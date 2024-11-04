@@ -9,6 +9,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Widgets;
 using System;
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Windows
     public partial class StartupWindow : POSWindow
     {
         private NumberPadPin PinPanel { get; set; }
-        public TablePad UsersPanel { get; set; }
+        public UsersMenu UsersMenu { get; set; }
         private sys_userdetail SelectedUser { get; set; }
 
         public StartupWindow(
@@ -201,40 +202,15 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.Relief = ReliefStyle.None;
                 tablePadUserButtonNext.BorderWidth = 0;
                 tablePadUserButtonNext.CanFocus = false;
-                //Objects:TablePadUser
-                string sqlTablePadUser = @"
-                        SELECT 
-                            Oid as id, Name as name, Name as label, ButtonImage as image
-                        FROM 
-                            sys_userdetail
-                        WHERE 
-                            (Disabled IS NULL or Disabled <> 1)
-                    ";
 
-                UsersPanel = new TablePad(
-                    sqlTablePadUser,
-                    "ORDER BY Ord",
-                    "",
-                    Guid.Empty,
-                    true,
-                    tablePadUserTableConfig.Rows,
-                    tablePadUserTableConfig.Columns,
-                    "buttonUserId",
-                    System.Drawing.Color.Transparent,
-                    tablePadUserButtonSize.Width,
-                    tablePadUserButtonSize.Height,
-                    tablePadUserButtonPrev,
-                    tablePadUserButtonNext
-                );
-                UsersPanel.SourceWindow = this;
-                UsersPanel.Clicked += TablePadUser_Clicked;
+                UsersMenu = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
 
                 //Put in Fix
                 if (tablePadUserVisible)
                 {
                     fix.Put(tablePadUserButtonPrev, tablePadUserButtonPrevPosition.X, tablePadUserButtonPrevPosition.Y);
                     fix.Put(tablePadUserButtonNext, tablePadUserButtonNextPosition.X, tablePadUserButtonNextPosition.Y);
-                    fix.Put(UsersPanel, tablePadUserPosition.X, tablePadUserPosition.Y);
+                    fix.Put(UsersMenu, tablePadUserPosition.X, tablePadUserPosition.Y);
                 }
 
                 //Label Version

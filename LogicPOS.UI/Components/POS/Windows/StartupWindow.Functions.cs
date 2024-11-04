@@ -18,9 +18,6 @@ namespace LogicPOS.UI.Components.Windows
         {
             CustomButton button = (CustomButton)sender;
 
-            UsersPanel.SelectedButtonOid = button.CurrentButtonId;
-
-            //Assign User Detail to Member Reference
             AssignUserDetail();
         }
 
@@ -64,25 +61,25 @@ namespace LogicPOS.UI.Components.Windows
 
         private void AssignUserDetail()
         {
-            if (UsersPanel.SelectedButtonOid != null)
-            {
-                SelectedUser = XPOUtility.GetEntityById<sys_userdetail>(UsersPanel.SelectedButtonOid);
-                if (SelectedUser != null)
-                {
-                    //Change NumberPadPinMode Mode
-                    PinPanel.Mode = (SelectedUser.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
+            //if (UsersMenu.SelectedButtonOid != null)
+            //{
+            //    SelectedUser = XPOUtility.GetEntityById<sys_userdetail>(UsersMenu.SelectedButtonOid);
+            //    if (SelectedUser != null)
+            //    {
+            //        //Change NumberPadPinMode Mode
+            //        PinPanel.Mode = (SelectedUser.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
-                    if (SelectedUser.PasswordReset)
-                    {
-                        //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
-                            string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), SelectedUser.Name, XPOSettings.DefaultValueUserDetailAccessPin)
-                        );
-                    }
-                }
-            }
+            //        if (SelectedUser.PasswordReset)
+            //        {
+            //            //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
+            //            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
+            //                string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), SelectedUser.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+            //            );
+            //        }
+            //    }
+            //}
 
-            PinPanel.EntryPin.GrabFocus();
+            //PinPanel.EntryPin.GrabFocus();
         }
 
         public void LogOutUser(bool pShowStartup)
@@ -105,11 +102,9 @@ namespace LogicPOS.UI.Components.Windows
                     GeneralSettings.LoggedUserPermissions = null;
                 }
             }
-            //Update Table, In case user change Users in BackOffice
-            GlobalApp.StartupWindow.UsersPanel.UpdateSql();
-            //Required to Assign Details to Update Select User
+            
             AssignUserDetail();
-            //Show Startup Windows, or Not (Silent Mode)
+
             if (pGotoStartupWindow) GlobalApp.StartupWindow.ShowAll();
         }
     }
