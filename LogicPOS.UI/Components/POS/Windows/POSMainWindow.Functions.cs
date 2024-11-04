@@ -217,6 +217,8 @@ namespace LogicPOS.UI.Components.Windows
 
         public void UpdateWorkSessionUI()
         {
+            return; //tchial0: prevent disabling some parts of the UI
+
             if (XPOSettings.WorkSessionPeriodDay != null)
             {
                 if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
