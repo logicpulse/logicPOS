@@ -276,7 +276,7 @@ namespace LogicPOS.UI.Components.POS
 
         private string GetDocumentType()
         {
-            return BtnInvoice.Sensitive ? "FS" : "FT";
+            return BtnInvoice.Sensitive ? "FR" : "FT";
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()

@@ -130,7 +130,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            if(ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
+            if(ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)
             {
                 return;
             }
@@ -138,11 +138,11 @@ namespace LogicPOS.UI.Components.POS
             if (ItemsPage.Ticket != null)
             {
                 ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow,
-                                                                        DialogFlags.DestroyWithParent,
-                                                                        MessageType.Question,
-                                                                        ButtonsType.OkCancel,
-                                                                        GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"),
-                                                                        GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
+                                                                              DialogFlags.DestroyWithParent,
+                                                                              MessageType.Question,
+                                                                              ButtonsType.OkCancel,
+                                                                              GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"),
+                                                                              GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
                 if (dialogResponse != ResponseType.Ok)
                 {
                     return;
