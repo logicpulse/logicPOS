@@ -16,6 +16,7 @@ using LogicPOS.Api.Features.Database.GetBackup;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
 {
@@ -151,30 +152,50 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 dateRangeModal.Destroy();
                 return;
             }
+
             var startDate = dateRangeModal.DateStart;
             var endDate = dateRangeModal.DateEnd;
+            dateRangeModal.Destroy();
 
+            ExportSaftByPeriod(startDate, endDate);
+        }
+
+        private void ExportSaftByPeriod(DateTime startDate, DateTime endDate)
+        {
             var filePath = FilePicker.GetSaveFilePath(this, "Export Angola SAFT");
 
             if (filePath == null)
             {
-                dateRangeModal.Destroy();
                 return;
             }
 
-            var getSaft = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetAngolaSaftQuery(startDate,endDate)).Result;
+            var getSaft = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetAngolaSaftQuery(startDate, endDate)).Result;
 
             if (getSaft.IsError)
             {
                 SimpleAlerts.ShowApiErrorAlert(this, getSaft.FirstError);
-                dateRangeModal.Destroy();
                 return;
             }
 
             string saftFileDestination = filePath + ".xml";
 
             File.WriteAllBytes(saftFileDestination, getSaft.Value);
-            dateRangeModal.Destroy();
+        }
+
+        private void BtnExportYearlySaft_Clicked(object sender, EventArgs e)
+        {
+            DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
+
+            ExportSaftByPeriod(startDate, endDate);
+        }
+
+        private void BtnExportLastMonthSaft_Clicked(object sender, EventArgs e)
+        {
+            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+
+            ExportSaftByPeriod(startDate, endDate);
         }
 
         #endregion

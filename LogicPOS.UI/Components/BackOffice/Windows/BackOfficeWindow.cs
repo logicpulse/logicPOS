@@ -156,8 +156,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private Dictionary<string, AccordionNode> CreateExportSection()
         {
             Dictionary<string, AccordionNode> exportSection = new Dictionary<string, AccordionNode>();
-            exportSection.Add("System_ExportSaftPT_SaftPt", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_whole_year")) { Clicked = BtnExportCustomSaft_Clicked  });
-            exportSection.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_last_month")) { Clicked = BtnExportCustomSaft_Clicked });
+            exportSection.Add("System_ExportSaftPT_SaftPt", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_whole_year")) { Clicked = BtnExportYearlySaft_Clicked  });
+            exportSection.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_last_month")) { Clicked = BtnExportLastMonthSaft_Clicked });
             exportSection.Add("System_ExportSaftPT_Custom", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_custom")) { Clicked = BtnExportCustomSaft_Clicked });
             exportSection.Add("System_Export_Articles", new AccordionNode(GeneralUtils.GetResourceByName("global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
             exportSection.Add("System_Export_Costumers", new AccordionNode(GeneralUtils.GetResourceByName("global_export_costumers")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportCustomers); } });
