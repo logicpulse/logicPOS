@@ -110,7 +110,7 @@ namespace LogicPOS.UI.Components.Windows
 
                 InitUiEventboxToolbar(theme);
 
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                GlobalApp.DialogThreadNotify?.WakeupMain();
 
                 SortingCollection sortCollection = new SortingCollection
                         {

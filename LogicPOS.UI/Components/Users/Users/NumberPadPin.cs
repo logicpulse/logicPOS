@@ -26,6 +26,7 @@ namespace LogicPOS.UI.Widgets
         private bool _notLoginAuth;
 
         private NumberPadPinMode _mode;
+
         public NumberPadPinMode Mode
         {
             get { return _mode; }
@@ -243,11 +244,7 @@ namespace LogicPOS.UI.Widgets
             //row6
             if (pShowSystemButtons)
             {
-                //_table.Attach(_buttonKeyFrontOffice, 0, 1, 5, 6, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                //_table.Attach(_buttonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                //_table.Attach(_buttonKeyBackOffice, 2, 3, 5, 6, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
                 _table.Attach(ButtonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                //space between Status Message and POS Keys
                 _table.SetRowSpacing(5, pRowSpacingSystemButtons);
             }
 
@@ -468,12 +465,9 @@ namespace LogicPOS.UI.Widgets
             {
                 case NumberPadPinMode.Password:
                     _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_password");
-                    //_buttonKeyOK.LabelText = CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "widget_pospinpad_login;
                     ButtonKeyOK.ButtonLabel.Text = !_notLoginAuth ? GeneralUtils.GetResourceByName("widget_pospinpad_login") : GeneralUtils.GetResourceByName("widget_pospinpad_ok");
                     break;
                 case NumberPadPinMode.PasswordOld:
-                    //Show message to user, to change old password
-                    //ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_change_password, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "pos_pinpad_message_password_request_change_password);
                     _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_old_password");
                     ButtonKeyOK.ButtonLabel.Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok");
                     break;
@@ -492,14 +486,12 @@ namespace LogicPOS.UI.Widgets
             ClearEntryPinStatusMessage(true);
         }
 
-        //Start Application or Change User
         private void ProcessLogin(sys_userdetail pUserDetail)
         {
             XPOSettings.LoggedUser = pUserDetail;
             GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
             XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), pUserDetail.Name));
 
-            //SessionApp Add LoggedUser
             if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
             {
                 POSSession.CurrentSession.LoggedUsers.Add(pUserDetail.Oid, XPOUtility.CurrentDateTimeAtomic());
@@ -510,16 +502,9 @@ namespace LogicPOS.UI.Widgets
             }
             POSSession.CurrentSession.Save();
 
-            //Returns to default mode
             _mode = NumberPadPinMode.Password;
             UpdateStatusLabels();
 
-            //Process Notifications After Login/Create First Time PosWindow
-            //Disabled SystemNotification and ShowNotifications. Moved to Startup Window
-            //FrameworkUtils.SystemNotification();
-            //Utils.ShowNotifications(_sourceWindow, pUserDetail.Oid);
-
-            //TK016235 BackOffice - Mode
             if (GeneralSettings.AppUseBackOfficeMode)
             {
                 Utils.ShowBackOffice(_sourceWindow);

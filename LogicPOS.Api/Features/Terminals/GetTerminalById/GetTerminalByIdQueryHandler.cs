@@ -1,0 +1,22 @@
+﻿using ErrorOr;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Terminals.GetTerminalById
+{
+    public class GetTerminalByIdQueryHandler :
+        RequestHandler<GetTerminalByIdQuery, ErrorOr<Terminal>>
+    {
+        public GetTerminalByIdQueryHandler(IHttpClientFactory factory) : base(factory)
+        {
+        }
+
+        public override async Task<ErrorOr<Terminal>> Handle(GetTerminalByIdQuery query, CancellationToken cancellationToken = default)
+        {
+            return await HandleGetEntityQueryAsync<Terminal>($"terminals/{query.Id}", cancellationToken);
+        }
+    }
+}

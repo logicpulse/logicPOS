@@ -9,7 +9,6 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Widgets;
 using System;
@@ -19,11 +18,9 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class StartupWindow : POSWindow
     {
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-        private NumberPadPin _userPinPanel;
+        private NumberPadPin PinPanel { get; set; }
         public TablePad UsersPanel { get; set; }
-        private sys_userdetail _selectedLoginUser;
+        private sys_userdetail SelectedUser { get; set; }
 
         public StartupWindow(
             string backgroundImage,
@@ -53,38 +50,30 @@ namespace LogicPOS.UI.Components.Windows
 
         private void InitPlataformParameters()
         {
-            try
+            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+            cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
+            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
+
+            if (
+                string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
+                string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryCode2.Value) ||
+                string.IsNullOrEmpty(configurationPreferenceParameterCompanyFiscalNumber.Value) ||
+                string.IsNullOrEmpty(configurationPreferenceParameterSystemCurrencyOid.Value)
+            )
             {
-                //Get ConfigurationPreferenceParameter Values to Check if Plataform is Inited
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
-                cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
-
-                if (
-                    string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
-                    string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryCode2.Value) ||
-                    string.IsNullOrEmpty(configurationPreferenceParameterCompanyFiscalNumber.Value) ||
-                    string.IsNullOrEmpty(configurationPreferenceParameterSystemCurrencyOid.Value)
-                )
-                {
-                    PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, false);
-                    ResponseType response = (ResponseType)dialog.Run();
-                    dialog.Destroy();
-                }
-
-                //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
-                configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-                configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-                XPOSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-                XPOSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
-
-                _logger.Debug(string.Format("Using System Country: [{0}], Currency: [{1}]", XPOSettings.ConfigurationSystemCountry.Designation, XPOSettings.ConfigurationSystemCurrency.Designation));
+                PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, false);
+                ResponseType response = (ResponseType)dialog.Run();
+                dialog.Destroy();
             }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+
+            //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
+            configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
+            configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
+            XPOSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
+            XPOSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
+
+
         }
 
         private dynamic GetTheme()
@@ -151,7 +140,7 @@ namespace LogicPOS.UI.Components.Windows
                 }
 
                 //NumberPadPin
-                _userPinPanel = new NumberPadPin(this,
+                PinPanel = new NumberPadPin(this,
                                                  "numberPadPin",
                                                  System.Drawing.Color.Transparent,
                                                  numberPadPinFont,
@@ -168,20 +157,20 @@ namespace LogicPOS.UI.Components.Windows
 
                 if (numberPadPinSize.Width > 0 || numberPadPinSize.Height > 0)
                 {
-                    _userPinPanel.Eventbox.WidthRequest = numberPadPinSize.Width;
-                    _userPinPanel.Eventbox.HeightRequest = numberPadPinSize.Height;
+                    PinPanel.Eventbox.WidthRequest = numberPadPinSize.Width;
+                    PinPanel.Eventbox.HeightRequest = numberPadPinSize.Height;
                 }
 
                 //Put in Fix
-                fix.Put(_userPinPanel, numberPadPinPosition.X, numberPadPinPosition.Y);
+                fix.Put(PinPanel, numberPadPinPosition.X, numberPadPinPosition.Y);
                 //Over NumberPadPin
                 //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                 //Events
-                _userPinPanel.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
-                _userPinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
-                _userPinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
-                _userPinPanel.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
-                _userPinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
+                PinPanel.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
+                PinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
+                PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
+                PinPanel.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
+                PinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
 
                 //Objects:TablePadUserButtonPrev
                 IconButton tablePadUserButtonPrev = new IconButton(
@@ -305,15 +294,15 @@ namespace LogicPOS.UI.Components.Windows
                 ScreenArea.Add(fix);
 
                 //Force EntryPin to be the Entry with Focus
-                _userPinPanel.EntryPin.GrabFocus();
+                PinPanel.EntryPin.GrabFocus();
 
                 ShowAll();
 
                 //Events
-                _userPinPanel.ExposeEvent += delegate
+                PinPanel.ExposeEvent += delegate
                 {
-                    _userPinPanel.ButtonKeyFrontOffice.Hide();
-                    _userPinPanel.ButtonKeyBackOffice.Hide();
+                    PinPanel.ButtonKeyFrontOffice.Hide();
+                    PinPanel.ButtonKeyBackOffice.Hide();
                 };
 
             }

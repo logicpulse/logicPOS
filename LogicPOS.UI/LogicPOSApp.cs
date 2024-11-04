@@ -50,7 +50,7 @@ namespace logicpos
             try
             {
                 Init();
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                GlobalApp.DialogThreadNotify?.WakeupMain();
                 InitAppMode(pMode);
 
                 InitBackupTimerProcess();

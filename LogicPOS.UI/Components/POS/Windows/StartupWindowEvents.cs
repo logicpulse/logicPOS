@@ -26,17 +26,17 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            _userPinPanel.ProcessPassword(this, _selectedLoginUser);
+            PinPanel.ProcessPassword(this, SelectedUser);
         }
 
         private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
         {
             //Require to store current Current Pin, else when we change mode it resets pin to messages
-            string currentPin = _userPinPanel.EntryPin.Text;
-            _userPinPanel.Mode = NumberPadPinMode.PasswordReset;
+            string currentPin = PinPanel.EntryPin.Text;
+            PinPanel.Mode = NumberPadPinMode.PasswordReset;
             //Restore Pin after UpdateLabelStatus triggered in mode
-            _userPinPanel.EntryPin.Text = currentPin;
-            _userPinPanel.ProcessPassword(this, _selectedLoginUser);
+            PinPanel.EntryPin.Text = currentPin;
+            PinPanel.ProcessPassword(this, SelectedUser);
         }
 
         private void StartupWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
@@ -64,33 +64,25 @@ namespace LogicPOS.UI.Components.Windows
 
         private void AssignUserDetail()
         {
-            try
+            if (UsersPanel.SelectedButtonOid != null)
             {
-                if (UsersPanel.SelectedButtonOid != null)
+                SelectedUser = XPOUtility.GetEntityById<sys_userdetail>(UsersPanel.SelectedButtonOid);
+                if (SelectedUser != null)
                 {
-                    _selectedLoginUser = XPOUtility.GetEntityById<sys_userdetail>(UsersPanel.SelectedButtonOid);
-                    if (_selectedLoginUser != null)
-                    {
-                        //Change NumberPadPinMode Mode
-                        _userPinPanel.Mode = (_selectedLoginUser.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
+                    //Change NumberPadPinMode Mode
+                    PinPanel.Mode = (SelectedUser.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
-                        if (_selectedLoginUser.PasswordReset)
-                        {
-                            //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                            Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
-                                string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), _selectedLoginUser.Name, XPOSettings.DefaultValueUserDetailAccessPin)
-                            );
-                        }
+                    if (SelectedUser.PasswordReset)
+                    {
+                        //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
+                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
+                            string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_user_request_change_password"), SelectedUser.Name, XPOSettings.DefaultValueUserDetailAccessPin)
+                        );
                     }
                 }
+            }
 
-                //Grab Focus
-                _userPinPanel.EntryPin.GrabFocus();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            PinPanel.EntryPin.GrabFocus();
         }
 
         public void LogOutUser(bool pShowStartup)
@@ -105,7 +97,7 @@ namespace LogicPOS.UI.Components.Windows
             {
                 POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
                 POSSession.CurrentSession.Save();
-               XPOUtility.Audit("USER_logout", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_logout"), pUserDetail.Name));
+                XPOUtility.Audit("USER_logout", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_logout"), pUserDetail.Name));
                 //Only Reset LoggedUser if equal to pUser
                 if (XPOSettings.LoggedUser.Equals(pUserDetail))
                 {

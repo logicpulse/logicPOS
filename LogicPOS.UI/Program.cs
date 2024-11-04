@@ -72,7 +72,6 @@ namespace LogicPOS.UI
 
                 if (true)
                 {
-
                     ShowLoadingScreen();
 
                     SetCulture();
@@ -129,6 +128,11 @@ namespace LogicPOS.UI
         }
 
         private static void StartApp()
+        {
+            StartFrontOffice();
+        }
+
+        private void OldStarApp()
         {
             if (PluginSettings.LicenceManager != null)
             {
