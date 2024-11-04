@@ -467,8 +467,7 @@ namespace LogicPOS.UI.Components.Windows
             MenuArticles = new ArticlesMenu(MenuSubfamilies,
                                             btnMenuArticlesPrevious,
                                             btnMenuArticlesNext,
-                                            SaleContext.ItemsPage)
-            { Sensitive = false };
+                                            SaleContext.ItemsPage);
 
             MenuArticles.SourceWindow = this;
 
@@ -625,7 +624,7 @@ namespace LogicPOS.UI.Components.Windows
             Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketPad.Position);
             Size size = (theme.Objects.EventBoxPosTicketPad.Size as string).ToSize();
 
-            SaleOptionsPanel = new SaleOptionsPanel(SaleContext.ItemsPage,theme.Objects.EventBoxPosTicketPad.Buttons) { Sensitive = false };
+            SaleOptionsPanel = new SaleOptionsPanel(SaleContext.ItemsPage, theme.Objects.EventBoxPosTicketPad.Buttons);
 
             SaleOptionsPanel.SourceWindow = this;
             EventBox saleOptionsPanelEventBox = new EventBox() { VisibleWindow = false, WidthRequest = size.Width, HeightRequest = size.Height };
