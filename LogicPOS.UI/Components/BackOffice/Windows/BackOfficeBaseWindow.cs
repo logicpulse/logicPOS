@@ -6,6 +6,8 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Pango;
@@ -127,7 +129,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             LabelActivePage.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
-            LabelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
+            LabelTerminalInfo = new Label($"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.LoggedUser.Name}");
             LabelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
             LabelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             LabelTerminalInfo.SetAlignment(0.5F, 0.5F);

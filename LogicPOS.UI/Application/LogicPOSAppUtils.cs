@@ -30,7 +30,7 @@ using System.IO;
 
 namespace LogicPOS.UI.Application
 {
-    internal class LogicPOSApp
+    internal class LogicPOSAppUtils
     {
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private bool _quitAfterBootStrap = false;
@@ -81,10 +81,8 @@ namespace LogicPOS.UI.Application
             }
         }
 
-
         private void Initialize()
         {
-
             bool createDatabase = LogicPOSSettings.XPOCreateDatabaseAndSchema;
             bool createDatabaseObjectsWithFixtures = createDatabase;
 

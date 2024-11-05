@@ -13,6 +13,7 @@ using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using MediatR;
@@ -482,6 +483,7 @@ namespace LogicPOS.UI.Widgets
         private void ProcessLogin(UserDetail user)
         {
             _mode = NumberPadPinMode.Password;
+            AuthenticationService.LoggedUser = user;
             UpdateStatusLabels();
 
             if (GeneralSettings.AppUseBackOfficeMode)

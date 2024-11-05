@@ -14,6 +14,8 @@ using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -198,7 +200,7 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            LabelTerminalInfo = new Label(string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name));
+            LabelTerminalInfo = new Label($"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.LoggedUser.Name}");
             LabelTerminalInfo.ModifyFont(labelTerminalInfoFont);
             LabelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);

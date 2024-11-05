@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPOSApp.Quit(this);
+            LogicPOSAppUtils.Quit(this);
         }
 
         private void BtnBackOffice_Clicked(object sender, EventArgs e)

@@ -132,7 +132,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (SourceWindow == null)
             {
-                LogicPOSApp.Quit(this);
+                LogicPOSAppUtils.Quit(this);
             }
 
             SourceWindow.ShowAll();

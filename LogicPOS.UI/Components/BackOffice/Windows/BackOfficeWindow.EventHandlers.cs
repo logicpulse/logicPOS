@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
     {
         private void BtnExit_Clicked(object sender, EventArgs args)
         {
-            LogicPOSApp.Quit(this);
+            LogicPOSAppUtils.Quit(this);
         }
 
         private void BtnDashBoard_Clicked(object sender, EventArgs args)
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 if (responseType == ResponseType.Yes)
                 {
                     System.Diagnostics.Process.Start(lPathToUpdater);
-                    LogicPOSApp.QuitWithoutConfirmation();
+                    LogicPOSAppUtils.QuitWithoutConfirmation();
                 }
             }
         }

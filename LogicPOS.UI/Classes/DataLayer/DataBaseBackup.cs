@@ -363,7 +363,7 @@ namespace logicpos.Classes.DataLayer
                             //Audit
                             XPOUtility.Audit("APP_CLOSE");
                             //Call QuitWithoutConfirmation without Audit
-                            LogicPOSApp.QuitWithoutConfirmation(false);
+                            LogicPOSAppUtils.QuitWithoutConfirmation(false);
 
                             return true;
                         }

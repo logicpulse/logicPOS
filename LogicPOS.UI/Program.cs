@@ -2,23 +2,18 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
-using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.DTOs.Printing;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
-using LogicPOS.Printing.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Terminals;
 using System;
 using System.Configuration;
-using System.Drawing.Printing;
 using System.Globalization;
-using System.Linq;
-using System.Net.Http;
 using System.Threading;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -130,8 +125,18 @@ namespace LogicPOS.UI
 
         private static void StartApp()
         {
-            OldStartApp();
+            var intializeTerminalResult = TerminalService.InitializeTerminalAsync().Result;
+           
+            if(intializeTerminalResult.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(null,intializeTerminalResult.FirstError);
+                return;
+            }
+
+            StartFrontOffice();
         }
+
+       
 
         private static void OldStartApp()
         {
@@ -153,13 +158,13 @@ namespace LogicPOS.UI
 
         public static void StartFrontOffice()
         {
-            LogicPOSApp logicPos = new LogicPOSApp();
+            LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
             logicPos.StartApp(AppMode.FrontOffice);
         }
 
         public static void StartBackOffice()
         {
-            LogicPOSApp logicPos = new LogicPOSApp();
+            LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
             logicPos.StartApp(AppMode.Backoffice);
         }
 
@@ -178,11 +183,12 @@ namespace LogicPOS.UI
 
                 return null;
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.Error("GetCultureFromDb() :: " + ex.Message);
                 return null;
-            }     
+            }
         }
 
         public static void SetCulture()
