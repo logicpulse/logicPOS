@@ -13,6 +13,8 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.PoleDisplays;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -33,7 +35,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void BackOfficeMainWindow_Show(object sender, EventArgs e)
         {
-            LabelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+            LabelTerminalInfo.Text = $"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.User.Name}";
             Menu.UpdateMenuPrivileges();
             string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Menu.CurrentPageChildButton.Name.ToUpper());
             CurrentPage.Sensitive = GeneralSettings.LoggedUserHasPermissionTo(currentNodePrivilegesToken);

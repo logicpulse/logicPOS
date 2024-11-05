@@ -1,10 +1,8 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -13,7 +11,7 @@ namespace LogicPOS.UI.Components.Accordions
 {
     public class Accordion : Box
     {
-        private readonly string _nodePrivilegesTokenFormat;
+        private readonly string _permissionTokenFormat;
         protected Label _label;
         public event EventHandler Clicked;
         internal Dictionary<string, AccordionNode> Nodes;
@@ -23,10 +21,10 @@ namespace LogicPOS.UI.Components.Accordions
 
         public Accordion() { }
         public Accordion(Dictionary<string, AccordionNode> nodes,
-                         string nodePrivilegesTokenFormat)
+                         string permissionTokenFormat)
         {
-            _nodePrivilegesTokenFormat = nodePrivilegesTokenFormat;
-            Initialize(nodes, nodePrivilegesTokenFormat);
+            _permissionTokenFormat = permissionTokenFormat;
+            Initialize(nodes, permissionTokenFormat);
         }
 
         protected void Initialize(Dictionary<string, AccordionNode> nodes,
@@ -78,7 +76,7 @@ namespace LogicPOS.UI.Components.Accordions
                     else
                     {
                         accordionParentButton = new AccordionParentButton(node.Value.Label) { Name = node.Key };
- 
+
                         if (CurrentParent == null)
                         {
                             CurrentParent = accordionParentButton;
@@ -93,10 +91,10 @@ namespace LogicPOS.UI.Components.Accordions
                     }
 
                     node.Value.Button = accordionParentButton;
-            
+
                     accordionParentButton.Clicked += ParentButton_Clicked;
                     vboxOuter.PackStart(accordionParentButton, false, false, 0);
-                    
+
                     if (node.Value.Children != null && node.Value.Children.Count > 0)
                     {
                         foreach (var childLevel in node.Value.Children)
@@ -108,12 +106,12 @@ namespace LogicPOS.UI.Components.Accordions
                             hboxChild.PackStart(_label, true, true, 0);
 
                             accordionChildButton = new AccordionChildButton(hboxChild) { Name = childLevel.Key, Page = childLevel.Value.Content };
-                            
+
                             childLevel.Value.Button = accordionChildButton;
-                           
-          
+
+
                             currentNodePrivilegesToken = string.Format(nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
-                           
+
                             if (CurrentChild == null)
                             {
                                 CurrentChild = accordionChildButton;
@@ -125,7 +123,7 @@ namespace LogicPOS.UI.Components.Accordions
                             accordionChildButton.Sensitive = GeneralSettings.LoggedUserHasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null) && childLevel.Value.Sensitive;
 
                             accordionChildButton.Clicked += ChildButton_Clicked;
-                           
+
                             if (childLevel.Value.ExternalAppFileName != null)
                             {
                                 accordionChildButton.ExternalApplication = childLevel.Value.ExternalAppFileName;
@@ -145,10 +143,7 @@ namespace LogicPOS.UI.Components.Accordions
 
         public void UpdateMenuPrivileges()
         {
-            string currentNodePrivilegesToken;
-
-            XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(XPOSettings.LoggedUser.Oid);
-            GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions(XPOSettings.LoggedUser);
+            string token;
 
             if (Nodes != null && Nodes.Count > 0)
             {
@@ -158,9 +153,9 @@ namespace LogicPOS.UI.Components.Accordions
                     {
                         foreach (var childLevel in parentLevel.Value.Children)
                         {
-                            currentNodePrivilegesToken = string.Format(_nodePrivilegesTokenFormat, childLevel.Key.ToUpper());
+                            token = string.Format(_permissionTokenFormat, childLevel.Key.ToUpper());
 
-                            if (GeneralSettings.LoggedUserHasPermissionTo(currentNodePrivilegesToken) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
+                            if (AuthenticationService.UserHasPermission(token) && (childLevel.Value.Content != null || childLevel.Value.Clicked != null || childLevel.Value.ExternalAppFileName != null))
                             {
                                 childLevel.Value.Button.Sensitive = true;
                             }

@@ -483,7 +483,7 @@ namespace LogicPOS.UI.Widgets
         private void ProcessLogin(UserDetail user)
         {
             _mode = NumberPadPinMode.Password;
-            AuthenticationService.LoggedUser = user;
+            AuthenticationService.LoginUser(user);
             UpdateStatusLabels();
 
             if (GeneralSettings.AppUseBackOfficeMode)

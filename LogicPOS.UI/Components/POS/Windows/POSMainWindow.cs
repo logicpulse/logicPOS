@@ -200,7 +200,7 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxStatusBar1.ModifyBg(StateType.Normal, eventBoxStatusBar1BackgroundColor);
 
             //EventBoxStatusBar1:LabelTerminalInfo
-            LabelTerminalInfo = new Label($"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.LoggedUser.Name}");
+            LabelTerminalInfo = new Label($"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.User.Name}");
             LabelTerminalInfo.ModifyFont(labelTerminalInfoFont);
             LabelTerminalInfo.ModifyFg(StateType.Normal, labelTerminalInfoFontColor);
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
