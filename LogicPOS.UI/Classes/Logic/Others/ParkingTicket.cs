@@ -1,7 +1,7 @@
 ﻿using logicpos.Classes.Enums.TicketList;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using System;
 using System.Net;
 
@@ -25,12 +25,12 @@ namespace logicpos.Classes.Logic.Others
         {
             _logger.Debug("void GetTicketDetailFromWS([ " + ean + " ])");
 
-            bool hasOrder = null != GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail.Lines;
+            bool hasOrder = null != LogicPOSAppContext.PosMainWindow.TicketList.CurrentOrderDetail.Lines;
             bool ticketExists = false;
 
             if (hasOrder) /* Checks for duplicates in current order */
             {
-                foreach (var line in GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail.Lines)
+                foreach (var line in LogicPOSAppContext.PosMainWindow.TicketList.CurrentOrderDetail.Lines)
                 {
                     if (line.Designation.Contains(ean))
                     {
@@ -47,10 +47,10 @@ namespace logicpos.Classes.Logic.Others
                 // http://ws.test.cloud.time.track.pt/service.asmx?op=payTicket
 
                 //Always Change Mode to Ticket
-                if (GlobalApp.PosMainWindow.TicketList.ListMode != TicketListMode.Ticket)
+                if (LogicPOSAppContext.PosMainWindow.TicketList.ListMode != TicketListMode.Ticket)
                 {
-                    GlobalApp.PosMainWindow.TicketList.ListMode = TicketListMode.Ticket;
-                    GlobalApp.PosMainWindow.TicketList.UpdateModel();
+                    LogicPOSAppContext.PosMainWindow.TicketList.ListMode = TicketListMode.Ticket;
+                    LogicPOSAppContext.PosMainWindow.TicketList.UpdateModel();
                 }
 
                 if (GeneralSettings.AppUseParkingTicketModule && parkingTicketResult == null)
@@ -59,18 +59,18 @@ namespace logicpos.Classes.Logic.Others
                 }
                 else if (GeneralSettings.AppUseParkingTicketModule && parkingTicketResult.Date == null && ean.Length == 13)
                 {
-                    GlobalApp.PosMainWindow.TicketList.ArticleNotFound();
+                    LogicPOSAppContext.PosMainWindow.TicketList.ArticleNotFound();
                 }
                 //IN009279 Parking ticket Service - implementar Cartão cliente
                 else if (parkingTicketResult.Ean.Length == 13)
                 {
-                    GlobalApp.PosMainWindow.UpdateWorkSessionUI();
-                    GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingTicket, parkingTicketResult);
+                    LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
+                    LogicPOSAppContext.PosMainWindow.TicketList.UpdateOrderStatusBar();
+                    LogicPOSAppContext.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingTicket, parkingTicketResult);
                 }
                 else
                 {
-                    GlobalApp.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingCard, parkingTicketResult);
+                    LogicPOSAppContext.PosMainWindow.TicketList.InsertOrUpdate(XPOSettings.XpoOidArticleParkingCard, parkingTicketResult);
                 }
             }
         }
@@ -106,7 +106,7 @@ namespace logicpos.Classes.Logic.Others
                 catch (WebException ex)
                 {
                     _logger.Error("ParkingTicketResult GetTicketInformation([ " + ean + " ]) :: " + ex.Message, ex);
-                    GlobalApp.PosMainWindow.TicketList.WsNotFound();
+                    LogicPOSAppContext.PosMainWindow.TicketList.WsNotFound();
                     parkingTicketResult = null;
                     // throw ex;
                 }

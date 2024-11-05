@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -56,13 +56,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
                     string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_duplicated_key"), data);
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), message);
+                    logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.BackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), message);
                 }
                 else
                 {
                     _logger.Error(ex.Message, ex);
                     ResponseType response = logicpos.Utils.ShowMessageTouch(
-                        GlobalApp.BackOffice,
+                        LogicPOSAppContext.BackOffice,
                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
                         MessageType.Warning, ButtonsType.Close,
                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"),

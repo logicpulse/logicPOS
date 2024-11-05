@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Formatters;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using LogicPOS.Shared.CustomDocument;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -236,7 +236,7 @@ WHERE DFM.Oid =  '{stringFormatIndexZero}';
             }
             //New Sort collection for pagination created (3/7/19) IN009223 IN009227
             SortingCollection sortCollection = new SortingCollection(sortProperty);
-            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage * CurrentPageNumber, Sorting = sortCollection };
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * CurrentPageNumber, Sorting = sortCollection };
 
             //Call Base Initializer
             base.InitObject(

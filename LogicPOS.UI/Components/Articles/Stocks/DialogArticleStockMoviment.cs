@@ -7,8 +7,8 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
             _sourceWindow = parentWindow;
             _xPGuidObject = pXPGuidObject;
             this.Title = "Editar Movimento";
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 SetSizeRequest(320, 250);
             }

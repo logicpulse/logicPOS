@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -13,6 +12,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
@@ -37,9 +37,9 @@ namespace LogicPOS.UI.Components.Windows
 
         private void PosMainWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
-            if (GlobalApp.BarCodeReader != null)
+            if (LogicPOSAppContext.BarCodeReader != null)
             {
-                GlobalApp.BarCodeReader.KeyReleaseEvent(this, o, args);
+                LogicPOSAppContext.BarCodeReader.KeyReleaseEvent(this, o, args);
             }
         }
 
@@ -63,7 +63,7 @@ namespace LogicPOS.UI.Components.Windows
         private void BtnLogOut_Clicked(object sender, EventArgs e)
         {
             Hide();
-            GlobalApp.StartupWindow.LogOutUser(true);
+            LogicPOSAppContext.StartupWindow.LogOutUser(true);
         }
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
@@ -184,9 +184,9 @@ namespace LogicPOS.UI.Components.Windows
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            if (GlobalApp.PosMainWindow.TicketList.CurrentOrderDetail != null)
+            if (LogicPOSAppContext.PosMainWindow.TicketList.CurrentOrderDetail != null)
             {
-                switch (GlobalApp.BarCodeReader.Device)
+                switch (LogicPOSAppContext.BarCodeReader.Device)
                 {
                     case InputReaderDevice.None:
                         break;
@@ -194,11 +194,11 @@ namespace LogicPOS.UI.Components.Windows
                     case InputReaderDevice.CardReader:
                         if (GeneralSettings.AppUseParkingTicketModule)
                         {
-                            GlobalApp.ParkingTicket.GetTicketDetailFromWS(GlobalApp.BarCodeReader.Buffer);
+                            LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(LogicPOSAppContext.BarCodeReader.Buffer);
                         }
                         else
                         {
-                            TicketList.InsertOrUpdate(GlobalApp.BarCodeReader.Buffer);
+                            TicketList.InsertOrUpdate(LogicPOSAppContext.BarCodeReader.Buffer);
                         }
                         break;
 
@@ -305,7 +305,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private bool UpdateClock()
         {
-            if (GlobalApp.PosMainWindow.Visible)
+            if (LogicPOSAppContext.PosMainWindow.Visible)
             {
                 LabelClock.Text = XPOUtility.CurrentDateTime(ClockTimeFormat);
 
@@ -392,7 +392,7 @@ namespace LogicPOS.UI.Components.Windows
             }
             else
             {
-                TicketList.SelectTableOrder(POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
+                TicketList.SelectTableOrder(LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
                 TicketList.UpdateArticleBag();
                 TicketList.UpdateSaleOptionsPanelOrderButtons();
                 TicketList.UpdateOrderStatusBar();

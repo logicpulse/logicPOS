@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using System.IO;
 
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Buttons
             string fontPosBackOfficeParentLowRes = LogicPOS.Settings.AppSettings.Instance.fontPosBackOfficeParentLowRes;
             Pango.FontDescription fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParent);
 
-            if (GlobalApp.ScreenSize.Height == 800)
+            if (LogicPOSAppContext.ScreenSize.Height == 800)
             {
                 fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParentLowRes);
             }
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Buttons
                 buttonIcon = Utils.ResizeAndCrop(buttonIcon, settings.IconSize);
                 Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(buttonIcon);
                 Image gtkimageButton = new Image(pixBuf);
-                if (GlobalApp.ScreenSize.Height == 800)
+                if (LogicPOSAppContext.ScreenSize.Height == 800)
                 {
                     hbox.PackStart(gtkimageButton, false, false, 4);
                 }

@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.Finance;
@@ -10,6 +9,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.PoleDisplays;
@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 {
     public partial class BackOfficeWindow : BackOfficeBaseWindow
     {
-        private readonly string _privilegesBackOfficeMenuOperation = $"{POSSettings.PrivilegesBackOfficeCRUDOperationPrefix}_{"MENU"}";
+        private readonly string _privilegesBackOfficeMenuOperation = $"{LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix}_{"MENU"}";
 
 
         public BackOfficeWindow()
@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void InitializeMenuSections()
         {
             var sections = CreateMenuSections();
-            Menu = new Accordion(sections, POSSettings.PrivilegesBackOfficeMenuOperationFormat);
+            Menu = new Accordion(sections, LogicPOSSettings.PrivilegesBackOfficeMenuOperationFormat);
             Menu.WidthRequest = ButtonSize.Width;
         }
 
@@ -78,7 +78,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void ResizeMenuButtons()
         {
-            if (GlobalApp.BackOfficeScreenSize.Height <= 800)
+            if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
             {
                 PanelButtons.Put(Menu, 0, 28);
             }

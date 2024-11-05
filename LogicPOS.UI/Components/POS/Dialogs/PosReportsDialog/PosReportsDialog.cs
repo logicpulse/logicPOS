@@ -2,11 +2,11 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
@@ -48,7 +48,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             // Build Accordion
-            Accordion accordion = new Accordion(GetAccordionDefinition(), POSSettings.PrivilegesReportDialogFormat);
+            Accordion accordion = new Accordion(GetAccordionDefinition(), LogicPOSSettings.PrivilegesReportDialogFormat);
             //Accordion.Clicked += accordion_Clicked;
 
             //ViewPort

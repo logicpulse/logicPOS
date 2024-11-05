@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.App
+namespace LogicPOS.UI.Application
 {
-    public static class POSSettings
+    public static class LogicPOSSettings
     {
 
 #if (DEBUG)
@@ -163,7 +163,7 @@ namespace logicpos.App
         private static List<string> GetProtectedFilesList()
         {
             List<string> result = new List<string>
-            { 
+            {
                 @"Resources\Reports\UserReports\ReportArticle.frx",
                 @"Resources\Reports\UserReports\ReportDocumentFinance.frx",
                 @"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx",
@@ -176,10 +176,10 @@ namespace logicpos.App
 
         private static string GetThemeFileLocation()
         {
-          
+
             CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
 
-            var themeLocation =  $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, GeneralSettings.AppTheme.ToLower(), customAppOperationMode.AppOperationTheme.ToLower())}";
+            var themeLocation = $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, GeneralSettings.AppTheme.ToLower(), customAppOperationMode.AppOperationTheme.ToLower())}";
             return themeLocation;
         }
 

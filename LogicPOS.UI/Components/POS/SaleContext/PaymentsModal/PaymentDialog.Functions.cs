@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB.Exceptions;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using LogicPOS.Data.XPO.Settings;
@@ -15,6 +14,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Modals;
@@ -202,7 +202,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 )
                                 {
                                     PaymentMethod = PaymentMethod.Oid,
-                                    PaymentCondition = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition,
+                                    PaymentCondition = LogicPOSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition,
                                     Customer = Customer.Oid,
                                     TotalDelivery = TotalDelivery,
                                     TotalChange = TotalChange
@@ -234,7 +234,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     else
                                     {
                                         //Update Display
-                                        if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(PaymentMethod.Designation, TotalDelivery, TotalChange);
+                                        if (LogicPOSAppContext.UsbDisplay != null) LogicPOSAppContext.UsbDisplay.ShowPayment(PaymentMethod.Designation, TotalDelivery, TotalChange);
                                     }
                                 }
                             }
@@ -441,7 +441,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 DialogFlags.DestroyWithParent,
                 CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_select_country"),
                 //TODO:THEME
-                GlobalApp.MaxWindowSize,
+                LogicPOSAppContext.MaxWindowSize,
                 defaultValue,
                 null, //CriteriaOperator,
                 GridViewMode.Default,
@@ -1011,7 +1011,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 DialogFlags.DestroyWithParent,
                 CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_partial_payment"),
                 //TODO:THEME
-                GlobalApp.MaxWindowSize,
+                LogicPOSAppContext.MaxWindowSize,
                 //new Guid(), //use this to test pDefaultValue 
                 //new Guid("630ff869-e433-46bb-a53b-563c43535424"), 
                 null, //pDefaultValue : Require to Send a DataRow

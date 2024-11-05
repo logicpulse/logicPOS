@@ -1,11 +1,11 @@
 ﻿using ErrorOr;
 using Gtk;
 using logicpos;
-using logicpos.App;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -152,7 +152,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetWindowIcon()
         {
-            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, POSSettings.AppIcon);
+            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, LogicPOSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon))
             {
                 Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
@@ -169,7 +169,7 @@ namespace LogicPOS.UI.Components.Modals
             Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
             Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
 
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 sizeBaseDialogActionAreaButton.Height -= 10;
                 sizeBaseDialogActionAreaButtonIcon.Width -= 10;

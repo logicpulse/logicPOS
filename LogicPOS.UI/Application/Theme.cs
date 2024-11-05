@@ -1,6 +1,6 @@
 ﻿using Gtk;
 
-namespace logicpos
+namespace LogicPOS.UI.Application
 {
     internal class Theme
     {

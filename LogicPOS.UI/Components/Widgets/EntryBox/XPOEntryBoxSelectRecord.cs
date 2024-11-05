@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice;
@@ -11,7 +10,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.Utility;
@@ -99,7 +98,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _value = pValue;
             CriteriaOperator = pCriteriaOperator;
             //Init Private
-            _dialogSize = GlobalApp.MaxWindowSize;
+            _dialogSize = LogicPOSAppContext.MaxWindowSize;
 
             //Add Entry if is BaseClass XPOEntryBoxSelectRecord, Else Leave it for SubClassed Classes (Create Diferente Entry Types:)
             if (this.GetType() == typeof(XPOEntryBoxSelectRecord<T1, T2>))
@@ -647,7 +646,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             //Pagination response 
             if (DialogResponseType.LoadMore.Equals(response))
             {
-                dialog.GenericTreeView.Entities.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
+                dialog.GenericTreeView.Entities.TopReturnedObjects = (LogicPOSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber);
                 dialog.GenericTreeView.Refresh();
                 PopuDialogMore(pEntry, dialog);
             }
@@ -673,7 +672,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                 {
                     dialog.GenericTreeView.CurrentPageNumber = 1;
                     dialog.GenericTreeView.Entities.Criteria = CriteriaOperatorLastFilter;
-                    dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
                     dialogFilter.Destroy();
                     PopuDialogMore(pEntry, dialog);
@@ -710,14 +709,14 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
                     //lastData = dialog.GenericTreeView.DataSource;
 
                     dialog.GenericTreeView.Entities.Criteria = criteriaOperator;
-                    dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                    dialog.GenericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                     dialog.GenericTreeView.Refresh();
 
                     //se retornar zero resultados apresenta dados anteriores ao filtro
                     if (dialog.GenericTreeView.Entities.Count == 0)
                     {
                         dialog.GenericTreeView.Entities.Criteria = criteriaOperatorLast;
-                        dialog.GenericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
+                        dialog.GenericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * dialog.GenericTreeView.CurrentPageNumber;
                         dialog.GenericTreeView.Refresh();
                     }
                     dialogFilter.Destroy();

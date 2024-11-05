@@ -12,6 +12,7 @@ using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Printing.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using System;
 using System.Configuration;
 using System.Drawing.Printing;
@@ -39,7 +40,7 @@ namespace LogicPOS.UI
 
         public static void InitializeGtk()
         {
-            Application.Init();
+            Gtk.Application.Init();
             Theme.ParseTheme();
         }
 
@@ -55,9 +56,9 @@ namespace LogicPOS.UI
 
         private static void KeepUIResponsive()
         {
-            while (Application.EventsPending())
+            while (Gtk.Application.EventsPending())
             {
-                Application.RunIteration();
+                Gtk.Application.RunIteration();
             }
         }
 
@@ -129,10 +130,10 @@ namespace LogicPOS.UI
 
         private static void StartApp()
         {
-            StartFrontOffice();
+            OldStartApp();
         }
 
-        private void OldStarApp()
+        private static void OldStartApp()
         {
             if (PluginSettings.LicenceManager != null)
             {
@@ -140,14 +141,13 @@ namespace LogicPOS.UI
             }
             else
             {
-                bool dbExists = DatabaseService.DatabaseExists();
+                bool dbExists = false;
                 Thread thread = new Thread(new ThreadStart(StartFrontOffice));
-                GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
+                LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                 thread.Start();
 
-                _logger.Debug("void StartApp() :: Show 'loading'");
-                GlobalApp.LoadingDialog = Utils.CreateSplashScreen(new Window("POS start up"), dbExists);
-                GlobalApp.LoadingDialog.Run();
+                LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen(new Window("POS start up"), dbExists);
+                LogicPOSAppContext.LoadingDialog.Run();
             }
         }
 

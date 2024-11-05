@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
@@ -10,8 +9,8 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
@@ -79,7 +78,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _entryCompositeLinesCollection = new List<XPOEntryBoxSelectRecordValidation<fin_article, TreeViewArticle>>();
             _articlecompositions = new List<fin_articlecomposition>();
 
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 SetSizeRequest(500, 700);
             }
@@ -249,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
+                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = LogicPOSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
@@ -445,7 +444,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 vboxTab3.PackStart(boxTemplateBarCode, false, false, 0);
                 InputFields.Add(new GenericCRUDWidgetXPO(boxTemplateBarCode, Entity, "TemplateBarCode", RegexUtils.RegexGuid, false));
 
-                if (GlobalApp.ScreenSize.Width > 800 && GlobalApp.ScreenSize.Height > 600)
+                if (LogicPOSAppContext.ScreenSize.Width > 800 && LogicPOSAppContext.ScreenSize.Height > 600)
                 {
                     //CommissionGroup
                     XPOComboBox xpoComboBoxCommissionGroup = new XPOComboBox(Entity.Session, typeof(pos_usercommissiongroup), (Entity as fin_article).CommissionGroup, "Designation", null);

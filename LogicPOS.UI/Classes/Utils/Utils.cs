@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
@@ -19,8 +18,8 @@ using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
@@ -131,21 +130,21 @@ namespace logicpos
         {
             if (
                 (
-                    GlobalApp.Notifications != null && GlobalApp.Notifications.ContainsKey("SHOW_PRINTER_UNDEFINED")
+                    LogicPOSAppContext.Notifications != null && LogicPOSAppContext.Notifications.ContainsKey("SHOW_PRINTER_UNDEFINED")
                 )
-                && GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] == true
+                && LogicPOSAppContext.Notifications["SHOW_PRINTER_UNDEFINED"] == true
             )
             {
                 ResponseType responseType = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information")
                     , string.Format(GeneralUtils.GetResourceByName("dialog_message_show_printer_undefined_on_print"), pDocumentType)
                 );
-                if (responseType == ResponseType.No) GlobalApp.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
+                if (responseType == ResponseType.No) LogicPOSAppContext.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
             }
         }
 
         public static void ShowMessageTouchErrorRenderTheme(Window parentWindow, string pErrorMessage)
         {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_RENDERING_THEME), POSSettings.FileTheme, pErrorMessage);
+            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_RENDERING_THEME), LogicPOSSettings.FileTheme, pErrorMessage);
             ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
             Environment.Exit(0);
         }
@@ -785,7 +784,7 @@ namespace logicpos
         public static string GetWindowTitle(string pTitle)
         {
             //return string.Format("{0} {1} : {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, pTitle);
-            return string.Format("{0} : {1}", POSSettings.AppName, pTitle);
+            return string.Format("{0} : {1}", LogicPOSSettings.AppName, pTitle);
         }
 
         /// <summary>
@@ -814,7 +813,7 @@ namespace logicpos
                     break;
             }
 
-            return string.Format("{0} :: {1} {2}", POSSettings.AppName, action, dialogWindowTitle); // FrameworkUtils.ProductVersion
+            return string.Format("{0} :: {1} {2}", LogicPOSSettings.AppName, action, dialogWindowTitle); // FrameworkUtils.ProductVersion
         }
 
         public static Size GetScreenSize()
@@ -952,10 +951,10 @@ namespace logicpos
                 _logger.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
 
                 /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, GeneralUtils.GetResourceByName("global_treeview_true"));
-                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(GlobalApp.StartupWindow, screenSize.Width, screenSize.Height);
+                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(LogicPOSAppContext.StartupWindow, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -1009,9 +1008,9 @@ namespace logicpos
 
         public static void NotifyLoadingIsDone()
         {
-            if (GlobalApp.LoadingDialog != null)
+            if (LogicPOSAppContext.LoadingDialog != null)
             {
-                GlobalApp.LoadingDialog.Destroy();
+                LogicPOSAppContext.LoadingDialog.Destroy();
             }
         }
 
@@ -1020,17 +1019,17 @@ namespace logicpos
             Thread thread,
             string backupProcess)
         {
-            GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(NotifyLoadingIsDone));
+            LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(NotifyLoadingIsDone));
             thread.Start();
 
             if (sourceWindow != null)
             {
-                GlobalApp.LoadingDialog = CreateSplashScreen(
+                LogicPOSAppContext.LoadingDialog = CreateSplashScreen(
                     sourceWindow,
                     DatabaseService.DatabaseExists(),
                     backupProcess);
 
-                GlobalApp.LoadingDialog.Run();
+                LogicPOSAppContext.LoadingDialog.Run();
             }
         }
 
@@ -1147,7 +1146,7 @@ namespace logicpos
                     catch (Exception ex)
                     {
                         /* IN009034 */
-                        GlobalApp.DialogThreadNotify.WakeupMain();
+                        LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                         _logger.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
                         ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
@@ -1202,19 +1201,19 @@ namespace logicpos
         public static void ShowFrontOffice(Window window)
         {
 
-            if (GlobalApp.PosMainWindow == null)
+            if (LogicPOSAppContext.PosMainWindow == null)
             {
                 Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-                dynamic themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+                dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
                 CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
-                GlobalApp.PosMainWindow = new POSMainWindow(windowImageFileName);
+                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+                LogicPOSAppContext.PosMainWindow = new POSMainWindow(windowImageFileName);
             }
             else
             {
-                GlobalApp.PosMainWindow.UpdateUI();
-                GlobalApp.PosMainWindow.Show();
+                LogicPOSAppContext.PosMainWindow.UpdateUI();
+                LogicPOSAppContext.PosMainWindow.Show();
             };
             window.Hide();
 
@@ -1222,13 +1221,13 @@ namespace logicpos
 
         public static void ShowBackOffice(Window pHideWindow)
         {
-            if (GlobalApp.BackOffice == null)
+            if (LogicPOSAppContext.BackOffice == null)
             {
-                GlobalApp.BackOffice = new BackOfficeWindow();
+                LogicPOSAppContext.BackOffice = new BackOfficeWindow();
             }
             else
             {
-                GlobalApp.BackOffice.Show();
+                LogicPOSAppContext.BackOffice.Show();
             }
 
             pHideWindow.Hide();
@@ -1473,11 +1472,11 @@ namespace logicpos
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
                     //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    GlobalApp.DialogPosKeyboard = new PosKeyboardDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
@@ -1485,33 +1484,33 @@ namespace logicpos
             //else
             //{
             //pInitialValue, pRegExRule
-            GlobalApp.DialogPosKeyboard.Text = pInitialValue;
-            GlobalApp.DialogPosKeyboard.Rule = pRegExRule;
+            LogicPOSAppContext.DialogPosKeyboard.Text = pInitialValue;
+            LogicPOSAppContext.DialogPosKeyboard.Rule = pRegExRule;
 
             //Fix TransientFor, ALT+TABS
             if (useBaseDialogWindowMask)
             {
-                GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.DialogPosKeyboard.WindowSettings.Mask;
-                GlobalApp.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
-                GlobalApp.DialogPosKeyboard.WindowSettings.Mask.Show();
+                LogicPOSAppContext.DialogPosKeyboard.TransientFor = LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask;
+                LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
+                LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask.Show();
             }
             else
             {
                 //Now we can change its TransientFor
-                GlobalApp.DialogPosKeyboard.TransientFor = parentWindow;
+                LogicPOSAppContext.DialogPosKeyboard.TransientFor = parentWindow;
             }
             //}
 
             //Always Start Validated, else Only Construct start Validated
-            GlobalApp.DialogPosKeyboard.TextEntry.Validate();
+            LogicPOSAppContext.DialogPosKeyboard.TextEntry.Validate();
             //Put Cursor in End
-            GlobalApp.DialogPosKeyboard.TextEntry.Position = GlobalApp.DialogPosKeyboard.TextEntry.Text.Length;
-            GlobalApp.DialogPosKeyboard.TextEntry.GrabFocus();
-            int response = GlobalApp.DialogPosKeyboard.Run();
+            LogicPOSAppContext.DialogPosKeyboard.TextEntry.Position = LogicPOSAppContext.DialogPosKeyboard.TextEntry.Text.Length;
+            LogicPOSAppContext.DialogPosKeyboard.TextEntry.GrabFocus();
+            int response = LogicPOSAppContext.DialogPosKeyboard.Run();
             string result;
             if (response == (int)ResponseType.Ok)
             {
-                result = GlobalApp.DialogPosKeyboard.Text;
+                result = LogicPOSAppContext.DialogPosKeyboard.Text;
             }
             else
             {
@@ -1521,7 +1520,7 @@ namespace logicpos
             //Fix Keyboard White Bug when useBaseDialogWindowMask = false
             //Required to assign TransientFor to a non Destroyed Window/Dialog like GlobalApp.WindowPos, 
             //else Keyboard is destroyed when TransientFor Windows/Dialog is Destroyed ex when parentWindow = PosInputTextDialog
-            GlobalApp.DialogPosKeyboard.TransientFor = GlobalApp.PosMainWindow;
+            LogicPOSAppContext.DialogPosKeyboard.TransientFor = LogicPOSAppContext.PosMainWindow;
 
             return result;
         }

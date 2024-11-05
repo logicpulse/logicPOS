@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -13,6 +12,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 using System.Data;
@@ -89,8 +89,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 
             //Defaults
             Guid initialDocumentFinanceTypeGuid = InvoiceSettings.InvoiceId;
-            Guid initialConfigurationPaymentConditionGuid = POSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
-            Guid initialConfigurationPaymentMethodGuid = POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
+            Guid initialConfigurationPaymentConditionGuid = LogicPOSSettings.XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition;
+            Guid initialConfigurationPaymentMethodGuid = LogicPOSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod;
             Guid initialConfigurationCurrencyGuid = XPOSettings.ConfigurationSystemCurrency.Oid;
             _defaultValueDocumentFinanceType = XPOUtility.GetEntityById<fin_documentfinancetype>(initialDocumentFinanceTypeGuid, _session);
             _defaultValueConfigurationPaymentCondition = XPOUtility.GetEntityById<fin_configurationpaymentcondition>(initialConfigurationPaymentConditionGuid, _session);

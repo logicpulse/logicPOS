@@ -13,6 +13,7 @@ using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using System;
 using System.Drawing;
@@ -101,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     DialogFlags.DestroyWithParent,
                     CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_select_ticket"),
                     //TODO:THEME
-                    GlobalApp.MaxWindowSize,
+                    LogicPOSAppContext.MaxWindowSize,
                     null, //XpoDefaultValue
                     criteria,
                     GridViewMode.Default,

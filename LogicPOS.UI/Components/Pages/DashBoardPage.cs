@@ -7,7 +7,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -95,7 +95,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Config
             int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
-            var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
             _parentWindow = parentWindow;
 
             Color screenBackgroundColor = (themeWindow.Globals.ScreenBackgroundColor as string).StringToColor();
@@ -145,8 +145,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Cria o evento por trás da dashboard, tudo será carregado para aqui
             _eventBox = new EventBox();
             //_eventboxDashboard.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(screenBackgroundColor));
-            _eventBox.WidthRequest = GlobalApp.BackOfficeScreenSize.Width;
-            _eventBox.HeightRequest = GlobalApp.BackOfficeScreenSize.Height;
+            _eventBox.WidthRequest = LogicPOSAppContext.BackOfficeScreenSize.Width;
+            _eventBox.HeightRequest = LogicPOSAppContext.BackOfficeScreenSize.Height;
             Alignment _alignmentWindow = new Alignment(0.0f, 0.0f, 0.0f, 0.0f)
             {
                 _eventBox
@@ -234,16 +234,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
 
                 //Actions Configurações
-                botao1.Clicked += delegate { botao1.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao1, null); };
-                botao2.Clicked += delegate { botao2.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao2, null); };
-                botao3.Clicked += delegate { botao3.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao3, null); };
-                botao4.Clicked += delegate { botao4.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao4, null); };
+                botao1.Clicked += delegate { botao1.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao1, null); };
+                botao2.Clicked += delegate { botao2.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao2, null); };
+                botao3.Clicked += delegate { botao3.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao3, null); };
+                botao4.Clicked += delegate { botao4.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao4, null); };
 
                 //Actions Tabelas
-                botao5.Clicked += delegate { botao5.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao5, null); };
-                botao6.Clicked += delegate { botao6.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao6, null); };
-                botao7.Clicked += delegate { botao7.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao7, null); };
-                botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); GlobalApp.BackOffice.MenuBtn_Clicked(botao8, null); };
+                botao5.Clicked += delegate { botao5.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao5, null); };
+                botao6.Clicked += delegate { botao6.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao6, null); };
+                botao7.Clicked += delegate { botao7.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao7, null); };
+                botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao8, null); };
 
                 //Actions Documents
                 BtnDocuments.Clicked += delegate {  };

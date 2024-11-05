@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -17,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
             Page<TEntity> page,
             string title) : base(page.SourceWindow,
                                  title,
-                                 GlobalApp.MaxWindowSize,
+                                 LogicPOSAppContext.MaxWindowSize,
                                  $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
                                  render: false)
         {

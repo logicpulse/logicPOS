@@ -3,6 +3,7 @@ using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Pages
                                             regexAlfaNumericExtended,
                                             false);
 
-            TxtSearch.WidthRequest = GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600 ? 150 : 250;
+            TxtSearch.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
 
             Bar.PackStart(TxtSearch, true, true, 0);
 

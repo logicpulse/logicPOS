@@ -11,6 +11,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -155,7 +156,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool result;
             //Update UI
-            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
+            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
 
 
             //WorkSessionProcessor.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
@@ -178,8 +179,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //Update UI
-                            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
-                            GlobalApp.PosMainWindow.TicketList.UpdateOrderStatusBar();
+                            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
+                            LogicPOSAppContext.PosMainWindow.TicketList.UpdateOrderStatusBar();
 
                             //Here we already have GlobalFramework.WorkSessionPeriodTerminal, assigned on WorkSessionProcessor.SessionPeriodStart
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
@@ -202,7 +203,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = false;
+                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             //ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
                             if (pResponse == ResponseType.Yes)
@@ -221,7 +222,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 }
                             }
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = true;
+                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = true;
 
                         }
                         else
@@ -385,8 +386,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //Update UI
-                            GlobalApp.PosMainWindow.UpdateWorkSessionUI();
-                            GlobalApp.PosMainWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
+                            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
+                            LogicPOSAppContext.PosMainWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
 
                             //Get Fresh XPO Objects, Prevent Deleted Object Bug
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
@@ -410,7 +411,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_request_print_document_confirmation"));
 
                             //Enable UI Buttons When Have Open Session
-                            GlobalApp.PosMainWindow.BtnNewDocument.Sensitive = false;
+                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = false;
                             //Show ClosePeriodMessage
                             ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
 

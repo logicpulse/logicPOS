@@ -5,7 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 
 namespace LogicPOS.UI.Components.Pickers
 {
@@ -57,12 +57,12 @@ namespace LogicPOS.UI.Components.Pickers
             FileChooser = new FileChooserWidget(PickerAction, "none");
             if (Filter != null) FileChooser.Filter = Filter;
 
-            if (Directory.Exists(GlobalApp.OpenFileDialogStartPath)) FileChooser.SetCurrentFolder(GlobalApp.OpenFileDialogStartPath);
+            if (Directory.Exists(LogicPOSAppContext.OpenFileDialogStartPath)) FileChooser.SetCurrentFolder(LogicPOSAppContext.OpenFileDialogStartPath);
 
             FileChooser.SetSizeRequest(WindowSettings.Size.Width - 13, WindowSettings.Size.Height - 120);
             Body.Put(FileChooser, 0, 0);
       
-            FileChooser.CurrentFolderChanged += delegate { GlobalApp.OpenFileDialogStartPath = FileChooser.CurrentFolder; };
+            FileChooser.CurrentFolderChanged += delegate { LogicPOSAppContext.OpenFileDialogStartPath = FileChooser.CurrentFolder; };
         }
 
         public static FileFilter GetFileFilterImages()

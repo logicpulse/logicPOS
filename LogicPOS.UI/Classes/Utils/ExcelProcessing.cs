@@ -8,7 +8,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
 using System;
@@ -535,7 +535,7 @@ namespace logicpos
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -648,7 +648,7 @@ namespace logicpos
             }
             finally
             {
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -882,7 +882,7 @@ namespace logicpos
             }
             finally
             {
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
     }

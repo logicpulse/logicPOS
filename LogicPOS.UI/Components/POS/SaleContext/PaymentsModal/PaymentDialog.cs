@@ -1,6 +1,5 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -13,6 +12,7 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Dialogs;
@@ -209,7 +209,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             tablePayments.Attach(buttonCheck, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePaymentsPadding, tablePaymentsPadding);
             tablePayments.Attach(buttonCreditCard, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePaymentsPadding, tablePaymentsPadding);
             if (enableCurrentAccountButton) tablePayments.Attach(
-                (POSSettings.PosPaymentsDialogUseCurrentAccount) ? buttonCurrentAccount : buttonCustomerCard
+                (LogicPOSSettings.PosPaymentsDialogUseCurrentAccount) ? buttonCurrentAccount : buttonCustomerCard
                 , 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, tablePaymentsPadding, tablePaymentsPadding
             );
 

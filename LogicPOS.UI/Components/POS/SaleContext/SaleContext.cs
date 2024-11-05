@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -71,7 +72,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (tables.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(GlobalApp.PosMainWindow, tables.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(LogicPOSAppContext.PosMainWindow, tables.FirstError);
                 Gtk.Application.Quit();
             }
 

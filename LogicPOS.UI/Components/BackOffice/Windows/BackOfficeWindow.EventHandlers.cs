@@ -17,6 +17,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
 using DocumentFormat.OpenXml.Wordprocessing;
+using LogicPOS.UI.Application;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
 {
@@ -79,13 +80,13 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void BtnLogout_Clicked(object sender, EventArgs e)
         {
             Hide();
-            GlobalApp.StartupWindow.LogOutUser(true);
+            LogicPOSAppContext.StartupWindow.LogOutUser(true);
         }
 
         private void BtnPOS_Clicked(object sender, EventArgs e)
         {
             Hide();
-            GlobalApp.PosMainWindow.ShowAll();
+            LogicPOSAppContext.PosMainWindow.ShowAll();
         }
 
         private void BtnNotificaion_Clicked(object sender, EventArgs e)

@@ -6,7 +6,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.Utility;
@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (currentDocumentFinanceYear != null)
             {
                 ResponseType responseType = logicpos.Utils.ShowMessageBox(
-                    GlobalApp.StartupWindow,
+                    LogicPOSAppContext.StartupWindow,
                     DialogFlags.Modal,
                     new Size(600, 400),
                     MessageType.Question,

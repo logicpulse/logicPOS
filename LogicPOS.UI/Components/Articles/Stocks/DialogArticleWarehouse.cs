@@ -10,7 +10,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
 {
@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles
         {
             this.Title = logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_warehose_management"));
 
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 SetSizeRequest(320, 250);
             }

@@ -7,9 +7,9 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 
-namespace LogicPOS.UI
+namespace LogicPOS.UI.Application
 {
-    public static class GlobalApp
+    public static class LogicPOSAppContext
     {
         public static StartupWindow StartupWindow { get; set; }
         public static POSMainWindow PosMainWindow { get; set; }

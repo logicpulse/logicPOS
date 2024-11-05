@@ -1,7 +1,6 @@
 ﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -9,6 +8,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using System;
 using System.Collections.Generic;
 
@@ -76,10 +76,10 @@ namespace LogicPOS.UI.Components
             InitUI();
 
             string objectNameWithoutPrefix = XPObjectType.UnderlyingSystemType.Name.Substring(4, XPObjectType.UnderlyingSystemType.Name.Length - 4);
-            string tokenAllowDelete = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "DELETE").ToUpper();
-            string tokenAllowInsert = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "CREATE").ToUpper();
-            string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "EDIT").ToUpper();
-            string tokenAllowView = string.Format("{0}_{1}", string.Format(POSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "VIEW").ToUpper();
+            string tokenAllowDelete = string.Format("{0}_{1}", string.Format(LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "DELETE").ToUpper();
+            string tokenAllowInsert = string.Format("{0}_{1}", string.Format(LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "CREATE").ToUpper();
+            string tokenAllowUpdate = string.Format("{0}_{1}", string.Format(LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "EDIT").ToUpper();
+            string tokenAllowView = string.Format("{0}_{1}", string.Format(LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix, objectNameWithoutPrefix), "VIEW").ToUpper();
 
 
             if (GeneralSettings.LoggedUserPermissions != null)

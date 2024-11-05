@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Windows
         private dynamic GetTheme()
         {
             var predicate = (Predicate<dynamic>)((x) => x.ID == "PosBaseWindow");
-            var theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            var theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
             return theme;
         }
 

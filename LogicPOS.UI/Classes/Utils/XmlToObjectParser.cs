@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System.Configuration;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 
 //ThirdParty Lib - Adapted to LogicPos
 //Class Based on Third Party XmlToObjectParser
@@ -41,7 +41,7 @@ namespace logicpos
 
             // ExpressionEvaluator, add reference to dynamic Object
             _expressionEvaluatorReference = parsedObject;
-            GlobalApp.ExpressionEvaluator.Variables.Add("themeRoot", (_expressionEvaluatorReference as dynamic));
+            LogicPOSAppContext.ExpressionEvaluator.Variables.Add("themeRoot", (_expressionEvaluatorReference as dynamic));
 
             XElement rootElement = rootElement = XElement.Parse(xml);
 
@@ -201,13 +201,13 @@ namespace logicpos
 
             try
             {
-                result = GlobalApp.ExpressionEvaluator.Evaluate(expression).ToString();
+                result = LogicPOSAppContext.ExpressionEvaluator.Evaluate(expression).ToString();
 
                 // Trigger Debugger with a BreakPoint, this is usefull to Eval Expressions
                 if (debug)
                 {
                     string hardCodeExpression = "globalScreenSizeHeight - ((posMainWindowTicketPadButtonSize.Height * 5) + (posMainWindowComponentsMargin * 2)) - posMainWindowEventBoxStatusBar1And2Height * 2";
-                    string hardCodeResult = GlobalApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString();
+                    string hardCodeResult = LogicPOSAppContext.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString();
                     //log.Debug(string.Format("result: [{0}]", GlobalApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString()));
                 }
             }

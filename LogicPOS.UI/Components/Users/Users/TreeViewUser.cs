@@ -4,7 +4,7 @@ using Gtk;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using System;
 using System.Collections.Generic;
@@ -73,7 +73,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         {
             sys_userdetail userDetail = (Entity as sys_userdetail);
             //If User deleted Force Logout in Sytem
-            GlobalApp.StartupWindow.LogOutUser(false, userDetail);
+            LogicPOSAppContext.StartupWindow.LogOutUser(false, userDetail);
         }
     }
 }

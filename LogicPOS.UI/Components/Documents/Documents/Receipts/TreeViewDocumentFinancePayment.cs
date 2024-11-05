@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Formatters;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -103,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Descending);
             //Configure Criteria/XPCollection/Model              
             //New IN009223 IN009227         
-            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = POSSettings.PaginationRowsPerPage };
+            XPCollection xpoCollection = new XPCollection(XPOSettings.Session, xpoGuidObjectType, criteria, sortProperty) { TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage };
 
             //Call Base Initializer
             base.InitObject(

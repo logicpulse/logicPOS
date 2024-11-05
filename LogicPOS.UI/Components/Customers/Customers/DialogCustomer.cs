@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
@@ -12,7 +11,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using System;
 using System.Collections;
@@ -145,7 +144,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_record_disabled"));
-                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
+                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = LogicPOSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
@@ -288,7 +287,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (entryCode.Text == item.Code.ToString())
                         {
-                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
+                            logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
                             entryCode.Text = "";
                         }
                     }
@@ -300,7 +299,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     {
                         if (entryOrd.Text == item.Code.ToString())
                         {
-                            logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
+                            logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_code_number_exists"));
                             entryOrd.Text = "";
                         }
                     }
@@ -387,7 +386,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     fiscalNumberAlreadyExists = true;
                     _genericCRUDWidgetXPOFiscalNumber.Validated = false;
-                    logicpos.Utils.ShowMessageTouch(GlobalApp.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_customer_fiscal_number_exists"));
+                    logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.BackOffice, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_customer_fiscal_number_exists"));
 
                 }
                 //IN:009268 BackOffice - NIF auto-complete 

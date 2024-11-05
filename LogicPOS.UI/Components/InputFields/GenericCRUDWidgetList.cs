@@ -10,7 +10,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.UI.Components.InputFields;
 using System;
@@ -158,7 +158,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageBox(GlobalApp.BackOffice,
+                ResponseType response = logicpos.Utils.ShowMessageBox(LogicPOSAppContext.BackOffice,
                                                                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
                                                                       new Size(500, 500),
                                                                       MessageType.Error,
@@ -418,7 +418,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                 result = false;
             }
 

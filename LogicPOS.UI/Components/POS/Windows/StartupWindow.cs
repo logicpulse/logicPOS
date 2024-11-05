@@ -8,6 +8,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
@@ -76,7 +77,7 @@ namespace LogicPOS.UI.Components.Windows
         private dynamic GetTheme()
         {
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
-            var theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            var theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
             return theme;
         }
 
@@ -133,7 +134,7 @@ namespace LogicPOS.UI.Components.Windows
                 {
                     EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                     eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                    fix.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
+                    fix.Put(eventBoxMinimize, LogicPOSAppContext.ScreenSize.Width - 27 - 10, 10);
                 }
 
                 //NumberPadPin
@@ -261,7 +262,7 @@ namespace LogicPOS.UI.Components.Windows
                 else
                 {
                     Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo));
-                    fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 430, 80);
+                    fix.Put(imageLogo, LogicPOSAppContext.ScreenSize.Width - 430, 80);
                 }
                 //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(LogicPOS.Settings.AppSettings.Instance.fileImageBackOfficeLogo"]);
                 ScreenArea.Add(fix);
@@ -287,11 +288,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ButtonDeveloper_Clicked(object sender, EventArgs e)
         {
-            PosDeveloperTestDialog dialog = new PosDeveloperTestDialog(this);
-
-            ResponseType response = (ResponseType)dialog.Run();
-
-            dialog.Destroy();
+          
         }
     }
 }

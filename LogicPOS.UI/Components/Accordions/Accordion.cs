@@ -4,6 +4,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Components.Accordions
         protected void Initialize(Dictionary<string, AccordionNode> nodes,
                                   string nodePrivilegesTokenFormat)
         {
-            GlobalApp.BackOfficeScreenSize = Utils.GetScreenSize();
+            LogicPOSAppContext.BackOfficeScreenSize = Utils.GetScreenSize();
             _label = new Label();
             Nodes = nodes;
 
@@ -51,7 +52,7 @@ namespace LogicPOS.UI.Components.Accordions
                     {
                         HBox button = new HBox(false, 0);
 
-                        if (GlobalApp.BackOfficeScreenSize.Height <= 800)
+                        if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
                         {
                             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
                             System.Drawing.Image imageIcon;
@@ -224,12 +225,12 @@ namespace LogicPOS.UI.Components.Accordions
 
             if (accordionType == "Parent")
             {
-                if (GlobalApp.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
+                if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
                 else _label.ModifyFont(fontPosBackOfficeParent);
             }
             else
             {
-                if (GlobalApp.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
+                if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
                 else _label.ModifyFont(fontPosBackOfficeChild);
             }
             _label.ModifyFg(StateType.Normal, colNormal.ToGdkColor());

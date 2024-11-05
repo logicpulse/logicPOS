@@ -2,22 +2,19 @@
 using System.Net;
 using System.Xml;
 using System.Text.RegularExpressions;
-//IN:009268 VAT INFO CHECKER AND AUTO-COMPLETE FIELDS
+
 namespace logicpos
 {
     public class EuropeanVatInformation
     {
-        //Limpa caracteres inválidos que chegam do WebService
         private static string CleanInput(string strIn)
         {
-            // Replace invalid characters with empty strings.
             try
             {
                 return Regex.Replace(strIn, @"[*/ƒ]", "",
                                      RegexOptions.Compiled, TimeSpan.FromSeconds(1.5));
             }
-            // If we timeout when replacing invalid characters, 
-            // we should return Empty.
+
             catch (RegexMatchTimeoutException)
             {
                 return string.Empty;

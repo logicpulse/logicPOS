@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.UI.Application;
 
 namespace LogicPOS.UI.Components.Accordions
 {
@@ -9,7 +10,7 @@ namespace LogicPOS.UI.Components.Accordions
 
         private void ResizeButton()
         {
-            if (GlobalApp.BackOfficeScreenSize.Height <= 800)
+            if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
             {
                 HeightRequest = 23;
             }

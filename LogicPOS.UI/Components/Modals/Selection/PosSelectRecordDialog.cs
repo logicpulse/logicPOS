@@ -3,7 +3,7 @@ using Gtk;
 using logicpos.Classes.Enums.Dialogs;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Dialogs;
@@ -227,7 +227,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 parentWindow,
                 DialogFlags.DestroyWithParent,
                 GeneralUtils.GetResourceByName("window_title_dialog_select_record"),
-                GlobalApp.MaxWindowSize,
+                LogicPOSAppContext.MaxWindowSize,
                 null, //pDefaultValue : Require to Send a DataRow
                 GridViewMode.CheckBox,
                 actionAreaButtons

@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
@@ -13,6 +12,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pickers;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 if (dataSourceRow.RegEx != null)
                 {
                     //Try to get Value
-                    object objectValueRegEx = GeneralUtils.GetFieldValueFromType(typeof(POSSettings), dataSourceRow.RegEx);
+                    object objectValueRegEx = GeneralUtils.GetFieldValueFromType(typeof(LogicPOSSettings), dataSourceRow.RegEx);
                     if (objectValueRegEx != null) valueRegEx = objectValueRegEx.ToString();
                 }
 

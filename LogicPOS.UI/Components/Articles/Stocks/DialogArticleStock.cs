@@ -1,6 +1,5 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Reports;
 using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
@@ -9,8 +8,8 @@ using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Extensions;
@@ -85,7 +84,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             _treeViewXPO_ArticleWarehouse = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleWarehouse>(this);
             _treeViewXPO_StockMov = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticleStock>(this);
             _listArticleserialnumbers = new List<fin_articleserialnumber>();
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 SetSizeRequest(500, 590);
             }
@@ -132,8 +131,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     _treeViewXPO_StockMov.Navigator.ButtonUpdate.Clicked += ButtonUpdateStockMov_Clicked; ;
                     CriteriaOperatorLastFilterStocks = _treeViewXPO_StockMov.Entities.Criteria;
 
-                    var _buttonMore = GetNewButton("MoreStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                    var _buttonMore = GetNewButton("MoreStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                    var _buttonFilter = GetNewButton("FilterStocks", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openOriginDocumentMovbutton, false, false, 0);
                     _treeViewXPO_StockMov.Navigator.PackEnd(_openSellDocumentMovbutton, false, false, 0);
@@ -184,8 +183,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _treeViewXPO_ArticleHistory.Navigator.PackStart(_openChangeArticleLocationbutton, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.ButtonDelete.Clicked += _buttonClearSerialNumber_Clicked;
 
-                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreArticles = GetNewButton("MoreHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterArticles = GetNewButton("FilterHistory", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonMoreArticles, false, false, 0);
                 _treeViewXPO_ArticleHistory.Navigator.PackEnd(_buttonFilterArticles, false, false, 0);
@@ -215,8 +214,8 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 CriteriaOperatorLastFilterWarehouse = _treeViewXPO_ArticleWarehouse.Entities.Criteria;
 
-                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
-                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), POSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
+                var _buttonMoreWarehouse = GetNewButton("MoreWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_more"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_more.png");
+                var _buttonFilterWarehouse = GetNewButton("FilterWarehouse", string.Format(GeneralUtils.GetResourceByName("global_button_label_filter"), LogicPOSSettings.PaginationRowsPerPage), @"Icons\icon_pos_filter.png");
 
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonMoreWarehouse, false, false, 0);
                 _treeViewXPO_ArticleWarehouse.Navigator.PackEnd(_buttonFilterWarehouse, false, false, 0);
@@ -293,7 +292,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileToOpen);
-                            var ScreenSizePDF = GlobalApp.ScreenSize;
+                            var ScreenSizePDF = LogicPOSAppContext.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
                             System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
@@ -326,7 +325,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.DocumentNumber + ".pdf");
-                            var ScreenSizePDF = GlobalApp.ScreenSize;
+                            var ScreenSizePDF = LogicPOSAppContext.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
                             System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
@@ -447,7 +446,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 {
                     genericTreeView.CurrentPageNumber = 1;
                     genericTreeView.Entities.Criteria = CriteriaOperatorLastFilter;
-                    genericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                    genericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                     genericTreeView.Refresh();
                     dialogFilter.Destroy();
                 }
@@ -495,14 +494,14 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     //lastData = dialog.GenericTreeView.DataSource;
 
                     genericTreeView.Entities.Criteria = criteriaOperator;
-                    genericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                    genericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                     genericTreeView.Refresh();
 
                     //se retornar zero resultados apresenta dados anteriores ao filtro
                     if (genericTreeView.Entities.Count == 0)
                     {
                         genericTreeView.Entities.Criteria = criteriaOperatorLast;
-                        genericTreeView.Entities.TopReturnedObjects = POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
+                        genericTreeView.Entities.TopReturnedObjects = LogicPOSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber;
                         genericTreeView.Refresh();
                     }
                     dialogFilter.Destroy();
@@ -538,7 +537,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 }
 
                 genericTreeView.CurrentPageNumber++;
-                genericTreeView.Entities.TopReturnedObjects = (POSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber);
+                genericTreeView.Entities.TopReturnedObjects = (LogicPOSSettings.PaginationRowsPerPage * genericTreeView.CurrentPageNumber);
                 genericTreeView.Refresh();
             }
             catch (System.Exception ex)
@@ -766,7 +765,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = $@"{Environment.CurrentDirectory}\{fileToOpen}";
-                            var ScreenSizePDF = GlobalApp.ScreenSize;
+                            var ScreenSizePDF = LogicPOSAppContext.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
                             System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));
@@ -799,7 +798,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                         if (logicpos.Utils.UsePosPDFViewer() == true)
                         {
                             string docPath = string.Format(@"{0}\{1}", Environment.CurrentDirectory, selecteRow.StockMovimentIn.DocumentNumber + ".pdf");
-                            var ScreenSizePDF = GlobalApp.ScreenSize;
+                            var ScreenSizePDF = LogicPOSAppContext.ScreenSize;
                             int widthPDF = ScreenSizePDF.Width;
                             int heightPDF = ScreenSizePDF.Height;
                             System.Windows.Forms.Application.Run(new LogicPOS.PDFViewer.Winforms.PDFViewer(docPath, widthPDF - 50, heightPDF - 25, false));

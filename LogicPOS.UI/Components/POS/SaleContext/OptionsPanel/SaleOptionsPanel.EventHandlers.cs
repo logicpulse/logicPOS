@@ -26,6 +26,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnDelete_Clicked(object sender, EventArgs e)
         {
-            ResponseType responseType = logicpos.Utils.ShowMessageBox(GlobalApp.PosMainWindow,
+            ResponseType responseType = logicpos.Utils.ShowMessageBox(LogicPOSAppContext.PosMainWindow,
                                                                       DialogFlags.Modal,
                                                                       new System.Drawing.Size(400, 280),
                                                                       MessageType.Question,
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(GlobalApp.PosMainWindow, ItemsPage.SelectedItem.Quantity);
+            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(LogicPOSAppContext.PosMainWindow, ItemsPage.SelectedItem.Quantity);
 
             if (newQuantity == 0)
             {
@@ -105,7 +106,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(GlobalApp.PosMainWindow,
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(LogicPOSAppContext.PosMainWindow,
                                                                                    GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
                                                                                    ItemsPage.SelectedItem.UnitPrice);
 
@@ -137,7 +138,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (ItemsPage.Ticket != null)
             {
-                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(GlobalApp.PosMainWindow,
+                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.PosMainWindow,
                                                                               DialogFlags.DestroyWithParent,
                                                                               MessageType.Question,
                                                                               ButtonsType.OkCancel,
@@ -159,7 +160,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(GlobalApp.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (response.ResponseType != ResponseType.Ok)
             {
@@ -187,13 +188,13 @@ namespace LogicPOS.UI.Components.POS
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(GlobalApp.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
                 if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
                 {
-                    GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
+                    LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
                 else
                 {
@@ -205,7 +206,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            PosOrdersDialog dialog = new PosOrdersDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
+            PosOrdersDialog dialog = new PosOrdersDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
 
@@ -213,7 +214,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(GlobalApp.PosMainWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
+            PosTablesDialog dialog = new PosTablesDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
@@ -227,7 +228,7 @@ namespace LogicPOS.UI.Components.POS
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
+                            LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
                             GeneralUtils.GetResourceByName("dialog_message_table_is_not_free")
                         );
                     }

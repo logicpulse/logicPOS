@@ -1,11 +1,11 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets.BackOffice;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
@@ -56,11 +56,11 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
 
                 //Disabled
                 CheckButton checkButtonDisabled = new CheckButton(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_disabled"));
-                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = POSSettings.BOXPOObjectsStartDisabled;
+                if (_dialogMode == DialogMode.Insert) checkButtonDisabled.Active = LogicPOSSettings.BOXPOObjectsStartDisabled;
                 vboxTab1.PackStart(checkButtonDisabled, false, false, 0);
                 InputFields.Add(new GenericCRUDWidgetXPO(checkButtonDisabled, Entity, "Disabled"));
 
-                if (Entity != null && (Entity as pos_configurationplacetable).Oid == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable) checkButtonDisabled.Sensitive = false;
+                if (Entity != null && (Entity as pos_configurationplacetable).Oid == LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable) checkButtonDisabled.Sensitive = false;
 
                 //Append Tab
                 _notebook.AppendPage(vboxTab1, new Label(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_record_main_detail")));

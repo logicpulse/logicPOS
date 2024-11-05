@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -19,6 +18,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -860,12 +860,12 @@ namespace LogicPOS.UI
         public static bool IsValidProtectedFile(string pFilePath, string pExtraMessage)
         {
             //Always valid if ProtectedFilesUse not Enabled and ProtectedFilesIgnoreProtection equal to true, this skip Validation
-            if (!POSSettings.UseProtectedFiles && POSSettings.ProtectedFilesIgnoreProtection) return true;
+            if (!LogicPOSSettings.UseProtectedFiles && LogicPOSSettings.ProtectedFilesIgnoreProtection) return true;
 
             bool result = true;
 
             //Check if ContainsKey and ! IsValidFile
-            if (GlobalApp.ProtectedFiles.ContainsKey(pFilePath) && !GlobalApp.ProtectedFiles.IsValidFile(pFilePath))
+            if (LogicPOSAppContext.ProtectedFiles.ContainsKey(pFilePath) && !LogicPOSAppContext.ProtectedFiles.IsValidFile(pFilePath))
             {
                 result = false;
             }
@@ -874,7 +874,7 @@ namespace LogicPOS.UI
             {
                 string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), message);
+                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), message);
             }
 
             return result;

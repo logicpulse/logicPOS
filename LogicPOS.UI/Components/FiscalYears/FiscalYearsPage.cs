@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.Pages
                 if (currentFiscalYear != null)
                 {
                     ResponseType dialog1Response = logicpos.Utils.ShowMessageBox(
-                        GlobalApp.BackOffice,
+                        LogicPOSAppContext.BackOffice,
                         DialogFlags.Modal,
                         new Size(600, 400),
                         MessageType.Question,

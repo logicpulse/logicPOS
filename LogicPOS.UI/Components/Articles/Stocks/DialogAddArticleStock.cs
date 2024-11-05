@@ -13,8 +13,8 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
@@ -93,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             this.Title = windowTitle;
 
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 SetSizeRequest(500, 650);
             }

@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -12,7 +11,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
@@ -159,7 +158,7 @@ namespace logicpos.Classes.DataLayer
                     if (DatabaseSettings.DatabaseType != DatabaseType.MSSqlServer)
                     {
                         //systemBackup.FileSize = new FileInfo(fileName).Length;
-                        systemBackup.FileNamePacked = Path.ChangeExtension(systemBackup.FileName, POSSettings.BackupExtension);
+                        systemBackup.FileNamePacked = Path.ChangeExtension(systemBackup.FileName, LogicPOSSettings.BackupExtension);
                         //Compress File : Required OSSlash
                         fullFileNamePacked = string.Format(@"{0}\{1}", systemBackup.FilePath, systemBackup.FileNamePacked);
                         // Old Method before PluginSoftwareVendor Implementation
@@ -449,7 +448,7 @@ namespace logicpos.Classes.DataLayer
         {
             //Settings
             string pathBackups = PathsSettings.BackupsFolderLocation;
-            string fileDataBaseBackup = POSSettings.FileFormatDataBaseBackup;
+            string fileDataBaseBackup = LogicPOSSettings.FileFormatDataBaseBackup;
             string dateTimeFileFormat = CultureSettings.FileFormatDateTime;
             //Local Vars
             string dateTime = XPOUtility.CurrentDateTimeAtomic().ToString(dateTimeFileFormat);
@@ -608,7 +607,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -633,7 +632,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -667,7 +666,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -713,7 +712,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -823,7 +822,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 
@@ -857,7 +856,7 @@ namespace logicpos.Classes.DataLayer
             finally
             {
                 //Notify WakeupMain and Call ReadyEvent
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
 

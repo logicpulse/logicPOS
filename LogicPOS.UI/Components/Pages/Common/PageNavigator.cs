@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
@@ -85,8 +86,8 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnApply.Clicked += delegate
             {
-                GlobalApp.BackOffice.Menu.UpdateMenuPrivileges();
-                GlobalApp.PosMainWindow.TicketList.UpdateSaleOptionsPanelButtons();
+                LogicPOSAppContext.BackOffice.Menu.UpdateMenuPrivileges();
+                LogicPOSAppContext.PosMainWindow.TicketList.UpdateSaleOptionsPanelButtons();
             };
 
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);

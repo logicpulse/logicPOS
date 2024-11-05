@@ -1,7 +1,7 @@
 ﻿using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Settings;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -38,8 +38,8 @@ namespace logicpos
                 //}
 
                 // Get Results
-                object widthResult = GlobalApp.ExpressionEvaluator.Evaluate(widthExpression);
-                object heightResult = GlobalApp.ExpressionEvaluator.Evaluate(heightExpression);
+                object widthResult = LogicPOSAppContext.ExpressionEvaluator.Evaluate(widthExpression);
+                object heightResult = LogicPOSAppContext.ExpressionEvaluator.Evaluate(heightExpression);
 
                 // Convert Results
                 int width = Convert.ToInt32(e.EvaluateArg(0));
@@ -64,7 +64,7 @@ namespace logicpos
 
                 int startupWindowObjectsTablePadUserTableConfigRows = Convert.ToInt16(
                     (
-                        GlobalApp.ScreenSize.Height
+                        LogicPOSAppContext.ScreenSize.Height
                         // Margin Top/Bottom
                         - (startupWindowObjectsTablePadUserMarginLeftTopSize.Height * 2)
                         - (startupWindowObjectsTablePadUserTablePadUserButtonPrevSize.Height * 2)
@@ -72,26 +72,26 @@ namespace logicpos
                         / startupWindowObjectsTablePadUserButtonSize.Height
                     );
 
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserMarginLeftTopSize", startupWindowObjectsTablePadUserMarginLeftTopSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserButtonSize", startupWindowObjectsTablePadUserButtonSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserTablePadUserButtonPrevSize", startupWindowObjectsTablePadUserTablePadUserButtonPrevSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserTableConfigRows", startupWindowObjectsTablePadUserTableConfigRows);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserMarginLeftTopSize", startupWindowObjectsTablePadUserMarginLeftTopSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserButtonSize", startupWindowObjectsTablePadUserButtonSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserTablePadUserButtonPrevSize", startupWindowObjectsTablePadUserTablePadUserButtonPrevSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsTablePadUserTableConfigRows", startupWindowObjectsTablePadUserTableConfigRows);
 
                 // startupWindow.Objects.NumberPadPin
                 int startupWindowObjectsNumberPadPinRight = AppSettings.Instance.intStartupWindowObjectsNumberPadPinRight;
                 Size startupWindowObjectsNumberPadPinSize = AppSettings.Instance.sizeStartupWindowObjectsNumberPadPin;
                 Size startupWindowObjectsNumberPadPinButtonSize = AppSettings.Instance.sizeStartupWindowObjectsNumberPadPinButton;
 
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinRight", startupWindowObjectsNumberPadPinRight);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinSize", startupWindowObjectsNumberPadPinSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinButtonSize", startupWindowObjectsNumberPadPinButtonSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinRight", startupWindowObjectsNumberPadPinRight);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinSize", startupWindowObjectsNumberPadPinSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsNumberPadPinButtonSize", startupWindowObjectsNumberPadPinButtonSize);
 
                 // startupWindow.Objects.LabelVersion
                 Size startupWindowObjectsLabelVersionSize = AppSettings.Instance.sizeStartupWindowObjectsLabelVersion;
                 Size startupWindowObjectsLabelVersionSizeMarginRightBottomSize = AppSettings.Instance.sizeStartupWindowObjectsLabelVersionSizeMarginRightBottom;
 
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSize", startupWindowObjectsLabelVersionSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSizeMarginRightBottomSize", startupWindowObjectsLabelVersionSizeMarginRightBottomSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSize", startupWindowObjectsLabelVersionSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("startupWindowObjectsLabelVersionSizeMarginRightBottomSize", startupWindowObjectsLabelVersionSizeMarginRightBottomSize);
             }
             catch (Exception ex)
             {
@@ -134,7 +134,7 @@ namespace logicpos
                 string fontTicketListColumnTitle = string.Empty;
                 string fontTicketListColumn = string.Empty;
 
-                string enumScreenSize = string.Format("res{0}x{1}", GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                string enumScreenSize = string.Format("res{0}x{1}", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
 
                 try
                 {
@@ -233,7 +233,7 @@ namespace logicpos
                 catch (Exception ex)
                 {
                     log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(GlobalApp.StartupWindow, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LogicPOSAppContext.StartupWindow, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
                 }
 
                 int posMainWindowComponentsMargin = AppSettings.Instance.intPosMainWindowComponentsMargin;
@@ -251,23 +251,23 @@ namespace logicpos
                 sizePosTicketPadButtonIconSizeDefault = sizePosTicketPadButtonIconSize;
                 //IN009257 END
 
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadColumns", intEventBoxPosTicketPadColumns);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadRows", intEventBoxPosTicketPadRows);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadButtonSize", sizePosTicketPadButtonSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadButtonDoubleWidthSize", sizePosTicketPadButtonDoubleWidth);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowToolbarButtonSize", sizePosToolbarButtonSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowComponentsMargin", posMainWindowComponentsMargin);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListColumnWidth", posMainWindowEventBoxPosTicketListColumnWidth);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxStatusBar1And2Height", posMainWindowEventBoxStatusBar1And2Height);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventboxToolbarIconSize", sizePosToolbarButtonIconSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketPadButtonsIconSize", sizePosTicketPadButtonIconSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListColumnsDesignationWidth", posMainWindowEventBoxPosTicketListColumnsDesignationWidth);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadColumns", intEventBoxPosTicketPadColumns);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadRows", intEventBoxPosTicketPadRows);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadButtonSize", sizePosTicketPadButtonSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadButtonDoubleWidthSize", sizePosTicketPadButtonDoubleWidth);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowToolbarButtonSize", sizePosToolbarButtonSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowComponentsMargin", posMainWindowComponentsMargin);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListColumnWidth", posMainWindowEventBoxPosTicketListColumnWidth);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxStatusBar1And2Height", posMainWindowEventBoxStatusBar1And2Height);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventboxToolbarIconSize", sizePosToolbarButtonIconSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketPadButtonsIconSize", sizePosTicketPadButtonIconSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListColumnsDesignationWidth", posMainWindowEventBoxPosTicketListColumnsDesignationWidth);
 
                 // Calculate TablePads TableConfig and Button Sizes, from starter sizePosBaseButton
 
                 //Override this from Config
-                int usefullAreaForMainTablePadsWidth = GlobalApp.ScreenSize.Width - posMainWindowComponentsMargin - (posMainWindowEventBoxPosTicketListColumnWidth + posMainWindowComponentsMargin * 2);
-                int usefullAreaForMainTablePadsHeight = GlobalApp.ScreenSize.Height - (posMainWindowEventBoxStatusBar1And2Height * 2) - posMainWindowComponentsMargin - posMainWindowEventBoxStatusBar1And2Height - (sizePosToolbarButtonSize.Height + posMainWindowComponentsMargin * 2);
+                int usefullAreaForMainTablePadsWidth = LogicPOSAppContext.ScreenSize.Width - posMainWindowComponentsMargin - (posMainWindowEventBoxPosTicketListColumnWidth + posMainWindowComponentsMargin * 2);
+                int usefullAreaForMainTablePadsHeight = LogicPOSAppContext.ScreenSize.Height - (posMainWindowEventBoxStatusBar1And2Height * 2) - posMainWindowComponentsMargin - posMainWindowEventBoxStatusBar1And2Height - (sizePosToolbarButtonSize.Height + posMainWindowComponentsMargin * 2);
                 // Get Columns and Rows based on sizePosBaseButton, leaving remains space to split after
                 int guessedTablePadColumns = Convert.ToInt16(usefullAreaForMainTablePadsWidth / sizePosBaseButtonSize.Width);
                 int guessedTablePadRows = Convert.ToInt16(usefullAreaForMainTablePadsHeight / sizePosBaseButtonSize.Height);
@@ -300,23 +300,23 @@ namespace logicpos
                 Point tablePadArticleButtonNextPosition = new Point(tablePadSubFamilyButtonNextPosition.X, tablePadFamilyButtonNextPosition.Y);
                 Size sizePosSmallButtonScrollerSize = new Size(Convert.ToInt16(sizePosBaseButtonSize.Width / 2), posMainWindowEventBoxStatusBar1And2Height);
 
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowBaseButtonSize", sizePosBaseButtonSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyTableConfig", tableConfigTablePadFamily);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyTableConfig", tableConfigTablePadSubFamily);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleTableConfig", tableConfigTablePadArticle);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowButtonFavoritesPosition", positionButtonFavorites);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyPosition", positionTablePadFamily);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyPosition", positionTablePadSubFamily);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticlePosition", positionTablePadArticle);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyButtonPrevPosition", tablePadFamilyButtonPrevPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyButtonNextPosition", tablePadFamilyButtonNextPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyButtonPrevPosition", tablePadSubFamilyButtonPrevPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyButtonNextPosition", tablePadSubFamilyButtonNextPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleButtonPrevPosition", tablePadArticleButtonPrevPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleButtonNextPosition", tablePadArticleButtonNextPosition);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowSmallButtonScrollerSize", sizePosSmallButtonScrollerSize);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListTicketListColumnTitleFont", fontTicketListColumnTitle);
-                GlobalApp.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListTicketListColumnFont", fontTicketListColumn);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowBaseButtonSize", sizePosBaseButtonSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyTableConfig", tableConfigTablePadFamily);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyTableConfig", tableConfigTablePadSubFamily);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleTableConfig", tableConfigTablePadArticle);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowButtonFavoritesPosition", positionButtonFavorites);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyPosition", positionTablePadFamily);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyPosition", positionTablePadSubFamily);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticlePosition", positionTablePadArticle);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyButtonPrevPosition", tablePadFamilyButtonPrevPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadFamilyButtonNextPosition", tablePadFamilyButtonNextPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyButtonPrevPosition", tablePadSubFamilyButtonPrevPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadSubFamilyButtonNextPosition", tablePadSubFamilyButtonNextPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleButtonPrevPosition", tablePadArticleButtonPrevPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowTablePadArticleButtonNextPosition", tablePadArticleButtonNextPosition);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowSmallButtonScrollerSize", sizePosSmallButtonScrollerSize);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListTicketListColumnTitleFont", fontTicketListColumnTitle);
+                LogicPOSAppContext.ExpressionEvaluator.Variables.Add("posMainWindowEventBoxPosTicketListTicketListColumnFont", fontTicketListColumn);
 
                 // Test Expressions Here
                 //string hardCodeExpression = "Size((tableConfigTablePadArticle.Columns - 2) * posMainWindowBaseButtonSize.Width, posMainWindowEventBoxStatusBar1And2Height)";

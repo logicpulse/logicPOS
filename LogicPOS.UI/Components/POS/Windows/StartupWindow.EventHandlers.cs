@@ -8,6 +8,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 
@@ -89,7 +90,7 @@ namespace LogicPOS.UI.Components.Windows
                 }
             }
 
-            if (pGotoStartupWindow) GlobalApp.StartupWindow.ShowAll();
+            if (pGotoStartupWindow) LogicPOSAppContext.StartupWindow.ShowAll();
         }
     }
 }

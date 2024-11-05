@@ -1,7 +1,7 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
+using logicpos;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.BackOffice;
@@ -17,7 +17,6 @@ using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
-using LogicPOS.UI;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
@@ -29,39 +28,35 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 
-namespace logicpos
+namespace LogicPOS.UI.Application
 {
     internal class LogicPOSApp
     {
-        //Log4Net
         private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //BootStrap
         private bool _quitAfterBootStrap = false;
-        /* IN009163 and IN009164 - Opt to auto-backup flow */
         private bool _autoBackupFlowIsEnabled = false;
-        //Days, hours, minutes, seconds, milliseconds
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeStart = new TimeSpan();
         private TimeSpan _databaseBackupTimeSpanRangeEnd = new TimeSpan();
         private static bool _needToUpdate = false;
 
-        public void StartApp(AppMode pMode)
+        public void StartApp(AppMode mode)
         {
             try
             {
-                Init();
-                GlobalApp.DialogThreadNotify?.WakeupMain();
-                InitAppMode(pMode);
+                Initialize();
+                LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
+                InitAppMode(mode);
 
                 InitBackupTimerProcess();
 
-                if (!_quitAfterBootStrap) Application.Run();
+                if (!_quitAfterBootStrap) Gtk.Application.Run();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
                 Utils.ShowMessageBox(
-                    GlobalApp.StartupWindow,
+                    LogicPOSAppContext.StartupWindow,
                     DialogFlags.Modal,
                     new Size(500, 240),
                     MessageType.Error,
@@ -73,55 +68,53 @@ namespace logicpos
             }
             finally
             {
-                // Dispose Devices
 
-                // Always Close Display Device
-                if (GlobalApp.UsbDisplay != null)
+                if (LogicPOSAppContext.UsbDisplay != null)
                 {
-                    GlobalApp.UsbDisplay.Close();
+                    LogicPOSAppContext.UsbDisplay.Close();
                 }
-                // Always Close Com Ports
-                if (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen())
+
+                if (LogicPOSAppContext.WeighingBalance != null && LogicPOSAppContext.WeighingBalance.IsPortOpen())
                 {
-                    GlobalApp.WeighingBalance.ClosePort();
+                    LogicPOSAppContext.WeighingBalance.ClosePort();
                 }
             }
         }
 
 
-        private void Init()
+        private void Initialize()
         {
 
-            bool createDatabase = POSSettings.XPOCreateDatabaseAndSchema;
+            bool createDatabase = LogicPOSSettings.XPOCreateDatabaseAndSchema;
             bool createDatabaseObjectsWithFixtures = createDatabase;
-       
-            AutoCreateOption xpoAutoCreateOption = (createDatabase) ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
 
-            if (File.Exists(POSSettings.LicenceFileName))
+            AutoCreateOption xpoAutoCreateOption = createDatabase ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
+
+            if (File.Exists(LogicPOSSettings.LicenceFileName))
             {
-                Utils.AssignLicence(POSSettings.LicenceFileName, true);
+                Utils.AssignLicence(LogicPOSSettings.LicenceFileName, true);
             }
 
-            GlobalApp.MultiUserEnvironment = AppSettings.Instance.appMultiUserEnvironment;
-            GlobalApp.UseVirtualKeyBoard = AppSettings.Instance.useVirtualKeyBoard;
+            LogicPOSAppContext.MultiUserEnvironment = AppSettings.Instance.appMultiUserEnvironment;
+            LogicPOSAppContext.UseVirtualKeyBoard = AppSettings.Instance.useVirtualKeyBoard;
 
-            GlobalApp.Notifications = new Dictionary<string, bool>
+            LogicPOSAppContext.Notifications = new Dictionary<string, bool>
             {
                 ["SHOW_PRINTER_UNDEFINED"] = true
             };
 
-            GlobalApp.OpenFileDialogStartPath = Directory.GetCurrentDirectory();
-    
+            LogicPOSAppContext.OpenFileDialogStartPath = Directory.GetCurrentDirectory();
+
             DatabaseSettings.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), AppSettings.Instance.databaseType);
-           
+
             DatabaseSettings.DatabaseName = AppSettings.Instance.databaseName;
-       
+
             string connectionString = string.Format(AppSettings.Instance.xpoConnectionString, DatabaseSettings.DatabaseName.ToLower());
             DatabaseSettings.AssignConnectionStringToSettings(connectionString);
 
-            if (POSSettings.UseProtectedFiles)
+            if (LogicPOSSettings.UseProtectedFiles)
             {
-                GlobalApp.ProtectedFiles = InitProtectedFiles();
+                LogicPOSAppContext.ProtectedFiles = InitProtectedFiles();
             }
 
             bool databaseCreated = false;
@@ -130,8 +123,8 @@ namespace logicpos
             {
                 try
                 {
-                 
-                    POSSettings.FirstBoot = true;
+
+                    LogicPOSSettings.FirstBoot = true;
                     databaseCreated = DataLayer.CreateDatabaseSchema(
                         connectionString,
                         DatabaseSettings.DatabaseType,
@@ -141,7 +134,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    GlobalApp.DialogThreadNotify.WakeupMain();
+                    LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                     Utils.ShowMessageBox(null,
                                          DialogFlags.Modal,
@@ -153,7 +146,7 @@ namespace logicpos
                     Environment.Exit(0);
                 }
             }
-            POSSettings.FirstBoot = false;
+            LogicPOSSettings.FirstBoot = false;
             //Init XPO Connector DataLayer
             try
             {
@@ -171,9 +164,9 @@ namespace logicpos
                 _logger.Error("void Init() :: Init XpoDefault.DataLayer: " + ex.Message, ex);
 
                 /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
+                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
                 throw; // TO DO
             }
 
@@ -185,10 +178,10 @@ namespace logicpos
                 if (!isSchemaValid)
                 {
                     /* IN009034 */
-                    GlobalApp.DialogThreadNotify.WakeupMain();
+                    LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                     string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                    Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
             }
@@ -212,12 +205,12 @@ namespace logicpos
             if (createDatabase)
             {
                 /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                 _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), string.Format(endMessage, Environment.NewLine));
+                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), string.Format(endMessage, Environment.NewLine));
                 Environment.Exit(0);
             }
 
@@ -236,24 +229,11 @@ namespace logicpos
             }
 
 
+            CultureSettings.CurrentCulture = CultureSettings.CurrentCulture = new CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
 
-            //if (!string.IsNullOrEmpty(culture))
-            //{
-            /* IN006018 and IN007009 */
-            //logicpos.shared.App.CustomRegion.RegisterCustomRegion();
-            //Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
-            //}
-            //if (!Utils.IsLinux)
-            //{
-            //    Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(culture);
-            //}                
-            CultureSettings.CurrentCulture = CultureSettings.CurrentCulture = new System.Globalization.CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-
-            /* IN006018 and IN007009 */
             _logger.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
 
-            //Always use en-US NumberFormat because of mySql Requirements
-            CultureSettings.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(POSSettings.CultureNumberFormat);
+            CultureSettings.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(LogicPOSSettings.CultureNumberFormat);
 
             //Init AppSession
             string appSessionFile = Utils.GetSessionFileName();
@@ -267,68 +247,58 @@ namespace logicpos
             //Use Detected ScreenSize
             var appScreenSize = AppSettings.Instance.appScreenSize;
 
-            if (appScreenSize == new Size(0,0))
+            if (appScreenSize == new Size(0, 0))
             {
 
-                GlobalApp.ScreenSize = Utils.GetThemeScreenSize();
+                LogicPOSAppContext.ScreenSize = Utils.GetThemeScreenSize();
             }
             else
             {
 
-                GlobalApp.ScreenSize = Utils.GetThemeScreenSize(appScreenSize);
+                LogicPOSAppContext.ScreenSize = Utils.GetThemeScreenSize(appScreenSize);
             }
 
-            // Init ExpressionEvaluator
-            GlobalApp.ExpressionEvaluator.EvaluateFunction += ExpressionEvaluatorExtended.ExpressionEvaluator_EvaluateFunction;
-            // Init Variables
+            LogicPOSAppContext.ExpressionEvaluator.EvaluateFunction += ExpressionEvaluatorExtended.ExpressionEvaluator_EvaluateFunction;
+
             ExpressionEvaluatorExtended.InitVariablesStartupWindow();
             ExpressionEvaluatorExtended.InitVariablesPosMainWindow();
 
-            // Define Max Dialog Window Size
-            GlobalApp.MaxWindowSize = new Size(GlobalApp.ScreenSize.Width - 40, GlobalApp.ScreenSize.Height - 40);
-            // Add Variables to ExpressionEvaluator.Variables Singleton
-            GlobalApp.ExpressionEvaluator.Variables.Add("globalScreenSize", GlobalApp.ScreenSize);
-            //to used in shared projects
-            GeneralSettings.ScreenSize = GlobalApp.ScreenSize;
-            //Parse and store Theme in Singleton
+            LogicPOSAppContext.MaxWindowSize = new Size(LogicPOSAppContext.ScreenSize.Width - 40, LogicPOSAppContext.ScreenSize.Height - 40);
+            LogicPOSAppContext.ExpressionEvaluator.Variables.Add("globalScreenSize", LogicPOSAppContext.ScreenSize);
+            GeneralSettings.ScreenSize = LogicPOSAppContext.ScreenSize;
+
             try
             {
-                GlobalApp.Theme = XmlToObjectParser.ParseFromFile(POSSettings.FileTheme);
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(GlobalApp.Theme);
+                LogicPOSAppContext.Theme = XmlToObjectParser.ParseFromFile(LogicPOSSettings.FileTheme);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(LogicPOSAppContext.Theme);
 
             }
             catch (Exception ex)
             {
-                /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 _logger.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
-                Utils.ShowMessageTouchErrorRenderTheme(GlobalApp.StartupWindow, ex.Message);
+                Utils.ShowMessageTouchErrorRenderTheme(LogicPOSAppContext.StartupWindow, ex.Message);
             }
 
-            //Init FastReports Custom Functions and Custom Vars
-            FastReportUtils.InitializeFastReports(POSSettings.AppName);
+            FastReportUtils.InitializeFastReports(LogicPOSSettings.AppName);
 
-            //Hardware : Init Display
             if (TerminalSettings.LoggedTerminal.PoleDisplay != null)
             {
-                GlobalApp.UsbDisplay = (UsbDisplayDevice)UsbDisplayDevice.InitDisplay();
-                GlobalApp.UsbDisplay.WriteCentered(string.Format("{0} {1}", POSSettings.AppName, GeneralSettings.ProductVersion), 1);
-                GlobalApp.UsbDisplay.WriteCentered(POSSettings.AppUrl, 2);
-                GlobalApp.UsbDisplay.EnableStandBy();
+                LogicPOSAppContext.UsbDisplay = UsbDisplayDevice.InitDisplay();
+                LogicPOSAppContext.UsbDisplay.WriteCentered(string.Format("{0} {1}", LogicPOSSettings.AppName, GeneralSettings.ProductVersion), 1);
+                LogicPOSAppContext.UsbDisplay.WriteCentered(LogicPOSSettings.AppUrl, 2);
+                LogicPOSAppContext.UsbDisplay.EnableStandBy();
             }
 
-            //Hardware : Init BarCodeReader 
             if (TerminalSettings.LoggedTerminal.BarcodeReader != null)
             {
-                GlobalApp.BarCodeReader = new InputReader();
+                LogicPOSAppContext.BarCodeReader = new InputReader();
             }
 
-            //Hardware : Init WeighingBalance
             if (TerminalSettings.LoggedTerminal.WeighingMachine != null)
             {
-                //Protecções de integridade das BD's [IN:013327]
-                //Check if port is used by pole display
+
                 if (TerminalSettings.LoggedTerminal.WeighingMachine.PortName == TerminalSettings.LoggedTerminal.PoleDisplay.COM)
                 {
                     _logger.Debug(string.Format("Port " + TerminalSettings.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
@@ -337,19 +307,14 @@ namespace logicpos
                 {
                     if (Utils.IsPortOpen(TerminalSettings.LoggedTerminal.WeighingMachine.PortName))
                     {
-                        GlobalApp.WeighingBalance = new WeighingBalance(TerminalSettings.LoggedTerminal.WeighingMachine);
-                        //_logger.Debug(string.Format("IsPortOpen: [{0}]", GlobalApp.WeighingBalance.IsPortOpen())); }
+                        LogicPOSAppContext.WeighingBalance = new WeighingBalance(TerminalSettings.LoggedTerminal.WeighingMachine);
                     }
 
                 }
 
             }
 
-            //Send To Log
-            _logger.Debug(string.Format("void Init() :: ProductVersion: [{0}], ImageRuntimeVersion: [{1}], IsLicensed: [{2}]", GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion, LicenseSettings.LicenceRegistered));
-
-            //Audit
-            XPOUtility.Audit("APP_START", string.Format("{0} {1} clr {2}", POSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
+            XPOUtility.Audit("APP_START", string.Format("{0} {1} clr {2}", LogicPOSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
             if (databaseCreated) XPOUtility.Audit("DATABASE_CREATE");
 
             // Plugin Errors Messages
@@ -357,11 +322,11 @@ namespace logicpos
                 PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
             {
                 /* IN009034 */
-                GlobalApp.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
                 Utils.ShowMessageBox(
-                    GlobalApp.StartupWindow,
+                    LogicPOSAppContext.StartupWindow,
                     DialogFlags.Modal,
                     new Size(650, 380),
                     MessageType.Error,
@@ -372,19 +337,16 @@ namespace logicpos
                     "dialog_message_error_plugin_softwarevendor_not_registered"));
             }
 
-            // TK013134: HardCoded Modules : PakingTicket
             try
             {
                 CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.GetCustomAppOperationMode();
                 GeneralSettings.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
 
-                //TK016235 BackOffice - Mode
                 GeneralSettings.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
 
-                // Init Global Object GlobalApp.ParkingTicket
                 if (GeneralSettings.AppUseParkingTicketModule)
                 {
-                    GlobalApp.ParkingTicket = new ParkingTicket();
+                    LogicPOSAppContext.ParkingTicket = new ParkingTicket();
                 }
             }
             catch (Exception)
@@ -392,21 +354,16 @@ namespace logicpos
                 _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GeneralSettings.AppUseParkingTicketModule));
             }
 
-
-            //Create SystemNotification
             XPOUtility.SystemNotification();
-
-            //Activate stock module for debug
 #if DEBUG
             LicenseSettings.LicenseModuleStocks = true;
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-            //Clean Documents Folder on New Database, else we have Document files that dont correspond to Database
             if (databaseCreated && Directory.Exists(PathsSettings.Paths["documents"].ToString()))
             {
                 string documentsFolder = PathsSettings.Paths["documents"].ToString();
-                System.IO.DirectoryInfo di = new DirectoryInfo(documentsFolder);
+                DirectoryInfo di = new DirectoryInfo(documentsFolder);
                 if (di.GetFiles().Length > 0)
                 {
                     _logger.Debug(string.Format("void Init() :: New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
@@ -426,20 +383,15 @@ namespace logicpos
 
         }
 
-        /// <summary>
-        /// It creates automatic backup process and its call to TimerHandler.
-        /// 
-        /// Please see IN009163 and IN009164
-        /// </summary>
         private void InitBackupTimerProcess()
         {
-            bool xpoCreateDatabaseAndSchema = POSSettings.XPOCreateDatabaseAndSchema;
+            bool xpoCreateDatabaseAndSchema = LogicPOSSettings.XPOCreateDatabaseAndSchema;
             Directory.CreateDirectory(PathsSettings.BackupsFolderLocation);
             bool backupsFolderExists = Directory.Exists(PathsSettings.BackupsFolderLocation);
 
             if (backupsFolderExists == false)
             {
-                ResponseType response = Utils.ShowMessageTouch(GlobalApp.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
+                ResponseType response = Utils.ShowMessageTouch(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -463,25 +415,23 @@ namespace logicpos
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
         private ProtectedFiles InitProtectedFiles()
         {
             bool debug = true;
-            string filePath = POSSettings.ProtectedFilesFileName;
-            List<string> fileList = POSSettings.ProtectedFilesList;
+            string filePath = LogicPOSSettings.ProtectedFilesFileName;
+            List<string> fileList = LogicPOSSettings.ProtectedFilesList;
 
             ProtectedFiles protectedFiles;
             //ReCreate File MODE
-            if (POSSettings.ProtectedFilesRecreateCSV)
+            if (LogicPOSSettings.ProtectedFilesRecreateCSV)
             {
                 protectedFiles = new ProtectedFiles(fileList, filePath);
                 string md5FromFile = CryptographyUtils.MD5HashFile(filePath);
-               
+
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageBox(GlobalApp.StartupWindow, DialogFlags.Modal, new System.Drawing.Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
+                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
                 Environment.Exit(0);
             }
             else
@@ -504,10 +454,10 @@ namespace logicpos
                     }
 
                     //If Not IgnoreProtection, show alert and exit
-                    if (!POSSettings.ProtectedFilesIgnoreProtection)
+                    if (!LogicPOSSettings.ProtectedFilesIgnoreProtection)
                     {
                         Utils.ShowMessageBox(
-                            GlobalApp.StartupWindow,
+                            LogicPOSAppContext.StartupWindow,
                             DialogFlags.Modal,
                             new Size(800, 400),
                             MessageType.Error,
@@ -525,7 +475,6 @@ namespace logicpos
             return protectedFiles;
         }
 
-        //Export Files
         public bool ExportProtectedFiles(List<string> pFileList)
         {
             bool result = false;
@@ -538,7 +487,7 @@ namespace logicpos
                 {
                     files[i] = pFileList[i];
                 }
-                files[pFileList.Count] = POSSettings.ProtectedFilesFileName;
+                files[pFileList.Count] = LogicPOSSettings.ProtectedFilesFileName;
 
                 //Empty password, to zip without password
                 result = CompressionUtils.ZipPack(files, filename, string.Empty);
@@ -551,31 +500,25 @@ namespace logicpos
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
         private void InitAppMode(AppMode pAppMode)
         {
-            //Run in BackOffice Mode
             if (pAppMode == AppMode.Backoffice)
             {
-                GlobalApp.BackOffice = new BackOfficeWindow();
+                LogicPOSAppContext.BackOffice = new BackOfficeWindow();
             }
-            //Run in POS Mode
             else
             {
-                //Init Theme Object
                 _logger.Debug("Init Theme Object ");
-                var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
-                var themeWindow = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+                var predicate = (Predicate<dynamic>)((x) => x.ID == "StartupWindow");
+                var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
                 _logger.Debug("Init windowImageFileName ");
-                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, GlobalApp.ScreenSize.Width, GlobalApp.ScreenSize.Height);
+                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
                 _logger.Debug("StartupWindow " + windowImageFileName);
-                GlobalApp.StartupWindow = new StartupWindow(windowImageFileName, _needToUpdate);
+                LogicPOSAppContext.StartupWindow = new StartupWindow(windowImageFileName, _needToUpdate);
 
             };
         }
-
 
         public static void QuitWithoutConfirmation(bool pAudit = true)
         {
@@ -595,8 +538,7 @@ namespace logicpos
                 log.Error(ex.Message, ex);
             }
 
-            Application.Quit();
-            //Environment.Exit(0);
+            Gtk.Application.Quit();
         }
 
         public static void Quit(Window parentWindow)
@@ -622,8 +564,7 @@ namespace logicpos
         {
             try
             {
-                // Every second call update_status' (1000 milliseconds)
-                GLib.Timeout.Add(POSSettings.BackupTimerInterval, new GLib.TimeoutHandler(UpdateBackupTimer));
+                GLib.Timeout.Add(LogicPOSSettings.BackupTimerInterval, new GLib.TimeoutHandler(UpdateBackupTimer));
             }
             catch (Exception ex)
             {

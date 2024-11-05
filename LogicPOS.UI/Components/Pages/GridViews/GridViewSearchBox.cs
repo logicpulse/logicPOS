@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.GenericTreeView;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System;
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components
                                             regexAlfaNumericExtended,
                                             false);
 
-            _entry.WidthRequest = GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600 ? 150 : 250;
+            _entry.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
 
             HBox horizontalBox = new HBox(false, 0);
             horizontalBox.PackStart(_entry, true, true, 0);

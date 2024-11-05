@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Gui.Gtk.WidgetsGeneric;
 using LogicPOS.Data.XPO.Settings;
@@ -7,8 +6,8 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.InputFields;
@@ -94,7 +93,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (entity != null) InputFields = new GenericCRUDWidgetListXPO(Entity.Session);
 
             //Ico
-            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, POSSettings.AppIcon);
+            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, LogicPOSSettings.AppIcon);
             if (File.Exists(fileImageAppIcon)) Icon = logicpos.Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
 
             InitStatusBar();
@@ -120,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             System.Drawing.Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
 
             //TODO:THEME
-            if (GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 sizeBaseDialogActionAreaButton.Height -= 10;
                 sizeBaseDialogActionAreaButtonIcon.Width -= 10;

@@ -1,8 +1,8 @@
 ﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
-using logicpos.App;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.UI.Application;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,14 +35,14 @@ namespace logicpos
                 Session xpoSession;
                 Dictionary<string, string> replace = GetReplaceables(databaseType);
 
-                string sqlDatabaseSchema = string.Format(POSSettings.FileDatabaseSchema, databaseTypeString);
-                string sqlDatabaseUpdate = string.Format(POSSettings.FileDatabaseUpdate, databaseTypeString);
-                string sqlDatabaseOtherCommon = POSSettings.FileDatabaseOtherCommon;
-                string sqlDatabaseOtherCommonPluginsSoftwareVendor = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
-                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
-                string sqlDatabaseData = POSSettings.FileDatabaseData;
-                string sqlDatabaseDataDemo = POSSettings.FileDatabaseDataDemo;
-                string sqlDatabaseViews = POSSettings.FileDatabaseViews;
+                string sqlDatabaseSchema = string.Format(LogicPOSSettings.FileDatabaseSchema, databaseTypeString);
+                string sqlDatabaseUpdate = string.Format(LogicPOSSettings.FileDatabaseUpdate, databaseTypeString);
+                string sqlDatabaseOtherCommon = LogicPOSSettings.FileDatabaseOtherCommon;
+                string sqlDatabaseOtherCommonPluginsSoftwareVendor = LogicPOSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
+                string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = LogicPOSSettings.FileDatabaseOtherCommonPluginsSoftwareVendor;
+                string sqlDatabaseData = LogicPOSSettings.FileDatabaseData;
+                string sqlDatabaseDataDemo = LogicPOSSettings.FileDatabaseDataDemo;
+                string sqlDatabaseViews = LogicPOSSettings.FileDatabaseViews;
                 bool useDatabaseDataDemo = AppSettings.Instance.useDatabaseDataDemo;
 
                 string version = GeneralSettings.ProductVersion.Replace("v", "");

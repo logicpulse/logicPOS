@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Documents
 
         public ReceiptsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment"),
-                                                   GlobalApp.MaxWindowSize,
+                                                   LogicPOSAppContext.MaxWindowSize,
                                                    $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
         {
 

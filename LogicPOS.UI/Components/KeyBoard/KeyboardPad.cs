@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Extensions;
-using LogicPOS.UI;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -277,7 +277,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Hide Numeric KeyPad if in 800x600
             //TODO:THEME
-            if (KeyboardMode.Equals(KeyboardMode.AlfaNumeric) && GlobalApp.ScreenSize.Width == 800 && GlobalApp.ScreenSize.Height == 600)
+            if (KeyboardMode.Equals(KeyboardMode.AlfaNumeric) && LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
             {
                 if (ParentDialog != null) ParentDialog.WidthRequest -= _vboxNumPadRows.Allocation.Width + _spacing;
                 _vboxNumPadRows.HideAll();

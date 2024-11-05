@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -15,6 +14,7 @@ using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Modals;
@@ -310,7 +310,7 @@ namespace LogicPOS.UI.Components
             {
                 if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
                 {
-                    GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
+                    LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
                 else
                 {
@@ -328,7 +328,7 @@ namespace LogicPOS.UI.Components
             {
                 if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
                 {
-                    GlobalApp.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
+                    LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
                 }
                 else
                 {
@@ -366,7 +366,7 @@ namespace LogicPOS.UI.Components
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
                         logicpos.Utils.ShowMessageTouch(
-                            GlobalApp.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
+                            LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
                             GeneralUtils.GetResourceByName("dialog_message_table_is_not_free")
                         );
                     }
@@ -431,18 +431,18 @@ namespace LogicPOS.UI.Components
    (int)TicketListColumns.ArticleId) && item.Properties.PriceNet == Convert.ToDecimal(ListStore.GetValue(_treeIter, (int)TicketListColumns.Price)));
 
             decimal articlePricePerKg = decimal.Round(CurrentOrderDetail.Lines[SelectedIndex].Properties.PriceFinal, 2, MidpointRounding.AwayFromZero);
-            GlobalApp.WeighingBalance.WeighArticle(articlePricePerKg);
+            LogicPOSAppContext.WeighingBalance.WeighArticle(articlePricePerKg);
 
         }
 
         public void WeighingBalance_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
 
-            string inData = GlobalApp.WeighingBalance.ComPort().ReadLine() + "\n";
+            string inData = LogicPOSAppContext.WeighingBalance.ComPort().ReadLine() + "\n";
 
             if (inData.Substring(0, 2) == "99")
             {
-                List<int> result = GlobalApp.WeighingBalance.CalculateFromHex(inData);
+                List<int> result = LogicPOSAppContext.WeighingBalance.CalculateFromHex(inData);
 
                 decimal quantity = Convert.ToDecimal(result[0]) / 1000;
 
@@ -475,7 +475,7 @@ namespace LogicPOS.UI.Components
                 POSWindow,
                 DialogFlags.DestroyWithParent,
                     GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
-                GlobalApp.MaxWindowSize,
+                LogicPOSAppContext.MaxWindowSize,
                 null, //XpoDefaultValue
                 criteria,
                 GridViewMode.Default,
@@ -513,9 +513,9 @@ namespace LogicPOS.UI.Components
         public void SelectTableOrder(Guid tableId)
         {
             OrderMain currentOrderMain = null;
-            if (tableId == POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable)
+            if (tableId == LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable)
             {
-                var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
+                var configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
                 if (configurationPlace == null)
                 {
                     tableId = ((pos_configurationplacetable)XPOUtility.GetXPGuidObjectFromCriteria(typeof(pos_configurationplacetable), string.Format("(Code = '{0}')", "10")) as pos_configurationplacetable).Oid;
@@ -553,7 +553,7 @@ namespace LogicPOS.UI.Components
             POSSession.CurrentSession.Save();
             UpdateModel();
 
-            GlobalApp.PosMainWindow.MenuArticles.Sensitive = true;
+            LogicPOSAppContext.PosMainWindow.MenuArticles.Sensitive = true;
             UpdateArticleBag();
             UpdateSaleOptionsPanelOrderButtons();
             UpdateOrderStatusBar();

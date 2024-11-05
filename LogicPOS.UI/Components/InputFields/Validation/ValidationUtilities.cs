@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos;
+using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                                             fields.Where(field => field.IsValid() == false)
                                                              .Select(field => field.FieldName));
 
-            Utils.ShowMessageBox(GlobalApp.BackOffice,
+            Utils.ShowMessageBox(LogicPOSAppContext.BackOffice,
                                  DialogFlags.DestroyWithParent | DialogFlags.Modal,
                                  new Size(500, 500),
                                  MessageType.Error,

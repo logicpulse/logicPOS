@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 using System.IO;
@@ -125,14 +126,14 @@ namespace logicpos.Classes.Logic.License
                 if (LoadApp)
                 {
                     System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));
-                    GlobalApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.NotifyLoadingIsDone));
+                    LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.NotifyLoadingIsDone));
                     thread.Start();
 
-                    GlobalApp.LoadingDialog = logicpos.Utils.CreateSplashScreen(
+                    LogicPOSAppContext.LoadingDialog = logicpos.Utils.CreateSplashScreen(
                         new Window("POS start up"),
                         DatabaseService.DatabaseExists());
 
-                    GlobalApp.LoadingDialog.Run();
+                    LogicPOSAppContext.LoadingDialog.Run();
                 }
             }
         }

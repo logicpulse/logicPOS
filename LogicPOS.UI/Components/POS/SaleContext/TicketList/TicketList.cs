@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.App;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Logic.Others;
 using logicpos.shared.Enums;
@@ -14,6 +13,7 @@ using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
@@ -62,9 +62,9 @@ namespace LogicPOS.UI.Components
 
         private void ConfigureWeighingBalance()
         {
-            if (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen())
+            if (LogicPOSAppContext.WeighingBalance != null && LogicPOSAppContext.WeighingBalance.IsPortOpen())
             {
-                GlobalApp.WeighingBalance.ComPort().DataReceived += WeighingBalance_DataReceived;
+                LogicPOSAppContext.WeighingBalance.ComPort().DataReceived += WeighingBalance_DataReceived;
             }
         }
 
@@ -476,7 +476,7 @@ namespace LogicPOS.UI.Components
                     article.Designation = $"{article.Designation} [{parkingTicketResult.Minutes} min.] [{parkingTicketResult.Ean}]";
                     article.Notes = $"[{ean}] {parkingTicketResult.Description}";
                     article.DefaultQuantity = Convert.ToInt32(parkingTicketResult.Quantity);
-                    GlobalApp.PosMainWindow.UpdateWorkSessionUI();
+                    LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
                 }
                 else
                 {
@@ -545,7 +545,7 @@ namespace LogicPOS.UI.Components
                 pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
                 fin_articletype articletype = (fin_articletype)XPOSettings.Session.GetObjectByKey(typeof(fin_articletype), article.Type.Oid);
 
-                if (configurationPlace == null) { configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), POSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable); }
+                if (configurationPlace == null) { configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable); }
                 TaxSellType taxSellType = (AppOperationModeSettings.AppMode == AppOperationMode.Retail || configurationPlace.MovementType.VatDirectSelling) ? TaxSellType.TakeAway : TaxSellType.Normal;
                 decimal priceTax = (taxSellType == TaxSellType.Normal) ? article.VatOnTable.Value : article.VatDirectSelling.Value;
 
@@ -875,7 +875,7 @@ namespace LogicPOS.UI.Components
                     if (SaleOptionsPanel.BtnDelete != null && SelectedIndex > -1) SaleOptionsPanel.BtnDelete.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_DELETE");
                     if (SaleOptionsPanel.BtnPrice != null && !SaleOptionsPanel.BtnPrice.Sensitive) SaleOptionsPanel.BtnPrice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("TICKETLIST_CHANGE_PRICE");
                     if (SaleOptionsPanel.BtnQuantity != null && !SaleOptionsPanel.BtnQuantity.Sensitive) SaleOptionsPanel.BtnQuantity.Sensitive = true;
-                    if (SaleOptionsPanel.BtnWeight != null) SaleOptionsPanel.BtnWeight.Sensitive = (GlobalApp.WeighingBalance != null && GlobalApp.WeighingBalance.IsPortOpen() && CurrentDetailArticle.UseWeighingBalance);
+                    if (SaleOptionsPanel.BtnWeight != null) SaleOptionsPanel.BtnWeight.Sensitive = (LogicPOSAppContext.WeighingBalance != null && LogicPOSAppContext.WeighingBalance.IsPortOpen() && CurrentDetailArticle.UseWeighingBalance);
                     if (SaleOptionsPanel.BtnSplitAccount != null && !SaleOptionsPanel.BtnSplitAccount.Sensitive) SaleOptionsPanel.BtnSplitAccount.Sensitive = (ArticleBag.Count > 1 && ArticleBag.TotalFinal > 0.00m);
                 }
                 else
@@ -1010,7 +1010,7 @@ namespace LogicPOS.UI.Components
             LabelTotalLabel.Text = labelTotalFinal;
             LabelTotal.Text = DataConversionUtils.DecimalToStringCurrency(TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym);
 
-            if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowOrder(CurrentOrderDetail, SelectedIndex);
+            if (LogicPOSAppContext.UsbDisplay != null) LogicPOSAppContext.UsbDisplay.ShowOrder(CurrentOrderDetail, SelectedIndex);
         }
 
         public void UpdateOrderStatusBar()

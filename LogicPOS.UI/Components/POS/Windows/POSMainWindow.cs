@@ -8,6 +8,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Menus;
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Components.Windows
             {
                 EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                 eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                FixedWindow.Put(eventBoxMinimize, GlobalApp.ScreenSize.Width - 27 - 10, 10);
+                FixedWindow.Put(eventBoxMinimize, LogicPOSAppContext.ScreenSize.Width - 27 - 10, 10);
             }
 
             this.ShowAll();
@@ -82,14 +83,14 @@ namespace LogicPOS.UI.Components.Windows
             //Hardware Events
             if (TerminalSettings.LoggedTerminal.BarcodeReader != null || TerminalSettings.LoggedTerminal.CardReader != null)
             {
-                GlobalApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
+                LogicPOSAppContext.BarCodeReader.Captured += HWBarCodeReader_Captured;
             }
         }
 
         private void InitUI()
         {
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-            dynamic theme = GlobalApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            dynamic theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             string errorMessage = "Node: <Window ID=\"PosMainWindow\">";
 
@@ -110,7 +111,7 @@ namespace LogicPOS.UI.Components.Windows
 
                 InitUiEventboxToolbar(theme);
 
-                GlobalApp.DialogThreadNotify?.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
 
                 SortingCollection sortCollection = new SortingCollection
                         {

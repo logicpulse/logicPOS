@@ -9,6 +9,7 @@ using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using System;
 
@@ -283,7 +284,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (item.DocumentFinanceMaster != null)
                         {
                             fin_configurationpaymentmethod paymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(item.ProcessFinanceDocumentParameter.PaymentMethod);
-                            if (GlobalApp.UsbDisplay != null) GlobalApp.UsbDisplay.ShowPayment(paymentMethod.Designation, item.ProcessFinanceDocumentParameter.TotalDelivery, item.ProcessFinanceDocumentParameter.TotalChange);
+                            if (LogicPOSAppContext.UsbDisplay != null) LogicPOSAppContext.UsbDisplay.ShowPayment(paymentMethod.Designation, item.ProcessFinanceDocumentParameter.TotalDelivery, item.ProcessFinanceDocumentParameter.TotalChange);
                         }
                     }
                 }

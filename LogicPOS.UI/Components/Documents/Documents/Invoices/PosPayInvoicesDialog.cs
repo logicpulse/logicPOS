@@ -1,6 +1,5 @@
 ﻿using DevExpress.Data.Filtering;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -10,6 +9,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
@@ -85,7 +85,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Initial Values
-            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(POSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
+            fin_configurationpaymentmethod initialValueConfigurationPaymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(LogicPOSSettings.XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
             cfg_configurationcurrency intialValueConfigurationCurrency = XPOSettings.ConfigurationSystemCurrency;
             string initialPaymentDate = XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat);
 

@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -13,6 +12,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.Utility;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Dialogs;
@@ -192,7 +192,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     label = (item.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, item.ResourceString) != null)
                         ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, item.ResourceString)
                         : string.Empty;
-                    regExObj = GeneralUtils.GetFieldValueFromType(typeof(POSSettings), item.RegEx);
+                    regExObj = GeneralUtils.GetFieldValueFromType(typeof(LogicPOSSettings), item.RegEx);
                     regEx = (regExObj != null) ? regExObj.ToString() : string.Empty;
                     required = Convert.ToBoolean(item.Required);
 
@@ -341,10 +341,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Proccess Country Scripts
                 string commandSeparator = ";";
                 Dictionary<string, string> replaceables = logicpos.DataLayer.GetReplaceables(DatabaseSettings.DatabaseType);
-                string directoryCountry = string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
+                string directoryCountry = string.Format(@"{0}/{1}", LogicPOSSettings.FileDatabaseOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
                 logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
                 //Proccess Country Plugin Scripts
-                directoryCountry = string.Format(@"{0}/{1}", POSSettings.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
+                directoryCountry = string.Format(@"{0}/{1}", LogicPOSSettings.FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry, _entryBoxSelectSystemCountry.Value.Code2);
                 logicpos.DataLayer.ProcessDumpDirectory(XPOSettings.Session, directoryCountry, commandSeparator, replaceables);
 
                 //Change Configuration : Currently only working outside Debugger, to prevent errors changing config with VS using app.config 

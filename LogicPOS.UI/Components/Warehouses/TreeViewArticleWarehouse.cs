@@ -1,7 +1,6 @@
 ﻿using DevExpress.Data.Filtering;
 using DevExpress.Xpo;
 using Gtk;
-using logicpos.App;
 using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using System;
 using System.Collections.Generic;
@@ -9,6 +8,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Application;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -50,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Custom Criteria hidding all Hidden Oids
             //CriteriaOperator criteria = CriteriaOperator.Parse($"(Oid = '{SettingsApp.XpoOidUndefinedRecord}' OR Oid NOT LIKE '{SettingsApp.XpoOidHiddenRecordsFilter}')");
 
-            int TopReturnedObj = POSSettings.PaginationRowsPerPage;
+            int TopReturnedObj = LogicPOSSettings.PaginationRowsPerPage;
             if (parentWindow.Title != logicpos.Utils.GetWindowTitle(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_document_finance_page3") + " - " + CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_stock_movements")))
             {
                 TopReturnedObj = 100000000;

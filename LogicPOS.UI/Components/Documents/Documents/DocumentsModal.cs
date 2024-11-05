@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
@@ -38,7 +39,7 @@ namespace LogicPOS.UI.Components.Documents
 
         public DocumentsModal(Window parent) : base(parent,
                                                     GeneralUtils.GetResourceByName("window_title_select_finance_document"),
-                                                    GlobalApp.MaxWindowSize,
+                                                    LogicPOSAppContext.MaxWindowSize,
                                                     $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
         {
 
