@@ -106,9 +106,9 @@ namespace LogicPOS.UI.Components.Windows
             int responseChangeUser = dialogChangeUser.Run();
             if (responseChangeUser == (int)ResponseType.Ok)
             {
-                if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
+                if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.User.Id))
                 {
-                    XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
+                    XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.User.Id);
                     GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                     TicketList.UpdateSaleOptionsPanelButtons();
                     XPOUtility.Audit("USER_CHANGE", string.Format(GeneralUtils.GetResourceByName("audit_message_user_change"), XPOSettings.LoggedUser.Name));
@@ -117,15 +117,15 @@ namespace LogicPOS.UI.Components.Windows
                 }
                 else
                 {
-                    PosPinPadDialog dialogPinPad = new PosPinPadDialog(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.UserDetail);
+                    PosPinPadDialog dialogPinPad = new PosPinPadDialog(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.User);
                     int responsePinPad = dialogPinPad.Run();
                     if (responsePinPad == (int)ResponseType.Ok)
                     {
-                        if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.UserDetail.Oid))
+                        if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.User.Id))
                         {
-                            POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.UserDetail.Oid, XPOUtility.CurrentDateTimeAtomic());
+                            POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.User.Id, XPOUtility.CurrentDateTimeAtomic());
                             POSSession.CurrentSession.Save();
-                            XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.UserDetail.Oid);
+                            XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.User.Id);
                             GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
                             TicketList.UpdateSaleOptionsPanelButtons();
                             XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), XPOSettings.LoggedUser.Name));
@@ -154,7 +154,10 @@ namespace LogicPOS.UI.Components.Windows
         {
             if (TerminalSettings.HasLoggedTerminal)
             {
-                PosPinPadDialog dialogPinPad = new PosPinPadDialog(this, DialogFlags.Modal, XPOSettings.LoggedUser, true);
+                PosPinPadDialog dialogPinPad = new PosPinPadDialog(this,
+                                                                   DialogFlags.Modal,
+                                                                   null, //tchial0
+                                                                   true);
                 int responsePinPad = dialogPinPad.Run();
                 if (responsePinPad == (int)ResponseType.Ok)
                 {

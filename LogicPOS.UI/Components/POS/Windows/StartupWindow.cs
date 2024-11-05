@@ -21,7 +21,6 @@ namespace LogicPOS.UI.Components.Windows
     {
         private NumberPadPin PinPanel { get; set; }
         public UsersMenu UsersMenu { get; set; }
-        private sys_userdetail SelectedUser { get; set; }
 
         public StartupWindow(
             string backgroundImage,
@@ -41,9 +40,6 @@ namespace LogicPOS.UI.Components.Windows
 
             //Show Notifications to all users after Show UI, here we dont have a logged user Yet
             Utils.ShowNotifications(this);
-
-            //Assign to member UserDetail reference, after InitUi, this way ChangePassword Message appears after StartupWindow
-            AssignUserDetail();
 
             //Events
             this.KeyReleaseEvent += StartupWindow_KeyReleaseEvent;
@@ -204,6 +200,7 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.CanFocus = false;
 
                 UsersMenu = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
+                UsersMenu.OnUserSelected += UserSelected;
 
                 //Put in Fix
                 if (tablePadUserVisible)

@@ -1,15 +1,22 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Errors;
+using LogicPOS.Api.Features.Authentication.Login;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 
@@ -17,12 +24,13 @@ namespace LogicPOS.UI.Widgets
 {
     public class NumberPadPin : Box
     {
-        protected Table _table;
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        protected Gtk.Table _table;
         private readonly Window _sourceWindow;
         private int _tempCursorPosition = 0;
         private bool _entryPinShowStatus = false;
         private readonly Label _labelStatus;
-        private string _passwordNew;
+        private string _newPassword;
         private bool _notLoginAuth;
 
         private NumberPadPinMode _mode;
@@ -72,7 +80,7 @@ namespace LogicPOS.UI.Widgets
 
             Eventbox = new EventBox() { VisibleWindow = pVisibleWindow };
 
-            _table = new Table(tableRows, 3, true);
+            _table = new Gtk.Table(tableRows, 3, true);
             _table.Homogeneous = false;
 
             //Pin Entry
@@ -80,7 +88,12 @@ namespace LogicPOS.UI.Widgets
                                               KeyboardMode.None,
                                               RegexUtils.RegexLoginPin,
                                               true)
-            { InvisibleChar = '*', Visibility = false };
+
+            {
+                InvisibleChar = '*',
+                Visibility = false
+            };
+
             EntryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
             EntryPin.Alignment = 0.5F;
 
@@ -92,13 +105,13 @@ namespace LogicPOS.UI.Widgets
                 {
                     Name = "touchButtonKeyPasswordReset",
                     //BackgroundColor = Color.Transparent,
-                    BackgroundColor= Color.FromArgb(70, 167, 167, 167),
+                    BackgroundColor = Color.FromArgb(70, 167, 167, 167),
                     Icon = numberPadPinButtonPasswordResetImageFileName,
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(25, 25)
                 })
             { Sensitive = false };
-            
+
 
             //Start Validated
             EntryPin.Validate();
@@ -258,7 +271,7 @@ namespace LogicPOS.UI.Widgets
                     {
                         Name = $"touchButtonKey{number}",
                         //BackgroundColor = pButtonColor,
-                        BackgroundColor = Color.FromArgb(70,167, 167, 167),
+                        BackgroundColor = Color.FromArgb(70, 167, 167, 167),
                         Text = number,
                         Font = pFont,
                         FontColor = pFontColor,
@@ -266,9 +279,6 @@ namespace LogicPOS.UI.Widgets
                     });
             }
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Events
 
         private void _entryPin_Changed(object sender, EventArgs e)
         {
@@ -278,13 +288,11 @@ namespace LogicPOS.UI.Widgets
             ButtonKeyResetPassword.Sensitive = entry.Validated && _mode == NumberPadPinMode.Password;
         }
 
-        //Shared Button Key for Numbers
         private void buttonKey_Clicked(object sender, EventArgs e)
         {
             TextButton button = (TextButton)sender;
             ClearEntryPinStatusMessage();
             EntryPin.InsertText(button.ButtonLabel.Text, ref _tempCursorPosition);
-            //_entryPin.Position = _tempCursorPosition;
             EntryPin.GrabFocus();
             EntryPin.Position = EntryPin.Text.Length;
         }
@@ -310,87 +318,81 @@ namespace LogicPOS.UI.Widgets
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Logic
-
-        public bool ProcessPassword(Window parentWindow, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
+        public bool ProcessPassword(Window parentWindow,
+                                    UserDetail user,
+                                    bool notLoginAuth = false)
         {
             bool result = false;
-            _notLoginAuth = pNotLoginAuth;
+            _notLoginAuth = notLoginAuth;
 
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    //Valid User
-                    if (ValidatePassword(pUserDetail))
+                    if (ValidatePassword(user))
                     {
-                        //Start Application if login Authentication
                         if (!_notLoginAuth)
                         {
-                            ProcessLogin(pUserDetail);
+                            ProcessLogin(user);
                         }
-                        //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
                         result = true;
                     }
                     break;
                 case NumberPadPinMode.PasswordOld:
-                    //Valid User
-                    if (ValidatePassword(pUserDetail))
+                    if (ValidatePassword(user))
                     {
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
                     }
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    //Check If New Password is Equal to Old Password using ValidatePassword
-                    if (CryptographyUtils.ValidateSaltedString(pUserDetail.AccessPin, EntryPin.Text))
+                    if (Login(user.Id, EntryPin.Text).IsError == false)
                     {
-                        //Show Error Message
-                        ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_equal_error"));
+                        ResponseType response = Utils.ShowMessageTouch(parentWindow,
+                                                                       DialogFlags.Modal,
+                                                                       MessageType.Error,
+                                                                       ButtonsType.Ok,
+                                                                       GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
+                                                                       GeneralUtils.GetResourceByName("pos_pinpad_message_password_equal_error"));
                         ClearEntryPinStatusMessage(true);
                     }
                     else
                     {
-                        _passwordNew = EntryPin.Text;
+                        _newPassword = EntryPin.Text;
                         _mode = NumberPadPinMode.PasswordNewConfirm;
                         UpdateStatusLabels();
                     }
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    if (_passwordNew == EntryPin.Text)
+                    if (_newPassword == EntryPin.Text)
                     {
-                        //Commit Changes
-                        pUserDetail.AccessPin = CryptographyUtils.GenerateSaltedString(_passwordNew);
-                        pUserDetail.PasswordReset = false;
-                        pUserDetail.PasswordResetDate = XPOUtility.CurrentDateTimeAtomic();
-                        pUserDetail.Save();
-                        XPOUtility.Audit("USER_CHANGE_PASSWORD", string.Format(GeneralUtils.GetResourceByName("audit_message_user_change_password"), pUserDetail.Name));
-                        ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_changed"));
-                        //Start Application
-                        ProcessLogin(pUserDetail);
-                        //Finish Job usefull to PosPinDialog send Respond(ResponseType.Ok) when Done
+                        user.AccessPin = CryptographyUtils.GenerateSaltedString(_newPassword);
+                        user.PasswordReset = false;
+                        user.PasswordResetDate = XPOUtility.CurrentDateTimeAtomic();
+
+                        ResponseType response = Utils.ShowMessageTouch(parentWindow,
+                                                                           DialogFlags.Modal,
+                                                                           MessageType.Info,
+                                                                           ButtonsType.Ok,
+                                                                           GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
+                                                                           GeneralUtils.GetResourceByName("pos_pinpad_message_password_changed"));
+                        ProcessLogin(user);
                         result = true;
                     }
                     else
                     {
-                        //Show Error Message
                         ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
                         ClearEntryPinStatusMessage(true);
-                        //Return to 
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
-                        //Reset passwordNew
-                        _passwordNew = string.Empty;
+                        _newPassword = string.Empty;
                     }
                     break;
                 case NumberPadPinMode.PasswordReset:
-                    //Valid User
-                    if (ValidatePassword(pUserDetail))
+                    if (ValidatePassword(user))
                     {
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
                     }
-                    //Return to default request password mode
                     else
                     {
                         _mode = NumberPadPinMode.Password;
@@ -400,56 +402,47 @@ namespace LogicPOS.UI.Widgets
                     break;
             }
 
-            //Always focus Entry
             EntryPin.GrabFocus();
-
 
             return result;
         }
 
-        public bool ValidatePassword(sys_userdetail pUserDetail)
+        private ErrorOr<string> Login(Guid userId, string password)
         {
-            bool result = false;
+            var loginResult = _mediator.Send(new LoginQuery(userId, password)).Result;
+            return loginResult;
+        }
+
+        public bool ValidatePassword(UserDetail user)
+        {
             string password = EntryPin.Text;
 
-            string sql = string.Format(@"
-                SELECT 
-                    AccessPin 
-                FROM 
-                    sys_userdetail 
-                WHERE 
-                    (Disabled <> 1 OR Disabled IS NULL)
-                    AND Oid = '{0}'
-                ;", pUserDetail.Oid
-            );
+            var loginResult = Login(user.Id, password);
 
-
-            var resultObject = XPOSettings.Session.ExecuteScalar(sql);
-
-            if (resultObject != null && resultObject.GetType() == typeof(string) && CryptographyUtils.ValidateSaltedString(resultObject.ToString(), password))
+            if (loginResult.IsError)
             {
-                EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
-                EntryPin.Visibility = false;
-                _entryPinShowStatus = false;
-                result = true;
-            }
-            else
-            {
-                XPOUtility.Audit("USER_LOGIN_ERROR", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login_error"), pUserDetail.Name));
+                if (loginResult.FirstError == ApiErrors.CommunicationError)
+                {
+                    SimpleAlerts.ShowApiErrorAlert(_sourceWindow, loginResult.FirstError);
+                    return false;
+                }
+
                 EntryPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
                 EntryPin.Text = GeneralUtils.GetResourceByName("status_message_pin_error");
                 EntryPin.Visibility = true;
                 _entryPinShowStatus = true;
-                result = false;
+                return false;
             }
 
-            return result;
+            EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
+            EntryPin.Visibility = false;
+            _entryPinShowStatus = false;
 
+            return true;
         }
 
         private void ClearEntryPinStatusMessage(bool pForceClear = false)
         {
-            //Clean Error Message
             if (_entryPinShowStatus || pForceClear)
             {
                 EntryPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
@@ -482,26 +475,12 @@ namespace LogicPOS.UI.Widgets
                 default:
                     break;
             }
-            //Force Clear Status
+
             ClearEntryPinStatusMessage(true);
         }
 
-        private void ProcessLogin(sys_userdetail pUserDetail)
+        private void ProcessLogin(UserDetail user)
         {
-            XPOSettings.LoggedUser = pUserDetail;
-            GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-            XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), pUserDetail.Name));
-
-            if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(XPOSettings.LoggedUser.Oid))
-            {
-                POSSession.CurrentSession.LoggedUsers.Add(pUserDetail.Oid, XPOUtility.CurrentDateTimeAtomic());
-            }
-            else
-            {
-                POSSession.CurrentSession.LoggedUsers[XPOSettings.LoggedUser.Oid] = XPOUtility.CurrentDateTimeAtomic();
-            }
-            POSSession.CurrentSession.Save();
-
             _mode = NumberPadPinMode.Password;
             UpdateStatusLabels();
 

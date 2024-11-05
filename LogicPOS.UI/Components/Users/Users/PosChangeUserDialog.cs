@@ -1,39 +1,29 @@
-﻿using System;
-using Gtk;
-using System.Drawing;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Utility;
-using LogicPOS.UI.Dialogs;
-using LogicPOS.UI.Extensions;
+using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.Utility;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal class PosChangeUserDialog : BaseDialog
     {
-        //Settings
-        //Sizes
         private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
         private Size _sizePosUserButton = AppSettings.Instance.sizePosUserButton;
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
-        //Files
         private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
         private readonly string _fileScrollRightImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
-
-        //Private Gui Members
         private readonly Fixed _fixedContent;
-        private TablePad _tablePadUsers;
-
-        //TouchButtonIconWithText _buttonOk;
+        private UsersMenu UsersMenu { get; set; }
         private readonly IconButtonWithText _buttonCancel;
+        public UserDetail User { get; set; }
 
-        public sys_userdetail UserDetail { get; set; }
-
-        public PosChangeUserDialog(Window parentWindow, DialogFlags pDialogFlags)
+        public PosChangeUserDialog(Window parentWindow,
+                                   DialogFlags pDialogFlags)
             : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
@@ -41,33 +31,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Size windowSize = new Size(559, 562);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
 
-            //Init Content
             _fixedContent = new Fixed();
 
-            InitTablePadUsers();
+            InitUsersMenu();
 
-            //ActionArea Buttons
-            //_buttonOk = ActionAreaButton.FactoryGetDialogButtonType(PosBaseDialogButtonType.Ok) { Sensitive = false };
             _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
-            //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
-                //actionAreaButtons.Add(new ActionAreaButton(_buttonOk, ResponseType.Ok));
                 new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
             };
 
-            //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _fixedContent, actionAreaButtons);
+            this.Initialize(this,
+                            pDialogFlags,
+                            fileDefaultWindowIcon,
+                            windowTitle,
+                            windowSize,
+                            _fixedContent,
+                            actionAreaButtons);
         }
 
-        private void InitTablePadUsers()
+        private void InitUsersMenu()
         {
-            //Colors
-            //Color colorPosButtonArticleBackground = FrameworkUtils.StringToColor(LogicPOS.Settings.AppSettings.Instance.colorPosButtonArticleBackground"]);
-
-            //Scrollers
-            IconButton buttonPosScrollersPlacePrev = new IconButton(
+            IconButton btnPrevious = new IconButton(
                 new ButtonSettings
                 {
                     Name = "buttonPosScrollersTablePrev",
@@ -77,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     ButtonSize = _sizePosSmallButtonScroller
                 });
 
-            IconButton buttonPosScrollersPlaceNext = new IconButton(
+            IconButton btnNext = new IconButton(
                 new ButtonSettings
                 {
                     Name = "buttonPosScrollersTableNext",
@@ -86,59 +72,44 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     IconSize = _sizeIconScrollLeftRight,
                     ButtonSize = _sizePosSmallButtonScroller
                 });
-            
-            buttonPosScrollersPlacePrev.Relief = ReliefStyle.None;
-            buttonPosScrollersPlaceNext.Relief = ReliefStyle.None;
-            buttonPosScrollersPlacePrev.BorderWidth = 0;
-            buttonPosScrollersPlaceNext.BorderWidth = 0;
-            buttonPosScrollersPlacePrev.CanFocus = false;
-            buttonPosScrollersPlaceNext.CanFocus = false;
-            HBox hboxPlaceScrollers = new HBox(true, 0);
-            hboxPlaceScrollers.PackStart(buttonPosScrollersPlacePrev);
-            hboxPlaceScrollers.PackStart(buttonPosScrollersPlaceNext);
 
-            //TablePad Places
-            string sqlUsers = @"SELECT Oid as id, Name as name, NULL as label, NULL as image FROM sys_userdetail WHERE (Disabled IS NULL or Disabled  <> 1)";
-            _tablePadUsers = new TablePadUser(
-                sqlUsers, 
-                "ORDER BY Ord", 
-                "", 
-                XPOSettings.LoggedUser.Oid, 
-                true,
-                5, 
-                4, 
-                "buttonUserId", 
-                Color.Transparent, 
-                _sizePosUserButton.Width, 
-                _sizePosUserButton.Height, 
-                buttonPosScrollersPlacePrev, 
-                buttonPosScrollersPlaceNext
+            btnPrevious.Relief = ReliefStyle.None;
+            btnNext.Relief = ReliefStyle.None;
+            btnPrevious.BorderWidth = 0;
+            btnNext.BorderWidth = 0;
+            btnPrevious.CanFocus = false;
+            btnNext.CanFocus = false;
+            HBox hboxPlaceScrollers = new HBox(true, 0);
+            hboxPlaceScrollers.PackStart(btnPrevious);
+            hboxPlaceScrollers.PackStart(btnNext);
+
+            UsersMenu = new UsersMenu(
+                this,
+                btnPrevious,
+                btnNext,
+                5,
+                4
             );
-            //Click Event
-            _tablePadUsers.Clicked += _tablePadUsers_Clicked;
-            //Pack It
-            _fixedContent.Put(_tablePadUsers, 0, 0);
+
+            UsersMenu.OnUserSelected += OnUserSelectd;
+            _fixedContent.Put(UsersMenu, 0, 0);
             _fixedContent.Put(hboxPlaceScrollers, 0, 411);
         }
 
-        private void _tablePadUsers_Clicked(object sender, EventArgs e)
+        private void OnUserSelectd(UserDetail user)
         {
-            CustomButton button = (CustomButton)sender;
+            User = user;
 
-            //Assign CurrentId to TablePad.CurrentId, to Know last Clicked Button Id
-            _tablePadUsers.SelectedButtonOid = button.CurrentButtonId;
-            //To be Used in Dialog Result
-            UserDetail = XPOUtility.GetEntityById<sys_userdetail>(button.CurrentButtonId);
-
-            if (UserDetail.PasswordReset)
+            if (User.PasswordReset)
             {
-                //_logger.Debug(string.Format("Name: [{0}], PasswordReset: [{1}]", _selectedUserDetail.Name, _selectedUserDetail.PasswordReset));
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"),
-                    string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), UserDetail.Name, XPOSettings.DefaultValueUserDetailAccessPin)
-                );
+                logicpos.Utils.ShowMessageTouch(this,
+                                                DialogFlags.Modal,
+                                                MessageType.Info,
+                                                ButtonsType.Ok,
+                                                GeneralUtils.GetResourceByName("global_information"),
+                                                string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, XPOSettings.DefaultValueUserDetailAccessPin));
             }
 
-            //Send Response to Replace the Old Ok Button
             Respond(ResponseType.Ok);
         }
     }

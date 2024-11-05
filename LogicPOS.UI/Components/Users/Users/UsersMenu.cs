@@ -29,19 +29,23 @@ namespace LogicPOS.UI.Components.Menus
         public int TotalPages { get; set; }
         public CustomButton BtnPrevious { get; set; }
         public CustomButton BtnNext { get; set; }
-        public uint Rows { get; set; } = 7;
-        public uint Columns { get; set; } = 1;
+        public uint Rows { get; set; }
+        public uint Columns { get; set; } 
         public Size ButtonSize { get; set; } = new Size(120, 102);
         public Window SourceWindow { get; set; }
         public UserDetail SelectedUser { get; set; }
         public CustomButton SelectedButton { get; set; }
 
-        public event Action<UserDetail> UserSelected;
+        public event Action<UserDetail> OnUserSelected;
 
         public UsersMenu(Window sourceWindow,
                          CustomButton btnPrevious,
-                         CustomButton btnNext) : base(7, 1, true)
+                         CustomButton btnNext,
+                         uint rows = 7,
+                         uint columns = 1) : base(rows, columns, true)
         {
+            Rows = rows;
+            Columns = columns;
             SourceWindow = sourceWindow;
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
@@ -229,7 +233,7 @@ namespace LogicPOS.UI.Components.Menus
             SelectedButton = button;
             SelectedButton.Sensitive = false;
             SelectedUser = Buttons.Find(x => x.Button == SelectedButton).User;
-            UserSelected?.Invoke(SelectedUser);
+            OnUserSelected?.Invoke(SelectedUser);
         }
 
         internal void Refresh()

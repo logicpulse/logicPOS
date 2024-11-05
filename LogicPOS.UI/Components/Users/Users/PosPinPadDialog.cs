@@ -1,53 +1,58 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Widgets;
+using LogicPOS.Api.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Widgets;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using LogicPOS.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Utility;
-using LogicPOS.UI.Dialogs;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Widgets;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal class PosPinPadDialog : BaseDialog
     {
-        private readonly sys_userdetail _selectedUserDetail;
+        private readonly UserDetail _selectedUser;
         private readonly NumberPadPin _numberPadPin;
         private readonly bool _notLoginAuth;
 
-        public PosPinPadDialog(Window parentWindow, DialogFlags pDialogFlags, sys_userdetail pUserDetail, bool pNotLoginAuth = false)
-            : base(parentWindow, pDialogFlags)
+        public PosPinPadDialog(Window parentWindow,
+                               DialogFlags flags,
+                               UserDetail user,
+                               bool notLoginAuth = false)
+            : base(parentWindow, flags)
         {
-            _notLoginAuth = pNotLoginAuth;
-            //Dialog compile time preferences
+            _notLoginAuth = notLoginAuth;
             bool showCancel = false;
-            int DialogHeight = (showCancel) ? 465 : 440;//465 : 400;
-            //Init Local Vars Parameters
-            _selectedUserDetail = pUserDetail;
-            //Init Local Vars
+            int DialogHeight = (showCancel) ? 465 : 440;
+            _selectedUser = user;
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
             string fontNumberPadPinButtonKeysTextAndLabel = AppSettings.Instance.fontNumberPadPinButtonKeysTextAndLabel;
             ActionAreaButtons actionAreaButtons;
 
-            //Init Content
             Fixed fixedContent = new Fixed();
 
-            //NumberPadPin
-            _numberPadPin = new NumberPadPin(parentWindow, "numberPadPin", Color.Transparent, fontNumberPadPinButtonKeysTextAndLabel, "12", Color.White, Color.Black, 100, 67, _notLoginAuth);
+            _numberPadPin = new NumberPadPin(parentWindow,
+                                             "numberPadPin",
+                                             Color.Transparent,
+                                             fontNumberPadPinButtonKeysTextAndLabel,
+                                             "12",
+                                             Color.White,
+                                             Color.Black,
+                                             100,
+                                             67,
+                                             _notLoginAuth);
             _numberPadPin.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_numberPadPin, 0, 0);
 
             if (showCancel)
             {
-                //ActionArea Buttons
                 IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
 
-                //ActionArea
                 actionAreaButtons = new ActionAreaButtons
                 {
                     new ActionAreaButton(buttonCancel, ResponseType.Cancel)
@@ -58,20 +63,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 actionAreaButtons = new ActionAreaButtons();
             }
 
-            //Init Mode
-            _numberPadPin.Mode = (_selectedUserDetail.PasswordReset) ? NumberPadPinMode.PasswordOld :
+            _numberPadPin.Mode = (_selectedUser.PasswordReset) ? NumberPadPinMode.PasswordOld :
                 NumberPadPinMode.Password;
 
-            //Events
             this.KeyReleaseEvent += PosPinPadDialog_KeyReleaseEvent;
 
-            //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            this.Initialize(this,
+                            flags,
+                            fileDefaultWindowIcon,
+                            windowTitle,
+                            windowSize,
+                            fixedContent,
+                            actionAreaButtons);
         }
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUserDetail, _notLoginAuth);
+            bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUser, _notLoginAuth);
             if (finishedJob) Respond(ResponseType.Ok);
         }
 
