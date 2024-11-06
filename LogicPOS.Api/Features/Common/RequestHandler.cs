@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
+using LogicPOS.Api.Features.Authentication;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,14 @@ namespace LogicPOS.Api.Features.Common
     public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         protected readonly HttpClient _httpClient;
-        public RequestHandler(IHttpClientFactory factory) => _httpClient = factory.CreateClient("Default");
+        public RequestHandler(IHttpClientFactory factory)
+        {
+            _httpClient = factory.CreateClient("Default");
+            if (AuthenticationData.Token != null)
+            {
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {AuthenticationData.Token}");
+            }
+        }
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 

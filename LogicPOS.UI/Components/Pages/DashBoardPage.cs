@@ -9,6 +9,7 @@ using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Medsphere.Widgets;
@@ -242,7 +243,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //Actions Tabelas
                 botao5.Clicked += delegate { botao5.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao5, null); };
                 botao6.Clicked += delegate { botao6.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao6, null); };
-                botao7.Clicked += delegate { botao7.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewUser>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao7, null); };
+                botao7.Clicked += delegate { botao7.Page = new UsersPage(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao7, null); };
                 botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao8, null); };
 
                 //Actions Documents

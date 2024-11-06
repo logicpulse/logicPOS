@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Windows
     public partial class LoginWindow : POSBaseWindow
     {
         public static LoginWindow Instance { get; set; }
-        private NumberPadPin PinPanel { get; set; }
+        private UserPinPanel PinPanel { get; set; }
         public UsersMenu UsersMenu { get; set; }
 
         public LoginWindow(
@@ -140,7 +140,7 @@ namespace LogicPOS.UI.Components.Windows
                 }
 
                 //NumberPadPin
-                PinPanel = new NumberPadPin(this,
+                PinPanel = new UserPinPanel(this,
                                                  "numberPadPin",
                                                  System.Drawing.Color.Transparent,
                                                  numberPadPinFont,

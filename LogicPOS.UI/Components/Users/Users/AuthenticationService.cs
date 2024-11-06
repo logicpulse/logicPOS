@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Authentication;
 using LogicPOS.Api.Features.Users.GetUserPermissions;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,10 +17,11 @@ namespace LogicPOS.UI.Components.Users
             return Permissions.Contains(permission);
         }
 
-        public static void LoginUser(UserDetail user)
+        public static void LoginUser(UserDetail user, string jwtToken)
         {
             User = user;
             LoadPermissions();
+            AuthenticationData.Token = jwtToken;
         }
 
         public static void LogoutUser()

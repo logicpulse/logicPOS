@@ -110,21 +110,19 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            UserPinPanel dialogPinPad = new UserPinPanel(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.User);
-            int responsePinPad = dialogPinPad.Run();
+            UserPinModal pinModal = new UserPinModal(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.User);
+            int responsePinPad = pinModal.Run();
             if (responsePinPad != (int)ResponseType.Ok)
             {
-                dialogPinPad.Destroy();
+                pinModal.Destroy();
                 dialogChangeUser.Destroy();
                 return;
             }
 
-            AuthenticationService.LoginUser(dialogChangeUser.User);
-
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
-            Utils.ShowNotifications(dialogPinPad);
+            Utils.ShowNotifications(pinModal);
 
-            dialogPinPad.Destroy();
+            pinModal.Destroy();
             dialogChangeUser.Destroy();
         }
 
@@ -136,7 +134,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
         {
-            UserPinPanel dialogPinPad = new UserPinPanel(this,
+            UserPinModal dialogPinPad = new UserPinModal(this,
                                                                DialogFlags.Modal,
                                                                null, //tchial0
                                                                true);
