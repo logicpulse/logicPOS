@@ -15,6 +15,8 @@ using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
 
@@ -98,50 +100,32 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnChangeUser_Clicked(object sender, EventArgs e)
         {
-            PosChangeUserDialog dialogChangeUser = new PosChangeUserDialog(this, DialogFlags.DestroyWithParent);
+            ChangeUserModal dialogChangeUser = new ChangeUserModal(this, DialogFlags.DestroyWithParent);
 
-
-            string terminalInfo = string.Empty;
 
             int responseChangeUser = dialogChangeUser.Run();
-            if (responseChangeUser == (int)ResponseType.Ok)
+            if (responseChangeUser != (int)ResponseType.Ok)
             {
-                if (POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.User.Id))
-                {
-                    XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.User.Id);
-                    GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-                    TicketList.UpdateSaleOptionsPanelButtons();
-                    XPOUtility.Audit("USER_CHANGE", string.Format(GeneralUtils.GetResourceByName("audit_message_user_change"), XPOSettings.LoggedUser.Name));
-                    terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
-                    if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
-                }
-                else
-                {
-                    PosPinPadDialog dialogPinPad = new PosPinPadDialog(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.User);
-                    int responsePinPad = dialogPinPad.Run();
-                    if (responsePinPad == (int)ResponseType.Ok)
-                    {
-                        if (!POSSession.CurrentSession.LoggedUsers.ContainsKey(dialogChangeUser.User.Id))
-                        {
-                            POSSession.CurrentSession.LoggedUsers.Add(dialogChangeUser.User.Id, XPOUtility.CurrentDateTimeAtomic());
-                            POSSession.CurrentSession.Save();
-                            XPOSettings.LoggedUser = XPOUtility.GetEntityById<sys_userdetail>(dialogChangeUser.User.Id);
-                            GeneralSettings.LoggedUserPermissions = XPOUtility.GetUserPermissions();
-                            TicketList.UpdateSaleOptionsPanelButtons();
-                            XPOUtility.Audit("USER_LOGIN", string.Format(GeneralUtils.GetResourceByName("audit_message_user_login"), XPOSettings.LoggedUser.Name));
-                            terminalInfo = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
-                            if (LabelTerminalInfo.Text != terminalInfo) LabelTerminalInfo.Text = terminalInfo;
-                            Utils.ShowNotifications(dialogPinPad);
-                        }
-                    };
+                dialogChangeUser.Destroy();
+                return;
+            }
 
-                    dialogPinPad.Destroy();
-                }
-            };
+            UserPinPanel dialogPinPad = new UserPinPanel(dialogChangeUser, DialogFlags.DestroyWithParent, dialogChangeUser.User);
+            int responsePinPad = dialogPinPad.Run();
+            if (responsePinPad != (int)ResponseType.Ok)
+            {
+                dialogPinPad.Destroy();
+                dialogChangeUser.Destroy();
+                return;
+            }
 
+            AuthenticationService.LoginUser(dialogChangeUser.User);
 
+            LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
+            Utils.ShowNotifications(dialogPinPad);
+
+            dialogPinPad.Destroy();
             dialogChangeUser.Destroy();
-
         }
 
         private void ButtonFavorites_Clicked(object sender, EventArgs e)
@@ -152,7 +136,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
         {
-            PosPinPadDialog dialogPinPad = new PosPinPadDialog(this,
+            UserPinPanel dialogPinPad = new UserPinPanel(this,
                                                                DialogFlags.Modal,
                                                                null, //tchial0
                                                                true);
@@ -206,12 +190,10 @@ namespace LogicPOS.UI.Components.Windows
 
         public void UpdateUI()
         {
-            LabelTerminalInfo.Text = string.Format("{0} : {1}", TerminalSettings.LoggedTerminal.Designation, XPOSettings.LoggedUser.Name);
+            LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
             MenuFamilies.LoadEntities();
             MenuSubfamilies.LoadEntities();
             MenuArticles.PresentArticles();
-
-            TicketList.UpdateSaleOptionsPanelButtons();
         }
 
         public void UpdateWorkSessionUI()

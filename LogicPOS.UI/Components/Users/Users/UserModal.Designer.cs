@@ -8,7 +8,7 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UserDetailsModal
+    public partial class UserModal
     {
         public override Size ModalSize => new Size(500, 469);
         public override string ModalTitleResourceName => "window_title_edit_user";

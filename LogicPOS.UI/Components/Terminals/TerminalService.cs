@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Terminals
     {
         private const string TERMINAL_HARDWAREID_FILE = "terminal.id";
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        public static Terminal CurrentTerminal { get; private set; }
+        public static Terminal Terminal { get; private set; }
 
         private static async Task<ErrorOr<Guid>> CreateTerminalAsync(CancellationToken ct = default)
         {
@@ -34,8 +34,8 @@ namespace LogicPOS.UI.Components.Terminals
                     return getTerminal.FirstError;
                 }
 
-                CurrentTerminal = getTerminal.Value;
-                return CurrentTerminal;
+                Terminal = getTerminal.Value;
+                return Terminal;
             }
 
             var createTerminalResult = await CreateTerminalAsync(ct);
@@ -54,9 +54,9 @@ namespace LogicPOS.UI.Components.Terminals
 
             CreateHardwareIdFile(getTerminalResult.Value.HardwareId);
 
-            CurrentTerminal = getTerminalResult.Value;
+            Terminal = getTerminalResult.Value;
 
-            return CurrentTerminal;
+            return Terminal;
         }
 
         private static bool HardwareIdFileExists()

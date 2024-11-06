@@ -29,7 +29,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         // XPOEntryBoxSelectRecordValidation
         private XPOEntryBoxSelectRecordValidation<fin_documentfinancetype, TreeViewDocumentFinanceType> _entryBoxSelectDocumentFinanceType;
         private XPOEntryBoxSelectRecordValidation<pos_configurationplaceterminal, TreeViewConfigurationPlaceTerminal> _entryBoxSelectConfigurationPlaceTerminal;
-        private XPOEntryBoxSelectRecordValidation<sys_userdetail, TreeViewUser> _entryBoxSelectUserDetail;
         private XPOEntryBoxSelectRecordValidation<erp_customer, TreeViewCustomer> _entryBoxSelectCustomer;
         private XPOEntryBoxSelectRecordValidation<fin_configurationpaymentmethod, TreeViewConfigurationPaymentMethod> _entryBoxSelectConfigurationPaymentMethod;
         private XPOEntryBoxSelectRecordValidation<fin_configurationpaymentcondition, TreeViewConfigurationPaymentCondition> _entryBoxSelectConfigurationPaymentCondition;
@@ -409,8 +408,9 @@ Oid = '{DocumentSettings.ConsignationInvoiceId}'
 
             if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(sys_userdetail)))
             {
-                _entryBoxSelectUserDetail = SelectionBoxFactory<sys_userdetail, TreeViewUser>(GeneralUtils.GetResourceByName("global_user"), "Name");
-                _selectionBoxs.Add(typeof(sys_userdetail).Name, _entryBoxSelectUserDetail);
+                //tchial0: deleted TreeViewUser
+                //_entryBoxSelectUserDetail = SelectionBoxFactory<sys_userdetail, TreeViewUser>(GeneralUtils.GetResourceByName("global_user"), "Name");
+                //_selectionBoxs.Add(typeof(sys_userdetail).Name, _entryBoxSelectUserDetail);
             }
 
             if (ComponentExistsInQueryDialogMode(_reportsQueryDialogMode, typeof(erp_customer)))

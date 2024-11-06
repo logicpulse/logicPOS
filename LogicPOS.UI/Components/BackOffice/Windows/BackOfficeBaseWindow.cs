@@ -129,7 +129,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             LabelActivePage.SetAlignment(0.0F, 0.5F);
 
             //TerminalInfo : Terminal : User
-            LabelTerminalInfo = new Label($"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.User.Name}");
+            LabelTerminalInfo = new Label($"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}");
             LabelTerminalInfo.ModifyFont(fontDescriptionStatusBar);
             LabelTerminalInfo.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             LabelTerminalInfo.SetAlignment(0.5F, 0.5F);

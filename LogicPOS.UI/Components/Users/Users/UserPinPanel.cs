@@ -11,13 +11,13 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosPinPadDialog : BaseDialog
+    internal class UserPinPanel : BaseDialog
     {
         private readonly UserDetail _selectedUser;
         private readonly NumberPadPin _numberPadPin;
         private readonly bool _notLoginAuth;
 
-        public PosPinPadDialog(Window parentWindow,
+        public UserPinPanel(Window parentWindow,
                                DialogFlags flags,
                                UserDetail user,
                                bool notLoginAuth = false)

@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal class PosChangeUserDialog : BaseDialog
+    internal class ChangeUserModal : BaseDialog
     {
         private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
         private Size _sizePosUserButton = AppSettings.Instance.sizePosUserButton;
@@ -22,7 +22,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly IconButtonWithText _buttonCancel;
         public UserDetail User { get; set; }
 
-        public PosChangeUserDialog(Window parentWindow,
+        public ChangeUserModal(Window parentWindow,
                                    DialogFlags pDialogFlags)
             : base(parentWindow, pDialogFlags)
         {
