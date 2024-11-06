@@ -59,7 +59,9 @@
     <Compile Include="Enums\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
+    <Compile Include="ThermalPrinter\Documents\CompanyInformationsDto.cs" />
     <Compile Include="ThermalPrinter\Documents\WorkSession.DataTableGroupProperties.cs" />
+    <Compile Include="ThermalPrinter\ThermalPrinting.cs" />
     <Compile Include="Tickets\TicketColumn.cs" />
     <Compile Include="ThermalPrinter\Templates\InternalDocumentTemplate.cs" />
     <Compile Include="ThermalPrinter\Templates\BaseFinanceTemplate.cs" />
@@ -84,6 +86,10 @@
     <Compile Include="Windows\RawPrinterHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
+      <Project>{267C627F-2248-4500-9247-CE7F30431A25}</Project>
+      <Name>LogicPOS.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj">
       <Project>{42af3be2-44b4-477d-8e45-55c64992b805}</Project>
       <Name>LogicPOS.Data</Name>

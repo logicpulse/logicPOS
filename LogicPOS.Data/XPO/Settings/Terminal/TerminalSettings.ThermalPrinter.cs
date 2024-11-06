@@ -10,12 +10,13 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if (HasLoggedTerminal == false)
+                    if (HasLoggedTerminal != false)
                     {
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
                     }
 
                     var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal;
+                    
                     return (result > 0) ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
                 }
             }
@@ -24,7 +25,7 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if (HasLoggedTerminal == false)
+                    if (HasLoggedTerminal != false)
                     {
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormalBold;
                     }
@@ -38,7 +39,7 @@ namespace LogicPOS.Data.XPO.Settings
             {
                 get
                 {
-                    if (HasLoggedTerminal == false)
+                    if (HasLoggedTerminal != false)
                     {
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                     }

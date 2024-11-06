@@ -6,6 +6,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.UI;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Drawing;
@@ -65,7 +66,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 //PrintWorkSessionMovement
                 //PrintRouter.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);
                 var workSessionDto = MappingUtils.GetPrintWorkSessionDto(XPOSettings.WorkSessionPeriodTerminal);
-                FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter,workSessionDto);
+                FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter,workSessionDto, TerminalService.Terminal.Designation);
 
                 //PrintTicket.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodDay);
                 //PrintTicket.PrintWorkSessionMovement(TerminalSettings.LoggedTerminal.Printer, GlobalFramework.WorkSessionPeriodTerminal);

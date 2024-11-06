@@ -25,11 +25,12 @@ namespace LogicPOS.Printing.Documents
 
         public WorkSessionPrinter(
             PrinterDto printer,
+            string terminalDesignation,
             PrintWorkSessionDto workSession,
             SplitCurrentAccountMode pSplitCurrentAccountMode,
             string workSessionMovementPrintingFileTemplate,
             Hashtable sessionPeriodSummaryDetails)
-            : base(printer)
+            : base(printer, terminalDesignation)
         {
             _workSessionPeriod = workSession;
             _splitCurrentAccountMode = pSplitCurrentAccountMode;

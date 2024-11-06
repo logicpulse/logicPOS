@@ -12,6 +12,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Utility;
 using LogicPOS.UI;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Terminals;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -56,7 +57,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     if (pResponse == ResponseType.Yes)
                     {
                         var workSessionDto = XPOUtility.WorkSession.GetCurrentWorkSessionPeriodDayDto();
-                        FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto);
+                       // FrameworkCalls.PrintWorkSessionMovement(this, TerminalService.CurrentTerminal.ThermalPrinter, TerminalService.CurrentTerminal.sess workSessionDto);
                     }
                     //FrameworkCalls.PrintWorkSessionMovement(this, TerminalSettings.LoggedTerminal.ThermalPrinter, GlobalFramework.WorkSessionPeriodDay);
                 }
@@ -218,6 +219,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_open"),
                                         0.0m,
                                         dialogCashDrawer.TotalAmountInCashDrawer,
+                                        dialogCashDrawer.MovementDescription,
                                         dialogCashDrawer.MovementDescription);
                                 }
                             }
@@ -281,7 +283,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
 
                                 //PrintCashDrawerOpenAndMoneyInOut
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
 
                                 //Open CashDrawer
                                 var resultOpenDoor = PrintingUtils.OpenDoor();
@@ -359,7 +361,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
 
                                 //PrintCashDrawerOpenAndMoneyInOut
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
 
                                 //Open CashDrawer
                                 var resultOpenDoor = PrintingUtils.OpenDoor();
@@ -419,7 +421,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
                                 //PrintWorkSessionMovement
                                 var workSessionDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodTerminal);
-                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto);
+                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, workSessionDto, TerminalService.Terminal.Designation);
                             }
 
                             //GlobalFramework.WorkSessionPeriodTerminal = null;
@@ -445,7 +447,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
                             //Open CashDrawer
                             var resultOpenDoor = PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
@@ -492,7 +494,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             //PrintCashDrawerOpenAndMoneyInOut
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_out"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalSettings.LoggedTerminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_out"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
                             //Open CashDrawer
                             var resultOpenDoor = PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)

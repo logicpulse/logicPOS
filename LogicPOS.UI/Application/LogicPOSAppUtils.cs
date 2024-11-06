@@ -320,7 +320,7 @@ namespace LogicPOS.UI.Application
                 PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
             {
                 /* IN009034 */
-                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
+                LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
 
                 _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
                 Utils.ShowMessageBox(

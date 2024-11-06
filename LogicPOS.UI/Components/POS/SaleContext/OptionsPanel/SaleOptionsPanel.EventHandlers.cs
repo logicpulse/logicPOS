@@ -27,6 +27,15 @@ using MediatR;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.Api.Features.Documents.GetDocumentById;
+using LogicPOS.Api.Features.Terminals.GetTerminalById;
+using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Documents;
+using LogicPOS.Printing.Utility;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Terminals;
+using PriceType = LogicPOS.Domain.Enums.PriceType;
+using LogicPOS.UI.Components.Users;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -124,10 +133,80 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
-
+            PrintOrder();
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
+            
         }
+
+        private void PrintOrder()
+        {
+            var orderTicket = new PrintOrderTicketDto();
+            orderTicket.OrderDetails = new List<PrintOrderDetailDto>();
+            
+            orderTicket.TicketId = (int)ItemsPage.Ticket.Number;
+            orderTicket.TableDesignation = ItemsPage.Order.Table.Designation;
+            orderTicket.PlaceDesignation = ItemsPage.Order.Table.Place.Designation;
+            foreach (var item in ItemsPage.Ticket.Items)
+            {
+                orderTicket.OrderDetails.Add(new PrintOrderDetailDto() { Designation = item.Article.Designation, Quantity = item.Quantity, UnitMeasure = item.Article.MeasurementUnit.Acronym });
+            }
+            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
+            if(printer == null)
+            {
+                return ;
+            }
+            CompanyInformationsDto companyInformationsDto = GetCompanyInformation();
+            new ThermalPrinting(printer, companyInformationsDto, orderTicket, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
+
+        }
+
+
+        protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
+        {
+
+            if (terminal.ThermalPrinter != null)
+            {
+                return new PrinterDto()
+                {
+                    Designation = terminal.ThermalPrinter.Designation,
+                    Token = terminal.ThermalPrinter.Type.Token,
+                    IsThermal = terminal.ThermalPrinter.Type.ThermalPrinter,
+                    CutCommand="0x42,0x00"
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private CompanyInformationsDto GetCompanyInformation()
+        {
+            var companyInformations = new CompanyInformations();
+            return new CompanyInformationsDto()
+            {
+                Address = companyInformations.Address,
+                Name = companyInformations.Name,
+                BusinessName = companyInformations.BusinessName,
+                ComercialName = companyInformations.ComercialName,
+                City = companyInformations.City,
+                Logo = companyInformations.Logo,
+                
+                Email = companyInformations.Email,
+                MobilePhone = companyInformations.MobilePhone,
+                FiscalNumber = companyInformations.FiscalNumber,
+                Phone = companyInformations.Phone,
+                StockCapital = companyInformations.StockCapital,
+                Website = companyInformations.Website,
+                DocumentFinalLine1 = companyInformations.DocumentFinalLine1,
+                DocumentFinalLine2 = companyInformations.DocumentFinalLine2,
+                TicketFinalLine1 = companyInformations.TicketFinalLine1,
+                TicketFinalLine2 = companyInformations.TicketFinalLine2,
+            };
+        }
+
+
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {

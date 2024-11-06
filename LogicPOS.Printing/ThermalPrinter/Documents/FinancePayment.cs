@@ -1,4 +1,5 @@
-﻿using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.DTOs.Reporting;
 using LogicPOS.Printing.Enums;
@@ -19,17 +20,23 @@ namespace LogicPOS.Printing.Documents
 
         public FinancePayment(
             PrinterDto printer,
-            PrintingFinancePaymentDto financePayment,
+            Document document,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformations,
             List<int> copyNumbers,
             bool secondCopy,
             List<FinancePaymentViewReportDataDto> financePaymentViewReportDtos)
             : base(
                   printer,
-                  financePayment.DocumentType,
+                  document,
+                  terminalDesignation,
+                  userName,
+                  companyInformations,
                   copyNumbers,
                   secondCopy)
         {
-            _financePaymentDto = financePayment;
+
             _financePaymentViewReportDtos = financePaymentViewReportDtos;
             _financePaymentDocumentViewReportDtos = financePaymentViewReportDtos[0].DocumentFinancePaymentDocument;
         }

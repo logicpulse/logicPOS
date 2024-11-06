@@ -16,6 +16,7 @@ namespace LogicPOS.Printing.Common
         public int MaxCharsPerLineNormal { get; set; }
         public int MaxCharsPerLineNormalBold { get; set; }
         public int MaxCharsPerLineSmall { get; set; }
+        public string CutCommand {  get; set; }
 
         public GenericThermalPrinter(
             PrinterDto printer)
@@ -50,6 +51,7 @@ namespace LogicPOS.Printing.Common
             MaxCharsPerLineNormal = maxCharsPerLineNormal;
             MaxCharsPerLineNormalBold = maxCharsPerLineNormalBold;
             MaxCharsPerLineSmall = maxCharsPerLineSmall;
+            CutCommand =printer.CutCommand;
             _line = new string(_lineChar, MaxCharsPerLineNormal);
         }
 

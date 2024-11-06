@@ -17,17 +17,34 @@ namespace LogicPOS.Printing.Documents
 
         public OrderRequest(
             PrinterDto printer,
-            PrintOrderTicketDto orderTicket)
+            PrintOrderTicketDto orderTicket,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto)
             : this(
                   printer,
-                  orderTicket, false)
+                  orderTicket, 
+                  terminalDesignation, 
+                  userName,companyInformationsDto, false)
+        { }
+
+        public OrderRequest(
+    PrinterDto printer,
+    PrintOrderTicketDto orderTicket,
+    string terminalDesignation)
+    : base(
+          printer,null,
+          terminalDesignation, "teste")
         { }
 
         public OrderRequest(
             PrinterDto printer,
             PrintOrderTicketDto orderTicket,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
             bool articlePrinterEnabled)
-            : base(printer)
+            : base(printer, companyInformationsDto, terminalDesignation, userName)
         {
             try
             {

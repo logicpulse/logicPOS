@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpo;
 using logicpos.shared.Enums;
+using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -1118,7 +1119,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            PrintDocumentMasterDto pDocumentFinanceMaster,
+            Document pDocumentFinanceMaster,
             string pPrinterDesignation,
             int pPrintCopies,
             List<int> pCopyNames,
@@ -1138,14 +1139,13 @@ namespace LogicPOS.Printing.Utility
         }
 
         private static bool SystemPrintInsert(
-            PrintingFinancePaymentDto pDocumentFinancePayment,
+            Document pDocumentFinancePayment,
             string pPrinterDesignation,
             int pPrintCopies,
             List<int> pCopyNames)
         {
             return XPOUtility.InsertSystemPrint(
-                null,
-                pDocumentFinancePayment,
+                pDocumentFinancePayment,null,
                 pPrinterDesignation,
                 pPrintCopies,
                 pCopyNames,
@@ -1157,7 +1157,10 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintFinanceDocument(
             PrinterDto printer,
-            PrintDocumentMasterDto financeMasterDto,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
+            Document financeMasterDto,
             List<int> copyNumbers,
             bool secondCopy,
             string motive)
@@ -1183,11 +1186,13 @@ namespace LogicPOS.Printing.Utility
 
                         FinanceMaster thermalPrinterFinanceDocument = new FinanceMaster(
                             printer,
+                            terminalDesignation,
+                            userName,
                             financeMasterDto,
+                            companyInformationsDto,
                             copyNumbers,
                             secondCopy,
-                            motive,
-                            financeMasterViewReportsDtos);
+                            motive);
 
                         thermalPrinterFinanceDocument.Print();
                         //Add to SystemPrint Audit
@@ -1218,14 +1223,14 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintFinanceDocument(
-            PrintDocumentMasterDto pDocumentFinanceMaster)
+        public static bool PrintFinanceDocument(PrinterDto printer,
+            Document pDocumentFinanceMaster)
         {
-            return PrintFinanceDocument(XPOSettings.Session, pDocumentFinanceMaster);
+            return PrintFinanceDocument(printer, pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(
-            Session session,
+            PrinterDto printer,
             PrintDocumentMasterDto financeMaster)
         {
             List<int> printCopies = new List<int>();
@@ -1235,7 +1240,7 @@ namespace LogicPOS.Printing.Utility
             }
 
             return PrintFinanceDocument(
-                session,
+                printer,
                 financeMaster,
                 printCopies,
                 false,
@@ -1243,7 +1248,7 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintFinanceDocument(
-            Session pSession,
+            PrinterDto pPrinter,
             PrintDocumentMasterDto financeMaster,
             List<int> pCopyNames,
             bool pSecondCopy,
@@ -1253,7 +1258,7 @@ namespace LogicPOS.Printing.Utility
 
             //Commented By Tchialo: Appearently this is not used
             //DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(
-            //    pSession,
+            //    pPrinter,
             //    financeMaster.DocumentType.Id);
 
             var printer = LoggedTerminalSettings.GetPrinterDto();
@@ -1276,14 +1281,18 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintFinanceDocumentPayment(
             PrinterDto printer,
-            PrintingFinancePaymentDto pDocumentFinancePayment)
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
+            Document pDocumentFinancePayment)
         {
             bool result = false;
 
             if (printer != null)
             {
                 //Initialize CopyNames List from PrintCopies
-                List<int> copyNames = Reporting.Common.FastReport.CopyNames(pDocumentFinancePayment.DocumentType.PrintCopies);
+                List<int> copyNames = new List<int>();
+                copyNames.Add(0);
                 int printCopies = copyNames.Count;
 
                 //Init Helper Vars
@@ -1300,6 +1309,10 @@ namespace LogicPOS.Printing.Utility
                             new FinancePayment(
                                 printer, 
                                 pDocumentFinancePayment, 
+                                terminalDesignation,
+                                userName,
+                                companyInformationsDto,
+
                                 copyNames, 
                                 false,
                                 financePaymentViewReportsDtos
@@ -1327,6 +1340,7 @@ namespace LogicPOS.Printing.Utility
 
         public static bool PrintWorkSessionMovement(
             PrinterDto printer,
+            string terminalDesignation,
             PrintWorkSessionDto workSessionPeriod,
             string workSessionMovementPrintingFileTemplate,
             Hashtable sessionPeriodSummaryDetails
@@ -1344,6 +1358,7 @@ namespace LogicPOS.Printing.Utility
 
                         WorkSessionPrinter workSessiontPrinter = new WorkSessionPrinter(
                             printer, 
+                            terminalDesignation,
                             workSessionPeriod, 
                             SplitCurrentAccountMode.NonCurrentAcount,
                             workSessionMovementPrintingFileTemplate,
@@ -1354,7 +1369,8 @@ namespace LogicPOS.Printing.Utility
                         if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                         {
                             workSessiontPrinter = new WorkSessionPrinter(
-                                printer,
+                                printer,                               
+                                terminalDesignation,
                                 workSessionPeriod, 
                                 SplitCurrentAccountMode.CurrentAcount,
                                 workSessionMovementPrintingFileTemplate,
@@ -1370,7 +1386,10 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto)
+        public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto, 
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto)
         {
             bool result;
 
@@ -1395,9 +1414,9 @@ namespace LogicPOS.Printing.Utility
             //Print Tickets for Article Printers
             if (articlesPrinters.Count > 0)
             {
-                foreach (var item in articlesPrinters)
+                foreach (var itemPrinter in articlesPrinters)
                 {
-                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(item, orderTicketDto, true);
+                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(itemPrinter, orderTicketDto,terminalDesignation,userName,companyInformationsDto, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -1409,6 +1428,7 @@ namespace LogicPOS.Printing.Utility
         //Used for Money Movements and Open/Close Terminal/Day Sessions
         public static bool PrintCashDrawerOpenAndMoneyInOut(
             PrinterDto printer,
+            string terminalDesignation,
             string pTicketTitle,
             decimal pMovementAmount,
             decimal pTotalAmountInCashDrawer,
@@ -1427,7 +1447,8 @@ namespace LogicPOS.Printing.Utility
                             pTicketTitle,
                             pTotalAmountInCashDrawer,
                             pMovementAmount,
-                            pMovementDescription);
+                            terminalDesignation);
+                            
 
                         internalDocumentCashDrawer.Print();
                         break;

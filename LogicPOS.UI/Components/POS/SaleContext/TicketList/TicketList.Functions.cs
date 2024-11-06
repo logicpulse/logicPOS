@@ -216,9 +216,9 @@ namespace LogicPOS.UI.Components
                 if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                 {
                     // TK016249 Impressoras - Diferenciação entre Tipos 
-                    FrameworkCalls.PrintOrderRequest(POSWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                    //FrameworkCalls.PrintOrderRequest(POSWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
                 }
-                FrameworkCalls.PrintArticleRequest(POSWindow, orderTicket);
+               // FrameworkCalls.PrintArticleRequest(POSWindow, orderTicket);
             }
 
             //Change Mode

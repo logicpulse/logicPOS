@@ -3,6 +3,7 @@ using logicpos;
 using logicpos.Classes.Enums.Finance;
 using logicpos.Classes.Enums.Tickets;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Entities;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -452,13 +453,14 @@ namespace LogicPOS.UI
 
         public static bool PrintFinanceDocument(Window parentWindow, fin_documentfinancemaster pDocumentFinanceMaster)
         {
-            return PrintFinanceDocument(parentWindow, null, pDocumentFinanceMaster);
+            return PrintFinanceDocument(parentWindow,  pDocumentFinanceMaster);
         }
 
         public static bool PrintFinanceDocument(
             Window sourceWindow,
             sys_configurationprinters pPrinter,
-            fin_documentfinancemaster financeMaster)
+            fin_documentfinancemaster financeMaster,
+            string terminalDesignation, string userName, CompanyInformationsDto companyInformationsDto)
         {
             bool result = false;
             bool openDrawer = false;
@@ -500,7 +502,8 @@ namespace LogicPOS.UI
                         printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
                         //Print with default DocumentFinanceYearSerieTerminal Template
                         var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
-                        if (printDialogResponse.Response == ResponseType.Ok) result = Printing.Utility.PrintingUtils.PrintFinanceDocument(financeMasterDto);
+                        var printerDto = new PrinterDto { Designation = printer.Designation, CutCommand = printer.ThermalCutCommand };
+                        if (printDialogResponse.Response == ResponseType.Ok) result = Printing.Utility.PrintingUtils.PrintFinanceDocument(printerDto, financeMasterDto);
                     }
                 }
                 else
@@ -609,13 +612,16 @@ namespace LogicPOS.UI
 
         public static bool PrintFinanceDocumentPayment(Window parentWindow, fin_documentfinancepayment pDocumentFinancePayment)
         {
-            return PrintFinanceDocumentPayment(parentWindow, null, pDocumentFinancePayment);
+            return PrintFinanceDocumentPayment(parentWindow, pDocumentFinancePayment);
         }
 
         public static bool PrintFinanceDocumentPayment(
             Window parentWindow,
             PrinterDto printer,
-            fin_documentfinancepayment pDocumentFinancePayment)
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
+            Document pDocumentFinancePayment)
         {
             bool result = false;
 
@@ -638,7 +644,7 @@ namespace LogicPOS.UI
 
                 //ProtectedFiles Protection
                 bool validFiles = true;
-                string extraMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.PaymentRefNo);
+                string extraMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), pDocumentFinancePayment.Number);
                 switch (Printing.Utility.PrintingUtils.GetPrinterToken(printer.Token))
                 {
                     //ThermalPrinter : Ticket Files
@@ -653,7 +659,7 @@ namespace LogicPOS.UI
                     case "VIRTUAL_SCREEN":
                         break;
                 }
-                var DocumentFinancePaymentDto = MappingUtils.GetPrintingFinancePaymentDto(pDocumentFinancePayment);
+               // var DocumentFinancePaymentDto = MappingUtils.GetPrintingFinancePaymentDto(pDocumentFinancePayment);
                 //ProtectedFiles Protection
                 if (!validFiles) return false;
                 //Recibos com impressão em impressora térmica
@@ -667,17 +673,17 @@ namespace LogicPOS.UI
                     {
                         var printerDto = LoggedTerminalSettings.GetPrinterDto();
 
-                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printerDto, DocumentFinancePaymentDto);
+                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printerDto, terminalDesignation, userName, companyInformationsDto, pDocumentFinancePayment);
                     }
                     else
                     {
-                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
+                        result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, terminalDesignation, userName, companyInformationsDto, pDocumentFinancePayment);
                     }
                 }
                 else
                 {
                     //Call Print Document A4
-                    result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, DocumentFinancePaymentDto);
+                    result = Printing.Utility.PrintingUtils.PrintFinanceDocumentPayment(printer, terminalDesignation, userName, companyInformationsDto, pDocumentFinancePayment);
                 }
 
             }
@@ -743,7 +749,8 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintTableTicket
 
-        public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket)
+        public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket, 
+                                            string terminalDesignation, CompanyInformationsDto companyInformationsDto)
         {
             bool result = false;
 
@@ -753,7 +760,7 @@ namespace LogicPOS.UI
                 {
                     var printer = MappingUtils.GetPrinterDto(pPrinter);
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printer, orderTicketDto);
+                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printer,orderTicketDto,terminalDesignation,"userTest",companyInformationsDto );
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -769,7 +776,8 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest
 
-        public static bool PrintArticleRequest(Window parentWindow, fin_documentorderticket orderTicket)
+        public static bool PrintArticleRequest(Window parentWindow, fin_documentorderticket orderTicket, 
+            string terminalDesignation, string userName, CompanyInformationsDto companyInformationsDto)
         {
             bool result = false;
 
@@ -779,7 +787,7 @@ namespace LogicPOS.UI
                 //if (SharedPrintTicket(parentWindow, null, TicketType.ArticleOrder))
                 //{
                 var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                result = Printing.Utility.PrintingUtils.PrintArticleRequest(orderTicketDto);
+                result = Printing.Utility.PrintingUtils.PrintArticleRequest(orderTicketDto, terminalDesignation,userName,companyInformationsDto);
                 //}
             }
             catch (Exception ex)
@@ -796,7 +804,9 @@ namespace LogicPOS.UI
         public static bool PrintWorkSessionMovement(
             Window parentWindow,
             sys_configurationprinters printerEntity,
-            PrintWorkSessionDto workSessionPeriod)
+            PrintWorkSessionDto workSessionPeriod,
+            string terminalDesignation
+            )
         {
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
@@ -810,6 +820,7 @@ namespace LogicPOS.UI
                     var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.Id);
                     result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(
                         printerDto,
+                        terminalDesignation,
                         workSessionPeriod,
                         workSessionMovementPrintingFileTemplate,
                         sessionPeriodSummaryDetails);
@@ -827,7 +838,8 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintCashDrawerOpenAndMoneyInOut
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription,
+            string terminalDesignation)
         {
             var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
@@ -838,7 +850,7 @@ namespace LogicPOS.UI
                 if (SharedPrintTicket(parentWindow, pPrinter, TicketType.CashDrawer))
                 {
 
-                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
+                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, terminalDesignation, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
                 }
             }
             catch (Exception ex)

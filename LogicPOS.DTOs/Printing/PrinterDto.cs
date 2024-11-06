@@ -9,5 +9,6 @@ namespace LogicPOS.DTOs.Printing
         public string NetworkName { get; set; }
         public string Token { get; set; }
         public bool IsThermal { get; set; }
+        public string CutCommand {  get; set; }
     }
 }

@@ -15,25 +15,14 @@ namespace LogicPOS.Printing.Documents
         public CashDrawer(
             PrinterDto printer,
             string pTicketTitle,
-            decimal pTotalAmountInCashDrawer)
-            : this(
-                  printer,
-                  pTicketTitle,
-                  pTotalAmountInCashDrawer,
-                  0.0m)
-        { }
-
-        public CashDrawer(
-            PrinterDto printer,
-            string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
-            decimal pMovementAmount)
+            string terminalDesignation)
             : this(
                   printer,
                   pTicketTitle,
                   pTotalAmountInCashDrawer,
-                  pMovementAmount,
-                  string.Empty)
+                  0.0m, 
+                  terminalDesignation)
         { }
 
         public CashDrawer(
@@ -41,8 +30,24 @@ namespace LogicPOS.Printing.Documents
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount,
-            string pMovementDescription)
-            : base(printer)
+            string terminalDesignation)
+            : this(
+                  printer,
+                  pTicketTitle,
+                  pTotalAmountInCashDrawer,
+                  pMovementAmount,
+                  string.Empty,
+                  terminalDesignation)
+        { }
+
+        public CashDrawer(
+            PrinterDto printer,
+            string pTicketTitle,
+            decimal pTotalAmountInCashDrawer,
+            decimal pMovementAmount,
+            string pMovementDescription,
+            string terminalDesignation)
+            : base(printer, terminalDesignation)
         {
             _ticketTitle = pTicketTitle;
             _totalAmountInCashDrawer = pTotalAmountInCashDrawer;

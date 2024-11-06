@@ -2,6 +2,7 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using DevExpress.Xpo.Metadata;
+using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -1040,7 +1041,7 @@ namespace LogicPOS.Data.XPO.Utility
         }
 
         public static bool InsertSystemPrint(
-            PrintDocumentMasterDto financeMasterDto,
+            Document financeMasterDto,
             PrintingFinancePaymentDto financePaymentDto,
             string printerDesignation,
             int printCopies,

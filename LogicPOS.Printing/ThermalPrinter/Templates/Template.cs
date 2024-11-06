@@ -2,12 +2,12 @@
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace LogicPOS.Printing.Templates
 {
@@ -18,13 +18,27 @@ namespace LogicPOS.Printing.Templates
         protected int _maxCharsPerLineNormal = 0;
         protected int _maxCharsPerLineNormalBold = 0;
         protected int _maxCharsPerLineSmall = 0;
-        protected string _companyLogo = string.Empty;
+        protected CompanyInformationsDto _companyInformationsDto;
         protected string _ticketTitle = string.Empty;
         protected string _ticketSubTitle = string.Empty;
+        protected string _userName = string.Empty;
+        protected string _terminalDesignation = string.Empty;
+
+
 
         public Template(
-            PrinterDto printer,
-            string pCompanyLogo)
+           PrinterDto printer,
+           string terminalDesignation)
+        {
+
+        }
+
+
+        public Template(
+        PrinterDto printer,
+        string terminalDesignation,
+        string userName,
+        CompanyInformationsDto pCompanyInformationsDtos)
         {
             try
             {
@@ -33,8 +47,9 @@ namespace LogicPOS.Printing.Templates
                 _maxCharsPerLineNormal = _printer.MaxCharsPerLineNormal;
                 _maxCharsPerLineNormalBold = _printer.MaxCharsPerLineNormalBold;
                 _maxCharsPerLineSmall = _printer.MaxCharsPerLineSmall;
-                _companyLogo = pCompanyLogo;
-
+                _companyInformationsDto = pCompanyInformationsDtos;
+                _terminalDesignation = terminalDesignation;
+                _userName = userName;
                 //Init Custom Vars From FastReport
                 _customVars = PrintingSettings.FastReportCustomVars;
                 //_systemVars = GlobalFramework.FastReportSystemVars;
@@ -87,26 +102,26 @@ namespace LogicPOS.Printing.Templates
             string logo = string.Format(
                 @"{0}{1}",
                 PathsSettings.Paths["assets"],
-                _companyLogo
+                _companyInformationsDto
             );
 
             sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_PRINT_COMERCIAL_NAME';";
-            var printComercialName = XPOSettings.Session.ExecuteScalar(sql).ToString();
+            var printComercialName = _companyInformationsDto.ComercialName;
 
             //Print Logo or Name + BusinessName
             //TK016249 - Impressoras - Diferenciação entre Tipos
 
-            string companyBusinessName = _customVars["COMPANY_BUSINESS_NAME"];
+            string companyBusinessName = _companyInformationsDto.BusinessName;// _customVars["COMPANY_BUSINESS_NAME"];
             if (string.IsNullOrEmpty(companyBusinessName)) companyBusinessName = "";
 
-            if (File.Exists(logo) && TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+            /*if (File.Exists(logo) && TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
             {
                 if (!string.IsNullOrEmpty(result))
                 {
                     logo = result;
                 }
                 _printer.PrintImage(logo);
-            }
+            }*/
 
             else if (isOrder) /* IN009055 */
             {
@@ -114,17 +129,17 @@ namespace LogicPOS.Printing.Templates
             }
             else if (printComercialName != null && !Convert.ToBoolean(printComercialName))
             {
-                _printer.WriteLine(_customVars["COMPANY_NAME"]);
+                _printer.WriteLine(_companyInformationsDto.Name);
             }
             else if (!string.IsNullOrEmpty(companyBusinessName) && companyBusinessName.Length > 20)
             {
                 _printer.WriteLine(companyBusinessName, WriteLineTextMode.DoubleHeightBold);
-                _printer.WriteLine(_customVars["COMPANY_NAME"]);
+                _printer.WriteLine(_companyInformationsDto.Name);
             }
             else
             {
                 _printer.WriteLine(companyBusinessName, WriteLineTextMode.Big);
-                _printer.WriteLine(_customVars["COMPANY_NAME"]);
+                _printer.WriteLine(_companyInformationsDto.Name);
             }
 
             //Reset to Left
@@ -192,7 +207,7 @@ namespace LogicPOS.Printing.Templates
                 _printer.SetFont(1);
 
                 //User : Terminal
-                _printer.WriteLine(string.Format("{0} - {1}", XPOSettings.LoggedUser.Name, TerminalSettings.LoggedTerminal.Designation));
+                _printer.WriteLine(string.Format("{0} - {1}", _userName, _terminalDesignation));
                 _printer.LineFeed();
 
                 //Printed On | Company|App|Version
@@ -200,9 +215,9 @@ namespace LogicPOS.Printing.Templates
                     , Environment.NewLine
                     , GeneralUtils.GetResourceByName("global_printed_on_date")
                     , XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateTimeFormat)
-                    , _customVars["APP_COMPANY"]
-                    , _customVars["APP_NAME"]
-                    , _customVars["APP_VERSION"]
+                    , "LogicPulse"//_customVars["APP_COMPANY"]
+                    , "LogicPOS"//_customVars["APP_NAME"]
+                    , "vs1.010.1"//_customVars["APP_VERSION"]
                     )
                 ); /* IN009211 */
 
@@ -217,7 +232,7 @@ namespace LogicPOS.Printing.Templates
 
                 //Finish With Cut and Print Buffer
                 //TK016249 - Impressoras - Diferenciação entre Tipos
-                _printer.Cut(true, TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalCutCommand);
+                _printer.Cut(true, _printer.CutCommand);
             }
             catch (Exception ex)
             {

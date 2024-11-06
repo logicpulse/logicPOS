@@ -151,6 +151,10 @@
     <Compile Include="XPO\Settings\XPOSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
+      <Project>{267C627F-2248-4500-9247-CE7F30431A25}</Project>
+      <Name>LogicPOS.Api</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
       <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
       <Name>LogicPOS.DTOs</Name>

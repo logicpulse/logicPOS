@@ -1,13 +1,17 @@
 ﻿using System;
 using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Documents;
 
 
 namespace LogicPOS.Printing.Templates
 {
     public class InternalDocumentTemplate : BaseInternalTemplate
     {
-        public InternalDocumentTemplate(PrinterDto printer)
-            : base(printer)
+        public InternalDocumentTemplate(PrinterDto printer,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto)
+            : base(printer, companyInformationsDto, terminalDesignation, userName)
         {
             _ticketTitle = "DYNAMIC TITLE";
         }

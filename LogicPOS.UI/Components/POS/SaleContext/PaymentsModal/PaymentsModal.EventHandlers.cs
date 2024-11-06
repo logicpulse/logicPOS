@@ -1,11 +1,21 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents.GetDocumentById;
+using LogicPOS.Api.Features.Terminals.GetTerminalById;
+using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Documents;
+using LogicPOS.Printing.Utility;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -79,7 +89,74 @@ namespace LogicPOS.UI.Components.POS
                 Run();
                 return;
             }
+            PrintDocument(addDocumentResult.Value);
         }
+
+
+
+        private void PrintDocument(Guid id)
+        {
+            var document = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetDocumentByIdQuery(id)).Result.Value;
+
+            List<int> docCopyName = new List<int>();
+            docCopyName.Add(0);
+            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
+            if (printer == null) 
+            {
+                return;
+            }
+            CompanyInformationsDto companyInformationsDto = GetCompanyInformation();
+            new ThermalPrinting(printer, companyInformationsDto, docCopyName, document, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
+        }
+
+
+        protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
+        {
+
+            if (terminal.ThermalPrinter != null)
+            {
+                return new PrinterDto()
+                {
+                    Designation = terminal.ThermalPrinter.Designation,
+                    Token = terminal.ThermalPrinter.Type.Token,
+                    IsThermal = terminal.ThermalPrinter.Type.ThermalPrinter,
+                    CutCommand = "0x42,0x00"
+                };
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        private CompanyInformationsDto GetCompanyInformation()
+        {
+            var companyInformations = new CompanyInformations();
+            return new CompanyInformationsDto()
+            {
+                Address = companyInformations.Address,
+                Name = companyInformations.Name,
+                BusinessName = companyInformations.BusinessName,
+                ComercialName = companyInformations.ComercialName,
+                City = companyInformations.City,
+                Logo = companyInformations.Logo,
+
+                Email = companyInformations.Email,
+                MobilePhone = companyInformations.MobilePhone,
+                FiscalNumber = companyInformations.FiscalNumber,
+                Phone = companyInformations.Phone,
+                StockCapital = companyInformations.StockCapital,
+                Website = companyInformations.Website,
+                DocumentFinalLine1 = companyInformations.DocumentFinalLine1,
+                DocumentFinalLine2 = companyInformations.DocumentFinalLine2,
+                TicketFinalLine1 = companyInformations.TicketFinalLine1,
+                TicketFinalLine2 = companyInformations.TicketFinalLine2,
+            };
+        }
+
+
+
+
 
         private void BtnNewCustomer_Clicked(object sender, EventArgs e)
         {

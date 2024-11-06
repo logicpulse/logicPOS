@@ -1,6 +1,8 @@
-﻿using LogicPOS.Data.XPO.Settings;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Data.XPO.Settings;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Tickets;
 using LogicPOS.Settings;
@@ -14,7 +16,7 @@ namespace LogicPOS.Printing.Templates
 {
     public abstract class BaseFinanceTemplate : Template
     {
-        protected PrintingDocumentTypeDto _documentType;
+        protected Document _document;
         protected List<int> _copyNames;
         protected string[] _copyNamesArray;
         protected bool _secondCopy;
@@ -23,11 +25,17 @@ namespace LogicPOS.Printing.Templates
 
         public BaseFinanceTemplate(
             PrinterDto printer,
-            PrintingDocumentTypeDto documentType,
+            Document document,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
             List<int> copyNames)
             : this(
                   printer,
-                  documentType,
+                  document,
+                  terminalDesignation,
+                  userName,
+                  companyInformationsDto,
                   copyNames,
                   false)
         {
@@ -35,14 +43,16 @@ namespace LogicPOS.Printing.Templates
 
         public BaseFinanceTemplate(
             PrinterDto printer,
-            PrintingDocumentTypeDto documentType,
+            Document document,
+            string terminalDesignation,
+            string userName,
+            CompanyInformationsDto companyInformationsDto,
             List<int> copiesNumbers,
             bool isSecondCopy)
             : base(
-                  printer,
-                  PrintingSettings.ThermalPrinter.CompanyLogoLocation)
+                  printer, terminalDesignation, userName,  companyInformationsDto)
         {
-            _documentType = documentType;
+            _document = document;
             _copyNames = copiesNumbers;
             _secondCopy = isSecondCopy;
 
@@ -137,12 +147,12 @@ namespace LogicPOS.Printing.Templates
             string name = pName;
 
             /* IN009055: pFiscalNumber real value is overwritten by GetFRBOFinancePayment(Guid pDocumentFinancePaymentOid) method */
-            if (SaftSettings.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SaftSettings.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
+            /*if (SaftSettings.FinanceFinalConsumerFiscalNumberDisplay.Equals(pFiscalNumber) || SaftSettings.FinanceFinalConsumerFiscalNumber.Equals(pFiscalNumber))
             {
                 //fiscalNumber = SettingsApp.FinanceFinalConsumerFiscalNumberDisplay;
-                fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary */
+                fiscalNumber = string.Empty; /* show the Fical Number display value is not necessary *
                 name = GeneralUtils.GetResourceByName("global_final_consumer");
-            }
+            }*/
 
             /* IN009055 block - begin */
             _printer.WriteLine(GeneralUtils.GetResourceByName("global_customer"), name, false);
@@ -365,7 +375,7 @@ namespace LogicPOS.Printing.Templates
             if (CultureSettings.PortugalCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
-                string prefix = (_documentType.IsSaftDocumentTypePayments)
+                string prefix = (_document.IsInformative())
                     ? GeneralUtils.GetResourceByName("global_report_overlay_software_certification_emitted")
                     : GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed")
                 ;
@@ -435,7 +445,7 @@ namespace LogicPOS.Printing.Templates
         }
 
         //UTILS
-        public string GetQrCode(System.Drawing.Bitmap QRCode)
+      /*  public string GetQrCode(System.Drawing.Bitmap QRCode)
         {
             //int widthBMP = 113;
             //int heightBMP = 113;
@@ -539,6 +549,6 @@ namespace LogicPOS.Printing.Templates
                     Width = bitmap.Width
                 };
             }
-        }
+        }*/
     }
 }

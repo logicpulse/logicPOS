@@ -1,5 +1,5 @@
 ﻿using LogicPOS.DTOs.Printing;
-using LogicPOS.Settings;
+using LogicPOS.Printing.Documents;
 using LogicPOS.Utility;
 using System;
 
@@ -7,10 +7,19 @@ namespace LogicPOS.Printing.Templates
 {
     public abstract class BaseInternalTemplate : Template
     {
-        public BaseInternalTemplate(PrinterDto printer)
+
+
+        public BaseInternalTemplate(PrinterDto printer, string terminalDesignation)
+    : base(
+          printer, terminalDesignation)
+        {
+        }
+
+
+        public BaseInternalTemplate(PrinterDto printer, CompanyInformationsDto companyInformationsDto, string terminalDesignation, string userName)
             : base(
                   printer,
-                  PrintingSettings.ThermalPrinter.CompanyLogoLocation)
+                  terminalDesignation,userName, companyInformationsDto)
         {
         }
 
@@ -21,7 +30,7 @@ namespace LogicPOS.Printing.Templates
             try
             {
                 //Call Base Template PrintHeader
-                PrintHeader(true); /* IN009055 - when is Order, true */
+                //PrintHeader(true); /* IN009055 - when is Order, true */
 
                 //Call Child Content (Overrided)
                 PrintContent();
