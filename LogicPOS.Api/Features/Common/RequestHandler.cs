@@ -21,7 +21,7 @@ namespace LogicPOS.Api.Features.Common
             _httpClient = factory.CreateClient("Default");
             if (AuthenticationData.Token != null)
             {
-                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {AuthenticationData.Token}");
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationData.Token);
             }
         }
 

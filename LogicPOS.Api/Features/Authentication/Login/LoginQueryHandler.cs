@@ -26,7 +26,7 @@ namespace LogicPOS.Api.Features.Authentication.Login
                     return Error.Unauthorized();
                 }
 
-                return await response.Content.ReadAsStringAsync();
+                return (await response.Content.ReadAsStringAsync()).Trim('"');
             }
             catch (HttpRequestException)
             {
