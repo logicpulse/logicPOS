@@ -2,6 +2,7 @@
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -233,7 +234,7 @@ namespace logicpos
                 catch (Exception ex)
                 {
                     log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LogicPOSAppContext.StartupWindow, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LoginWindow.Instance, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
                 }
 
                 int posMainWindowComponentsMargin = AppSettings.Instance.intPosMainWindowComponentsMargin;

@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             LabelTerminalInfo.Text = $"{TerminalService.CurrentTerminal.Designation} : {AuthenticationService.User.Name}";
             Menu.UpdateMenuPrivileges();
             string currentNodePrivilegesToken = string.Format(_privilegesBackOfficeMenuOperation, Menu.CurrentPageChildButton.Name.ToUpper());
-            CurrentPage.Sensitive = GeneralSettings.LoggedUserHasPermissionTo(currentNodePrivilegesToken);
+            CurrentPage.Sensitive = AuthenticationService.UserHasPermission(currentNodePrivilegesToken);
         }
 
 

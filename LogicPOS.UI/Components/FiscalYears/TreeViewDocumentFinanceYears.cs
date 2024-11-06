@@ -9,6 +9,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             if (currentDocumentFinanceYear != null)
             {
                 ResponseType responseType = logicpos.Utils.ShowMessageBox(
-                    LogicPOSAppContext.StartupWindow,
+                    LoginWindow.Instance,
                     DialogFlags.Modal,
                     new Size(600, 400),
                     MessageType.Question,

@@ -9,14 +9,15 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
 
 namespace LogicPOS.UI.Components.Windows
 {
-    public partial class StartupWindow
+    public partial class LoginWindow
     {
-        private void ButtonKeyOK_Clicked(object sender, EventArgs e)
+        private void BtnOK_Clicked(object sender, EventArgs e)
         {
             PinPanel.ProcessPassword(this, UsersMenu.SelectedUser);
         }
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Components.Windows
             Utils.ShowBackOffice(this);
         }
 
-        private void UserSelected(UserDetail user)
+        private void OnUserSelected(UserDetail user)
         {
             PinPanel.Mode = (user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
@@ -69,28 +70,16 @@ namespace LogicPOS.UI.Components.Windows
             PinPanel.EntryPin.GrabFocus();
         }
 
-        public void LogOutUser(bool pShowStartup)
+        public void LogOutUser(bool showLoginWindow = true)
         {
-            LogOutUser(pShowStartup, XPOSettings.LoggedUser);
+            AuthenticationService.LogoutUser();
+
+            if (showLoginWindow) LoginWindow.Instance.ShowAll();
         }
 
-        public void LogOutUser(bool pGotoStartupWindow, sys_userdetail pUserDetail)
+        private void ButtonDeveloper_Clicked(object sender, EventArgs e)
         {
-            if (
-                POSSession.CurrentSession.LoggedUsers.ContainsKey(pUserDetail.Oid))
-            {
-                POSSession.CurrentSession.LoggedUsers.Remove(pUserDetail.Oid);
-                POSSession.CurrentSession.Save();
-                XPOUtility.Audit("USER_logout", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_user_logout"), pUserDetail.Name));
- 
-                if (XPOSettings.LoggedUser.Equals(pUserDetail))
-                {
-                    XPOSettings.LoggedUser = null;
-                    GeneralSettings.LoggedUserPermissions = null;
-                }
-            }
 
-            if (pGotoStartupWindow) LogicPOSAppContext.StartupWindow.ShowAll();
         }
     }
 }

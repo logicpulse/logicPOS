@@ -47,12 +47,12 @@ namespace LogicPOS.UI.Components
         private Label LabelTotal { get; set; }
         private Label LabelTotalLabel { get; set; }
 
-        public POSMainWindow POSWindow { get; }
+        public POSWindow POSWindow { get; }
         public ListStore ListStore { get; set; }
         internal TicketListMode ListMode { get; set; } = TicketListMode.Ticket;
 
         public TicketList(
-            POSMainWindow posWIndow,
+            POSWindow posWIndow,
             dynamic theme)
         {
             POSWindow = posWIndow;

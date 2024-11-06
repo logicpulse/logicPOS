@@ -19,6 +19,7 @@ using LogicPOS.Printing.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -874,7 +875,7 @@ namespace LogicPOS.UI
             {
                 string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), message);
+                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), message);
             }
 
             return result;

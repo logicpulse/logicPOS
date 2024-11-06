@@ -2,7 +2,6 @@
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
@@ -12,8 +11,7 @@ namespace LogicPOS.UI.Application
 {
     public static class LogicPOSAppContext
     {
-        public static StartupWindow StartupWindow { get; set; }
-        public static POSMainWindow PosMainWindow { get; set; }
+        public static POSWindow PosMainWindow { get; set; }
         public static BackOfficeWindow BackOffice { get; set; }
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }

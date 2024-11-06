@@ -18,32 +18,34 @@ using Image = Gtk.Image;
 
 namespace LogicPOS.UI.Components.Windows
 {
-    public partial class StartupWindow : POSWindow
+    public partial class LoginWindow : POSBaseWindow
     {
+        public static LoginWindow Instance { get; set; }
         private NumberPadPin PinPanel { get; set; }
         public UsersMenu UsersMenu { get; set; }
 
-        public StartupWindow(
+        public LoginWindow(
             string backgroundImage,
             bool needToUpdate)
             : base(backgroundImage)
         {
             InitializeUI();
 
-            //InitPlataform
             InitPlataformParameters();
 
-            //show changelog
             if (needToUpdate)
             {
                 Utils.ShowChangeLog(this);
             }
 
-            //Show Notifications to all users after Show UI, here we dont have a logged user Yet
             Utils.ShowNotifications(this);
 
-            //Events
             this.KeyReleaseEvent += StartupWindow_KeyReleaseEvent;
+
+            if (UsersMenu.SelectedUser != null)
+            {
+                OnUserSelected(UsersMenu.SelectedUser);
+            }
         }
 
         private void InitPlataformParameters()
@@ -124,7 +126,7 @@ namespace LogicPOS.UI.Components.Windows
                 System.Drawing.Point tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
                 System.Drawing.Size tablePadUserButtonSize = (theme.Objects.TablePadUser.ButtonSize as string).ToSize();
                 TableConfig tablePadUserTableConfig = Utils.StringToTableConfig(theme.Objects.TablePadUser.TableConfig);
-                bool tablePadUserVisible = Convert.ToBoolean(theme.Objects.TablePadUser.Visible);
+                bool showUsersMenu = Convert.ToBoolean(theme.Objects.TablePadUser.Visible);
 
                 //Init UI
                 Fixed fix = new Fixed();
@@ -164,7 +166,7 @@ namespace LogicPOS.UI.Components.Windows
                 //Over NumberPadPin
                 //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                 //Events
-                PinPanel.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
+                PinPanel.ButtonKeyOK.Clicked += BtnOK_Clicked;
                 PinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
                 PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
                 PinPanel.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
@@ -201,10 +203,9 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.CanFocus = false;
 
                 UsersMenu = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
-                UsersMenu.OnUserSelected += UserSelected;
+                UsersMenu.OnUserSelected += OnUserSelected;
 
-                //Put in Fix
-                if (tablePadUserVisible)
+                if (showUsersMenu)
                 {
                     fix.Put(tablePadUserButtonPrev, tablePadUserButtonPrevPosition.X, tablePadUserButtonPrevPosition.Y);
                     fix.Put(tablePadUserButtonNext, tablePadUserButtonNextPosition.X, tablePadUserButtonNextPosition.Y);
@@ -284,11 +285,6 @@ namespace LogicPOS.UI.Components.Windows
             {
                 Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
             }
-        }
-
-        private void ButtonDeveloper_Clicked(object sender, EventArgs e)
-        {
-          
         }
     }
 }

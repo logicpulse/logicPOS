@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Application
             {
                 _logger.Error(ex.Message, ex);
                 Utils.ShowMessageBox(
-                    LogicPOSAppContext.StartupWindow,
+                    LoginWindow.Instance,
                     DialogFlags.Modal,
                     new Size(500, 240),
                     MessageType.Error,
@@ -164,7 +164,7 @@ namespace LogicPOS.UI.Application
                 /* IN009034 */
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
+                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
                 throw; // TO DO
             }
 
@@ -179,7 +179,7 @@ namespace LogicPOS.UI.Application
                     LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                     string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                    Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(endMessage, Environment.NewLine));
+                    Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(endMessage, Environment.NewLine));
                     Environment.Exit(0);
                 }
             }
@@ -208,7 +208,7 @@ namespace LogicPOS.UI.Application
                 string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                 _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
 
-                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), string.Format(endMessage, Environment.NewLine));
+                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), string.Format(endMessage, Environment.NewLine));
                 Environment.Exit(0);
             }
 
@@ -276,7 +276,7 @@ namespace LogicPOS.UI.Application
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 _logger.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
-                Utils.ShowMessageTouchErrorRenderTheme(LogicPOSAppContext.StartupWindow, ex.Message);
+                Utils.ShowMessageTouchErrorRenderTheme(LoginWindow.Instance, ex.Message);
             }
 
             FastReportUtils.InitializeFastReports(LogicPOSSettings.AppName);
@@ -324,7 +324,7 @@ namespace LogicPOS.UI.Application
 
                 _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
                 Utils.ShowMessageBox(
-                    LogicPOSAppContext.StartupWindow,
+                    LoginWindow.Instance,
                     DialogFlags.Modal,
                     new Size(650, 380),
                     MessageType.Error,
@@ -389,7 +389,7 @@ namespace LogicPOS.UI.Application
 
             if (backupsFolderExists == false)
             {
-                ResponseType response = Utils.ShowMessageTouch(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
+                ResponseType response = Utils.ShowMessageTouch(LoginWindow.Instance, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -429,7 +429,7 @@ namespace LogicPOS.UI.Application
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
+                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
                 Environment.Exit(0);
             }
             else
@@ -455,7 +455,7 @@ namespace LogicPOS.UI.Application
                     if (!LogicPOSSettings.ProtectedFilesIgnoreProtection)
                     {
                         Utils.ShowMessageBox(
-                            LogicPOSAppContext.StartupWindow,
+                            LoginWindow.Instance,
                             DialogFlags.Modal,
                             new Size(800, 400),
                             MessageType.Error,
@@ -513,7 +513,7 @@ namespace LogicPOS.UI.Application
                 _logger.Debug("Init windowImageFileName ");
                 string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
                 _logger.Debug("StartupWindow " + windowImageFileName);
-                LogicPOSAppContext.StartupWindow = new StartupWindow(windowImageFileName, _needToUpdate);
+                LoginWindow.Instance = new LoginWindow(windowImageFileName, _needToUpdate);
 
             };
         }

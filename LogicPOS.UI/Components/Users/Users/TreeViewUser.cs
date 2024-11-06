@@ -6,6 +6,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
+using LogicPOS.UI.Components.Windows;
 using System;
 using System.Collections.Generic;
 
@@ -71,9 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
         //LogOff User Before Delete
         private void TreeView_RecordBeforeDelete(object sender, EventArgs e)
         {
-            sys_userdetail userDetail = (Entity as sys_userdetail);
-            //If User deleted Force Logout in Sytem
-            LogicPOSAppContext.StartupWindow.LogOutUser(false, userDetail);
+            LoginWindow.Instance.LogOutUser(false);
         }
     }
 }

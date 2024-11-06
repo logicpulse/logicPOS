@@ -954,7 +954,7 @@ namespace logicpos
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                 string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, GeneralUtils.GetResourceByName("global_treeview_true"));
-                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(LogicPOSAppContext.StartupWindow, screenSize.Width, screenSize.Height);
+                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(LoginWindow.Instance, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -1208,7 +1208,7 @@ namespace logicpos
 
                 CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
                 string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
-                LogicPOSAppContext.PosMainWindow = new POSMainWindow(windowImageFileName);
+                LogicPOSAppContext.PosMainWindow = new POSWindow(windowImageFileName);
             }
             else
             {

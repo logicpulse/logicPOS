@@ -11,6 +11,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
 
 namespace logicpos.Classes.Gui.Gtk.BackOffice
 {
@@ -250,7 +251,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
             //Detected Change in User Disabled: If user was Disabled, Force Logout User
             if (!_isLoggedUser && _currentUserDisabled && !_userDetail.Disabled)
             {
-                LogicPOSAppContext.StartupWindow.LogOutUser(false, _userDetail);
+                LoginWindow.Instance.LogOutUser(false);
             }
         }
 
@@ -266,7 +267,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                 _userDetail.PasswordReset = false;
                 _userDetail.PasswordResetDate = XPOUtility.CurrentDateTimeAtomic();
                 //Force LogOut User
-                LogicPOSAppContext.StartupWindow.LogOutUser(false, _userDetail);
+                LoginWindow.Instance.LogOutUser(false);
             }
             catch (Exception ex)
             {

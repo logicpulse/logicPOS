@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.POS
         public static Table CurrentTable { get; private set; }
         public static PosOrder CurrentOrder { get; private set; }
         public static List<PosOrder> Orders { get; private set; } = new List<PosOrder>();
-        public static POSMainWindow POSWindow { get; private set; }
+        public static POSWindow POSWindow { get; private set; }
        
         public static void SetCurrentTable(Table table)
         {
@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        public static void Initialize(POSMainWindow posWindow)
+        public static void Initialize(POSWindow posWindow)
         {
             POSWindow = posWindow;
             if (CurrentTable == null)

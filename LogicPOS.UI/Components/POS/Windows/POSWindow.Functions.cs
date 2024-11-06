@@ -20,7 +20,7 @@ using System;
 
 namespace LogicPOS.UI.Components.Windows
 {
-    public partial class POSMainWindow
+    public partial class POSWindow
     {
         private Guid TableId = Guid.Empty;
 
@@ -63,7 +63,7 @@ namespace LogicPOS.UI.Components.Windows
         private void BtnLogOut_Clicked(object sender, EventArgs e)
         {
             Hide();
-            LogicPOSAppContext.StartupWindow.LogOutUser(true);
+            LoginWindow.Instance.LogOutUser(true);
         }
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
@@ -152,34 +152,30 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
         {
-            if (TerminalSettings.HasLoggedTerminal)
+            PosPinPadDialog dialogPinPad = new PosPinPadDialog(this,
+                                                               DialogFlags.Modal,
+                                                               null, //tchial0
+                                                               true);
+            int responsePinPad = dialogPinPad.Run();
+            if (responsePinPad == (int)ResponseType.Ok)
             {
-                PosPinPadDialog dialogPinPad = new PosPinPadDialog(this,
-                                                                   DialogFlags.Modal,
-                                                                   null, //tchial0
-                                                                   true);
-                int responsePinPad = dialogPinPad.Run();
-                if (responsePinPad == (int)ResponseType.Ok)
+                var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
+                if (!resultOpenDoor)
                 {
-                    var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
-                    if (!resultOpenDoor)
-                    {
-                        Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
-                    }
-                    else
-                    {
-                        XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
-                             GeneralUtils.GetResourceByName("audit_message_cashdrawer_out"),
-                             TerminalSettings.LoggedTerminal.Designation,
-                             "Button Open Door"));
-                    }
+                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
+                }
+                else
+                {
+                    XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
+                         GeneralUtils.GetResourceByName("audit_message_cashdrawer_out"),
+                         TerminalSettings.LoggedTerminal.Designation,
+                         "Button Open Door"));
+                }
 
-                };
+            };
 
-                dialogPinPad.Destroy();
+            dialogPinPad.Destroy();
 
-
-            }
         }
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)

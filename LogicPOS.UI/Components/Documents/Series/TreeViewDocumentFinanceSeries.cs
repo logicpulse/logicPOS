@@ -12,6 +12,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -181,7 +182,7 @@ namespace logicpos.Classes.Gui.Gtk.BackOffice
                     if (resultAcronym.ResponseType == ResponseType.Ok && sqlCheckExistingSeriesResultInt > 0)
                     {
                         responseType = logicpos.Utils.ShowMessageTouch(
-                            LogicPOSAppContext.StartupWindow,
+                            LoginWindow.Instance,
                             DialogFlags.Modal,
                             MessageType.Question,
                             ButtonsType.YesNo,

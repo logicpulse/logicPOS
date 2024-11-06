@@ -13,6 +13,7 @@ using LogicPOS.Modules.StockManagement;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Windows;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -418,7 +419,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageBox(LogicPOSAppContext.StartupWindow, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+                logicpos.Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
                 result = false;
             }
 

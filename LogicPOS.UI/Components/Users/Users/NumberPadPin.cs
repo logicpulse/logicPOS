@@ -6,6 +6,7 @@ using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Authentication.Login;
+using LogicPOS.Api.Features.Users.ResetPassword;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -27,10 +28,11 @@ namespace LogicPOS.UI.Widgets
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         protected Gtk.Table _table;
-        private readonly Window _sourceWindow;
+        private Window SourceWindow { get; }
         private int _tempCursorPosition = 0;
         private bool _entryPinShowStatus = false;
         private readonly Label _labelStatus;
+        private string _oldPassword;
         private string _newPassword;
         private bool _notLoginAuth;
 
@@ -73,7 +75,7 @@ namespace LogicPOS.UI.Widgets
                             uint pRowSpacingSystemButtons = 40,
                             byte pPadding = 3)
         {
-            _sourceWindow = parentWindow;
+            SourceWindow = parentWindow;
             Name = pName;
             _notLoginAuth = pNotLoginAuth;
             //Show or Hide System Buttons (Startup Visible, Pos Change User Invisible)
@@ -117,8 +119,8 @@ namespace LogicPOS.UI.Widgets
             //Start Validated
             EntryPin.Validate();
             //Event
-            EntryPin.Changed += _entryPin_Changed;
-            EntryPin.KeyReleaseEvent += _entryPin_KeyReleaseEvent;
+            EntryPin.Changed += TxtPin_Changed;
+            EntryPin.KeyReleaseEvent += TxtPin_KeyReleaseEvent;
 
             //Label Status
             _labelStatus = new Label(GeneralUtils.GetResourceByName("pos_pinpad_message_type_password"));
@@ -219,7 +221,7 @@ namespace LogicPOS.UI.Widgets
             buttonKey8.Clicked += buttonKey_Clicked;
             buttonKey9.Clicked += buttonKey_Clicked;
             buttonKey0.Clicked += buttonKey_Clicked;
-            buttonKeyCE.Clicked += buttonKeyCE_Clicked;
+            buttonKeyCE.Clicked += BtnCE_Clicked;
 
             //Prepare Table
 
@@ -281,7 +283,7 @@ namespace LogicPOS.UI.Widgets
             }
         }
 
-        private void _entryPin_Changed(object sender, EventArgs e)
+        private void TxtPin_Changed(object sender, EventArgs e)
         {
             ValidatableTextBox entry = (ValidatableTextBox)sender;
             ClearEntryPinStatusMessage();
@@ -298,7 +300,7 @@ namespace LogicPOS.UI.Widgets
             EntryPin.Position = EntryPin.Text.Length;
         }
 
-        private void buttonKeyCE_Clicked(object sender, EventArgs e)
+        private void BtnCE_Clicked(object sender, EventArgs e)
         {
             ClearEntryPinStatusMessage();
             //_entryPin.DeleteText(0, _entryPin.Text.Length);
@@ -308,7 +310,7 @@ namespace LogicPOS.UI.Widgets
             EntryPin.Position = EntryPin.Text.Length;
         }
 
-        private void _entryPin_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void TxtPin_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
@@ -341,12 +343,13 @@ namespace LogicPOS.UI.Widgets
                 case NumberPadPinMode.PasswordOld:
                     if (ValidatePassword(user))
                     {
+                        _oldPassword = EntryPin.Text;
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
                     }
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    if (Login(user.Id, EntryPin.Text).IsError == false)
+                    if (EntryPin.Text == _oldPassword)
                     {
                         ResponseType response = Utils.ShowMessageTouch(parentWindow,
                                                                        DialogFlags.Modal,
@@ -366,22 +369,21 @@ namespace LogicPOS.UI.Widgets
                 case NumberPadPinMode.PasswordNewConfirm:
                     if (_newPassword == EntryPin.Text)
                     {
-                        user.AccessPin = CryptographyUtils.GenerateSaltedString(_newPassword);
-                        user.PasswordReset = false;
-                        user.PasswordResetDate = XPOUtility.CurrentDateTimeAtomic();
+                        ChangePassword(user.Id, _oldPassword, _newPassword);
 
-                        ResponseType response = Utils.ShowMessageTouch(parentWindow,
-                                                                           DialogFlags.Modal,
-                                                                           MessageType.Info,
-                                                                           ButtonsType.Ok,
-                                                                           GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
-                                                                           GeneralUtils.GetResourceByName("pos_pinpad_message_password_changed"));
+                        Utils.ShowMessageTouch(parentWindow,
+                                               DialogFlags.Modal,
+                                               MessageType.Info,
+                                               ButtonsType.Ok,
+                                               GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
+                                               GeneralUtils.GetResourceByName("pos_pinpad_message_password_changed"));
+
                         ProcessLogin(user);
                         result = true;
                     }
                     else
                     {
-                        ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
+                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
                         ClearEntryPinStatusMessage(true);
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
@@ -424,7 +426,7 @@ namespace LogicPOS.UI.Widgets
             {
                 if (loginResult.FirstError == ApiErrors.CommunicationError)
                 {
-                    SimpleAlerts.ShowApiErrorAlert(_sourceWindow, loginResult.FirstError);
+                    SimpleAlerts.ShowApiErrorAlert(SourceWindow, loginResult.FirstError);
                     return false;
                 }
 
@@ -488,12 +490,27 @@ namespace LogicPOS.UI.Widgets
 
             if (GeneralSettings.AppUseBackOfficeMode)
             {
-                Utils.ShowBackOffice(_sourceWindow);
+                Utils.ShowBackOffice(SourceWindow);
             }
             else
             {
-                Utils.ShowFrontOffice(_sourceWindow);
+                Utils.ShowFrontOffice(SourceWindow);
             }
+        }
+
+        private bool ChangePassword(Guid userId,
+                                    string oldPassword,
+                                    string newPassword)
+        {
+            var changePasswordResult = _mediator.Send(new ResetPasswordCommand(userId, oldPassword, newPassword)).Result;
+
+            if (changePasswordResult.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(SourceWindow, changePasswordResult.FirstError);
+                return false;
+            }
+
+            return true;
         }
     }
 }
