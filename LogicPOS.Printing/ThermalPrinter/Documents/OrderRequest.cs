@@ -20,7 +20,7 @@ namespace LogicPOS.Printing.Documents
             PrintOrderTicketDto orderTicket,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto)
+            CompanyPrintingInformationsDto companyInformationsDto)
             : this(
                   printer,
                   orderTicket, 
@@ -42,7 +42,7 @@ namespace LogicPOS.Printing.Documents
             PrintOrderTicketDto orderTicket,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             bool articlePrinterEnabled)
             : base(printer, companyInformationsDto, terminalDesignation, userName)
         {

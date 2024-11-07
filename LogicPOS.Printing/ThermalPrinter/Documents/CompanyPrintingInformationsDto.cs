@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.Printing.Documents
 {
-    public class CompanyInformationsDto
+    public class CompanyPrintingInformationsDto
     {
         public string Name { get; set; }
         public string BusinessName { get; set; }

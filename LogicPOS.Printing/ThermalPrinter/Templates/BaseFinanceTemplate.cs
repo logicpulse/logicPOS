@@ -28,7 +28,7 @@ namespace LogicPOS.Printing.Templates
             Document document,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             List<int> copyNames)
             : this(
                   printer,
@@ -46,7 +46,7 @@ namespace LogicPOS.Printing.Templates
             Document document,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             List<int> copiesNumbers,
             bool isSecondCopy)
             : base(

@@ -8,6 +8,7 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LogicPOS.Printing.Templates
 {
@@ -18,7 +19,7 @@ namespace LogicPOS.Printing.Templates
         protected int _maxCharsPerLineNormal = 0;
         protected int _maxCharsPerLineNormalBold = 0;
         protected int _maxCharsPerLineSmall = 0;
-        protected CompanyInformationsDto _companyInformationsDto;
+        protected CompanyPrintingInformationsDto _companyInformationsDto;
         protected string _ticketTitle = string.Empty;
         protected string _ticketSubTitle = string.Empty;
         protected string _userName = string.Empty;
@@ -38,7 +39,7 @@ namespace LogicPOS.Printing.Templates
         PrinterDto printer,
         string terminalDesignation,
         string userName,
-        CompanyInformationsDto pCompanyInformationsDtos)
+        CompanyPrintingInformationsDto pCompanyInformationsDtos)
         {
             try
             {
@@ -105,23 +106,24 @@ namespace LogicPOS.Printing.Templates
                 _companyInformationsDto
             );
 
-            sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_PRINT_COMERCIAL_NAME';";
             var printComercialName = _companyInformationsDto.ComercialName;
 
             //Print Logo or Name + BusinessName
             //TK016249 - Impressoras - Diferenciação entre Tipos
 
             string companyBusinessName = _companyInformationsDto.BusinessName;// _customVars["COMPANY_BUSINESS_NAME"];
-            if (string.IsNullOrEmpty(companyBusinessName)) companyBusinessName = "";
-
-            /*if (File.Exists(logo) && TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+            if (string.IsNullOrEmpty(companyBusinessName))
+            {
+                companyBusinessName = _companyInformationsDto.Name;
+            }
+            if (File.Exists(logo) )//&& TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
             {
                 if (!string.IsNullOrEmpty(result))
                 {
                     logo = result;
                 }
                 _printer.PrintImage(logo);
-            }*/
+            }
 
             else if (isOrder) /* IN009055 */
             {

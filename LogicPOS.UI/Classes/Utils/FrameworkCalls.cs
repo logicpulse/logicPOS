@@ -460,7 +460,7 @@ namespace LogicPOS.UI
             Window sourceWindow,
             sys_configurationprinters pPrinter,
             fin_documentfinancemaster financeMaster,
-            string terminalDesignation, string userName, CompanyInformationsDto companyInformationsDto)
+            string terminalDesignation, string userName, CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result = false;
             bool openDrawer = false;
@@ -620,7 +620,7 @@ namespace LogicPOS.UI
             PrinterDto printer,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             Document pDocumentFinancePayment)
         {
             bool result = false;
@@ -750,7 +750,7 @@ namespace LogicPOS.UI
         //PrintTableTicket
 
         public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket, 
-                                            string terminalDesignation, CompanyInformationsDto companyInformationsDto)
+                                            string terminalDesignation, CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result = false;
 
@@ -777,7 +777,7 @@ namespace LogicPOS.UI
         //PrintArticleRequest
 
         public static bool PrintArticleRequest(Window parentWindow, fin_documentorderticket orderTicket, 
-            string terminalDesignation, string userName, CompanyInformationsDto companyInformationsDto)
+            string terminalDesignation, string userName, CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result = false;
 

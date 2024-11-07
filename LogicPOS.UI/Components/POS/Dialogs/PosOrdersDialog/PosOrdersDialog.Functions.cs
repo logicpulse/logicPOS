@@ -33,7 +33,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             /*public string terminalDesignation { get; set; }
             public string userName { get; set; }
-            public CompanyInformationsDto companyInformationsDto { get; set; }*/
+            public CompanyPrintingInformationsDto companyInformationsDto { get; set; }*/
 
         //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
         fin_documentfinancemaster lastDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);

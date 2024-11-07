@@ -1159,7 +1159,7 @@ namespace LogicPOS.Printing.Utility
             PrinterDto printer,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             Document financeMasterDto,
             List<int> copyNumbers,
             bool secondCopy,
@@ -1283,7 +1283,7 @@ namespace LogicPOS.Printing.Utility
             PrinterDto printer,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             Document pDocumentFinancePayment)
         {
             bool result = false;
@@ -1389,7 +1389,7 @@ namespace LogicPOS.Printing.Utility
         public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto, 
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformationsDto)
+            CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result;
 

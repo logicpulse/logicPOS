@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
-using LogicPOS.Api.Features.Terminals.GetTerminalById;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Utility;
@@ -96,16 +96,20 @@ namespace LogicPOS.UI.Components.POS
 
         private void PrintDocument(Guid id)
         {
-            var document = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetDocumentByIdQuery(id)).Result.Value;
-
+            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetDocumentByIdQuery(id)).Result;
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+            }
+            var document = result.Value;
             List<int> docCopyName = new List<int>();
             docCopyName.Add(0);
             PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if (printer == null) 
+            if (printer == null)
             {
                 return;
             }
-            CompanyInformationsDto companyInformationsDto = GetCompanyInformation();
+            CompanyPrintingInformationsDto companyInformationsDto = GetCompanyPrintingInformation();
             new ThermalPrinting(printer, companyInformationsDto, docCopyName, document, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
         }
 
@@ -129,18 +133,22 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        private CompanyInformationsDto GetCompanyInformation()
+        private CompanyPrintingInformationsDto GetCompanyPrintingInformation()
         {
-            var companyInformations = new CompanyInformations();
-            return new CompanyInformationsDto()
+            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
+            if (result.IsError)
+            {
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+            }
+            var companyInformations = result.Value;
+            return new CompanyPrintingInformationsDto()
             {
                 Address = companyInformations.Address,
                 Name = companyInformations.Name,
-                BusinessName = companyInformations.BusinessName,
+                BusinessName = companyInformations.BussinessName,
                 ComercialName = companyInformations.ComercialName,
                 City = companyInformations.City,
-                Logo = companyInformations.Logo,
-
+                Logo = companyInformations.LogoBmp,
                 Email = companyInformations.Email,
                 MobilePhone = companyInformations.MobilePhone,
                 FiscalNumber = companyInformations.FiscalNumber,
@@ -192,7 +200,7 @@ namespace LogicPOS.UI.Components.POS
 
             UpdateTotals();
         }
-        
+
         private void BtnClearCustomer_Clicked(object sender, EventArgs e)
         {
             Clear();

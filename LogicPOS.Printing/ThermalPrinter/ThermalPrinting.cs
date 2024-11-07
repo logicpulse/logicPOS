@@ -15,10 +15,10 @@ namespace LogicPOS.Printing.Utility
         PrintOrderTicketDto OrderTicketDto;
         protected string TerminalDesignation { get; set; }
         protected string UserName { get; set; }
-        protected readonly CompanyInformationsDto CompanyInformationsDto;
+        protected readonly CompanyPrintingInformationsDto CompanyInformationsDto;
         protected readonly Document DocumentMaster;
 
-        public ThermalPrinting(PrinterDto printerDto,CompanyInformationsDto companyInformationsDto, List<int> docCopyName, Document documentMaster, string terminalDesignation, string userDesignation)
+        public ThermalPrinting(PrinterDto printerDto,CompanyPrintingInformationsDto companyInformationsDto, List<int> docCopyName, Document documentMaster, string terminalDesignation, string userDesignation)
         {
             PrinterDto = printerDto;
             DocCopyName = docCopyName;
@@ -29,7 +29,7 @@ namespace LogicPOS.Printing.Utility
             PrintInvoice();
         }  
         
-        public ThermalPrinting(PrinterDto printerDto, CompanyInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userDesignation)
+        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userDesignation)
         {
             PrinterDto = printerDto;
             CompanyInformationsDto = companyInformationsDto;

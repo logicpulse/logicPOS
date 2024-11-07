@@ -16,7 +16,7 @@ namespace LogicPOS.Printing.Templates
         }
 
 
-        public BaseInternalTemplate(PrinterDto printer, CompanyInformationsDto companyInformationsDto, string terminalDesignation, string userName)
+        public BaseInternalTemplate(PrinterDto printer, CompanyPrintingInformationsDto companyInformationsDto, string terminalDesignation, string userName)
             : base(
                   printer,
                   terminalDesignation,userName, companyInformationsDto)

@@ -23,7 +23,7 @@ namespace LogicPOS.Printing.Documents
             Document document,
             string terminalDesignation,
             string userName,
-            CompanyInformationsDto companyInformations,
+            CompanyPrintingInformationsDto companyInformations,
             List<int> copyNumbers,
             bool secondCopy,
             List<FinancePaymentViewReportDataDto> financePaymentViewReportDtos)

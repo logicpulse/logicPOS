@@ -25,14 +25,13 @@ namespace LogicPOS.Printing.Documents
         private readonly Document _documentMaster;//readonly PrintDocumentMasterDto _documentMaster;
         private readonly List<FinanceMasterViewReportDataDto> _financeMasterViewReportsDtos;
         private readonly List<DocumentDetail> _documentDetails;
-        private readonly CompanyInformationsDto _companyInformationsDto;
 
         public FinanceMaster(
             PrinterDto printer,
             string terminalDesignation,
             string userName,
             Document documentMaster,
-            CompanyInformationsDto companyInformationsDto,
+            CompanyPrintingInformationsDto companyInformationsDto,
             List<int> copyNames,
             bool isSecondCopy,
             string motive
@@ -94,13 +93,13 @@ namespace LogicPOS.Printing.Documents
                 }
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                 //Print QRCode
-                /*if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.ATDocCodeID))
+                if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.Number))
                 {
                     //PrintQRCode with buffer
                     //base.PrintQRCode(_documentMaster.ATDocQRCode);
 
                     //PrintQRCode with image
-                    var qrCode = new QrCode(_documentMaster.ATDocCodeID, new Vector2Slim(256, 256), SKEncodedImageFormat.Png);
+                    var qrCode = new QrCode(_documentMaster.Number, new Vector2Slim(256, 256), SKEncodedImageFormat.Png);
                     using (var output = new FileStream(@"temp/qrcode.Png", FileMode.OpenOrCreate))
                     {
                         qrCode.GenerateImage(output);
@@ -111,7 +110,7 @@ namespace LogicPOS.Printing.Documents
                     }
 
                     PrintQRCodeImage(new System.Drawing.Bitmap(@"temp/qrcode.Bmp"));
-                }*/
+                }
             }
 
 
@@ -297,7 +296,7 @@ namespace LogicPOS.Printing.Documents
             dataTable.Rows.Add(dataRow);
 
             //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
-            if (_documentMaster.Type == "FS"
+            if ((_documentMaster.Type == "FS" || _documentMaster.Type == "FR")
                 && _documentMaster.PaymentMethod.Token == "MONEY"
                 && _documentMaster.TotalChange > 0
                 )

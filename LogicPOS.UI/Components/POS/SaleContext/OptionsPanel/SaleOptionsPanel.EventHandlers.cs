@@ -3,6 +3,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
+using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -129,6 +130,19 @@ namespace LogicPOS.UI.Components.POS
 
         private void PrintOrder()
         {
+           var orderTicket = GetOrderTicket();
+            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
+            if (printer == null)
+            {
+                return;
+            }
+            CompanyPrintingInformationsDto companyInformationsDto = GetCompanyPrintingInformation();
+            new ThermalPrinting(printer, companyInformationsDto, orderTicket, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
+
+        }
+
+        private PrintOrderTicketDto GetOrderTicket()
+        {
             var orderTicket = new PrintOrderTicketDto();
             orderTicket.OrderDetails = new List<PrintOrderDetailDto>();
 
@@ -137,18 +151,16 @@ namespace LogicPOS.UI.Components.POS
             orderTicket.PlaceDesignation = ItemsPage.Order.Table.Place.Designation;
             foreach (var item in ItemsPage.Ticket.Items)
             {
-                orderTicket.OrderDetails.Add(new PrintOrderDetailDto() { Designation = item.Article.Designation, Quantity = item.Quantity, UnitMeasure = item.Article.MeasurementUnit.Acronym });
+                orderTicket.OrderDetails.Add(new PrintOrderDetailDto() 
+                { 
+                    Designation = item.Article.Designation, 
+                    Quantity = item.Quantity, 
+                    UnitMeasure = item.Article.MeasurementUnit.Acronym 
+                });
             }
-            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if (printer == null)
-            {
-                return;
-            }
-            CompanyInformationsDto companyInformationsDto = GetCompanyInformation();
-            new ThermalPrinting(printer, companyInformationsDto, orderTicket, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
 
+            return orderTicket;
         }
-
 
         protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
         {
@@ -169,17 +181,22 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        private CompanyInformationsDto GetCompanyInformation()
+        private CompanyPrintingInformationsDto GetCompanyPrintingInformation()
         {
-            var companyInformations = new CompanyInformations();
-            return new CompanyInformationsDto()
+            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
+            if (result.IsError)
+            {
+               SimpleAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
+            }
+            var companyInformations=result.Value;
+            return new CompanyPrintingInformationsDto()
             {
                 Address = companyInformations.Address,
                 Name = companyInformations.Name,
-                BusinessName = companyInformations.BusinessName,
+                BusinessName = companyInformations.BussinessName,
                 ComercialName = companyInformations.ComercialName,
                 City = companyInformations.City,
-                Logo = companyInformations.Logo,
+                Logo = companyInformations.LogoBmp,
 
                 Email = companyInformations.Email,
                 MobilePhone = companyInformations.MobilePhone,
