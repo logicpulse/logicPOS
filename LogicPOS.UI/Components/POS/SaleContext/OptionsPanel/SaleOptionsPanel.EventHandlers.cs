@@ -1,41 +1,29 @@
-﻿using DevExpress.Xpo;
-using Gtk;
-using logicpos.Classes.Enums.TicketList;
+﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Data.XPO.Settings.Terminal;
-using LogicPOS.Data.XPO.Settings;
+using logicpos.shared.Enums;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
-using LogicPOS.Settings;
-using LogicPOS.Shared.Article;
-using logicpos.shared.Enums;
-using LogicPOS.Shared.Orders;
-using LogicPOS.Shared;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Dialogs;
-using LogicPOS.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using MediatR;
-using LogicPOS.Api.Features.Articles.GetArticleByCode;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
-using LogicPOS.Api.Features.Documents.GetDocumentById;
-using LogicPOS.Api.Features.Terminals.GetTerminalById;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Utility;
-using LogicPOS.Api.Entities;
+using LogicPOS.Settings;
+using LogicPOS.Shared;
+using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
-using PriceType = LogicPOS.Domain.Enums.PriceType;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using PriceType = LogicPOS.Domain.Enums.PriceType;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -60,7 +48,7 @@ namespace LogicPOS.UI.Components.POS
                                                                       ButtonsType.YesNo,
                                                                       string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion),
                                                                       GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
-            if(responseType != ResponseType.Yes && responseType != ResponseType.Ok)
+            if (responseType != ResponseType.Yes && responseType != ResponseType.Ok)
             {
                 return;
             }
@@ -83,7 +71,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnIncrease_Clicked(object sender, EventArgs e)
         {
-            if(ItemsPage.SelectedItem == null)
+            if (ItemsPage.SelectedItem == null)
             {
                 return;
             }
@@ -129,21 +117,21 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)
         {
-            if(ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
+            if (ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
             {
                 return;
             }
             PrintOrder();
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
-            
+
         }
 
         private void PrintOrder()
         {
             var orderTicket = new PrintOrderTicketDto();
             orderTicket.OrderDetails = new List<PrintOrderDetailDto>();
-            
+
             orderTicket.TicketId = (int)ItemsPage.Ticket.Number;
             orderTicket.TableDesignation = ItemsPage.Order.Table.Designation;
             orderTicket.PlaceDesignation = ItemsPage.Order.Table.Place.Designation;
@@ -152,9 +140,9 @@ namespace LogicPOS.UI.Components.POS
                 orderTicket.OrderDetails.Add(new PrintOrderDetailDto() { Designation = item.Article.Designation, Quantity = item.Quantity, UnitMeasure = item.Article.MeasurementUnit.Acronym });
             }
             PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if(printer == null)
+            if (printer == null)
             {
-                return ;
+                return;
             }
             CompanyInformationsDto companyInformationsDto = GetCompanyInformation();
             new ThermalPrinting(printer, companyInformationsDto, orderTicket, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
@@ -172,7 +160,7 @@ namespace LogicPOS.UI.Components.POS
                     Designation = terminal.ThermalPrinter.Designation,
                     Token = terminal.ThermalPrinter.Type.Token,
                     IsThermal = terminal.ThermalPrinter.Type.ThermalPrinter,
-                    CutCommand="0x42,0x00"
+                    CutCommand = "0x42,0x00"
                 };
             }
             else
@@ -192,7 +180,7 @@ namespace LogicPOS.UI.Components.POS
                 ComercialName = companyInformations.ComercialName,
                 City = companyInformations.City,
                 Logo = companyInformations.Logo,
-                
+
                 Email = companyInformations.Email,
                 MobilePhone = companyInformations.MobilePhone,
                 FiscalNumber = companyInformations.FiscalNumber,
@@ -210,7 +198,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            if(ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)
+            if (ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)
             {
                 return;
             }
@@ -277,7 +265,7 @@ namespace LogicPOS.UI.Components.POS
                 }
                 else
                 {
-                   
+
                 }
             }
         }

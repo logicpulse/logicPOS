@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
@@ -179,7 +180,7 @@ namespace LogicPOS.UI.Components.Documents
 
             if (result.IsError)
             {
-                Alerts.SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
                 return;
             }
 
