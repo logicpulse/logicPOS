@@ -32,19 +32,8 @@ namespace LogicPOS.Api.Entities
         public string Type { get; set; }
         public string Number { get; set; }
         public string Status { get; set; }
-        public string StatusDate { get; set; }
-        public string StatusReason { get; set; }
-        public string StatusUser { get; set; }
-        public string SourceBilling { get; set; }
         public string Hash { get; set; }
-        public string HashControl { get; set; }
-        public int SelfBillingIndicator { get; set; }
-        public int CashVatSchemeIndicator { get; set; }
-        public int ThirdPartiesBillingIndicator { get; set; }
-        public string EACCode { get; set; }
         public string Date { get; set; }
-        public string SystemEntryDate { get; set; }
-        public string TransactionID { get; set; }
         public ShipAddress ShipToAdress { get; set; }
         public ShipAddress ShipFromAdress { get; set; }
         public DateTime? MovementStartTime { get; set; }
@@ -54,7 +43,6 @@ namespace LogicPOS.Api.Entities
         public decimal TotalDiscount { get; set; }
         public decimal TotalTax { get; set; }
         public decimal TotalFinal { get; set; }
-        public decimal TotalFinalRound { get; set; }
         public decimal TotalDelivery { get; set; }
         public decimal TotalChange { get; set; }
         public string ExternalDocument { get; set; }
@@ -62,12 +50,7 @@ namespace LogicPOS.Api.Entities
         public decimal FinancialDiscount { get; set; }
         public decimal ExchangeRate { get; set; }
         public DocumentCustomer Customer { get; set; }
-        public bool Paid { get; set; }
-        public DateTime? PaymentDate { get; set; }
-        public bool Printed { get; set; }
         public string ATDocCodeID { get; set; }
-        public bool ATResendDocument { get; set; }
-        public string ATCUD { get; set; }
         public IList<DocumentDetail> Details { get; set; }
         public bool IsCancelled => Status == "A";
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
