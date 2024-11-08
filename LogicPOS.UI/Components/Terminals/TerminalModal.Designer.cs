@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtHardwareId= new TextBox("global_hardware_id", true, true, @".+");
+        private TextBox _txtHardwareId = new TextBox("global_hardware_id", true, true, @".+");
         private TextBox _txtTimerInterval = new TextBox("global_input_reader_timer_interval", true, true, @"^\d*$");
         private EntityComboBox<Place> _comboPlaces;
         private EntityComboBox<Printer> _comboPrinters;

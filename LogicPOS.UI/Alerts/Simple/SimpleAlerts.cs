@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Gtk;
+using logicpos;
 using LogicPOS.Api.Errors;
 using System.Text;
 
@@ -74,7 +75,7 @@ namespace LogicPOS.UI.Alerts
         {
             var errorMessage = new StringBuilder();
             errorMessage.AppendLine("Code: " + error.Code);
-            errorMessage.AppendLine("Title: " + error.Description);
+            errorMessage.AppendLine("Description: " + error.Description);
           
 
             var metadata = error.Metadata;
@@ -97,10 +98,12 @@ namespace LogicPOS.UI.Alerts
                 }
             }
 
-            Error().WithParent(sourceWindow)
-                  .WithTitle("API")
-                  .WithMessage(errorMessage.ToString())
-                  .Show();
+            Utils.ShowMessageTouch(sourceWindow,
+                                   DialogFlags.Modal,
+                                   MessageType.Error,
+                                   ButtonsType.Ok,
+                                   "Erro",
+                                   errorMessage.ToString());
         }
     }
 }

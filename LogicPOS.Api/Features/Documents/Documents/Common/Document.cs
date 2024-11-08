@@ -10,8 +10,7 @@ namespace LogicPOS.Api.Entities
     public class Document : ApiEntity
     {
         #region  References
-        public PaymentMethod PaymentMethod { get; set; }
-        public Guid? PaymentMethodId { get; set; }
+        public List<DocumentPaymentMethod> PaymentMethods { get; set; }
 
         public PaymentCondition PaymentCondition { get; set; }
         public Guid? PaymentConditionId { get; set; }

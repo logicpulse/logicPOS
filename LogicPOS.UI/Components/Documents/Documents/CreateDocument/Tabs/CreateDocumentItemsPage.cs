@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.View, SelectedEntity);
+            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.View, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
+            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
             var response = (ResponseType)modal.Run();
 
             modal.Destroy();
@@ -74,7 +74,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void RunInsertModal()
         {
-            var modal = new AddItemModal(SourceWindow, EntityEditionModalMode.Insert);
+            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Insert);
             var response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok)

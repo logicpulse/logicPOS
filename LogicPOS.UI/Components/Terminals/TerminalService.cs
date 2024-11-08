@@ -35,6 +35,13 @@ namespace LogicPOS.UI.Components.Terminals
                 }
 
                 Terminal = getTerminal.Value;
+
+                if(Terminal == null)
+                {
+                    var hardwareId = GetHardwareIdFromFile();
+                    return Error.NotFound(description:$"Terminal com o HardwareId [{hardwareId}] não econtrado.");
+                }
+
                 return Terminal;
             }
 

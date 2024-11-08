@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public class AddItemModal : Modal
+    public class AddArticleModal : Modal
     {
         private EntityEditionModalMode _mode;
         public Item Item { get; }
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public PageTextBox TxtNotes { get; set; }
         private decimal _vatRateValue;
 
-        public AddItemModal(Window parent,
+        public AddArticleModal(Window parent,
                             EntityEditionModalMode mode,
                             Item item = null) : base(parent,
                                                      GeneralUtils.GetResourceByName("global_insert_articles"),

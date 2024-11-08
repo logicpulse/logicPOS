@@ -14,6 +14,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         public TerminalModal(EntityEditionModalMode modalMode, Terminal entity = null) : base(modalMode, entity)
         {
+            _txtHardwareId.Component.Sensitive = false;
         }
 
 

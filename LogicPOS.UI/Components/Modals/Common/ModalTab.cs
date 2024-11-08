@@ -11,7 +11,6 @@ namespace LogicPOS.UI.Components.Modals.Common
         public string PageIcon { get; set; }
         public Window SourceWindow { get; set; }
         public IconButtonWithText BtnNavigator { get; set; }
-
         public string FieldName => PageName;
 
         public ModalTab(Window parent,

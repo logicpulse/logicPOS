@@ -11,6 +11,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.Utility;
 using System;
 using System.Configuration;
 using System.Globalization;
@@ -135,9 +136,7 @@ namespace LogicPOS.UI
 
             StartFrontOffice();
         }
-
-       
-
+  
         private static void OldStartApp()
         {
             if (PluginSettings.LicenceManager != null)

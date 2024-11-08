@@ -48,6 +48,7 @@ namespace LogicPOS.UI.Components.Modals
         private CreateDocumentArticlesTab ArticlesTab { get; set; }
         private CreateDocumentShipToTab ShipToTab { get; set; }
         private CreateDocumentShipFromTab ShipFromTab { get; set; }
+        private CreateDocumentPaymentMethodsTab PaymentMethodsTab { get; set; }
         #endregion
 
         private ModalTabsNavigator Navigator { get; set; }
@@ -84,7 +85,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this,result.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
                 return;
             }
 
@@ -102,7 +103,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return getResult.Value;
-        }     
+        }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
@@ -132,6 +133,7 @@ namespace LogicPOS.UI.Components.Modals
             Navigator = new ModalTabsNavigator(DocumentTab,
                                                CustomerTab,
                                                ArticlesTab,
+                                               PaymentMethodsTab,
                                                ShipToTab,
                                                ShipFromTab);
         }
@@ -139,13 +141,19 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTabs()
         {
             DocumentTab = new CreateDocumentDocumentTab(this);
-            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
-            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
-            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
+            AddTabsEventHandlers();
             CustomerTab = new CreateDocumentCustomerTab(this);
             ArticlesTab = new CreateDocumentArticlesTab(this);
             ShipToTab = new CreateDocumentShipToTab(this);
             ShipFromTab = new CreateDocumentShipFromTab(this);
+            PaymentMethodsTab = new CreateDocumentPaymentMethodsTab(this);
+        }
+
+        private void AddTabsEventHandlers()
+        {
+            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
+            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
+            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
         }
 
         private void OnDocumentTypeSelected(DocumentType documentType)
@@ -176,7 +184,7 @@ namespace LogicPOS.UI.Components.Modals
             CustomerTab.ImportDataFromDocument(document);
             ArticlesTab.ImportDataFromDocument(document);
 
-            if(document.IsGuide())
+            if (document.IsGuide())
             {
                 ShipFromTab.ImportDataFromDocument(document);
                 ShipToTab.ImportDataFromDocument(document);
@@ -187,7 +195,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             var command = new AddDocumentCommand();
 
-            command.PaymentMethodId = DocumentTab.GetPaymentMethod()?.Id;
+            var documentType = DocumentTab.GetDocumentType();
+
+            if(documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice())
+            {
+                command.PaymentMethods = PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
+            }
+
             command.Type = DocumentTab.GetDocumentType().Acronym;
             command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
             command.CurrencyId = DocumentTab.GetCurrency().Id;
@@ -207,7 +221,7 @@ namespace LogicPOS.UI.Components.Modals
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
 
-            if (DocumentTab.GetDocumentType().IsGuide())
+            if (documentType.IsGuide())
             {
                 command.ShipToAdress = ShipToTab.GetAddress();
                 command.ShipFromAdress = ShipFromTab.GetAddress();
@@ -229,9 +243,17 @@ namespace LogicPOS.UI.Components.Modals
 
             var documentType = DocumentTab.GetDocumentType();
 
+            if(documentType == null)
+            {
+                return validatableTabs;
+            }
 
+            if (documentType.IsInvoiceReceipt() || documentType.IsInvoiceReceipt())
+            {
+                validatableTabs.Add(PaymentMethodsTab);
+            }
 
-            if (documentType != null && documentType.IsGuide())
+            if (documentType.IsGuide())
             {
                 validatableTabs.Add(ShipToTab);
                 validatableTabs.Add(ShipFromTab);

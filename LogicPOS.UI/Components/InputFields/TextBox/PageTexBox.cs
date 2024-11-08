@@ -21,7 +21,6 @@ namespace LogicPOS.UI.Components.InputFields
         public bool IsValidatable { get; set; }
         public string Regex { get; set; }
         public Widget Component { get; private set; }
-        public HBox ButtonsArea { get; private set; }
         public string FieldName => Label.Text;
         public event EventHandler SelectEntityClicked;
         public object SelectedEntity { get; set; }

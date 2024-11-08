@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ namespace LogicPOS.Api.Features.Documents.AddDocument
 {
     public class AddDocumentCommand : IRequest<ErrorOr<Guid>>
     {
-        public Guid? PaymentMethodId { get; set; }
+        public IEnumerable<AddDocumentPaymentMethodDto> PaymentMethods { get; set; }
         public Guid? PaymentConditionId { get; set; }
         public Guid? CustomerId { get; set; }
         public Guid? CurrencyId { get; set; }

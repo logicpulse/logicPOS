@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -284,12 +285,20 @@ namespace LogicPOS.UI.Components.POS
             return SaleContext.CurrentOrder.GetDocumentDetails();
         }
 
+        private IEnumerable<AddDocumentPaymentMethodDto> GetPaymentMethodsDtos()
+        {
+            yield return new AddDocumentPaymentMethodDto
+            {
+                PaymentMethodId = _selectedPaymentMethod.Id,
+                Amount = TotalFinal
+            };
+        }
         private AddDocumentCommand CreateAddDocumentCommand()
         {
             var command = new AddDocumentCommand();
 
             command.Type = GetDocumentType();
-            command.PaymentMethodId = _selectedPaymentMethod?.Id;
+            command.PaymentMethods = GetPaymentMethodsDtos();
             command.PaymentConditionId = _selectedPaymentCondition?.Id;
             command.CustomerId = (TxtCustomer.SelectedEntity as Customer)?.Id;
             if (command.CustomerId == null)

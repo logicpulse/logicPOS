@@ -5,7 +5,6 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

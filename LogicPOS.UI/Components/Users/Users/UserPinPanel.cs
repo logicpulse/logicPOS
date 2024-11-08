@@ -381,7 +381,13 @@ namespace LogicPOS.UI.Widgets
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_change_password"), GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
+                        Utils.ShowMessageTouch(parentWindow,
+                                               DialogFlags.Modal,
+                                               MessageType.Error,
+                                               ButtonsType.Ok,
+                                               GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
+                                               GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
+
                         ClearEntryPinStatusMessage(true);
                         _mode = NumberPadPinMode.PasswordNew;
                         UpdateStatusLabels();
