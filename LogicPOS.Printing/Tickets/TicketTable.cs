@@ -217,13 +217,12 @@ namespace LogicPOS.Printing.Tickets
             bool debug = false;
             string result = string.Empty;
             TicketColumn ticketColumn;
-
             try
             {
                 for (int i = 0; i < this.Columns.Count; i++)
                 {
                     ticketColumn = (TicketColumn)this.Columns[i].ExtendedProperties["Ticket"];
-
+                    ticketColumn.Width = 30;
                     string formatedColumn;
                     //Title Mode
                     if (pDataRow == null)
@@ -267,10 +266,10 @@ namespace LogicPOS.Printing.Tickets
                     switch (ticketColumn.Align)
                     {
                         case TicketColumnsAlignment.Left:
-                            formatedColumn = formatedColumn.PadRight(ticketColumn.Width);
+                            formatedColumn = formatedColumn.PadRight(ticketColumn.Width-1);
                             break;
                         case TicketColumnsAlignment.Right:
-                            formatedColumn = formatedColumn.PadLeft(ticketColumn.Width);
+                            formatedColumn = formatedColumn.PadLeft(ticketColumn.Width-1);
                             break;
                     }
 
@@ -345,7 +344,7 @@ namespace LogicPOS.Printing.Tickets
         {
             bool debug = false;
 
-            try
+           try
             {
                 List<string> table = GetTable();
 

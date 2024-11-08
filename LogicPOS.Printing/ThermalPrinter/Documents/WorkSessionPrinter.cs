@@ -3,6 +3,7 @@ using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Printing.Tickets;
@@ -34,7 +35,7 @@ namespace LogicPOS.Printing.Documents
         {
             _workSessionPeriod = workSession;
             _splitCurrentAccountMode = pSplitCurrentAccountMode;
-
+            _printer =new GenericThermalPrinter(printer);
             DefineTicketTitle();
 
             DefineTicketSubtitle();
@@ -170,30 +171,30 @@ namespace LogicPOS.Printing.Documents
             //Open Total CashDrawer
             dataRow = dataTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_total_cashdrawer"));
-            dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+            dataRow[1] = 1000.ToString();/* LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                 (decimal)_sessionPeriodSummaryDetails["totalMoneyInCashDrawerOnOpen"],
-                XPOSettings.ConfigurationSystemCurrency.Acronym);
+                XPOSettings.ConfigurationSystemCurrency.Acronym); Luciano*/
             dataTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = dataTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_total_cashdrawer"));
-            dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+            dataRow[1] = 1000.ToString();/*LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                 (decimal)_sessionPeriodSummaryDetails["totalMoneyInCashDrawer"],
-                XPOSettings.ConfigurationSystemCurrency.Acronym);
+                XPOSettings.ConfigurationSystemCurrency.Acronym);*/
             dataTable.Rows.Add(dataRow);
             //Total Money In
             dataRow = dataTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_in"));
-            dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+            dataRow[1] = 1000.ToString();/*LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                 (decimal)_sessionPeriodSummaryDetails["totalMoneyIn"],
-                XPOSettings.ConfigurationSystemCurrency.Acronym);
+                XPOSettings.ConfigurationSystemCurrency.Acronym);*/
             dataTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = dataTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_out"));
-            dataRow[1] = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
+            dataRow[1] = 1000.ToString();/*LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(
                 (decimal)_sessionPeriodSummaryDetails["totalMoneyOut"],
-                XPOSettings.ConfigurationSystemCurrency.Acronym);
+                XPOSettings.ConfigurationSystemCurrency.Acronym);*/
             dataTable.Rows.Add(dataRow);
             //Configure Ticket Column Properties
             List<TicketColumn> columns = new List<TicketColumn>
@@ -259,7 +260,7 @@ namespace LogicPOS.Printing.Documents
                     summaryTotal = 0.0m;
 
                     //Get Group Data from group Query
-                    xPSelectData = XPOUtility.GetSelectedDataFromQuery(item.Value.Sql);
+                   //xPSelectData = XPOUtility.GetSelectedDataFromQuery(item.Value.Sql);
 
                     //Generate Columns
                     columns = new List<TicketColumn>
@@ -356,7 +357,6 @@ namespace LogicPOS.Printing.Documents
             string pSqlWhere)
         {
             //Parameters
-            string sqlWhere = pSqlWhere;
             bool enabledGroupTerminal = (periodType == "Day"); ;
             bool enabledGroupPaymentMethod = (pSplitCurrentAccountMode != SplitCurrentAccountMode.CurrentAcount); ; ;
             bool enabledGroupSubFamily = true;
@@ -375,7 +375,7 @@ namespace LogicPOS.Printing.Documents
                 "FamilyDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, FamilyDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(FamilyCode)",
-                sqlWhere
+                "sqlWhere"
               )
             )
                 },
@@ -389,7 +389,7 @@ namespace LogicPOS.Printing.Documents
                 "SubFamilyDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, SubFamilyDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(SubFamilyCode)",
-                sqlWhere
+                "sqlWhere"
               )
               , enabledGroupSubFamily
             )
@@ -404,7 +404,7 @@ namespace LogicPOS.Printing.Documents
                 "Designation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, Designation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(Code)",
-                sqlWhere
+                "sqlWhere"
               )
             )
                 },
@@ -418,7 +418,7 @@ namespace LogicPOS.Printing.Documents
                 "VatDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, VatDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(VatCode)",
-                sqlWhere
+                "sqlWhere"
               )
             )
                 },
@@ -432,7 +432,7 @@ namespace LogicPOS.Printing.Documents
                 "PaymentMethodDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, PaymentMethodDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(PaymentMethodCode)",
-                sqlWhere
+                "sqlWhere"
               )
               , enabledGroupPaymentMethod
             )
@@ -447,7 +447,7 @@ namespace LogicPOS.Printing.Documents
                 "DocumentTypeDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, DocumentTypeDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(DocumentTypeCode)",
-                sqlWhere
+                "sqlWhere"
               )
             )
                 }
@@ -474,7 +474,7 @@ namespace LogicPOS.Printing.Documents
                 string.Format(@"{0} AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure", hourField),
                 string.Format("UnitMeasure, {0}", hourField),//Required UnitMeasure and used FieldName for SqlServer Group
                 string.Format("MIN({0})", hourField),
-                sqlWhere
+                "sqlWhere"
               )
             ));
 
@@ -485,7 +485,7 @@ namespace LogicPOS.Printing.Documents
                 "TerminalDesignation AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, TerminalDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(TerminalCode)",
-                sqlWhere
+                "sqlWhere"
               )
               , enabledGroupTerminal
             ));
@@ -497,7 +497,7 @@ namespace LogicPOS.Printing.Documents
                 @"UserDetailName AS Designation, SUM(Quantity) AS Quantity, SUM(TotalFinal) AS Total, UnitMeasure",
                 "UnitMeasure, UserDetailName",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(UserDetailCode)",
-                sqlWhere
+                "sqlWhere"
               )
             ));
 
@@ -511,7 +511,7 @@ namespace LogicPOS.Printing.Documents
                 "PaymentMethodDesignation AS Designation, 0 AS Quantity, SUM(MovementAmount) AS Total, UnitMeasure",
                 "UnitMeasure, PaymentMethodDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(PaymentMethodCode)",
-                sqlWhere,
+                "sqlWhere",
                 WorkSessionMovementResumeQueryMode.Payments
                 )
                 , enabledGroupPaymentMethod
@@ -524,7 +524,7 @@ namespace LogicPOS.Printing.Documents
                 string.Format(@"{0} AS Designation, 0 AS Quantity, SUM(MovementAmount) AS Total, UnitMeasure", hourField),
                 string.Format("UnitMeasure, {0}", hourField),//Required UnitMeasure and used FieldName for SqlServer Group
                 string.Format("MIN({0})", hourField),
-                sqlWhere,
+                "sqlWhere",
                 WorkSessionMovementResumeQueryMode.Payments
                 )
             ));
@@ -536,7 +536,7 @@ namespace LogicPOS.Printing.Documents
                 "TerminalDesignation AS Designation, 0 AS Quantity, SUM(MovementAmount) AS Total, UnitMeasure",
                 "UnitMeasure, TerminalDesignation",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(TerminalCode)",
-                sqlWhere,
+                "sqlWhere",
                 WorkSessionMovementResumeQueryMode.Payments
               )
               , enabledGroupTerminal
@@ -549,7 +549,7 @@ namespace LogicPOS.Printing.Documents
                 @"UserDetailName AS Designation, 0 AS Quantity, SUM(MovementAmount) AS Total, UnitMeasure",
                 "UnitMeasure, UserDetailName",//Required UnitMeasure and used FieldName for SqlServer Group
                 "MIN(UserDetailCode)",
-                sqlWhere,
+                "sqlWhere",
                 WorkSessionMovementResumeQueryMode.Payments
                 )
             ));

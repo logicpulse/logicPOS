@@ -60,6 +60,7 @@
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
     <Compile Include="ThermalPrinter\Documents\CompanyPrintingInformationsDto.cs" />
+    <Compile Include="ThermalPrinter\Documents\WorkSession.cs" />
     <Compile Include="ThermalPrinter\Documents\WorkSession.DataTableGroupProperties.cs" />
     <Compile Include="ThermalPrinter\ThermalPrinting.cs" />
     <Compile Include="Tickets\TicketColumn.cs" />

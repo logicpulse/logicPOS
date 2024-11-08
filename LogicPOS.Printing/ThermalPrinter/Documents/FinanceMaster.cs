@@ -73,7 +73,7 @@ namespace LogicPOS.Printing.Documents
             PrintDocumenWayBillDetails();
 
             //Call base PrintDocumentPaymentDetails();
-            PrintDocumentPaymentDetails(string.Empty, _documentMaster.PaymentMethod.Designation, _documentMaster.Currency.Acronym); /* IN009055 */
+            PrintDocumentPaymentDetails(string.Empty, _documentMaster.PaymentMethods[0].PaymentMethod.Designation, _documentMaster.Currency.Acronym); /* IN009055 */
 
             //Call base PrintNotes();
             //IN009279 Wont print notes on ticket mode 
@@ -297,7 +297,7 @@ namespace LogicPOS.Printing.Documents
 
             //If Simplified Invoice, Payment Method MONEY and has Total Change, add it
             if ((_documentMaster.Type == "FS" || _documentMaster.Type == "FR")
-                && _documentMaster.PaymentMethod.Token == "MONEY"
+                && _documentMaster.PaymentMethods[0].PaymentMethod.Token == "MONEY"
                 && _documentMaster.TotalChange > 0
                 )
             {
