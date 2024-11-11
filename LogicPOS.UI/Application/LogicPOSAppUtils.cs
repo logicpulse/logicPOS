@@ -4,7 +4,6 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Data.Services;
@@ -17,9 +16,9 @@ using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -54,17 +53,7 @@ namespace LogicPOS.UI.Application
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
-                Utils.ShowMessageBox(
-                    LoginWindow.Instance,
-                    DialogFlags.Modal,
-                    new Size(500, 240),
-                    MessageType.Error,
-                    ButtonsType.Ok,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                    "global_error"),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                    "app_error_contact_support"));
+                CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance);
             }
             finally
             {
@@ -275,8 +264,7 @@ namespace LogicPOS.UI.Application
             {
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                _logger.Debug("void Init() :: XmlToObjectParser.ParseFromFile(SettingsApp.FileTheme) :: " + ex);
-                Utils.ShowMessageTouchErrorRenderTheme(LoginWindow.Instance, ex.Message);
+                CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message,LoginWindow.Instance);
             }
 
             FastReportUtils.InitializeFastReports(LogicPOSSettings.AppName);

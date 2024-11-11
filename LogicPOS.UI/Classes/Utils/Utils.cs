@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.Classes.Enums;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.BackOffice;
@@ -12,21 +11,16 @@ using logicpos.Classes.Logic.Others;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.DTOs.Printing;
-using LogicPOS.Finance.DocumentProcessing;
-using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -51,406 +45,6 @@ namespace logicpos
     {
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //ShowMessage Touch
-
-        //Touch Dialog
-        public static ResponseType ShowMessageTouch(Window parentWindow, Gtk.DialogFlags pDialogFlags, MessageType pMessageType, ButtonsType pButtonsType, string pWindowTitle, string pMessage)
-        {
-            //Default Size
-            Size size = new Size(600, 400);
-            return ShowMessageBox(parentWindow, pDialogFlags, size, pMessageType, pButtonsType, pWindowTitle, pMessage);
-        }
-
-        public static ResponseType ShowMessageBox(Window parentWindow,
-                                                  DialogFlags flags,
-                                                  Size size,
-                                                  MessageType messageType,
-                                                  ButtonsType buttonsType,
-                                                  string title,
-                                                  string message)
-        {
-            var alertSettings = new CustomAlertSettings();
-            var alertButtons = new CustomAlertButtons(alertSettings);
-
-            //Init Local Vars
-            string fileImageDialog, fileImageWindowIcon;
-            ResponseType dialogResponse = ResponseType.None;
-
-            ActionAreaButtons actionAreaButtons = alertButtons.GetActionAreaButtons(buttonsType);
-
-            fileImageDialog = alertSettings.GetDialogImage(messageType);
-            fileImageWindowIcon = alertSettings.GetDialogIcon(messageType);
-
-            CustomAlert dialog = new CustomAlert(parentWindow,
-                                                 flags,
-                                                 size,
-                                                 title,
-                                                 message,
-                                                 actionAreaButtons,
-                                                 fileImageWindowIcon,
-                                                 fileImageDialog);
-
-            dialog.HideCloseButton();
-
-            dialogResponse = (ResponseType)dialog.Run();
-
-            if (dialogResponse != ResponseType.Apply)
-            {
-                dialog.Destroy();
-            }
-
-            return dialogResponse;
-        }
-
-        internal static ResponseType ShowMessageTouchErrorPrintingTicket(
-            Gtk.Window parentWindow,
-            PrinterDto printer,
-            Exception pEx)
-        {
-            //Protection when Printer is Null, ex printing Ticket Articles (Printer is Assign in Article)
-            string printerDesignation = (printer != null) ? printer.Designation : "NULL";
-            string printerNetworkName = (printer != null) ? printer.NetworkName : "NULL";
-            return ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_printing_ticket"), printerDesignation, printerNetworkName, pEx.Message));
-        }
-
-        public static bool ShowMessageTouchRequiredValidPrinter(Window parentWindow, sys_configurationprinters pPrinter)
-        {
-            bool result = pPrinter == null && TerminalSettings.LoggedTerminal.ThermalPrinter == null;
-
-            if (result)
-            {
-                ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_required_valid_printer"));
-            }
-
-            return result;
-        }
-
-        public static void ShowMessageTouchTerminalWithoutAssociatedPrinter(Window parentWindow, string pDocumentType)
-        {
-            if (
-                (
-                    LogicPOSAppContext.Notifications != null && LogicPOSAppContext.Notifications.ContainsKey("SHOW_PRINTER_UNDEFINED")
-                )
-                && LogicPOSAppContext.Notifications["SHOW_PRINTER_UNDEFINED"] == true
-            )
-            {
-                ResponseType responseType = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 400), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information")
-                    , string.Format(GeneralUtils.GetResourceByName("dialog_message_show_printer_undefined_on_print"), pDocumentType)
-                );
-                if (responseType == ResponseType.No) LogicPOSAppContext.Notifications["SHOW_PRINTER_UNDEFINED"] = false;
-            }
-        }
-
-        public static void ShowMessageTouchErrorRenderTheme(Window parentWindow, string pErrorMessage)
-        {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_RENDERING_THEME), LogicPOSSettings.FileTheme, pErrorMessage);
-            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 500), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
-            Environment.Exit(0);
-        }
-
-        public static void ShowMessageBoxUnlicensedError(
-            Window parentWindow,
-            string pErrorMessage)
-        {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_APPLICATION_UNLICENCED_FUNCTION_DISABLED), pErrorMessage);
-            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), errorMessage);
-        }
-
-        public static ResponseType ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(Window parentWindow, DocumentProcessingParameters pParameters)
-        {
-            //Default is Yes
-            ResponseType result = ResponseType.Yes;
-
-            try
-            {
-                fin_documentfinanceyearserieterminal documentFinanceYearSerieTerminal = null;
-                fin_documentfinanceseries documentFinanceSerie = null;
-                if (TerminalSettings.LoggedTerminal != null)
-                {
-                    documentFinanceYearSerieTerminal = DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(pParameters.DocumentType);
-                    if (documentFinanceYearSerieTerminal != null) documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
-                }
-
-                //If Dont Have Series Throw Exception to Caller Method
-                if (documentFinanceSerie == null)
-                {
-                    throw new Exception("ERROR_MISSING_SERIE");
-                }
-                //Get Reference
-                else
-                {
-                    documentFinanceSerie = documentFinanceYearSerieTerminal.Serie;
-                }
-
-                //WARNING_RULE_SYSTEM_DATE_SERIE
-                DateTime dateLastDocumentFromSerie = DateTime.MaxValue;
-                if (documentFinanceSerie != null)
-                {
-                    dateLastDocumentFromSerie = DocumentProcessingUtils.GetLastDocumentDateTime(string.Format("DocumentSerie = '{0}'", documentFinanceSerie.Oid)).Date;
-                }
-
-                //Check if DocumentDate is greater than dateLastDocumentFromSerie (If Defined) else if is First Document in Series Skip
-                if (pParameters.DocumentDateTime < dateLastDocumentFromSerie && dateLastDocumentFromSerie != DateTime.MinValue)
-                {
-                    result = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
-                }
-                else
-                {
-                    //WARNING_RULE_SYSTEM_DATE_GLOBAL
-                    DateTime dateTimeLastDocument = DocumentProcessingUtils.GetLastDocumentDateTime();
-                    //Check if DocumentDate is greater than dateLastDocument (If Defined) else if is First Document in Series Skip
-                    if (pParameters.DocumentDateTime < dateTimeLastDocument && dateTimeLastDocument != DateTime.MinValue)
-                    {
-                        result = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_systementry_is_less_than_last_finance_document_series"));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-
-            return result;
-        }
-
-        public static void ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(Window parentWindow, decimal pCurrentTotal, decimal pMaxTotal)
-        {
-            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 480), MessageType.Info, ButtonsType.Close,
-                GeneralUtils.GetResourceByName("global_warning"),
-                string.Format(
-                    GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
-                    , string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_total"), DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, XPOSettings.ConfigurationSystemCurrency.Acronym))
-                    , string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_maximum"), DataConversionUtils.DecimalToStringCurrency(pMaxTotal, XPOSettings.ConfigurationSystemCurrency.Acronym))
-                )
-            );
-        }
-
-        public static ResponseType ShowMessageTouchSimplifiedInvoiceMaxValueExceed(Window parentWindow, ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode pMode, decimal pCurrentTotal, decimal pMaxTotal, decimal pCurrentTotalServices, decimal pMaxTotalServices)
-        {
-            ResponseType result = ResponseType.No;
-
-            string message = string.Empty;
-            string messageMaxExceed = string.Empty;
-            string messageMaxExceedServices = string.Empty;
-            string messageMode = string.Empty;
-            MessageType messageType = MessageType.Other;
-            ButtonsType buttonsType = ButtonsType.None;
-
-            switch (pMode)
-            {
-                case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog:
-                    messageMode = GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
-                    messageType = MessageType.Question;
-                    buttonsType = ButtonsType.YesNo;
-                    break;
-                case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog:
-                    messageMode = GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
-                    messageType = MessageType.Info;
-                    buttonsType = ButtonsType.Close;
-                    break;
-            }
-
-            try
-            {
-                if (pCurrentTotal > pMaxTotal)
-                {
-                    messageMaxExceed = string.Format(
-                        "{1}: {2}{0}{3}: {4}"
-                        , Environment.NewLine
-                        , GeneralUtils.GetResourceByName("global_total")
-                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotal, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                        , GeneralUtils.GetResourceByName("global_maximum")
-                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotal, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                    );
-                }
-
-                if (pCurrentTotalServices > pMaxTotalServices)
-                {
-                    messageMaxExceedServices = string.Format(
-                        "{1}: {2}{0}{3}: {4}"
-                        , Environment.NewLine
-                        , GeneralUtils.GetResourceByName("global_services")
-                        , DataConversionUtils.DecimalToStringCurrency(pCurrentTotalServices, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                        , GeneralUtils.GetResourceByName("global_maximum")
-                        , DataConversionUtils.DecimalToStringCurrency(pMaxTotalServices, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                    );
-                }
-
-                if (pCurrentTotal > pMaxTotal || pCurrentTotalServices > pMaxTotalServices)
-                {
-                    if (messageMaxExceed != string.Empty) message += messageMaxExceed;
-                    if (messageMaxExceedServices != string.Empty)
-                    {
-                        //Add Seperate Lines if message is not Empty
-                        if (message != string.Empty) message += string.Format("{0}{0}", Environment.NewLine);
-                        message += messageMaxExceedServices;
-                    }
-
-                    result = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(550, 440), messageType, buttonsType,
-                        GeneralUtils.GetResourceByName("global_warning"),
-                        string.Format(GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode
-                        )
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-        public static bool ShowMessageMinimumStock(Window parentWindow, Guid pArticleOid, decimal pNewQuantity)
-        {
-            bool unusedBool;
-            return ShowMessageMinimumStock(parentWindow, pArticleOid, pNewQuantity, out unusedBool);
-        }
-
-        public static bool ShowMessageMinimumStock(Window parentWindow, Guid pArticleOid, decimal pNewQuantity, out bool showMessage)
-        {
-            showMessage = false;
-            Size size = new Size(500, 350);
-            fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), pArticleOid);
-            decimal articleStock;
-            try
-            {
-                string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
-                articleStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
-            }
-            catch
-            {
-                _logger.Debug("Article with stock 0 or NULL");
-                articleStock = 0;
-            }
-
-            string childStockMessage = Environment.NewLine + Environment.NewLine + "Stock de artigos associados: " + Environment.NewLine;
-            //Composite article Messages
-            int childStockAlertCount = 0;
-            if (article.IsComposed)
-            {
-                foreach (fin_articlecomposition item in article.ArticleComposition)
-                {
-                    fin_article child = item.ArticleChild;
-                    decimal childStock = 0;
-                    try
-                    {
-                        string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", item.ArticleChild.Oid);
-                        childStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
-                    }
-                    catch
-                    {
-                        _logger.Debug("Article child with stock 0 or NULL");
-                        childStock = 0;
-                    }
-                    var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
-                    if (childStockAfterChanged <= child.MinimumStock)
-                    {
-                        childStockMessage += Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + child.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(childStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), "0.00") + Environment.NewLine;
-                        childStockAlertCount++;
-                    }
-                }
-            }
-            var stockQuantityAfterChanged = articleStock - pNewQuantity;
-            //Mensagem de stock apenas para artigos da classe Produtos
-            if ((stockQuantityAfterChanged <= article.MinimumStock || childStockAlertCount > 0) && article.Class.Oid == Guid.Parse("6924945d-f99e-476b-9c4d-78fb9e2b30a3"))
-            {
-                if (article.IsComposed)
-                {
-                    size = new Size(650, 480);
-                    var response = ShowMessageBox(parentWindow, DialogFlags.DestroyWithParent, size, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_stock_movements"), GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage);
-                    if (response == ResponseType.Yes)
-                    {
-                        showMessage = true;
-                        return true;
-                    }
-                    else
-                    {
-                        showMessage = true;
-                        return false;
-                    }
-                }
-                else
-                {
-                    var response = ShowMessageBox(parentWindow,
-                                                  DialogFlags.DestroyWithParent,
-                                                  size,
-                                                  MessageType.Question,
-                                                  ButtonsType.YesNo,
-                                                  GeneralUtils.GetResourceByName("global_stock_movements"),
-                                                  GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"));
-                    
-                    if (response == ResponseType.Yes)
-                    {
-                        showMessage = true;
-                        return true;
-                    }
-                    else
-                    {
-                        showMessage = true;
-                        return false;
-                    }
-                }
-            }
-            showMessage = false;
-            return false;
-        }
-
-
-        public static void ShowMessageTouchProtectedDeleteRecordMessage(Window parentWindow)
-        {
-            ShowMessageTouch(
-                parentWindow,
-                DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                MessageType.Error,
-                ButtonsType.Ok,
-                GeneralUtils.GetResourceByName("window_title_dialog_delete_record"),
-                GeneralUtils.GetResourceByName("dialog_message_delete_record_show_protected_record"))
-            ;
-        }
-
-        public static void ShowMessageTouchProtectedUpdateRecordMessage(Window parentWindow)
-        {
-            ShowMessageTouch(
-                parentWindow,
-                DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                MessageType.Error,
-                ButtonsType.Ok,
-                GeneralUtils.GetResourceByName("window_title_dialog_update_record"),
-                GeneralUtils.GetResourceByName("dialog_message_update_record_show_protected_record"))
-            ;
-        }
-
-        public static void ShowMessageTouchUnsupportedResolutionDetectedAndExit(Window parentWindow, int width, int height)
-        {
-            string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), width, height);
-            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
-            Environment.Exit(Environment.ExitCode);
-        }
-
-        /// <summary>
-        /// Responsible for the dialogbox for screen resolution issues.
-        /// It takes the control of application when user opt to do not follow with low-resolution app startup, closing the application.
-        /// <para>See also "IN008023: apply "800x600" settings as default."</para>
-        /// </summary>
-        /// <param name="parentWindow"></param>
-        /// <param name="width"></param>
-        /// <param name="height"></param>
-        public static void ShowMessageTouchUnsupportedResolutionDetectedDialogbox(Window parentWindow, int width, int height)
-        {
-            string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), width, height, GeneralUtils.GetResourceByName("global_treeview_true"));
-            ResponseType dialogResponse = ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_information"), message);
-            if (dialogResponse == ResponseType.No)
-            {
-                Environment.Exit(Environment.ExitCode);
-            }
-        }
-
-        public static void ShowMessageTouchErrorTryToIssueACreditNoteExceedingSourceDocumentArticleQuantities(Window parentWindow, decimal currentQuantity, decimal maxPossibleQuantity)
-        {
-            string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"), currentQuantity, maxPossibleQuantity);
-            ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(700, 400), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Request Text Dialog
@@ -947,14 +541,11 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                /* This block of code log the message informing that the resolution is not supported and asks user to define or not the default one */
                 _logger.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
 
-                /* IN009034 */
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), screenSize.Width, screenSize.Height, GeneralUtils.GetResourceByName("global_treeview_true"));
-                ShowMessageTouchUnsupportedResolutionDetectedDialogbox(LoginWindow.Instance, screenSize.Width, screenSize.Height);
+                CustomAlerts.ShowUnsupportedResolutionErrorAlert(LoginWindow.Instance, screenSize.Width, screenSize.Height);
 
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -1111,55 +702,7 @@ namespace logicpos
 
         public static pos_configurationplaceterminal GetOrCreateTerminal()
         {
-            pos_configurationplaceterminal configurationPlaceTerminal = null;
-
-            try
-            {
-
-                LicenseSettings.LicenseHardwareId = AppSettings.Instance.appHardwareId;
-
-                try
-                {
-
-                    configurationPlaceTerminal = (pos_configurationplaceterminal)XPOUtility.GetXPGuidObjectFromField(typeof(pos_configurationplaceterminal), "HardwareId", LicenseSettings.LicenseHardwareId);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error("pos_configurationplaceterminal GetTerminal() :: Try TerminalID from Database: " + ex.Message, ex);
-                }
-
-                //Create a new db terminal
-                if (configurationPlaceTerminal == null)
-                {
-                    try
-                    {
-                        //Persist Terminal in DB
-                        configurationPlaceTerminal = new pos_configurationplaceterminal(XPOSettings.Session)
-                        {
-                            Ord = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Ord"),
-                            Code = XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            Designation = "Terminal #" + XPOUtility.GetNextTableFieldID("pos_configurationplaceterminal", "Code"),
-                            HardwareId = LicenseSettings.LicenseHardwareId
-                        };
-                        configurationPlaceTerminal.Save();
-                    }
-                    catch (Exception ex)
-                    {
-                        /* IN009034 */
-                        LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                        _logger.Error(string.Format("pos_configurationplaceterminal GetTerminal() :: Error! Can't Register a new TerminalId [{0}] with HardwareId: [{1}], Error: [2]", configurationPlaceTerminal.Oid, configurationPlaceTerminal.HardwareId, ex.Message), ex);
-                        ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_register_new_terminal"), configurationPlaceTerminal.HardwareId));
-                        Environment.Exit(0);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("pos_configurationplaceterminal GetTerminal() :: " + ex.Message, ex);
-            }
-
-            return configurationPlaceTerminal;
+            throw new Exception("Removed Legacy Code");
         }
 
         public static bool CloseAllOpenTerminals(Window parentWindow, Session pSession)
@@ -1326,135 +869,33 @@ namespace logicpos
         /// <param name="showNotificationOnDemand"></param>
         public static void ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser, bool showNotificationOnDemand = false)
         {
-            _logger.Debug("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: Source Window: " + parentWindow.Name);
-            string extraFilter = (pLoggedUser != Guid.Empty) ? string.Format("AND (UserTarget = '{0}' OR UserTarget IS NULL) ", pLoggedUser) : string.Empty;
-
-            /* IN006001 */
-            try
-            {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("(TerminalTarget = '{0}' OR TerminalTarget IS NULL){1}", TerminalSettings.LoggedTerminal.Oid, extraFilter));
-
-                /* IN006001 - for "on demand" notification flow */
-                if (showNotificationOnDemand)
-                {
-                    /* IN006001 - get date for filtering notifications that were created 'n' days before Today */
-                    //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
-                    DateTime dateFilter = XPOUtility.GetDateTimeBackUtilDays(
-                        XPOUtility.CurrentDateTimeAtomicMidnight(),
-                        NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering,
-                        true);
-                    criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse(string.Format("[CreatedAt] > '{0} 23:59:59'", dateFilter.ToString(CultureSettings.DateFormat))));
-
-                    JoinOperand joinOperand = new JoinOperand();
-                    joinOperand.JoinTypeName = "sys_systemnotificationtype";
-                    CriteriaOperator criteriaJoin = CriteriaOperator.Parse("^.NotificationType") == new OperandProperty("Oid");
-                    /*
-                     * Notification Type for "on demand" notifications flow:
-                     * '06319D46-E7B5-4CCA-8257-55EFF4CFE0FA': Documentos de conta-corrente por faturar
-                     * 'A567578B-53E9-4B5C-848F-183C65194971': Documentos de faturas de consignação por faturar
-                     * '80A03838-0937-4AE3-921F-75A1E358F7BF': Documentos de transporte por faturar
-                     * 
-                     */
-                    criteriaJoin = CriteriaOperator.And(criteriaJoin, new InOperator("Oid", new Guid[]{
-                            NotificationSettings.XpoOidSystemNotificationTypeCurrentAccountDocumentsToInvoice,
-                            NotificationSettings.XpoOidSystemNotificationTypeConsignationInvoiceDocumentsToInvoice,
-                            NotificationSettings.XpoOidSystemNotificationTypeSaftDocumentTypeMovementOfGoods
-                        }));
-                    joinOperand.Condition = criteriaJoin;
-
-                    criteriaOperator = CriteriaOperator.And(criteriaOperator, joinOperand);
-                }
-                else
-                {/* keep the criteria for original flow */
-                    criteriaOperator = CriteriaOperator.And(criteriaOperator, CriteriaOperator.Parse("[Readed] = 0"));
-                }
-
-                SortProperty[] sortProperty = new SortProperty[2];
-                sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
-                sortProperty[1] = new SortProperty("Ord", SortingDirection.Ascending);
-                XPCollection xpcSystemNotification = new XPCollection(pSession, typeof(sys_systemnotification), criteriaOperator, sortProperty);
-
-
-                string message;
-                if (xpcSystemNotification.Count > 0)
-                {
-                    foreach (sys_systemnotification item in xpcSystemNotification)
-                    {
-                        message = string.Format("{1}{0}{0}{2}", Environment.NewLine, item.CreatedAt, item.Message);
-                        ResponseType response = ShowMessageBox(
-                          parentWindow,
-                          DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                          new Size(700, 480),
-                          MessageType.Info,
-                          ButtonsType.Ok,
-                          GeneralUtils.GetResourceByName("window_title_dialog_notification"),
-                          message
-                        );
-
-                        //Always OK
-                        if (response == ResponseType.Ok)
-                        {
-                            item.DateRead = XPOUtility.CurrentDateTimeAtomic();
-                            item.Readed = true;
-                            item.UserLastRead = XPOSettings.LoggedUser;
-                            item.TerminalLastRead = TerminalSettings.LoggedTerminal;
-                            item.Save();
-                        }
-                    }
-                }
-                else if (showNotificationOnDemand)
-                {/* IN006001 - when "on demand" request returns no results */
-                    message = string.Format(GeneralUtils.GetResourceByName("dialog_message_no_notification"), NotificationSettings.XpoOidSystemNotificationDaysBackWhenFiltering);
-                    ResponseType response = ShowMessageBox(
-                      parentWindow,
-                      DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                      new Size(700, 480),
-                      MessageType.Info,
-                      ButtonsType.Ok,
-                      GeneralUtils.GetResourceByName("window_title_dialog_notification"),
-                      message
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "There is an error when checking for notifications. Please contact the helpdesk");
-            }
+            throw new Exception("Removed Legacy Code");
         }
 
         public static void ShowChangeLog(Window parentWindow)
         {
-            try
-            {
-                string message = "";
+            string message = "";
+
+            WebClient wc = new WebClient();
+            byte[] raw = wc.DownloadData("http://box.logicpulse.com/files/changelogs/pos.txt");
+
+            message = System.Text.Encoding.UTF8.GetString(raw);
+
+            System.Text.Encoding iso = System.Text.Encoding.GetEncoding("ISO-8859-1");
+            System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
+            byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
+            message = iso.GetString(isoBytes);
+
+            //ResponseType response = ShowMessageBox(parentWindow,
+            //                                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
+            //                                       new Size(700, 480),
+            //                                       MessageType.Info,
+            //                                       ButtonsType.Ok,
+            //                                       GeneralUtils.GetResourceByName("change_log"),
+            //                                       message);
 
 
-                WebClient wc = new WebClient();
-                byte[] raw = wc.DownloadData("http://box.logicpulse.com/files/changelogs/pos.txt");
 
-                message = System.Text.Encoding.UTF8.GetString(raw);
-
-                System.Text.Encoding iso = System.Text.Encoding.GetEncoding("ISO-8859-1");
-                System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
-                byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
-                message = iso.GetString(isoBytes);
-
-                ResponseType response = ShowMessageBox(
-                         parentWindow,
-                         DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                         new Size(700, 480),
-                         MessageType.Info,
-                         ButtonsType.Ok,
-                         GeneralUtils.GetResourceByName("change_log"),
-                         message
-                       );
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("void Utils.ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser) :: " + ex.Message, ex);
-                ShowMessageBox(null, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "There is an error when checking for changelog. Please contact the helpdesk");
-            }
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1788,109 +1229,7 @@ namespace logicpos
 
         public static object SaveOrUpdateCustomer(Window parentWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
         {
-            bool customerExists = false;
-            erp_customer result;
-            erp_customer finalConsumerEntity = XPOUtility.GetEntityById<erp_customer>(InvoiceSettings.FinalConsumerId);
-            fin_configurationpricetype configurationPriceType = XPOUtility.GetEntityById<fin_configurationpricetype>(XPOSettings.XpoOidConfigurationPriceTypeDefault);
-
-            SortingCollection sortCollection = new SortingCollection
-            {
-                new SortProperty("Oid", SortingDirection.Ascending)
-            };
-            CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL)"));
-            ICollection collectionCustomers = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(erp_customer)), criteria, sortCollection, int.MaxValue, false, true);
-
-            foreach (erp_customer item in collectionCustomers)
-            {
-                //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
-                if (item.FiscalNumber == pFiscalNumber) customerExists = true;
-                if (item.Oid.Equals(finalConsumerEntity)) customerExists = true;
-            }
-
-            bool changed;
-            //insert new Customer before Process Finance Document
-            //se for consumidor final, nao altera, cria novo registo
-            if (!customerExists)
-            {
-                changed = true;
-                //Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367]
-                if (string.IsNullOrEmpty(pName)) pName = GeneralUtils.GetResourceByName("saft_value_unknown");
-                result = new erp_customer(XPOSettings.Session)
-                {
-                    Ord = (pFiscalNumber != string.Empty) ? XPOUtility.GetNextTableFieldID("erp_customer", "Ord") : 0,
-                    Code = (pFiscalNumber != string.Empty) ? XPOUtility.GetNextTableFieldID("erp_customer", "Code") : 0,
-                    Name = pName,
-                    Address = pAddress,
-                    Locality = pLocality,
-                    ZipCode = pZipCode,
-                    City = pCity,
-                    Country = pCountry,
-                    FiscalNumber = (pFiscalNumber != string.Empty) ? pFiscalNumber : finalConsumerEntity.FiscalNumber,
-                    CardNumber = (pCardNumber != string.Empty) ? pCardNumber : null,
-                    Discount = pDiscount,
-                    PriceType = configurationPriceType,
-                    Notes = pNotes,
-                    Hidden = pFiscalNumber == string.Empty
-                };
-                if (pPhone != null)
-                {
-                    result.Phone = pPhone;
-                };
-                if (pEmail != null)
-                {
-                    result.Email = pEmail;
-                };
-            }
-            //If customer Exists, check for modifications and UPDATE Details
-            else
-            {
-                changed = false;
-                //Require to get a Fresh Object
-                result = XPOUtility.GetEntityById<erp_customer>(pCustomer.Oid);
-
-                if (result != finalConsumerEntity)
-                {
-                    if (CheckIfFieldChanged(result.Name, pName)) { result.Name = pName; changed = true; };
-                    if (CheckIfFieldChanged(result.Address, pAddress)) { result.Address = pAddress; changed = true; };
-                    if (CheckIfFieldChanged(result.Locality, pLocality)) { result.Locality = pLocality; changed = true; };
-                    if (CheckIfFieldChanged(result.ZipCode, pZipCode)) { result.ZipCode = pZipCode; changed = true; };
-                    if (CheckIfFieldChanged(result.City, pCity)) { result.City = pCity; changed = true; };
-                    if (result.Country != pCountry) { result.Country = pCountry; changed = true; };
-                    if (CheckIfFieldChanged(result.FiscalNumber, pFiscalNumber)) { result.FiscalNumber = pFiscalNumber; changed = true; };
-                    if (CheckIfFieldChanged(result.CardNumber, pCardNumber)) { result.CardNumber = pCardNumber; changed = true; };
-                    if (CheckIfFieldChanged(result.Discount, pDiscount)) { result.Discount = pDiscount; changed = true; };
-                    if (CheckIfFieldChanged(result.Notes, pNotes)) { result.Notes = pNotes; changed = true; };
-                    // Only used in DocumentFinanceDialogPage2
-                    if (pPhone != null && CheckIfFieldChanged(result.Phone, pPhone)) { result.Phone = pPhone; changed = true; };
-                    if (pEmail != null && CheckIfFieldChanged(result.Email, pEmail)) { result.Email = pEmail; changed = true; };
-
-                    //If final Consumer not save
-                    if (changed && result.Oid != finalConsumerEntity.Oid)
-                    {
-                        ResponseType responseType = ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_record_modified"), GeneralUtils.GetResourceByName("dialog_message_customer_updated_save_changes"));
-                        if (responseType == ResponseType.No)
-                        {
-                            changed = false;
-                            //Require to Revert Changes from XPO Session Memory
-                            result.Reload();
-                        }
-                    }
-                }
-            }
-
-            //Shared Save for Insert and Update
-            try
-            {
-                if (changed) result.Save();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                //Dont Show in Log, we process error showing alert to user
-                //_logger.Error(ex.Message, ex);
-                result.Reload();
-                return ex;
-            }
+            throw new Exception("Removed Legacy Code");
         }
 
         //Method to Check Equallity from Db Fields to Input Fields, Required to compare null with "" etc
@@ -1974,7 +1313,13 @@ namespace logicpos
             }
             else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
             {
-                var messageDialog = ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Warning, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_acquire_module_stocks"));
+                var messageDialog = CustomAlerts.Warning()
+                    .WithButtonsType(ButtonsType.OkCancel)
+                    .WithTitleResource("global_warning")
+                    .WithMessageResource("global_warning_acquire_module_stocks")
+                    .ShowAlert();
+
+
                 if (messageDialog == ResponseType.Ok)
                 {
                     Process.Start("https://logic-pos.com/");

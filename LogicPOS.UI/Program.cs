@@ -11,7 +11,6 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
-using LogicPOS.Utility;
 using System;
 using System.Configuration;
 using System.Globalization;
@@ -127,16 +126,16 @@ namespace LogicPOS.UI
         private static void StartApp()
         {
             var intializeTerminalResult = TerminalService.InitializeTerminalAsync().Result;
-           
-            if(intializeTerminalResult.IsError)
+
+            if (intializeTerminalResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(null,intializeTerminalResult.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(null, intializeTerminalResult.FirstError);
                 return;
             }
 
             StartFrontOffice();
         }
-  
+
         private static void OldStartApp()
         {
             if (PluginSettings.LicenceManager != null)

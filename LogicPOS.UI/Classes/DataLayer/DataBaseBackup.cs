@@ -190,7 +190,7 @@ namespace logicpos.Classes.DataLayer
                          ));
 
                         //Moved to Thread Outside > Only Show if not in Silence Mode
-                        if (parentWindow != null) logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
+                        //tchial0 -> if (parentWindow != null) logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_successfully"), systemBackup.FileNamePacked));
                     }
                     else
                     {

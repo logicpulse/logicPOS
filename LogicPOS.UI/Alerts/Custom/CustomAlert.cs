@@ -1,63 +1,101 @@
 ﻿using Gtk;
-using System.IO;
+using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.UI.Extensions;
-using logicpos;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Extensions;
+using System.IO;
 
-namespace LogicPOS.UI.Dialogs
+namespace LogicPOS.UI.Alerts
 {
-    internal class CustomAlert : BaseDialog
+    public class CustomAlert : BaseDialog
     {
         private TextView _txtLog;
+        private string _title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog");
+        private string _message;
+        private DialogFlags _flags = DialogFlags.Modal;
+        private MessageType _messageType = MessageType.Info;
+        private ButtonsType _buttonsType = ButtonsType.Ok;
+        private Window _parentWindow = null;
+        private ActionAreaButtons _buttons;
+        private System.Drawing.Size _size = new System.Drawing.Size(600, 400);
+        private string _icon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
+        private string _image = string.Empty;
 
-        public CustomAlert(Window parentWindow,
-                           DialogFlags pDialogFlags,
-                           System.Drawing.Size pSize,
-                           string pTitle,
-                           string pMessage,
-                           ActionAreaButtons pActionAreaButtons,
-                           string pImageWindowIcon,
-                           string pImageDialog = "")
-            : base(parentWindow, pDialogFlags)
+        public CustomAlert(Window parentWindow)
+            : base(parentWindow, DialogFlags.Modal)
         {
-            InitObject(parentWindow,
-                       pDialogFlags,
-                       pSize,
-                       pTitle,
-                       pMessage,
-                       pActionAreaButtons,
-                       pImageWindowIcon,
-                       pImageDialog);
+
         }
 
-        private void InitObject(Window parentWindow,
-                                DialogFlags pDialogFlags,
-                                System.Drawing.Size pSize,
-                                string pTitle,
-                                string pMessage,
-                                ActionAreaButtons pActionAreaButtons,
-                                string pImageWindowIcon,
-                                string pImageDialog = "")
+        public CustomAlert WithTitle(string title)
         {
-            //Init Local Vars
-            string windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog");
-            System.Drawing.Size windowSize = pSize;
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
+            _title = title;
+            return this;
+        }
 
-            if (!pTitle.Equals(string.Empty))
+        public CustomAlert WithTitleResource(string titleResource)
+        {
+            _title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, titleResource);
+            return this;
+        }
+
+        public CustomAlert WithMessage(string message)
+        {
+            _message = message;
+            return this;
+        }
+
+        public CustomAlert WithMessageResource(string messageResource)
+        {
+            _message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, messageResource);
+            return this;
+        }
+
+
+        public CustomAlert WithMessageType(MessageType messageType)
+        {
+            _messageType = messageType;
+            return this;
+        }
+
+        public CustomAlert WithButtonsType(ButtonsType buttonsType)
+        {
+            _buttonsType = buttonsType;
+            return this;
+        }
+
+        public CustomAlert WithSize(System.Drawing.Size size)
+        {
+            _size = size;
+            return this;
+        }
+
+        public ResponseType ShowAlert()
+        {
+            var alertSettings = new CustomAlertSettings();
+            var alertButtons = new CustomAlertButtons(alertSettings);
+            _buttons = alertButtons.GetActionAreaButtons(_buttonsType);
+            _image = alertSettings.GetDialogImage(_messageType);
+            _icon = alertSettings.GetDialogIcon(_messageType);
+
+            InitObject();
+
+            HideCloseButton();
+            ResponseType responseType = (ResponseType)Run();
+
+            if (responseType != ResponseType.Apply)
             {
-                windowTitle = pTitle;
+                Destroy();
             }
 
-            if (!pImageWindowIcon.Equals(string.Empty))
-            {
-                fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + pImageWindowIcon;
-            }
+            return responseType;
+        }
 
-            //Text View
-            System.Drawing.Size sizeTextView = new System.Drawing.Size(pSize.Width - 40, pSize.Height - 130);
+        private void InitObject()
+        {
+            System.Drawing.Size sizeTextView = new System.Drawing.Size(_size.Width - 40, _size.Height - 130);
             _txtLog = new TextView()
             {
                 BorderWidth = 0,
@@ -69,79 +107,59 @@ namespace LogicPOS.UI.Dialogs
             _txtLog.SizeAllocated += new SizeAllocatedHandler(ScrollTextViewLog);
             _txtLog.WrapMode = WrapMode.Word;
             _txtLog.Sensitive = false;
-            //Removed to be Transparent - CHANGE COLOR ex to System.Drawing.Color.Aqua to View TextView to Position
             _txtLog.ModifyBase(StateType.Insensitive, System.Drawing.Color.Transparent.ToGdkColor());
 
-
             TextBuffer _textBuffer = _txtLog.Buffer;
-            _textBuffer.InsertAtCursor(pMessage);
+            _textBuffer.InsertAtCursor(_message);
 
             ScrolledWindow scrolledWindowTextviewLog = new ScrolledWindow();
-            //scrolledWindowTextviewLog.SetPolicy(PolicyType.Automatic, PolicyType.Automatic);
             scrolledWindowTextviewLog.SetSizeRequest(sizeTextView.Width, sizeTextView.Height);
             scrolledWindowTextviewLog.Add(_txtLog);
             scrolledWindowTextviewLog.Vadjustment.Value = scrolledWindowTextviewLog.Vadjustment.Upper;
 
+            Fixed body = new Fixed();
 
-            //Init Content
-            Fixed fixedContent = new Fixed();
-
-            //Add content, with or without ImageDialog
-            string fileImageDialog = PathsSettings.ImagesFolderLocation + pImageDialog;
-            if (pImageDialog != string.Empty && File.Exists(fileImageDialog))
+            if (_image != string.Empty && File.Exists(_image))
             {
-                Gdk.Pixbuf pixBuf = Utils.FileToPixBuf(fileImageDialog);
+                Gdk.Pixbuf pixBuf = Utils.FileToPixBuf(_image);
                 Image imageDialog = new Image(pixBuf);
 
 
                 scrolledWindowTextviewLog.WidthRequest -= pixBuf.Width;
-                fixedContent.Put(imageDialog, 10, 10);
-                fixedContent.Put(scrolledWindowTextviewLog, pixBuf.Width + 25, 10);
+                body.Put(imageDialog, 10, 10);
+                body.Put(scrolledWindowTextviewLog, pixBuf.Width + 25, 10);
             }
             else
             {
-                fixedContent.Put(scrolledWindowTextviewLog, 0, 0);
+                body.Put(scrolledWindowTextviewLog, 0, 0);
             }
 
-            ActionAreaButtons actionAreaButtons;
-
-            //Default ActionArea Buttons if Not Defined
-            if (pActionAreaButtons == null)
+            if (_buttons == null)
             {
-                //ActionArea Buttons
                 IconButtonWithText buttonOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
                 IconButtonWithText buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-                //Add to ActionArea
-                actionAreaButtons = new ActionAreaButtons
+
+                _buttons = new ActionAreaButtons
                 {
                     new ActionAreaButton(buttonOk, ResponseType.Ok),
                     new ActionAreaButton(buttonCancel, ResponseType.Cancel)
                 };
             }
-            else
-            {
-                //Use ActionAreaButtons from Parameters
-                actionAreaButtons = pActionAreaButtons;
-            }
 
-            //Detect Autosize
-            //if (windowSize.Height == 0 )
-            //{
-            //  int maxSize = 700;
-            //  int targetSize = _textviewLog.HeightRequest + 125;
-            //  windowSize.Height = (targetSize < maxSize) ? targetSize : maxSize;
-            //  _logger.Debug(string.Format("Message: [{0}] [{1}] [{2}] [{3}]", _textviewLog.HeightRequest, targetSize, pSize.Height, windowSize.Height));
-            //}
-
-            //Init Object
-            Initialize(parentWindow/*this*/, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, actionAreaButtons);
+            Initialize(_parentWindow,
+                       _flags,
+                       _icon,
+                       _title,
+                       _size,
+                       body,
+                      _buttons);
         }
 
- 
+
         private void ScrollTextViewLog(object o,
                                        SizeAllocatedArgs args)
         {
-            _txtLog.ScrollToIter(_txtLog.Buffer.EndIter, 0,false, 0,0);
+            _txtLog.ScrollToIter(_txtLog.Buffer.EndIter, 0, false, 0, 0);
         }
     }
 }
