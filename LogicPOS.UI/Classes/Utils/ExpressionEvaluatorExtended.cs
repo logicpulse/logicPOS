@@ -1,6 +1,8 @@
-﻿using logicpos.Classes.Enums.App;
+﻿using Gtk;
+using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
@@ -234,7 +236,13 @@ namespace logicpos
                 catch (Exception ex)
                 {
                     log.Error(ex.Message, ex);
-                    Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LoginWindow.Instance, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+                    var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                              .WithMessage($"Unsupported Resolution Detected: {LogicPOSAppContext.ScreenSize.Width}x{LogicPOSAppContext.ScreenSize.Height}")
+                                              .WithMessageType(MessageType.Error)
+                                              .WithButtonsType(ButtonsType.Close)
+                                              .WithTitleResource(GeneralUtils.GetResourceByName("dialog_message_operation_successfully"))
+                                              .ShowAlert();
+                    //Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LoginWindow.Instance, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height); :: dúvida na substituição ::LUCIANO
                 }
 
                 int posMainWindowComponentsMargin = AppSettings.Instance.intPosMainWindowComponentsMargin;

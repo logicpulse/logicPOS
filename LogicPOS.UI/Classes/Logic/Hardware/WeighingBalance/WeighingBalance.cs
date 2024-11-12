@@ -2,6 +2,7 @@
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
@@ -43,9 +44,16 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                logicpos.Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                    string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), TerminalSettings.LoggedTerminal.WeighingMachine.Designation, ex.Message)
-                    );
+
+                var responseType = new CustomAlert(LoginWindow.Instance)
+                                   .WithMessageResource(string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), TerminalSettings.LoggedTerminal.WeighingMachine.Designation))
+                                   .WithMessage(ex.Message)
+                                   .WithMessageType(MessageType.Error)
+                                   .WithSize(new Size(500,340))
+                                   .WithButtonsType(ButtonsType.Ok)
+                                   .WithTitleResource("global_error")
+                                   .ShowAlert();
+
                 _logger.Error(ex.Message, ex);
                 return false;
             }

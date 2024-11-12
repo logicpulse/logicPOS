@@ -53,7 +53,11 @@ namespace LogicPOS.UI.Application
             }
             catch (Exception ex)
             {
-                CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance);
+                //CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance); ::: DÚVIDA LUCIANO
+
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                            .WithMessage(ex.Message)
+                                            .ShowAlert();
             }
             finally
             {
@@ -123,13 +127,14 @@ namespace LogicPOS.UI.Application
                 {
                     LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                    Utils.ShowMessageBox(null,
-                                         DialogFlags.Modal,
-                                         new Size(900, 700),
-                                         MessageType.Error,
-                                         ButtonsType.Ok,
-                                         GeneralUtils.GetResourceByName("global_error"),
-                                         ex.Message);
+                    var messageDialog = new CustomAlert(LoginWindow.Instance)
+                    .WithMessage(ex.Message)
+                    .WithSize(new Size(900,700))
+                    .WithMessageType(MessageType.Error)
+                    .WithButtonsType(ButtonsType.Ok)
+                    .WithTitleResource("global_error")
+                    .ShowAlert();
+
                     Environment.Exit(0);
                 }
             }
@@ -153,7 +158,14 @@ namespace LogicPOS.UI.Application
                 /* IN009034 */
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(900, 700), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                    .WithMessage(ex.Message)
+                                    .WithSize(new Size(900, 700))
+                                    .WithMessageType(MessageType.Error)
+                                    .WithButtonsType(ButtonsType.Ok)
+                                    .WithTitleResource("global_error")
+                                    .ShowAlert();
+
                 throw; // TO DO
             }
 
@@ -168,7 +180,15 @@ namespace LogicPOS.UI.Application
                     LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
                     string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-                    Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(500, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), string.Format(endMessage, Environment.NewLine));
+
+                    var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                            .WithMessage(string.Format(endMessage, Environment.NewLine))
+                                            .WithSize(new Size(500, 300))
+                                            .WithMessageType(MessageType.Error)
+                                            .WithButtonsType(ButtonsType.Ok)
+                                            .WithTitleResource("global_error")
+                                            .ShowAlert();
+
                     Environment.Exit(0);
                 }
             }
@@ -196,8 +216,15 @@ namespace LogicPOS.UI.Application
 
                 string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
                 _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
+               
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                    .WithMessage(string.Format(endMessage, Environment.NewLine))
+                    .WithSize(new Size(500, 300))
+                    .WithMessageType(MessageType.Info)
+                    .WithButtonsType(ButtonsType.Ok)
+                    .WithTitleResource("global_information")
+                    .ShowAlert();
 
-                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(500, 300), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), string.Format(endMessage, Environment.NewLine));
                 Environment.Exit(0);
             }
 
@@ -264,7 +291,11 @@ namespace LogicPOS.UI.Application
             {
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message,LoginWindow.Instance);
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                        .WithMessage(ex.Message)
+                        .ShowAlert();
+
+               // CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message,LoginWindow.Instance);
             }
 
             FastReportUtils.InitializeFastReports(LogicPOSSettings.AppName);
@@ -311,16 +342,14 @@ namespace LogicPOS.UI.Application
                 LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
 
                 _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
-                Utils.ShowMessageBox(
-                    LoginWindow.Instance,
-                    DialogFlags.Modal,
-                    new Size(650, 380),
-                    MessageType.Error,
-                    ButtonsType.Ok,
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                    "global_error"),
-                    CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                    "dialog_message_error_plugin_softwarevendor_not_registered"));
+
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                        .WithMessageResource("dialog_message_error_plugin_softwarevendor_not_registered")
+                        .WithSize(new Size(650, 380))
+                        .WithMessageType(MessageType.Error)
+                        .WithButtonsType(ButtonsType.Ok)
+                        .WithTitleResource("global_error")
+                        .ShowAlert();
             }
 
             try
@@ -377,7 +406,13 @@ namespace LogicPOS.UI.Application
 
             if (backupsFolderExists == false)
             {
-                ResponseType response = Utils.ShowMessageTouch(LoginWindow.Instance, DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation));
+                ResponseType response = new CustomAlert(LoginWindow.Instance)
+                                        .WithMessageResource(string.Format(GeneralUtils.GetResourceByName("dialog_message_error_create_directory_backups"), PathsSettings.BackupsFolderLocation))
+                                        .WithMessageType(MessageType.Question)
+                                        .WithButtonsType(ButtonsType.YesNo)
+                                        .WithTitleResource("global_error")
+                                        .ShowAlert();
+
                 //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
@@ -417,7 +452,15 @@ namespace LogicPOS.UI.Application
                 string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
 
                 ExportProtectedFiles(fileList);
-                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(600, 350), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), message);
+     
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                    .WithMessage(message)
+                                    .WithSize(new Size(600, 350))
+                                    .WithMessageType(MessageType.Info)
+                                    .WithButtonsType(ButtonsType.Ok)
+                                    .WithTitleResource("global_information")
+                                    .ShowAlert();
+                
                 Environment.Exit(0);
             }
             else
@@ -442,7 +485,7 @@ namespace LogicPOS.UI.Application
                     //If Not IgnoreProtection, show alert and exit
                     if (!LogicPOSSettings.ProtectedFilesIgnoreProtection)
                     {
-                        Utils.ShowMessageBox(
+                        /*Utils.ShowMessageBox(   DUVÍDA ::: LUCIANO
                             LoginWindow.Instance,
                             DialogFlags.Modal,
                             new Size(800, 400),
@@ -451,7 +494,18 @@ namespace LogicPOS.UI.Application
                             CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
                             "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
                             "dialog_message_error_protected_files_invalid_files_detected"),
-                            filesMessage));
+                            filesMessage));*/
+
+                        var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                            .WithMessage(filesMessage)
+                                            .WithMessageResource(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
+                                                                                "dialog_message_error_protected_files_invalid_files_detected"))
+                                            .WithSize(new Size(800, 400))
+                                            .WithMessageType(MessageType.Error)
+                                            .WithButtonsType(ButtonsType.Close)
+                                            .WithTitleResource("global_error")
+                                            .ShowAlert();
+
 
                         Environment.Exit(0);
                     }
@@ -529,16 +583,14 @@ namespace LogicPOS.UI.Application
 
         public static void Quit(Window parentWindow)
         {
-            ResponseType responseType = Utils.ShowMessageBox(
-                parentWindow,
-                DialogFlags.Modal,
-                new Size(400, 300),
-                MessageType.Question,
-                ButtonsType.YesNo,
-                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                "global_quit_title"),
-                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                "global_quit_message"));
+            ResponseType responseType = new CustomAlert(parentWindow)
+                                            .WithMessageResource(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_quit_message"))
+                                            .WithSize(new Size(400, 300))
+                                            .WithMessageType(MessageType.Question)
+                                            .WithButtonsType(ButtonsType.YesNo)
+                                            .WithTitleResource("global_quit_title")
+                                            .ShowAlert();
+
 
             if (responseType == ResponseType.Yes)
             {

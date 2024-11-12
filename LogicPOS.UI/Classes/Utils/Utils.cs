@@ -545,8 +545,12 @@ namespace logicpos
 
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                CustomAlerts.ShowUnsupportedResolutionErrorAlert(LoginWindow.Instance, screenSize.Width, screenSize.Height);
-
+                var messageDialog= new CustomAlert(LoginWindow.Instance)
+                    .WithMessage($"ShowUnsupportedResolutionErrorAlert{screenSize.Width}, {screenSize.Height}")
+                    .WithSize( new Size())
+                    .ShowAlert();
+                
+                //ShowUnsupportedResolutionErrorAlert(LoginWindow.Instance, screenSize.Width, screenSize.Height);
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
             return supportedScreenSizeEnum;
@@ -1313,7 +1317,8 @@ namespace logicpos
             }
             else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
             {
-                var messageDialog = CustomAlerts.Warning()
+                var messageDialog = new CustomAlert(parentWindow)
+                    .WithMessageType(MessageType.Warning)
                     .WithButtonsType(ButtonsType.OkCancel)
                     .WithTitleResource("global_warning")
                     .WithMessageResource("global_warning_acquire_module_stocks")

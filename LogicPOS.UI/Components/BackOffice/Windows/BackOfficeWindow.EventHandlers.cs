@@ -19,6 +19,7 @@ using LogicPOS.Api.Features.Company.GetAngolaSaft;
 using DocumentFormat.OpenXml.Wordprocessing;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
 {
@@ -44,7 +45,13 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (File.Exists(lPathToUpdater))
             {
-                ResponseType responseType = Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 400), MessageType.Question, ButtonsType.YesNo, string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), GeneralSettings.ServerVersion), GeneralUtils.GetResourceByName("global_pos_update"));
+                var responseType = new CustomAlert(this)
+                                    .WithMessageResource("global_pos_update")
+                                    .WithSize(new Size(600,400))
+                                    .WithMessageType(MessageType.Question)
+                                    .WithButtonsType(ButtonsType.YesNo)
+                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), GeneralSettings.ServerVersion))
+                                    .ShowAlert();
 
                 if (responseType == ResponseType.Yes)
                 {

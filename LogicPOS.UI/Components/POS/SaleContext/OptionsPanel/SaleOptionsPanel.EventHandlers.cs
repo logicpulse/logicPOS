@@ -4,6 +4,7 @@ using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Company.GetCompanyInformations;
+using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -122,15 +123,38 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
-            PrintOrder();
+            PrintWorkSession();
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
 
         }
 
+        private void PrintWorkSession()
+        {
+           var workSessionData= DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDataQuery(new Guid("3f89ea05-c00f-4ad0-be14-3b616cc7c156"))).Result.Value;
+            var pp = new PrintWorkSessionDto()
+            {
+                StartDate = workSessionData.StartDate,
+                EndDate = (DateTime)workSessionData.EndDate,
+                TerminalDesignation = TerminalService.Terminal.Designation,
+                PeriodType = WorkSessionPeriodType.Day.ToString(),
+                SessionStatus = WorkSessionPeriodStatus.Open.ToString()
+            };
+            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
+            if (printer == null)
+            {
+                return;
+            }
+            
+            new ThermalPrinting(printer, TerminalService.Terminal.Designation,workSessionData, pp);
+        }
+
+
         private void PrintOrder()
         {
-           var orderTicket = GetOrderTicket();
+            
+            var orderTicket = GetOrderTicket();
+
             PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
             if (printer == null)
             {

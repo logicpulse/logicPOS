@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Alerts
             var errorMessage = new StringBuilder();
             errorMessage.AppendLine("Code: " + error.Code);
             errorMessage.AppendLine("Description: " + error.Description);
-          
+
 
             var metadata = error.Metadata;
 
@@ -98,12 +98,13 @@ namespace LogicPOS.UI.Alerts
                 }
             }
 
-            Utils.ShowMessageTouch(sourceWindow,
-                                   DialogFlags.Modal,
-                                   MessageType.Error,
-                                   ButtonsType.Ok,
-                                   "Erro",
-                                   errorMessage.ToString());
+            var messageDialog = new CustomAlert(sourceWindow)
+                                .WithMessage(errorMessage.ToString())
+                                .WithMessageType(MessageType.Error)
+                                .WithButtonsType(ButtonsType.Ok)
+                                .WithTitle("Erro")
+
+                                .ShowAlert();
         }
     }
 }

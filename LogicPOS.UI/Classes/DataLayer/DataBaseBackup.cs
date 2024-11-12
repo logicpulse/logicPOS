@@ -11,6 +11,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
@@ -207,7 +208,13 @@ namespace logicpos.Classes.DataLayer
                         // Show only when "Silent Mode" is on
                         if (parentWindow != null)
                         {
-                            logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked));
+                            var messageDialog = new CustomAlert(parentWindow)
+                                             .WithMessageResource(string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked))
+                                             .WithMessageType(MessageType.Warning)
+                                             .WithSize(_sizeDialog)
+                                             .WithButtonsType(ButtonsType.Close)
+                                             .WithTitleResource("global_information")
+                                             .ShowAlert();
                         }
 
                         _logger.Debug($"DataBaseBackup.Backup(Window parentWindow): {string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error_when_secure_compacting"), systemBackup.FileNamePacked)}");
@@ -216,7 +223,16 @@ namespace logicpos.Classes.DataLayer
                 else
                 {
                     //Moved to Thread Outside > Only Show if not in Silence Mode
-                    if (parentWindow != null) logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error"), Path.GetFileName(fileName)));
+                    if (parentWindow != null)
+                    {
+                        var messageDialog = new CustomAlert(parentWindow)
+                          .WithMessageResource(string.Format(GeneralUtils.GetResourceByName("dialog_message_database_backup_error"), Path.GetFileName(fileName)))
+                          .WithMessageType(MessageType.Error)
+                          .WithSize(_sizeDialog)
+                          .WithButtonsType(ButtonsType.Close)
+                          .WithTitleResource("global_error")
+                          .ShowAlert();
+                    }
                 }
                 /* IN009164 */
                 SessionXpoForBackupPurposes.Disconnect();
@@ -263,7 +279,15 @@ namespace logicpos.Classes.DataLayer
                         {
                             //#EQUAL#1
                             string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
+                            
+                            var messageDialog = new CustomAlert(parentWindow)
+                              .WithMessage(message)
+                              .WithMessageType(MessageType.Error)
+                              .WithSize(new Size(600,300))
+                              .WithButtonsType(ButtonsType.Ok)
+                              .WithTitleResource("global_error")
+                              .ShowAlert();
+
                             return false;
                         }
                         break;
@@ -376,7 +400,15 @@ namespace logicpos.Classes.DataLayer
                     {
                         //#EQUAL#1
                         string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(600, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), message);
+                        
+                        var messageDialog = new CustomAlert(parentWindow)
+                                          .WithMessage(message)
+                                          .WithMessageType(MessageType.Error)
+                                          .WithSize(new Size(600,300))
+                                          .WithButtonsType(ButtonsType.Ok)
+                                          .WithTitleResource("global_error")
+                                          .ShowAlert();
+
                         return false;
                     }
                 }
@@ -434,11 +466,24 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-                logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_successfully"), pFileNamePacked));
+               
+                var messageDialog = new CustomAlert(parentWindow)
+                                  .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_successfully"), pFileNamePacked))
+                                  .WithMessageType(MessageType.Info)
+                                  .WithSize(_sizeDialog)
+                                  .WithButtonsType(ButtonsType.Close)
+                                  .WithTitleResource("global_information")
+                                  .ShowAlert();
             }
             else
             {
-                logicpos.Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, _sizeDialog, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error"), pFileNamePacked));
+                var messageDialog = new CustomAlert(parentWindow)
+                                   .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error"), pFileNamePacked))
+                                   .WithMessageType(MessageType.Error)
+                                   .WithSize(_sizeDialog)
+                                   .WithButtonsType(ButtonsType.Close)
+                                   .WithTitleResource("global_information")
+                                   .ShowAlert();
             }
 
             return resultRestore;
@@ -571,14 +616,13 @@ namespace logicpos.Classes.DataLayer
 
         public static void ShowRequestBackupDialog(Window parentWindow)
         {
-            ResponseType responseType = logicpos.Utils.ShowMessageTouch(
-              parentWindow,
-              DialogFlags.Modal,
-              MessageType.Question,
-              ButtonsType.YesNo,
-              GeneralUtils.GetResourceByName("global_information"),
-              GeneralUtils.GetResourceByName("dialog_message_request_backup")
-            );
+
+            var responseType = new CustomAlert(parentWindow)
+                   .WithMessageResource("dialog_message_request_backup")
+                   .WithMessageType(MessageType.Question)
+                   .WithButtonsType(ButtonsType.YesNo)
+                   .WithTitleResource("global_information")
+                   .ShowAlert();
 
             if (responseType == ResponseType.Yes)
             {

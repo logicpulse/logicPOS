@@ -10,6 +10,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components;
 using System;
 using System.Data;
@@ -124,7 +125,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                 )
             )
             {
-                logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, ArticleBag.TotalFinal, GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid));
+                var messageDialog = new CustomAlert(SourceWindow.TransientFor)
+                                    .WithMessage("SimplifiedInvoiceMaxValueExceedForFinalConsumer")
+                                    .ShowAlert();
+                //logicpos.Utils.ShowMessageTouchSimplifiedInvoiceMaxValueExceedForFinalConsumer(_posDocumentFinanceDialog, ArticleBag.TotalFinal, GeneralSettings.GetRequiredCustomerDetailsAboveValue(XPOSettings.ConfigurationSystemCountry.Oid));
                 _validated = false;
             }
             //If Simplified Invoice, Check if Total Document and Total Services is Not Greater than Max Value

@@ -19,6 +19,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
@@ -47,7 +48,14 @@ namespace LogicPOS.UI
             try
             {
                 //Protection to Check if SystemDate is < Last DocumentDate
-                ResponseType responseType = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(parentWindow, pProcessFinanceDocumentParameter);
+              //  ResponseType messageDialog = Utils.ShowMessageTouchCheckIfFinanceDocumentHasValidDocumentDate(parentWindow, pProcessFinanceDocumentParameter);
+                var responseType = new CustomAlert(parentWindow)
+                                              .WithMessage("IfFinanceDocumentHasValidDocumentDate")
+                                              .WithMessageType(MessageType.Question)
+                                              .WithButtonsType(ButtonsType.YesNo)
+                                              .WithTitleResource("global_information")
+                                              .ShowAlert();
+
                 if (responseType != ResponseType.Yes) return result;
 
                 fin_documentfinancemaster documentFinanceMaster = DocumentProcessingUtils.PersistFinanceDocument(pProcessFinanceDocumentParameter, true);
@@ -135,14 +143,12 @@ namespace LogicPOS.UI
 
                     if (documentFinanceMaster.DocumentType.PrintRequestConfirmation)
                     {
-                        responseType = Utils.ShowMessageTouch(
-                            parentWindow,
-                            DialogFlags.Modal,
-                            MessageType.Question,
-                            ButtonsType.YesNo,
-                            GeneralUtils.GetResourceByName("window_title_dialog_document_finance"),
-                            GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation")
-                        );
+                                 responseType = new CustomAlert(parentWindow)
+                                              .WithMessageResource("dialog_message_request_print_document_confirmation")
+                                              .WithMessageType(MessageType.Question)
+                                              .WithButtonsType(ButtonsType.YesNo)
+                                              .WithTitleResource("window_title_dialog_document_finance")
+                                              .ShowAlert();
 
                         if (responseType == ResponseType.No) printDocument = false;
                     }
@@ -172,15 +178,14 @@ namespace LogicPOS.UI
                         errorMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_creating_financial_document"), ex.Message);
                         break;
                 }
-                Utils.ShowMessageBox(
-                  parentWindow,
-                  DialogFlags.Modal,
-                  _sizeDefaultWindowSize,
-                  MessageType.Error,
-                  ButtonsType.Close,
-                  GeneralUtils.GetResourceByName("global_error"),
-                  errorMessage
-                );
+                
+                var messageDialog= new CustomAlert(parentWindow)
+                                 .WithMessage(errorMessage)
+                                 .WithSize(_sizeDefaultWindowSize)
+                                 .WithMessageType(MessageType.Error)
+                                 .WithButtonsType(ButtonsType.Close)
+                                 .WithTitleResource("global_error")
+                                 .ShowAlert();
             }
 
             return result;
@@ -229,9 +234,18 @@ namespace LogicPOS.UI
 
                 if (sendDocumentResult == null || sendDocumentResult.ReturnCode != "0")
                 {
-                    dialogResponse = Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"),
+                    /*dialogResponse = Utils.ShowMessageBox(parentWindow, DialogFlags.Modal, new Size(700, 440), MessageType.Error, ButtonsType.YesNo, GeneralUtils.GetResourceByName("global_error"),
                         string.Format(GeneralUtils.GetResourceByName("dialog_message_error_in_at_webservice"), sendDocumentResult.ReturnCode, sendDocumentResult.ReturnMessage)
-                    );
+                    );*/
+
+                    dialogResponse = new CustomAlert(parentWindow)
+                                   .WithMessageResource("dialog_message_error_in_at_webservice")
+                                   .WithSize(new Size(700,440))
+                                   .WithMessageType(MessageType.Error)
+                                   .WithButtonsType(ButtonsType.YesNo)
+                                   .WithTitleResource("global_error")
+                                   .ShowAlert();
+
                     /* IN009083 - returns true when WS call fails and user opts to do not retry */
                     if (ResponseType.No.Equals(dialogResponse))
                     {
@@ -337,15 +351,13 @@ namespace LogicPOS.UI
                         errorMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_creating_financial_document"), ex.Exception.Message);
                         break;
                 }
-                Utils.ShowMessageBox(
-                  parentWindow,
-                  DialogFlags.Modal,
-                  _sizeDefaultWindowSize,
-                  MessageType.Error,
-                  ButtonsType.Close,
-                  GeneralUtils.GetResourceByName("global_error"),
-                  errorMessage
-                );
+                var messageDialog = new CustomAlert(parentWindow)
+                    .WithMessage(errorMessage)
+                    .WithSize(_sizeDefaultWindowSize)
+                    .WithMessageType(MessageType.Error)
+                    .WithButtonsType(ButtonsType.Close)
+                    .WithTitleResource("Global_error")
+                    .ShowAlert();
             }
             return result;
         }
@@ -421,27 +433,25 @@ namespace LogicPOS.UI
 
                 }
 
-                Utils.ShowMessageBox(
-                  parentWindow,
-                  DialogFlags.Modal,
-                  _sizeDefaultWindowSize,
-                  MessageType.Info,
-                  ButtonsType.Close,
-                  GeneralUtils.GetResourceByName("global_information"),
-                  string.Format(GeneralUtils.GetResourceByName("dialog_message_saftpt_exported_successfully"), result)
-                );
+                var messageDialog = new CustomAlert(parentWindow)
+                    .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_saftpt_exported_successfully"), result))
+                    .WithSize(_sizeDefaultWindowSize)
+                    .WithMessageType(MessageType.Info)
+                    .WithButtonsType(ButtonsType.Close)
+                    .WithTitleResource("global_information")
+                    .ShowAlert();
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageBox(
-                  parentWindow,
-                  DialogFlags.Modal,
-                  _sizeDefaultWindowSize,
-                  MessageType.Error,
-                  ButtonsType.Close,
-                  GeneralUtils.GetResourceByName("global_error"),
-                  GeneralUtils.GetResourceByName("dialog_message_saftpt_exported_error")
-                );
+                var messageDialog = new CustomAlert(parentWindow)
+                                    .WithMessageResource("dialog_message_saftpt_exported_error")
+                                    .WithSize(_sizeDefaultWindowSize)
+                                    .WithMessageType(MessageType.Error)
+                                    .WithButtonsType(ButtonsType.Close)
+                                    .WithTitleResource("global_error")
+                                    .ShowAlert();
+
+ 
                 _logger.Error(ex.Message, ex);
             }
 
@@ -495,7 +505,9 @@ namespace LogicPOS.UI
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
                     if (financeMasterPrinter == null)
                     {
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(sourceWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, financeMaster.DocumentType.ResourceString));
+                      var messageDialog = new CustomAlert(sourceWindow)
+                                        .WithMessageResource(financeMaster.DocumentType.ResourceString)
+                                        .ShowAlert();
                     }
                     else
                     {
@@ -570,7 +582,13 @@ namespace LogicPOS.UI
                             var resultOpenDoor = Printing.Utility.PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
                             {
-                                Utils.ShowMessageTouch(sourceWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
+                                var messageDialog = new CustomAlert(sourceWindow)
+                                                    .WithMessageResource("open_cash_draw_permissions")
+                                                    .WithSize(_sizeDefaultWindowSize)
+                                                    .WithMessageType(MessageType.Info)
+                                                    .WithButtonsType(ButtonsType.Close)
+                                                    .WithTitleResource("global_information")
+                                                    .ShowAlert();
                             }
                             else
                             {
@@ -589,7 +607,14 @@ namespace LogicPOS.UI
             catch (Exception ex)
             {
                 var printerDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
-                Utils.ShowMessageTouchErrorPrintingTicket(sourceWindow, printerDto, ex);
+                //Utils.ShowMessageTouchErrorPrintingTicket(sourceWindow, printerDto, ex); ::: DÚVIDA NA SUBSTITUIÇÃO ::: LUCIANO
+
+                var messageDialog = new CustomAlert(sourceWindow)
+                                                .WithMessage(ex.Message)
+                                                .WithMessageType(MessageType.Error)
+                                                .WithTitleResource("global_error")
+                                                .ShowAlert();
+
             }
 
             return result;
@@ -627,7 +652,12 @@ namespace LogicPOS.UI
 
             if (LicenseSettings.LicenceRegistered == false)
             {
-                Utils.ShowMessageBoxUnlicensedError(parentWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
+                var messageDialog = new CustomAlert(parentWindow)
+                                                .WithMessageResource(ResourceNames.PRINTING_DISABLED_MESSAGE)
+                                                .WithSize(_sizeDefaultWindowSize)
+                                                .WithTitleResource("global_error")
+                                                .ShowAlert();
+                //Utils.ShowMessageBoxUnlicensedError(parentWindow, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.PRINTING_DISABLED_MESSAGE));
                 return false;
             }
 
@@ -635,9 +665,13 @@ namespace LogicPOS.UI
             {
                 if (printer == null)
                 {
-                    Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(
+                    /*Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(
                         parentWindow,
-                        GeneralUtils.GetResourceByName("global_documentfinance_type_title_rc"));
+                        GeneralUtils.GetResourceByName("global_documentfinance_type_title_rc"));*/
+
+                    var messageDialog = new CustomAlert(parentWindow)
+                                               .WithMessageResource("global_documentfinance_type_title_rc")
+                                               .ShowAlert();
 
                     return false;
                 }
@@ -665,9 +699,12 @@ namespace LogicPOS.UI
                 //Recibos com impressão em impressora térmica
                 if (TerminalSettings.HasLoggedTerminal)
                 {
-
-
-                    ResponseType responseType = Utils.ShowMessageTouch(parentWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.YesNo, GeneralUtils.GetResourceByName("dialog_edit_DialogConfigurationPrintersType_tab1_label"), GeneralUtils.GetResourceByName("global_printer_choose_printer"));
+                    var responseType = new CustomAlert(parentWindow)
+                                                .WithMessageResource("global_printer_choose_printer")
+                                                .WithMessageType(MessageType.Question)
+                                                .WithButtonsType(ButtonsType.YesNo)
+                                                .WithTitleResource("dialog_edit_DialogConfigurationPrintersType_tab1_label")
+                                                .ShowAlert();
 
                     if (responseType == ResponseType.Yes)
                     {
@@ -689,7 +726,11 @@ namespace LogicPOS.UI
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
+                var messageDialog = new CustomAlert(parentWindow)
+                                    .WithMessage(ex.Message)
+                                    .ShowAlert();
+
+                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -704,7 +745,10 @@ namespace LogicPOS.UI
 
             if (LicenseSettings.LicenceRegistered == false)
             {
-                Utils.ShowMessageBoxUnlicensedError(parentWindow, GeneralUtils.GetResourceByName("global_printing_function_disabled"));
+                var messageDialog = new CustomAlert(parentWindow)
+                            .WithMessageResource("global_printing_function_disabled")
+                            .ShowAlert();
+                //Utils.ShowMessageBoxUnlicensedError(parentWindow, GeneralUtils.GetResourceByName("global_printing_function_disabled"));
             }
             else
             {
@@ -731,7 +775,10 @@ namespace LogicPOS.UI
                             default:
                                 break;
                         }
-                        Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(parentWindow, ticketTitle);
+                        var messageDialog = new CustomAlert(parentWindow)
+                                                .WithMessage(ticketTitle)
+                                                .ShowAlert();
+                        //Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(parentWindow, ticketTitle);
                     }
                     else
                     {
@@ -767,7 +814,12 @@ namespace LogicPOS.UI
             catch (Exception ex)
             {
                 var printerDto = MappingUtils.GetPrinterDto(pPrinter);
-                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printerDto, ex);
+
+                var messageDialog = new CustomAlert(parentWindow)
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+
+                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printerDto, ex);
             }
 
             return result;
@@ -792,7 +844,11 @@ namespace LogicPOS.UI
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, null, ex);
+                var messageDialog = new CustomAlert(parentWindow)
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+
+                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, null, ex);
             }
 
             return result;
@@ -829,7 +885,12 @@ namespace LogicPOS.UI
             catch (Exception ex)
             {
                 var printer = MappingUtils.GetPrinterDto(printerEntity);
-                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
+
+                var messageDialog = new CustomAlert(parentWindow)
+                                        .WithMessage(ex.Message)
+                                        .ShowAlert();
+
+                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -855,7 +916,11 @@ namespace LogicPOS.UI
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
+                var messageDialog = new CustomAlert(parentWindow)
+                                        .WithMessage(ex.Message)
+                                        .ShowAlert();
+
+                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
             }
 
             return result;
@@ -887,7 +952,14 @@ namespace LogicPOS.UI
             {
                 string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected"), pFilePath);
                 if (pExtraMessage != string.Empty) message = string.Format("{1}{0}{0}{2}", Environment.NewLine, message, pExtraMessage);
-                Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(800, 400), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), message);
+                
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
+                                        .WithMessage(message)
+                                        .WithSize(new Size(800,400))
+                                        .WithMessageType(MessageType.Error)
+                                        .WithButtonsType(ButtonsType.Close)
+                                        .WithTitleResource("global_error")
+                                        .ShowAlert();
             }
 
             return result;

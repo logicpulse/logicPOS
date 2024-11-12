@@ -11,6 +11,7 @@ using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
 using LogicPOS.UI;
+using LogicPOS.UI.Alerts;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -69,7 +70,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 if (Page3.ArticleBag != null && Page3.ArticleBag.Count > 0)
                 {
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source, DialogFlags.DestroyWithParent | DialogFlags.Modal, MessageType.Question, ButtonsType.YesNo, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_finance_dialog_confirm_cancel"));
+                    var response = new CustomAlert(WindowSettings.Source)
+                                            .WithMessageType(MessageType.Question)
+                                            .WithButtonsType(ButtonsType.YesNo)
+                                            .WithTitleResource("window_title_dialog_message_dialog")
+                                            .WithMessageResource("dialog_message_finance_dialog_confirm_cancel")
+                                            .ShowAlert();
+                    
                     if (response == ResponseType.No)
                     {
                         //Keep Running
@@ -280,12 +287,13 @@ Page2.EntryBoxCustomerEmail.EntryValidation.Text,
                 if (resultObject.GetType() == typeof(ConstraintViolationException))
                 {
                     Exception ex = (Exception)resultObject;
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(WindowSettings.Source,
-                                                                            DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                                                                            MessageType.Warning,
-                                                                            ButtonsType.Close,
-                                                                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"),
-                                                                            ex.InnerException.Message);
+
+                    var response = new CustomAlert(WindowSettings.Source)
+                                            .WithMessageType(MessageType.Warning)
+                                            .WithButtonsType(ButtonsType.Close)
+                                            .WithTitleResource("window_title_dialog_exception_error")
+                                            .WithMessage(ex.InnerException.Message)
+                                            .ShowAlert();
                 }
                 customer = null;
             }
@@ -426,21 +434,30 @@ Page2.EntryBoxCustomerEmail.EntryValidation.Text,
                 && articleBag.TotalFinal > Page2.EntryBoxSelectCustomerName.Value.CardCredit
             )
             {
-                logicpos.Utils.ShowMessageTouch(
-                    this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
-                    string.Format(
+                var message = string.Format(
                         CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_value_exceed_customer_card_credit"),
                         LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(Page2.EntryBoxSelectCustomerName.Value.CardCredit, XPOSettings.ConfigurationSystemCurrency.Acronym),
-                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym)
-                    )
-                );
+                        LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(articleBag.TotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym));
+
+                var messageDialog = new CustomAlert(this)
+                        .WithMessageType(MessageType.Error)
+                        .WithButtonsType(ButtonsType.Ok)
+                        .WithTitleResource("global_error")
+                        .WithMessage(message)
+                        .ShowAlert();
+
                 result = false;
             }
 
             //Protection to Prevent Recharge Customer Card with Invalid User (User without Card or FinalConsumer...)
             if (result && !DocumentProcessingUtils.IsCustomerCardValidForArticleBag(articleBag, Page2.EntryBoxSelectCustomerName.Value))
             {
-                logicpos.Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_invalid_customer_card_detected"));
+                var messageDialog = new CustomAlert(this)
+                                    .WithMessageType(MessageType.Error)
+                                    .WithButtonsType(ButtonsType.Ok)
+                                    .WithTitleResource("global_error")
+                                    .WithMessageResource("dialog_message_invalid_customer_card_detected")
+                                    .ShowAlert();
                 result = false;
             }
 

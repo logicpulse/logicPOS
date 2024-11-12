@@ -80,8 +80,6 @@ namespace LogicPOS.Printing.Documents
            WorkSessionData workSessionData
            )
         {
-            
-
             string dateCloseDisplay = workSessionData.StartDate.ToString(CultureSettings.DateTimeFormat);
 
 
@@ -160,7 +158,7 @@ namespace LogicPOS.Printing.Documents
             //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
              groupPositionTitlePayments--;
 
-            for(int i = 0; i < 2; i++) { 
+            
                     //Increment Group Position
                     groupPosition++;
 
@@ -190,7 +188,7 @@ namespace LogicPOS.Printing.Documents
                     //Generate Columns
                     columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", workSessionData.FamilyReportItems.ToString(), 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_family"), 0, TicketColumnsAlignment.Left),
                                 new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
                                 //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
                                 new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
@@ -214,8 +212,8 @@ namespace LogicPOS.Printing.Documents
                             total = Convert.ToDecimal(item.Total);
 
                             //Sum Summary Totals
-                            summaryTotalQuantity = quantity;
-                            summaryTotal = total;
+                            summaryTotalQuantity += quantity;
+                            summaryTotal += total;
                             //_logger.Debug(string.Format("Designation: [{0}], quantity: [{1}], unitMeasure: [{2}], total: [{3}]", designation, quantity, unitMeasure, total));
                             //Create Row
                             dataRow = dataTable.NewRow();
@@ -253,17 +251,17 @@ namespace LogicPOS.Printing.Documents
                     WriteLineTextMode rowTextMode;
 
                     //Dynamic Print All except Last One (Totals), Double Height in Titles
-                    for (int x = 0; x < tableCustomPrint.Count - 1; i++)
+                    for (int x = 0; x < tableCustomPrint.Count - 1; x++)
                     {
                         //Prepare TextMode Based on Row
-                        rowTextMode = (i == 0) ? WriteLineTextMode.DoubleHeight : WriteLineTextMode.Normal;
+                        rowTextMode = (x == 0) ? WriteLineTextMode.DoubleHeight : WriteLineTextMode.Normal;
                         //Print Row
-                        _printer.WriteLine(tableCustomPrint[i], rowTextMode);
+                        _printer.WriteLine(tableCustomPrint[x], rowTextMode);
                     }
 
                     //Line Feed
                     _printer.LineFeed();
-                }
+                
             
 
             //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop

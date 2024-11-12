@@ -306,14 +306,16 @@ namespace LogicPOS.UI.Components.Menus
 
             if (totalStock - SelectedArticle.DefaultQuantity <= SelectedArticle.MinimumStock)
             {
-                var stockWarningResponse = Utils.ShowMessageBox(SourceWindow,
-                                                                DialogFlags.DestroyWithParent,
-                                                                new Size(500, 350),
-                                                                MessageType.Question,
-                                                                ButtonsType.YesNo,
-                                                                GeneralUtils.GetResourceByName("global_stock_movements"),
-                                                                $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedArticle.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedArticle.MinimumStock.ToString()}");
-               
+                var message= $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedArticle.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedArticle.MinimumStock.ToString()}";
+                
+                var stockWarningResponse = new CustomAlert(SourceWindow)
+                                        .WithMessage(message)
+                                        .WithSize(new Size(500,350))
+                                        .WithMessageType(MessageType.Question)
+                                        .WithButtonsType(ButtonsType.YesNo)
+                                        .WithTitleResource("global_stock_movements")
+                                        .ShowAlert();
+                
                 if (stockWarningResponse == ResponseType.No)
                 {
                     return;

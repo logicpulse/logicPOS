@@ -12,10 +12,12 @@ using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 using System.Data;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
 {
@@ -640,14 +642,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs.DocumentFinanceDialog
                             GeneralUtils.GetResourceByName("global_source_finance_document"),
                             creditedDocuments);
 
-                        logicpos.Utils.ShowMessageBox(
-                            this.SourceWindow.TransientFor, DialogFlags.Modal,
-                            new System.Drawing.Size(550, 450),
-                            MessageType.Info,
-                            ButtonsType.Close,
-                            GeneralUtils.GetResourceByName("global_information"),
-                            message);
-
+                        var messageDialog = new CustomAlert(SourceWindow.TransientFor)
+                                    .WithMessage(message)
+                                    .WithSize(new Size(550, 450))
+                                    .WithMessageType(MessageType.Info)
+                                    .WithButtonsType(ButtonsType.Close)
+                                    .WithTitleResource("global_information")
+                                    .ShowAlert();
                         return;
                     }
                     else

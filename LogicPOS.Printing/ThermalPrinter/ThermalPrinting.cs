@@ -24,6 +24,15 @@ namespace LogicPOS.Printing.Utility
         protected readonly PrintWorkSessionDto PrintWorkSessionDto;
 
 
+        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userDesignation)
+        {
+            PrinterDto = printerDto;
+            CompanyInformationsDto = companyInformationsDto;
+            OrderTicketDto = orderTicketDto;
+            TerminalDesignation = terminalDesignation;
+            UserName = userDesignation;
+            PrintOrder();
+        }
 
         public ThermalPrinting(PrinterDto printerDto, string terminalDesignation, WorkSessionData workSessionData, PrintWorkSessionDto printWorkSessionDto)
         {
@@ -45,15 +54,6 @@ namespace LogicPOS.Printing.Utility
             PrintDocument();
         }
 
-        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userDesignation)
-        {
-            PrinterDto = printerDto;
-            CompanyInformationsDto = companyInformationsDto;
-            OrderTicketDto = orderTicketDto;
-            TerminalDesignation = terminalDesignation;
-            UserName = userDesignation;
-            PrintOrder();
-        }
 
         public void PrintOrder()
         {

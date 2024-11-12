@@ -8,6 +8,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.Settings.Extensions;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
@@ -260,22 +261,42 @@ namespace logicpos
                     }
                     if (result == 1)
                     {
-                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_import_successfully"));
+                        var messageDialog = new CustomAlert(parentWindow)
+                                           .WithMessageResource("dialog_message_import_successfully")
+                                           .WithMessageType(MessageType.Info)
+                                           .WithButtonsType(ButtonsType.Close)
+                                           .WithTitleResource(GeneralUtils.GetResourceByName("dialog_message_operation_successfully"))
+                                           .ShowAlert();
                     }
                     else if (result == -1)
                     {
-                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Close, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("dialog_message_partial_import"));
+                        var messageDialog = new CustomAlert(parentWindow)
+                                               .WithMessageResource("dialog_message_partial_import")
+                                               .WithMessageType(MessageType.Warning)
+                                               .WithButtonsType(ButtonsType.Close)
+                                               .WithTitleResource(GeneralUtils.GetResourceByName("global_warning"))
+                                               .ShowAlert();
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_import_error"));
+                        var messageDialog = new CustomAlert(parentWindow)
+                                               .WithMessageResource("dialog_message_import_error")
+                                               .WithMessageType(MessageType.Error)
+                                               .WithButtonsType(ButtonsType.Close)
+                                               .WithTitleResource(GeneralUtils.GetResourceByName("global_error"))
+                                               .ShowAlert();
                     }
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error("ReadExcel: Error proccess file " + ex.Message, ex);
-                Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), string.Format(GeneralUtils.GetResourceByName("dialog_message_import_error")));
+                var messageDialog = new CustomAlert(parentWindow)
+                                               .WithMessageResource("dialog_message_import_error")
+                                               .WithMessageType(MessageType.Error)
+                                               .WithButtonsType(ButtonsType.Close)
+                                               .WithTitleResource(GeneralUtils.GetResourceByName("global_error"))
+                                               .ShowAlert();
             }
 
             return dtResult;
@@ -742,11 +763,21 @@ namespace logicpos
                         Utils.ThreadStart(parentWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
+                            var messageDialog = new CustomAlert(parentWindow)
+                                               .WithMessageResource("dialog_message_exported_successfully")
+                                               .WithMessageType(MessageType.Info)
+                                               .WithButtonsType(ButtonsType.Close)
+                                               .WithTitleResource(GeneralUtils.GetResourceByName("dialog_message_operation_successfully"))
+                                               .ShowAlert();
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
+                            var messageDialog = new CustomAlert(parentWindow)
+                                              .WithMessage("Empty Database")
+                                              .WithMessageType(MessageType.Error)
+                                              .WithButtonsType(ButtonsType.Close)
+                                              .WithTitleResource(GeneralUtils.GetResourceByName("global_error"))
+                                              .ShowAlert();
                         }
                         break;
 
@@ -827,11 +858,21 @@ namespace logicpos
                         Utils.ThreadStart(parentWindow, _threadExport, GeneralUtils.GetResourceByName("global_export_articles"));
                         if (result)
                         {
-                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("dialog_message_operation_successfully"), GeneralUtils.GetResourceByName("dialog_message_exported_successfully"));
+                            var messageDialog = new CustomAlert(parentWindow)
+                                              .WithMessageResource("dialog_message_exported_successfully")
+                                              .WithMessageType(MessageType.Info)
+                                              .WithButtonsType(ButtonsType.Close)
+                                              .WithTitleResource(GeneralUtils.GetResourceByName("dialog_message_operation_successfully"))
+                                              .ShowAlert();
                         }
                         else
                         {
-                            Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), "Empty Database");
+                            var messageDialog = new CustomAlert(parentWindow)
+                                              .WithMessage("Empty Database")
+                                              .WithMessageType(MessageType.Error)
+                                              .WithButtonsType(ButtonsType.Close)
+                                              .WithTitleResource(GeneralUtils.GetResourceByName("global_error"))
+                                              .ShowAlert();
                         }
                         break;
 
@@ -843,7 +884,12 @@ namespace logicpos
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                Utils.ShowMessageTouch(parentWindow, DialogFlags.Modal, MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_export_error"));
+                var messageDialog = new CustomAlert(parentWindow)
+                                              .WithMessageResource("dialog_message_exported_error")
+                                              .WithMessageType(MessageType.Error)
+                                              .WithButtonsType(ButtonsType.Close)
+                                              .WithTitleResource(GeneralUtils.GetResourceByName("global_error"))
+                                              .ShowAlert();
             }
 
         }
