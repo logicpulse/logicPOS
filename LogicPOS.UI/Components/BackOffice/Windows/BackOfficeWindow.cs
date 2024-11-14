@@ -24,8 +24,9 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 {
     public partial class BackOfficeWindow : BackOfficeBaseWindow
     {
-        private readonly string _privilegesBackOfficeMenuOperation = $"{LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix}_{"MENU"}";
+        public static BackOfficeWindow Instance { get; set; }
 
+        private readonly string _privilegesBackOfficeMenuOperation = $"{LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix}_{"MENU"}";
 
         public BackOfficeWindow()
         {
@@ -208,10 +209,10 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             string configurationPlaceTableLabel = AppOperationModeSettings.IsDefaultTheme ? GeneralUtils.GetResourceByName("global_place_tables") : GeneralUtils.GetResourceByName("window_title_dialog_orders");
             othersSection.Add("ConfigurationPlaceTable", new AccordionNode(configurationPlaceTableLabel) { Content = new TablesPage(this) });
-            othersSection.Add("ConfigurationPlaceMovementType", new AccordionNode(GeneralUtils.GetResourceByName("global_places_movement_type")) { Content = new MovementTypePage(this) });
+            othersSection.Add("ConfigurationPlaceMovementType", new AccordionNode(GeneralUtils.GetResourceByName("global_places_movement_type")) { Content = new MovementTypesPage(this) });
             othersSection.Add("ConfigurationUnitMeasure", new AccordionNode(GeneralUtils.GetResourceByName("global_units_measure")) { Content = new MeasurementUnitsPage(this) });
             othersSection.Add("ConfigurationUnitSize", new AccordionNode(GeneralUtils.GetResourceByName("global_units_size")) { Content = new SizeUnitsPage(this) });
-            othersSection.Add("ConfigurationHolidays", new AccordionNode(GeneralUtils.GetResourceByName("global_holidays")) { Content = new HolidayPage(this) });
+            othersSection.Add("ConfigurationHolidays", new AccordionNode(GeneralUtils.GetResourceByName("global_holidays")) { Content = new HolidaysPage(this) });
             othersSection.Add("Warehouse", new AccordionNode(GeneralUtils.GetResourceByName("global_warehouse")) { Content = new WarehousesPage(this) });
             return othersSection;
         }
@@ -220,7 +221,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             return new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = new FiscalYearsPage(this) } },
+                    { "DocumentFinanceYears", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_years")) { Content = FiscalYearsPage.Instance } },
                     { "DocumentFinanceSeries", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_series")) { Content = new DocumentSeriesPage(this) } },
                     { "DocumentFinanceType", new AccordionNode(GeneralUtils.GetResourceByName("global_documentfinance_type")) { Content = new DocumentTypesPage(this) } },
                     { "ConfigurationVatRate", new AccordionNode(GeneralUtils.GetResourceByName("global_vat_rates")) { Content = new VatRatesPage(this) } },
@@ -236,7 +237,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "UserDetail", new AccordionNode(GeneralUtils.GetResourceByName("global_users")) { Content = new UsersPage(this) } },
                     { "UserPermissionProfile", new AccordionNode(GeneralUtils.GetResourceByName("global_user_permissions")) { Content = new PermissionsPage(this) } },
-                    { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = new CommissionGroupPage(this) } }
+                    { "UserCommissionGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_user_commission_groups")) { Content = new CommissionGroupsPage(this) } }
                 };
         }
 
@@ -261,7 +262,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 {
                     { "Customer", new AccordionNode(GeneralUtils.GetResourceByName("global_customers")) { Content = new CustomersPage(this) } },
                     { "CustomerType", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_types")) { Content = new CustomerTypePage(this) } },
-                    { "CustomerDiscountGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_discount_groups")) { Content = new DiscountGroupPage(this) } }
+                    { "CustomerDiscountGroup", new AccordionNode(GeneralUtils.GetResourceByName("global_customer_discount_groups")) { Content = new DiscountGroupsPage(this) } }
                 };
         }
 
@@ -292,8 +293,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
                 { "ArticleFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_families")) { Content = new ArticleFamiliesPage(this) } },
                 { "ArticleSubFamily", new AccordionNode(GeneralUtils.GetResourceByName("global_subfamilies")) { Content = new ArticleSubfamiliesPage(this) } },
                 { "Article", new AccordionNode(GeneralUtils.GetResourceByName("global_articles")) { Content = new ArticlesPage(this) } },
-                { "ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypePage(this) } },
-                { "ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = new ArticleClassPage(this) } },
+                { "ArticleType", new AccordionNode(GeneralUtils.GetResourceByName("global_article_types")) { Content = new ArticleTypesPage(this) } },
+                { "ArticleClass", new AccordionNode(GeneralUtils.GetResourceByName("global_article_class")) { Content = new ArticleClassesPage(this) } },
                 { "ConfigurationPriceType", new AccordionNode(GeneralUtils.GetResourceByName("global_price_type")) { Content = new PriceTypesPage(this) } },
                 { "ArticleStock", new AccordionNode(GeneralUtils.GetResourceByName("global_stock_movements")) { Clicked = delegate { Utils.OpenArticleStockDialog(this); } } }
             };

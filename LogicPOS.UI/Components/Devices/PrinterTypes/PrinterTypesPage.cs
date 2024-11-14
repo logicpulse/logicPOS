@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PrinterTypes.GetAllPrinterTypes;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -19,8 +20,6 @@ namespace LogicPOS.UI.Components.Pages
         public PrinterTypesPage(Window parent) : base(parent)
         {
         }
-
-
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
@@ -46,13 +45,12 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var printerType = (PrinterType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = printerType.ThermalPrinter ? GeneralUtils.GetResourceByName("global_treeview_true") : GeneralUtils.GetResourceByName("global_treeview_false"); 
+                (cell as CellRendererText).Text = printerType.ThermalPrinter ? GeneralUtils.GetResourceByName("global_treeview_true") : GeneralUtils.GetResourceByName("global_treeview_false");
             }
 
             var title = GeneralUtils.GetResourceByName("global_printer_thermal_printer");
             return Columns.CreateColumn(title, 2, RenderValue);
         }
-
 
         protected override void InitializeSort()
         {
@@ -80,5 +78,19 @@ namespace LogicPOS.UI.Components.Pages
             });
         }
 
+        #region Signleton
+        private static PrinterTypesPage _instance;
+        public static PrinterTypesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PrinterTypesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

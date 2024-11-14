@@ -1,6 +1,8 @@
 ﻿using Gtk;
 using logicpos;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -16,14 +18,12 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                                             fields.Where(field => field.IsValid() == false)
                                                              .Select(field => field.FieldName));
 
-            Utils.ShowMessageBox(LogicPOSAppContext.BackOffice,
-                                 DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                                 new Size(500, 500),
-                                 MessageType.Error,
-                                 ButtonsType.Ok,
-                                 GeneralUtils.GetResourceByName("window_title_dialog_validation_error"),
-                                 string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"),
-                                               invalidFields));
+            CustomAlerts.Error(BackOfficeWindow.Instance)
+                        .WithSize(new Size(500, 340))
+                        .WithTitleResource("window_title_dialog_validation_error")
+                        .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"),
+                                                  invalidFields))
+                        .ShowAlert();
         }
     }
 }

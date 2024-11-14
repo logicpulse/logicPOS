@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
@@ -81,7 +82,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (Value.Contains(EntryBoxAddFile.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_filepicker_existing_file_error"));
+                CustomAlerts.Error(_sourceWindow)
+                             .WithSize(new Size(500, 340))
+                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_filepicker_existing_file_error"))
+                             .ShowAlert();
             }
             else
             {
@@ -156,21 +160,20 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     if (entryBoxValidationButton.EntryValidation.Text == dialog.FileChooser.Filename)
                     {
-                        //Do Nothing
+                        
                     }
                     else if (Value.Contains(dialog.FileChooser.Filename))
                     {
-                        logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_filepicker_existing_file_error"));
+                        CustomAlerts.Error(_sourceWindow)
+                                     .WithMessage(GeneralUtils.GetResourceByName("dialog_message_filepicker_existing_file_error"))
+                                     .ShowAlert();
                     }
                     else
                     {
-                        //Update fileList with Changed Value
                         Value[currentFileListIndexPosition] = dialog.FileChooser.Filename;
-                        //Update and Validate Entry
                         entryBoxValidationButton.EntryValidation.Text = dialog.FileChooser.Filename;
                         entryBoxValidationButton.EntryValidation.Validate();
 
-                        //Trigger Event
                         OnChange();
 
                         if (_debug) ListValue();

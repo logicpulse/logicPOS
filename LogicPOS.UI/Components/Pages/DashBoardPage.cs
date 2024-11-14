@@ -2,14 +2,16 @@
 using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.Shared.CustomDocument;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Medsphere.Widgets;
@@ -25,20 +27,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
     internal class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
-        private readonly IconButtonWithText botao1;
-        private readonly IconButtonWithText botao2;
-        private readonly IconButtonWithText botao3;
-        private readonly IconButtonWithText botao4;
-        private readonly IconButtonWithText botao5;
-        private readonly IconButtonWithText botao6;
-        private readonly IconButtonWithText botao7;
-        private readonly IconButtonWithText botao8;
+        private  IconButtonWithText BtnTerminals { get; set; }
+        private readonly IconButtonWithText BtnPreferenceParameters;
+        private readonly IconButtonWithText BtnFiscalYears;
+        private readonly IconButtonWithText BtnPrinters;
+        private readonly IconButtonWithText BtnArticles;
+        private readonly IconButtonWithText BtnCustomers;
+        private readonly IconButtonWithText BtnUsers;
+        private readonly IconButtonWithText BtnTables;
         private readonly IconButtonWithText BtnDocuments;
         private readonly IconButtonWithText BtnNewDocument;
         private readonly IconButtonWithText botao11;
-        private readonly IconButtonWithText botao12;
-        private readonly IconButtonWithText botao13;
-        private readonly IconButtonWithText botao14;
+        private readonly IconButtonWithText BtnArticleStock;
+        private readonly IconButtonWithText BtnReportsMenu;
+        private readonly IconButtonWithText BtnPrintReportRouter;
         private readonly IconButtonWithText botao15;
         private readonly IconButtonWithText botao16;
         private readonly ICollection collectionDocuments = null;
@@ -161,7 +163,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventBox.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);
                 //Buttons Configuração
-                botao1 = new IconButtonWithText(
+                BtnTerminals = new IconButtonWithText(
                     new ButtonSettings
                     {
                         Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU",
@@ -174,7 +176,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         ButtonSize = new Size(105, 70)
                     });
 
-                botao2 = new IconButtonWithText(
+                BtnPreferenceParameters = new IconButtonWithText(
                     new ButtonSettings
                     {
                         Name = "BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW",
@@ -188,98 +190,90 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     });
 
 
-                botao3 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_documentfinance_years_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertFiscalYear, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao4 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_printers"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnFiscalYears = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_documentfinance_years_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertFiscalYear, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnPrinters = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_printers"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
                 //Buttons Tabelas
-                botao5 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_ARTICLE_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_articles"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileArticlesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao6 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CUSTOMER_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_customers"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileCostumersIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao7 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_USERDETAIL_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_users"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileEmployeesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao8 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_other_tables"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileOtherTablesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnArticles = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_ARTICLE_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_articles"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileArticlesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnCustomers = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CUSTOMER_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_customers"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileCostumersIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnUsers = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_USERDETAIL_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_users"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileEmployeesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnTables = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_other_tables"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileOtherTablesIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
                 //Buttons Documentos
                 BtnDocuments = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSSHOW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileNewDocumentIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 BtnNewDocument = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSNEW_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileDocumentsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 botao11 = new IconButtonWithText(new ButtonSettings { Name = "BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _filePayedDocumentsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao12 = new IconButtonWithText(new ButtonSettings { Name = "STOCK_MERCHANDISE_ENTRY_ACCESS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertMerchIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnArticleStock = new IconButtonWithText(new ButtonSettings { Name = "STOCK_MERCHANDISE_ENTRY_ACCESS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileInsertMerchIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
                 //Buttons Relatórios
-                botao13 = new IconButtonWithText(new ButtonSettings { Name = "REPORT_ACCESS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_reports"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsMenuIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
-                botao14 = new IconButtonWithText(new ButtonSettings { Name = "REPORT_COMPANY_BILLING", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("report_company_billing_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsTotalIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnReportsMenu = new IconButtonWithText(new ButtonSettings { Name = "REPORT_ACCESS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("global_reports"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsMenuIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
+                BtnPrintReportRouter = new IconButtonWithText(new ButtonSettings { Name = "REPORT_COMPANY_BILLING", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("report_company_billing_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsTotalIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 botao15 = new IconButtonWithText(new ButtonSettings { Name = "REPORT_CUSTOMER_BALANCE_DETAILS", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("report_customer_balance_details_short"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsClientsIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
                 botao16 = new IconButtonWithText(new ButtonSettings { Name = "REPORT_SALES_DETAIL_PER_DATE", BackgroundColor = _colorBaseDialogDefaultButtonBackground, Text = GeneralUtils.GetResourceByName("report_sales_per_date"), Font = _fontBaseDialogButton, FontColor = _colorBaseDialogDefaultButtonFont, Icon = _fileReportsDayIcon, IconSize = sizeIcon, ButtonSize = new Size(105, 70) });
 
-                PosReportsDialog reportsClicked = new PosReportsDialog();
+                BtnTerminals.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
+                BtnPreferenceParameters.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
+                BtnFiscalYears.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
+                BtnPrinters.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
 
-                //Permissões dos botões
-                botao1.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
-                botao2.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
-                botao3.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
-                botao4.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
+                BtnArticles.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_VIEW");
+                BtnCustomers.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_VIEW");
+                BtnUsers.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERDETAIL_VIEW");
+                BtnTables.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
 
-                botao5.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_ARTICLE_VIEW");
-                botao6.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CUSTOMER_VIEW");
-                botao7.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USERDETAIL_VIEW");
-                botao8.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
+                BtnDocuments.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
+                BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+                botao11.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
+                BtnArticleStock.Sensitive = AuthenticationService.UserHasPermission("STOCK_MERCHANDISE_ENTRY_ACCESS");
 
-                BtnDocuments.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
-                BtnNewDocument.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
-                botao11.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
-                botao12.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("STOCK_MERCHANDISE_ENTRY_ACCESS");
+                BtnReportsMenu.Sensitive = AuthenticationService.UserHasPermission("REPORT_ACCESS");
+                BtnPrintReportRouter.Sensitive = AuthenticationService.UserHasPermission("REPORT_COMPANY_BILLING");
+                botao15.Sensitive = AuthenticationService.UserHasPermission("REPORT_CUSTOMER_BALANCE_DETAILS");
+                botao16.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_DATE");
 
-                //Este fica comentado, porque o próprio menu dos reports tem controlo de previlégios
-                //botao13.Sensitive = FrameworkUtils.HasPermissionTo("REPORT_ACCESS");
-                botao14.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_COMPANY_BILLING");
-                botao15.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_CUSTOMER_BALANCE_DETAILS");
-                botao16.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_SALES_DETAIL_PER_DATE");
+                BtnTerminals.Clicked += delegate { BtnTerminals.Page = TerminalsPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnTerminals, null); };
+                BtnPreferenceParameters.Clicked += delegate { BtnPreferenceParameters.Page = PreferenceParametersPage.CompanyPage; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnPreferenceParameters, null); };
+                BtnFiscalYears.Clicked += delegate { BtnFiscalYears.Page = FiscalYearsPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnFiscalYears, null); };
+                BtnPrinters.Clicked += delegate { BtnPrinters.Page = PrintersPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnPrinters, null); };
 
+                BtnArticles.Clicked += delegate { BtnArticles.Page = ArticlesPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnArticles, null); };
+                BtnCustomers.Clicked += delegate { BtnCustomers.Page = CustomersPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnCustomers, null); };
+                BtnUsers.Clicked += delegate { BtnUsers.Page = UsersPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnUsers, null); };
+                BtnTables.Clicked += delegate { BtnTables.Page = TablesPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnTables, null); };
 
-                //Actions Configurações
-                botao1.Clicked += delegate { botao1.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTerminal>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao1, null); };
-                botao2.Clicked += delegate { botao2.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPreferenceParameter>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao2, null); };
-                botao3.Clicked += delegate { botao3.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewDocumentFinanceYears>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao3, null); };
-                botao4.Clicked += delegate { botao4.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPrinters>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao4, null); };
-
-                //Actions Tabelas
-                botao5.Clicked += delegate { botao5.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewArticle>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao5, null); };
-                botao6.Clicked += delegate { botao6.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewCustomer>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao6, null); };
-                botao7.Clicked += delegate { botao7.Page = new UsersPage(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao7, null); };
-                botao8.Clicked += delegate { botao8.Page = logicpos.Utils.GetGenericTreeViewXPO<TreeViewConfigurationPlaceTable>(parentWindow); LogicPOSAppContext.BackOffice.MenuBtn_Clicked(botao8, null); };
-
-                //Actions Documents
-                BtnDocuments.Clicked += delegate {  };
+                BtnDocuments.Clicked += delegate { };
                 BtnNewDocument.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(parentWindow); };
-                botao11.Clicked += delegate {  };
-                botao12.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_parentWindow); };
+                botao11.Clicked += delegate { };
+                BtnArticleStock.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_parentWindow); };
 
-                //Actions Reports
-                botao13.Clicked += delegate { logicpos.Utils.StartReportsMenuFromBackOffice(parentWindow); };
-                botao14.Clicked += delegate
+                BtnReportsMenu.Clicked += delegate { logicpos.Utils.StartReportsMenuFromBackOffice(parentWindow); };
+                BtnPrintReportRouter.Clicked += delegate
                 {
-                    reportsClicked.PrintReportRouter
-                    (botao14, null);
+                    //tchial0
+                    //reportsClicked.PrintReportRouter
+                    //(BtnPrintReportRouter, null);
                 };
-                botao15.Clicked += delegate { reportsClicked.PrintReportRouter(botao15, null); };
-                botao16.Clicked += delegate { reportsClicked.PrintReportRouter(botao16, null); };
 
-                //Posição dos botões na dashboard
-                fix.Put(botao1, 55, 62);
-                fix.Put(botao2, 55, 155);
-                fix.Put(botao3, 55, 250);
-                fix.Put(botao4, 55, 345);
+                botao15.Clicked += delegate { /*reportsClicked.PrintReportRouter(botao15, null);*/ };
+                botao16.Clicked += delegate {/* reportsClicked.PrintReportRouter(botao16, null);*/ };
 
-                fix.Put(botao5, 245, 62);
-                fix.Put(botao6, 245, 155);
-                fix.Put(botao7, 245, 250);
-                fix.Put(botao8, 245, 345);
+                fix.Put(BtnTerminals, 55, 62);
+                fix.Put(BtnPreferenceParameters, 55, 155);
+                fix.Put(BtnFiscalYears, 55, 250);
+                fix.Put(BtnPrinters, 55, 345);
+
+                fix.Put(BtnArticles, 245, 62);
+                fix.Put(BtnCustomers, 245, 155);
+                fix.Put(BtnUsers, 245, 250);
+                fix.Put(BtnTables, 245, 345);
 
                 fix.Put(BtnDocuments, 440, 62);
                 fix.Put(BtnNewDocument, 440, 155);
                 fix.Put(botao11, 440, 250);
-                fix.Put(botao12, 440, 345);
+                fix.Put(BtnArticleStock, 440, 345);
 
-                fix.Put(botao13, 635, 62);
-                fix.Put(botao14, 635, 155);
+                fix.Put(BtnReportsMenu, 635, 62);
+                fix.Put(BtnPrintReportRouter, 635, 155);
                 fix.Put(botao15, 635, 250);
                 fix.Put(botao16, 635, 345);
 
@@ -440,7 +434,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
             catch (Exception ex)
             {
-                logicpos.Utils.ShowMessageTouchErrorRenderTheme(parentWindow, string.Format("{1}{0}{0}{2}", Environment.NewLine, errorMessage, ex.Message));
+                CustomAlerts.ShowThemeRenderingErrorAlert($"{errorMessage}\n\n{ex.Message}", parentWindow);
             }
 
             ShowAll();

@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
+using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -10,30 +10,24 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 
-
 namespace LogicPOS.UI.Components.Pages
 {
-    public class DocumentTypesPage : Page<DocumentType>
+    public class PaymentConditionsPage : Page<PaymentCondition>
     {
-        public DocumentTypesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
+        public PaymentConditionsPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
         }
-
-        protected override IRequest<ErrorOr<IEnumerable<DocumentType>>> GetAllQuery => new GetAllDocumentTypesQuery();
 
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
+        protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
+
         public override void RunModal(EntityEditionModalMode mode)
         {
-            if (mode == EntityEditionModalMode.Insert)
-            {
-                return;
-            }
-
-            var modal = new DocumentTypeModal(mode, SelectedEntity);
+            var modal = new PaymentConditionModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
@@ -50,16 +44,17 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var documentType = (DocumentType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = documentType.Acronym.ToString();
+                var paymentCondition = (PaymentCondition)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = paymentCondition.Acronym.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = GeneralUtils.GetResourceByName("global_ConfigurationPaymentCondition_Acronym");
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
 
         protected override void InitializeSort()
         {
+
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
             AddCodeSorting(0);
@@ -72,27 +67,27 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftType = (DocumentType)model.GetValue(left, 0);
-                var rightType = (DocumentType)model.GetValue(right, 0);
+                var leftPaymentCondition = (PaymentCondition)model.GetValue(left, 0);
+                var rightPaymentCondition = (PaymentCondition)model.GetValue(right, 0);
 
-                if (leftType == null || rightType == null)
+                if (leftPaymentCondition == null || rightPaymentCondition == null)
                 {
                     return 0;
                 }
 
-                return leftType.Acronym.CompareTo(rightType.Acronym);
+                return leftPaymentCondition.Acronym.CompareTo(rightPaymentCondition.Acronym);
             });
         }
 
         #region Singleton
-        private static DocumentTypesPage _instance;
-        public static DocumentTypesPage Instance
+        private static PaymentConditionsPage _instance;
+        public static PaymentConditionsPage Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new DocumentTypesPage(BackOfficeWindow.Instance);
+                    _instance = new PaymentConditionsPage(BackOfficeWindow.Instance);
                 }
 
                 return _instance;
@@ -100,5 +95,4 @@ namespace LogicPOS.UI.Components.Pages
         }
         #endregion
     }
-
 }

@@ -78,5 +78,21 @@ namespace LogicPOS.UI.Components.Pages
                 return leftArticleSubfamily.Family?.Designation.CompareTo(rightArticleSubfamily.Family?.Designation) ?? 0;
             });
         }
+
+        #region Singleton
+        private static ArticleSubfamiliesPage _instance;
+        public static ArticleSubfamiliesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ArticleSubfamiliesPage(null);
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (documentTypes.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow, documentTypes.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this.SourceWindow, documentTypes.FirstError);
                 return Enumerable.Empty<DocumentType>();
             }
 
@@ -191,7 +191,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (getCurrency.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this.SourceWindow, getCurrency.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this.SourceWindow, getCurrency.FirstError);
                 return null;
             }
 

@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Menus
 
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(SourceWindow,result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(SourceWindow,result.FirstError);
                 return;
             }
 

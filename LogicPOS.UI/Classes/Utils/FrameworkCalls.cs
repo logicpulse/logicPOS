@@ -21,6 +21,7 @@ using LogicPOS.Settings;
 using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
@@ -466,172 +467,7 @@ namespace LogicPOS.UI
             return PrintFinanceDocument(parentWindow,  pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(
-            Window sourceWindow,
-            sys_configurationprinters pPrinter,
-            fin_documentfinancemaster financeMaster,
-            string terminalDesignation, string userName, CompanyPrintingInformationsDto companyInformationsDto)
-        {
-            bool result = false;
-            bool openDrawer = false;
-            PosDocumentFinancePrintDialog.PrintDialogResponse printDialogResponse;
-
-            DeleteGeneratedFiles();
-
-            //TK016249 - Impressoras - Diferenciação entre Tipos
-            //Deteta janela de origem de forma a escolher qual impressora usar - TicketList -> ThermalPrinter | PosDocumentFinanceDialog -> Printer
-            sys_configurationprinters printer;
-            sys_configurationprinters financeMasterPrinter;
-            if (PrintingSettings.ThermalPrinter.UsingThermalPrinter)
-            {
-                //Both printer can be the same, if not Defined in DocumentType
-                //Printer for Drawer and Document, if not defined in DocumentType
-                printer = pPrinter != null ? pPrinter : TerminalSettings.LoggedTerminal.ThermalPrinter;
-                financeMasterPrinter = financeMaster.DocumentType.Printer != null ? financeMaster.DocumentType.Printer : printer;
-            }
-            else
-            {
-                //Both printer can be the same, if not Defined in DocumentType
-                //Printer for Drawer and Document, if not defined in DocumentType
-                printer = pPrinter != null ? pPrinter : TerminalSettings.LoggedTerminal.Printer;
-                financeMasterPrinter = financeMaster.DocumentType.Printer != null ? financeMaster.DocumentType.Printer : printer;
-            }
-
-            try
-            {
-                //Overload Management
-                if (financeMasterPrinter == null)
-                {
-                    //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
-                    if (financeMasterPrinter == null)
-                    {
-                      var messageDialog = new CustomAlert(sourceWindow)
-                                        .WithMessageResource(financeMaster.DocumentType.ResourceString)
-                                        .ShowAlert();
-                    }
-                    else
-                    {
-                        printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
-                        //Print with default DocumentFinanceYearSerieTerminal Template
-                        var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
-                        var printerDto = new PrinterDto { Designation = printer.Designation, CutCommand = printer.ThermalCutCommand };
-                        if (printDialogResponse.Response == ResponseType.Ok) result = Printing.Utility.PrintingUtils.PrintFinanceDocument(printerDto, financeMasterDto);
-                    }
-                }
-                else
-                {
-                    bool validFiles = true;
-                    string extraMessage = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_protected_files_invalid_files_detected_print_document_ignored"), financeMaster.DocumentNumber);
-
-                    //Printer Drawer : Set openDrawer
-                    switch (Printing.Utility.PrintingUtils.GetPrinterToken(printer.PrinterType.Token))
-                    {
-                        //ThermalPrinter : Ticket Files
-                        case "THERMAL_PRINTER_WINDOWS":
-                        case "THERMAL_PRINTER_LINUX":
-                        case "THERMAL_PRINTER_SOCKET":
-                            openDrawer = true;
-                            break;
-                    }
-
-                    //Printer Document : Set Valid Files
-                    switch (Printing.Utility.PrintingUtils.GetPrinterToken(financeMasterPrinter.PrinterType.Token))
-                    {
-                        //ThermalPrinter : Ticket Files
-                        case "THERMAL_PRINTER_WINDOWS":
-                        case "THERMAL_PRINTER_SOCKET":
-                            //validFiles = IsValidProtectedFile(SharedUtils.OSSlash(template.FileTemplate), extraMessage);
-                            break;
-                        //FastReport : Report Files
-                        case "GENERIC_PRINTER_WINDOWS":
-                        case "REPORT_EXPORT_PDF":
-                            //Required both Template Files ReportDocumentFinance and ReportDocumentFinanceWayBill
-                            //validFiles = (
-                            //    IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinance.frx"), extraMessage) &&
-                            //    IsValidProtectedFile(SharedUtils.OSSlash(@"Resources/Reports/UserReports/ReportDocumentFinanceWayBill.frx"), extraMessage)
-                            //);
-                            break;
-                        case "VIRTUAL_SCREEN":
-                            break;
-                    }
-
-                    //ProtectedFiles Protection
-                    if (!validFiles) return false;
-
-                    //Call Print Document : Receives ResponseType.Ok without user Confirmation, if Document was never Printer
-                    printDialogResponse = PosDocumentFinancePrintDialog.GetDocumentFinancePrintProperties(sourceWindow, financeMaster);
-
-                    //Print with Parameters Printer and Template
-                    if (printDialogResponse.Response == ResponseType.Ok)
-                    {
-                        var financeMasterPrinterDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
-                        var financeMasterDto = MappingUtils.GetPrintDocumentMasterDto(financeMaster);
-
-                        result = Printing.Utility.PrintingUtils.PrintFinanceDocument(
-                            financeMasterPrinterDto,
-                            financeMasterDto,
-                            printDialogResponse.CopyNames,
-                            printDialogResponse.SecondCopy,
-                            printDialogResponse.Motive);
-
-
-
-                        //OpenDoor use Printer Drawer
-                        if (openDrawer && financeMaster.DocumentType.PrintOpenDrawer && !printDialogResponse.SecondCopy)
-                        {
-                            var resultOpenDoor = Printing.Utility.PrintingUtils.OpenDoor();
-                            if (!resultOpenDoor)
-                            {
-                                var messageDialog = new CustomAlert(sourceWindow)
-                                                    .WithMessageResource("open_cash_draw_permissions")
-                                                    .WithSize(_sizeDefaultWindowSize)
-                                                    .WithMessageType(MessageType.Info)
-                                                    .WithButtonsType(ButtonsType.Close)
-                                                    .WithTitleResource("global_information")
-                                                    .ShowAlert();
-                            }
-                            else
-                            {
-                                XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
-                                 GeneralUtils.GetResourceByName("audit_message_cashdrawer_out"),
-                                 TerminalSettings.LoggedTerminal.Designation,
-                                 "Button Open Door"));
-                            }
-
-                        }
-
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-                var printerDto = MappingUtils.GetPrinterDto(financeMasterPrinter);
-                //Utils.ShowMessageTouchErrorPrintingTicket(sourceWindow, printerDto, ex); ::: DÚVIDA NA SUBSTITUIÇÃO ::: LUCIANO
-
-                var messageDialog = new CustomAlert(sourceWindow)
-                                                .WithMessage(ex.Message)
-                                                .WithMessageType(MessageType.Error)
-                                                .WithTitleResource("global_error")
-                                                .ShowAlert();
-
-            }
-
-            return result;
-        }
-
-        private static void DeleteGeneratedFiles()
-        {
-            string rootFolderPath = @"temp";
-            string filesToDelete = @"*qrcode*";
-            string[] fileList = System.IO.Directory.GetFiles(rootFolderPath, filesToDelete);
-            foreach (string file in fileList)
-            {
-                System.Diagnostics.Debug.WriteLine(file + "will be deleted");
-                System.IO.File.Delete(file);
-            }
-        }
-
+    
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintFinanceDocumentPayment
 
@@ -739,7 +575,7 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
         //Shared Method to call all other PrintTicketMethods to Check Licence and other Protections
-        public static bool SharedPrintTicket(Window parentWindow, sys_configurationprinters pPrinter, TicketType pTicketType)
+        public static bool SharedPrintTicket(Window parentWindow, Api.Entities.Printer printer, TicketType pTicketType)
         {
             bool result = false;
 
@@ -748,14 +584,14 @@ namespace LogicPOS.UI
                 var messageDialog = new CustomAlert(parentWindow)
                             .WithMessageResource("global_printing_function_disabled")
                             .ShowAlert();
-                //Utils.ShowMessageBoxUnlicensedError(parentWindow, GeneralUtils.GetResourceByName("global_printing_function_disabled"));
+
             }
             else
             {
                 try
                 {
                     //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
-                    if (pPrinter == null)
+                    if (printer == null)
                     {
                         string ticketTitle = string.Empty;
                         switch (pTicketType)
@@ -796,30 +632,46 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintTableTicket
 
-        public static bool PrintOrderRequest(Window parentWindow, sys_configurationprinters pPrinter, OrderMain pDocumentOrderMain, fin_documentorderticket orderTicket, 
-                                            string terminalDesignation, CompanyPrintingInformationsDto companyInformationsDto)
+        public static bool PrintOrderRequest(Window parentWindow,
+                                             Api.Entities.Printer printerEntity,
+                                             OrderMain pDocumentOrderMain,
+                                             fin_documentorderticket orderTicket,
+                                             string terminalDesignation,
+                                             CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result = false;
 
+            var printerDto = new PrinterDto
+            {
+                Id = printerEntity.Id,
+                Designation = printerEntity.Designation,
+                NetworkName = printerEntity.NetworkName,
+                Token = printerEntity.Type.Token,
+                IsThermal = printerEntity.Type.ThermalPrinter
+            };
+
             try
             {
-                if (SharedPrintTicket(parentWindow, pPrinter, TicketType.TableOrder))
+                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.TableOrder))
                 {
-                    var printer = MappingUtils.GetPrinterDto(pPrinter);
+                    
+
                     var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printer,orderTicketDto,terminalDesignation,"userTest",companyInformationsDto );
+
+                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printerDto,
+                                                                                               orderTicketDto,
+                                                                                               terminalDesignation,
+                                                                                               "userTest",
+                                                                                               companyInformationsDto);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
             catch (Exception ex)
             {
-                var printerDto = MappingUtils.GetPrinterDto(pPrinter);
-
-                var messageDialog = new CustomAlert(parentWindow)
-                            .WithMessage(ex.Message)
-                            .ShowAlert();
-
-                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printerDto, ex);
+                CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
+                                                          printerEntity.Designation,
+                                                          printerEntity.NetworkName,
+                                                          ex.Message);
             }
 
             return result;
@@ -857,12 +709,10 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintWorkSessionMovement
 
-        public static bool PrintWorkSessionMovement(
-            Window parentWindow,
-            sys_configurationprinters printerEntity,
-            PrintWorkSessionDto workSessionPeriod,
-            string terminalDesignation
-            )
+        public static bool PrintWorkSessionMovement(Window parentWindow,
+                                                    Api.Entities.Printer printerEntity,
+                                                    PrintWorkSessionDto workSessionPeriod,
+                                                    string terminalDesignation)
         {
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
@@ -871,26 +721,31 @@ namespace LogicPOS.UI
             {
                 if (SharedPrintTicket(parentWindow, printerEntity, TicketType.WorkSession))
                 {
-                    var printerDto = MappingUtils.GetPrinterDto(printerEntity);
+                    var printerDto = new PrinterDto
+                    {
+                        Id = printerEntity.Id,
+                        Designation = printerEntity.Designation,
+                        NetworkName = printerEntity.NetworkName,
+                        Token = printerEntity.Type.Token,
+                        IsThermal = printerEntity.Type.ThermalPrinter
+                    };
+
                     string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
                     var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.Id);
-                    result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(
-                        printerDto,
-                        terminalDesignation,
-                        workSessionPeriod,
-                        workSessionMovementPrintingFileTemplate,
-                        sessionPeriodSummaryDetails);
+
+                    result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(printerDto,
+                                                                                     terminalDesignation,
+                                                                                     workSessionPeriod,
+                                                                                     workSessionMovementPrintingFileTemplate,
+                                                                                     sessionPeriodSummaryDetails);
                 }
             }
             catch (Exception ex)
             {
-                var printer = MappingUtils.GetPrinterDto(printerEntity);
-
-                var messageDialog = new CustomAlert(parentWindow)
-                                        .WithMessage(ex.Message)
-                                        .ShowAlert();
-
-                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
+                CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
+                                                          printerEntity.Designation,
+                                                          printerEntity.NetworkName,
+                                                          ex.Message);
             }
 
             return result;
@@ -899,28 +754,43 @@ namespace LogicPOS.UI
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintCashDrawerOpenAndMoneyInOut
 
-        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow, sys_configurationprinters pPrinter, string pTicketTitle, decimal pMovementAmount, decimal pTotalAmountInCashDrawer, string pMovementDescription,
-            string terminalDesignation)
+        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow,
+                                                            Api.Entities.Printer printerEntity,
+                                                            string pTicketTitle,
+                                                            decimal pMovementAmount,
+                                                            decimal pTotalAmountInCashDrawer,
+                                                            string pMovementDescription,
+                                                            string terminalDesignation)
         {
-            var printer = MappingUtils.GetPrinterDto(pPrinter);
             bool result = false;
-            sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.CashDrawerMoneyMovementPrintingTemplateId);
-
+           
             try
             {
-                if (SharedPrintTicket(parentWindow, pPrinter, TicketType.CashDrawer))
+                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.CashDrawer))
                 {
+                    var printerDto = new PrinterDto
+                    {
+                        Id = printerEntity.Id,
+                        Designation = printerEntity.Designation,
+                        NetworkName = printerEntity.NetworkName,
+                        Token = printerEntity.Type.Token,
+                        IsThermal = printerEntity.Type.ThermalPrinter
+                    };
 
-                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printer, terminalDesignation, pTicketTitle, pMovementAmount, pTotalAmountInCashDrawer, pMovementDescription);
+                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printerDto,
+                                                                                             terminalDesignation,
+                                                                                             pTicketTitle,
+                                                                                             pMovementAmount,
+                                                                                             pTotalAmountInCashDrawer,
+                                                                                             pMovementDescription);
                 }
             }
             catch (Exception ex)
             {
-                var messageDialog = new CustomAlert(parentWindow)
-                                        .WithMessage(ex.Message)
-                                        .ShowAlert();
-
-                //Utils.ShowMessageTouchErrorPrintingTicket(parentWindow, printer, ex);
+               CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
+                                                          printerEntity.Designation,
+                                                          printerEntity.NetworkName,
+                                                          ex.Message);
             }
 
             return result;

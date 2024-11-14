@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Modules", "LogicPO
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Finance", "LogicPOS.Finance\LogicPOS.Finance.csproj", "{6F50BD8B-A054-424C-9247-3892EFCC25B6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Reporting", "LogicPOS.Reporting\LogicPOS.Reporting.csproj", "{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Printing", "LogicPOS.Printing\LogicPOS.Printing.csproj", "{EE93C7F8-F973-4A6E-8C59-E4BAC4FF7BF7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Persistence", "LogicPOS.Persistence\LogicPOS.Persistence.csproj", "{4B305A39-47C9-4F59-AC06-EF868B4903AD}"
@@ -90,10 +88,6 @@ Global
 		{6F50BD8B-A054-424C-9247-3892EFCC25B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F50BD8B-A054-424C-9247-3892EFCC25B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F50BD8B-A054-424C-9247-3892EFCC25B6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8105C12-D5FA-4AFB-906B-F762BD2F9A27}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EE93C7F8-F973-4A6E-8C59-E4BAC4FF7BF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EE93C7F8-F973-4A6E-8C59-E4BAC4FF7BF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE93C7F8-F973-4A6E-8C59-E4BAC4FF7BF7}.Release|Any CPU.ActiveCfg = Release|Any CPU

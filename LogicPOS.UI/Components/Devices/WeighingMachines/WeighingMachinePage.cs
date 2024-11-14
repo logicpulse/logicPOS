@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
@@ -18,7 +19,6 @@ namespace LogicPOS.UI.Components.Pages
         public WeighingMachinesPage(Window parent) : base(parent)
         {
         }
-
 
         public override void DeleteEntity()
         {
@@ -47,6 +47,21 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static WeighingMachinesPage _instance;
+        public static WeighingMachinesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new WeighingMachinesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
 
     }
 }

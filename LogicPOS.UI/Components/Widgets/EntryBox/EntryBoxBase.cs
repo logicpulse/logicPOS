@@ -136,12 +136,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
-                if (parentWindow.GetType() == typeof(PosArticleStockDialog))
-                {
-                    colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
-                    fontLabel = AppSettings.Instance.fontEntryBoxLabel;
-                    fontEntry = AppSettings.Instance.fontEntryBoxValue;
-                }
 
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
                 //this.BorderWidth = (uint)padding;
@@ -174,13 +168,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 string fontLabel = "10";
                 string fontEntry = "9";
                 int padding = 2;
-                if (parentWindow.GetType() == typeof(PosArticleStockDialog))
-                {
-                    colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
-                    fontLabel = AppSettings.Instance.fontEntryBoxLabel;
-                    fontEntry = AppSettings.Instance.fontEntryBoxValue;
-                }
-
+                
 
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
                 //this.BorderWidth = (uint)padding;

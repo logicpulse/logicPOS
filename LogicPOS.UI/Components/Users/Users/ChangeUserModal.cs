@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Dialogs;
@@ -102,12 +103,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (User.PasswordReset)
             {
-                logicpos.Utils.ShowMessageTouch(this,
-                                                DialogFlags.Modal,
-                                                MessageType.Info,
-                                                ButtonsType.Ok,
-                                                GeneralUtils.GetResourceByName("global_information"),
-                                                string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, XPOSettings.DefaultValueUserDetailAccessPin));
+                CustomAlerts.Information(this)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_information")
+                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, XPOSettings.DefaultValueUserDetailAccessPin))
+                            .ShowAlert();
             }
 
             Respond(ResponseType.Ok);

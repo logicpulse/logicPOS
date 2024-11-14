@@ -77,8 +77,8 @@ namespace LogicPOS.UI.Alerts
             var alertSettings = new CustomAlertSettings();
             var alertButtons = new CustomAlertButtons(alertSettings);
             _buttons = alertButtons.GetActionAreaButtons(_buttonsType);
-            _image = alertSettings.GetDialogImage(_messageType);
-            _icon = alertSettings.GetDialogIcon(_messageType);
+            _image = PathsSettings.ImagesFolderLocation + alertSettings.GetDialogImage(_messageType);
+            _icon = PathsSettings.ImagesFolderLocation + alertSettings.GetDialogIcon(_messageType);
 
             InitObject();
 

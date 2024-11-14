@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace logicpos.Classes.Logic.Hardware
         public InputReader()
         {
             //Init Time Interval
-            _timerInterval = TerminalSettings.LoggedTerminal.InputReaderTimerInterval;
+            _timerInterval = TerminalService.Terminal.TimerInterval;
             //Init Readers
             _readers = InitReaders();
         }
@@ -41,9 +42,9 @@ namespace logicpos.Classes.Logic.Hardware
 
             try
             {
-                if (TerminalSettings.LoggedTerminal.BarcodeReader != null)
+                if (TerminalService.Terminal.BarcodeReader != null)
                 {
-                    _barCodeReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalSettings.LoggedTerminal.BarcodeReader.ReaderSizes);
+                    _barCodeReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalService.Terminal.BarcodeReader.ReaderSizes);
                     
                     for (int i = 0; i < _barCodeReaderList.Count; i++)
                     {
@@ -51,9 +52,9 @@ namespace logicpos.Classes.Logic.Hardware
                     }
                 }
 
-                if (TerminalSettings.LoggedTerminal.CardReader != null)
+                if (TerminalService.Terminal.CardReader != null)
                 {
-                    _cardReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalSettings.LoggedTerminal.CardReader.ReaderSizes);
+                    _cardReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalService.Terminal.CardReader.ReaderSizes);
                     
                     for (int i = 0; i < _cardReaderList.Count; i++)
                     {

@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
 using LogicPOS.Api.Features.FiscalYears.CreateDefaultSeries;
 using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
+using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -69,15 +70,11 @@ namespace LogicPOS.UI.Components.Modals
 
             var fiscalYearId = result.Value;
 
-            ResponseType response = logicpos.Utils.ShowMessageBox(
-               this,
-               DialogFlags.Modal,
-               new Size(600, 400),
-               MessageType.Question,
-               ButtonsType.YesNo,
-               GeneralUtils.GetResourceByName("window_title_series_create_series"),
-               GeneralUtils.GetResourceByName("dialog_message_series_create_document_type_series")
-            );
+            ResponseType response = CustomAlerts.Question(this)
+                                                .WithSize(new Size(600, 400))
+                                                .WithTitleResource("window_title_series_create_series")
+                                                .WithMessageResource("dialog_message_series_create_document_type_series")
+                                                .ShowAlert();
 
             if (response != ResponseType.Yes)
             {

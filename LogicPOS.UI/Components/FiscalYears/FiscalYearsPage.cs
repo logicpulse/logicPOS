@@ -4,7 +4,9 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -19,6 +21,7 @@ namespace LogicPOS.UI.Components.Pages
     public class FiscalYearsPage : Page<FiscalYear>
     {
         protected override IRequest<ErrorOr<IEnumerable<FiscalYear>>> GetAllQuery => new GetAllFiscalYearsQuery();
+       
         public FiscalYearsPage(Window parent) : base(parent)
         {
             Navigator.BtnUpdate.Visible = false;
@@ -43,15 +46,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 if (currentFiscalYear != null)
                 {
-                    ResponseType dialog1Response = logicpos.Utils.ShowMessageBox(
-                        LogicPOSAppContext.BackOffice,
-                        DialogFlags.Modal,
-                        new Size(600, 400),
-                        MessageType.Question,
-                        ButtonsType.YesNo,
-                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_fiscal_year_close_current"),
-                        string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_fiscal_year_close_current"), currentFiscalYear.Designation)
-                    );
+                    ResponseType dialog1Response = CustomAlerts.Question(BackOfficeWindow.Instance)
+                                                               .WithSize(new Size(600, 400))
+                                                               .WithTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_fiscal_year_close_current"))
+                                                               .WithMessage(string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_fiscal_year_close_current"), currentFiscalYear.Designation))
+                                                               .ShowAlert();
 
                     if (dialog1Response == ResponseType.No)
                     {
@@ -74,8 +73,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateYearColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
-
-      
 
         private TreeViewColumn CreateAcronymColumn()
         {
@@ -143,5 +140,23 @@ namespace LogicPOS.UI.Components.Pages
                 return leftFiscalYear.Year.CompareTo(rightFiscalYear.Year);
             });
         }
+
+        #region Singleton
+        private static FiscalYearsPage _instance;
+
+        public static FiscalYearsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new FiscalYearsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+
+        #endregion
+
     }
 }

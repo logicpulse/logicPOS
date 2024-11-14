@@ -4,8 +4,6 @@ using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.BackOffice.Dialogs.Articles;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Data.XPO.Settings;
@@ -16,7 +14,6 @@ using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
@@ -24,7 +21,6 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
@@ -499,30 +495,6 @@ namespace logicpos
         }
 
 
-        public static string OpenNewSerialNumberCompositePopUpWindow(Window parentWindow, Entity pXPGuidObject, out List<fin_articleserialnumber> pSelectedCollection, string pSerialNumber = "", List<fin_articleserialnumber> pSelectedCollectionToFill = null)
-        {
-            try
-            {
-                DialogArticleCompositionSerialNumber dialog = new DialogArticleCompositionSerialNumber(parentWindow, GetGenericTreeViewXPO<TreeViewArticleStock>(parentWindow), DialogFlags.DestroyWithParent, pXPGuidObject, pSelectedCollectionToFill, pSerialNumber);
-                ResponseType response = (ResponseType)dialog.Run();
-                if (response == ResponseType.Ok)
-                {
-                    string insertedSerialNumber = dialog.EntryBoxSerialNumber1.EntryValidation.Text;
-                    pSelectedCollection = dialog.SelectedAssocietedArticles;
-                    dialog.Destroy();
-                    return insertedSerialNumber;
-                }
-                dialog.Destroy();
-                pSelectedCollection = dialog.SelectedAssocietedArticles;
-                return pSerialNumber;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                pSelectedCollection = null;
-                return "";
-            }
-        }
 
         /// <summary>
         /// Method responsible for screen resolution validation and if necessary, sets the default resolution settings.
@@ -545,11 +517,11 @@ namespace logicpos
 
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
-                var messageDialog= new CustomAlert(LoginWindow.Instance)
+                var messageDialog = new CustomAlert(LoginWindow.Instance)
                     .WithMessage($"ShowUnsupportedResolutionErrorAlert{screenSize.Width}, {screenSize.Height}")
-                    .WithSize( new Size())
+                    .WithSize(new Size())
                     .ShowAlert();
-                
+
                 //ShowUnsupportedResolutionErrorAlert(LoginWindow.Instance, screenSize.Width, screenSize.Height);
                 supportedScreenSizeEnum = ScreenSize.resDefault;
             }
@@ -768,13 +740,13 @@ namespace logicpos
 
         public static void ShowBackOffice(Window pHideWindow)
         {
-            if (LogicPOSAppContext.BackOffice == null)
+            if (BackOfficeWindow.Instance == null)
             {
-                LogicPOSAppContext.BackOffice = new BackOfficeWindow();
+                BackOfficeWindow.Instance = new BackOfficeWindow();
             }
             else
             {
-                LogicPOSAppContext.BackOffice.Show();
+                BackOfficeWindow.Instance.Show();
             }
 
             pHideWindow.Hide();
@@ -1100,80 +1072,10 @@ namespace logicpos
         }
 
 
-        //Commented by Mario because its not used in Project
-        //internal static void DeleteWidgetChilds(Fixed pxedWindow)
-        //{
-        //  try
-        //  {
-        //    if (pxedWindow.Children.Length > 0)
-        //    {
-        //      for (int i = 0; i < pxedWindow.Children.Length; i++)
-        //      {
-        //        pxedWindow.Remove(pxedWindow.Children[i]);
-        //      }
-        //    }
-        //  }
-        //  catch (Exception ex)
-        //  {
-        //    _logger.Error(ex.Message, ex);
-        //  }
-        //}
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //GenericTreeView
 
-        //Helper Static Method to Return a GenericTreeView from T
-        [Obsolete]
-        public static T GetGenericTreeViewXPO<T>(Window parentWindow,
-                                                 GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default,
-                                                 GridViewMode pGenericTreeViewMode = GridViewMode.Default)
-          where T : IGridView, new()
-        {
-            return GetGenericTreeViewXPO<T>(parentWindow, null, navigatorMode, pGenericTreeViewMode);
-        }
 
-        [Obsolete]
-        public static T GetGenericTreeViewXPO<T>(Window parentWindow, CriteriaOperator pCriteria, GridViewNavigatorMode navigatorMode = GridViewNavigatorMode.Default, GridViewMode pGenericTreeViewMode = GridViewMode.Default)
-          where T : IGridView, new()
-        {
-            T genericTreeView = default;
-
-            try
-            {
-                // Add default Criteria to Hide Undefined Records
-                string undefinedFilter = string.Format("Oid <> '{0}'", XPOSettings.XpoOidUndefinedRecord);
-
-                if (pCriteria == null)
-                {
-                    pCriteria = CriteriaOperator.Parse(undefinedFilter);
-                }
-                else
-                {
-                    pCriteria = CriteriaOperator.Parse(string.Format("{0} AND ({1})", pCriteria, undefinedFilter));
-                }
-
-                object[] constructor = new object[]
-                {
-                      parentWindow,
-                      null,         //Default Value
-                      pCriteria,    //Criteria
-                      null,         //DialogType
-                      pGenericTreeViewMode,
-                      navigatorMode
-                };
-                genericTreeView = (T)Activator.CreateInstance(typeof(T), constructor);
-                //Cast to Box to use ShowAll for all T(ypes) of GenericTreeView
-                (genericTreeView as Box).ShowAll();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-            return genericTreeView;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Network
 
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -1270,38 +1172,17 @@ namespace logicpos
 
 
 
-        //TK016235 BackOffice - Mode
         public static void StartReportsMenuFromBackOffice(Window parentWindow)
         {
-            try
-            {
-                PosReportsDialog dialog = new PosReportsDialog(parentWindow, DialogFlags.DestroyWithParent);
-                int response = dialog.Run();
-                dialog.Destroy();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            //tchial0: start Reports Menu
         }
 
-        //TK016235 BackOffice - Mode
+
         public static void StartNewDocumentFromBackOffice(Window parentWindow)
         {
-            try
-            {
-                //Call New DocumentFinance Dialog
-                PosDocumentFinanceDialog dialogNewDocument = new PosDocumentFinanceDialog(parentWindow, DialogFlags.DestroyWithParent);
-                ResponseType responseNewDocument = (ResponseType)dialogNewDocument.Run();
-                if (responseNewDocument == ResponseType.Ok)
-                {
-                }
-                dialogNewDocument.Destroy();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            var createDocumentModal = new CreateDocumentModal(parentWindow);
+            createDocumentModal.Run();
+            createDocumentModal.Destroy();
         }
 
 
@@ -1311,9 +1192,7 @@ namespace logicpos
 
             if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
             {
-                DialogArticleStock dialog = new DialogArticleStock(parentWindow);
-                ResponseType response = (ResponseType)dialog.Run();
-                dialog.Destroy();
+                //tchial0: Open Stock Management
             }
             else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
             {

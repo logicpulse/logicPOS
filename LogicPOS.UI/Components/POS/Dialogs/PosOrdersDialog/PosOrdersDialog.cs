@@ -2,6 +2,7 @@
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -74,11 +75,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Events
             buttonPrintOrder.Clicked += buttonPrintOrder_Clicked;
             buttonTableConsult.Clicked += buttonTableConsult_Clicked;
-            //buttonListFinanceDocuments.Clicked += buttonListFinanceDocuments_Clicked;
-
-            // Enable/Disable PrintTicket based on Printer Type, Currently PrintTicket is only Implemented in Thermal Printers
-            //TK016249 - Impressoras - Diferenciação entre Tipos
-            bool printerMissing = (TerminalSettings.HasLoggedTerminal && TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.Token.StartsWith("THERMAL_PRINTER_"));
+ 
+            bool printerMissing = (TerminalSettings.HasLoggedTerminal && TerminalService.Terminal.ThermalPrinter.Type.Token.StartsWith("THERMAL_PRINTER_"));
             buttonPrintOrder.Sensitive = printerMissing;
             buttonTableConsult.Sensitive = printerMissing;
         }

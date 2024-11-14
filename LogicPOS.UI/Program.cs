@@ -129,7 +129,7 @@ namespace LogicPOS.UI
 
             if (intializeTerminalResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(null, intializeTerminalResult.FirstError);
+                CustomAlerts.ShowApiErrorAlert(null, intializeTerminalResult.FirstError);
                 return;
             }
 

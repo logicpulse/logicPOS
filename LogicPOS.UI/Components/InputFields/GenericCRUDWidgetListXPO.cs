@@ -1,10 +1,11 @@
 ﻿using DevExpress.Xpo;
-using Gtk;
+using LogicPOS.Domain.Entities;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using System;
 using System.Diagnostics;
-using LogicPOS.Globalization;
-using LogicPOS.Domain.Entities;
-using LogicPOS.UI.Application;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 {
@@ -42,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 _session.BeginTransaction();
 
                 foreach (var item in _modifiedDataSourceRowObjects)
-                { 
+                {
                     item.Key.Save();
                 }
 
@@ -56,18 +57,22 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
                     string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_duplicated_key"), data);
-                    logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.BackOffice, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"), message);
+
+
+                    CustomAlerts.Error(BackOfficeWindow.Instance)
+                                .WithSize(new Size(500, 340))
+                                .WithMessage(message)
+                                .ShowAlert();
                 }
                 else
                 {
                     _logger.Error(ex.Message, ex);
-                    ResponseType response = logicpos.Utils.ShowMessageTouch(
-                        LogicPOSAppContext.BackOffice,
-                        DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                        MessageType.Warning, ButtonsType.Close,
-                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_exception_error"),
-                        (ex.InnerException.Message != null) ? ex.InnerException.Message : ex.Message
-                        );
+
+                    CustomAlerts.Error(BackOfficeWindow.Instance)
+                                .WithSize(new Size(500, 340))
+                                .WithMessage(ex.Message)
+                                .ShowAlert();
+
                 }
                 try
                 {

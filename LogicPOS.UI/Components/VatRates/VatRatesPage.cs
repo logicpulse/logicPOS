@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -77,5 +78,21 @@ namespace LogicPOS.UI.Components.Pages
                 return leftVatRate.Value.CompareTo(rightVatRate.Value);
             });
         }
+
+        #region Singleton
+        private static VatRatesPage _instance;
+        public static VatRatesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new VatRatesPage(BackOfficeWindow.Instance);
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

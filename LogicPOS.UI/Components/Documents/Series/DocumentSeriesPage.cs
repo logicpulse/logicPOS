@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -45,8 +46,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateDesignationColumn(3));
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
-
-
 
         private TreeViewColumn CreateFiscalYearColumn()
         {
@@ -114,5 +113,20 @@ namespace LogicPOS.UI.Components.Pages
                 return leftDocumentSerie.DocumentType.Designation.CompareTo(rightDocumentSerie.DocumentType.Designation);
             });
         }
+
+        #region Singleton
+        private static DocumentSeriesPage _instance;
+        public static DocumentSeriesPage Instance
+        {
+            get
+            {
+                if(_instance == null)
+                {
+                    _instance = new DocumentSeriesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

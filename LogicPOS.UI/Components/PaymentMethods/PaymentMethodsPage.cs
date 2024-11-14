@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PaymentMethodsPage : Page<PaymentMethod>
     {
-        public PaymentMethodsPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
+        public PaymentMethodsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
@@ -77,5 +78,21 @@ namespace LogicPOS.UI.Components.Pages
                 return leftPaymentMethod.Acronym.CompareTo(rightPaymentMethod.Acronym);
             });
         }
+
+        #region Singleton
+        private static PaymentMethodsPage _instance;
+        public static PaymentMethodsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PaymentMethodsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+
+        }
+        #endregion
     }
 }

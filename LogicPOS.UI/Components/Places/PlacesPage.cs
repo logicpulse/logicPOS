@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -106,5 +107,21 @@ namespace LogicPOS.UI.Components.Pages
                 return leftPlace.MovementType.Designation.CompareTo(rightPlace.MovementType.Designation);
             });
         }
+
+        #region Singleton
+        private static PlacesPage _instance;
+        public static PlacesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PlacesPage(BackOfficeWindow.Instance);
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

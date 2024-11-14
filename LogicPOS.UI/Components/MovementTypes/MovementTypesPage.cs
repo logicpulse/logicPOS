@@ -1,24 +1,22 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
+using LogicPOS.Api.Features.MovementTypes.GetAllMovementTypes;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
 using System;
 using System.Collections.Generic;
 
-
 namespace LogicPOS.UI.Components.Pages
 {
-    public class InputReadersPage : Page<InputReader>
+    public class MovementTypesPage : Page<MovementType>
     {
-       
-        protected override IRequest<ErrorOr<IEnumerable<InputReader>>> GetAllQuery => new GetAllInputReadersQuery();
-        public InputReadersPage(Window parent) : base(parent)
+        protected override IRequest<ErrorOr<IEnumerable<MovementType>>> GetAllQuery => new GetAllMovementTypesQuery();
+        public MovementTypesPage(Window parent) : base(parent)
         {
         }
-
 
         public override void DeleteEntity()
         {
@@ -27,7 +25,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            var modal = new InputReaderModal(mode, SelectedEntity as InputReader);
+            var modal = new MovementTypeModal(mode, SelectedEntity as MovementType);
             modal.Run();
             modal.Destroy();
         }
@@ -36,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
         }
 
         protected override void InitializeSort()
@@ -49,14 +47,14 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         #region Singleton
-        private static InputReadersPage _instance;
-        public static InputReadersPage Instance
+        private static MovementTypesPage _instance;
+        public static MovementTypesPage Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new InputReadersPage(null);
+                    _instance = new MovementTypesPage(BackOfficeWindow.Instance);
                 }
                 return _instance;
             }

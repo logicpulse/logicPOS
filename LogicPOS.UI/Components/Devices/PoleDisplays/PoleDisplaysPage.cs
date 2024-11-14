@@ -48,5 +48,20 @@ namespace LogicPOS.UI.Components.PoleDisplays
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static PoleDisplaysPage _instance;
+        public static PoleDisplaysPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PoleDisplaysPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

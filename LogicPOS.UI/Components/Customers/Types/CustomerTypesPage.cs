@@ -45,5 +45,20 @@ namespace LogicPOS.UI.Components.Pages
             modal.Run();
             modal.Destroy();
         }
+
+        #region Singleton
+        private static CustomerTypePage _instance;
+        public static CustomerTypePage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new CustomerTypePage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

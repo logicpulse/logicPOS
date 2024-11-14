@@ -357,7 +357,7 @@ namespace LogicPOS.UI.Components.InputFieds
             }
 
             //XPOEntryBoxSelectRecord
-            else if (Widget.GetType().IsGenericType && Widget.GetType().GetGenericTypeDefinition() == typeof(XPOEntryBoxSelectRecord<,>))
+            else if (Widget.GetType().IsGenericType)
             {
                 //Required to use dynamics to get Widget on Runtime, Because we can Cast it, Because we dont Know <T,T>, 
                 //and We cant Cast Base (Widget as XPOEntryBoxSelectRecord<XPGuidObject,GenericTreeViewXPO>) Because it doesn works, 

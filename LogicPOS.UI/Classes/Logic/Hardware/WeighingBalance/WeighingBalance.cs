@@ -1,9 +1,10 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
@@ -22,7 +23,7 @@ namespace logicpos.Classes.Logic.Hardware
 
         private readonly SerialPortService _communicationManager;
 
-        public WeighingBalance(sys_configurationweighingmachine weighingMachine)
+        public WeighingBalance(WeighingMachine weighingMachine)
             : this(weighingMachine.BaudRate.ToString(), weighingMachine.Parity, weighingMachine.StopBits, weighingMachine.DataBits.ToString(), weighingMachine.PortName)
         {
         }
@@ -44,15 +45,13 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-
-                var responseType = new CustomAlert(LoginWindow.Instance)
-                                   .WithMessageResource(string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), TerminalSettings.LoggedTerminal.WeighingMachine.Designation))
-                                   .WithMessage(ex.Message)
-                                   .WithMessageType(MessageType.Error)
-                                   .WithSize(new Size(500,340))
-                                   .WithButtonsType(ButtonsType.Ok)
-                                   .WithTitleResource("global_error")
-                                   .ShowAlert();
+                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_initializing_weighing_balance"),TerminalService.Terminal.Designation,ex.Message);
+               
+                CustomAlerts.Error(LoginWindow.Instance)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_error")
+                            .WithMessage(message)
+                            .ShowAlert();
 
                 _logger.Error(ex.Message, ex);
                 return false;

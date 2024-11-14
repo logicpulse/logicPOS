@@ -1,16 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Dialogs;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.WidgetsXPO;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Modules;
-using LogicPOS.Modules.StockManagement;
-using LogicPOS.UI.Application;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.InputFieds;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Windows;
@@ -159,13 +154,12 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
 
             if (!result)
             {
-                ResponseType response = logicpos.Utils.ShowMessageBox(LogicPOSAppContext.BackOffice,
-                                                                      DialogFlags.DestroyWithParent | DialogFlags.Modal,
-                                                                      new Size(500, 500),
-                                                                      MessageType.Error,
-                                                                      ButtonsType.Ok,
-                                                                      CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "window_title_dialog_validation_error"),
-                                                                      string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields));
+                CustomAlerts.Error(BackOfficeWindow.Instance)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("window_title_dialog_validation_error")
+                            .WithMessage(string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields))
+                            .ShowAlert();
+
             };
 
             return result;
@@ -320,7 +314,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                         }
 
                         //XPOEntryBoxSelectRecord
-                        else if (item.Widget.GetType().IsGenericType && item.Widget.GetType().GetGenericTypeDefinition() == typeof(XPOEntryBoxSelectRecord<,>))
+                        else if (item.Widget.GetType().IsGenericType)
                         {
                             //Required to use Dynamic, we cant cast without knowing generic types <T,T>
                             dynamic dynamicWiget = item.Widget;
@@ -348,7 +342,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                             }
                         }
                         //XPOEntryBoxSelectRecordValidation
-                        else if (item.Widget.GetType().IsGenericType && item.Widget.GetType().GetGenericTypeDefinition() == typeof(XPOEntryBoxSelectRecordValidation<,>))
+                        else if (item.Widget.GetType().IsGenericType)
                         {
                             //Required to use Dynamic, we cant cast without knowing generic types <T,T>
                             dynamic dynamicWiget = item.Widget;
@@ -419,7 +413,13 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
             catch (Exception ex)
             {
                 _logger.Error(ex.Message, ex);
-                logicpos.Utils.ShowMessageBox(LoginWindow.Instance, DialogFlags.Modal, new Size(600, 350), MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), ex.Message);
+
+                CustomAlerts.Error(LoginWindow.Instance)
+                            .WithSize(new Size(600, 350))
+                            .WithTitleResource("global_error")
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+
                 result = false;
             }
 
@@ -445,77 +445,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
         /// <param name="pResponse"></param>
         public void ProcessDialogResponse(Dialog pDialog, DialogMode pDialogMode, ResponseType pResponse)
         {
-            if (pResponse == ResponseType.Ok)
-            {
-                if (pDialog.GetType() == typeof(DialogAddArticleStock) && LogicPOS.Settings.LicenseSettings.LicenseModuleStocks)
-                {
-                    ProcessArticleStockParameter res = DialogAddArticleStock.GetProcessArticleStockParameter(pDialog as DialogAddArticleStock);
-                    List<fin_articleserialnumber> barCodeLabelList = new List<fin_articleserialnumber>();
 
-                    if (res != null)
-                    {
-                        if (res.ArticleCollection.Count > 0)
-                        {
-                            foreach (var item in res.ArticleCollection)
-                            {
-                                res.Quantity = item.Value.Item1;
-
-                                res.PurchasePrice = item.Value.Item3;
-                                res.Article = item.Key;
-                                res.WarehouseLocation = item.Value.Item4;
-                                //If has serial Numbers
-                                if (item.Value.Item2.Count > 0)
-                                {
-                                    foreach (var itemS in item.Value.Item2)
-                                    {
-                                        res.Quantity = 1;
-                                        res.SerialNumber = itemS.Key;
-                                        res.AssociatedArticles = itemS.Value;
-                                        ModulesSettings.StockManagementModule.Add(ProcessArticleStockMode.In, res);
-                                        string sql = string.Format("SELECT Oid FROM fin_articleserialnumber WHERE SerialNumber = '{0}';", res.SerialNumber.ToString());
-                                        var serialNumberOid = XPOSettings.Session.ExecuteScalar(sql);
-                                        if (serialNumberOid != null)
-                                        {
-                                            fin_articleserialnumber serialNumber = (fin_articleserialnumber)XPOSettings.Session.GetObjectByKey(typeof(fin_articleserialnumber), Guid.Parse(serialNumberOid.ToString()));
-                                            barCodeLabelList.Add(serialNumber);
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    ModulesSettings.StockManagementModule.Add(ProcessArticleStockMode.In, res);
-                                }
-                                if (barCodeLabelList.Count > 0)
-                                {
-                                    LogicPOS.Reporting.Common.FastReport.ProcessReportBarcodeLabel(shared.Enums.CustomReportDisplayMode.Print, null, "", false, barCodeLabelList);
-                                }
-                            }
-                            return;
-                        }
-                    }
-                    else return;
-                }
-                //Validate Fields
-                else if (ValidateRecord() == false)
-                {
-                    pDialog.Run();
-                }
-                else
-                {
-                    //Save Record
-                    if (!UpdateRecord(pDialogMode))
-                    {
-                        pDialog.Run();
-                    };
-                    if (pDialog.GetType() == typeof(DialogArticleStock))
-                    {
-                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleDetails.Refresh();
-                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleHistory.Refresh();
-                        (pDialog as DialogArticleStock).TreeViewXPO_ArticleWarehouse.Refresh();
-                        (pDialog as DialogArticleStock).TreeViewXPO_StockMov.Refresh();
-                    }
-                };
-            };
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::

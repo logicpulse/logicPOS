@@ -3,8 +3,6 @@ using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Gui.Gtk.BackOffice;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
@@ -15,6 +13,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
 using MySql.Data.MySqlClient;
 using System;
@@ -105,7 +104,7 @@ namespace logicpos.Classes.DataLayer
                     FileNamePacked = Path.GetRandomFileName(),
                     DataBaseType = DatabaseSettings.DatabaseType,
                     Version = XPOUtility.GetNextTableFieldID("sys_systembackup", "Version", false),
-                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), TerminalSettings.LoggedTerminal.Oid)
+                    Terminal = (pos_configurationplaceterminal)SessionXpoForBackupPurposes.GetObjectByKey(typeof(pos_configurationplaceterminal), TerminalService.Terminal.Id)
                 };
                 systemBackup.Save();
                 string backupProcess = GeneralUtils.GetResourceByName("global_database_backup");
@@ -279,11 +278,11 @@ namespace logicpos.Classes.DataLayer
                         {
                             //#EQUAL#1
                             string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                            
+
                             var messageDialog = new CustomAlert(parentWindow)
                               .WithMessage(message)
                               .WithMessageType(MessageType.Error)
-                              .WithSize(new Size(600,300))
+                              .WithSize(new Size(600, 300))
                               .WithButtonsType(ButtonsType.Ok)
                               .WithTitleResource("global_error")
                               .ShowAlert();
@@ -400,11 +399,11 @@ namespace logicpos.Classes.DataLayer
                     {
                         //#EQUAL#1
                         string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_error_invalid_backup_file"), fileNamePacked);
-                        
+
                         var messageDialog = new CustomAlert(parentWindow)
                                           .WithMessage(message)
                                           .WithMessageType(MessageType.Error)
-                                          .WithSize(new Size(600,300))
+                                          .WithSize(new Size(600, 300))
                                           .WithButtonsType(ButtonsType.Ok)
                                           .WithTitleResource("global_error")
                                           .ShowAlert();
@@ -466,7 +465,7 @@ namespace logicpos.Classes.DataLayer
 
             if (resultRestore)
             {
-               
+
                 var messageDialog = new CustomAlert(parentWindow)
                                   .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_database_restore_successfully"), pFileNamePacked))
                                   .WithMessageType(MessageType.Info)
@@ -564,52 +563,52 @@ namespace logicpos.Classes.DataLayer
         private static DataBaseBackupFileInfo GetSelectRecordFileName(Window parentWindow)
         {
             DataBaseBackupFileInfo resultFileInfo = new DataBaseBackupFileInfo();
+            // tchial0
+            //try
+            //{
+            //    CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("DataBaseType = '{0}' && FileName IS NOT NULL", DatabaseSettings.DatabaseType));
 
-            try
-            {
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse(string.Format("DataBaseType = '{0}' && FileName IS NOT NULL", DatabaseSettings.DatabaseType));
+            //    PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>
+            //      dialogSystemBackup = new PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>(
+            //        parentWindow,
+            //        DialogFlags.DestroyWithParent,
+            //        GeneralUtils.GetResourceByName("window_title_select_backup_filename"),
+            //        new Size(780, 580),
+            //        null, //XpoDefaultValue
+            //        criteriaOperator,
+            //        GridViewMode.Default,
+            //        null  //ActionAreaButtons
+            //      );
 
-                PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>
-                  dialogSystemBackup = new PosSelectRecordDialog<XPCollection, Entity, TreeViewSystemBackup>(
-                    parentWindow,
-                    DialogFlags.DestroyWithParent,
-                    GeneralUtils.GetResourceByName("window_title_select_backup_filename"),
-                    new Size(780, 580),
-                    null, //XpoDefaultValue
-                    criteriaOperator,
-                    GridViewMode.Default,
-                    null  //ActionAreaButtons
-                  );
+            //    ResponseType response = (ResponseType)dialogSystemBackup.Run();
+            //    if (response == ResponseType.Ok)
+            //    {
+            //        //Assign Result
+            //        resultFileInfo.Response = response;
 
-                ResponseType response = (ResponseType)dialogSystemBackup.Run();
-                if (response == ResponseType.Ok)
-                {
-                    //Assign Result
-                    resultFileInfo.Response = response;
-
-                    sys_systembackup systemBackup = (sys_systembackup)dialogSystemBackup.GenericTreeView.Entity;
-                    if (systemBackup != null)
-                    {
-                        if (DatabaseSettings.DatabaseType == DatabaseType.MSSqlServer)
-                        {
-                            resultFileInfo.FileName = systemBackup.FileName;
-                            resultFileInfo.FileHashValid = true;
-                        }
-                        else
-                        {
-                            resultFileInfo.FileName = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName);
-                            resultFileInfo.FileNamePacked = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked);
-                            resultFileInfo.FileHashDB = systemBackup.FileHash;
-                            resultFileInfo.FileHashFile = CryptographyUtils.MD5HashFile(resultFileInfo.FileNamePacked);
-                        }
-                    }
-                }
-                dialogSystemBackup.Destroy();
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
+            //        sys_systembackup systemBackup = (sys_systembackup)dialogSystemBackup.GenericTreeView.Entity;
+            //        if (systemBackup != null)
+            //        {
+            //            if (DatabaseSettings.DatabaseType == DatabaseType.MSSqlServer)
+            //            {
+            //                resultFileInfo.FileName = systemBackup.FileName;
+            //                resultFileInfo.FileHashValid = true;
+            //            }
+            //            else
+            //            {
+            //                resultFileInfo.FileName = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileName);
+            //                resultFileInfo.FileNamePacked = string.Format(@"{0}{1}", _pathBackups, systemBackup.FileNamePacked);
+            //                resultFileInfo.FileHashDB = systemBackup.FileHash;
+            //                resultFileInfo.FileHashFile = CryptographyUtils.MD5HashFile(resultFileInfo.FileNamePacked);
+            //            }
+            //        }
+            //    }
+            //    dialogSystemBackup.Destroy();
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error(ex.Message, ex);
+            //}
 
             return resultFileInfo;
         }

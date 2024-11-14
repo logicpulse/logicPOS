@@ -24,6 +24,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using PriceType = LogicPOS.Domain.Enums.PriceType;
 
@@ -43,13 +44,12 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnDelete_Clicked(object sender, EventArgs e)
         {
-            ResponseType responseType = logicpos.Utils.ShowMessageBox(LogicPOSAppContext.PosMainWindow,
-                                                                      DialogFlags.Modal,
-                                                                      new System.Drawing.Size(400, 280),
-                                                                      MessageType.Question,
-                                                                      ButtonsType.YesNo,
-                                                                      string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion),
-                                                                      GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
+            ResponseType responseType = CustomAlerts.Question(LogicPOSAppContext.PosMainWindow)
+                                                    .WithSize(new Size(400, 280))
+                                                    .WithTitleResource("global_warning")
+                                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"))
+                                                    .ShowAlert();
+
             if (responseType != ResponseType.Yes && responseType != ResponseType.Ok)
             {
                 return;
@@ -149,7 +149,6 @@ namespace LogicPOS.UI.Components.POS
             new ThermalPrinting(printer, TerminalService.Terminal.Designation,workSessionData, pp);
         }
 
-
         private void PrintOrder()
         {
             
@@ -210,7 +209,7 @@ namespace LogicPOS.UI.Components.POS
             var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
             if (result.IsError)
             {
-               SimpleAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
+               CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
             }
             var companyInformations=result.Value;
             return new CompanyPrintingInformationsDto()
@@ -235,8 +234,6 @@ namespace LogicPOS.UI.Components.POS
             };
         }
 
-
-
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
             if (ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)
@@ -246,12 +243,12 @@ namespace LogicPOS.UI.Components.POS
 
             if (ItemsPage.Ticket != null)
             {
-                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(LogicPOSAppContext.PosMainWindow,
-                                                                              DialogFlags.DestroyWithParent,
-                                                                              MessageType.Question,
-                                                                              ButtonsType.OkCancel,
-                                                                              GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"),
-                                                                              GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
+                ResponseType dialogResponse = CustomAlerts.Question(LogicPOSAppContext.PosMainWindow)
+                                                          .WithSize(new Size(400, 280))
+                                                          .WithTitleResource("global_warning")
+                                                          .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
+                                                          .ShowAlert();
+
                 if (dialogResponse != ResponseType.Ok)
                 {
                     return;
@@ -281,7 +278,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (getArticle.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(SourceWindow, getArticle.FirstError);
+                CustomAlerts.ShowApiErrorAlert(SourceWindow, getArticle.FirstError);
                 return;
             }
 
@@ -335,10 +332,11 @@ namespace LogicPOS.UI.Components.POS
 
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
-                        logicpos.Utils.ShowMessageTouch(
-                            LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
-                            GeneralUtils.GetResourceByName("dialog_message_table_is_not_free")
-                        );
+                        CustomAlerts.Error(LogicPOSAppContext.PosMainWindow)
+                                    .WithSize(new Size(400, 280))
+                                    .WithTitleResource("global_error")
+                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
+                                    .ShowAlert();
                     }
                     else
                     {

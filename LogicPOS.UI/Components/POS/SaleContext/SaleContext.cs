@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (tables.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(LogicPOSAppContext.PosMainWindow, tables.FirstError);
+                CustomAlerts.ShowApiErrorAlert(LogicPOSAppContext.PosMainWindow, tables.FirstError);
                 Gtk.Application.Quit();
             }
 

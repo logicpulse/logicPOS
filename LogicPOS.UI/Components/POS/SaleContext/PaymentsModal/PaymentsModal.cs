@@ -221,7 +221,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (getResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, getResult.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, getResult.FirstError);
                 return Enumerable.Empty<PaymentMethod>();
             }
 

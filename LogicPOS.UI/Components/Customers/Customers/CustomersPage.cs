@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -134,5 +135,20 @@ namespace LogicPOS.UI.Components.Pages
                 return leftCustomer.FiscalNumber.CompareTo(rightCustomer.FiscalNumber);
             });
         }
+
+        #region Singleton
+        private static CustomersPage _instance;
+        public static CustomersPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new CustomersPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

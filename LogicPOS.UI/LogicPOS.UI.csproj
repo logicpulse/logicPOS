@@ -77,7 +77,7 @@
       <HintPath>..\libs\Patagames.Pdf.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
-	    <Reference Include="Spire.Pdf, Version=8.6.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+    <Reference Include="Spire.Pdf, Version=8.6.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\libs\SpirePDF\Spire.Pdf.dll</HintPath>
     </Reference>
@@ -114,97 +114,75 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Properties\**\*.cs;Resources\**\*.cs" />
-
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-	
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-	
     <Compile Include="Web References\AccessTrackParkingTicketService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
-	
     <None Include="app.manifest" />
-	
     <Content Include="..\libs\SQLite.Interop.dll">
       <Link>SQLite.Interop.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-	
     <Content Include="Assets\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-   
     <None Include="logicpos.exe.files">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	
     <None Include="Resources\Database\NOTES.md" />
     <None Include="Resources\Reports\Scripts\ReportDocumentFinance.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-	
     <Compile Include="Service References\ServiceReference\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-	
     <None Include="Resources\Reports\UserReports\*.frx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-	
     <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.CompositeType.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-	
     <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.ServicesATSoapResult.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-
   </ItemGroup>
-  
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  
   <ItemGroup>
-  
     <Content Include="..\libs\sqlite3.dll">
       <Link>sqlite3.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-	
     <Content Include="application.ico" />
-	
     <Content Include="Assets\**\*.png;Assets\**\*.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-	
     <Content Include="Assets\Themes\theme_default_default.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-	
     <None Include="Service References\ServiceReference\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-	
     <None Include="Service References\ServiceReference\configuration.svcinfo" />
     <None Include="Service References\ServiceReference\configuration91.svcinfo" />
     <None Include="Service References\ServiceReference\Service1.disco" />
     <None Include="Resources\Reports\Styles\StyleMain.frs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-	
     <None Include="Service References\ServiceReference\Service1.wsdl" />
     <None Include="Service References\ServiceReference\Service1.xsd">
       <SubType>Designer</SubType>
@@ -218,36 +196,29 @@
     <None Include="Service References\ServiceReference\Service13.xsd">
       <SubType>Designer</SubType>
     </None>
-  
     <Content Include="Assets\Themes\theme_default_retail.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-	
     <Content Include="Resources\Database\**\*.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-   
     <Content Include="Resources\Database\MSSqlServer\databaseschema.txt" />
     <Content Include="Resources\Database\Other\Country\notes.txt" />
-	
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-	
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  
   <ItemGroup>
     <Content Include="Resources\Keyboards\163.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
-  
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
@@ -265,7 +236,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -273,13 +243,11 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-	<WCFMetadataStorage Include="Service References\ServiceReference\" />
-	 <WebReferences Include="Web References\" />
+    <WCFMetadataStorage Include="Service References\ServiceReference\" />
+    <WebReferences Include="Web References\" />
   </ItemGroup>
-  
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
       <Project>{267c627f-2248-4500-9247-ce7f30431a25}</Project>
@@ -321,10 +289,6 @@
       <Project>{ee93c7f8-f973-4a6e-8c59-e4bac4ff7bf7}</Project>
       <Name>LogicPOS.Printing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogicPOS.Reporting\LogicPOS.Reporting.csproj">
-      <Project>{e8105c12-d5fa-4afb-906b-f762bd2f9a27}</Project>
-      <Name>LogicPOS.Reporting</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj">
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
       <Name>LogicPOS.Settings</Name>
@@ -338,7 +302,6 @@
       <Name>LogicPOS.Utility</Name>
     </ProjectReference>
   </ItemGroup>
-
   <ItemGroup>
     <WebReferenceUrl Include="http://192.168.1.86/POS/service.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
@@ -352,12 +315,10 @@
       <CachedSettingsPropName>logicpos_AccessTrackParkingTicketService_TimeService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
-  
   <ItemGroup>
     <Analyzer Include="..\libs\DocumentFormat.OpenXml.dll" />
     <Analyzer Include="..\libs\System.IO.FileSystem.Primitives.dll" />
   </ItemGroup>
-  
   <ItemGroup>
     <PackageReference Include="ClosedXML">
       <Version>0.102.2</Version>

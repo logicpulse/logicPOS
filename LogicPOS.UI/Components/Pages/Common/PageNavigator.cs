@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -86,7 +87,7 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnApply.Clicked += delegate
             {
-                LogicPOSAppContext.BackOffice.Menu.UpdateMenuPrivileges();
+                BackOfficeWindow.Instance.Menu.UpdateMenuPrivileges();
                 LogicPOSAppContext.PosMainWindow.TicketList.UpdateSaleOptionsPanelButtons();
             };
 

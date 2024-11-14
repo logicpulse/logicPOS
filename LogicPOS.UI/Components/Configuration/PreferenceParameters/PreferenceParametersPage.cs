@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -12,6 +13,9 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class PreferenceParametersPage : Page<PreferenceParameter>
     {
+        public static readonly Dictionary<string, string> CompanyParametersOptions = new Dictionary<string, string> { { "parameters", "company" } };
+        public static readonly Dictionary<string, string> SystemParametersOptions = new Dictionary<string, string> { { "parameters", "system" } };
+
         public PreferenceParametersPage(Gtk.Window parent, Dictionary<string, string> options) : base(parent, options)
         {
             CanDeleteEntity = false;
@@ -172,5 +176,39 @@ namespace LogicPOS.UI.Components.Pages
             modal.Run();
             modal.Destroy();
         }
+
+        #region Singleton
+        private static PreferenceParametersPage _companyParametersInstance;
+        private static PreferenceParametersPage _systemParametersInstance;
+
+        public static PreferenceParametersPage CompanyPage
+        {
+            get
+            {
+                if (_companyParametersInstance == null)
+                {
+                    _companyParametersInstance = new PreferenceParametersPage(BackOfficeWindow.Instance,
+                                                                              CompanyParametersOptions);
+                }
+
+                return _companyParametersInstance;
+            }
+        }
+
+        public static PreferenceParametersPage SystemPage
+        {
+            get
+            {
+                if (_systemParametersInstance == null)
+                {
+                    _systemParametersInstance = new PreferenceParametersPage(BackOfficeWindow.Instance,
+                                                                             SystemParametersOptions);
+                }
+
+                return _systemParametersInstance;
+            }
+        }
+        #endregion
+
     }
 }

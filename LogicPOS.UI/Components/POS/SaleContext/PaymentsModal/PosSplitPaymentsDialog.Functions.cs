@@ -166,40 +166,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 item.ArticleBag = new ArticleBag();
             }
 
-            // Init Object to Use priceTax on above Loop
-            //Get PrinterType Objects to extract TaxSellType Normal|TakeWay, PrinterType, Tables etc
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
             pos_configurationplace configurationPlace = (pos_configurationplace)XPOSettings.Session.GetObjectByKey(typeof(pos_configurationplace), currentOrderMain.Table.PlaceId);
 
-            // Loop articleBag, and Add the quantity for Each Split (Total Article Quantity / numberOfSplits)
             foreach (var article in articleBag)
             {
-                // Default quantity to add to all Splitters, last one gets the extra Remains ex 0,0000000000001
                 decimal articleQuantity = (article.Value.Quantity / numberOfSplits);
-                // Store Remain Quantity
                 decimal articleQuantityRemain = article.Value.Quantity;
-                // Check if Total is equal to Origin
                 decimal articleQuantityCheck = 0.0m;
                 decimal articleQuantityCheckModulo = 0.0m;
-                // Reset t
+
                 int t = 0;
                 foreach (SplitPaymentButton touchButtonSplitPayment in _splitPaymentButtons)
                 {
                     t++;
-                    // Discount articleQuantityRemain
                     articleQuantityRemain = articleQuantityRemain - articleQuantity;
                     if (t.Equals(_splitPaymentButtons.Count))
                     {
-                        // Override Default split Quantity, adding extra Remain
                         articleQuantity += articleQuantityRemain;
                     }
 
-                    // Add to articleQuantityCheck
                     articleQuantityCheck += articleQuantity;
-                    // Modulo
+
                     articleQuantityCheckModulo = article.Value.Quantity % articleQuantityCheck;
 
-                    // ArticleBagKey
                     ArticleBagKey articleBagKey = new ArticleBagKey(
                         article.Key.ArticleId,
                         article.Key.Designation,
@@ -207,12 +197,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         article.Key.Discount,
                         article.Key.Vat
                     );
-                    //Detect and Assign VatExemptionReason to ArticleBak Key
+
                     if (article.Key.VatExemptionReasonId != null && article.Key.VatExemptionReasonId != Guid.Empty)
                     {
                         articleBagKey.VatExemptionReasonId = article.Key.VatExemptionReasonId;
                     }
-                    // ArticleBagProperties
+
                     ArticleBagProperties articleBagProps = articleBagProps = new ArticleBagProperties(
                       configurationPlace.Oid,
                       currentOrderMain.Table.Oid,
@@ -222,17 +212,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                       article.Value.UnitMeasure
                     );
 
-                    // Add to ArticleBag
                     touchButtonSplitPayment.ArticleBag.Add(articleBagKey, articleBagProps);
                 }
             }
 
-            // After have all splitPaymentButtons ArticleBags (End of arraySplit.Count Loop)
             foreach (SplitPaymentButton item in _splitPaymentButtons)
             {
-                // Require to Update ProcessFinanceDocumentParameter, like when we Close Payment Window, BEFORE UpdateTouchButtonSplitPaymentLabels
-                // This is to Update UI when we Add/Remove Splits, else Already filled Payments dont Update
-                // Only change ArticleBag
                 if (item.ProcessFinanceDocumentParameter != null)
                 {
                     fin_configurationpaymentmethod paymentMethod = XPOUtility.GetEntityById<fin_configurationpaymentmethod>(item.ProcessFinanceDocumentParameter.PaymentMethod);
@@ -328,41 +313,25 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 checkTotal += item.Value.PriceFinal * item.Value.Quantity;
             }
 
-            //Arredondamento de valores na divisão de contas gera perdas no valor e quantidade [IN:005944]
-            //if (_articleBag.TotalFinal < checkTotal * _splitPaymentButtons.Count && touchButtonSplitPayment == _splitPaymentButtons[_splitPaymentButtons.Count - 1])
+            //tchial0
+            //PaymentDialog dialog = new PaymentDialog(WindowSettings.Source,
+            //                                         DialogFlags.DestroyWithParent,
+            //                                         touchButtonSplitPayment.ArticleBag,
+            //                                         false,
+            //                                         true,
+            //                                         true,
+            //                                         touchButtonSplitPayment.ProcessFinanceDocumentParameter,
+            //                                         touchButtonSplitPayment.SelectedPaymentMethodButtonName);
+            //int response = dialog.Run();
+
+            //if (response == (int)ResponseType.Ok)
             //{
-            //    var totalPSplit = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(checkTotal));
-            //    var totalPTotal = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(_articleBag.TotalFinal));
-            //    var missingRoundPayment = Convert.ToDecimal(LogicPOS.Utility.DataConversionUtils.DecimalToString(totalPTotal - (totalPSplit * _splitPaymentButtons.Count)));
-
-            //    touchButtonSplitPayment.ArticleBag.TotalFinal += missingRoundPayment;
-            //    //if(missingRoundPayment > 0)
-            //    //{
-            //    //    foreach (var item in touchButtonSplitPayment.ArticleBag)
-            //    //    {
-            //    //        item.Value.PriceFinal += (missingRoundPayment / _splitPaymentButtons.Count);
-            //    //    }
-            //    //}            
-            //}
-
-            // Using RequestProcessFinanceDocumentParameter, to prevent Emmit Document On Ok/Close
-            PaymentDialog dialog = new PaymentDialog(WindowSettings.Source, DialogFlags.DestroyWithParent, touchButtonSplitPayment.ArticleBag, false, true, true, touchButtonSplitPayment.ProcessFinanceDocumentParameter, touchButtonSplitPayment.SelectedPaymentMethodButtonName);
-            int response = dialog.Run();
-
-            if (response == (int)ResponseType.Ok)
-            {
-                // Assign ProcessFinanceDocumentParameter (Other dialog.TotalChange | dialog.TotalDelivery)
-                touchButtonSplitPayment.ProcessFinanceDocumentParameter = dialog.ProcessFinanceDocumentParameter;
-                // Store SelectedPaymentMethodButtonName to init Dialog with corrected Button Toggled
-                touchButtonSplitPayment.SelectedPaymentMethodButtonName = dialog.SelectedPaymentMethodButton.Name;
-                // Call UpdateTouchButtonSplitPaymentLabels
-                UpdateTouchButtonSplitPaymentLabels(touchButtonSplitPayment);
-                // UpdateActionButtons
-                UpdateActionButtons();
-
-                // Valid Result Destroy Dialog
-                dialog.Destroy();
-            };
+            //    touchButtonSplitPayment.ProcessFinanceDocumentParameter = dialog.ProcessFinanceDocumentParameter;
+            //    touchButtonSplitPayment.SelectedPaymentMethodButtonName = dialog.SelectedPaymentMethodButton.Name;
+            //    UpdateTouchButtonSplitPaymentLabels(touchButtonSplitPayment);
+            //    UpdateActionButtons();
+            //    dialog.Destroy();
+            //};
 
         }
     }

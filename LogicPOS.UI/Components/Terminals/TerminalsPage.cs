@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -77,5 +78,22 @@ namespace LogicPOS.UI.Components.Pages
                 return leftTerminal.HardwareId.CompareTo(rightTerminal.HardwareId);
             });
         }
+
+        #region Singleton
+        private static TerminalsPage _instance;
+
+        public static TerminalsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new TerminalsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+
+        #endregion
     }
 }

@@ -13,6 +13,7 @@ using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
@@ -423,8 +424,12 @@ namespace LogicPOS.UI.Components
                 }
                 else
                 {
-                    string message = GeneralUtils.GetResourceByName("global_invalid_code");
-                    logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+
+                    CustomAlerts.Error(POSWindow)
+                                .WithSize(new Size(400, 300))
+                                .WithMessageResource("global_invalid_code")
+                                .ShowAlert();
+
                     return;
                 }
             }
@@ -432,15 +437,24 @@ namespace LogicPOS.UI.Components
 
         public void ArticleNotFound()
         {
-            string message = GeneralUtils.GetResourceByName("global_invalid_code");
-            logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Código Inválido", message);
+
+            CustomAlerts.Error(POSWindow)
+                        .WithSize(new Size(400, 300))
+                        .WithMessageResource("global_invalid_code")
+                        .ShowAlert();
+
             return;
         }
 
         public void WsNotFound()
         {
             string message = string.Format("O Web service não se encontra em funcionamento");
-            logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, "Web Service não encontrado", message);
+
+            CustomAlerts.Error(POSWindow)
+                        .WithSize(new Size(400, 300))
+                        .WithTitle("Web Service não encontrado")
+                        .WithMessage(message)
+                        .ShowAlert();
             return;
         }
 
@@ -505,21 +519,37 @@ namespace LogicPOS.UI.Components
 
             if (requireToChooseVatExemptionReason && article.VatDirectSelling.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree && article.VatExemptionReason == null)
             {
-                logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(400, 300), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_vatrate_free_article_detected"), GeneralUtils.GetResourceByName("dialog_message_article_without_vat_exception_reason_detected"));
+                CustomAlerts.Error(POSWindow)
+                            .WithSize(new Size(400, 300))
+                            .WithTitleResource("window_title_dialog_vatrate_free_article_detected")
+                            .WithMessageResource("dialog_message_article_without_vat_exception_reason_detected")
+                            .ShowAlert();
                 return;
             }
 
             if (parkingTicketResult.AlreadyExit)
             {
                 string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_exited"), parkingTicketResult.DateExits);
-                logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_exited"), message);
+
+                CustomAlerts.Error(POSWindow)
+                            .WithSize(new Size(400, 300))
+                            .WithTitleResource("window_title_dialog_already_exited")
+                            .WithMessage(message)
+                            .ShowAlert();
+
+
                 return;
             }
 
             else if (parkingTicketResult.AlreadyPaid)
             {
                 string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
-                logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(450, 350), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("window_title_dialog_already_paid"), message);
+
+                CustomAlerts.Error(POSWindow)
+                            .WithSize(new Size(400, 300))
+                            .WithTitleResource("window_title_dialog_already_paid")
+                            .WithMessage(message)
+                            .ShowAlert();
                 return;
             }
 
@@ -536,7 +566,11 @@ namespace LogicPOS.UI.Components
                 bool showMessage;
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (!logicpos.Utils.ShowMessageMinimumStock(POSWindow, pArticleOid, Convert.ToDecimal(ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity, out showMessage))
+           
+                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow,
+                                                       pArticleOid,
+                                                       Convert.ToDecimal(ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity,
+                                                       out showMessage))
                     {
                         if (showMessage) return;
                     }
@@ -561,12 +595,23 @@ namespace LogicPOS.UI.Components
                     if (parkingTicketResult.Ean.Length == 13)
                     {
                         message = string.Format(" Numero do ticket: {0}\n\n Data de Emissão: {1}\n Duração: {2} minuto(s)\n Descrição: {3}\n", parkingTicketResult.Ean, parkingTicketResult.Date, parkingTicketResult.Minutes, parkingTicketResult.Description);
-                        logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+
+ 
+                        CustomAlerts.Information(POSWindow)
+                                    .WithSize(new Size(480, 350))
+                                    .WithTitleResource("window_title_dialog_ticket_details")
+                                    .WithMessage(message)
+                                    .ShowAlert();
                     }
                     else
                     {
                         message = string.Format(" Numero do cartão: {0} \n", parkingTicketResult.Ean);
-                        logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.DestroyWithParent, new Size(480, 350), MessageType.Info, ButtonsType.Ok, "Ticket Details", message);
+
+                        CustomAlerts.Information(POSWindow)
+                                    .WithSize(new Size(480, 350))
+                                    .WithTitleResource("window_title_dialog_ticket_details")
+                                    .WithMessage(message)
+                                    .ShowAlert();
                     }
 
                 }

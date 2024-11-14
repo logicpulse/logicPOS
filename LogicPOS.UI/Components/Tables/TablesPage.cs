@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Printers.GetAllPrinters;
+using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -9,17 +8,17 @@ using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using Printer = LogicPOS.Api.Entities.Printer;
+using Table = LogicPOS.Api.Entities.Table;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class PrintersPage : Page<Printer>
+    public class TablesPage : Page<Table>
     {
-        public PrintersPage(Window parent) : base(parent)
+        public TablesPage(Window parent) : base(parent)
         {
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<Printer>>> GetAllQuery => new GetAllPrintersQuery();
+        protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetAllTablesQuery();
 
         public override void DeleteEntity()
         {
@@ -28,7 +27,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            var modal = new PrinterModal(mode, SelectedEntity);
+            var modal = new TableModal(mode, SelectedEntity);
             modal.Run();
             modal.Destroy();
         }
@@ -37,19 +36,19 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(2));
-            GridView.AppendColumn(CreatePrinterTypeColumn());
+            GridView.AppendColumn(CreatePlaceColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
 
-        private TreeViewColumn CreatePrinterTypeColumn()
+        private TreeViewColumn CreatePlaceColumn()
         {
             void RenderPlace(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var table = (Printer)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = table.Type.Designation;
+                var table = (Table)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = table.Place.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_printer_type");
+            var title = GeneralUtils.GetResourceByName("global_places");
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
 
@@ -60,36 +59,37 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting(0);
             AddDesignationSorting(2);
-            AddPrinterTypeSorting();
+            AddPlaceSorting();
             AddUpdatedAtSorting(4);
         }
 
-        private void AddPrinterTypeSorting()
+        private void AddPlaceSorting()
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var leftPrinter = (Printer)model.GetValue(left, 0);
-                var rightPrinter = (Printer)model.GetValue(right, 0);
+                var leftTable = (Table)model.GetValue(left, 0);
+                var rightTable = (Table)model.GetValue(right, 0);
 
-                if (leftPrinter == null || rightPrinter == null)
+                if (leftTable == null || rightTable == null)
                 {
                     return 0;
                 }
 
-                return leftPrinter.Type.Designation.CompareTo(rightPrinter.Type.Designation);
+                return leftTable.Place.Designation.CompareTo(rightTable.Place.Designation);
             });
         }
 
         #region Signleton
-        private static PrintersPage _instance;
-        public static PrintersPage Instance
+        private static TablesPage _instance;
+        public static TablesPage Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new PrintersPage(BackOfficeWindow.Instance);
+                    _instance = new TablesPage(BackOfficeWindow.Instance);
                 }
+
                 return _instance;
             }
         }

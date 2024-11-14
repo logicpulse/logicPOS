@@ -12,6 +12,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
@@ -19,6 +20,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -57,9 +59,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnReports_Clicked(object sender, EventArgs e)
         {
-            PosReportsDialog dialog = new PosReportsDialog(this, DialogFlags.DestroyWithParent);
-            int response = dialog.Run();
-            dialog.Destroy();
+            
         }
 
         private void BtnLogOut_Clicked(object sender, EventArgs e)
@@ -85,10 +85,6 @@ namespace LogicPOS.UI.Components.Windows
             var modal = new CreateDocumentModal(this);
             modal.Run();
             modal.Destroy();
-
-            PosDocumentFinanceDialog createDocumentModal = new PosDocumentFinanceDialog(this, DialogFlags.DestroyWithParent);
-            ResponseType response = (ResponseType)createDocumentModal.Run();
-            createDocumentModal.Destroy();
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
@@ -144,13 +140,17 @@ namespace LogicPOS.UI.Components.Windows
                 var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                 if (!resultOpenDoor)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")));
+                    CustomAlerts.Information(this)
+                                .WithSize(new Size(500, 340))
+                                .WithTitleResource("global_information")
+                                .WithMessage(string.Format(GeneralUtils.GetResourceByName("open_cash_draw_permissions")))
+                                .ShowAlert();
                 }
                 else
                 {
                     XPOUtility.Audit("CASHDRAWER_OUT", string.Format(
                          GeneralUtils.GetResourceByName("audit_message_cashdrawer_out"),
-                         TerminalSettings.LoggedTerminal.Designation,
+                         TerminalService.Terminal.Designation,
                          "Button Open Door"));
                 }
 

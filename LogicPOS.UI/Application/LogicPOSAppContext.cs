@@ -12,7 +12,6 @@ namespace LogicPOS.UI.Application
     public static class LogicPOSAppContext
     {
         public static POSWindow PosMainWindow { get; set; }
-        public static BackOfficeWindow BackOffice { get; set; }
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }
         public static PosKeyboardDialog DialogPosKeyboard { get; set; }

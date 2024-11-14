@@ -132,7 +132,7 @@ namespace LogicPOS.UI.Components.Documents
 
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
                 return;
             }
 
@@ -142,13 +142,12 @@ namespace LogicPOS.UI.Components.Documents
         private void ShowCannotCancelReceiptMessage(string refNo)
         {
             string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), refNo);
-            logicpos.Utils.ShowMessageBox(this,
-                                          DialogFlags.Modal,
-                                          new Size(600, 400),
-                                          MessageType.Info,
-                                          ButtonsType.Ok,
-                                          GeneralUtils.GetResourceByName("global_information"),
-                                          infoMessage);
+
+            CustomAlerts.Information(this)
+                        .WithSize(new Size(600, 400))
+                        .WithTitleResource("global_information")
+                        .WithMessage(infoMessage)
+                        .ShowAlert();
         }
 
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)

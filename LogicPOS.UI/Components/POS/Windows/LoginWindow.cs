@@ -8,6 +8,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
@@ -24,14 +25,11 @@ namespace LogicPOS.UI.Components.Windows
         private UserPinPanel PinPanel { get; set; }
         public UsersMenu UsersMenu { get; set; }
 
-        public LoginWindow(
-            string backgroundImage,
-            bool needToUpdate)
+        public LoginWindow(string backgroundImage,
+                           bool needToUpdate)
             : base(backgroundImage)
         {
             InitializeUI();
-
-            InitPlataformParameters();
 
             if (needToUpdate)
             {
@@ -46,34 +44,6 @@ namespace LogicPOS.UI.Components.Windows
             {
                 OnUserSelected(UsersMenu.SelectedUser);
             }
-        }
-
-        private void InitPlataformParameters()
-        {
-            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-            cfg_configurationpreferenceparameter configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyCountryCode2 = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_CODE2")) as cfg_configurationpreferenceparameter);
-            cfg_configurationpreferenceparameter configurationPreferenceParameterCompanyFiscalNumber = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_FISCALNUMBER")) as cfg_configurationpreferenceparameter);
-
-            if (
-                string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryOid.Value) ||
-                string.IsNullOrEmpty(configurationPreferenceParameterCompanyCountryCode2.Value) ||
-                string.IsNullOrEmpty(configurationPreferenceParameterCompanyFiscalNumber.Value) ||
-                string.IsNullOrEmpty(configurationPreferenceParameterSystemCurrencyOid.Value)
-            )
-            {
-                PosEditCompanyDetails dialog = new PosEditCompanyDetails(this, DialogFlags.DestroyWithParent | DialogFlags.Modal, false);
-                ResponseType response = (ResponseType)dialog.Run();
-                dialog.Destroy();
-            }
-
-            //Always Get Objects from Prefs to Singleton : with and without PosEditCompanyDetails
-            configurationPreferenceParameterCompanyCountryOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "COMPANY_COUNTRY_OID")) as cfg_configurationpreferenceparameter);
-            configurationPreferenceParameterSystemCurrencyOid = (XPOUtility.GetXPGuidObjectFromCriteria(typeof(cfg_configurationpreferenceparameter), string.Format("(Disabled IS NULL OR Disabled  <> 1) AND (Token = '{0}')", "SYSTEM_CURRENCY_OID")) as cfg_configurationpreferenceparameter);
-            XPOSettings.ConfigurationSystemCountry = (cfg_configurationcountry)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcountry), new Guid(configurationPreferenceParameterCompanyCountryOid.Value));
-            XPOSettings.ConfigurationSystemCurrency = (cfg_configurationcurrency)XPOSettings.Session.GetObjectByKey(typeof(cfg_configurationcurrency), new Guid(configurationPreferenceParameterSystemCurrencyOid.Value));
-
-
         }
 
         private dynamic GetTheme()
@@ -241,8 +211,6 @@ namespace LogicPOS.UI.Components.Windows
                 //Put in Fix
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
-
-
                 if (Program.DebugMode)
                 {
                     Button buttonDeveloper = new Button("Developer");
@@ -265,15 +233,13 @@ namespace LogicPOS.UI.Components.Windows
                     Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo));
                     fix.Put(imageLogo, LogicPOSAppContext.ScreenSize.Width - 430, 80);
                 }
-                //string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(LogicPOS.Settings.AppSettings.Instance.fileImageBackOfficeLogo"]);
+
                 ScreenArea.Add(fix);
 
-                //Force EntryPin to be the Entry with Focus
                 PinPanel.EntryPin.GrabFocus();
 
                 ShowAll();
 
-                //Events
                 PinPanel.ExposeEvent += delegate
                 {
                     PinPanel.ButtonKeyFrontOffice.Hide();
@@ -283,7 +249,7 @@ namespace LogicPOS.UI.Components.Windows
             }
             else
             {
-                Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
+                CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage,this);
             }
         }
     }

@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -95,7 +96,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (theme == null)
             {
-                Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
+                CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage,this);
             }
 
             try
@@ -121,7 +122,7 @@ namespace LogicPOS.UI.Components.Windows
             }
             catch (Exception ex)
             {
-                Utils.ShowMessageTouchErrorRenderTheme(this, $"{errorMessage}{Environment.NewLine}{Environment.NewLine}{ex.Message}");
+                CustomAlerts.ShowThemeRenderingErrorAlert($"{errorMessage}\n\n{ex.Message}",this);
             }
 
         }
@@ -148,15 +149,12 @@ namespace LogicPOS.UI.Components.Windows
 
             if (monitorGeometry.Width < width || monitorGeometry.Height < height)
             {
-                Utils.ShowMessageTouch(
-                    this,
-                    DialogFlags.Modal,
-                    MessageType.Error,
-                    ButtonsType.Ok,
-                    GeneralUtils.GetResourceByName("global_error"),
-                    string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"),
-                    width,
-                    height));
+                CustomAlerts.Error(this)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_error")
+                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"), width, height))
+                            .ShowAlert();
+
                 Environment.Exit(0);
             }
 

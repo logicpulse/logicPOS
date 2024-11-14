@@ -44,5 +44,20 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static WarehousesPage _instance;
+        public static WarehousesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new WarehousesPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

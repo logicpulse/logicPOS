@@ -4,7 +4,9 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.Utility;
 using System;
 using System.IO;
@@ -75,26 +77,21 @@ namespace logicpos.Classes.Logic.License
 
                     WriteByteArrayToFile(registredLicence, licenseFilePath);
 
-                    logicpos.Utils.ShowMessageTouch(
-                        null,
-                        DialogFlags.Modal,
-                        MessageType.Info,
-                        ButtonsType.Close,
-                        GeneralUtils.GetResourceByName("global_information"),
-                        GeneralUtils.GetResourceByName("dialog_message_license_updated"));
+                    CustomAlerts.Information(BackOfficeWindow.Instance)
+                                .WithSize(new System.Drawing.Size(600, 400))
+                                .WithTitleResource("global_information")
+                                .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_updated"))
+                                .ShowAlert();
 
                     //return; -> removed by tchial0 to continue the execution
                 }
 
                 if (version == "LOGICPOS_BLOCK")
                 {
-                    logicpos.Utils.ShowMessageTouch(
-                        null,
-                        DialogFlags.Modal,
-                        MessageType.Error,
-                        ButtonsType.Close,
-                        GeneralUtils.GetResourceByName("global_error"),
-                        GeneralUtils.GetResourceByName("dialog_message_license_blocked"));
+                    CustomAlerts.Error(BackOfficeWindow.Instance)
+                                .WithSize(new System.Drawing.Size(600, 400))
+                                .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_blocked"))
+                                .ShowAlert();
 
                     return;
                 }

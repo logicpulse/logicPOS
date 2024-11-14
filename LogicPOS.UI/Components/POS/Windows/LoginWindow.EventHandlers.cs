@@ -3,15 +3,12 @@ using logicpos;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.Shared;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -59,12 +56,11 @@ namespace LogicPOS.UI.Components.Windows
 
             if (user.PasswordReset)
             {
-                Utils.ShowMessageTouch(this,
-                                       DialogFlags.Modal,
-                                       MessageType.Info,
-                                       ButtonsType.Ok,
-                                       CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_information"),
-                                       string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), user.Name, XPOSettings.DefaultValueUserDetailAccessPin));
+                CustomAlerts.Information(this)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_information")
+                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), user.Name, XPOSettings.DefaultValueUserDetailAccessPin))
+                            .ShowAlert();
             }
 
             PinPanel.EntryPin.GrabFocus();

@@ -1,8 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
-using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -10,30 +9,23 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 
-
 namespace LogicPOS.UI.Components.Pages
 {
-    public class DocumentTypesPage : Page<DocumentType>
+    public class ArticleClassesPage : Page<ArticleClass>
     {
-        public DocumentTypesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
+        public ArticleClassesPage(Window parent) : base(parent)
         {
         }
-
-        protected override IRequest<ErrorOr<IEnumerable<DocumentType>>> GetAllQuery => new GetAllDocumentTypesQuery();
 
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
         }
+        protected override IRequest<ErrorOr<IEnumerable<ArticleClass>>> GetAllQuery => new GetAllArticleClassesQuery();
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            if (mode == EntityEditionModalMode.Insert)
-            {
-                return;
-            }
-
-            var modal = new DocumentTypeModal(mode, SelectedEntity);
+            var modal = new ArticleClassModal(mode, SelectedEntity as ArticleClass);
             modal.Run();
             modal.Destroy();
         }
@@ -50,8 +42,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var documentType = (DocumentType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = documentType.Acronym.ToString();
+                var articleClass = (ArticleClass)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = articleClass.Acronym.ToString();
             }
 
             var title = GeneralUtils.GetResourceByName("global_acronym");
@@ -60,6 +52,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void InitializeSort()
         {
+
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
             AddCodeSorting(0);
@@ -72,33 +65,29 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftType = (DocumentType)model.GetValue(left, 0);
-                var rightType = (DocumentType)model.GetValue(right, 0);
+                var leftArticleClass = (ArticleClass)model.GetValue(left, 0);
+                var rightArticleClass = (ArticleClass)model.GetValue(right, 0);
 
-                if (leftType == null || rightType == null)
+                if (leftArticleClass == null || rightArticleClass == null)
                 {
                     return 0;
                 }
 
-                return leftType.Acronym.CompareTo(rightType.Acronym);
+                return leftArticleClass.Acronym.CompareTo(rightArticleClass.Acronym);
             });
         }
 
-        #region Singleton
-        private static DocumentTypesPage _instance;
-        public static DocumentTypesPage Instance
+        #region Singleton   
+        private static ArticleClassesPage _instance;
+        public static ArticleClassesPage Instance(Window parent)
         {
-            get
+            if (_instance == null)
             {
-                if (_instance == null)
-                {
-                    _instance = new DocumentTypesPage(BackOfficeWindow.Instance);
-                }
-
-                return _instance;
+                _instance = new ArticleClassesPage(parent);
             }
+
+            return _instance;
         }
         #endregion
     }
-
 }

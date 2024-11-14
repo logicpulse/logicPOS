@@ -10,6 +10,7 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Alerts;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -109,7 +110,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _entryBoxValidationBcc.EntryValidation.Validated &&
                 _entryBoxValidationMultiLine.Validated &&
                 (
-                    // One of them is Required
                     !string.IsNullOrEmpty(_entryBoxValidationTo.EntryValidation.Text) ||
                     !string.IsNullOrEmpty(_entryBoxValidationCc.EntryValidation.Text) ||
                     !string.IsNullOrEmpty(_entryBoxValidationBcc.EntryValidation.Text)
@@ -123,22 +123,30 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    EmailUtils.SendMail(
-                        GeneralSettings.PreferenceParameters,
-                        SmtpDeliveryMethod.Network,
-                        To,
-                        Cc,
-                        Bcc,
-                        Subject,
-                        Body,
-                        AttachmentFileNames
-                        );
-                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(650, 380), MessageType.Info, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_mail_sent_successfully"));
+                    EmailUtils.SendMail(GeneralSettings.PreferenceParameters,
+                                        SmtpDeliveryMethod.Network,
+                                        To,
+                                        Cc,
+                                        Bcc,
+                                        Subject,
+                                        Body,
+                                        AttachmentFileNames);
+
+                    CustomAlerts.Information(this)
+                                .WithSize(new Size(600, 400))
+                                .WithTitleResource("global_information")
+                                .WithMessage(GeneralUtils.GetResourceByName("dialog_message_mail_sent_successfully"))
+                                .ShowAlert();
+
                 }
                 catch (Exception ex)
                 {
-                    logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new Size(650, 380), MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), ex.Message);
-                    // Keep Running
+                    CustomAlerts.Error(this)
+                                .WithSize(new Size(500, 340))
+                                .WithTitleResource("global_error")
+                                .WithMessage(ex.Message)
+                                .ShowAlert();
+
                     this.Run();
                 }
             }

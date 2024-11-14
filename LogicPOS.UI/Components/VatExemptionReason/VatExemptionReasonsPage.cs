@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -38,8 +39,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
 
-
-
         private TreeViewColumn CreateAcronymColumn()
         {
             void RenderAcronym(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
@@ -60,5 +59,20 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static VatExemptionReasonsPage _instance;
+        public static VatExemptionReasonsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new VatExemptionReasonsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

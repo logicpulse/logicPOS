@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
 using LogicPOS.Api.Features.Articles.GetTotalStocks;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -226,5 +227,22 @@ namespace LogicPOS.UI.Components.Pages
                 return leftArticle.Type?.Designation.CompareTo(rightArticle.Type?.Designation) ?? 0;
             });
         }
+
+        #region Singleton
+        private static ArticlesPage _instance;
+
+        public static ArticlesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ArticlesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+
+        #endregion
     }
 }

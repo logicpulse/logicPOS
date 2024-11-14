@@ -349,12 +349,11 @@ namespace LogicPOS.UI.Widgets
                 case NumberPadPinMode.PasswordNew:
                     if (EntryPin.Text == _oldPassword)
                     {
-                        ResponseType response = Utils.ShowMessageTouch(parentWindow,
-                                                                       DialogFlags.Modal,
-                                                                       MessageType.Error,
-                                                                       ButtonsType.Ok,
-                                                                       GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
-                                                                       GeneralUtils.GetResourceByName("pos_pinpad_message_password_equal_error"));
+                        CustomAlerts.Error(parentWindow)
+                                    .WithTitleResource("window_title_dialog_change_password")
+                                    .WithMessageResource("pos_pinpad_message_password_equal_error")
+                                    .ShowAlert();
+
                         ClearEntryPinStatusMessage(true);
                     }
                     else
@@ -369,24 +368,21 @@ namespace LogicPOS.UI.Widgets
                     {
                         ChangePassword(user.Id, _oldPassword, _newPassword);
 
-                        Utils.ShowMessageTouch(parentWindow,
-                                               DialogFlags.Modal,
-                                               MessageType.Info,
-                                               ButtonsType.Ok,
-                                               GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
-                                               GeneralUtils.GetResourceByName("pos_pinpad_message_password_changed"));
+                        CustomAlerts.Information(parentWindow)
+                                    .WithTitleResource("window_title_dialog_change_password")
+                                    .WithMessageResource("pos_pinpad_message_password_changed")
+                                    .ShowAlert();
 
                         ProcessLogin(user);
                         result = true;
                     }
                     else
                     {
-                        Utils.ShowMessageTouch(parentWindow,
-                                               DialogFlags.Modal,
-                                               MessageType.Error,
-                                               ButtonsType.Ok,
-                                               GeneralUtils.GetResourceByName("window_title_dialog_change_password"),
-                                               GeneralUtils.GetResourceByName("pos_pinpad_message_password_confirmation_error"));
+
+                        CustomAlerts.Error(parentWindow)
+                                    .WithTitleResource("window_title_dialog_change_password")
+                                    .WithMessageResource("pos_pinpad_message_password_confirmation_error")
+                                    .ShowAlert();
 
                         ClearEntryPinStatusMessage(true);
                         _mode = NumberPadPinMode.PasswordNew;
@@ -431,7 +427,7 @@ namespace LogicPOS.UI.Widgets
             {
                 if (loginResult.FirstError == ApiErrors.CommunicationError)
                 {
-                    SimpleAlerts.ShowApiErrorAlert(SourceWindow, loginResult.FirstError);
+                    CustomAlerts.ShowApiErrorAlert(SourceWindow, loginResult.FirstError);
                     return false;
                 }
 
@@ -511,7 +507,7 @@ namespace LogicPOS.UI.Widgets
 
             if (changePasswordResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(SourceWindow, changePasswordResult.FirstError);
+                CustomAlerts.ShowApiErrorAlert(SourceWindow, changePasswordResult.FirstError);
                 return false;
             }
 

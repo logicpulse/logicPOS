@@ -20,7 +20,6 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<SizeUnit>>> GetAllQuery => new GetAllSizeUnitsQuery();
        
-
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
@@ -40,7 +39,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
         }
 
-
         protected override void InitializeSort()
         {
 
@@ -50,6 +48,21 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static SizeUnitsPage _instance;
+        public static SizeUnitsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new SizeUnitsPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
-    
+
 }

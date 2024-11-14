@@ -45,5 +45,20 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
         }
+
+        #region Singleton
+        private static PriceTypesPage _instance;
+        public static PriceTypesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PriceTypesPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

@@ -44,5 +44,20 @@ namespace LogicPOS.UI.Components.Pages
             modal.Run();
             modal.Destroy();
         }
+
+        #region Singleton
+        private static CountriesPage _instance;
+        public static CountriesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new CountriesPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

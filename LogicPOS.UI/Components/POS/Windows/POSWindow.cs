@@ -8,6 +8,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
@@ -83,7 +84,7 @@ namespace LogicPOS.UI.Components.Windows
             this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
             //Hardware Events
-            if (TerminalSettings.LoggedTerminal.BarcodeReader != null || TerminalSettings.LoggedTerminal.CardReader != null)
+            if (TerminalService.Terminal.BarcodeReader != null || TerminalService.Terminal.CardReader != null)
             {
                 LogicPOSAppContext.BarCodeReader.Captured += HWBarCodeReader_Captured;
             }
@@ -123,12 +124,16 @@ namespace LogicPOS.UI.Components.Windows
                 ICollection collectionDocumentFinanceSeries = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinanceyearserieterminal)), criteria, sortCollection, int.MaxValue, false, true);
                 if (collectionDocumentFinanceSeries.Count == 0)
                 {
-                    Utils.ShowMessageTouch(this, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_warning"), GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"));
+                    CustomAlerts.Warning(this)
+                                .WithSize(new Size(600, 400))
+                                .WithTitleResource("global_warning")
+                                .WithMessage(GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"))
+                                .ShowAlert();
                 }
             }
             else
             {
-                Utils.ShowMessageTouchErrorRenderTheme(this, errorMessage);
+                CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage,this);
             }
         }
 

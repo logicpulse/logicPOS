@@ -1,24 +1,28 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
+using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
+using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class InputReadersPage : Page<InputReader>
+    public class DiscountGroupsPage : Page<DiscountGroup>
     {
        
-        protected override IRequest<ErrorOr<IEnumerable<InputReader>>> GetAllQuery => new GetAllInputReadersQuery();
-        public InputReadersPage(Window parent) : base(parent)
+        protected override IRequest<ErrorOr<IEnumerable<DiscountGroup>>> GetAllQuery => new GetAllDiscountGroupsQuery();
+        public DiscountGroupsPage(Window parent) : base(parent)
         {
         }
-
 
         public override void DeleteEntity()
         {
@@ -27,7 +31,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void RunModal(EntityEditionModalMode mode)
         {
-            var modal = new InputReaderModal(mode, SelectedEntity as InputReader);
+            var modal = new DiscountGroupModal(mode, SelectedEntity as DiscountGroup);
             modal.Run();
             modal.Destroy();
         }
@@ -36,7 +40,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
         }
 
         protected override void InitializeSort()
@@ -49,14 +53,14 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         #region Singleton
-        private static InputReadersPage _instance;
-        public static InputReadersPage Instance
+        private static DiscountGroupsPage _instance;
+        public static DiscountGroupsPage Instance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new InputReadersPage(null);
+                    _instance = new DiscountGroupsPage(null);
                 }
                 return _instance;
             }

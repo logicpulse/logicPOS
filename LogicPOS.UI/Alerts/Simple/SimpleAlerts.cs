@@ -68,43 +68,5 @@ namespace LogicPOS.UI.Alerts
                 .WithMessageResource("dialog_message_composite_article_same")
                 .Show();
         }
-
-        public static void ShowApiErrorAlert(
-            Window sourceWindow,
-            Error error)
-        {
-            var errorMessage = new StringBuilder();
-            errorMessage.AppendLine("Code: " + error.Code);
-            errorMessage.AppendLine("Description: " + error.Description);
-
-
-            var metadata = error.Metadata;
-
-            if (metadata != null)
-            {
-                var problemDetails = (ProblemDetails)metadata["problem"];
-
-                errorMessage.AppendLine("\nProblem Details:");
-                errorMessage.AppendLine("Title: " + problemDetails.Title);
-                errorMessage.AppendLine("Status: " + problemDetails.Status);
-                errorMessage.AppendLine("Type: " + problemDetails.Type);
-                errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
-
-                foreach (var problemDetailsError in problemDetails.Errors)
-                {
-                    errorMessage.AppendLine("\nError:");
-                    errorMessage.AppendLine("Name: " + problemDetailsError.Name);
-                    errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
-                }
-            }
-
-            var messageDialog = new CustomAlert(sourceWindow)
-                                .WithMessage(errorMessage.ToString())
-                                .WithMessageType(MessageType.Error)
-                                .WithButtonsType(ButtonsType.Ok)
-                                .WithTitle("Erro")
-
-                                .ShowAlert();
-        }
     }
 }

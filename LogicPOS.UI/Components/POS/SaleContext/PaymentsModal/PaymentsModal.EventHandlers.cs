@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (addDocumentResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, addDocumentResult.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, addDocumentResult.FirstError);
                 Run();
                 return;
             }
@@ -99,7 +99,7 @@ namespace LogicPOS.UI.Components.POS
             var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetDocumentByIdQuery(id)).Result;
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
             }
             var document = result.Value;
             List<int> docCopyName = new List<int>();
@@ -138,7 +138,7 @@ namespace LogicPOS.UI.Components.POS
             var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
             if (result.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
             }
             var companyInformations = result.Value;
             return new CompanyPrintingInformationsDto()

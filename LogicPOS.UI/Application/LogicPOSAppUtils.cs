@@ -18,6 +18,7 @@ using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
@@ -46,18 +47,13 @@ namespace LogicPOS.UI.Application
                 Initialize();
                 LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
                 InitAppMode(mode);
-
                 InitBackupTimerProcess();
 
                 if (!_quitAfterBootStrap) Gtk.Application.Run();
             }
             catch (Exception ex)
             {
-                //CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance); ::: DÚVIDA LUCIANO
-
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                                            .WithMessage(ex.Message)
-                                            .ShowAlert();
+                CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance, ex.StackTrace);
             }
             finally
             {
@@ -76,16 +72,6 @@ namespace LogicPOS.UI.Application
 
         private void Initialize()
         {
-            bool createDatabase = LogicPOSSettings.XPOCreateDatabaseAndSchema;
-            bool createDatabaseObjectsWithFixtures = createDatabase;
-
-            AutoCreateOption xpoAutoCreateOption = createDatabase ? AutoCreateOption.DatabaseAndSchema : AutoCreateOption.None;
-
-            if (File.Exists(LogicPOSSettings.LicenceFileName))
-            {
-                Utils.AssignLicence(LogicPOSSettings.LicenceFileName, true);
-            }
-
             LogicPOSAppContext.MultiUserEnvironment = AppSettings.Instance.appMultiUserEnvironment;
             LogicPOSAppContext.UseVirtualKeyBoard = AppSettings.Instance.useVirtualKeyBoard;
 
@@ -96,179 +82,31 @@ namespace LogicPOS.UI.Application
 
             LogicPOSAppContext.OpenFileDialogStartPath = Directory.GetCurrentDirectory();
 
-            DatabaseSettings.DatabaseType = (DatabaseType)Enum.Parse(typeof(DatabaseType), AppSettings.Instance.databaseType);
-
-            DatabaseSettings.DatabaseName = AppSettings.Instance.databaseName;
-
-            string connectionString = string.Format(AppSettings.Instance.xpoConnectionString, DatabaseSettings.DatabaseName.ToLower());
-            DatabaseSettings.AssignConnectionStringToSettings(connectionString);
-
-            if (LogicPOSSettings.UseProtectedFiles)
-            {
-                LogicPOSAppContext.ProtectedFiles = InitProtectedFiles();
-            }
-
-            bool databaseCreated = false;
-
-            if (createDatabase == false)
-            {
-                try
-                {
-
-                    LogicPOSSettings.FirstBoot = true;
-                    databaseCreated = DataLayer.CreateDatabaseSchema(
-                        connectionString,
-                        DatabaseSettings.DatabaseType,
-                        DatabaseSettings.DatabaseName,
-                        out _needToUpdate);
-
-                }
-                catch (Exception ex)
-                {
-                    LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                    var messageDialog = new CustomAlert(LoginWindow.Instance)
-                    .WithMessage(ex.Message)
-                    .WithSize(new Size(900,700))
-                    .WithMessageType(MessageType.Error)
-                    .WithButtonsType(ButtonsType.Ok)
-                    .WithTitleResource("global_error")
-                    .ShowAlert();
-
-                    Environment.Exit(0);
-                }
-            }
             LogicPOSSettings.FirstBoot = false;
-            //Init XPO Connector DataLayer
-            try
-            {
-                /* IN007011 */
-                var connectionStringBuilder = new System.Data.Common.DbConnectionStringBuilder()
-                { ConnectionString = connectionString };
-                if (connectionStringBuilder.ContainsKey("password")) { connectionStringBuilder["password"] = "*****"; };
-                _logger.Debug(string.Format("void Init() :: Init XpoDefault.DataLayer: [{0}]", connectionStringBuilder.ToString()));
-
-                XpoDefault.DataLayer = XpoDefault.GetDataLayer(connectionString, xpoAutoCreateOption);
-                XPOSettings.Session = new Session(XpoDefault.DataLayer) { LockingOption = LockingOption.None };
-            }
-            catch (Exception ex)
-            {
-                _logger.Error("void Init() :: Init XpoDefault.DataLayer: " + ex.Message, ex);
-
-                /* IN009034 */
-                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                                    .WithMessage(ex.Message)
-                                    .WithSize(new Size(900, 700))
-                                    .WithMessageType(MessageType.Error)
-                                    .WithButtonsType(ButtonsType.Ok)
-                                    .WithTitleResource("global_error")
-                                    .ShowAlert();
-
-                throw; // TO DO
-            }
-
-            //Check Valid Database Scheme
-            if (!createDatabase && !GeneralUtils.IsRunningOnMono)
-            {
-                bool isSchemaValid = DataLayer.IsSchemaValid(connectionString);
-                _logger.Debug(string.Format("void Init() :: Check if Database Scheme: isSchemaValid : [{0}]", isSchemaValid));
-                if (!isSchemaValid)
-                {
-                    /* IN009034 */
-                    LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                    string endMessage = "Invalid database Schema! Fix database Schema and Try Again!";
-
-                    var messageDialog = new CustomAlert(LoginWindow.Instance)
-                                            .WithMessage(string.Format(endMessage, Environment.NewLine))
-                                            .WithSize(new Size(500, 300))
-                                            .WithMessageType(MessageType.Error)
-                                            .WithButtonsType(ButtonsType.Ok)
-                                            .WithTitleResource("global_error")
-                                            .ShowAlert();
-
-                    Environment.Exit(0);
-                }
-            }
-
-            //If not in Xpo create database Scheme Mode, Get Terminal from Db
-            if (createDatabase == false)
-            {
-                TerminalSettings.LoggedTerminal = Utils.GetOrCreateTerminal();
-            }
-
-            //After Assigned LoggedUser
-            if (createDatabaseObjectsWithFixtures)
-            {
-                InitFixtures.InitUserAndTerminal(XPOSettings.Session);
-                InitFixtures.InitOther(XPOSettings.Session);
-                InitFixtures.InitDocumentFinance(XPOSettings.Session);
-                InitFixtures.InitWorkSession(XPOSettings.Session);
-            }
-
-            //End Xpo Create Scheme and Fixtures, Terminate App and Request assign False to Developer Vars
-            if (createDatabase)
-            {
-                /* IN009034 */
-                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                string endMessage = "Xpo Create Schema and Fixtures Done!{0}Please assign false to 'xpoCreateDatabaseAndSchema' and 'xpoCreateDatabaseObjectsWithFixtures' and run App again";
-                _logger.Debug(string.Format("void Init() :: xpoCreateDatabaseAndSchema: {0}", endMessage));
-               
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                    .WithMessage(string.Format(endMessage, Environment.NewLine))
-                    .WithSize(new Size(500, 300))
-                    .WithMessageType(MessageType.Info)
-                    .WithButtonsType(ButtonsType.Ok)
-                    .WithTitleResource("global_information")
-                    .ShowAlert();
-
-                Environment.Exit(0);
-            }
-
-            //Init PreferenceParameters
             GeneralSettings.PreferenceParameters = XPOUtility.GetPreferencesParameters();
-            //Init Preferences Path
             PathsSettings.InitializePreferencesPaths();
 
-            //CultureInfo/Localization
             string culture = GeneralSettings.PreferenceParameters["CULTURE"];
 
-            /* IN008013 */
             if (string.IsNullOrEmpty(culture))
             {
                 culture = CultureSettings.CurrentCultureName;
             }
 
-
             CultureSettings.CurrentCulture = CultureSettings.CurrentCulture = new CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-
-            _logger.Debug(string.Format("CUSTOM CULTURE :: CurrentUICulture '{0}' in use.", CultureInfo.CurrentUICulture));
-
             CultureSettings.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(LogicPOSSettings.CultureNumberFormat);
 
-            //Init AppSession
             string appSessionFile = Utils.GetSessionFileName();
-            if (databaseCreated && File.Exists(appSessionFile)) File.Delete(appSessionFile);
             POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
 
-            //Try to Get open Session Day/Terminal for this Terminal
-            XPOSettings.WorkSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
-            XPOSettings.WorkSessionPeriodTerminal = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Terminal);
-
-            //Use Detected ScreenSize
             var appScreenSize = AppSettings.Instance.appScreenSize;
 
             if (appScreenSize == new Size(0, 0))
             {
-
                 LogicPOSAppContext.ScreenSize = Utils.GetThemeScreenSize();
             }
             else
             {
-
                 LogicPOSAppContext.ScreenSize = Utils.GetThemeScreenSize(appScreenSize);
             }
 
@@ -290,17 +128,10 @@ namespace LogicPOS.UI.Application
             catch (Exception ex)
             {
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                        .WithMessage(ex.Message)
-                        .ShowAlert();
-
-               // CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message,LoginWindow.Instance);
+                CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message, LoginWindow.Instance);
             }
 
-            FastReportUtils.InitializeFastReports(LogicPOSSettings.AppName);
-
-            if (TerminalSettings.LoggedTerminal.PoleDisplay != null)
+            if (TerminalService.Terminal.PoleDisplay != null)
             {
                 LogicPOSAppContext.UsbDisplay = UsbDisplayDevice.InitDisplay();
                 LogicPOSAppContext.UsbDisplay.WriteCentered(string.Format("{0} {1}", LogicPOSSettings.AppName, GeneralSettings.ProductVersion), 1);
@@ -308,37 +139,32 @@ namespace LogicPOS.UI.Application
                 LogicPOSAppContext.UsbDisplay.EnableStandBy();
             }
 
-            if (TerminalSettings.LoggedTerminal.BarcodeReader != null)
+            if (TerminalService.Terminal.BarcodeReader != null)
             {
                 LogicPOSAppContext.BarCodeReader = new InputReader();
             }
 
-            if (TerminalSettings.LoggedTerminal.WeighingMachine != null)
+            if (TerminalService.Terminal.WeighingMachine != null)
             {
 
-                if (TerminalSettings.LoggedTerminal.WeighingMachine.PortName == TerminalSettings.LoggedTerminal.PoleDisplay.COM)
+                if (TerminalService.Terminal.WeighingMachine.PortName == TerminalService.Terminal.PoleDisplay.COMPort)
                 {
-                    _logger.Debug(string.Format("Port " + TerminalSettings.LoggedTerminal.WeighingMachine.PortName + "Already taken by pole display"));
+                    _logger.Debug(string.Format("Port " + TerminalService.Terminal.WeighingMachine.PortName + "Already taken by pole display"));
                 }
                 else
                 {
-                    if (Utils.IsPortOpen(TerminalSettings.LoggedTerminal.WeighingMachine.PortName))
+                    if (Utils.IsPortOpen(TerminalService.Terminal.WeighingMachine.PortName))
                     {
-                        LogicPOSAppContext.WeighingBalance = new WeighingBalance(TerminalSettings.LoggedTerminal.WeighingMachine);
+                        LogicPOSAppContext.WeighingBalance = new WeighingBalance(TerminalService.Terminal.WeighingMachine);
                     }
 
                 }
 
             }
 
-            XPOUtility.Audit("APP_START", string.Format("{0} {1} clr {2}", LogicPOSSettings.AppName, GeneralSettings.ProductVersion, GeneralSettings.ProductAssembly.ImageRuntimeVersion));
-            if (databaseCreated) XPOUtility.Audit("DATABASE_CREATE");
-
-            // Plugin Errors Messages
             if (PluginSettings.HasSoftwareVendorPlugin == false ||
                 PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
             {
-                /* IN009034 */
                 LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
 
                 _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
@@ -375,27 +201,7 @@ namespace LogicPOS.UI.Application
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-            if (databaseCreated && Directory.Exists(PathsSettings.Paths["documents"].ToString()))
-            {
-                string documentsFolder = PathsSettings.Paths["documents"].ToString();
-                DirectoryInfo di = new DirectoryInfo(documentsFolder);
-                if (di.GetFiles().Length > 0)
-                {
-                    _logger.Debug(string.Format("void Init() :: New database created. Start Delete [{0}] document(s) from [{1}] folder!", di.GetFiles().Length, documentsFolder));
-                    foreach (FileInfo file in di.GetFiles())
-                    {
-                        try
-                        {
-                            file.Delete();
-                        }
-                        catch (Exception)
-                        {
-                            _logger.Error(string.Format("void Init() :: Error! Cant delete Document file: [{0}]", file.Name));
-                        }
-                    }
-                }
-            }
-
+          
         }
 
         private void InitBackupTimerProcess()
@@ -436,85 +242,6 @@ namespace LogicPOS.UI.Application
             }
         }
 
-        private ProtectedFiles InitProtectedFiles()
-        {
-            bool debug = true;
-            string filePath = LogicPOSSettings.ProtectedFilesFileName;
-            List<string> fileList = LogicPOSSettings.ProtectedFilesList;
-
-            ProtectedFiles protectedFiles;
-            //ReCreate File MODE
-            if (LogicPOSSettings.ProtectedFilesRecreateCSV)
-            {
-                protectedFiles = new ProtectedFiles(fileList, filePath);
-                string md5FromFile = CryptographyUtils.MD5HashFile(filePath);
-
-                string message = string.Format(@"ProtectedFiles '{1}' re-created with {2} files found!{0}{0}Assign false to 'SettingsApp.ProtectedFilesRecreateCsv' and run app again.", Environment.NewLine, filePath, fileList.Count);
-
-                ExportProtectedFiles(fileList);
-     
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                                    .WithMessage(message)
-                                    .WithSize(new Size(600, 350))
-                                    .WithMessageType(MessageType.Info)
-                                    .WithButtonsType(ButtonsType.Ok)
-                                    .WithTitleResource("global_information")
-                                    .ShowAlert();
-                
-                Environment.Exit(0);
-            }
-            else
-            {
-                protectedFiles = new ProtectedFiles(filePath);
-                foreach (var item in protectedFiles)
-                {
-                    if (debug) _logger.Debug(string.Format("Message: [{0}], Valid: [{1}], IsValidFile: [{2}]", item.Key, item.Value.Valid, protectedFiles.IsValidFile(item.Key)));
-                }
-
-                List<string> getInvalidAndMissingFiles = protectedFiles.GetInvalidAndMissingFiles(fileList);
-
-                if (getInvalidAndMissingFiles.Count > 0)
-                {
-                    string filesMessage = string.Empty;
-                    for (int i = 0; i < getInvalidAndMissingFiles.Count; i++)
-                    {
-                        if (debug) _logger.Debug(string.Format("InvalidFile: [{0}]", getInvalidAndMissingFiles[i]));
-                        filesMessage += string.Format("{0}{1}", getInvalidAndMissingFiles[i], Environment.NewLine);
-                    }
-
-                    //If Not IgnoreProtection, show alert and exit
-                    if (!LogicPOSSettings.ProtectedFilesIgnoreProtection)
-                    {
-                        /*Utils.ShowMessageBox(   DUVÍDA ::: LUCIANO
-                            LoginWindow.Instance,
-                            DialogFlags.Modal,
-                            new Size(800, 400),
-                            MessageType.Error,
-                            ButtonsType.Close,
-                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                            "global_error"), string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                            "dialog_message_error_protected_files_invalid_files_detected"),
-                            filesMessage));*/
-
-                        var messageDialog = new CustomAlert(LoginWindow.Instance)
-                                            .WithMessage(filesMessage)
-                                            .WithMessageResource(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                                                                                "dialog_message_error_protected_files_invalid_files_detected"))
-                                            .WithSize(new Size(800, 400))
-                                            .WithMessageType(MessageType.Error)
-                                            .WithButtonsType(ButtonsType.Close)
-                                            .WithTitleResource("global_error")
-                                            .ShowAlert();
-
-
-                        Environment.Exit(0);
-                    }
-                }
-            }
-
-            return protectedFiles;
-        }
-
         public bool ExportProtectedFiles(List<string> pFileList)
         {
             bool result = false;
@@ -544,7 +271,7 @@ namespace LogicPOS.UI.Application
         {
             if (pAppMode == AppMode.Backoffice)
             {
-                LogicPOSAppContext.BackOffice = new BackOfficeWindow();
+                BackOfficeWindow.Instance = new BackOfficeWindow();
             }
             else
             {

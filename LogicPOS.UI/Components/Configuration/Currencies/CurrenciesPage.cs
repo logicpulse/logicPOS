@@ -75,5 +75,21 @@ namespace LogicPOS.UI.Components.Pages
             modal.Run();
             modal.Destroy();
         }
+
+        #region Singleton
+        private static CurrenciesPage _instance;
+        public static CurrenciesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new CurrenciesPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
+
     }
 }

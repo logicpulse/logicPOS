@@ -1,5 +1,7 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using logicpos.Classes.Enums;
+using LogicPOS.Api.Errors;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
@@ -8,6 +10,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using System.Text;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -23,6 +26,7 @@ namespace LogicPOS.UI.Alerts
         public static CustomAlert Error(Window parent = null)
         {
             return new CustomAlert(parent)
+                       .WithTitleResource("global_error")
                        .WithMessageType(MessageType.Error)
                        .WithButtonsType(ButtonsType.Ok);
         }
@@ -310,13 +314,50 @@ namespace LogicPOS.UI.Alerts
         }
 
 
-        public static void ShowContactSupportErrorAlert(Window parentWindow)
+        public static void ShowContactSupportErrorAlert(Window parentWindow, string additionalInformation = "")
         {
             Error(parentWindow)
                 .WithSize(new Size(500, 240))
                 .WithTitleResource("global_error")
-                .WithMessageResource("app_error_contact_support")
+                .WithMessage($"{GeneralUtils.GetResourceByName("app_error_contact_support")}\n\n{additionalInformation}")
                 .ShowAlert();
+        }
+
+        public static void ShowApiErrorAlert(Window sourceWindow,
+                                             Error error)
+        {
+            var errorMessage = new StringBuilder();
+            errorMessage.AppendLine("Code: " + error.Code);
+            errorMessage.AppendLine("Description: " + error.Description);
+
+
+            var metadata = error.Metadata;
+
+            if (metadata != null)
+            {
+                var problemDetails = (ProblemDetails)metadata["problem"];
+
+                errorMessage.AppendLine("\nProblem Details:");
+                errorMessage.AppendLine("Title: " + problemDetails.Title);
+                errorMessage.AppendLine("Status: " + problemDetails.Status);
+                errorMessage.AppendLine("Type: " + problemDetails.Type);
+                errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
+
+                foreach (var problemDetailsError in problemDetails.Errors)
+                {
+                    errorMessage.AppendLine("\nError:");
+                    errorMessage.AppendLine("Name: " + problemDetailsError.Name);
+                    errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
+                }
+            }
+
+            var messageDialog = new CustomAlert(sourceWindow)
+                                .WithMessage(errorMessage.ToString())
+                                .WithMessageType(MessageType.Error)
+                                .WithButtonsType(ButtonsType.Ok)
+                                .WithTitle("Erro")
+
+                                .ShowAlert();
         }
     }
 }

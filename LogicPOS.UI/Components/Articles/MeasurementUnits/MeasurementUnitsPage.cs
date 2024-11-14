@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -18,10 +19,8 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();
        
-
         public override void DeleteEntity()
         {
             throw new NotImplementedException();
@@ -80,6 +79,21 @@ namespace LogicPOS.UI.Components.Pages
                 return leftMeasurementUnit.Acronym.CompareTo(rightMeasurementUnit.Acronym);
             });
         }
+
+        #region Singleton
+        private static MeasurementUnitsPage _instance;
+        public static MeasurementUnitsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new MeasurementUnitsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
-    
+
 }

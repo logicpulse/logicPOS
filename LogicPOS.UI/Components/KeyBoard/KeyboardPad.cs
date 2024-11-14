@@ -7,6 +7,9 @@ using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Alerts;
+using LogicPOS.Utility;
+using LogicPOS.UI.Components.BackOffice.Windows;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -135,7 +138,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 }
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error_keyboardpad"));
+                    CustomAlerts.Error(BackOfficeWindow.Instance)
+                                .WithSize(new Size(500, 340))
+                                .WithTitleResource("global_error")
+                                .WithMessage(GeneralUtils.GetResourceByName("dialog_message_field_validation_error_keyboardpad"))
+                                .ShowAlert();
                 }
             }
         }
@@ -364,7 +371,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        logicpos.Utils.ShowMessageTouch(ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error_keyboardpad"));
+                        CustomAlerts.Error(BackOfficeWindow.Instance)
+                                    .WithSize(new Size(500, 340))
+                                    .WithTitleResource("global_error")
+                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_field_validation_error_keyboardpad"))
+                                    .ShowAlert();
                     };
                     break;
                 //Show/Hide Number Lock

@@ -6,6 +6,8 @@ using LogicPOS.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Utility;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Alerts;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -92,33 +94,33 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             if (Value.Contains(EntryBoxAddDate.Value))
             {
-                logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error"));
+                CustomAlerts.Error(_sourceWindow)
+                             .WithSize(new Size(500, 340))
+                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error"))
+                             .ShowAlert();
             }
             else
             {
-                //Check Valid Date Range
                 if (
                     (AllowedPeriodBegin != null && EntryBoxAddDate.Value.Date >= AllowedPeriodBegin.Date) &&
                     (AllowedPeriodEnd != null && EntryBoxAddDate.Value.Date <= AllowedPeriodEnd.Date)
                 )
                 {
-                    //Add Date
                     AddDateTimeEntry(EntryBoxAddDate.Value, true);
-
-                    //Trigger Event
                     OnChange();
 
                     if (_debug) ListValue();
                 }
-                //Failled: Invalid Date Range
                 else
                 {
-                    logicpos.Utils.ShowMessageTouch(null, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
-                        string.Format(GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error_outside_range"),
-                            AllowedPeriodBegin.ToString(CultureSettings.DateFormat),
-                            AllowedPeriodEnd.ToString(CultureSettings.DateFormat)
-                        )
-                    );
+
+                    CustomAlerts.Error(_sourceWindow)
+                                 .WithSize(new Size(500, 340))
+                                 .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_datepicker_existing_date_error_outside_range"),
+                                               AllowedPeriodBegin.ToString(CultureSettings.DateFormat),
+                                               AllowedPeriodEnd.ToString(CultureSettings.DateFormat))
+                                 )
+                                 .ShowAlert();
                 }
             }
         }
@@ -172,9 +174,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Events
 
         private void OnChange()
         {

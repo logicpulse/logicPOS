@@ -16,30 +16,8 @@ namespace LogicPOS.Data.Services
     {
         public static pos_worksessionperiod GetSessionPeriod(WorkSessionPeriodType pWorkSessionPeriodType)
         {
-            string whereTerminal = string.Empty;
-            if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
-            {
-                whereTerminal = string.Format("Terminal = '{0}' AND ", TerminalSettings.LoggedTerminal.Oid);
-            }
-
-            string sql = string.Format(@"SELECT Oid FROM pos_worksessionperiod WHERE {1}PeriodType = '{0}' AND SessionStatus = 0;", Convert.ToInt16(pWorkSessionPeriodType), whereTerminal);
-            Guid workSessionPeriodOid = XPOUtility.GetGuidFromQuery(sql);
-            if (workSessionPeriodOid != Guid.Empty)
-            {
-                pos_worksessionperiod resultWorkSessionPeriod = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodOid);
-                //Add Parent Reference, not used because we use GlobalFramework.WorkSessionPeriodDay and not GlobalFramework.WorkSessionPeriodTerminal.Parent
-                if (pWorkSessionPeriodType == WorkSessionPeriodType.Terminal)
-                {
-                    //Child > Parent Reference
-                    resultWorkSessionPeriod.Parent = XPOSettings.WorkSessionPeriodDay;
-                }
-
-                return resultWorkSessionPeriod;
-            }
-            else
-            {
-                return null;
-            }
+            //Remove Legacy Code
+            return null;
         }
 
         public static bool SessionPeriodOpen(WorkSessionPeriodType pWorkSessionPeriodType, string pDescription = "")

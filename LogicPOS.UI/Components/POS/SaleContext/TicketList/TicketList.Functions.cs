@@ -2,7 +2,6 @@
 using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.TicketList;
-using logicpos.Classes.Gui.Gtk.BackOffice;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
@@ -14,10 +13,11 @@ using LogicPOS.Settings;
 using LogicPOS.Shared;
 using LogicPOS.Shared.Article;
 using LogicPOS.Shared.Orders;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -44,7 +44,12 @@ namespace LogicPOS.UI.Components
         {
             if (ListMode == TicketListMode.OrderMain)
             {
-                ResponseType responseType = logicpos.Utils.ShowMessageBox(POSWindow, DialogFlags.Modal, new System.Drawing.Size(400, 280), MessageType.Question, ButtonsType.YesNo, string.Format(GeneralUtils.GetResourceByName("global_warning"), GeneralSettings.ServerVersion), GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"));
+
+                ResponseType responseType = CustomAlerts.Question(POSWindow)
+                                                        .WithSize(new System.Drawing.Size(400, 280))
+                                                        .WithTitleResource("global_warning")
+                                                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"))
+                                                        .ShowAlert();
 
                 if (responseType == ResponseType.Yes)
                 {
@@ -144,7 +149,7 @@ namespace LogicPOS.UI.Components
             decimal oldValueQnt = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.', ','));
             if (!logicpos.Utils.CheckStocks())
             {
-                if (logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity)))
+                if (CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity), out bool showMessage))
                 {
                     ChangeQuantity(oldValueQnt + defaultQuantity);
                     UpdateSaleOptionsPanelButtons();
@@ -172,7 +177,7 @@ namespace LogicPOS.UI.Components
             {
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (!logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
                     {
                         if (showMessage)
                         {
@@ -188,7 +193,7 @@ namespace LogicPOS.UI.Components
         }
 
         private void BtnPrice_Clicked(object sender, EventArgs e)
-        {  
+        {
             InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), 0);
             decimal newValuePrice = result.Value;
         }
@@ -209,16 +214,16 @@ namespace LogicPOS.UI.Components
             PrintingSettings.ThermalPrinter.UsingThermalPrinter = true;
             if (TerminalSettings.HasLoggedTerminal &&
                 LoggedTerminalSettings.HasThermalPrinter &&
-                TerminalSettings.LoggedTerminal.ThermalPrinter.PrinterType.ThermalPrinter &&
+                TerminalService.Terminal.Printer.Type.ThermalPrinter &&
                 orderTicket.OrderDetail.Count != 0)
             {
 
                 if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
                 {
                     // TK016249 Impressoras - Diferenciação entre Tipos 
-                    //FrameworkCalls.PrintOrderRequest(POSWindow, TerminalSettings.LoggedTerminal.ThermalPrinter, orderMain, orderTicket);
+                    //FrameworkCalls.PrintOrderRequest(POSWindow, TerminalService.Terminal.ThermalPrinter, orderMain, orderTicket);
                 }
-               // FrameworkCalls.PrintArticleRequest(POSWindow, orderTicket);
+                // FrameworkCalls.PrintArticleRequest(POSWindow, orderTicket);
             }
 
             //Change Mode
@@ -239,7 +244,12 @@ namespace LogicPOS.UI.Components
             //Request Finish Open Ticket
             if (TotalItemsTicketListMode > 0)
             {
-                ResponseType dialogResponse = logicpos.Utils.ShowMessageTouch(POSWindow, DialogFlags.DestroyWithParent, MessageType.Question, ButtonsType.OkCancel, GeneralUtils.GetResourceByName("window_title_dialog_message_dialog"), GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"));
+                ResponseType dialogResponse = CustomAlerts.Question(POSWindow)
+                                                          .WithSize(new System.Drawing.Size(400, 280))
+                                                          .WithTitleResource("global_warning")
+                                                          .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
+                                                          .ShowAlert();
+
                 if (dialogResponse != ResponseType.Ok)
                 {
                     return;
@@ -276,7 +286,7 @@ namespace LogicPOS.UI.Components
             // Get Dialog Reference
             if (button.Name.Equals("touchButtonPosTicketPadPayments_Green"))
             {
-                dialog = new PaymentDialog(POSWindow, DialogFlags.DestroyWithParent, articleBag);
+                //dialog = new PaymentDialog(POSWindow, DialogFlags.DestroyWithParent, articleBag);
             }
             else
             if (button.Name.Equals("touchButtonPosTicketPadSplitAccount_Green"))
@@ -358,17 +368,12 @@ namespace LogicPOS.UI.Components
                     OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
                     pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
                     pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
-                    //Require to Prevent A first chance exception of type 'DevExpress.Xpo.DB.Exceptions.LockingException' occurred in DevExpress.Xpo.v13.2.dll when it is Changed in Diferent Session ex UnitOfWork
-                    //TODO: Confirm working with Reload Commented
-                    //xOldTable.Reload();
-                    //xNewTable.Reload();
 
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
-                        logicpos.Utils.ShowMessageTouch(
-                            LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, MessageType.Warning, ButtonsType.Ok, GeneralUtils.GetResourceByName("global_error"),
-                            GeneralUtils.GetResourceByName("dialog_message_table_is_not_free")
-                        );
+                        CustomAlerts.Error(POSWindow)
+                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
+                                    .ShowAlert();
                     }
                     else
                     {
@@ -408,15 +413,8 @@ namespace LogicPOS.UI.Components
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
-            //Toggle Mode
             ListMode = (ListMode == TicketListMode.Ticket) ? TicketListMode.OrderMain : TicketListMode.Ticket;
-            //ArticleBag
             UpdateModel();
-            //CurrentOrderDetails = CurrentOrderDetailsAll;
-            //generateTicketAll();
-            //for(int i=0; i < CurrentOrderDetailsAll.Lines.Count; i++) { CurrentOrderDetailsAll.Delete(i); }
-            //_listMode = TicketListMode.EditList;
-
         }
 
         private void BtnGifts_Clicked(object sender, EventArgs e)
@@ -448,7 +446,7 @@ namespace LogicPOS.UI.Components
 
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (logicpos.Utils.ShowMessageMinimumStock(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity))
+                    if (CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity, out bool showMessage))
                     {
                         ChangeQuantity(quantity);
                     }
@@ -468,27 +466,6 @@ namespace LogicPOS.UI.Components
         private Guid GetVatExemptionReason()
         {
             Guid result = new Guid();
-
-            CriteriaOperator criteria = CriteriaOperator.Parse("(Disabled = 0 OR Disabled IS NULL)");
-            PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>
-              dialog = new PosSelectRecordDialog<XPCollection, Entity, TreeViewConfigurationVatExceptionReason>(
-                POSWindow,
-                DialogFlags.DestroyWithParent,
-                    GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
-                LogicPOSAppContext.MaxWindowSize,
-                null, //XpoDefaultValue
-                criteria,
-                GridViewMode.Default,
-                null  //pActionAreaButtons
-              );
-
-            int response = dialog.Run();
-            if (response == (int)ResponseType.Ok)
-            {
-                result = dialog.GenericTreeView.Entity.Oid;
-            }
-            dialog.Destroy();
-
             return result;
         }
 

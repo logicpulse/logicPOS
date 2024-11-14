@@ -473,11 +473,7 @@ namespace LogicPOS.Data.XPO.Utility
             return resultPermissions;
         }
 
-        public static Dictionary<string, bool> GetUserPermissions()
-        {
-            return GetUserPermissions(XPOSettings.LoggedUser);
-        }
-
+ 
         public static void SystemNotification()
         {
             SystemNotification(XPOSettings.Session);

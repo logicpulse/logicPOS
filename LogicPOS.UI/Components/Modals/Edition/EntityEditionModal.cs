@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected virtual void HandleApiError(Error error)
         {
-            SimpleAlerts.ShowApiErrorAlert(this,error);
+            CustomAlerts.ShowApiErrorAlert(this,error);
             this.Run();
         }
 

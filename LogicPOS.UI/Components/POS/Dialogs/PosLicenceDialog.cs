@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
@@ -319,14 +320,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
-                logicpos.Utils.ShowMessageBox(
-                    this,
-                    DialogFlags.Modal,
-                    new System.Drawing.Size(600, 300),
-                    MessageType.Error,
-                    ButtonsType.Close,
-                    GeneralUtils.GetResourceByName("global_error"),
-                    GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"));
+               
+                CustomAlerts.Error(this)
+                            .WithSize(new System.Drawing.Size(600, 300))
+                            .WithTitleResource("global_error")
+                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
+                            .ShowAlert();
 
                 return;
             }
@@ -341,32 +340,40 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             try
             {
                 //Returns ByteWrite File
-                registredLicence = PluginSettings.LicenceManager.ActivateLicense(
-                    EntryBoxName.EntryValidation.Text,
-                    EntryBoxCompany.EntryValidation.Text,
-                    EntryBoxFiscalNumber.EntryValidation.Text,
-                    EntryBoxAddress.EntryValidation.Text,
-                    EntryBoxEmail.EntryValidation.Text,
-                    EntryBoxPhone.EntryValidation.Text,
-                    _entryBoxHardwareId.EntryValidation.Text,
-                    System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                    _countrysList.FirstOrDefault(x => x.Value == ComboBoxCountry.Value).Key,
-                    _entryBoxSoftwareKey.EntryValidation.Text
-                );
+                registredLicence = PluginSettings.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
+                                                                                 EntryBoxCompany.EntryValidation.Text,
+                                                                                 EntryBoxFiscalNumber.EntryValidation.Text,
+                                                                                 EntryBoxAddress.EntryValidation.Text,
+                                                                                 EntryBoxEmail.EntryValidation.Text,
+                                                                                 EntryBoxPhone.EntryValidation.Text,
+                                                                                 _entryBoxHardwareId.EntryValidation.Text,
+                                                                                 System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                                                                 _countrysList.FirstOrDefault(x => x.Value == ComboBoxCountry.Value).Key,
+                                                                                 _entryBoxSoftwareKey.EntryValidation.Text);
 
                 string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
 
                 LicenseRouter.WriteByteArrayToFile(registredLicence, licenseFilePath);
 
+                CustomAlerts.Information(this)
+                            .WithSize(new System.Drawing.Size(600, 300))
+                            .WithTitleResource("global_information")
+                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
+                            .ShowAlert();
+
                 this.Destroy();
-                logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Info, ButtonsType.Close, GeneralUtils.GetResourceByName("global_information"), GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"));
-                this.Destroy();
+                
                 Environment.Exit(0);
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                logicpos.Utils.ShowMessageBox(this, DialogFlags.Modal, new System.Drawing.Size(600, 300), MessageType.Error, ButtonsType.Close, GeneralUtils.GetResourceByName("global_error"), GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"));
+                
+                CustomAlerts.Error(this)
+                            .WithSize(new System.Drawing.Size(600, 300))
+                            .WithTitleResource("global_error")
+                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"))
+                            .ShowAlert();
 
                 this.Run();
             }
@@ -382,15 +389,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (response == ResponseType.Accept)
             {
-                result = new LicenseUIResult(
-                    LicenseUIResponse.Register,
-                    dialog.EntryBoxName.EntryValidation.Text,
-                    dialog.EntryBoxCompany.EntryValidation.Text,
-                    dialog.EntryBoxFiscalNumber.EntryValidation.Text,
-                    dialog.EntryBoxAddress.EntryValidation.Text,
-                    dialog.EntryBoxEmail.EntryValidation.Text,
-                    dialog.EntryBoxPhone.EntryValidation.Text
-                );
+                result = new LicenseUIResult(LicenseUIResponse.Register,
+                                             dialog.EntryBoxName.EntryValidation.Text,
+                                             dialog.EntryBoxCompany.EntryValidation.Text,
+                                             dialog.EntryBoxFiscalNumber.EntryValidation.Text,
+                                             dialog.EntryBoxAddress.EntryValidation.Text,
+                                             dialog.EntryBoxEmail.EntryValidation.Text,
+                                             dialog.EntryBoxPhone.EntryValidation.Text);
             }
             else if (response == ResponseType.Ok)
             {

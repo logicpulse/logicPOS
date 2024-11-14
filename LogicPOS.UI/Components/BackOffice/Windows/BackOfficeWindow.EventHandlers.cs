@@ -131,7 +131,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (getBackup.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, getBackup.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, getBackup.FirstError);
                 picker.Destroy();
                 return;
             }
@@ -182,7 +182,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (getSaft.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(this, getSaft.FirstError);
+                CustomAlerts.ShowApiErrorAlert(this, getSaft.FirstError);
                 return;
             }
 

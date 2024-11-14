@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -299,5 +300,20 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
         }
+
+        #region Singleton
+        private static PermissionsPage _instance;
+        public static PermissionsPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PermissionsPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

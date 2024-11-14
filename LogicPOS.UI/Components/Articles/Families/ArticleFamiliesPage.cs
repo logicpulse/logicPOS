@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
+using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -46,5 +47,23 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddUpdatedAtSorting(3);
         }
+
+
+
+
+        #region Singleton
+        private static ArticleFamiliesPage _instance;
+        public static ArticleFamiliesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ArticleFamiliesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }

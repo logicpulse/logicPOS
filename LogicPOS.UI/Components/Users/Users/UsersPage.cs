@@ -8,6 +8,7 @@ using System;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.UI.Components.BackOffice.Windows;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -134,5 +135,20 @@ namespace LogicPOS.UI.Components.Pages
                 return leftUser.FiscalNumber?.CompareTo(rightUser?.FiscalNumber) ?? 0;
             });
         }
+
+        #region Singleton
+        private static UsersPage _instance;
+        public static UsersPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new UsersPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
     }
 }
