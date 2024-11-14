@@ -1,5 +1,4 @@
-﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -18,6 +17,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components
             if (ListMode == TicketListMode.OrderMain)
             {
 
-                ResponseType responseType = CustomAlerts.Question(POSWindow)
+                ResponseType responseType = CustomAlerts.Question(POSWindow.Instance)
                                                         .WithSize(new System.Drawing.Size(400, 280))
                                                         .WithTitleResource("global_warning")
                                                         .WithMessage(GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"))
@@ -149,7 +149,7 @@ namespace LogicPOS.UI.Components
             decimal oldValueQnt = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.', ','));
             if (!logicpos.Utils.CheckStocks())
             {
-                if (CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity), out bool showMessage))
+                if (CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity), out bool showMessage))
                 {
                     ChangeQuantity(oldValueQnt + defaultQuantity);
                     UpdateSaleOptionsPanelButtons();
@@ -171,13 +171,13 @@ namespace LogicPOS.UI.Components
         private void BtnQuantity_Clicked(object sender, EventArgs e)
         {
             decimal oldValueQnt = CurrentOrderDetail.Lines[SelectedIndex].Properties.Quantity;
-            decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(POSWindow, oldValueQnt);
+            decimal newValueQnt = PosKeyboardDialog.RequestDecimalValue(POSWindow.Instance, oldValueQnt);
             bool showMessage;
             if (newValueQnt > 0)
             {
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
+                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
                     {
                         if (showMessage)
                         {
@@ -194,7 +194,7 @@ namespace LogicPOS.UI.Components
 
         private void BtnPrice_Clicked(object sender, EventArgs e)
         {
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), 0);
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), 0);
             decimal newValuePrice = result.Value;
         }
 
@@ -244,7 +244,7 @@ namespace LogicPOS.UI.Components
             //Request Finish Open Ticket
             if (TotalItemsTicketListMode > 0)
             {
-                ResponseType dialogResponse = CustomAlerts.Question(POSWindow)
+                ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
                                                           .WithSize(new System.Drawing.Size(400, 280))
                                                           .WithTitleResource("global_warning")
                                                           .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
@@ -314,7 +314,7 @@ namespace LogicPOS.UI.Components
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -332,7 +332,7 @@ namespace LogicPOS.UI.Components
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -350,7 +350,7 @@ namespace LogicPOS.UI.Components
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            PosOrdersDialog dialog = new PosOrdersDialog(this.POSWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
+            PosOrdersDialog dialog = new PosOrdersDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
 
@@ -358,7 +358,7 @@ namespace LogicPOS.UI.Components
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(this.POSWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
+            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
@@ -371,7 +371,7 @@ namespace LogicPOS.UI.Components
 
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
-                        CustomAlerts.Error(POSWindow)
+                        CustomAlerts.Error(POSWindow.Instance)
                                     .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
                                     .ShowAlert();
                     }
@@ -446,7 +446,7 @@ namespace LogicPOS.UI.Components
 
                 if (logicpos.Utils.CheckStocks())
                 {
-                    if (CustomAlerts.ShowMinimumStockAlert(POSWindow, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity, out bool showMessage))
+                    if (CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity, out bool showMessage))
                     {
                         ChangeQuantity(quantity);
                     }
@@ -471,7 +471,7 @@ namespace LogicPOS.UI.Components
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(this.POSWindow, DialogFlags.DestroyWithParent);
+            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
@@ -530,7 +530,7 @@ namespace LogicPOS.UI.Components
             POSSession.CurrentSession.Save();
             UpdateModel();
 
-            LogicPOSAppContext.PosMainWindow.MenuArticles.Sensitive = true;
+            POSWindow.Instance.MenuArticles.Sensitive = true;
             UpdateArticleBag();
             UpdateSaleOptionsPanelOrderButtons();
             UpdateOrderStatusBar();

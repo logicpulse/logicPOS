@@ -47,16 +47,12 @@ namespace LogicPOS.UI.Components
         private TreeView TreeView { get; set; }
         private Label LabelTotal { get; set; }
         private Label LabelTotalLabel { get; set; }
-
-        public POSWindow POSWindow { get; }
         public ListStore ListStore { get; set; }
         internal TicketListMode ListMode { get; set; } = TicketListMode.Ticket;
 
         public TicketList(
-            POSWindow posWIndow,
             dynamic theme)
         {
-            POSWindow = posWIndow;
             InitUI(theme);
             ConfigureWeighingBalance();
         }
@@ -425,7 +421,7 @@ namespace LogicPOS.UI.Components
                 else
                 {
 
-                    CustomAlerts.Error(POSWindow)
+                    CustomAlerts.Error(POSWindow.Instance)
                                 .WithSize(new Size(400, 300))
                                 .WithMessageResource("global_invalid_code")
                                 .ShowAlert();
@@ -438,7 +434,7 @@ namespace LogicPOS.UI.Components
         public void ArticleNotFound()
         {
 
-            CustomAlerts.Error(POSWindow)
+            CustomAlerts.Error(POSWindow.Instance)
                         .WithSize(new Size(400, 300))
                         .WithMessageResource("global_invalid_code")
                         .ShowAlert();
@@ -450,7 +446,7 @@ namespace LogicPOS.UI.Components
         {
             string message = string.Format("O Web service não se encontra em funcionamento");
 
-            CustomAlerts.Error(POSWindow)
+            CustomAlerts.Error(POSWindow.Instance)
                         .WithSize(new Size(400, 300))
                         .WithTitle("Web Service não encontrado")
                         .WithMessage(message)
@@ -490,7 +486,7 @@ namespace LogicPOS.UI.Components
                     article.Designation = $"{article.Designation} [{parkingTicketResult.Minutes} min.] [{parkingTicketResult.Ean}]";
                     article.Notes = $"[{ean}] {parkingTicketResult.Description}";
                     article.DefaultQuantity = Convert.ToInt32(parkingTicketResult.Quantity);
-                    LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
+                    POSWindow.Instance.UpdateWorkSessionUI();
                 }
                 else
                 {
@@ -519,7 +515,7 @@ namespace LogicPOS.UI.Components
 
             if (requireToChooseVatExemptionReason && article.VatDirectSelling.Oid == InvoiceSettings.XpoOidConfigurationVatRateDutyFree && article.VatExemptionReason == null)
             {
-                CustomAlerts.Error(POSWindow)
+                CustomAlerts.Error(POSWindow.Instance)
                             .WithSize(new Size(400, 300))
                             .WithTitleResource("window_title_dialog_vatrate_free_article_detected")
                             .WithMessageResource("dialog_message_article_without_vat_exception_reason_detected")
@@ -531,7 +527,7 @@ namespace LogicPOS.UI.Components
             {
                 string message = string.Format("Numero do ticket: {0}\n\n{1}\n\nData de Saida: {2}", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_exited"), parkingTicketResult.DateExits);
 
-                CustomAlerts.Error(POSWindow)
+                CustomAlerts.Error(POSWindow.Instance)
                             .WithSize(new Size(400, 300))
                             .WithTitleResource("window_title_dialog_already_exited")
                             .WithMessage(message)
@@ -545,7 +541,7 @@ namespace LogicPOS.UI.Components
             {
                 string message = string.Format("Numero do ticket: {0}\n\n{1}\nData de pagamento: {2}\n\nPode sair até: {3} ", parkingTicketResult.Ean, GeneralUtils.GetResourceByName("dialog_message_article_already_paid"), parkingTicketResult.DatePaid, parkingTicketResult.DateTolerance);
 
-                CustomAlerts.Error(POSWindow)
+                CustomAlerts.Error(POSWindow.Instance)
                             .WithSize(new Size(400, 300))
                             .WithTitleResource("window_title_dialog_already_paid")
                             .WithMessage(message)
@@ -567,10 +563,10 @@ namespace LogicPOS.UI.Components
                 if (logicpos.Utils.CheckStocks())
                 {
            
-                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow,
-                                                       pArticleOid,
-                                                       Convert.ToDecimal(ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity,
-                                                       out showMessage))
+                    if (!CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance,
+                                                            pArticleOid,
+                                                            Convert.ToDecimal(ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)) + defaultQuantity,
+                                                            out showMessage))
                     {
                         if (showMessage) return;
                     }
@@ -597,7 +593,7 @@ namespace LogicPOS.UI.Components
                         message = string.Format(" Numero do ticket: {0}\n\n Data de Emissão: {1}\n Duração: {2} minuto(s)\n Descrição: {3}\n", parkingTicketResult.Ean, parkingTicketResult.Date, parkingTicketResult.Minutes, parkingTicketResult.Description);
 
  
-                        CustomAlerts.Information(POSWindow)
+                        CustomAlerts.Information(POSWindow.Instance)
                                     .WithSize(new Size(480, 350))
                                     .WithTitleResource("window_title_dialog_ticket_details")
                                     .WithMessage(message)
@@ -607,7 +603,7 @@ namespace LogicPOS.UI.Components
                     {
                         message = string.Format(" Numero do cartão: {0} \n", parkingTicketResult.Ean);
 
-                        CustomAlerts.Information(POSWindow)
+                        CustomAlerts.Information(POSWindow.Instance)
                                     .WithSize(new Size(480, 350))
                                     .WithTitleResource("window_title_dialog_ticket_details")
                                     .WithMessage(message)
@@ -623,7 +619,7 @@ namespace LogicPOS.UI.Components
                 }
                 else if (price <= 0.0m || article.PVPVariable == true)
                 {
-                    InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
+                    InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
                     if (result.Response == ResponseType.Cancel) return;
                     sourceMode = PricePropertiesSourceMode.FromTotalFinal;
                     price = result.Value;
@@ -941,31 +937,31 @@ namespace LogicPOS.UI.Components
                 if (SaleOptionsPanel.BtnFinishOrder != null && SaleOptionsPanel.BtnFinishOrder.Sensitive) SaleOptionsPanel.BtnFinishOrder.Sensitive = false;
 
 
-                if (POSWindow.BtnBackOffice != null) POSWindow.BtnBackOffice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_ACCESS");
-                if (POSWindow.BtnReports != null) POSWindow.BtnReports.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_ACCESS");
-                if (POSWindow.BtnShowSystemDialog != null && !POSWindow.BtnShowSystemDialog.Sensitive) POSWindow.BtnShowSystemDialog.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("SYSTEM_ACCESS");
-                if (POSWindow.BtnLogOut != null && !POSWindow.BtnLogOut.Sensitive) POSWindow.BtnLogOut.Sensitive = true;
-                if (POSWindow.BtnChangeUser != null && !POSWindow.BtnChangeUser.Sensitive) POSWindow.BtnChangeUser.Sensitive = true;
-                if (POSWindow.BtnCashDrawer != null) POSWindow.BtnCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
-                if (POSWindow.BtnDocuments != null && !POSWindow.BtnDocuments.Sensitive) POSWindow.BtnDocuments.Sensitive = true;
+                if (POSWindow.Instance.BtnBackOffice != null) POSWindow.Instance.BtnBackOffice.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_ACCESS");
+                if (POSWindow.Instance.BtnReports != null) POSWindow.Instance.BtnReports.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("REPORT_ACCESS");
+                if (POSWindow.Instance.BtnShowSystemDialog != null && !POSWindow.Instance.BtnShowSystemDialog.Sensitive) POSWindow.Instance.BtnShowSystemDialog.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("SYSTEM_ACCESS");
+                if (POSWindow.Instance.BtnLogOut != null && !POSWindow.Instance.BtnLogOut.Sensitive) POSWindow.Instance.BtnLogOut.Sensitive = true;
+                if (POSWindow.Instance.BtnChangeUser != null && !POSWindow.Instance.BtnChangeUser.Sensitive) POSWindow.Instance.BtnChangeUser.Sensitive = true;
+                if (POSWindow.Instance.BtnCashDrawer != null) POSWindow.Instance.BtnCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
+                if (POSWindow.Instance.BtnDocuments != null && !POSWindow.Instance.BtnDocuments.Sensitive) POSWindow.Instance.BtnDocuments.Sensitive = true;
 
                 if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
-                    if (POSWindow.BtnNewDocument != null && !POSWindow.BtnNewDocument.Sensitive) POSWindow.BtnNewDocument.Sensitive = true;
+                    if (POSWindow.Instance.BtnNewDocument != null && !POSWindow.Instance.BtnNewDocument.Sensitive) POSWindow.Instance.BtnNewDocument.Sensitive = true;
                 }
             }
             else
             {
                 if (SaleOptionsPanel.BtnFinishOrder != null && !SaleOptionsPanel.BtnFinishOrder.Sensitive) SaleOptionsPanel.BtnFinishOrder.Sensitive = true;
 
-                if (POSWindow.BtnBackOffice != null && POSWindow.BtnBackOffice.Sensitive) POSWindow.BtnBackOffice.Sensitive = false;
-                if (POSWindow.BtnReports != null && POSWindow.BtnReports.Sensitive) POSWindow.BtnReports.Sensitive = false;
-                if (POSWindow.BtnShowSystemDialog != null && POSWindow.BtnShowSystemDialog.Sensitive) POSWindow.BtnShowSystemDialog.Sensitive = false;
-                if (POSWindow.BtnLogOut != null && POSWindow.BtnLogOut.Sensitive) POSWindow.BtnLogOut.Sensitive = false;
-                if (POSWindow.BtnChangeUser != null && POSWindow.BtnChangeUser.Sensitive) POSWindow.BtnChangeUser.Sensitive = false;
-                if (POSWindow.BtnCashDrawer != null && POSWindow.BtnCashDrawer.Sensitive) POSWindow.BtnCashDrawer.Sensitive = false;
-                if (POSWindow.BtnDocuments != null && POSWindow.BtnDocuments.Sensitive) POSWindow.BtnDocuments.Sensitive = false;
-                if (POSWindow.BtnNewDocument != null && POSWindow.BtnNewDocument.Sensitive) POSWindow.BtnNewDocument.Sensitive = false;
+                if (POSWindow.Instance.BtnBackOffice != null && POSWindow.Instance.BtnBackOffice.Sensitive) POSWindow.Instance.BtnBackOffice.Sensitive = false;
+                if (POSWindow.Instance.BtnReports != null && POSWindow.Instance.BtnReports.Sensitive) POSWindow.Instance.BtnReports.Sensitive = false;
+                if (POSWindow.Instance.BtnShowSystemDialog != null && POSWindow.Instance.BtnShowSystemDialog.Sensitive) POSWindow.Instance.BtnShowSystemDialog.Sensitive = false;
+                if (POSWindow.Instance.BtnLogOut != null && POSWindow.Instance.BtnLogOut.Sensitive) POSWindow.Instance.BtnLogOut.Sensitive = false;
+                if (POSWindow.Instance.BtnChangeUser != null && POSWindow.Instance.BtnChangeUser.Sensitive) POSWindow.Instance.BtnChangeUser.Sensitive = false;
+                if (POSWindow.Instance.BtnCashDrawer != null && POSWindow.Instance.BtnCashDrawer.Sensitive) POSWindow.Instance.BtnCashDrawer.Sensitive = false;
+                if (POSWindow.Instance.BtnDocuments != null && POSWindow.Instance.BtnDocuments.Sensitive) POSWindow.Instance.BtnDocuments.Sensitive = false;
+                if (POSWindow.Instance.BtnNewDocument != null && POSWindow.Instance.BtnNewDocument.Sensitive) POSWindow.Instance.BtnNewDocument.Sensitive = false;
             }
 
             UpdateSaleOptionsPanelOrderButtons();
@@ -1077,7 +1073,7 @@ namespace LogicPOS.UI.Components
 
                     string global_table = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
 
-                    POSWindow.LabelCurrentTable.Text =
+                    POSWindow.Instance.LabelCurrentTable.Text =
                       string.Format(labelCurrentTableFormat
                         , global_table
                         , orderMain.Table.Name
@@ -1085,7 +1081,7 @@ namespace LogicPOS.UI.Components
                         , lastUserName
                         );
 
-                    POSWindow.LabelTotalTable.Text =
+                    POSWindow.Instance.LabelTotalTable.Text =
                       string.Format(labelTotalTableFormat,
 
                       DataConversionUtils.DecimalToStringCurrency(orderMain.GlobalTotalFinal, XPOSettings.ConfigurationSystemCurrency.Acronym),
@@ -1097,12 +1093,12 @@ namespace LogicPOS.UI.Components
                 }
                 else
                 {
-                    POSWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("status_message_select_order_or_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    POSWindow.Instance.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("status_message_select_order_or_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
                 }
             }
             else
             {
-                POSWindow.LabelCurrentTable.Text = GeneralUtils.GetResourceByName("status_message_open_cashdrawer");
+                POSWindow.Instance.LabelCurrentTable.Text = GeneralUtils.GetResourceByName("status_message_open_cashdrawer");
             }
         }
 

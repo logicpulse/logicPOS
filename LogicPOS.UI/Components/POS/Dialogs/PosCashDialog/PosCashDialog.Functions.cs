@@ -14,6 +14,7 @@ using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -142,7 +143,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool result;
             //Update UI
-            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
+            POSWindow.Instance.UpdateWorkSessionUI();
 
 
             //WorkSessionProcessor.GetSessionPeriodMovementTotalDebug(GlobalFramework.WorkSessionPeriodTerminal, true );
@@ -163,8 +164,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (result)
                         {
-                            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
-                            LogicPOSAppContext.PosMainWindow.TicketList.UpdateOrderStatusBar();
+                            POSWindow.Instance.UpdateWorkSessionUI();
+                            POSWindow.Instance.TicketList.UpdateOrderStatusBar();
 
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(XPOSettings.WorkSessionPeriodTerminal.Oid);
 
@@ -190,7 +191,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                                         .WithMessageResource("dialog_message_request_print_document_confirmation")
                                                         .ShowAlert();
 
-                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = false;
+                            POSWindow.Instance.BtnNewDocument.Sensitive = false;
 
                             if (pResponse == ResponseType.Yes)
                             {
@@ -209,7 +210,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 }
                             }
                             //Enable UI Buttons When Have Open Session
-                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = true;
+                            POSWindow.Instance.BtnNewDocument.Sensitive = true;
 
                         }
                         else
@@ -376,8 +377,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (result)
                         {
-                            LogicPOSAppContext.PosMainWindow.UpdateWorkSessionUI();
-                            LogicPOSAppContext.PosMainWindow.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
+                            POSWindow.Instance.UpdateWorkSessionUI();
+                            POSWindow.Instance.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
 
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
 
@@ -399,7 +400,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                                         .WithMessageResource("dialog_message_request_print_document_confirmation")
                                                         .ShowAlert();
 
-                            LogicPOSAppContext.PosMainWindow.BtnNewDocument.Sensitive = false;
+                            POSWindow.Instance.BtnNewDocument.Sensitive = false;
 
                             ShowClosePeriodMessage(dialogCashDrawer, workSessionPeriodTerminal);
 

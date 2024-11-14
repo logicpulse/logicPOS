@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void BtnPOS_Clicked(object sender, EventArgs e)
         {
             Hide();
-            LogicPOSAppContext.PosMainWindow.ShowAll();
+            POSWindow.Instance.ShowAll();
         }
 
         private void BtnNotificaion_Clicked(object sender, EventArgs e)

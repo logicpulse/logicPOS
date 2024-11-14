@@ -18,8 +18,7 @@ namespace LogicPOS.UI.Components.POS
         public static Table CurrentTable { get; private set; }
         public static PosOrder CurrentOrder { get; private set; }
         public static List<PosOrder> Orders { get; private set; } = new List<PosOrder>();
-        public static POSWindow POSWindow { get; private set; }
-       
+
         public static void SetCurrentTable(Table table)
         {
             CurrentTable = table;
@@ -47,18 +46,17 @@ namespace LogicPOS.UI.Components.POS
             if (CurrentTable != null)
             {
                 string tableDenomination = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
-                POSWindow.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
+                POSWindow.Instance.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
             }
 
             if (CurrentOrder != null)
             {
-                POSWindow.LabelTotalTable.Text = POSWindow.LabelTotalTable.Text = $"{CurrentOrder.TotalFinal:0.00} : #{CurrentOrder.Tickets.Count}";
+                POSWindow.Instance.LabelTotalTable.Text = POSWindow.Instance.LabelTotalTable.Text = $"{CurrentOrder.TotalFinal:0.00} : #{CurrentOrder.Tickets.Count}";
             }
         }
 
-        public static void Initialize(POSWindow posWindow)
+        public static void Initialize()
         {
-            POSWindow = posWindow;
             if (CurrentTable == null)
             {
                 var defaultTable = GetDefaultTable();
@@ -72,7 +70,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (tables.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(LogicPOSAppContext.PosMainWindow, tables.FirstError);
+                CustomAlerts.ShowApiErrorAlert(POSWindow.Instance, tables.FirstError);
                 Gtk.Application.Quit();
             }
 

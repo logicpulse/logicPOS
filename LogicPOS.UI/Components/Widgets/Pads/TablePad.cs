@@ -6,6 +6,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -277,7 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     else
                     {
-                        CustomAlerts.Error(LogicPOSAppContext.PosMainWindow)
+                        CustomAlerts.Error(POSWindow.Instance)
                                     .WithSize(new Size(500, 340))
                                     .WithTitleResource("global_error")
                                     .WithMessage("TablePad: Cant create TablePad, invalid query! You must supply mandatory fields name in Sql (id, name, label and image)!")

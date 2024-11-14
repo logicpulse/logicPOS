@@ -21,7 +21,6 @@ namespace logicpos
         public int Maxlength { get; set; } = 0;
         private int _maxWords = 0;
 
-        //Propertir from Entry(Gtk)
         private bool _validated;
         public bool Validated
         {
@@ -49,8 +48,16 @@ namespace logicpos
 
         }
 
-        public ValidatableTextBox(Window parentWindow, KeyboardMode pKeyboardMode, string pRule, bool pRequired)
-            : this(parentWindow, pKeyboardMode, pRule, pRequired, 0, 0)
+        public ValidatableTextBox(Window parentWindow,
+                                  KeyboardMode pKeyboardMode,
+                                  string pRule,
+                                  bool pRequired)
+            : this(parentWindow,
+                   pKeyboardMode,
+                   pRule,
+                   pRequired,
+                   0,
+                   0)
         {
         }
 

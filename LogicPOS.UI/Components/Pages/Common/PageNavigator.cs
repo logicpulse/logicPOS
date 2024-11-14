@@ -5,6 +5,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnApply.Clicked += delegate
             {
                 BackOfficeWindow.Instance.Menu.UpdateMenuPrivileges();
-                LogicPOSAppContext.PosMainWindow.TicketList.UpdateSaleOptionsPanelButtons();
+                POSWindow.Instance.TicketList.UpdateSaleOptionsPanelButtons();
             };
 
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);

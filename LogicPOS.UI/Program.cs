@@ -156,8 +156,8 @@ namespace LogicPOS.UI
 
         public static void StartFrontOffice()
         {
-            LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-            logicPos.StartApp(AppMode.FrontOffice);
+            LogicPOSAppUtils appUtils = new LogicPOSAppUtils();
+            appUtils.StartApp(AppMode.FrontOffice);
         }
 
         public static void StartBackOffice()

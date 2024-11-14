@@ -12,6 +12,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using MediatR;
@@ -58,33 +59,31 @@ namespace LogicPOS.UI.Widgets
         public TextButton ButtonKeyQuit { get; set; }
 
         public UserPinPanel(Window parentWindow,
-                            string pName,
-                            Color pButtonColor,
-                            string pFont,
-                            string pFontLabelStatus,
-                            Color pFontColor,
-                            Color pFontColorLabelStatus,
-                            byte pButtonWidth,
-                            byte pButtonHeight,
-                            bool pNotLoginAuth,
-                            bool pShowSystemButtons = false,
-                            bool pVisibleWindow = false,
-                            uint pRowSpacingLabelStatus = 20,
-                            uint pRowSpacingSystemButtons = 40,
-                            byte pPadding = 3)
+                            string name,
+                            Color btnColor,
+                            string font,
+                            string labelStatusFont,
+                            Color fontColor,
+                            Color labelStatusFontColor,
+                            byte btnWidth,
+                            byte btnHeight,
+                            bool notLoginAuth,
+                            bool showSystemButtons = false,
+                            bool showWindow = false,
+                            uint labelStatusRowSpacing = 20,
+                            uint systemButtonsRowSpacing = 40,
+                            byte padding = 3)
         {
             SourceWindow = parentWindow;
-            Name = pName;
-            _notLoginAuth = pNotLoginAuth;
-            //Show or Hide System Buttons (Startup Visible, Pos Change User Invisible)
-            uint tableRows = pShowSystemButtons ? 5 : (uint)3;
+            Name = name;
+            _notLoginAuth = notLoginAuth;
+            uint tableRows = showSystemButtons ? 5 : (uint)3;
 
-            Eventbox = new EventBox() { VisibleWindow = pVisibleWindow };
+            Eventbox = new EventBox() { VisibleWindow = showWindow };
 
             _table = new Gtk.Table(tableRows, 3, true);
             _table.Homogeneous = false;
 
-            //Pin Entry
             EntryPin = new ValidatableTextBox(parentWindow,
                                               KeyboardMode.None,
                                               RegexUtils.RegexLoginPin,
@@ -95,19 +94,16 @@ namespace LogicPOS.UI.Widgets
                 Visibility = false
             };
 
-            EntryPin.ModifyFont(Pango.FontDescription.FromString(pFont));
+            EntryPin.ModifyFont(Pango.FontDescription.FromString(font));
             EntryPin.Alignment = 0.5F;
 
-            //ResetPassword
-            string numberPadPinButtonPasswordResetImageFileName = PathsSettings.ImagesFolderLocation + @"Icons\Other\pinpad_password_reset.png";
+            string resetPasswordImage = PathsSettings.ImagesFolderLocation + @"Icons\Other\pinpad_password_reset.png";
 
             ButtonKeyResetPassword = new IconButton(
                 new ButtonSettings
                 {
-                    Name = "touchButtonKeyPasswordReset",
-                    //BackgroundColor = Color.Transparent,
                     BackgroundColor = Color.FromArgb(70, 167, 167, 167),
-                    Icon = numberPadPinButtonPasswordResetImageFileName,
+                    Icon = resetPasswordImage,
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(25, 25)
                 })
@@ -122,11 +118,11 @@ namespace LogicPOS.UI.Widgets
 
             //Label Status
             _labelStatus = new Label(GeneralUtils.GetResourceByName("pos_pinpad_message_type_password"));
-            _labelStatus.ModifyFont(Pango.FontDescription.FromString(pFontLabelStatus));
-            _labelStatus.ModifyFg(StateType.Normal, pFontColorLabelStatus.ToGdkColor());
+            _labelStatus.ModifyFont(Pango.FontDescription.FromString(labelStatusFont));
+            _labelStatus.ModifyFg(StateType.Normal, labelStatusFontColor.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
 
-            var buttonSize = new Size(pButtonWidth, pButtonHeight);
+            var buttonSize = new Size(btnWidth, btnHeight);
 
             TextButton buttonKey1 = CreateNumberedButton("1");
             var color = buttonKey1.Style.Background(StateType.Normal);
@@ -145,10 +141,10 @@ namespace LogicPOS.UI.Widgets
                new ButtonSettings
                {
                    Name = "touchButtonKeyCE_Red",
-                   BackgroundColor = pButtonColor,
+                   BackgroundColor = btnColor,
                    Text = "CE",
-                   Font = pFont,
-                   FontColor = pFontColor,
+                   Font = font,
+                   FontColor = fontColor,
                    ButtonSize = buttonSize
                });
 
@@ -157,25 +153,25 @@ namespace LogicPOS.UI.Widgets
             ButtonKeyOK = new TextButton(new ButtonSettings
             {
                 Name = "touchButtonKeyOK_Green",
-                BackgroundColor = pButtonColor,
+                BackgroundColor = btnColor,
                 Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok"),
-                Font = pFont,
-                FontColor = pFontColor,
-                ButtonSize = new Size(pButtonWidth, pButtonHeight)
+                Font = font,
+                FontColor = fontColor,
+                ButtonSize = new Size(btnWidth, btnHeight)
             })
             { Sensitive = false };
 
 
-            if (pShowSystemButtons)
+            if (showSystemButtons)
             {
                 ButtonKeyFrontOffice = new TextButton(new ButtonSettings
                 {
                     Name = "touchButtonKeyFrontOffice_DarkGrey",
-                    BackgroundColor = pButtonColor,
+                    BackgroundColor = btnColor,
                     Text = "FO",
-                    Font = pFont,
-                    FontColor = pFontColor,
-                    ButtonSize = new Size(pButtonWidth, pButtonHeight)
+                    Font = font,
+                    FontColor = fontColor,
+                    ButtonSize = new Size(btnWidth, btnHeight)
                 })
                 { Sensitive = false, Visible = false };
 
@@ -183,22 +179,22 @@ namespace LogicPOS.UI.Widgets
                    new ButtonSettings
                    {
                        Name = "touchButtonKeyQuit_DarkGrey",
-                       BackgroundColor = pButtonColor,
+                       BackgroundColor = btnColor,
                        Text = GeneralUtils.GetResourceByName("global_quit_title"),
-                       Font = pFont,
-                       FontColor = pFontColor,
-                       ButtonSize = new Size(pButtonWidth, pButtonHeight)
+                       Font = font,
+                       FontColor = fontColor,
+                       ButtonSize = new Size(btnWidth, btnHeight)
                    });
 
                 ButtonKeyBackOffice = new TextButton(
                     new ButtonSettings
                     {
                         Name = "touchButtonKeyBackOffice_DarkGrey",
-                        BackgroundColor = pButtonColor,
+                        BackgroundColor = btnColor,
                         Text = "BO",
-                        Font = pFont,
-                        FontColor = pFontColor,
-                        ButtonSize = new Size(pButtonWidth, pButtonHeight)
+                        Font = font,
+                        FontColor = fontColor,
+                        ButtonSize = new Size(btnWidth, btnHeight)
                     })
                 { Sensitive = false, Visible = false };
 
@@ -224,42 +220,42 @@ namespace LogicPOS.UI.Widgets
             //Prepare Table
 
             //row0
-            int entryPinTablePos = pShowSystemButtons ? 2 : 3;
+            int entryPinTablePos = showSystemButtons ? 2 : 3;
             //Without ResetPassword Button
-            if (!pShowSystemButtons)
+            if (!showSystemButtons)
             {
-                _table.Attach(EntryPin, 0, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(EntryPin, 0, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             }
             //With ResetPassword Button
             else
             {
-                _table.Attach(EntryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                _table.Attach(ButtonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+                _table.Attach(EntryPin, 0, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                _table.Attach(ButtonKeyResetPassword, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             }
             //row1
-            _table.Attach(buttonKey7, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey8, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey9, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            _table.Attach(buttonKey7, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey8, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey9, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row2
-            _table.Attach(buttonKey4, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey5, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey6, 2, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            _table.Attach(buttonKey4, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey5, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey6, 2, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row3
-            _table.Attach(buttonKey1, 0, 1, 3, 4, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey2, 1, 2, 3, 4, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey3, 2, 3, 3, 4, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            _table.Attach(buttonKey1, 0, 1, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey2, 1, 2, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey3, 2, 3, 3, 4, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //row4
-            _table.Attach(buttonKeyCE, 0, 1, 4, 5, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(buttonKey0, 1, 2, 4, 5, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.Attach(_buttonQuitOrOk, 2, 3, 4, 5, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
+            _table.Attach(buttonKeyCE, 0, 1, 4, 5, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(buttonKey0, 1, 2, 4, 5, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.Attach(_buttonQuitOrOk, 2, 3, 4, 5, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             //Row5
-            _table.Attach(_labelStatus, 0, 3, 5, 6, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-            _table.SetRowSpacing(4, pRowSpacingLabelStatus);
+            _table.Attach(_labelStatus, 0, 3, 5, 6, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            _table.SetRowSpacing(4, labelStatusRowSpacing);
             //row6
-            if (pShowSystemButtons)
+            if (showSystemButtons)
             {
-                _table.Attach(ButtonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, pPadding, pPadding);
-                _table.SetRowSpacing(5, pRowSpacingSystemButtons);
+                _table.Attach(ButtonKeyOK, 0, 3, 7, 8, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+                _table.SetRowSpacing(5, systemButtonsRowSpacing);
             }
 
             Eventbox.Add(_table);
@@ -274,8 +270,8 @@ namespace LogicPOS.UI.Widgets
                         //BackgroundColor = pButtonColor,
                         BackgroundColor = Color.FromArgb(70, 167, 167, 167),
                         Text = number,
-                        Font = pFont,
-                        FontColor = pFontColor,
+                        Font = font,
+                        FontColor = fontColor,
                         ButtonSize = buttonSize
                     });
             }
@@ -412,7 +408,7 @@ namespace LogicPOS.UI.Widgets
 
         private ErrorOr<string> Login(Guid userId, string password)
         {
-            var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id,userId, password)).Result;
+            var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
             JwtToken = loginResult.IsError ? null : loginResult.Value;
             return loginResult;
         }
@@ -485,18 +481,17 @@ namespace LogicPOS.UI.Widgets
         private void ProcessLogin(UserDetail user)
         {
             _mode = NumberPadPinMode.Password;
-            AuthenticationService.LoginUser(user,JwtToken);
+            AuthenticationService.LoginUser(user, JwtToken);
 
             UpdateStatusLabels();
 
             if (GeneralSettings.AppUseBackOfficeMode)
             {
                 Utils.ShowBackOffice(SourceWindow);
+                return;
             }
-            else
-            {
-                Utils.ShowFrontOffice(SourceWindow);
-            }
+
+            POSWindow.ShowFrontOffice(SourceWindow);
         }
 
         private bool ChangePassword(Guid userId,

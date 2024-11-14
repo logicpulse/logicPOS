@@ -17,6 +17,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -528,12 +529,9 @@ namespace logicpos
             return supportedScreenSizeEnum;
         }
 
-
-
-        public static Dialog CreateSplashScreen(
-            Window parent,
-            bool dbExists,
-            string backupProcess = "")
+        public static Dialog CreateSplashScreen(Window parent,
+                                                bool dbExists,
+                                                string backupProcess = "")
         {
             string loadingImage = PathsSettings.ImagesFolderLocation + @"Other\working.gif";
 
@@ -581,10 +579,9 @@ namespace logicpos
             }
         }
 
-        public static void ThreadStart(
-            Window sourceWindow,
-            Thread thread,
-            string backupProcess)
+        public static void ThreadStart(Window sourceWindow,
+                                       Thread thread,
+                                       string backupProcess)
         {
             LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(NotifyLoadingIsDone));
             thread.Start();
@@ -606,10 +603,6 @@ namespace logicpos
             Thread.Sleep(pMilliseconds);
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Settings
-
-        //Require to use Dictionary to Save Batch of Value/Keys
         public static void AddUpdateSettings(Dictionary<string, string> pValues)
         {
             bool debug = false;
@@ -657,7 +650,6 @@ namespace logicpos
             }
         }
 
-        //Used when working with Debugger
         public static string GetApplicationConfigFileName()
         {
             string result = string.Empty;
@@ -673,12 +665,6 @@ namespace logicpos
             }
 
             return result;
-        }
-
-
-        public static pos_configurationplaceterminal GetOrCreateTerminal()
-        {
-            throw new Exception("Removed Legacy Code");
         }
 
         public static bool CloseAllOpenTerminals(Window parentWindow, Session pSession)
@@ -713,31 +699,6 @@ namespace logicpos
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Windows
-
-        //Helpers
-        public static void ShowFrontOffice(Window window)
-        {
-
-            if (LogicPOSAppContext.PosMainWindow == null)
-            {
-                Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-                dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
-
-                CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
-                LogicPOSAppContext.PosMainWindow = new POSWindow(windowImageFileName);
-            }
-            else
-            {
-                LogicPOSAppContext.PosMainWindow.UpdateUI();
-                LogicPOSAppContext.PosMainWindow.Show();
-            };
-            window.Hide();
-
-        }
-
         public static void ShowBackOffice(Window pHideWindow)
         {
             if (BackOfficeWindow.Instance == null)
@@ -751,9 +712,6 @@ namespace logicpos
 
             pHideWindow.Hide();
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Themes and Backgrounds
 
         public static string GetThemeFileLocation(string pFile)
         {
@@ -811,9 +769,6 @@ namespace logicpos
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Notifications UI
-
         public static void ShowChangeLog(Window parentWindow)
         {
             string message = "";
@@ -835,9 +790,6 @@ namespace logicpos
                 .ShowAlert();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Virtual KeyBoard
-
         public static string GetVirtualKeyBoardInput(Window parentWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
             bool useBaseDialogWindowMask = AppSettings.Instance.useBaseDialogWindowMask;
@@ -850,11 +802,11 @@ namespace logicpos
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
                     //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
@@ -895,17 +847,11 @@ namespace logicpos
                 result = null;
             }
 
-            //Fix Keyboard White Bug when useBaseDialogWindowMask = false
-            //Required to assign TransientFor to a non Destroyed Window/Dialog like GlobalApp.WindowPos, 
-            //else Keyboard is destroyed when TransientFor Windows/Dialog is Destroyed ex when parentWindow = PosInputTextDialog
-            LogicPOSAppContext.DialogPosKeyboard.TransientFor = LogicPOSAppContext.PosMainWindow;
+            LogicPOSAppContext.DialogPosKeyboard.TransientFor = POSWindow.Instance;
 
             return result;
         }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Cache
-
+       
         internal static bool UseCache()
         {
             bool result = false;
@@ -970,8 +916,6 @@ namespace logicpos
             return (result);
         }
 
-        //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
-        //Criação de variável nas configurações para imprimir ou não QRCode
         internal static bool PrintQRCode()
         {
             bool result;
@@ -1032,16 +976,6 @@ namespace logicpos
             return (result);
         }
 
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //GenericTreeView
-
-
-
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //License
-
         public static bool AssignLicence(string pFileName, bool pDebug = false)
         {
             bool result = false;
@@ -1094,31 +1028,6 @@ namespace logicpos
             return result;
         }
 
-        public static object SaveOrUpdateCustomer(Window parentWindow, erp_customer pCustomer, string pName, string pAddress, string pLocality, string pZipCode, string pCity, string pPhone, string pEmail, cfg_configurationcountry pCountry, string pFiscalNumber, string pCardNumber, decimal pDiscount, string pNotes)
-        {
-            throw new Exception("Removed Legacy Code");
-        }
-
-        //Method to Check Equallity from Db Fields to Input Fields, Required to compare null with "" etc
-        public static bool CheckIfFieldChanged(object pFieldDb, object pFieldInput)
-        {
-            object fieldDb = (pFieldDb == null || pFieldDb.ToString() == string.Empty) ? string.Empty : pFieldDb;
-
-            bool result;
-            //Decimal
-            if (fieldDb.GetType() == typeof(decimal))
-            {
-                result = (!fieldDb.Equals(pFieldInput));
-            }
-            //all Other
-            else
-            {
-                result = (fieldDb.ToString() != pFieldInput.ToString());
-            }
-
-            return result;
-        }
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //SessionApp
 
@@ -1131,13 +1040,10 @@ namespace logicpos
             return result;
         }
 
-
-
         public static void StartReportsMenuFromBackOffice(Window parentWindow)
         {
             //tchial0: start Reports Menu
         }
-
 
         public static void StartNewDocumentFromBackOffice(Window parentWindow)
         {
@@ -1146,8 +1052,6 @@ namespace logicpos
             createDocumentModal.Destroy();
         }
 
-
-        //TK016235 BackOffice - Mode
         public static void OpenArticleStockDialog(Window parentWindow)
         {
 
@@ -1189,7 +1093,6 @@ namespace logicpos
 
         }
 
-
         public static bool IsPortOpen(string portName)
         {
             var port = new SerialPort(portName);
@@ -1206,19 +1109,5 @@ namespace logicpos
             }
         }
 
-        //Generate random String
-        public static string RandomString()
-        {
-            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var stringChars = new char[8];
-            var random = new Random();
-
-            for (int i = 0; i < stringChars.Length; i++)
-            {
-                stringChars[i] = chars[random.Next(chars.Length)];
-            }
-
-            return new string(stringChars);
-        }
     }
 }

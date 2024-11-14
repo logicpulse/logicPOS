@@ -163,7 +163,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            if (LogicPOSAppContext.PosMainWindow.TicketList.CurrentOrderDetail != null)
+            if (POSWindow.Instance.TicketList.CurrentOrderDetail != null)
             {
                 switch (LogicPOSAppContext.BarCodeReader.Device)
                 {
@@ -282,7 +282,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private bool UpdateClock()
         {
-            if (LogicPOSAppContext.PosMainWindow.Visible)
+            if (POSWindow.Instance.Visible)
             {
                 LabelClock.Text = XPOUtility.CurrentDateTime(ClockTimeFormat);
 

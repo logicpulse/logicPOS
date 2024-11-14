@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ButtonKeyFrontOffice_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowFrontOffice(this);
+            POSWindow.ShowFrontOffice(this);
         }
 
         private void ButtonKeyBackOffice_Clicked(object sender, EventArgs e)

@@ -661,57 +661,7 @@ namespace LogicPOS.Data.XPO.Utility
 
         public static bool Audit(string pAuditTypeToken, string pDescription = "")
         {
-            return Audit(
-                XPOSettings.Session,
-                XPOSettings.LoggedUser ?? null,
-                TerminalSettings.LoggedTerminal ?? null,
-                pAuditTypeToken,
-                pDescription
-            );
-        }
-
-        public static bool Audit(Session pSession, sys_userdetail pLoggedUser, pos_configurationplaceterminal pLoggedTerminal, string pAuditTypeToken, string pDescription = "")
-        {
-            bool result = false;
-            DateTime dateTime = CurrentDateTimeAtomic();
-            string executeSql = string.Format(@"SELECT Oid FROM sys_systemaudittype WHERE (Disabled IS NULL or Disabled  <> 1) AND Token = '{0}';", pAuditTypeToken);
-
-            
-            //Get auditType Guid from Query
-            Guid guidAuditType = GetGuidFromQuery(executeSql);
-
-            if (!guidAuditType.Equals(Guid.Empty))
-            {
-                //Fresh User and Terminal, to prevent Object Delection Problem
-                sys_userdetail xpoUserDetail = pLoggedUser != null ? (sys_userdetail)GetXPGuidObject(typeof(sys_userdetail), pLoggedUser.Oid) : null;
-                pos_configurationplaceterminal xpoTerminal = (pos_configurationplaceterminal)GetXPGuidObject(typeof(pos_configurationplaceterminal), pLoggedTerminal.Oid);
-                //get AuditType Object
-                sys_systemaudittype xpoAuditType = (sys_systemaudittype)GetXPGuidObject(typeof(sys_systemaudittype), guidAuditType);
-                string description = pDescription != string.Empty ? pDescription
-                  : xpoAuditType.ResourceString != null && CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) != null
-                  ? CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, xpoAuditType.ResourceString) : xpoAuditType.Designation;
-
-                sys_systemaudit systemAudit = new sys_systemaudit(pSession)
-                {
-                    Date = dateTime,
-                    Description = description,
-                    UserDetail = xpoUserDetail,
-                    Terminal = xpoTerminal,
-                    AuditType = xpoAuditType
-                };
-                systemAudit.Save();
-
-
-
-                result = true;
-            }
-            else
-            {
-                string exceptionMessage = string.Format("Invalid AuditType: [{0}]", pAuditTypeToken);
-                throw new Exception(exceptionMessage);
-            }
-
-            return result;
+            return true; //tchial0
         }
 
         public static decimal GetPartialPaymentPayedItems(Session pSession, Guid pDocumentOrderMain, Guid pArticle)

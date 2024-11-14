@@ -19,6 +19,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -44,7 +45,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnDelete_Clicked(object sender, EventArgs e)
         {
-            ResponseType responseType = CustomAlerts.Question(LogicPOSAppContext.PosMainWindow)
+            ResponseType responseType = CustomAlerts.Question(POSWindow.Instance)
                                                     .WithSize(new Size(400, 280))
                                                     .WithTitleResource("global_warning")
                                                     .WithMessage(GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"))
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(LogicPOSAppContext.PosMainWindow, ItemsPage.SelectedItem.Quantity);
+            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(POSWindow.Instance, ItemsPage.SelectedItem.Quantity);
 
             if (newQuantity == 0)
             {
@@ -105,7 +106,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(LogicPOSAppContext.PosMainWindow,
+            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
                                                                                    GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
                                                                                    ItemsPage.SelectedItem.UnitPrice);
 
@@ -243,7 +244,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (ItemsPage.Ticket != null)
             {
-                ResponseType dialogResponse = CustomAlerts.Question(LogicPOSAppContext.PosMainWindow)
+                ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
                                                           .WithSize(new Size(400, 280))
                                                           .WithTitleResource("global_warning")
                                                           .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
@@ -265,7 +266,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (response.ResponseType != ResponseType.Ok)
             {
@@ -293,7 +294,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(LogicPOSAppContext.PosMainWindow, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegexUtils.RegexAlfaNumericExtended, true);
 
             if (dialogResponse.ResponseType == ResponseType.Ok)
             {
@@ -311,7 +312,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
             OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            PosOrdersDialog dialog = new PosOrdersDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
+            PosOrdersDialog dialog = new PosOrdersDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
             ResponseType response = (ResponseType)dialog.Run();
             dialog.Destroy();
 
@@ -319,7 +320,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(LogicPOSAppContext.PosMainWindow, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
+            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
             ResponseType response = (ResponseType)dialog.Run();
 
             if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
@@ -332,7 +333,7 @@ namespace LogicPOS.UI.Components.POS
 
                     if (xNewTable.TableStatus != TableStatus.Free)
                     {
-                        CustomAlerts.Error(LogicPOSAppContext.PosMainWindow)
+                        CustomAlerts.Error(POSWindow.Instance)
                                     .WithSize(new Size(400, 280))
                                     .WithTitleResource("global_error")
                                     .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))

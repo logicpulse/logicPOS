@@ -1,12 +1,7 @@
 using Gdk;
 using Gtk;
 using logicpos;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -55,7 +50,6 @@ namespace LogicPOS.UI.Components.Windows
 
         private void InitializeUI()
         {
-
             dynamic theme = GetTheme();
 
             string errorMessage = "Node: <Window ID=\"StartupWindow\">";
@@ -249,7 +243,7 @@ namespace LogicPOS.UI.Components.Windows
             }
             else
             {
-                CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage,this);
+                CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage, this);
             }
         }
     }

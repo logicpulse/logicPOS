@@ -27,9 +27,8 @@ namespace LogicPOS.Api.Features.Common
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
-        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQueryAsync<TEntity>(
-            string endpoint,
-            CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQueryAsync<TEntity>(string endpoint,
+                                                                                            CancellationToken cancellationToken = default)
         {
             try
             {
@@ -42,9 +41,8 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(
-           string endpoint,
-           CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(string endpoint,
+                                                                                  CancellationToken cancellationToken = default)
         {
             try
             {
@@ -65,10 +63,9 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(
-            string endpoint,
-            TRequest command,
-            CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(string endpoint,
+                                                                  TRequest command,
+                                                                  CancellationToken cancellationToken = default)
         {
             try
             {
@@ -81,10 +78,9 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleUpdateCommandAsync(
-            string endpoint,
-            TRequest command,
-            CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<Unit>> HandleUpdateCommandAsync(string endpoint,
+                                                                     TRequest command,
+                                                                     CancellationToken cancellationToken = default)
         {
             try
             {

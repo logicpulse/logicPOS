@@ -8,6 +8,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using Pango;
@@ -364,7 +365,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void OnCloseWindow(object o, DeleteEventArgs args)
         {
             Hide();
-            LogicPOSAppContext.PosMainWindow.ShowAll();
+            POSWindow.Instance.ShowAll();
             args.RetVal = true;
         }
 
