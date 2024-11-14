@@ -1,5 +1,4 @@
-﻿using DevExpress.Xpo;
-using logicpos.shared.Enums;
+﻿using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -8,8 +7,6 @@ using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Enums;
-using LogicPOS.Reporting.Common;
-using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
@@ -1145,7 +1142,7 @@ namespace LogicPOS.Printing.Utility
             List<int> pCopyNames)
         {
             return XPOUtility.InsertSystemPrint(
-                pDocumentFinancePayment,null,
+                pDocumentFinancePayment, null,
                 pPrinterDesignation,
                 pPrintCopies,
                 pCopyNames,
@@ -1155,73 +1152,6 @@ namespace LogicPOS.Printing.Utility
                 TerminalSettings.LoggedTerminal.Oid);
         }
 
-        public static bool PrintFinanceDocument(
-            PrinterDto printer,
-            string terminalDesignation,
-            string userName,
-            CompanyPrintingInformationsDto companyInformationsDto,
-            Document financeMasterDto,
-            List<int> copyNumbers,
-            bool secondCopy,
-            string motive)
-        {
-            bool result = false;
-
-            if (printer != null)
-            {
-                int printCopies = copyNumbers.Count;
-                //Get Hash4Chars from Hash
-                string hash4Chars = CryptographyUtils.GetDocumentHash4Chars(financeMasterDto.Hash);
-
-                //Init Helper Vars
-                bool resultSystemPrint;
-                switch (GetPrinterToken(printer.Token))
-                {
-
-                    case "THERMAL_PRINTER_WINDOWS":
-                    case "THERMAL_PRINTER_SOCKET":
-
-                        var financeMasterViewReports = ReportDataHelper.GetFinanceMasterViewReportDataList(financeMasterDto.Id).List;
-                        var financeMasterViewReportsDtos = financeMasterViewReports.ConvertAll(view => ReportDataMapping.GetFinanceMasterViewReportDto(view));
-
-                        FinanceMaster thermalPrinterFinanceDocument = new FinanceMaster(
-                            printer,
-                            terminalDesignation,
-                            userName,
-                            financeMasterDto,
-                            companyInformationsDto,
-                            copyNumbers,
-                            secondCopy,
-                            motive);
-
-                        thermalPrinterFinanceDocument.Print();
-                        //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
-                        break;
-                    case "GENERIC_PRINTER_WINDOWS":
-                        Reporting.Common.FastReport.ProcessReportFinanceDocument(
-                            CustomReportDisplayMode.Print, 
-                            financeMasterDto.Id, 
-                            hash4Chars, 
-                            copyNumbers, 
-                            secondCopy, 
-                            motive);
-
-                        //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
-                        break;
-                    case "REPORT_EXPORT_PDF":
-                        Reporting.Common.FastReport.ProcessReportFinanceDocument(CustomReportDisplayMode.ExportPDF, financeMasterDto.Id, hash4Chars, copyNumbers, secondCopy, motive);
-                        //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
-                        resultSystemPrint = SystemPrintInsert(financeMasterDto, printer.Designation, printCopies, copyNumbers, secondCopy, motive);
-                        break;
-                }
-                result = true;
-
-            }
-
-            return result;
-        }
 
         public static bool PrintFinanceDocument(PrinterDto printer,
             Document pDocumentFinanceMaster)
@@ -1279,65 +1209,7 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintFinanceDocumentPayment(
-            PrinterDto printer,
-            string terminalDesignation,
-            string userName,
-            CompanyPrintingInformationsDto companyInformationsDto,
-            Document pDocumentFinancePayment)
-        {
-            bool result = false;
-
-            if (printer != null)
-            {
-                //Initialize CopyNames List from PrintCopies
-                List<int> copyNames = new List<int>();
-                copyNames.Add(0);
-                int printCopies = copyNames.Count;
-
-                //Init Helper Vars
-                bool resultSystemPrint;
-                switch (GetPrinterToken(printer.Token))
-                {
-                    case "THERMAL_PRINTER_WINDOWS":
-                    case "THERMAL_PRINTER_SOCKET":
-
-                        var financePaymentViewReports = ReportDataHelper.GetFinancePaymentViewReportDataList(pDocumentFinancePayment.Id).List;
-                        var financePaymentViewReportsDtos = financePaymentViewReports.ConvertAll(view => ReportDataMapping.GetFinancePaymentViewReportDto(view));
-
-                        FinancePayment thermalPrinterFinanceDocumentPayment = 
-                            new FinancePayment(
-                                printer, 
-                                pDocumentFinancePayment, 
-                                terminalDesignation,
-                                userName,
-                                companyInformationsDto,
-
-                                copyNames, 
-                                false,
-                                financePaymentViewReportsDtos
-                                );
-
-                        thermalPrinterFinanceDocumentPayment.Print();
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
-                        break;
-                    case "GENERIC_PRINTER_WINDOWS":
-                        Reporting.Common.FastReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.Print, pDocumentFinancePayment.Id, copyNames);
-                        //Add to SystemPrint Audit
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
-                        break;
-                    case "REPORT_EXPORT_PDF":
-                        Reporting.Common.FastReport.ProcessReportFinanceDocumentPayment(CustomReportDisplayMode.ExportPDF, pDocumentFinancePayment.Id, copyNames);
-                        //Add to SystemPrint Audit : Developer : Use here Only to Test SystemPrintInsert
-                        resultSystemPrint = SystemPrintInsert(pDocumentFinancePayment, printer.Designation, printCopies, copyNames);
-                        break;
-                }
-                result = true;
-
-            }
-            return result;
-        }
-
+   
         public static bool PrintWorkSessionMovement(
             PrinterDto printer,
             string terminalDesignation,
@@ -1357,9 +1229,9 @@ namespace LogicPOS.Printing.Utility
                     case "THERMAL_PRINTER_SOCKET":
 
                         WorkSessionPrinter workSessiontPrinter = new WorkSessionPrinter(
-                            printer, 
+                            printer,
                             terminalDesignation,
-                            workSessionPeriod, 
+                            workSessionPeriod,
                             SplitCurrentAccountMode.NonCurrentAcount,
                             workSessionMovementPrintingFileTemplate,
                             sessionPeriodSummaryDetails);
@@ -1369,9 +1241,9 @@ namespace LogicPOS.Printing.Utility
                         if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
                         {
                             workSessiontPrinter = new WorkSessionPrinter(
-                                printer,                               
+                                printer,
                                 terminalDesignation,
-                                workSessionPeriod, 
+                                workSessionPeriod,
                                 SplitCurrentAccountMode.CurrentAcount,
                                 workSessionMovementPrintingFileTemplate,
                                 sessionPeriodSummaryDetails);
@@ -1386,7 +1258,7 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-        public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto, 
+        public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto,
             string terminalDesignation,
             string userName,
             CompanyPrintingInformationsDto companyInformationsDto)
@@ -1416,7 +1288,7 @@ namespace LogicPOS.Printing.Utility
             {
                 foreach (var itemPrinter in articlesPrinters)
                 {
-                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(itemPrinter, orderTicketDto,terminalDesignation,userName,companyInformationsDto, true);
+                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(itemPrinter, orderTicketDto, terminalDesignation, userName, companyInformationsDto, true);
                     thermalPrinterInternalDocumentOrderRequest.Print();
                 }
             }
@@ -1448,7 +1320,7 @@ namespace LogicPOS.Printing.Utility
                             pTotalAmountInCashDrawer,
                             pMovementAmount,
                             terminalDesignation);
-                            
+
 
                         internalDocumentCashDrawer.Print();
                         break;

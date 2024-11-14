@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Widgets;
 using LogicPOS.Utility;
@@ -64,8 +65,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 actionAreaButtons = new ActionAreaButtons();
             }
 
-            _pinPanel.Mode = (_user.PasswordReset) ? NumberPadPinMode.PasswordOld :
-                NumberPadPinMode.Password;
+            if(_user == null)
+            {
+                _user = AuthenticationService.User;
+            }
+
+            _pinPanel.Mode = (_user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
             this.KeyReleaseEvent += PosPinPadDialog_KeyReleaseEvent;
 

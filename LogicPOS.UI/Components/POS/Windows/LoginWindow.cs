@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Windows
                 Utils.ShowChangeLog(this);
             }
 
-            Utils.ShowNotifications(this);
+            //Utils.ShowNotifications(this); -> tchial0
 
             this.KeyReleaseEvent += StartupWindow_KeyReleaseEvent;
 

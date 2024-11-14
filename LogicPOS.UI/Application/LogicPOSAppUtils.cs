@@ -1,20 +1,13 @@
-﻿using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
-using Gtk;
+﻿using Gtk;
 using logicpos;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.Services;
-using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Reporting.Utility;
 using LogicPOS.Settings;
-using LogicPOS.Settings.Enums;
 using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
@@ -201,7 +194,7 @@ namespace LogicPOS.UI.Application
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-          
+
         }
 
         private void InitBackupTimerProcess()

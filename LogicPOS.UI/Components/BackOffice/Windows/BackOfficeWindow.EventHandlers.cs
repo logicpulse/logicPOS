@@ -99,7 +99,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void BtnNotificaion_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowNotifications(this, true);
+           
         }
 
         private void BtnChangeLog_Clicked(object sender, EventArgs e)

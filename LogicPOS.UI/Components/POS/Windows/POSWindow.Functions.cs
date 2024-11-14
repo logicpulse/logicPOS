@@ -116,7 +116,8 @@ namespace LogicPOS.UI.Components.Windows
             }
 
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
-            Utils.ShowNotifications(pinModal);
+            
+            //Utils.ShowNotifications(pinModal); -> tchial0
 
             pinModal.Destroy();
             dialogChangeUser.Destroy();

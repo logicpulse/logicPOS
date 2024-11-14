@@ -224,7 +224,7 @@ namespace LogicPOS.UI.Components.POS
             LabelTotalValue.ModifyFont(labelTotalFont);
             LabelTotalValue.ModifyFg(StateType.Normal, labelTotalFontColor);
             LabelTotalValue.SetAlignment(labelTotalAlignmentX, 0.0F);
-            LabelTotalValue.Text = DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            LabelTotalValue.Text = "0";
 
             HBox hboxTotal = new HBox(false, 4);
             hboxTotal.PackStart(LabelTotal, true, true, 5);

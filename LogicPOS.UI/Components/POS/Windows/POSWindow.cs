@@ -289,8 +289,7 @@ namespace LogicPOS.UI.Components.Windows
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);
 
-            //EventBoxStatusBar2:vboxTotalTable:LabelTotalTable
-            LabelTotalTable = new Label(DataConversionUtils.DecimalToStringCurrency(0, XPOSettings.ConfigurationSystemCurrency.Acronym));
+            LabelTotalTable = new Label("0");
             LabelTotalTable.ModifyFont(labelTotalTableFont);
             LabelTotalTable.ModifyFg(StateType.Normal, labelTotalTableFontColor);
             LabelTotalTable.SetAlignment(labelTotalTableAlignmentX, 0.5F);

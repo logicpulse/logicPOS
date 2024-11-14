@@ -1,17 +1,14 @@
-﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Settings;
 using LogicPOS.Settings.Enums;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
@@ -26,19 +23,13 @@ namespace logicpos.Classes.DataLayer
 
     internal class DataBaseBackup
     {
-        //Log4Net
         private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //Enable Debug
         private static readonly bool _debug = false;
-        //Settings
         private static string _backupConnectionString;
         private static string _fileExtension;
         private static readonly string _pathBackups = PathsSettings.BackupsFolderLocation;
-        //Private Vars
         private static readonly Size _sizeDialog = new Size(800, 300);
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Shared for All DataBaseTypes
         public static void Init()
         {
             switch (DatabaseSettings.DatabaseType)
@@ -71,7 +62,6 @@ namespace logicpos.Classes.DataLayer
                     break;
             }
         }
-
 
         public static bool Backup(Window parentWindow)
         {
@@ -352,16 +342,6 @@ namespace logicpos.Classes.DataLayer
                         //Send fileNamePacked only to show its name in success dialog
                         if (Restore(parentWindow, fileName, fileNamePacked, systemBackup))
                         {
-                            //Audit DATABASE_RESTORE
-                            XPOUtility.Audit("DATABASE_RESTORE", string.Format(GeneralUtils.GetResourceByName("audit_message_database_restore"), fileNamePacked));
-                            //Required to DropIdentity before get currentDocumentFinanceYear Object, else it exists in old non restored Session
-                            XPOSettings.Session.DropIdentityMap();
-                            //Get Current Active FinanceYear
-                            fin_documentfinanceyears currentDocumentFinanceYear = DocumentProcessingSeriesUtils.GetCurrentDocumentFinanceYear();
-
-                            //Disable all Active FinanceYear Series and SeriesTerminal if Exists
-                            if (currentDocumentFinanceYear != null) DocumentProcessingSeriesUtils.DisableActiveYearSeriesAndTerminalSeries(currentDocumentFinanceYear);
-
                             //Restore SystemBackup properties else it keeps temp names after Restore acegvpls.soj & n2sjiamk.32o, empty hash etc
                             if (systemBackupGuid != Guid.Empty)
                             {
@@ -512,38 +492,7 @@ namespace logicpos.Classes.DataLayer
                 }
             }
 
-            /*
-            OLD CODE, NOT USED ANYMORE
-            #if MONOLINUX
-            #else
-            //Override default LocalPath with MSSqlServer.BackupDirectory
-            if (GlobalFramework.DatabaseType == "MSSqlServer")
-            {
-              _backupConnectionString = string.Format(LogicPOS.Settings.AppSettings.Instance.backupConnectionString"], GlobalFramework.DatabaseServer);
-              ServerConnection connection = new ServerConnection(_backupConnectionString);
-              Server server = new Server(connection);
-
-              //SqlServer Edition
-              if (GlobalFramework.DatabaseServer.ToUpper() != @".\SQLEXPRESS".ToUpper())
-              {
-                try
-                {
-                  //Using SQL Server authentication
-                  server.ConnectionContext.LoginSecure = false;
-                  server.ConnectionContext.Login = GlobalFramework.DatabaseUser;
-                  server.ConnectionContext.Password = GlobalFramework.DatabasePassword;
-                }
-                catch (Exception ex)
-                {
-                  _logger.Error(ex.Message, ex);
-                }
-              }
-
-              pathBackups = string.Format(@"{0}\", server.BackupDirectory);
-              if (server.ConnectionContext.IsOpen) server.ConnectionContext.Disconnect();
-            }
-            #endif
-            */
+           
             if (pFilename == "")
             {
                 return pathBackups + string.Format(
@@ -679,13 +628,6 @@ namespace logicpos.Classes.DataLayer
             }
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //MSSqlServer
-        /// <summary>
-        /// Method responsible for SQL Server database backing up process
-        /// </summary>
-        /// <param name="pFileName"></param>
-        /// <returns>'true' if success and 'false' if fail</returns>
         private static bool BackupMSSqlServer(string pFileName, Session SessionXpoForBackupPurposes)
         {
             try
@@ -758,79 +700,6 @@ namespace logicpos.Classes.DataLayer
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
             }
         }
-
-        /*
-        //Notes
-        //The database must not be in use when backing up
-        //The folder holding the file must have appropriate permissions given
-        private static bool BackupMSSqlServer(string pConnectionString, string pFileName)
-        {
-          if (_debug) _logger.Debug(string.Format("BackupMSSqlServer fileName: [{0}]", pFileName));
-
-          try
-          {
-            ServerConnection connection = new ServerConnection(_backupConnectionString);
-            Server server = new Server(connection);
-            //Using SQL Server authentication
-            if (GlobalFramework.DatabaseServer.ToUpper() != @".\SQLEXPRESS".ToUpper())
-            {
-              server.ConnectionContext.LoginSecure = false;
-              server.ConnectionContext.Login = GlobalFramework.DatabaseUser;
-              server.ConnectionContext.Password = GlobalFramework.DatabasePassword;
-            }
-            Backup source = new Backup();
-            source.Action = BackupActionType.Database;
-            source.Database = SharedFramework.DatabaseName;
-            BackupDeviceItem destination = new BackupDeviceItem(pFileName, DeviceType.File);
-            source.Devices.Add(destination);
-            source.SqlBackup(server);
-            connection.Disconnect();
-            if (server.ConnectionContext.IsOpen) server.ConnectionContext.Disconnect();
-
-            return true;
-          }
-          catch (Exception ex)
-          {
-            _logger.Error(ex.Message, ex);
-            return false;
-          }
-        }
-
-        private static bool RestoreMSSqlServer(string pConnectionString, string pFileName)
-        {
-          if (_debug) _logger.Debug(string.Format("RestoreMSSqlServer fileName: [{0}]", pFileName));
-
-          try
-          {
-            ServerConnection connection = new ServerConnection(_backupConnectionString);
-            Server server = new Server(connection);
-            //Using SQL Server authentication
-            if (GlobalFramework.DatabaseServer.ToUpper() != @".\SQLEXPRESS".ToUpper())
-            {
-              server.ConnectionContext.LoginSecure = false;
-              server.ConnectionContext.Login = GlobalFramework.DatabaseUser;
-              server.ConnectionContext.Password = GlobalFramework.DatabasePassword;
-            }
-            //Deletes the specified database and drops any active connection
-            server.KillDatabase(SharedFramework.DatabaseName);
-            Restore destination = new Restore();
-            destination.Action = RestoreActionType.Database;
-            destination.Database = SharedFramework.DatabaseName;
-            BackupDeviceItem source = new BackupDeviceItem(pFileName, DeviceType.File);
-            destination.Devices.Add(source);
-            destination.ReplaceDatabase = true;
-            destination.SqlRestore(server);
-            if (server.ConnectionContext.IsOpen) server.ConnectionContext.Disconnect();
-
-            return true;
-          }
-          catch (Exception ex)
-          {
-            _logger.Error(ex.Message, ex);
-            return false;
-          }
-        }
-        */
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //MySQL

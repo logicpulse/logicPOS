@@ -2,7 +2,6 @@
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Finance.DocumentProcessing;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Shared;
@@ -31,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             public CompanyPrintingInformationsDto companyInformationsDto { get; set; }*/
 
             //Get Latest DocumentConference Document without Recreate it if Diference, compare it in Above Line
-            fin_documentfinancemaster lastDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(false);
+            fin_documentfinancemaster lastDocument = null;
 
             //Reprint Existing Document After compare with current ArticleBag
             if (
@@ -47,10 +46,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 try
                 {
                     //Call Recreate New Document
-                    fin_documentfinancemaster newDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(true);
+                   //fin_documentfinancemaster newDocument = DocumentProcessingUtils.GetOrderMainLastDocumentConference(true);
 
                     //Call Print New Document
-                    FrameworkCalls.PrintFinanceDocument(this, newDocument);
+                   // FrameworkCalls.PrintFinanceDocument(this, newDocument);
                 }
                 catch (Exception ex)
                 {

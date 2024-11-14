@@ -476,7 +476,8 @@ namespace LogicPOS.Data.XPO.Utility
  
         public static void SystemNotification()
         {
-            SystemNotification(XPOSettings.Session);
+            //tchial0
+            //SystemNotification(XPOSettings.Session);
         }
 
         public static void SystemNotification(Session xpoSession)

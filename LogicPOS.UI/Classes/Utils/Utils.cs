@@ -814,40 +814,6 @@ namespace logicpos
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Notifications UI
 
-        public static void ShowNotifications(Window parentWindow)
-        {
-            ShowNotifications(parentWindow, XPOSettings.Session);
-        }
-
-        public static void ShowNotifications(Window parentWindow, Session pSession)
-        {
-            ShowNotifications(parentWindow, pSession, Guid.Empty);
-        }
-
-        /// <summary>
-        /// When user wish to show notifications again.
-        /// Please see #IN006001 for further details.
-        /// </summary>
-        /// <param name="parentWindow"></param>
-        /// <param name="showNotificationOnDemand"></param>
-        public static void ShowNotifications(Window parentWindow, bool showNotificationOnDemand)
-        {
-            ShowNotifications(parentWindow, XPOSettings.Session, Guid.Empty, showNotificationOnDemand);
-        }
-
-        /// <summary>
-        /// Shows notifications created by "void FrameworkUtils.SystemNotification(Session pSession)" method.
-        /// More information about changes on this, please see #IN006001.
-        /// </summary>
-        /// <param name="parentWindow"></param>
-        /// <param name="pSession"></param>
-        /// <param name="pLoggedUser"></param>
-        /// <param name="showNotificationOnDemand"></param>
-        public static void ShowNotifications(Window parentWindow, Session pSession, Guid pLoggedUser, bool showNotificationOnDemand = false)
-        {
-            throw new Exception("Removed Legacy Code");
-        }
-
         public static void ShowChangeLog(Window parentWindow)
         {
             string message = "";
@@ -862,16 +828,11 @@ namespace logicpos
             byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
             message = iso.GetString(isoBytes);
 
-            //ResponseType response = ShowMessageBox(parentWindow,
-            //                                       DialogFlags.DestroyWithParent | DialogFlags.Modal,
-            //                                       new Size(700, 480),
-            //                                       MessageType.Info,
-            //                                       ButtonsType.Ok,
-            //                                       GeneralUtils.GetResourceByName("change_log"),
-            //                                       message);
-
-
-
+            CustomAlerts.Information(parentWindow)
+                .WithSize(new Size(700, 480))
+                .WithTitleResource("change_log")
+                .WithMessage(message)
+                .ShowAlert();
         }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
