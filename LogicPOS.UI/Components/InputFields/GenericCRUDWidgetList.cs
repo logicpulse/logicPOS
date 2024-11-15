@@ -157,7 +157,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 CustomAlerts.Error(BackOfficeWindow.Instance)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("window_title_dialog_validation_error")
-                            .WithMessage(string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_field_validation_error"), invalidFields))
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_field_validation_error"], invalidFields))
                             .ShowAlert();
 
             };

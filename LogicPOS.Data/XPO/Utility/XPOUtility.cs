@@ -272,10 +272,6 @@ namespace LogicPOS.Data.XPO.Utility
 
             return result;
         }
-        public static string CurrentDateTime(string pDateTimeFormat)
-        {
-            return CurrentDateTimeAtomic().ToString(pDateTimeFormat, CultureInfo.GetCultureInfo(CultureSettings.CurrentCulture.Name));
-        }
 
         public static DateTime CurrentDateTimeAtomicMidnight()
         {
@@ -581,8 +577,7 @@ namespace LogicPOS.Data.XPO.Utility
             //Ignore Notificate Documents after Documents Have Been Notified a determined Number Of Times
             int ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = 0;
 
-            ignoreNotificationsAfterHaveBeenNotificatedNumberOfTimes = Convert.ToInt16(GeneralSettings.PreferenceParameters["NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"]);
-
+  
 
             //Get Date Back DaysBackToFilter (Without WeekEnds and Holidays)
             int warnDaysBefore = systemNotificationType.WarnDaysBefore > 0 ? systemNotificationType.WarnDaysBefore : 0;
@@ -624,8 +619,7 @@ namespace LogicPOS.Data.XPO.Utility
                             "- {0} : {1} : {2} {3} : (#{4})",
                             item.DocumentNumber, item.Date,
                             documentBackUtilDays,
-                            CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName,
-                            "global_day_days"),
+                            LocalizedString.Instance["global_day_days"],
                             item.Notifications.Count + 1);
 
                         //Add New Line if not Last Document
@@ -1027,7 +1021,7 @@ namespace LogicPOS.Data.XPO.Utility
                 {
                     var financeMaster = GetEntityById<fin_documentfinancemaster>(financeMasterDto.Id, unitOfWork);
                     systemPrint.DocumentMaster = financeMaster;
-                    designation = $"{CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.GLOBAL_PRINTED)} {financeMaster.DocumentType.Designation} : {financeMaster.DocumentNumber}";
+                    designation = $"{LocalizedString.Instance[ResourceNames.GLOBAL_PRINTED]} {financeMaster.DocumentType.Designation} : {financeMaster.DocumentNumber}";
 
                     financeMaster.Printed = true;
                 }
@@ -1037,7 +1031,7 @@ namespace LogicPOS.Data.XPO.Utility
                 {
                     fin_documentfinancepayment documentFinancePayment = GetEntityById<fin_documentfinancepayment>(financePaymentDto.Id, unitOfWork);
                     systemPrint.DocumentPayment = documentFinancePayment;
-                    designation = string.Format("{0} {1} : {2}", CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.GLOBAL_PRINTED), documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
+                    designation = string.Format("{0} {1} : {2}", LocalizedString.Instance[ResourceNames.GLOBAL_PRINTED], documentFinancePayment.DocumentType.Designation, documentFinancePayment.PaymentRefNo);
                 }
                 systemPrint.Designation = designation;
 

@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter;
+using LogicPOS.UI.Alerts;
 using System;
 using System.IO;
 
@@ -24,9 +25,19 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override void UpdateEntity()
+        {
+            ExecuteUpdateCommand(CreateUpdateCommand());
 
-        public string logoGetBase64Image()
+            if(_entity.Token == "CULTURE")
+            {
+                CustomAlerts.Warning(this)
+                    .WithMessageResource("dialog_message_culture_change")
+                    .ShowAlert();
+            }
+        }
+
+        public string LogoGetBase64Image()
         {
             if (_entity.Token.Contains("LOGO"))
             {
@@ -40,6 +51,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             return _field.TextBox.Text;
         }
+
         private UpdatePreferenceParameterCommand CreateUpdateCommand()
         {
             ;
@@ -48,7 +60,7 @@ namespace LogicPOS.UI.Components.Modals
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
-                NewValue = logoGetBase64Image(),
+                NewValue = LogoGetBase64Image(),
                 NewNotes = _txtNotes.Value.Text
             };
         }

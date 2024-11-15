@@ -5,7 +5,6 @@ using LogicPOS.Api.Errors;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.Utility;
 using System;
@@ -34,6 +33,7 @@ namespace LogicPOS.UI.Alerts
         public static CustomAlert Warning(Window parent = null)
         {
             return new CustomAlert(parent)
+                       .WithTitleResource("global_warning")
                        .WithMessageType(MessageType.Warning)
                        .WithButtonsType(ButtonsType.Ok);
         }
@@ -91,7 +91,7 @@ namespace LogicPOS.UI.Alerts
 
         public static void ShowThemeRenderingErrorAlert(string message, Window parent = null)
         {
-            string errorMessage = string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, ResourceNames.APP_ERROR_RENDERING_THEME),
+            string errorMessage = string.Format(LocalizedString.Instance[ResourceNames.APP_ERROR_RENDERING_THEME],
                                                 LogicPOSSettings.FileTheme,
                                                 message);
 

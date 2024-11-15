@@ -58,11 +58,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     switch (ex.Message)
                     {
                         case "ERROR_MISSING_SERIE":
-                            errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_missing_series"));
+                            errorMessage = string.Format(LocalizedString.Instance["dialog_message_error_creating_financial_document"], LocalizedString.Instance["dialog_message_error_creating_financial_document_missing_series"]);
                             break;
                         case "ERROR_COMMIT_FINANCE_DOCUMENT_PAYMENT":
                         default:
-                            errorMessage = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document"), ex.Message);
+                            errorMessage = string.Format(LocalizedString.Instance["dialog_message_error_creating_financial_document"], ex.Message);
                             break;
                     }
 

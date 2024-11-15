@@ -38,15 +38,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle;
             if (pMode == DocumentFinanceDialogPreviewMode.Preview)
             {
-                windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_documentfinance_preview_totals_mode_preview");
+                windowTitle = LocalizedString.Instance["window_title_dialog_documentfinance_preview_totals_mode_preview"];
                 //ActionArea Buttons
-                IconButtonWithText buttonOk = new IconButtonWithText(new ButtonSettings { Name = "touchButtonOk_DialogActionArea", Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_button_label_ok"), Font = FontSettings.ActionAreaButton, FontColor = ColorSettings.ActionAreaButtonFont, Icon = IconSettings.ActionOK, IconSize = SizeSettings.ActionAreaButtonIcon, ButtonSize = SizeSettings.ActionAreaButton });
+                IconButtonWithText buttonOk = new IconButtonWithText(new ButtonSettings { Name = "touchButtonOk_DialogActionArea", Text = LocalizedString.Instance["global_button_label_ok"], Font = FontSettings.ActionAreaButton, FontColor = ColorSettings.ActionAreaButtonFont, Icon = IconSettings.ActionOK, IconSize = SizeSettings.ActionAreaButtonIcon, ButtonSize = SizeSettings.ActionAreaButton });
                 //ActionArea
                 actionAreaButtons.Add(new ActionAreaButton(buttonOk, ResponseType.Ok));
             }
             else
             {
-                windowTitle = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_documentfinance_preview_totals_mode_confirm");
+                windowTitle = LocalizedString.Instance["window_title_dialog_documentfinance_preview_totals_mode_confirm"];
                 //ActionArea Buttons
                 IconButtonWithText buttonNo = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.No);
                 IconButtonWithText buttonYes = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Yes);
@@ -73,19 +73,19 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Pango.FontDescription fontDescriptionValue = Pango.FontDescription.FromString("11");
 
             //Titles: Table Tax
-            Label labelTitleTaxDesignation = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_designation"));
-            Label labelTitleTaxValue = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_tax"));
-            Label labelTitleTaxBase = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_total_tax_base"));
-            Label labelTitleTaxTotal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax_acronym"));
+            Label labelTitleTaxDesignation = new Label(LocalizedString.Instance["global_designation"]);
+            Label labelTitleTaxValue = new Label(LocalizedString.Instance["global_tax"]);
+            Label labelTitleTaxBase = new Label(LocalizedString.Instance["global_total_tax_base"]);
+            Label labelTitleTaxTotal = new Label(LocalizedString.Instance["global_documentfinance_totaltax_acronym"]);
             //Titles: Table Totals
-            Label labelTitleDiscountCustomer = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_discount_customer") + " (%)"); /* IN009206 */
-            Label labelTitleTotalNet = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_totalnet"));
-            Label labelTitleTotalGross = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totalgross"));
-            Label labelTitleDiscountTotal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_total_discount")); /* IN009206 */
+            Label labelTitleDiscountCustomer = new Label(LocalizedString.Instance["global_documentfinance_discount_customer"] + " (%)"); /* IN009206 */
+            Label labelTitleTotalNet = new Label(LocalizedString.Instance["global_totalnet"]);
+            Label labelTitleTotalGross = new Label(LocalizedString.Instance["global_documentfinance_totalgross"]);
+            Label labelTitleDiscountTotal = new Label(LocalizedString.Instance["global_documentfinance_total_discount"]); /* IN009206 */
             /* IN009206 */
             //Label labelTitleDiscountPaymentConditions = new Label(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_documentfinance_discount_payment_conditions);
-            Label labelTitleTotalTax = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totaltax")); /* IN009206 */
-            Label labelTitleTotalFinal = new Label(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_documentfinance_totalfinal"));
+            Label labelTitleTotalTax = new Label(LocalizedString.Instance["global_documentfinance_totaltax"]); /* IN009206 */
+            Label labelTitleTotalFinal = new Label(LocalizedString.Instance["global_documentfinance_totalfinal"]);
 
             //Values: Table Totals
             /* IN009206 - Begin */

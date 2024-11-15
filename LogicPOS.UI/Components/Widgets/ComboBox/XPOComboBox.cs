@@ -123,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsXPO
             _comboBoxListStore = new ListStore(typeof(string), typeof(Entity));
 
             //Aways Default to Null Value - Undefined, even if Collection is Empty
-            tempItemIter = _comboBoxListStore.AppendValues(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "widget_combobox_undefined"), null);
+            tempItemIter = _comboBoxListStore.AppendValues(LocalizedString.Instance["widget_combobox_undefined"], null);
             _treeInterDictionary.Add(new Guid(), tempItemIter);
             //Default Selected
             currentItemIter = tempItemIter;

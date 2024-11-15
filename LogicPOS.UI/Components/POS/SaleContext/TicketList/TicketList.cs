@@ -20,6 +20,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -560,7 +561,7 @@ namespace LogicPOS.UI.Components
             else
             {
                 bool showMessage;
-                if (logicpos.Utils.CheckStocks())
+                if (PreferenceParametersService.CheckStocks)
                 {
            
                     if (!CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance,
@@ -1071,7 +1072,7 @@ namespace LogicPOS.UI.Components
                     string labelTotalTableFormat = "{0} : #{1}";
                     string lastUserName = (orderMain != null && orderMain.GlobalLastUser != null) ? string.Format(": {0}", orderMain.GlobalLastUser.Name) : string.Empty;
 
-                    string global_table = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    string global_table = LocalizedString.Instance[string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()];
 
                     POSWindow.Instance.LabelCurrentTable.Text =
                       string.Format(labelCurrentTableFormat
@@ -1093,7 +1094,7 @@ namespace LogicPOS.UI.Components
                 }
                 else
                 {
-                    POSWindow.Instance.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("status_message_select_order_or_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower());
+                    POSWindow.Instance.LabelCurrentTable.Text = LocalizedString.Instance[string.Format("status_message_select_order_or_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()];
                 }
             }
             else

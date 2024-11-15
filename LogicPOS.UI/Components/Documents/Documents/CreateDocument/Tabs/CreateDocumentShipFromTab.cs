@@ -26,7 +26,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public CreateDocumentShipFromTab(Window parent) : base(parent,
                                                                GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"),
-                                                               PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png")
+                                                               PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
+                                                               false)
         {
             Initialize();
             Design();

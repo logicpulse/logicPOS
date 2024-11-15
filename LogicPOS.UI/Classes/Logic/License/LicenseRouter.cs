@@ -126,9 +126,7 @@ namespace logicpos.Classes.Logic.License
                     LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.NotifyLoadingIsDone));
                     thread.Start();
 
-                    LogicPOSAppContext.LoadingDialog = logicpos.Utils.CreateSplashScreen(
-                        new Window("POS start up"),
-                        DatabaseService.DatabaseExists());
+                    LogicPOSAppContext.LoadingDialog = logicpos.Utils.CreateSplashScreen();
 
                     LogicPOSAppContext.LoadingDialog.Run();
                 }

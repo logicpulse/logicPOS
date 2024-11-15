@@ -87,10 +87,10 @@ namespace LogicPOS.Modules.StockManagement
                 switch (pMode)
                 {
                     case ProcessArticleStockMode.Out:
-                        XPOUtility.Audit("STOCK_MOVEMENT_OUT", string.Format(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_out"), article.Designation, Utility.DataConversionUtils.DecimalToString(quantity, Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        XPOUtility.Audit("STOCK_MOVEMENT_OUT", string.Format(LocalizedString.Instance["audit_message_stock_movement_out"], article.Designation, Utility.DataConversionUtils.DecimalToString(quantity, Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                     case ProcessArticleStockMode.In:
-                        XPOUtility.Audit("STOCK_MOVEMENT_IN", string.Format(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "audit_message_stock_movement_in"), article.Designation, Utility.DataConversionUtils.DecimalToString(quantity, Settings.CultureSettings.DecimalFormatStockQuantity)));
+                        XPOUtility.Audit("STOCK_MOVEMENT_IN", string.Format(LocalizedString.Instance["audit_message_stock_movement_in"], article.Designation, Utility.DataConversionUtils.DecimalToString(quantity, Settings.CultureSettings.DecimalFormatStockQuantity)));
                         break;
                 }
 

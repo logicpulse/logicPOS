@@ -186,7 +186,7 @@ namespace LogicPOS.Utility
             // Protection In case of bad hash, ex when we dont have SoftwareVendorPlugin Registered
             if (string.IsNullOrEmpty(pHash))
             {
-                throw new Exception(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_error_creating_financial_document_bad_hash_detected"));
+                throw new Exception(LocalizedString.Instance["dialog_message_error_creating_financial_document_bad_hash_detected"]);
             }
             else
             {

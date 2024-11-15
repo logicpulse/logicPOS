@@ -118,7 +118,7 @@ namespace LogicPOS.Shared.Orders
             if (xTable.TableStatus != TableStatus.Open)
             {
                 xTable.TableStatus = TableStatus.Open;
-                XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), xTable.Designation));
+                XPOUtility.Audit("TABLE_OPEN", string.Format(LocalizedString.Instance["audit_message_table_open"], xTable.Designation));
                 xTable.DateTableOpen = XPOUtility.CurrentDateTimeAtomic();
                 if (!isInUOW) xTable.Save();
             }

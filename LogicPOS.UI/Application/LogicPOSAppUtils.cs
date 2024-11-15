@@ -13,6 +13,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -76,18 +77,6 @@ namespace LogicPOS.UI.Application
             LogicPOSAppContext.OpenFileDialogStartPath = Directory.GetCurrentDirectory();
 
             LogicPOSSettings.FirstBoot = false;
-            GeneralSettings.PreferenceParameters = XPOUtility.GetPreferencesParameters();
-            PathsSettings.InitializePreferencesPaths();
-
-            string culture = GeneralSettings.PreferenceParameters["CULTURE"];
-
-            if (string.IsNullOrEmpty(culture))
-            {
-                culture = CultureSettings.CurrentCultureName;
-            }
-
-            CultureSettings.CurrentCulture = CultureSettings.CurrentCulture = new CultureInfo(ConfigurationManager.AppSettings["customCultureResourceDefinition"]);
-            CultureSettings.CurrentCultureNumberFormat = CultureInfo.GetCultureInfo(LogicPOSSettings.CultureNumberFormat);
 
             string appSessionFile = Utils.GetSessionFileName();
             POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
@@ -194,7 +183,6 @@ namespace LogicPOS.UI.Application
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
 #endif
 
-
         }
 
         private void InitBackupTimerProcess()
@@ -212,24 +200,18 @@ namespace LogicPOS.UI.Application
                                         .WithTitleResource("global_error")
                                         .ShowAlert();
 
-                //Enable Quit After BootStrap, Preventing Application.Run()
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
             }
 
-            //Start Database Backup Timer if not create XPO Schema and SoftwareVendor is Active
             if (PluginSettings.HasSoftwareVendorPlugin && backupsFolderExists && xpoCreateDatabaseAndSchema == false)
             {
-                /* IN009163 and IN009164 - Opt to auto-backup flow */
-                _autoBackupFlowIsEnabled = bool.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_AUTOMATIC_ENABLED"]);
+                _autoBackupFlowIsEnabled = PreferenceParametersService.DatabaseBackupAutomaticEnabled;
 
-                /* IN009164 */
                 if (_autoBackupFlowIsEnabled)
                 {
-                    /* IN009164 - considering these variables are only used for automatic backup purposes, will be settled only when Auto-Backup Flow is enabled */
-                    _backupDatabaseTimeSpan = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIMESPAN"]);
-                    _databaseBackupTimeSpanRangeStart = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_START"]);
-                    _databaseBackupTimeSpanRangeEnd = TimeSpan.Parse(GeneralSettings.PreferenceParameters["DATABASE_BACKUP_TIME_SPAN_RANGE_END"]);
-                    /* IN009164 - TimeoutHandler() for UpdateBackupTimer() will not be created if Auto-Backup Flow is enabled */
+                    _backupDatabaseTimeSpan = PreferenceParametersService.DatabaseBackupTimeSpan;
+                    _databaseBackupTimeSpanRangeStart = PreferenceParametersService.DatabaseBackupTimeSpanRangeStart;
+                    _databaseBackupTimeSpanRangeEnd = PreferenceParametersService.DatabaseBackupTimeSpanRangeEnd;
                     StartBackupTimer();
                 }
             }
@@ -282,22 +264,6 @@ namespace LogicPOS.UI.Application
 
         public static void QuitWithoutConfirmation(bool pAudit = true)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            try
-            {
-                if (pAudit) XPOUtility.Audit("APP_CLOSE");
-
-                POSSession.CurrentSession.CleanSession();
-                POSSession.CurrentSession.Save();
-
-                XPOSettings.Session.Disconnect();
-            }
-            catch (Exception ex)
-            {
-                log.Error(ex.Message, ex);
-            }
-
             Gtk.Application.Quit();
         }
 

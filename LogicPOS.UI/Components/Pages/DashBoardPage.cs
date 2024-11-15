@@ -13,6 +13,7 @@ using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using Medsphere.Widgets;
 using Pango;
@@ -277,16 +278,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 fix.Put(botao15, 635, 250);
                 fix.Put(botao16, 635, 345);
 
-                string currency = "Money";
-                try
-                {
-                    string sqlCurrency = "SELECT Value FROM cfg_configurationpreferenceparameter where Token = 'SYSTEM_CURRENCY'";
-                    currency = XPOSettings.Session.ExecuteScalar(sqlCurrency).ToString();
-                }
-                catch
-                {
-                    currency = CultureSettings.SaftCurrencyCode;
-                }
+                string currency = PreferenceParametersService.SystemCurrency;
 
                 decimal dailyTotal = 0;
                 decimal MonthlyTotal = 0;
@@ -295,56 +287,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 {
                     DateTime.Now.Year.ToString()
                 };
-
-                SortingCollection sortCollection = new SortingCollection
-                    {
-                        new SortProperty("Date", SortingDirection.Ascending)
-                    };
-                CriteriaOperator criteria = CriteriaOperator.Parse(string.Format("(Disabled = 0 OR Disabled IS NULL AND (DocumentType.Oid = '{0}' OR DocumentType.Oid = '{1}' OR DocumentType.Oid = '{2}' OR DocumentType.Oid = '{3}') AND DocumentStatusReason != 'A')", invoiceOid, invoiceAndPaymentOid, simpleInvoiceOid, creditNoteOid));
-                collectionDocuments = XPOSettings.Session.GetObjects(XPOSettings.Session.GetClassInfo(typeof(fin_documentfinancemaster)), criteria, sortCollection, int.MaxValue, false, true);
-
-                datenow = DateTime.Now;
-
-                foreach (fin_documentfinancemaster item in collectionDocuments)
-                {
-                    //Faturação por Dia
-                    if (item.Date.Day == datenow.Day && item.Date.Month == datenow.Month && item.Date.Year == datenow.Year)
-                    {
-                        if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
-                        {
-                            dailyTotal -= Convert.ToDecimal(item.TotalFinal);
-                        }
-                        else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
-                            dailyTotal += Convert.ToDecimal(item.TotalFinal);
-                    }
-                    //Faturação por Mês
-                    if (item.Date.Month == datenow.Month && item.Date.Year == datenow.Year)
-                    {
-                        if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
-                        {
-                            MonthlyTotal -= Convert.ToDecimal(item.TotalFinal);
-                        }
-                        else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
-                            MonthlyTotal += Convert.ToDecimal(item.TotalFinal);
-                    }
-                    //Faturação por Ano
-                    if (item.Date.Year == datenow.Year)
-                    {
-                        if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
-                        {
-                            annualTotal -= Convert.ToDecimal(item.TotalFinal);
-                        }
-                        else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
-                            annualTotal += Convert.ToDecimal(item.TotalFinal);
-                    }
-                    //grava anos que existe faturação 
-                    if (!values.Contains(item.Date.Year.ToString()))
-                    {
-                        values.Add(item.Date.Year.ToString());
-                    }
-                }
-
-
+          
                 label = new Label();
                 frame.ShadowType = (ShadowType)0;
 
@@ -418,14 +361,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                    vbox.PackStart(hbox, false, false, 0);
                    string selectedDate = string.Format("01/01/{0}", (selAno.ActiveText.ToString()));
                    fix.Put(vbox, 640, 515);
-                   fix.Put(drawSalesGraphic(DateTime.Parse(selectedDate), true), 55, 485);
+                   //fix.Put(drawSalesGraphic(DateTime.Parse(selectedDate), true), 55, 485);
 
                };
 
                 fix.Put(selAno, 220, 665);
 
                 //GRÁFICO         
-                fix.Put(drawSalesGraphic(datenow, false), 55, 485);
+                //fix.Put(drawSalesGraphic(datenow, false), 55, 485);
 
                 //Adiciona tudo ao evento principal
                 _eventBox.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
@@ -440,82 +383,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             ShowAll();
         }
 
-        private Widget drawSalesGraphic(DateTime date, bool cleanGraph)
-        {
-            if (cleanGraph) newGraph.Clear();
-            HBox hboxGraph = new HBox(false, 0);
-            DateTimeAxis dtA = new DateTimeAxis(0, AxisLocation.Bottom);
-            dtA.Padding = 5;
-            dtA.ShowGridLines = false;
-            dtA.ShowTicks = true;
-            dtA.ShowTickLabels = true;
+      
 
-            newGraph.AppendAxis(dtA);
-            newGraph.AppendAxis(new LinearAxis(1, AxisLocation.Left));
-            HistogramPlot(newGraph, date);
-            newGraph.CreatePangoContext();
-            newGraph.ModifyBg(StateType.Normal, new Gdk.Color(218, 218, 218));
-            newGraph.ModifyFg(StateType.Normal, new Gdk.Color(100, 100, 100));
-            newGraph.WidthRequest = 515;
-            newGraph.HeightRequest = 170;
-            hboxGraph.PackStart(newGraph, false, false, 0);
-            return hboxGraph;
-        }
-
-        public void HistogramPlot(Graph graph, DateTime date)
-        {
-            PlotColor plotColors = PlotColor.Green;
-            HistogramPlot plot = new HistogramPlot(
-                CreateModel(date),
-                plotColors);
-
-            plot.Name = "Vendas por Mês";
-            plot.ShowValues = true;
-
-            plot.SetValueDataColumn(0, 0);
-            plot.SetValueDataColumn(1, 1);
-            graph.AddPlot(plot, graph.Axes);
-        }
-
-        public TreeStore CreateModel(DateTime year)
-        {
-            TreeStore store = new TreeStore(typeof(DateTime), typeof(double));
-            string date;
-            DateTime parsedDate = new DateTime();
-            try
-            {
-                for (int i = 1; i <= 12; i++)
-                {
-                    decimal totalMes = 0;
-                    foreach (fin_documentfinancemaster item in collectionDocuments)
-                    {
-                        //Faturação por Mes/Ano
-                        if (item.Date.Year == year.Year)
-                        {
-                            //Faturação por mês
-                            if (item.Date.Month == i)
-                            {
-                                if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
-                                {
-                                    totalMes -= Convert.ToDecimal(item.TotalFinal);
-                                }
-                                else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
-                                    totalMes += Convert.ToDecimal(item.TotalFinal);
-                            }
-                        }
-                    }
-                    totalMes = Math.Round(totalMes, 0);
-                    date = string.Format("01/{0}/{1}", i, year.Year.ToString());
-                    parsedDate = DateTime.Parse(date);
-                    store.AppendValues(parsedDate, Convert.ToDouble(totalMes));
-                }
-                return store;
-            }
-            catch (Exception ex)
-            {
-                store = null;
-                return store;
-            }
-        }
     }
 }

@@ -50,6 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public InsertMoneyBox(Window parentWindow, decimal pInitialValue = 0.0m)
         {
+            
             //Settings
             string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;
             string fontMoneyPadTextEntry = AppSettings.Instance.fontMoneyPadTextEntry;

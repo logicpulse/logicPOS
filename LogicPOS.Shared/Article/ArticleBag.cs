@@ -314,7 +314,7 @@ namespace LogicPOS.Shared.Article
                 }
 
                 XPOUtility.Audit("ORDER_ARTICLE_REMOVED", string.Format(
-                        CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_order_article_removed"),
+                        LocalizedString.Instance["audit_message_order_article_removed"],
                         articleDesignation,
                         1,
                         resultRemainQuantity - 1,
@@ -345,7 +345,7 @@ namespace LogicPOS.Shared.Article
                             string sql = string.Format(@"UPDATE fin_documentfinancemaster SET SourceOrderMain = NULL WHERE SourceOrderMain = '{0}';", deleteOrderMain.Oid);
                             unitOfWork.ExecuteScalar(sql);
                             deleteOrderMain.PlaceTable.TableStatus = TableStatus.Free;
-                            XPOUtility.Audit("TABLE_OPEN", string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "audit_message_table_open"), deleteOrderMain.PlaceTable.Designation));
+                            XPOUtility.Audit("TABLE_OPEN", string.Format(LocalizedString.Instance["audit_message_table_open"], deleteOrderMain.PlaceTable.Designation));
                             deleteOrderMain.Delete();
                         };
                     };

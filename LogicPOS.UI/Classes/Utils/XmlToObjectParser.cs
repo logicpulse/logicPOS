@@ -153,7 +153,7 @@ namespace logicpos
                     break;
                 case ReplaceType.Resource:
                     patternPrefix = "Resx";
-                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, x);
+                    if (pInput.Contains(string.Format("{0}[", patternPrefix))) funcGetValue = (x) => LocalizedString.Instance[x];
                     break;
                 case ReplaceType.Evaluation:
                     patternPrefix = "Eval";

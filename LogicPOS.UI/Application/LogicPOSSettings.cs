@@ -131,12 +131,6 @@ namespace LogicPOS.UI.Application
         public static string PrivilegesReportDialogFormat = "{0}";
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //AT Web Services
-
-        public static bool ServiceATSendDocuments { get { return GetServiceATSendDocuments(); } }
-        public static bool ServiceATSendDocumentsWayBill { get { return GetServiceATSendDocumentsWayBill(); } }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //BackOffice
 
         //BackOffice Insert Objects start Disabled
@@ -181,16 +175,6 @@ namespace LogicPOS.UI.Application
 
             var themeLocation = $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, GeneralSettings.AppTheme.ToLower(), customAppOperationMode.AppOperationTheme.ToLower())}";
             return themeLocation;
-        }
-
-        private static bool GetServiceATSendDocuments()
-        {
-            return Convert.ToBoolean(GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS"]);
-        }
-
-        private static bool GetServiceATSendDocumentsWayBill()
-        {
-            return Convert.ToBoolean(GeneralSettings.PreferenceParameters["SERVICE_AT_SEND_DOCUMENTS_WAYBILL"]);
         }
 
         /// <summary>

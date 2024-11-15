@@ -203,7 +203,7 @@ namespace LogicPOS.UI.Components.Windows
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
-            LabelClock = new Label(XPOUtility.CurrentDateTime(ClockTimeFormat));
+            LabelClock = new Label(DateTime.Now.ToString(ClockTimeFormat));
             LabelClock.ModifyFont(labelClockFont);
             LabelClock.ModifyFg(StateType.Normal, labelClockFontColor);
             LabelClock.SetAlignment(labelClockAlignmentX, 0.5F);
@@ -259,7 +259,7 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()); /* IN008024 */
+            string global_table = LocalizedString.Instance[string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()]; /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -583,9 +583,6 @@ namespace LogicPOS.UI.Components.Windows
             BtnDocuments = getButton(buttonFinanceDocumentsName, buttonFinanceDocumentsText, buttonFinanceDocumentsImageFileName);
             BtnNewDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
-            //Toggle Sensitive Buttons
-            BtnNewDocument.Sensitive = (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open);
-            //Pack Buttons
             HBox hboxToolbar = new HBox(false, 0);
             hboxToolbar.BorderWidth = 10;
 
@@ -669,9 +666,6 @@ namespace LogicPOS.UI.Components.Windows
             Instance = new POSWindow(windowImageFileName);
             SaleContext.Initialize();
             windowToHide.Hide();
-
-            //LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
-  
 
             var initFiscalYearServiceResult = FiscalYearService.InitializeAsync().Result;
             if (initFiscalYearServiceResult.IsError)

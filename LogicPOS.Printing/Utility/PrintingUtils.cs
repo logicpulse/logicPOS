@@ -1238,7 +1238,7 @@ namespace LogicPOS.Printing.Utility
 
                         workSessiontPrinter.Print();
 
-                        if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"]))
+                        if (true /*Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CC_DAILY_TICKET"])*/)
                         {
                             workSessiontPrinter = new WorkSessionPrinter(
                                 printer,

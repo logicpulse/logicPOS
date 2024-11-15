@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos;
 using LogicPOS.Settings;
+using LogicPOS.UI.Services;
 using System;
 using System.IO;
 
@@ -11,8 +12,8 @@ namespace LogicPOS.UI.Buttons
         private const int _BUTTON_INNER_BORDER = 7;
         private const int _BUTTON_TEXT_OVERLAY_INNER_MARGIN = 0;
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
-        private readonly bool _useCachedImages = Utils.UseCache();
-        private readonly bool _useVatAutocompletee = Utils.UseVatAutocomplete();
+        private readonly bool _useCachedImages = PreferenceParametersService.UseCachedImages;
+        private readonly bool _useVatAutocompletee = PreferenceParametersService.UseEuropeanVatAutoComplete;
         private readonly string _pathCache = Convert.ToString(PathsSettings.Paths["cache"]);
 
         public ImageButton(ButtonSettings settings)

@@ -123,7 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    EmailUtils.SendMail(GeneralSettings.PreferenceParameters,
+                    EmailUtils.SendMail(null,
                                         SmtpDeliveryMethod.Network,
                                         To,
                                         Cc,

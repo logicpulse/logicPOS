@@ -56,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.WidgetsGeneric
                 if (ex.InnerException.HResult == -2146232060)
                 {
                     string data = getBetween(ex.InnerException.Message, "(", ")");
-                    string message = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_duplicated_key"), data);
+                    string message = string.Format(LocalizedString.Instance["dialog_message_error_duplicated_key"], data);
 
 
                     CustomAlerts.Error(BackOfficeWindow.Instance)

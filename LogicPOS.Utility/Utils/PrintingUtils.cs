@@ -1,4 +1,4 @@
-﻿using LogicPOS.Settings;
+﻿using LogicPOS.Globalization;
 using System.Collections.Generic;
 
 namespace LogicPOS.Utility
@@ -12,9 +12,9 @@ namespace LogicPOS.Utility
 
             for (int i = 0; i < copiesNumbers.Count; i++)
             {
-                copyNames[i] = Globalization.ResourcesUtility.GetDocumentCopyNameByNumber(
-                    CultureSettings.CurrentCultureName,
-                    copiesNumbers[i] + 1);
+                copyNames[i] = LocalizedString.Instance[$"global_print_copy_title{copiesNumbers[i] + 1}"];
+
+
             }
             return copyNames;
         }

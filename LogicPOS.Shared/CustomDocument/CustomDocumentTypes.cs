@@ -9,9 +9,7 @@ namespace LogicPOS.Shared.CustomDocument
     public static class CustomDocumentTypes
     {
         public static readonly CustomDocumentType TransportDocument = new CustomDocumentType(
-            CultureResources.GetResourceByLanguage(
-                CultureSettings.CurrentCultureName,
-                "global_documentfinance_type_title_gt"),
+            LocalizedString.Instance["global_documentfinance_type_title_gt"],
             CustomDocumentSettings.TransportDocumentTypeId,
             Domain.Enums.DocumentType.WayBill,
             "GT",
@@ -25,9 +23,7 @@ namespace LogicPOS.Shared.CustomDocument
             false);
 
         public static readonly CustomDocumentType CreditNote = new CustomDocumentType(
-            CultureResources.GetResourceByLanguage(
-                CultureSettings.CurrentCultureName,
-                "global_documentfinance_type_title_nc"),
+            LocalizedString.Instance["global_documentfinance_type_title_nc"],
             CustomDocumentSettings.CreditNoteId,
             Domain.Enums.DocumentType.Invoice,
             "NC",
@@ -41,9 +37,7 @@ namespace LogicPOS.Shared.CustomDocument
             false);
 
         public static readonly CustomDocumentType DeliveryNote = new CustomDocumentType(
-            CultureResources.GetResourceByLanguage(
-                CultureSettings.CurrentCultureName,
-                "global_documentfinance_type_title_gr"),
+            LocalizedString.Instance["global_documentfinance_type_title_gr"],
             CustomDocumentSettings.DeliveryNoteDocumentTypeId,
             Domain.Enums.DocumentType.WayBill,
             "GR",

@@ -43,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
                     _touchButtonCashDrawer.Sensitive = false;
 
                     ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
@@ -65,7 +65,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
                     _touchButtonCashDrawer.Sensitive = true;
                 }
             }
@@ -202,7 +202,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                     FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(
                                         dialogCashDrawer,
                                         thermalPrinter,
-                                        CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_terminal_open"),
+                                        LocalizedString.Instance["ticket_title_worksession_terminal_open"],
                                         0.0m,
                                         dialogCashDrawer.TotalAmountInCashDrawer,
                                         dialogCashDrawer.MovementDescription,
@@ -269,7 +269,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             if (resultProcess)
                             {
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
 
                                 var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                                 if (!resultOpenDoor)
@@ -283,7 +283,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     XPOUtility.Audit(audit, string.Format(
-                                         CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
+                                         LocalizedString.Instance[moneyInOutLabelAudit],
                                          LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                          dialogCashDrawer.MovementDescription)
                                      );
@@ -350,7 +350,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             {
 
                                 //PrintCashDrawerOpenAndMoneyInOut
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabel), addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
 
                                 //Open CashDrawer
                                 var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
@@ -365,7 +365,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                 else
                                 {
                                     //Audit
-                                    XPOUtility.Audit(audit, string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, moneyInOutLabelAudit),
+                                    XPOUtility.Audit(audit, string.Format(LocalizedString.Instance[moneyInOutLabelAudit],
                                                                           LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(addedMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                                                           dialogCashDrawer.MovementDescription)
                                      );
@@ -378,7 +378,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                         if (result)
                         {
                             POSWindow.Instance.UpdateWorkSessionUI();
-                            POSWindow.Instance.LabelCurrentTable.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "status_message_open_cashdrawer");
+                            POSWindow.Instance.LabelCurrentTable.Text = LocalizedString.Instance["status_message_open_cashdrawer"];
 
                             workSessionPeriodTerminal = XPOSettings.Session.GetObjectByKey<pos_worksessionperiod>(workSessionPeriodTerminal.Oid);
 
@@ -430,7 +430,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                         if (result)
                         {
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_in"), dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance["ticket_title_worksession_money_in"], dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
 
                             var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
@@ -442,7 +442,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
                             else
                             {
-                                XPOUtility.Audit("CASHDRAWER_IN", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_in"),
+                                XPOUtility.Audit("CASHDRAWER_IN", string.Format(LocalizedString.Instance["audit_message_cashdrawer_in"],
                                                                                 LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                                                                 dialogCashDrawer.MovementDescription)
                                  );
@@ -479,7 +479,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                             FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer,
                                                                             TerminalService.Terminal.ThermalPrinter,
-                                                                            CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "ticket_title_worksession_money_out"),
+                                                                            LocalizedString.Instance["ticket_title_worksession_money_out"],
                                                                             dialogCashDrawer.MovementAmountMoney,
                                                                             dialogCashDrawer.TotalAmountInCashDrawer,
                                                                             dialogCashDrawer.MovementDescription,
@@ -495,7 +495,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             }
                             else
                             {
-                                XPOUtility.Audit("CASHDRAWER_OUT", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_cashdrawer_out"),
+                                XPOUtility.Audit("CASHDRAWER_OUT", string.Format(LocalizedString.Instance["audit_message_cashdrawer_out"],
                                                                                  LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(dialogCashDrawer.MovementAmountMoney, XPOSettings.ConfigurationSystemCurrency.Acronym),
                                                                                  dialogCashDrawer.MovementDescription)
                                  );
@@ -536,9 +536,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                 {
                     if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text
-                        != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day"))
+                        != LocalizedString.Instance["global_worksession_close_day"])
                     {
-                        _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_close_day");
+                        _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
                     }
 
                     if (!_touchButtonCashDrawer.Sensitive == true)
@@ -552,9 +552,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //No WorkSessionPeriodDay
             else
             {
-                if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text != CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day"))
+                if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text != LocalizedString.Instance["global_worksession_open_day"])
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_worksession_open_day");
+                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
                 }
                 _touchButtonCashDrawer.Sensitive = false;
             }
@@ -568,8 +568,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public void ShowClosePeriodMessage(Window parentWindow, pos_worksessionperiod pWorkSessionPeriod)
         {
             string messageResource = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ?
-              CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_day_close_successfully") :
-              CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_worksession_terminal_close_successfully")
+              LocalizedString.Instance["dialog_message_worksession_day_close_successfully"] :
+              LocalizedString.Instance["dialog_message_worksession_terminal_close_successfully"]
             ;
             //used to store number of payments used, to increase dialog window size
             int workSessionPeriodTotalCount = 0;
@@ -580,11 +580,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Get Session Period Details
             Hashtable resultHashTable = WorkSessionProcessor.GetSessionPeriodSummaryDetails(pWorkSessionPeriod.Oid);
             //Get Total Money in CashDrawer On Open/Close
-            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer_on_open"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"], XPOSettings.ConfigurationSystemCurrency.Acronym));
-            string totalMoneyInCashDrawer = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_cashdrawer"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyInCashDrawerOnOpen = string.Format("{0}: {1}", LocalizedString.Instance["global_total_cashdrawer_on_open"], LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawerOnOpen"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyInCashDrawer = string.Format("{0}: {1}", LocalizedString.Instance["global_total_cashdrawer"], LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyInCashDrawer"], XPOSettings.ConfigurationSystemCurrency.Acronym));
             //Get Total Money and TotalMoney Out (NonPayments)
-            string totalMoneyIn = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_cashdrawer_money_in"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"], XPOSettings.ConfigurationSystemCurrency.Acronym));
-            string totalMoneyOut = string.Format("{0}: {1}", CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_cashdrawer_money_out"), LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyIn = string.Format("{0}: {1}", LocalizedString.Instance["global_cashdrawer_money_in"], LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyIn"], XPOSettings.ConfigurationSystemCurrency.Acronym));
+            string totalMoneyOut = string.Format("{0}: {1}", LocalizedString.Instance["global_cashdrawer_money_out"], LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency((decimal)resultHashTable["totalMoneyOut"], XPOSettings.ConfigurationSystemCurrency.Acronym));
             //Init Message
             string messageTotalSummary = string.Format("{1}{0}{2}{0}{3}{0}{4}{0}", Environment.NewLine, totalMoneyInCashDrawerOnOpen, totalMoneyInCashDrawer, totalMoneyIn, totalMoneyOut);
 
@@ -593,7 +593,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             XPCollection workSessionPeriodTotal = WorkSessionProcessor.GetSessionPeriodTotal(pWorkSessionPeriod);
             if (workSessionPeriodTotal.Count > 0)
             {
-                messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_total_by_type_of_payment"));
+                messageTotalSummary += string.Format("{0}{1}{0}", Environment.NewLine, LocalizedString.Instance["global_total_by_type_of_payment"]);
                 foreach (pos_worksessionperiodtotal item in workSessionPeriodTotal)
                 {
                     messageTotalSummary += string.Format("{1}-{2}: {3}{0}", Environment.NewLine, item.PaymentMethod.Acronym, item.PaymentMethod.Designation, LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(item.Total, XPOSettings.ConfigurationSystemCurrency.Acronym));

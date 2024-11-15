@@ -48,8 +48,8 @@ namespace LogicPOS.UI.Components.Pages
                 {
                     ResponseType dialog1Response = CustomAlerts.Question(BackOfficeWindow.Instance)
                                                                .WithSize(new Size(600, 400))
-                                                               .WithTitle(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_series_fiscal_year_close_current"))
-                                                               .WithMessage(string.Format(CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_series_fiscal_year_close_current"), currentFiscalYear.Designation))
+                                                               .WithTitle(LocalizedString.Instance["window_title_series_fiscal_year_close_current"])
+                                                               .WithMessage(string.Format(LocalizedString.Instance["dialog_message_series_fiscal_year_close_current"], currentFiscalYear.Designation))
                                                                .ShowAlert();
 
                     if (dialog1Response == ResponseType.No)

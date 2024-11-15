@@ -136,7 +136,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             LabelTerminalInfo.SetAlignment(0.5F, 0.5F);
 
             //Clock
-            LabelDateTime = new Label(XPOUtility.CurrentDateTime(DateTimeFormat));
+            LabelDateTime = new Label(DateTime.Now.ToString());
             LabelDateTime.ModifyFont(fontDescriptionStatusBar);
             LabelDateTime.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             LabelDateTime.SetAlignment(1.0F, 0.5F);
@@ -409,7 +409,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private bool UpdateClock()
         {
-            LabelDateTime.Text = XPOUtility.CurrentDateTime(DateTimeFormat);
+            LabelDateTime.Text = DateTime.Now.ToString(DateTimeFormat);
             return true;
         }
     }

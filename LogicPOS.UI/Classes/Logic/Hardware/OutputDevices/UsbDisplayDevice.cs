@@ -579,7 +579,7 @@ namespace logicpos.Classes.Logic.Hardware
             string price = string.Format("{0}", DataConversionUtils.DecimalToString(pPrice));
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_pole_display_global_total")), DataConversionUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(LocalizedString.Instance["global_pole_display_global_total"]), DataConversionUtils.DecimalToString(pTotal), 2);
             EnableStandBy();
         }
 

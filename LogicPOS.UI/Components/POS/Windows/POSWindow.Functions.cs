@@ -15,6 +15,7 @@ using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
@@ -82,6 +83,12 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
+            if(FiscalYearService.HasFiscalYear == false)
+            {
+                FiscalYearService.ShowOpenFiscalYearAlert();
+                return;
+            }
+
             var modal = new CreateDocumentModal(this);
             modal.Run();
             modal.Destroy();
@@ -284,7 +291,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             if (POSWindow.Instance.Visible)
             {
-                LabelClock.Text = XPOUtility.CurrentDateTime(ClockTimeFormat);
+                LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
 
                 if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
                 {

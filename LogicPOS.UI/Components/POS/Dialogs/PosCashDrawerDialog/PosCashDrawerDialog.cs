@@ -94,7 +94,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     new ButtonSettings
                     {
                         Name = string.Format("touchButton{0}_Green", buttonBagKey),
-                        Text = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, row.Values[xPSelectData.GetFieldIndexFromName("ResourceString")].ToString()),
+                        Text = LocalizedString.Instance[row.Values[xPSelectData.GetFieldIndexFromName("ResourceString")].ToString()],
                         Font = FontSettings.Button,
                         FontColor = ColorSettings.DefaultButtonFont,
                         Icon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, row.Values[xPSelectData.GetFieldIndexFromName("ButtonIcon")].ToString()),

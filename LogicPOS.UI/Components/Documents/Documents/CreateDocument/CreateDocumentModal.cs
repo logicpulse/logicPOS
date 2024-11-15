@@ -38,8 +38,6 @@ namespace LogicPOS.UI.Components.Modals
                                                                                                           GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_preview"),
                                                                                                           PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_preview.png");
 
-        string BtnPreviewIcon => PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_preview.png";
-        string BtnClearCustomerIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png";
         #endregion
 
         #region Tabs
@@ -59,6 +57,7 @@ namespace LogicPOS.UI.Components.Modals
                                                          icon: PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png")
         {
             Initialize();
+            Navigator.UpdateUI();
         }
 
         private void Initialize()
@@ -92,18 +91,6 @@ namespace LogicPOS.UI.Components.Modals
             DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
         }
 
-        private IEnumerable<DocumentSeries> GetDocumentSeries()
-        {
-            var getResult = _mediator.Send(new GetAllDocumentSeriesQuery()).Result;
-
-            if (getResult.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(this, getResult.FirstError);
-                return Enumerable.Empty<DocumentSeries>();
-            }
-
-            return getResult.Value;
-        }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
@@ -158,17 +145,20 @@ namespace LogicPOS.UI.Components.Modals
 
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
-            EnableAllTabs();
-
-            if (documentType.IsGuide() || documentType.IsCreditNote() || documentType.IsDebitNote())
-            {
-                CustomerTab.Disable();
-            }
+            ShowTabsForDocumentType(documentType);
+            EnableTabsForDocumentType(documentType);
+            Navigator.UpdateUI();
         }
 
-        private void EnableAllTabs()
+        private void ShowTabsForDocumentType(DocumentType documentType)
         {
-            Navigator.Tabs.ForEach(t => t.Enable());
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = documentType.IsGuide();
+            PaymentMethodsTab.ShowTab = documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice();
+        }
+
+        private void EnableTabsForDocumentType(DocumentType documentType)
+        {
+            CustomerTab.Sensitive = documentType.IsCreditNote() == false && documentType.IsGuide() == false;
         }
 
         private void OnOriginDocumentSelected(Document document)
@@ -179,8 +169,6 @@ namespace LogicPOS.UI.Components.Modals
 
         private void OnCopyDocumentSelected(Document document)
         {
-            EnableAllTabs();
-
             CustomerTab.ImportDataFromDocument(document);
             ArticlesTab.ImportDataFromDocument(document);
 
@@ -189,6 +177,8 @@ namespace LogicPOS.UI.Components.Modals
                 ShipFromTab.ImportDataFromDocument(document);
                 ShipToTab.ImportDataFromDocument(document);
             }
+
+            OnDocumentTypeSelected(document.Series.DocumentType);
         }
 
         private AddDocumentCommand CreateAddCommand()

@@ -13,12 +13,12 @@ namespace LogicPOS.Utility
             string curreyInSingular = currencyCode;
             string currencyInPlural = GetCurrencyInPlural(currencyCode);
 
-            string moedaDecimalSingular = CultureResources.GetResourceByLanguage("", "numbers_to_words_cent");//Centavo
-            string moedaDecimalPlural = CultureResources.GetResourceByLanguage("", "numbers_to_words_cents");//Centavos
+            string moedaDecimalSingular = LocalizedString.Instance[ "numbers_to_words_cent"];//Centavo
+            string moedaDecimalPlural = LocalizedString.Instance[ "numbers_to_words_cents"];//Centavos
             if (GeneralSettings.Settings["cultureFinancialRules"] == "pt-MZ" || GeneralSettings.Settings["cultureFinancialRules"] == "pt-AO")
             {
-                moedaDecimalSingular = CultureResources.GetResourceByLanguage(GeneralSettings.Settings["cultureFinancialRules"], "numbers_to_words_cent");//Centavo
-                moedaDecimalPlural = CultureResources.GetResourceByLanguage(GeneralSettings.Settings["cultureFinancialRules"], "numbers_to_words_cents");//Centavos
+                moedaDecimalSingular = LocalizedString.Instance["numbers_to_words_cent"];//Centavo
+                moedaDecimalPlural = LocalizedString.Instance["numbers_to_words_cents"];//Centavos
             }
 
             string strValorExtenso = ""; //Variável que irá armazenar o valor por extenso do número informado

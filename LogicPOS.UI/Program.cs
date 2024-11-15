@@ -2,7 +2,9 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.License;
+using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
 using LogicPOS.Persistence.Services;
@@ -11,9 +13,12 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Configuration;
 using System.Globalization;
+using System.Linq;
 using System.Threading;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -41,9 +46,7 @@ namespace LogicPOS.UI
 
         public static void ShowLoadingScreen()
         {
-            SplashScreen = Utils.CreateSplashScreen(
-                new Window("POS start loading"),
-                true);
+            SplashScreen = Utils.CreateSplashScreen();
 
             _loadingThread = new Thread(() => SplashScreen.Run());
             _loadingThread.Start();
@@ -68,9 +71,14 @@ namespace LogicPOS.UI
 
                 if (true)
                 {
+                    if (InitializeCulture() == false || true)
+                    {
+                        CustomAlerts.Error(null)
+                            .WithTitle("Erro")
+                            .WithMessage("Não foi possível initalizar o idioma do sistema.")
+                            .Show();
+                    }
                     ShowLoadingScreen();
-
-                    SetCulture();
 
                     InitializePlugins();
 
@@ -144,12 +152,11 @@ namespace LogicPOS.UI
             }
             else
             {
-                bool dbExists = false;
                 Thread thread = new Thread(new ThreadStart(StartFrontOffice));
                 LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                 thread.Start();
 
-                LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen(new Window("POS start up"), dbExists);
+                LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen();
                 LogicPOSAppContext.LoadingDialog.Run();
             }
         }
@@ -166,43 +173,23 @@ namespace LogicPOS.UI
             logicPos.StartApp(AppMode.Backoffice);
         }
 
-        private static string GetCultureFromDb()
+        public static bool InitializeCulture()
         {
-            try
+            var meditator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var getSystemInformationsResult = meditator.Send(new GetSystemInformationsQuery()).Result;
+
+            if (getSystemInformationsResult.IsError)
             {
-                string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'CULTURE';";
-                XPOSettings.Session = DatabaseService.CreateDatabaseSession();
-                var result = XPOSettings.Session.ExecuteScalar(sql);
-
-                if (result != null)
-                {
-                    return result.ToString();
-                }
-
-                return null;
-
+                CustomAlerts.ShowApiErrorAlert(null, getSystemInformationsResult.FirstError);
+                return false;
             }
-            catch (Exception ex)
-            {
-                _logger.Error("GetCultureFromDb() :: " + ex.Message);
-                return null;
-            }
-        }
 
-        public static void SetCulture()
-        {
-            string cultureFromDb = GetCultureFromDb();
+            var culture = getSystemInformationsResult.Value.Culture;
+            LocalizedString.Instance = new LocalizedString(culture);
+            CultureInfo.CurrentCulture = new CultureInfo(culture);
+            CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
 
-            if (cultureFromDb == null || CultureSettings.OSHasCulture(cultureFromDb) == false)
-            {
-                CultureSettings.CurrentCulture = new CultureInfo("pt-PT");
-                AppSettings.Instance.customCultureResourceDefinition = "pt-PT";
-            }
-            else
-            {
-                AppSettings.Instance.customCultureResourceDefinition = cultureFromDb;
-                CultureSettings.CurrentCulture = new CultureInfo(cultureFromDb);
-            }
+            return true;
         }
 
 

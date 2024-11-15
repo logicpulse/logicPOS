@@ -6,6 +6,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals.Common
 {
@@ -22,51 +23,50 @@ namespace LogicPOS.UI.Components.Modals.Common
         public IconButtonWithText BtnPrevious { get; private set; }
         public IconButtonWithText BtnNext { get; private set; }
         public List<ModalTab> Tabs { get; set; }
-        public int CurrentPageIndex { get; set; } = 0;
-        public ModalTab ActivePage { get; set; }
-        public event EventHandler PageChanged;
+        public ModalTab CurrentTab { get; set; }
 
         public ModalTabsNavigator(params ModalTab[] pages)
         {
             Tabs = new List<ModalTab>(pages);
-            Build();
+            Initialize();
         }
 
-        private void Build()
+        private void Initialize()
         {
             InitializeButtons();
             AddEventHandlers();
 
             HBox navigatorButtons = new HBox(true, 0);
 
-            int i = 0;
-            foreach (ModalTab page in Tabs)
+            for (int i = 0; i < Tabs.Count; i++)
             {
-                i++;
-                page.BtnNavigator = new IconButtonWithText(
+                ModalTab page = Tabs[i];
+                page.Index = i;
+
+                page.Button = new IconButtonWithText(
                     new ButtonSettings
                     {
-                        Name = page.PageName,
-                        Text = page.PageName,
+                        Name = page.TabName,
+                        Text = page.TabName,
                         Font = BtnNavigatorFont,
                         FontColor = Color.White,
-                        Icon = page.PageIcon,
+                        Icon = page.TabIcon,
                         IconSize = BtnNavigatorIconSize,
                         ButtonSize = BtnNavigatorSize,
                         BackgroundColor = HotButtonBackgroundColor
                     });
 
-                page.BtnNavigator.Sensitive = (i == 1);
+                page.Button.Sensitive = (i == 0);
 
-                if ((i == 1))
+                if (i == 0)
                 {
-                    page.BtnNavigator.ModifyBg(
-                    StateType.Normal,
-                    HotButtonBackgroundColor.ToGdkColor());
+                    page.Button.ModifyBg(StateType.Normal,
+                                         HotButtonBackgroundColor.ToGdkColor());
+
+                    CurrentTab = page;
                 }
 
-
-                navigatorButtons.PackStart(page.BtnNavigator, true, true, 2);
+                navigatorButtons.PackStart(page.Button, true, true, 2);
             }
 
             Component = new HBox(false, 0);
@@ -74,9 +74,33 @@ namespace LogicPOS.UI.Components.Modals.Common
             Component.PackStart(navigatorButtons, true, true, 2);
             Component.PackStart(BtnNext, false, false, 2);
             PackStart(Component, false, false, 2);
+            PackStart(CurrentTab);
+        }
 
-            ActivePage = Tabs[0];
-            PackStart(ActivePage);
+        public void HideTab(ModalTab tab)
+        {
+            tab.ShowTab = false;
+            tab.Button.Hide();
+        }
+
+        public void ShowTab(ModalTab tab)
+        {
+            tab.ShowTab = true;
+            tab.Button.Show();
+        }
+
+        public void UpdateUI()
+        {
+            Tabs.ForEach(t =>
+            {
+                if(t.ShowTab == false)
+                {
+                    t.Button.Hide();
+                    t.Button.HideAll();
+                }
+            });
+
+            UpdateNavigatorButtons();
         }
 
         private void InitializeButtons()
@@ -117,54 +141,95 @@ namespace LogicPOS.UI.Components.Modals.Common
 
         private void BtnNext_Clicked(object sender, EventArgs e)
         {
-            MovePage(true);
+            MoveNext();
         }
 
         private void BtnPrevious_Clicked(object sender, EventArgs e)
         {
-            MovePage(false);
+            MovePrevious();
         }
 
-        private void UpdateUI()
+        private bool CanMoveNext()
         {
+            return Tabs.Where(t => t.Index > CurrentTab.Index && t.ShowTab).Any();
+        }
 
-            if (CurrentPageIndex == 0)
+        private void MoveNext()
+        {
+            if(CanMoveNext() == false)
+            {
+                return;
+            }
+
+            this.Remove(CurrentTab);
+            CurrentTab.Button.Sensitive = false;
+
+            CurrentTab = Tabs[GetNextTabIndex()];
+            this.PackStart(CurrentTab);
+            ShowCurrentTab();
+        }
+
+        private void MovePrevious()
+        {
+            if (CanMovePrevious() == false)
+            {
+                return;
+            }
+
+            this.Remove(CurrentTab);
+            CurrentTab.Button.Sensitive = false;
+
+            CurrentTab = Tabs[GetPreviousTabIndex()];
+            this.PackStart(CurrentTab);
+            ShowCurrentTab();
+        }
+
+        private void ShowCurrentTab()
+        {
+            CurrentTab.Button.Sensitive = true;
+            CurrentTab.Button.ModifyBg(StateType.Normal, HotButtonBackgroundColor.ToGdkColor());
+
+            if (CurrentTab.Visible == false)
+            {
+                CurrentTab.ShowAll();
+            }
+
+            UpdateUI();
+        }
+
+        private int GetNextTabIndex()
+        {
+            return Tabs.IndexOf(Tabs.First(t => t.Index > CurrentTab.Index && t.ShowTab));
+        }
+
+        private bool CanMovePrevious()
+        {
+            return Tabs.Where(t => t.Index < CurrentTab.Index && t.ShowTab).Any();
+        }
+
+        private int GetPreviousTabIndex()
+        {
+            return Tabs.IndexOf(Tabs.Last(t => t.Index < CurrentTab.Index && t.ShowTab));
+        }
+
+        private void UpdateNavigatorButtons()
+        {
+            if (CurrentTab.Index == 0)
             {
                 BtnPrevious.Sensitive = false;
                 BtnNext.Sensitive = true;
             }
-            else if (CurrentPageIndex == Tabs.Count - 1)
+            else if (CurrentTab.Index == Tabs.Count - 1)
             {
                 BtnPrevious.Sensitive = true;
-                BtnNext.Sensitive = (CurrentPageIndex + 1 <= Tabs.Count - 1);
+                BtnNext.Sensitive = (CurrentTab.Index + 1 <= Tabs.Count - 1);
             }
             else
             {
                 BtnPrevious.Sensitive = true;
                 BtnNext.Sensitive = true;
             }
-
-            PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void MovePage(bool next)
-        {
-            this.Remove(ActivePage);
-            ActivePage.BtnNavigator.Sensitive = false;
-
-            CurrentPageIndex = next ? CurrentPageIndex + 1 : CurrentPageIndex - 1;
-
-            ActivePage = Tabs[CurrentPageIndex];
-            this.PackStart(ActivePage);
-            ActivePage.BtnNavigator.Sensitive = true;
-            ActivePage.BtnNavigator.ModifyBg(StateType.Normal, HotButtonBackgroundColor.ToGdkColor());
-
-            if (ActivePage.Visible == false)
-            {
-                ActivePage.ShowAll();
-            }
-
-            UpdateUI();
-        }
     }
 }

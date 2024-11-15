@@ -64,11 +64,11 @@ namespace LogicPOS.UI.Buttons
                     break;
                 case TableStatus.Open:
                     _labelTotalOrStatus.Text = Utility.DataConversionUtils.DecimalToStringCurrency(TableSettings.Total, XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    if (TableSettings.OpenedAt != null) labelDateTableOpenOrClosed.Text = string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "pos_button_label_table_open_at"), TableSettings.OpenedAt.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatHour));
+                    if (TableSettings.OpenedAt != null) labelDateTableOpenOrClosed.Text = string.Format(LocalizedString.Instance["pos_button_label_table_open_at"], TableSettings.OpenedAt.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatHour));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:
-                    _labelTotalOrStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_reserved_table");
+                    _labelTotalOrStatus.Text = LocalizedString.Instance["global_reserved_table"];
                     SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 default:
@@ -85,11 +85,11 @@ namespace LogicPOS.UI.Buttons
            
             if (pTableStatus == TableStatus.Reserved)
             {
-                _labelTotalOrStatus.Text = CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_reserved_table");
+                _labelTotalOrStatus.Text = LocalizedString.Instance["global_reserved_table"];
                 _eventBoxTotalOrStatus.VisibleWindow = true;
                 SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Reserved;
-                XPOUtility.Audit("TABLE_RESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_reserved"), xTable.Designation));
+                XPOUtility.Audit("TABLE_RESERVED", string.Format(LocalizedString.Instance["audit_message_table_reserved"], xTable.Designation));
             }
             else
             {
@@ -97,7 +97,7 @@ namespace LogicPOS.UI.Buttons
                 _eventBoxTotalOrStatus.VisibleWindow = false;
                 SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                 xTable.TableStatus = TableStatus.Free;
-                XPOUtility.Audit("TABLE_UNRESERVED", string.Format(CultureResources.GetResourceByLanguage(LogicPOS.Settings.CultureSettings.CurrentCultureName, "audit_message_table_unreserved"), xTable.Designation));
+                XPOUtility.Audit("TABLE_UNRESERVED", string.Format(LocalizedString.Instance["audit_message_table_unreserved"], xTable.Designation));
             }
  
             TableSettings.TableStatus = pTableStatus;

@@ -11,8 +11,6 @@ namespace LogicPOS.Settings
         public static string AppTheme = "Default";
 
         public static NameValueCollection Settings { get; set; }
-
-        public static Dictionary<string, string> PreferenceParameters { get; set; }
         public static string ServerVersion { get; set; }
         public static string ProductVersion
         {
@@ -51,7 +49,6 @@ namespace LogicPOS.Settings
         public static bool AppUseBackOfficeMode { get; set; } = false;
         public static Dictionary<string, Guid> PendentPaidParkingTickets { get; set; } = new Dictionary<string, Guid>();
         public static Dictionary<string, Guid> PendentPaidParkingCards { get; set; } = new Dictionary<string, Guid>();
-        public static bool UsePosPDFViewer => Convert.ToBoolean(PreferenceParameters["USE_POS_PDF_VIEWER"]);
         public static bool LoggedUserHasPermissionTo(string permissionToken)
         {
             if (LoggedUserPermissions != null && LoggedUserPermissions.ContainsKey(permissionToken))

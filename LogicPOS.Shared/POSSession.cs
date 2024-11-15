@@ -78,7 +78,7 @@ namespace LogicPOS.Shared
             foreach (Guid id in CurrentSession.LoggedUsers.Keys)
             {
                 sys_userdetail user = XPOUtility.GetEntityById<sys_userdetail>(id);
-                XPOUtility.Audit("USER_logout", string.Format(CultureResources.GetResourceByLanguage(Settings.CultureSettings.CurrentCultureName, "audit_message_used_forced_logout"), user.Name));
+                XPOUtility.Audit("USER_logout", string.Format(LocalizedString.Instance["audit_message_used_forced_logout"], user.Name));
             }
             CurrentSession.LoggedUsers.Clear();
         }

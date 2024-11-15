@@ -93,7 +93,7 @@ namespace LogicPOS.Printing.Documents
                 }
                 //ATCUD Documentos - Criação do QRCode e ATCUD IN016508
                 //Print QRCode
-                if (Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]) && !string.IsNullOrEmpty(_documentMaster.Number))
+                if (!string.IsNullOrEmpty(_documentMaster.Number))
                 {
                     //PrintQRCode with buffer
                     //base.PrintQRCode(_documentMaster.ATDocQRCode);

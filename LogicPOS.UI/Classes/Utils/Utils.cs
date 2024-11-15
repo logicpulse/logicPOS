@@ -20,6 +20,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -529,29 +530,20 @@ namespace logicpos
             return supportedScreenSizeEnum;
         }
 
-        public static Dialog CreateSplashScreen(Window parent,
-                                                bool dbExists,
-                                                string backupProcess = "")
+        public static Dialog CreateSplashScreen(string backupProcess = "")
         {
             string loadingImage = PathsSettings.ImagesFolderLocation + @"Other\working.gif";
 
-            Dialog dialog = new Dialog(
-                "Working",
-                parent,
-                DialogFlags.Modal | DialogFlags.DestroyWithParent);
+            Dialog dialog = new Dialog("Working",
+                                       null,
+                                       DialogFlags.Modal | DialogFlags.DestroyWithParent);
 
             dialog.WindowPosition = WindowPosition.Center;
 
             Label labelBoot;
 
-            if (dbExists)
-            {
-                labelBoot = new Label(GeneralUtils.GetResourceByName("global_load"));
-            }
-            else
-            {
-                labelBoot = new Label(GeneralUtils.GetResourceByName("global_load_first_time"));
-            }
+
+            labelBoot = new Label(GeneralUtils.GetResourceByName("global_load"));
 
             if (backupProcess != string.Empty)
             {
@@ -588,10 +580,7 @@ namespace logicpos
 
             if (sourceWindow != null)
             {
-                LogicPOSAppContext.LoadingDialog = CreateSplashScreen(
-                    sourceWindow,
-                    DatabaseService.DatabaseExists(),
-                    backupProcess);
+                LogicPOSAppContext.LoadingDialog = CreateSplashScreen(backupProcess);
 
                 LogicPOSAppContext.LoadingDialog.Run();
             }
@@ -851,130 +840,6 @@ namespace logicpos
 
             return result;
         }
-       
-        internal static bool UseCache()
-        {
-            bool result = false;
-
-            try
-            {
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_CACHED_IMAGES"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return (result);
-        }
-
-        internal static bool UseVatAutocomplete()
-        {
-            bool result = false;
-
-            try
-            {
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_EUROPEAN_VAT_AUTOCOMPLETE"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return (result);
-        }
-
-        internal static bool UsePosPDFViewer()
-        {
-            bool result = false;
-
-            try
-            {
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["USE_POS_PDF_VIEWER"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return (result);
-        }
-
-        internal static bool PrintTicket()
-        {
-            bool result;
-            try
-            {
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["TICKET_PRINT_TICKET"]);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                return true;
-            }
-
-            return (result);
-        }
-
-        internal static bool PrintQRCode()
-        {
-            bool result;
-            try
-            {
-                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'PRINT_QRCODE' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                PrintingSettings.PrintQRCode = result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["PRINT_QRCODE"]);
-                PrintingSettings.PrintQRCode = result;
-                return true;
-            }
-
-            return (result);
-        }
-
-        internal static bool CheckStocks()
-        {
-            bool result;
-            try
-            {
-                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS' AND (Disabled = 0 OR Disabled is NULL);");
-                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                GeneralSettings.CheckStocks = result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["CHECK_STOCKS"]);
-                GeneralSettings.CheckStocks = result;
-                return true;
-            }
-
-            return (result);
-        }
-
-        internal static bool CheckStockMessage()
-        {
-            bool result;
-            try
-            {
-                string query = string.Format("SELECT Value FROM cfg_configurationpreferenceparameter WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                result = Convert.ToBoolean(XPOSettings.Session.ExecuteScalar(query));
-                GeneralSettings.CheckStockMessage = result;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-                result = Convert.ToBoolean(GeneralSettings.PreferenceParameters["CHECK_STOCKS_MESSAGE"]);
-                GeneralSettings.CheckStockMessage = result;
-                return true;
-            }
-
-            return (result);
-        }
 
         public static bool AssignLicence(string pFileName, bool pDebug = false)
         {
@@ -1059,7 +924,7 @@ namespace logicpos
             {
                 //tchial0: Open Stock Management
             }
-            else if (CheckStockMessage() && !LicenseSettings.LicenseModuleStocks)
+            else if (PreferenceParametersService.CheckStocksMessage && !LicenseSettings.LicenseModuleStocks)
             {
                 var messageDialog = new CustomAlert(parentWindow)
                     .WithMessageType(MessageType.Warning)
@@ -1073,11 +938,6 @@ namespace logicpos
                 {
                     Process.Start("https://logic-pos.com/");
                 }
-
-                string query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Value = 'False' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                XPOSettings.Session.ExecuteScalar(query);
-                query = string.Format("UPDATE cfg_configurationpreferenceparameter SET Disabled = '1' WHERE Token = 'CHECK_STOCKS_MESSAGE';");
-                XPOSettings.Session.ExecuteScalar(query);
 
                 var documentsMenu = new DocumentsMenuModal(parentWindow);
                 documentsMenu.Run();

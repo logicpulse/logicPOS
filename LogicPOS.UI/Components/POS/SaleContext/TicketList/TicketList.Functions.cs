@@ -20,6 +20,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -147,7 +148,7 @@ namespace LogicPOS.UI.Components
             var price = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Price)).Replace('.', ','));
 
             decimal oldValueQnt = Convert.ToDecimal(((string)ListStore.GetValue(_treeIter, (int)TicketListColumns.Quantity)).Replace('.', ','));
-            if (!logicpos.Utils.CheckStocks())
+            if (!PreferenceParametersService.CheckStocks)
             {
                 if (CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, (oldValueQnt + defaultQuantity), out bool showMessage))
                 {
@@ -175,7 +176,7 @@ namespace LogicPOS.UI.Components
             bool showMessage;
             if (newValueQnt > 0)
             {
-                if (logicpos.Utils.CheckStocks())
+                if (PreferenceParametersService.CheckStocks)
                 {
                     if (!CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, newValueQnt, out showMessage))
                     {
@@ -218,7 +219,7 @@ namespace LogicPOS.UI.Components
                 orderTicket.OrderDetail.Count != 0)
             {
 
-                if (!GeneralSettings.AppUseParkingTicketModule && logicpos.Utils.PrintTicket())
+                if (!GeneralSettings.AppUseParkingTicketModule && PreferenceParametersService.PrintTicket)
                 {
                     // TK016249 Impressoras - Diferenciação entre Tipos 
                     //FrameworkCalls.PrintOrderRequest(POSWindow, TerminalService.Terminal.ThermalPrinter, orderMain, orderTicket);
@@ -444,9 +445,12 @@ namespace LogicPOS.UI.Components
 
                 decimal quantity = Convert.ToDecimal(result[0]) / 1000;
 
-                if (logicpos.Utils.CheckStocks())
+                if (PreferenceParametersService.CheckStocks)
                 {
-                    if (CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance, CurrentOrderDetail.Lines[SelectedIndex].ArticleOid, quantity, out bool showMessage))
+                    if (CustomAlerts.ShowMinimumStockAlert(POSWindow.Instance,
+                                                           CurrentOrderDetail.Lines[SelectedIndex].ArticleOid,
+                                                           quantity,
+                                                           out bool showMessage))
                     {
                         ChangeQuantity(quantity);
                     }

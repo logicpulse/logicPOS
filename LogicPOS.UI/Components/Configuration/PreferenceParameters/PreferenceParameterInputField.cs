@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.InputFieds
         public Widget FieldComponent { get; set; } = new VBox(false, 2);
         public Label Label { get; private set; }
 
-        Dictionary<string, string> Cultures = new Dictionary<string, string>
+        private readonly Dictionary<string, string> Cultures = new Dictionary<string, string>
             {
                 { "Português(Portugal)",   "pt-PT"},
                 { "Português(Angola)",     "pt-AO"},

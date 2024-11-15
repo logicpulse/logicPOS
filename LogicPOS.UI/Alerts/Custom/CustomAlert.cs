@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Alerts
     public class CustomAlert : BaseDialog
     {
         private TextView _txtLog;
-        private string _title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "window_title_dialog_message_dialog");
+        private string _title = LocalizedString.Instance["window_title_dialog_message_dialog"];
         private string _message;
         private DialogFlags _flags = DialogFlags.Modal;
         private MessageType _messageType = MessageType.Info;
@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Alerts
 
         public CustomAlert WithTitleResource(string titleResource)
         {
-            _title = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, titleResource);
+            _title = LocalizedString.Instance[titleResource];
             return this;
         }
 
@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Alerts
 
         public CustomAlert WithMessageResource(string messageResource)
         {
-            _message = CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, messageResource);
+            _message = LocalizedString.Instance[messageResource];
             return this;
         }
 
