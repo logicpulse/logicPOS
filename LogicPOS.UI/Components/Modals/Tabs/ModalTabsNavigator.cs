@@ -96,7 +96,9 @@ namespace LogicPOS.UI.Components.Modals.Common
                 if(t.ShowTab == false)
                 {
                     t.Button.Hide();
-                    t.Button.HideAll();
+                } else
+                {
+                    t.Button.Show();
                 }
             });
 

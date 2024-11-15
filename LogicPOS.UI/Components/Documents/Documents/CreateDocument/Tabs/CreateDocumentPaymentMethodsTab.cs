@@ -15,7 +15,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public DocumentPaymentMethodsBox PaymentMethodsBox { get; set; }
         public CreateDocumentPaymentMethodsTab(Window parent) : base(parent: parent,
                                                                      name: GeneralUtils.GetResourceByName("global_payment_method"),
-                                                                     icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png")
+                                                                     icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png",
+                                                                     false)
         {
             Initialize();
             Design();
