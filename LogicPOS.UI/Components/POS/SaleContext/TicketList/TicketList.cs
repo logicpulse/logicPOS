@@ -943,7 +943,7 @@ namespace LogicPOS.UI.Components
                 if (POSWindow.Instance.BtnShowSystemDialog != null && !POSWindow.Instance.BtnShowSystemDialog.Sensitive) POSWindow.Instance.BtnShowSystemDialog.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("SYSTEM_ACCESS");
                 if (POSWindow.Instance.BtnLogOut != null && !POSWindow.Instance.BtnLogOut.Sensitive) POSWindow.Instance.BtnLogOut.Sensitive = true;
                 if (POSWindow.Instance.BtnChangeUser != null && !POSWindow.Instance.BtnChangeUser.Sensitive) POSWindow.Instance.BtnChangeUser.Sensitive = true;
-                if (POSWindow.Instance.BtnCashDrawer != null) POSWindow.Instance.BtnCashDrawer.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
+                if (POSWindow.Instance.BtnSessionOpening != null) POSWindow.Instance.BtnSessionOpening.Sensitive = (GeneralSettings.LoggedUserHasPermissionTo("WORKSESSION_ALL"));
                 if (POSWindow.Instance.BtnDocuments != null && !POSWindow.Instance.BtnDocuments.Sensitive) POSWindow.Instance.BtnDocuments.Sensitive = true;
 
                 if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
@@ -960,7 +960,7 @@ namespace LogicPOS.UI.Components
                 if (POSWindow.Instance.BtnShowSystemDialog != null && POSWindow.Instance.BtnShowSystemDialog.Sensitive) POSWindow.Instance.BtnShowSystemDialog.Sensitive = false;
                 if (POSWindow.Instance.BtnLogOut != null && POSWindow.Instance.BtnLogOut.Sensitive) POSWindow.Instance.BtnLogOut.Sensitive = false;
                 if (POSWindow.Instance.BtnChangeUser != null && POSWindow.Instance.BtnChangeUser.Sensitive) POSWindow.Instance.BtnChangeUser.Sensitive = false;
-                if (POSWindow.Instance.BtnCashDrawer != null && POSWindow.Instance.BtnCashDrawer.Sensitive) POSWindow.Instance.BtnCashDrawer.Sensitive = false;
+                if (POSWindow.Instance.BtnSessionOpening != null && POSWindow.Instance.BtnSessionOpening.Sensitive) POSWindow.Instance.BtnSessionOpening.Sensitive = false;
                 if (POSWindow.Instance.BtnDocuments != null && POSWindow.Instance.BtnDocuments.Sensitive) POSWindow.Instance.BtnDocuments.Sensitive = false;
                 if (POSWindow.Instance.BtnNewDocument != null && POSWindow.Instance.BtnNewDocument.Sensitive) POSWindow.Instance.BtnNewDocument.Sensitive = false;
             }

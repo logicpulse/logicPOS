@@ -71,13 +71,14 @@ namespace LogicPOS.UI
 
                 if (true)
                 {
-                    if (InitializeCulture() == false || true)
+                    if (InitializeCulture() == false)
                     {
                         CustomAlerts.Error(null)
                             .WithTitle("Erro")
                             .WithMessage("Não foi possível initalizar o idioma do sistema.")
                             .Show();
                     }
+
                     ShowLoadingScreen();
 
                     InitializePlugins();

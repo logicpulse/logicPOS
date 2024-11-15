@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.Windows
         public IconButtonWithText BtnShowSystemDialog { get; set; }
         public IconButtonWithText BtnLogOut { get; set; }
         public IconButtonWithText BtnChangeUser { get; set; }
-        public IconButtonWithText BtnCashDrawer { get; set; }
+        public IconButtonWithText BtnSessionOpening { get; set; }
         public IconButtonWithText BtnDocuments { get; set; }
         public IconButtonWithText BtnNewDocument { get; set; }
         public SaleOptionsPanel SaleOptionsPanel { get; set; }
@@ -579,7 +579,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnShowSystemDialog = getButton(buttonShowSystemDialogName, buttonShowSystemDialogText, buttonShowSystemDialogImageFileName);
             BtnLogOut = getButton(buttonLogoutUserName, buttonLogoutUserText, buttonLogoutUserImageFileName);
             BtnChangeUser = getButton(buttonShowChangeUserDialogName, buttonShowChangeUserDialogText, buttonShowChangeUserDialogImageFileName);
-            BtnCashDrawer = getButton(buttonCashDrawerName, buttonCashDrawerText, buttonCashDrawerImageFileName);
+            BtnSessionOpening = getButton(buttonCashDrawerName, buttonCashDrawerText, buttonCashDrawerImageFileName);
             BtnDocuments = getButton(buttonFinanceDocumentsName, buttonFinanceDocumentsText, buttonFinanceDocumentsImageFileName);
             BtnNewDocument = getButton(buttonNewFinanceDocumentName, buttonNewFinanceDocumentText, buttonNewFinanceDocumentImageFileName);
 
@@ -591,7 +591,7 @@ namespace LogicPOS.UI.Components.Windows
             if (buttonShowSystemDialogVisible) hboxToolbar.PackStart(BtnShowSystemDialog, false, false, 0);
             if (buttonLogoutUserVisible) hboxToolbar.PackStart(BtnLogOut, false, false, 0);
             if (buttonShowChangeUserDialogVisible) hboxToolbar.PackStart(BtnChangeUser, false, false, 0);
-            if (buttonCashDrawerVisible) hboxToolbar.PackStart(BtnCashDrawer, false, false, 0);
+            if (buttonCashDrawerVisible) hboxToolbar.PackStart(BtnSessionOpening, false, false, 0);
             if (buttonReportsVisible) hboxToolbar.PackStart(BtnReports, false, false, 0);
             if (buttonFinanceDocumentsVisible) hboxToolbar.PackStart(BtnDocuments, false, false, 0);
             if (buttonNewFinanceDocumentVisible) hboxToolbar.PackStart(BtnNewDocument, false, false, 0);
@@ -612,7 +612,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
             BtnLogOut.Clicked += BtnLogOut_Clicked;
             BtnChangeUser.Clicked += BtnChangeUser_Clicked;
-            BtnCashDrawer.Clicked += BtnCashDrawer_Clicked;
+            BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Clicked += BtnDocuments_Clicked;
         }

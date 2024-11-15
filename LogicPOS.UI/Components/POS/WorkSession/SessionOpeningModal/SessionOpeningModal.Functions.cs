@@ -15,6 +15,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -22,9 +23,9 @@ using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
-    internal partial class PosCashDialog
+    internal partial class SessionOpeningModal
     {
-        private void _touchButtonStartStopWorkSessionPeriodDay_Clicked(object sender, EventArgs e)
+        private void BtnDayOpening_Clicked(object sender, EventArgs e)
         {
             //Stop WorkSessionPeriodDay
             if (XPOSettings.WorkSessionPeriodDay != null && XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
@@ -43,8 +44,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
-                    _touchButtonCashDrawer.Sensitive = false;
+                    BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
+                    BtnSessionOpening.Sensitive = false;
 
                     ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
 
@@ -65,8 +66,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 bool result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day);
                 if (result)
                 {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
-                    _touchButtonCashDrawer.Sensitive = true;
+                    BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
+                    BtnSessionOpening.Sensitive = true;
                 }
             }
         }
@@ -88,9 +89,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 }
 
 
-                ResponseType dialogResponse = CustomAlerts.Error(this)
+                CustomAlerts.Error(this)
                             .WithSize(new Size(620, 300))
-                            .WithTitleResource("global_error")
                             .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_worksession_period_warning_open_orders_tables"),
                                           noOfOpenOrderTables,
                                           string.Format("{0}{1}", Environment.NewLine, openOrderTables)))
@@ -139,7 +139,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         }
 
         //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
-        private void _touchButtonCashDrawer_Clicked(object sender, EventArgs e)
+        private void BtnSessionOpening_Clicked(object sender, EventArgs e)
         {
             bool result;
             //Update UI
@@ -529,34 +529,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         public void UpdateButtons()
         {
-            //Update Toolbar UI Buttons After ToolBox and ToolBar
-            if (XPOSettings.WorkSessionPeriodDay != null)
+            if (WorkSessionService.DayIsOpen())
             {
-                //With Valid WorkSessionPeriodDay
-                if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
-                {
-                    if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text
-                        != LocalizedString.Instance["global_worksession_close_day"])
-                    {
-                        _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
-                    }
-
-                    if (!_touchButtonCashDrawer.Sensitive == true)
-                    {
-                        _touchButtonCashDrawer.Sensitive = true;
-                    }
-
-                    _touchButtonCashDrawer.Sensitive = true;
-                }
+                BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
+                BtnSessionOpening.Sensitive = true;
             }
-            //No WorkSessionPeriodDay
             else
             {
-                if (_touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text != LocalizedString.Instance["global_worksession_open_day"])
-                {
-                    _touchButtonStartStopWorkSessionPeriodDay.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
-                }
-                _touchButtonCashDrawer.Sensitive = false;
+                BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
+                BtnSessionOpening.Sensitive = false;
             }
         }
 
