@@ -56,16 +56,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;
             string fontMoneyPadTextEntry = AppSettings.Instance.fontMoneyPadTextEntry;
             //ButtonLabels
-            string moneyButtonL1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL1Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL2Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL3Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL4Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonL5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonL5Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR1Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR1Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR2Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR2Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR3Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR3Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR4Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR4Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
-            string moneyButtonR5Label = LogicPOS.Utility.DataConversionUtils.DecimalToStringCurrency(_decimalMoneyButtonR5Value, XPOSettings.ConfigurationSystemCurrency.Acronym);
+            string moneyButtonL1Label = _decimalMoneyButtonL1Value.ToString("C");
+            string moneyButtonL2Label = _decimalMoneyButtonL2Value.ToString("C");
+            string moneyButtonL3Label = _decimalMoneyButtonL3Value.ToString("C");
+            string moneyButtonL4Label = _decimalMoneyButtonL4Value.ToString("C");
+            string moneyButtonL5Label = _decimalMoneyButtonL5Value.ToString("C");
+            string moneyButtonR1Label = _decimalMoneyButtonR1Value.ToString("C");
+            string moneyButtonR2Label = _decimalMoneyButtonR2Value.ToString("C");
+            string moneyButtonR3Label = _decimalMoneyButtonR3Value.ToString("C");
+            string moneyButtonR4Label = _decimalMoneyButtonR4Value.ToString("C");
+            string moneyButtonR5Label = _decimalMoneyButtonR5Value.ToString("C");
 
             //Local Vars
             Color colorFont = Color.White;
@@ -162,7 +162,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             ValidatableTextBox entry = (ValidatableTextBox)sender;
             Validated = entry.Validated;
-            DeliveryValue = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryDeliveryValue.Text);
+            DeliveryValue =decimal.Parse(_entryDeliveryValue.Text);
             EntryChanged?.Invoke(sender, e);
         }
 

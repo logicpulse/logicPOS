@@ -287,12 +287,23 @@ namespace LogicPOS.UI.Components.POS
 
         private IEnumerable<AddDocumentPaymentMethodDto> GetPaymentMethodsDtos()
         {
-            yield return new AddDocumentPaymentMethodDto
+            var paymentMethods = new List<AddDocumentPaymentMethodDto>();
+
+            if(_selectedPaymentMethod == null)
+            {
+                return null;
+            }
+
+            paymentMethods.Add(new AddDocumentPaymentMethodDto
             {
                 PaymentMethodId = _selectedPaymentMethod.Id,
                 Amount = TotalFinal
-            };
+            });
+
+            return paymentMethods;
+
         }
+
         private AddDocumentCommand CreateAddDocumentCommand()
         {
             var command = new AddDocumentCommand();

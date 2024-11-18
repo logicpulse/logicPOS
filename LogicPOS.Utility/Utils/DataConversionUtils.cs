@@ -6,19 +6,6 @@ namespace LogicPOS.Utility
 {
     public static class DataConversionUtils
     {
-        public static decimal StringToDecimal(string input)
-        {
-            decimal result;
-
-            NumberStyles numberStyle = NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent;
-
-            if (!decimal.TryParse(input, numberStyle, CurrentCulture.NumberFormat, out result))
-            {
-                decimal.TryParse(input, numberStyle, CultureInfo.InvariantCulture.NumberFormat, out result);
-            }
-
-            return result;
-        }
 
         public static string DecimalToString(decimal input)
         {
@@ -40,22 +27,9 @@ namespace LogicPOS.Utility
             return input.ToString(DecimalFormat, CurrentCulture.NumberFormat);
         }
 
-        public static string StringToDecimalAndToStringAgain(
-            string input)
-        {
-            string result = DecimalToString(StringToDecimal(input));
 
-            if (result[0] == Convert.ToChar(CurrentCulture.NumberFormat.NumberDecimalSeparator))
-            {
-                result = $"{0}{result}";
-            }
-
-            return result;
-        }
-
-        public static string FormatDataTableFieldFromType(
-            string fieldValue,
-            string fieldType)
+        public static string FormatDataTableFieldFromType(string fieldValue,
+                                                          string fieldType)
         {
             string resultFieldValue;
             switch (fieldType)

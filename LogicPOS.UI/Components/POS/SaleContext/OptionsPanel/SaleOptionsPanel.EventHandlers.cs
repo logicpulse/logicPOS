@@ -125,10 +125,11 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
-            PrintWorkSession();
+
+            //PrintWorkSession();
+
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
-
         }
 
         private void PrintWorkSession()
@@ -260,8 +261,16 @@ namespace LogicPOS.UI.Components.POS
             }
 
             var modal = new PaymentsModal(SourceWindow);
-            modal.Run();
+            ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                SaleContext.ItemsPage.Clear(true);
+                SaleContext.CurrentOrder.Clear();
+                SaleContext.ItemsPage.SetTicketModeBackGround();
+                SaleContext.UpdatePOSLabels();
+            }
         }
 
         private void BtnBarcode_Clicked(object sender, EventArgs e)

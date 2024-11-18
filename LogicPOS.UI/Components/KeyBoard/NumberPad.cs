@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.UI.Buttons;
 using System;
 using System.Drawing;
+using System.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -19,7 +20,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             this.Name = name;
 
             Color colorFont = Color.White;
-            char decimalSeparator = (char)LogicPOS.Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
+            char decimalSeparator = (char)CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0];
 
             EventBox eventbox = new EventBox() { VisibleWindow = false };
             Table = new Table(4, 3, true);

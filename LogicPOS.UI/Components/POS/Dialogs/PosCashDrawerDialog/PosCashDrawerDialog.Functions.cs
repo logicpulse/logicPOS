@@ -3,12 +3,9 @@ using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -22,7 +19,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             if (pResponse == ResponseType.Ok)
             {
-                MovementAmountMoney = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
+                MovementAmountMoney = decimal.Parse(_entryBoxMovementAmountMoney.EntryValidation.Text);
                 MovementDescription = _entryBoxMovementDescription.EntryValidation.Text;
 
                 decimal cashLastMovementTypeAmount;
@@ -140,7 +137,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             decimal entryValidation;
             if (_entryBoxMovementAmountMoney.EntryValidation.Text != string.Empty)
-                entryValidation = LogicPOS.Utility.DataConversionUtils.StringToDecimal(_entryBoxMovementAmountMoney.EntryValidation.Text);
+                entryValidation = decimal.Parse(_entryBoxMovementAmountMoney.EntryValidation.Text);
 
             //Validate Selected Entities and Change Value
             if (_buttonOk != null)

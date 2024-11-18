@@ -326,7 +326,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             else if (keyboardMode == KeyboardMode.Money)
             {
-                InsertMoneyModal dialog = new InsertMoneyModal(_sourceWindow, DialogFlags.DestroyWithParent, DataConversionUtils.StringToDecimal(text));
+                InsertMoneyModal dialog = new InsertMoneyModal(_sourceWindow, DialogFlags.DestroyWithParent, decimal.Parse(text));
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
