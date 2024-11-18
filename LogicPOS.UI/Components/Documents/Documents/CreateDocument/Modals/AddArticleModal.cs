@@ -311,6 +311,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtArticle.Text = page.SelectedEntity.Designation;
                 TxtArticle.SelectedEntity = page.SelectedEntity;
                 ShowArticleData(page.SelectedEntity);
+                UpdateTotals();
+                UpdateValidatableFields();
             }
         }
 
@@ -325,8 +327,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtTax.Text = article.VatDirectSelling?.Designation;
             _vatRateValue = article.VatDirectSelling.Value;
             TxtNotes.Text = article.Notes;
-
-            UpdateTotals();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

@@ -1,7 +1,4 @@
-﻿using Gtk;
-using logicpos;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
+﻿using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
