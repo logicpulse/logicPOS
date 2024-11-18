@@ -5,6 +5,7 @@ using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
         private void Design(bool showFilterAndMoreButtons)
         {
            
-            string regexAlfaNumericExtended = RegexUtils.RegexAlfaNumericExtended;
+            string regexAlfaNumericExtended = RegularExpressions.AlfaNumericExtended;
 
 
             TxtSearch = new EntryBoxValidation(SourceWindow,

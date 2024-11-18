@@ -3,9 +3,12 @@ using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Logic.License;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using Pango;
@@ -40,25 +43,24 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public EntryBoxValidation EntryBoxPhone { get; set; }
         public ListComboBox ComboBoxCountry { get; set; }
 
-        public PosLicenceDialog(
-            Window parentWindow,
-            DialogFlags pDialogFlags,
-            string pHardwareId)
+        public PosLicenceDialog(Window parentWindow,
+                                DialogFlags pDialogFlags,
+                                string hardWareId)
                     : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = GeneralUtils.GetResourceByName("window_title_license");
+            string windowTitle = LocalizedString.Instance["window_title_license"];
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_license.png";
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
-            if (string.IsNullOrEmpty(pHardwareId))
+            if (string.IsNullOrEmpty(hardWareId))
             {
                 _hardwareId = PluginSettings.LicenceManager.GetHardwareID();
             }
             else
             {
-                _hardwareId = pHardwareId;
+                _hardwareId = hardWareId;
             }
 
             _countrys = PluginSettings.LicenceManager.GetCountries();
@@ -179,49 +181,49 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(labelInternetRegistration, false, false, 0);
 
             //EntryBoxName
-            EntryBoxName = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_name"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxName = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_name"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxName.EntryValidation.Text = mockName;
             EntryBoxName.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxName, false, false, 0);
 
             //EntryBoxCompany
-            EntryBoxCompany = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_company"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxCompany = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_company"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxCompany.EntryValidation.Text = mockCompany;
             EntryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            EntryBoxFiscalNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_fiscal_number"), KeyboardMode.Numeric, RegexUtils.RegexIntegerGreaterThanZero, true);
+            EntryBoxFiscalNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_fiscal_number"), KeyboardMode.Numeric, RegularExpressions.FiscalNumber, true);
             EntryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
             EntryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxFiscalNumber, false, false, 0);
 
             //EntryBoxAddress
-            EntryBoxAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxAddress.EntryValidation.Text = mockAddress;
             EntryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxAddress, false, false, 0);
 
             //EntryBoxEmail
-            EntryBoxEmail = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email"), KeyboardMode.AlfaNumeric, RegexUtils.RegexEmail, true);
+            EntryBoxEmail = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email"), KeyboardMode.AlfaNumeric, RegularExpressions.Email, true);
             EntryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxEmail.EntryValidation.Text = mockEmail;
             EntryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            EntryBoxPhone = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_phone"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, true);
+            EntryBoxPhone = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_phone"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxPhone.EntryValidation.Text = mockPhone;
             EntryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxPhone, false, false, 0);
 
             //EntryBoxHardwareId
-            _entryBoxHardwareId = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_hardware_id"), KeyboardMode.None, RegexUtils.RegexAlfaNumericExtended, true);
+            _entryBoxHardwareId = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_hardware_id"), KeyboardMode.None, RegularExpressions.AlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
             _entryBoxHardwareId.EntryValidation.Sensitive = false;
@@ -229,7 +231,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
             //EntryBoxSoftwareKey
-            _entryBoxSoftwareKey = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_software_key"), KeyboardMode.AlfaNumeric, RegexUtils.RegexAlfaNumericExtended, false);
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_software_key"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, false);
             _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
             _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };
@@ -287,7 +289,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if(_countrysList.Count == 0)
             {
-                _countrysList[168] = "Default";
+                _countrysList[168] = "Portugal";
             }
 
             ComboBoxCountry = new ListComboBox(_countrysListSource, _countrysList[168]);
@@ -318,6 +320,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ActionRegister()
         {
+            if (PluginSettings.LicenceManager == null)
+            {
+                return;
+            }
+
             if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
                
@@ -330,17 +337,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 return;
             }
 
-            if (PluginSettings.LicenceManager == null)
-            {
-                return;
-            }
-
-            byte[] registredLicence = new byte[0];
+            byte[] registeredLicence = new byte[0];
 
             try
             {
                 //Returns ByteWrite File
-                registredLicence = PluginSettings.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
+                registeredLicence = PluginSettings.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
                                                                                  EntryBoxCompany.EntryValidation.Text,
                                                                                  EntryBoxFiscalNumber.EntryValidation.Text,
                                                                                  EntryBoxAddress.EntryValidation.Text,
@@ -353,7 +355,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
                 string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
 
-                LicenseRouter.WriteByteArrayToFile(registredLicence, licenseFilePath);
+                LicenseRouter.WriteByteArrayToFile(registeredLicence, licenseFilePath);
 
                 CustomAlerts.Information(this)
                             .WithSize(new System.Drawing.Size(600, 300))
@@ -379,31 +381,29 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        public static LicenseUIResult GetLicenseDetails(string pHardwareID)
+        public static LicenseUIResult GetLicenseDetails(string hardWareId)
         {
-            LicenseUIResult result = new LicenseUIResult(LicenseUIResponse.None);
+            LicenseUIResult result = new LicenseUIResult();
 
-            PosLicenceDialog dialog = new PosLicenceDialog(new Window(string.Empty), DialogFlags.DestroyWithParent, pHardwareID);
+            PosLicenceDialog dialog = new PosLicenceDialog(new Window(string.Empty), DialogFlags.DestroyWithParent, hardWareId);
 
-            ResponseType response = (ResponseType)dialog.Run();
+            result.Response = (ResponseType)dialog.Run();
 
-            if (response == ResponseType.Accept)
+            switch (result.Response)
             {
-                result = new LicenseUIResult(LicenseUIResponse.Register,
-                                             dialog.EntryBoxName.EntryValidation.Text,
-                                             dialog.EntryBoxCompany.EntryValidation.Text,
-                                             dialog.EntryBoxFiscalNumber.EntryValidation.Text,
-                                             dialog.EntryBoxAddress.EntryValidation.Text,
-                                             dialog.EntryBoxEmail.EntryValidation.Text,
-                                             dialog.EntryBoxPhone.EntryValidation.Text);
-            }
-            else if (response == ResponseType.Ok)
-            {
-                result = new LicenseUIResult(LicenseUIResponse.Continue);
-            }
-            else
-            {
-                Environment.Exit(0);
+                case ResponseType.Accept:
+                    result.Address = dialog.EntryBoxAddress.EntryValidation.Text;
+                    result.Company = dialog.EntryBoxCompany.EntryValidation.Text;
+                    result.Email = dialog.EntryBoxEmail.EntryValidation.Text;
+                    result.FiscalNumber = dialog.EntryBoxFiscalNumber.EntryValidation.Text;
+                    result.Name = dialog.EntryBoxName.EntryValidation.Text;
+                    result.Phone = dialog.EntryBoxPhone.EntryValidation.Text;
+                    break;
+                case ResponseType.Ok:
+                    break;
+                case ResponseType.Close:
+                    Environment.Exit(0);
+                    break;
             }
 
             dialog.Destroy();

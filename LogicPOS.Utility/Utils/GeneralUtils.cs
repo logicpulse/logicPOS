@@ -65,12 +65,6 @@ namespace LogicPOS.Utility
                 return false;
             };
 
-            //Check if is a Blank GUID 
-            if (pValidate == new Guid().ToString() && pRegExRule == RegexUtils.RegexGuid)
-            {
-                return false;
-            }
-
             if (pValidate != string.Empty && pRegExRule != string.Empty)
             {
                 return Regex.IsMatch(pValidate, pRegExRule);

@@ -1,24 +1,24 @@
 using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.App;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Api.Features.System.GetSystemInformations;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
 using LogicPOS.Modules.StockManagement;
-using LogicPOS.Persistence.Services;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Configuration;
 using System.Globalization;
-using System.Linq;
 using System.Threading;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
@@ -77,6 +77,8 @@ namespace LogicPOS.UI
                             .WithTitle("Erro")
                             .WithMessage("Não foi possível initalizar o idioma do sistema.")
                             .Show();
+
+                        return;
                     }
 
                     ShowLoadingScreen();
@@ -138,9 +140,11 @@ namespace LogicPOS.UI
 
             if (intializeTerminalResult.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(null, intializeTerminalResult.FirstError);
+                ErrorHandlingService.HandleApiError(intializeTerminalResult.FirstError,true);
                 return;
             }
+
+            PosLicenceDialog.GetLicenseDetails("Vision");
 
             StartFrontOffice();
         }

@@ -219,7 +219,7 @@ namespace LogicPOS.UI.Components.Modals
                                           GeneralUtils.GetResourceByName("global_date"),
                                           isRequired: true,
                                           isValidatable: true,
-                                          regex: RegexUtils.RegexDateTime,
+                                          regex: RegularExpressions.DateTime,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true);
 

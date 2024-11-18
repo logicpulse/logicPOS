@@ -10,6 +10,7 @@ using LogicPOS.Api.Features.Users.ResetPassword;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
@@ -86,7 +87,7 @@ namespace LogicPOS.UI.Widgets
 
             EntryPin = new ValidatableTextBox(parentWindow,
                                               KeyboardMode.None,
-                                              RegexUtils.RegexLoginPin,
+                                              RegularExpressions.LoginPin,
                                               true)
 
             {

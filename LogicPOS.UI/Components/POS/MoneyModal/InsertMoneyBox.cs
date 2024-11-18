@@ -4,6 +4,7 @@ using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
 using System;
 using System.Drawing;
 
@@ -73,7 +74,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Delivery Entry
             string initialValue = (pInitialValue > 0) ? LogicPOS.Utility.DataConversionUtils.DecimalToString(pInitialValue) : string.Empty;
-            _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, LogicPOS.Utility.RegexUtils.RegexDecimal, true) { Text = initialValue, Alignment = 0.5F };
+            _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, RegularExpressions.Decimal, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
             Validated = _entryDeliveryValue.Validated;

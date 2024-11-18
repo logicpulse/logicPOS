@@ -6,6 +6,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -169,7 +170,7 @@ namespace LogicPOS.UI.Components.Documents
                                                              PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png",
                                                              string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.Number),
                                                              string.Empty,
-                                                             RegexUtils.RegexAlfaNumericExtendedForMotive,
+                                                             RegularExpressions.AlfaNumericExtendedForMotive,
                                                              true);
 
             if (cancelReasonDialog.ResponseType != ResponseType.Ok)

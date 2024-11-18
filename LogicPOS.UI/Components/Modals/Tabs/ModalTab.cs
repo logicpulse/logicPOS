@@ -7,7 +7,6 @@ namespace LogicPOS.UI.Components.Modals.Common
 {
     public abstract class ModalTab : Box, IValidatableField
     {
-
         public string TabName { get; set; }
         public string TabIcon { get; set; }
         public Window SourceWindow { get; set; }

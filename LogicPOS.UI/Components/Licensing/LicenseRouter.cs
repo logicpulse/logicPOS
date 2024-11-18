@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Persistence.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.Utility;
 using System;
 using System.IO;
@@ -62,7 +62,8 @@ namespace logicpos.Classes.Logic.License
                         version,
                         System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     System.Windows.Forms.MessageBox.Show(ex.Message);
                 }
 

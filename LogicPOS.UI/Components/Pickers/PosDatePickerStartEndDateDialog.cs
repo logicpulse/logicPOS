@@ -7,6 +7,7 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -59,13 +60,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_start"), DateStart, RegexUtils.RegexDate, true);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_start"), DateStart, RegularExpressions.Date, true);
             _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(CultureSettings.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_end"), DateEnd, RegexUtils.RegexDate, true);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_end"), DateEnd, RegularExpressions.Date, true);
             _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(CultureSettings.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;

@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtEmail = new TextBox("global_email_separator");
 
         private TextBox _txtDiscount = new TextBox("global_discount", true,true, RegularExpressions.Money);
-        private TextBox _txtFiscalNumber = new TextBox("global_fiscal_number",true,true,@"^[a-zA-Z0-9]+$");
+        private TextBox _txtFiscalNumber = new TextBox("global_fiscal_number",true,true,RegularExpressions.FiscalNumber);
         private TextBox _txtCardNumber = new TextBox("global_card_number");
         private TextBox _txtCardCredit = new TextBox("global_card_credit_amount",true,true, @"^\d+(\.\d+)?$");
         private CheckButton _checkSupplier = new CheckButton(GeneralUtils.GetResourceByName("global_supplier"));

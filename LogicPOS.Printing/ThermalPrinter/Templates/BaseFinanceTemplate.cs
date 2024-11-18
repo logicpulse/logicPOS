@@ -58,7 +58,7 @@ namespace LogicPOS.Printing.Templates
 
             if (_copyNames != null)
             {
-                _copyNamesArray = LogicPOS.Utility.PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
+                //tchial0 -> _copyNamesArray = LogicPOS.Utility.PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
             }
         }
 

@@ -1,15 +1,14 @@
 ﻿using logicpos.Classes.Enums.Xml;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Application;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using System.Configuration;
-using LogicPOS.UI.Application;
 
 //ThirdParty Lib - Adapted to LogicPos
 //Class Based on Third Party XmlToObjectParser
@@ -24,7 +23,7 @@ namespace logicpos
 
         public static dynamic ParseFromFile(string filename)
         {
- 
+
             if (File.Exists(filename))
             {
                 return ParseFromXml(File.ReadAllText(filename));

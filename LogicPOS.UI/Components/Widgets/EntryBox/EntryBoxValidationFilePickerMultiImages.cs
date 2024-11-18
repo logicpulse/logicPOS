@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.Utility;
 using System;
@@ -49,7 +50,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox = new VBox(false, 0);
 
             //Init AddFile
-            EntryBoxAddFile = new EntryBoxValidationFilePickerDialog(parentWindow, pLabelText, RegexUtils.RegexAlfaNumericFilePath, false, pFileFilter);
+            EntryBoxAddFile = new EntryBoxValidationFilePickerDialog(parentWindow, pLabelText, RegularExpressions.AlfaNumericFilePath, false, pFileFilter);
             EntryBoxAddFile.EntryValidation.Validate();
             EntryBoxAddFile.ClosePopup += _entryBoxAddFile_ClosePopup;
 
@@ -101,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //if AddFileNameToList true, add the File to the list, else skip add, usefull when we Initialize List from Constructor pInitialFileList
         private void AddFileEntry(string pFileName, bool pAddFileNameToList)
         {
-            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(GeneralUtils.GetResourceByName("global_file_image"), Value.Count + 1), KeyboardMode.None, RegexUtils.RegexAlfaNumericFilePath, true);
+            EntryBoxValidationButton entryBoxValidationButton = new EntryBoxValidationButton(_sourceWindow, string.Format(GeneralUtils.GetResourceByName("global_file_image"), Value.Count + 1), KeyboardMode.None, RegularExpressions.AlfaNumericFilePath, true);
             entryBoxValidationButton.EntryValidation.Validate();
             entryBoxValidationButton.EntryValidation.Sensitive = false;
 

@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Alerts;
 using System.Drawing;
+using LogicPOS.UI.Components.InputFields.Validation;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -60,7 +61,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             _vbox = new VBox(false, 0);
 
             //Init DateEntry
-            EntryBoxAddDate = new EntryBoxValidationDatePickerDialog(parentWindow, pLabelText, pWindowTitle, RegexUtils.RegexDate, false);
+            EntryBoxAddDate = new EntryBoxValidationDatePickerDialog(parentWindow, pLabelText, pWindowTitle, RegularExpressions.Date, false);
             EntryBoxAddDate.EntryValidation.Text = initialDate;
             EntryBoxAddDate.EntryValidation.Validate();
             EntryBoxAddDate.ClosePopup += _entryBoxAddDate_ClosePopup;
@@ -128,7 +129,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         private void AddDateTimeEntry(DateTime pDateTime, bool pAddDateTimeToList)
         {
             string iconFileName = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_delete_record.png");
-            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(GeneralUtils.GetResourceByName("global_date"), Value.Count + 1), KeyboardMode.None, RegexUtils.RegexDate, true, iconFileName);
+            EntryBoxValidationButton entryBoxValidation = new EntryBoxValidationButton(_sourceWindow, string.Format(GeneralUtils.GetResourceByName("global_date"), Value.Count + 1), KeyboardMode.None, RegularExpressions.Date, true, iconFileName);
             entryBoxValidation.EntryValidation.Validate();
             entryBoxValidation.EntryValidation.Sensitive = false;
             //Remove Event
