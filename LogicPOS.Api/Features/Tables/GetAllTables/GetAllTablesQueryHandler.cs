@@ -17,7 +17,9 @@ namespace LogicPOS.Api.Features.Tables.GetAllTables
 
         public override async Task<ErrorOr<IEnumerable<Table>>> Handle(GetAllTablesQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<Table>("tables", cancellationToken);
+            var endpoint = "tables" + (query.Status.HasValue ? $"?status={(int)query.Status}" : string.Empty);
+
+            return await HandleGetAllQueryAsync<Table>(endpoint, cancellationToken);
         }
     }
 }

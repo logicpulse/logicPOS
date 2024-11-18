@@ -5,9 +5,9 @@ using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.POS
 {
-    internal partial class SessionOpeningModal : BaseDialog
+    public partial class SessionOpeningModal : BaseDialog
     {
         private IconButtonWithText BtnDayOpening { get; set; }
         private IconButtonWithText BtnSessionOpening { get; set; }

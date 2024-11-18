@@ -274,7 +274,8 @@ namespace LogicPOS.UI.Components.POS
             TxtFiscalNumber = new PageTextBox(this,
                                               GeneralUtils.GetResourceByName("global_fiscal_number"),
                                               isRequired: true,
-                                              isValidatable: false,
+                                              isValidatable: true,
+                                              regex: RegularExpressions.FiscalNumber,
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
 

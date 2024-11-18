@@ -51,7 +51,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public InsertMoneyBox(Window parentWindow, decimal pInitialValue = 0.0m)
         {
-            
+
             //Settings
             string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;
             string fontMoneyPadTextEntry = AppSettings.Instance.fontMoneyPadTextEntry;
@@ -106,16 +106,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                   ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height)
               });
 
-			_buttonKeyMBL3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL3_Green", Text = moneyButtonL3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBL4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL4_Green", Text = moneyButtonL4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBL5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL5_Green", Text = moneyButtonL5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			//MoneyButtons Right
-			_buttonKeyMBR1 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR1_Green", Text = moneyButtonR1Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBR2 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR2_Green", Text = moneyButtonR2Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBR3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR3_Green", Text = moneyButtonR3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBR4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR4_Green", Text = moneyButtonR4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			_buttonKeyMBR5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR5_Green", Text = moneyButtonR5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
-			//Events
+            _buttonKeyMBL3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL3_Green", Text = moneyButtonL3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBL4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL4_Green", Text = moneyButtonL4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBL5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBL5_Green", Text = moneyButtonL5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            //MoneyButtons Right
+            _buttonKeyMBR1 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR1_Green", Text = moneyButtonR1Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBR2 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR2_Green", Text = moneyButtonR2Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBR3 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR3_Green", Text = moneyButtonR3Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBR4 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR4_Green", Text = moneyButtonR4Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            _buttonKeyMBR5 = new TextButton(new ButtonSettings { Name = "touchButtonKeyMBR5_Green", Text = moneyButtonR5Label, Font = fontMoneyPadButtonKeys, FontColor = colorFont, ButtonSize = new Size(moneyButtonSize.Width, moneyButtonSize.Height) });
+            //Events
             _buttonKeyMBL1.Clicked += buttonKeyMB_Clicked;
             _buttonKeyMBL2.Clicked += buttonKeyMB_Clicked;
             _buttonKeyMBL3.Clicked += buttonKeyMB_Clicked;
@@ -162,7 +162,12 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             ValidatableTextBox entry = (ValidatableTextBox)sender;
             Validated = entry.Validated;
-            DeliveryValue =decimal.Parse(_entryDeliveryValue.Text);
+
+            if (entry.Validated)
+            {
+                DeliveryValue = decimal.Parse(_entryDeliveryValue.Text);
+            }
+
             EntryChanged?.Invoke(sender, e);
         }
 

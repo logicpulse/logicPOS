@@ -1,18 +1,14 @@
 ﻿using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
 using Gtk;
 using logicpos.Classes.DataLayer;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.Services;
-using LogicPOS.Data.XPO;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Printing.Utility;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
@@ -20,125 +16,93 @@ using LogicPOS.Utility;
 using System;
 using System.Collections;
 using System.Drawing;
+using System.Linq;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.POS
 {
-    internal partial class SessionOpeningModal
+    public partial class SessionOpeningModal
     {
         private void BtnDayOpening_Clicked(object sender, EventArgs e)
         {
-            //Stop WorkSessionPeriodDay
-            if (XPOSettings.WorkSessionPeriodDay != null && XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
+            if (WorkSessionService.DayIsOpen())
             {
-                //Check if we can StopSessionPeriodDay
-                bool resultCanClose = CanCloseWorkSessionPeriodDay();
-                if (resultCanClose == false) return;
-
-                // ShowRequestBackupDialog and Backup only if PluginSoftwareVendor is Active
-                if (LogicPOS.Settings.PluginSettings.HasSoftwareVendorPlugin)
-                {
-                    //Request User to do a DatabaseBackup, After Check Can Close
-                    DataBaseBackup.ShowRequestBackupDialog(this);
-                }
-
-                bool result = WorkSessionProcessor.SessionPeriodClose(XPOSettings.WorkSessionPeriodDay);
-                if (result)
-                {
-                    BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
-                    BtnSessionOpening.Sensitive = false;
-
-                    ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
-
-                    var pResponse = CustomAlerts.Question(this)
-                                                .WithSize(new Size(500, 350))
-                                                .WithTitleResource("global_button_label_print")
-                                                .WithMessageResource("dialog_message_request_print_document_confirmation")
-                                                .ShowAlert();
-
-                    if (pResponse == ResponseType.Yes)
-                    {
-                        var workSessionDto = XPOUtility.WorkSession.GetCurrentWorkSessionPeriodDayDto();
-                    }
-                }
+                CloseDay();
+                return;
             }
-            else
-            {
-                bool result = WorkSessionProcessor.SessionPeriodOpen(WorkSessionPeriodType.Day);
-                if (result)
-                {
-                    BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
-                    BtnSessionOpening.Sensitive = true;
-                }
-            }
+
+            OpenDay();
         }
 
-        private bool CanCloseWorkSessionPeriodDay()
+        private void CloseDay()
         {
-            //Check if has Working Open Orders/Tables
-            SQLSelectResultData xPSelectDataTables = WorkSessionProcessor.GetOpenOrderTables();
-            int noOfOpenOrderTables = xPSelectDataTables.DataRows.Length;
-            if (noOfOpenOrderTables > 0)
-            {
-                string openOrderTables = string.Empty;
-                pos_configurationplacetable currentOpenOrderTable;
-                foreach (SelectStatementResultRow row in xPSelectDataTables.DataRows)
-                {
-                    Guid tableOid = new Guid(row.Values[xPSelectDataTables.GetFieldIndexFromName("PlaceTable")].ToString());
-                    currentOpenOrderTable = XPOSettings.Session.GetObjectByKey<pos_configurationplacetable>(tableOid);
-                    openOrderTables += string.Format("{0}{1}", currentOpenOrderTable.Designation, " ");
-                }
+            var openTables = TablesService.GetOpenTables();
 
+            if (openTables.Any())
+            {
+                string tablesNames = string.Join(" ", openTables.Select(x => x.Designation));
 
                 CustomAlerts.Error(this)
                             .WithSize(new Size(620, 300))
                             .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_worksession_period_warning_open_orders_tables"),
-                                          noOfOpenOrderTables,
-                                          string.Format("{0}{1}", Environment.NewLine, openOrderTables)))
+                                          openTables.Count(),
+                                          $"\n{tablesNames}"))
                             .ShowAlert();
-
-                //Exit Event Button Without Close Cash Drwawer
-                return false;
+                return;
             }
 
-            //Check if has Working Terminal Sessions
-            SQLSelectResultData xPSelectDataTerminals = WorkSessionProcessor.GetSessionPeriodOpenTerminalSessions();
-            int noOfTerminalOpenSessions = xPSelectDataTerminals.DataRows.Length;
-            if (noOfTerminalOpenSessions > 0)
+            var openTerminalSessions = WorkSessionService.GetOpenTerminalSessions();
+
+            if (openTerminalSessions.Any())
             {
-                string openTerminals = string.Empty;
-                pos_configurationplaceterminal currentOpenSessionTerminal;
-                foreach (SelectStatementResultRow row in xPSelectDataTerminals.DataRows)
+                string openTerminalsNames = string.Join(" ", openTerminalSessions.Select(x => x.Designation));
+
+                ResponseType alertResponse = CustomAlerts.Question(this)
+                                                         .WithSize(new Size(600, 400))
+                                                         .WithTitleResource("global_information")
+                                                         .WithMessage(string.Format(LocalizedString.Instance["dialog_message_worksession_period_warning_open_terminals"],
+                                                                                    openTerminalSessions.Count(),
+                                                                                    $"\n{openTerminalsNames}"))
+                                                         .ShowAlert();
+
+                if (alertResponse != ResponseType.Yes)
                 {
-                    Guid terminalOid = new Guid(row.Values[xPSelectDataTerminals.GetFieldIndexFromName("Terminal")].ToString());
-                    currentOpenSessionTerminal = XPOSettings.Session.GetObjectByKey<pos_configurationplaceterminal>(terminalOid);
-                    openTerminals += string.Format("{0}{1} - {2}", Environment.NewLine, currentOpenSessionTerminal.Designation, row.Values[xPSelectDataTerminals.GetFieldIndexFromName("Designation")].ToString());
+                    return;
                 }
 
-                ResponseType responseType = CustomAlerts.Question(this)
-                    .WithSize(new Size(600, 400))
-                    .WithTitleResource("global_information")
-                    .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_worksession_period_warning_open_terminals"),
-                                          noOfTerminalOpenSessions,
-                                          $"\n{openTerminals}"))
-                            .ShowAlert();
-
-                if (responseType == ResponseType.Yes)
-                {
-                    return logicpos.Utils.CloseAllOpenTerminals(this, XPOSettings.Session);
-
-                }
-                else
-                {
-
-                    return false;
-                }
-
-
+                WorkSessionService.CloseTerminalAllSessions();
             }
-            return true;
+
+            DataBaseBackup.ShowRequestBackupDialog(this);
+
+            if (!WorkSessionService.CloseDay())
+            {
+                return;
+            }
+
+            UpdateButtons();
+
+            //tchial0: ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
+
+            var pResponse = CustomAlerts.Question(this)
+                                        .WithSize(new Size(500, 350))
+                                        .WithTitleResource("global_button_label_print")
+                                        .WithMessageResource("dialog_message_request_print_document_confirmation")
+                                        .ShowAlert();
         }
 
-        //Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+        private void OpenDay()
+        {
+            if (WorkSessionService.OpenDay() == false)
+            {
+                CustomAlerts.Error(this)
+                            .WithSize(new Size(620, 300))
+                            .WithMessage("Não foi possível abrir o dia.")
+                            .ShowAlert();
+            }
+
+            UpdateButtons();
+        }
+
         private void BtnSessionOpening_Clicked(object sender, EventArgs e)
         {
             bool result;
@@ -524,9 +488,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             dialogCashDrawer.Destroy();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Helper Methods
-
         public void UpdateButtons()
         {
             if (WorkSessionService.DayIsOpen())
@@ -541,11 +502,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             }
         }
 
-        /// <summary>
-        /// Show Close Message, Shared for Day and Terminal Sessions
-        /// </summary>
-        /// <param name="pWorkSessionPeriod"></param>
-        /// <returns></returns>
         public void ShowClosePeriodMessage(Window parentWindow, pos_worksessionperiod pWorkSessionPeriod)
         {
             string messageResource = (pWorkSessionPeriod.PeriodType == WorkSessionPeriodType.Day) ?

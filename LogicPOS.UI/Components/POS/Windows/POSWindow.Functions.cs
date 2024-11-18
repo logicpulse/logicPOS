@@ -17,6 +17,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;

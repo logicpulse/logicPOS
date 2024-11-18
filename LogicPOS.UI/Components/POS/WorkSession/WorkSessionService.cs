@@ -1,11 +1,14 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
+using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
 using LogicPOS.Api.Features.WorkSessions.GetAllWorkSessionPeriods;
 using LogicPOS.Api.Features.WorkSessions.GetLastWorkSessionPeriod;
+using LogicPOS.Api.Features.WorkSessions.OpenWorkSessionPeriodDay;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Linq;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Services
 {
@@ -57,7 +60,7 @@ namespace LogicPOS.UI.Services
 
         }
 
-        public static bool HasAnyTerminalSessionOpen()
+        public static IEnumerable<WorkSessionPeriod> GetOpenTerminalSessions()
         {
             var query = new GetAllWorkSessionPeriodsQuery(WorkSessionPeriodType.Terminal, WorkSessionPeriodStatus.Open);
             var getResult = _mediator.Send(query).Result;
@@ -65,12 +68,48 @@ namespace LogicPOS.UI.Services
             if (getResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+            }
+
+            return getResult.Value;
+        }
+
+        public static bool OpenDay()
+        {
+            var openDayResult = _mediator.Send(new OpenWorkSessionPeriodDayCommand()).Result;
+
+            if (openDayResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
                 return false;
             }
 
-            return getResult.Value.Any();
+            return true;
         }
 
+        public static bool CloseDay()
+        {
+            var openDayResult = _mediator.Send(new CloseWorkSessionPeriodDayCommand()).Result;
 
+            if (openDayResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool CloseTerminalAllSessions()
+        {
+            var openDayResult = _mediator.Send(new CloseAllWorkSessionsCommand()).Result;
+
+            if (openDayResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                return false;
+            }
+
+            return true;
+        }
     }
 }
