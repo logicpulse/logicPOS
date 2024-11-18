@@ -10,7 +10,7 @@ namespace LogicPOS.Api.Entities
         public Guid OrderId { get; set; }
 
         public int TicketId { get; set; }
-        public Common.Enums.PriceType PriceType { get; set; }
+        public Api.Enums.PriceType PriceType { get; set; }
         public decimal Discount { get; set; }
 
         public IList<OrderDetail> Details { get; set; }

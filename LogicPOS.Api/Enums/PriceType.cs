@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.Api.Common.Enums
+﻿namespace LogicPOS.Api.Enums
 {
     public enum PriceType
     {

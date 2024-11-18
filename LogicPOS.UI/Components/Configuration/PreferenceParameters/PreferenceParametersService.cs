@@ -1,6 +1,9 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company;
+using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -12,6 +15,7 @@ namespace LogicPOS.UI.Services
     public static class PreferenceParametersService
     {
         private static IEnumerable<PreferenceParameter> _preferenceParameters;
+        private static CompanyInformations _companyInformations;
 
         public static string GetPreferenceParameterValue(string token)
         {
@@ -38,6 +42,20 @@ namespace LogicPOS.UI.Services
             _preferenceParameters = preferenceParameters.Value;
         }
 
+        private static void LoadCompanyInformations()
+        {
+            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var companyInformations = mediator.Send(new GetCompanyInformationsQuery()).Result;
+
+            if (companyInformations.IsError)
+            {
+                ErrorHandlingService.HandleApiError(companyInformations.FirstError, true);
+                return;
+            }
+
+            _companyInformations = companyInformations.Value;
+        }
+
         public static bool UseCachedImages => Convert.ToBoolean(GetPreferenceParameterValue("USE_CACHED_IMAGES"));
         public static bool UseEuropeanVatAutoComplete => Convert.ToBoolean(GetPreferenceParameterValue("USE_EUROPEAN_VAT_AUTOCOMPLETE"));
         public static bool UsePosPdfViewer => Convert.ToBoolean(GetPreferenceParameterValue("USE_POS_PDF_VIEWER"));
@@ -53,5 +71,19 @@ namespace LogicPOS.UI.Services
         public static bool ServiceAtSendDocuments => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS"));
         public static bool ServiceAtSendDocumentsWaybill => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS_WAYBILL"));
         public static string SystemCurrency => GetPreferenceParameterValue("SYSTEM_CURRENCY");
+
+        public static CompanyInformations CompanyInformations
+        {
+            get
+            {
+                if (_companyInformations == null)
+                {
+                    LoadCompanyInformations();
+                }
+
+                return _companyInformations;
+            }
+        }
+
     }
 }

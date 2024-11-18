@@ -273,10 +273,6 @@
       <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
       <Name>LogicPOS.PDFViewer.Winforms</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogicPOS.Persistence\LogicPOS.Persistence.csproj">
-      <Project>{4b305a39-47c9-4f59-ac06-ef868b4903ad}</Project>
-      <Name>LogicPOS.Persistence</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
