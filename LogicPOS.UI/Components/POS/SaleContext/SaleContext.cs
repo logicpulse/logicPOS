@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -22,6 +23,9 @@ namespace LogicPOS.UI.Components.POS
         public static void SetCurrentTable(Table table)
         {
             CurrentTable = table;
+
+            ReloadOrders();
+
             CurrentOrder = Orders.FirstOrDefault(o => o.Table.Id == table.Id);
             
             if(CurrentOrder == null)
@@ -55,8 +59,17 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
+        public static void ReloadOrders()
+        {
+            Orders.Clear();
+            var orders = OrdersService.GetOpenPosOrders();
+            Orders.AddRange(orders);
+        }
+
         public static void Initialize()
         {
+            ReloadOrders();
+
             if (CurrentTable == null)
             {
                 var defaultTable = GetDefaultTable();

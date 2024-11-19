@@ -21,6 +21,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +56,19 @@ namespace LogicPOS.UI.Components.POS
             if (responseType != ResponseType.Yes && responseType != ResponseType.Ok)
             {
                 return;
+            }
+
+            if(ItemsPage.Order.Id.HasValue)
+            {
+                var deleteOrderResult = OrdersService.CloseOrder(ItemsPage.Order.Id.Value);
+
+                if (deleteOrderResult == false)
+                {
+                    CustomAlerts.Error(POSWindow.Instance)
+                                .WithMessage("Não foi possível cancelar o pedido. Tente novamente.")
+                                .ShowAlert();
+                    return;
+                }
             }
 
             SaleContext.ItemsPage.Clear(true);
@@ -126,7 +140,30 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            //PrintWorkSession();
+            if (ItemsPage.Order.Id.HasValue == false)
+            {
+                var saveOrderResult = OrdersService.SavePosOrder(ItemsPage.Order);
+
+                if (saveOrderResult == false)
+                {
+                    CustomAlerts.Error(POSWindow.Instance)
+                                .WithMessage("Não foi possível finalizar o pedido. Tente novamente.")
+                                .ShowAlert();
+                    return;
+                }
+            }
+            else
+            {
+                var saveTicketResult = OrdersService.SavePosTicket(ItemsPage.Order, ItemsPage.Ticket);
+
+                if (saveTicketResult == false)
+                {
+                    CustomAlerts.Error(POSWindow.Instance)
+                                .WithMessage("Não foi possível finalizar o pedido. Tente novamente.")
+                                .ShowAlert();
+                    return;
+                }
+            }
 
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
@@ -134,7 +171,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void PrintWorkSession()
         {
-           var workSessionData= DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDataQuery(new Guid("3f89ea05-c00f-4ad0-be14-3b616cc7c156"))).Result.Value;
+            var workSessionData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDataQuery(new Guid("3f89ea05-c00f-4ad0-be14-3b616cc7c156"))).Result.Value;
             var pp = new PrintWorkSessionDto()
             {
                 StartDate = workSessionData.StartDate,
@@ -148,13 +185,13 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
-            
-            new ThermalPrinting(printer, TerminalService.Terminal.Designation,workSessionData, pp);
+
+            new ThermalPrinting(printer, TerminalService.Terminal.Designation, workSessionData, pp);
         }
 
         private void PrintOrder()
         {
-            
+
             var orderTicket = GetOrderTicket();
 
             PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
@@ -177,11 +214,11 @@ namespace LogicPOS.UI.Components.POS
             orderTicket.PlaceDesignation = ItemsPage.Order.Table.Place.Designation;
             foreach (var item in ItemsPage.Ticket.Items)
             {
-                orderTicket.OrderDetails.Add(new PrintOrderDetailDto() 
-                { 
-                    Designation = item.Article.Designation, 
-                    Quantity = item.Quantity, 
-                    UnitMeasure = item.Article.MeasurementUnit.Acronym 
+                orderTicket.OrderDetails.Add(new PrintOrderDetailDto()
+                {
+                    Designation = item.Article.Designation,
+                    Quantity = item.Quantity,
+                    UnitMeasure = item.Article.MeasurementUnit.Acronym
                 });
             }
 
@@ -212,9 +249,9 @@ namespace LogicPOS.UI.Components.POS
             var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
             if (result.IsError)
             {
-               CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
             }
-            var companyInformations=result.Value;
+            var companyInformations = result.Value;
             return new CompanyPrintingInformationsDto()
             {
                 Address = companyInformations.Address,

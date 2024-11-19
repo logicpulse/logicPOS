@@ -23,11 +23,8 @@ namespace LogicPOS.Api.Entities
         public decimal Price { get; set; }
         public decimal Discount { get; set; }
         public decimal Vat { get; set; }
-        public decimal TotalGross { get; set; }
         public decimal TotalDiscount { get; set; }
         public decimal TotalTax { get; set; }
         public decimal TotalFinal { get; set; }
-        public string Token1 { get; set; }
-        public string Token2 { get; set; }
     }
 }

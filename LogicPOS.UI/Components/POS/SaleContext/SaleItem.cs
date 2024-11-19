@@ -13,7 +13,20 @@ namespace LogicPOS.UI.Components.POS
             Discount = article.Discount;
         }
 
-        public Article Article { get; }
+        public SaleItem(OrderDetail detail)
+        {
+            Article = detail.Article;
+            UnitPrice = detail.Price;
+            Quantity = detail.Quantity;
+            Vat = detail.Vat;
+            Discount = detail.Discount;
+        }
+
+        public SaleItem()
+        {
+        }
+
+        public Article Article { get; set; }
         public decimal Discount { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Quantity { get; set; }

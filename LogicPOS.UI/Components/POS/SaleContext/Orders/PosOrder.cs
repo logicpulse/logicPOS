@@ -9,6 +9,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class PosOrder
     {
+        public Guid? Id { get; set; } = null;
         public Table Table { get; }
 
         public List<PosTicket> Tickets { get; } = new List<PosTicket>();
@@ -16,6 +17,16 @@ namespace LogicPOS.UI.Components.POS
         public PosOrder(Table table)
         {
             Table = table;
+        }
+
+        public PosOrder(Order order)
+        {
+            Id = order.Id;
+            Table = order.Table;
+            foreach (var ticket in order.Tickets)
+            {
+                AddTicket(ticket);
+            }
         }
 
         public List<SaleItem> GetOrderItems()
@@ -30,9 +41,13 @@ namespace LogicPOS.UI.Components.POS
 
                 if (existingItem == null)
                 {
-                    orderItems.Add(new SaleItem(item.Article)
+                    orderItems.Add(new SaleItem
                     {
-                        Quantity = item.Quantity
+                        Article = item.Article,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice,
+                        Discount = item.Discount,
+                        Vat = item.Vat
                     });
                 }
                 else
@@ -50,6 +65,15 @@ namespace LogicPOS.UI.Components.POS
             ticket.Items.AddRange(items);
             Tickets.Add(ticket);
             return ticket;
+        }
+
+        public PosTicket AddTicket(Ticket ticket)
+        {
+            var posTicket = new PosTicket((uint)ticket.TicketId);
+            var saleItems = ticket.Details.Select(d => new SaleItem(d));
+            posTicket.Items.AddRange(saleItems);
+            Tickets.Add(posTicket);
+            return posTicket;
         }
 
         public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal);
@@ -74,6 +98,7 @@ namespace LogicPOS.UI.Components.POS
         public void Clear()
         {
             Tickets.Clear();
+            Id = null;
         }
     }
 }

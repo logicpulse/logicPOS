@@ -27,11 +27,9 @@ namespace LogicPOS.UI.Components.POS
 
         public dynamic Theme { get; }
 
-        public SaleItemsPage(
-            Window parent, 
-            dynamic theme,
-            PosOrder order
-            )
+        public SaleItemsPage(Window parent,
+                             dynamic theme,
+                             PosOrder order)
         {
             Order = Order;
             SourceWindow = parent;
