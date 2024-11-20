@@ -52,11 +52,10 @@ namespace LogicPOS.UI.Components.Menus
         public IEnumerable<ArticleStock> Stocks { get; private set; }
         public SaleItemsPage SaleItemsPage { get;  }
 
-        public ArticlesMenu(
-            ArticleSubfamiliesMenu subfamiliesMenu,
-            CustomButton btnPrevious,
-            CustomButton btnNext,
-            SaleItemsPage saleItemsPage) : base(6, 7, true)
+        public ArticlesMenu(ArticleSubfamiliesMenu subfamiliesMenu,
+                            CustomButton btnPrevious,
+                            CustomButton btnNext,
+                            SaleItemsPage saleItemsPage) : base(6, 7, true)
         {
             SaleItemsPage = saleItemsPage;
             BtnPrevious = btnPrevious;
@@ -99,6 +98,7 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
+                    Name = "buttonArticleId",
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,

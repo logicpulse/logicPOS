@@ -211,7 +211,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnPrevious()
         {
-            var button = CreateButton(BtnPreviousName,
+            var button = CreateButton("buttonUserId",
                                       BtnPreviousText,
                                       BtnPreviousSize,
                                       BtnPreviousImageFileName);
@@ -223,7 +223,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnNext()
         {
-            var button = CreateButton(BtnNextName,
+            var button = CreateButton("buttonUserId",
                                       BtnNextText,
                                       BtnNextSize,
                                       BtnNextImageFileName);
@@ -235,7 +235,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnDecrease()
         {
-            var button = CreateButton(BtnDecreaseName,
+            var button = CreateButton("buttonUserId",
                                       BtnDecreaseText,
                                       BtnDecreaseSize,
                                       BtnDecreaseImageFileName);
@@ -247,7 +247,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnIncrease()
         {
-            var button = CreateButton(BtnIncreaseName,
+            var button = CreateButton("buttonUserId",
                                       BtnIncreaseText,
                                       BtnIncreaseSize,
                                       BtnIncreaseImageFileName);
@@ -259,7 +259,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnDelete()
         {
-            var button = CreateButton(BtnDeleteName,
+            var button = CreateButton("buttonUserId",
                                       BtnDeleteText,
                                       BtnDeleteSize,
                                       BtnDeleteImageFileName);
@@ -271,7 +271,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnQuantity()
         {
-            var button = CreateButton(BtnQuantityName,
+            var button = CreateButton("buttonUserId",
                                       BtnQuantityText,
                                       BtnQuantitySize,
                                       BtnQuantityImageFileName);
@@ -283,7 +283,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnPrice()
         {
-            var button = CreateButton(BtnPriceName,
+            var button = CreateButton("buttonUserId",
                                       BtnPriceText,
                                       BtnPriceSize,
                                       BtnPriceImageFileName);
@@ -295,7 +295,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnListMode()
         {
-            var button = CreateButton(BtnListModeName,
+            var button = CreateButton("buttonUserId",
                                       BtnListModeText,
                                       BtnListModeSize,
                                       BtnListModeImageFileName);
@@ -343,7 +343,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnWeight()
         {
-            var button = CreateButton(BtnWeightName,
+            var button = CreateButton("buttonUserId",
                                       BtnWeightText,
                                       BtnWeightSize,
                                       BtnWeightImageFileName);
@@ -367,7 +367,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnChangeTable()
         {
-            var button = CreateButton(BtnChangeTableName,
+            var button = CreateButton("buttonUserId",
                                       BtnChangeTableText,
                                       BtnChangeTableSize,
                                       BtnChangeTableImageFileName);
@@ -415,7 +415,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnBarcode()
         {
-            var button = CreateButton(BtnBarCodeName,
+            var button = CreateButton("buttonUserId",
                                       BtnBarCodeText,
                                       BtnBarCodeSize,
                                       BtnBarCodeImageFileName);

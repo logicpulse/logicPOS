@@ -432,7 +432,6 @@ widget_class '*AccordionChildButton*' style 'AccordionChildButton'
 #widget_class '*GenericTreeView*.*' style 'KeyboardPadKey'
 #widget_class '*TreeView*' style 'TreeView'
       ");
-
         }
     }
 }

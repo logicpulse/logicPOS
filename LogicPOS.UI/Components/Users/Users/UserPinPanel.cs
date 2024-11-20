@@ -103,7 +103,7 @@ namespace LogicPOS.UI.Widgets
             ButtonKeyResetPassword = new IconButton(
                 new ButtonSettings
                 {
-                    BackgroundColor = Color.FromArgb(70, 167, 167, 167),
+                    Name = "buttonUserId",
                     Icon = resetPasswordImage,
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(25, 25)
@@ -267,9 +267,8 @@ namespace LogicPOS.UI.Widgets
                 return new TextButton(
                     new ButtonSettings
                     {
-                        Name = $"touchButtonKey{number}",
-                        //BackgroundColor = pButtonColor,
-                        BackgroundColor = Color.FromArgb(70, 167, 167, 167),
+                        Name = "buttonUserId",
+                        BackgroundColor = btnColor,
                         Text = number,
                         Font = font,
                         FontColor = fontColor,

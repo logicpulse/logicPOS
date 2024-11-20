@@ -129,6 +129,7 @@ namespace LogicPOS.UI.Components.InputFields
             var button = new IconButton(
                new ButtonSettings
                {
+                   Name = "buttonUserId",
                    Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_keyboard.png"}",
                    IconSize = new Size(20, 20),
                    ButtonSize = new Size(30, 30)
@@ -144,7 +145,7 @@ namespace LogicPOS.UI.Components.InputFields
             var button = new IconButton(
                 new ButtonSettings
                 {
-                    Name = "touchButtonIcon",
+                    Name = "buttonUserId",
                     Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(30, 30)

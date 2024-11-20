@@ -71,6 +71,7 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
+                    Name = "buttonSubFamilyId",
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,

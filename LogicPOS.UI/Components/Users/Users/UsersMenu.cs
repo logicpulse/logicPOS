@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Menus
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
         public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
         public List<(UserDetail User, CustomButton Button)> Buttons { get; set; } = new List<(UserDetail, CustomButton)>();
-        public string ButtonImage { get; set; }
+        public string ButtonImage => PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
         public string ButtonLabel { get; set; }
         public UserDetail InitialUser { get; set; }
         public int TotalItems { get; set; }
@@ -64,6 +64,7 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
+                    Name = "buttonUserId",
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,
@@ -191,8 +192,6 @@ namespace LogicPOS.UI.Components.Menus
                     }
 
                     ButtonLabel = user.Name;
-
-                    ButtonImage = null;
 
                     if (ButtonLabel.Length > MaxCharsPerButtonLabel)
                     {
