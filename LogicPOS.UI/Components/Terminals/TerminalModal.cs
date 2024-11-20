@@ -51,13 +51,13 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewDesignation = _txtDesignation.Text,
                 NewTimerInterval = uint.Parse(_txtTimerInterval.Text),
-                NewPlaceId = _comboPlaces.SelectedEntity.Id,
-                NewPrinterId = _comboPrinters.SelectedEntity.Id,
-                NewThermalPrinterId = _comboThermalPrinters.SelectedEntity.Id,
-                NewPoleDisplayId = _comboPoleDisplays.SelectedEntity.Id,
-                NewWeighingMachineId = _comboWeighingMachines.SelectedEntity.Id,
-                NewBarcodeReaderId = _comboBarcodeReaders.SelectedEntity.Id,
-                NewCardReaderId = _comboCardReaders.SelectedEntity.Id,
+                NewPlaceId = _comboPlaces.SelectedEntity?.Id,
+                NewPrinterId = _comboPrinters.SelectedEntity?.Id,
+                NewThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id,
+                NewPoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id,
+                NewWeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id,
+                NewBarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id,
+                NewCardReaderId = _comboCardReaders.SelectedEntity?.Id,
                 NewNotes = _txtNotes.Value.Text                
             };
         }
