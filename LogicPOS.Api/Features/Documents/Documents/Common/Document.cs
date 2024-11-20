@@ -21,23 +21,14 @@ namespace LogicPOS.Api.Entities
         public DocumentSeries Series { get; set; }
         public Guid SeriesId { get; set; }
 
-        public Order Order { get; set; }
-        public Guid? OrderId { get; set; }
-
-        public Guid? ParentId { get; set; }
-        public Guid? ChildId { get; set; }
-
         public Guid CustomerId { get; set; }
         #endregion
         public string Type { get; set; }
         public string Number { get; set; }
         public string Status { get; set; }
-        public string Hash { get; set; }
         public string Date { get; set; }
         public ShipAddress ShipToAdress { get; set; }
         public ShipAddress ShipFromAdress { get; set; }
-        public DateTime? MovementStartTime { get; set; }
-        public DateTime? MovementEndTime { get; set; }
         public decimal TotalNet { get; set; }
         public decimal TotalGross { get; set; }
         public decimal TotalDiscount { get; set; }
@@ -45,9 +36,8 @@ namespace LogicPOS.Api.Entities
         public decimal TotalFinal { get; set; }
         public decimal TotalDelivery { get; set; }
         public decimal TotalChange { get; set; }
-        public string ExternalDocument { get; set; }
         public decimal Discount { get; set; }
-        public decimal FinancialDiscount { get; set; }
+        public bool Paid { get; set; }
         public decimal ExchangeRate { get; set; }
         public DocumentCustomer Customer { get; set; }
         public string ATDocCodeID { get; set; }

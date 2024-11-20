@@ -21,12 +21,12 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnDelete.Visible = false;
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             if (mode == EntityEditionModalMode.Update)
             {
@@ -34,8 +34,9 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var modal = new DocumentSerieModal(mode, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

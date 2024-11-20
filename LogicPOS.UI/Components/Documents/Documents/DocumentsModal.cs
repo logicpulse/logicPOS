@@ -15,6 +15,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -107,6 +108,17 @@ namespace LogicPOS.UI.Components.Documents
             {
                 return;
             }
+
+            var paidDocuments = string.Join(",", Page.SelectedDocuments.Where(x => x.Paid).Select(x => x.Number));
+
+            if (paidDocuments != string.Empty)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage($"Os seguintes documentos já foram pagos: {paidDocuments}")
+                            .ShowAlert();
+                return;
+            }
+
 
             var modal = new PayInvoiceModal(this, Page.GetSelectedDocumentsWithTotals());
             var response = (ResponseType)modal.Run();

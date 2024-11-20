@@ -33,16 +33,17 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(2);
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new System.NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new CountryModal(mode, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         #region Singleton

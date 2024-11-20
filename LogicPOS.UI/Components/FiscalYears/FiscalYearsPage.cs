@@ -28,12 +28,12 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnDelete.Visible = false;
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             if(mode == EntityEditionModalMode.Update)
             {
@@ -54,15 +54,16 @@ namespace LogicPOS.UI.Components.Pages
 
                     if (dialog1Response == ResponseType.No)
                     {
-                        return;
+                        return (int)ResponseType.No;
                     }
                 }
             }
       
             var modal = new FiscalYearModal(modalMode: mode,
                                             entity: SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

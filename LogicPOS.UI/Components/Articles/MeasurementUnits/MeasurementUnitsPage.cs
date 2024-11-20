@@ -21,16 +21,17 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();
        
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new MeasurementUnitModal(mode, SelectedEntity as MeasurementUnit);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

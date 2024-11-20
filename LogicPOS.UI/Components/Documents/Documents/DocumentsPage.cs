@@ -74,7 +74,7 @@ namespace LogicPOS.UI.Components.Pages
             _relations.AddRange(result.Value);
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
@@ -101,11 +101,8 @@ namespace LogicPOS.UI.Components.Pages
             };
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
-        {
-          
-        }
-
+        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
+    
         protected override void AddColumns()
         {
             GridView.AppendColumn(CreateSelectColumn());

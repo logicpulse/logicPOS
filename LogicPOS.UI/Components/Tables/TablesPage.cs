@@ -20,16 +20,17 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetAllTablesQuery();
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new TableModal(mode, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()
@@ -51,7 +52,6 @@ namespace LogicPOS.UI.Components.Pages
             var title = GeneralUtils.GetResourceByName("global_places");
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
-
 
         protected override void InitializeSort()
         {

@@ -18,16 +18,17 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<PriceType>>> GetAllQuery => new GetAllPriceTypesQuery();
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new PriceTypeModal(mode, SelectedEntity as PriceType);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

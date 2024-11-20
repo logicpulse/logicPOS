@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
             Options = options;
 
             LoadEntities();
-            
+
             InitializeGridView();
 
             Design();
@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        protected void ShowApiErrorAlert(Error error) => CustomAlerts.ShowApiErrorAlert(SourceWindow,error);
+        protected void ShowApiErrorAlert(Error error) => CustomAlerts.ShowApiErrorAlert(SourceWindow, error);
 
         public virtual void Refresh()
         {
@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Pages
             AddEntitiesToModel();
         }
 
-        public abstract void DeleteEntity();
+        public abstract bool DeleteEntity();
 
         protected virtual void LoadEntities()
         {
@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Pages
             var model = (ListStore)GridViewSettings.Model;
             _entities.ForEach(entity => model.AppendValues(entity));
         }
-        
+
         protected virtual void InitializeFilter()
         {
             GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
@@ -177,7 +177,9 @@ namespace LogicPOS.UI.Components.Pages
         protected abstract void InitializeSort();
 
         protected abstract void AddColumns();
-        public abstract void RunModal(EntityEditionModalMode mode);
+
+        public abstract int RunModal(EntityEditionModalMode mode);
+
         protected virtual void Design()
         {
             VBox verticalLayout = new VBox(false, 1);
@@ -217,7 +219,7 @@ namespace LogicPOS.UI.Components.Pages
 
             Navigator.Update();
         }
-        
+
         protected virtual void AddGridViewEventHandlers()
         {
             GridView.CursorChanged += GridViewRow_Changed;
@@ -233,7 +235,12 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            RunModal(EntityEditionModalMode.Update);
+            var response = (ResponseType)RunModal(EntityEditionModalMode.Update);
+
+            if (response == ResponseType.Ok)
+            {
+                Refresh();
+            }
         }
     }
 }

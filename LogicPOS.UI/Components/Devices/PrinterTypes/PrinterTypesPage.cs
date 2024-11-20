@@ -20,16 +20,17 @@ namespace LogicPOS.UI.Components.Pages
         public PrinterTypesPage(Window parent) : base(parent)
         {
         }
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new PrinterTypeModal(mode, SelectedEntity as PrinterType);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

@@ -20,16 +20,17 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new UserModal(mode, SelectedEntity);
-            modal.Run();
+            var resposne = modal.Run();
             modal.Destroy();
+            return resposne;
         }
 
         protected override void AddColumns()

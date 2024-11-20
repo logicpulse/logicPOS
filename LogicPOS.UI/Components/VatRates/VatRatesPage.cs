@@ -19,16 +19,17 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new VatRateModal(mode, SelectedEntity as VatRate);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()
@@ -38,8 +39,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateValueColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
-
-      
 
         private TreeViewColumn CreateValueColumn()
         {

@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new System.NotImplementedException();
         }
@@ -69,11 +69,12 @@ namespace LogicPOS.UI.Components.Pages
             return Columns.CreateColumn(title, 2, RenderAcronym);
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new CurrencyModal(mode, SelectedEntity as Currency);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         #region Singleton

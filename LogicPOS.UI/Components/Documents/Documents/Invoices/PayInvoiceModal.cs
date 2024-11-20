@@ -41,9 +41,8 @@ namespace LogicPOS.UI.Components.Modals
         private readonly decimal _invoicesTotalFinal;
         private string TitleBase { get; set; }
 
-        public PayInvoiceModal(
-            Window parent,
-            IEnumerable<(Document, DocumentTotals)> invoices) : base(parent,
+        public PayInvoiceModal(Window parent,
+                               IEnumerable<(Document, DocumentTotals)> invoices) : base(parent,
                                                      GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
                                                      new Size(500, 500),
                                                      PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_pay_invoice.png")
@@ -144,7 +143,7 @@ namespace LogicPOS.UI.Components.Modals
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
 
-            TxtExchangeRate.Text = "1.00";
+            TxtExchangeRate.Text = "1";
 
             TxtExchangeRate.Entry.Changed += TxtExchangeRate_Changed;
         }

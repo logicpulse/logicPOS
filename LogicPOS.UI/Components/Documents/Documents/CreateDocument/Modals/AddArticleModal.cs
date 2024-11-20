@@ -35,8 +35,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private decimal _vatRateValue;
 
         public AddArticleModal(Window parent,
-                            EntityEditionModalMode mode,
-                            Item item = null) : base(parent,
+                               EntityEditionModalMode mode,
+                               Item item = null) : base(parent,
                                                      GeneralUtils.GetResourceByName("global_insert_articles"),
                                                      new Size(900, 360),
                                                      PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png")
@@ -44,10 +44,36 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             _mode = mode;
             Item = item;
 
+            HandleModalMode();
+        }
+
+        private void HandleModalMode()
+        {
             if (_mode != EntityEditionModalMode.Insert)
             {
                 ShowItemData(Item);
             }
+
+            if(_mode == EntityEditionModalMode.View)
+            {
+                DisableFields();
+            }
+
+            if (_mode == EntityEditionModalMode.Update)
+            {
+                TxtArticle.Component.Sensitive = false;
+            }
+        }
+
+        private void DisableFields()
+        {
+            TxtArticle.Component.Sensitive = false;
+            TxtPrice.Component.Sensitive = false;
+            TxtQuantity.Component.Sensitive = false;
+            TxtDiscount.Component.Sensitive = false;
+            TxtTax.Component.Sensitive = false;
+            TxtVatExemptionReason.Component.Sensitive = false;
+            TxtNotes.Component.Sensitive = false;
         }
 
         private void ShowItemData(Item item)

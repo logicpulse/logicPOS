@@ -50,16 +50,17 @@ namespace LogicPOS.UI.Components.Pages
             _totalStocks.AddRange(result.Value);
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new ArticleModal(mode, SelectedEntity);
-            modal.Run();
+            var response =modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

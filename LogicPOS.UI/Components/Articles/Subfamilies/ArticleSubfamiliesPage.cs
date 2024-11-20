@@ -17,18 +17,19 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<ArticleSubfamily>>> GetAllQuery => new GetAllArticleSubfamiliesQuery();
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new ArticleSubfamilyModal(mode, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()
@@ -38,8 +39,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateFamilyColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
-
-
 
         private TreeViewColumn CreateFamilyColumn()
         {

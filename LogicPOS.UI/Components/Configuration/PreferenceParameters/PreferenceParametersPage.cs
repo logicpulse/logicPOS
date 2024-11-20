@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             throw new NotImplementedException();
         }
@@ -170,11 +170,12 @@ namespace LogicPOS.UI.Components.Pages
             _entities.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new PreferenceParameterModal(mode, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
         #region Singleton

@@ -3,6 +3,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -16,74 +17,104 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         protected override void LoadEntities() { }
 
-        public override void DeleteEntity()
+        public override bool DeleteEntity()
         {
             if (SelectedEntity == null)
             {
-                return;
+                return false;
             }
 
-            _entities.Remove(SelectedEntity);
+            var result = _entities.Remove(SelectedEntity);
             SelectedEntity = null;
-
-            Refresh();
+            return result;
         }
 
-        public override void RunModal(EntityEditionModalMode mode)
+        public override int RunModal(EntityEditionModalMode mode)
         {
             switch (mode)
             {
                 case EntityEditionModalMode.Insert:
-                    RunInsertModal();
-                    break;
+                    return RunInsertModal();
                 case EntityEditionModalMode.Update:
-                    RunUpdateModal();
-                    break;
+                    return RunUpdateModal();
                 default:
-                    RunViewModal();
-                    break;
+                    return RunViewModal();
             }
-
-            Refresh();
         }
 
-        private void RunViewModal()
+        private int RunViewModal()
         {
             if (SelectedEntity == null)
             {
-                return;
+                return (int)ResponseType.Cancel;
             }
 
             var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.View, SelectedEntity);
-            modal.Run();
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
-        private void RunUpdateModal()
+        private int RunUpdateModal()
         {
             if (SelectedEntity == null)
             {
-                return;
+                return (int)ResponseType.Cancel;
             }
 
             var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
-            var response = (ResponseType)modal.Run();
-
+            var response = modal.Run();
             modal.Destroy();
+            return response;
         }
 
-        private void RunInsertModal()
+        private int RunInsertModal()
         {
             var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Insert);
             var response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok)
             {
-                _entities.Add(modal.GetItem());
+                var newItem = modal.GetItem();
+                if (ItemExists(newItem.ArticleId))
+                {
+                    UpdateItemData(newItem.ArticleId, newItem);
+                }
+                else
+                {
+                    _entities.Add(newItem);
+                }
             }
 
             modal.Destroy();
+            return (int)response;
         }
+
+        private void UpdateItemData(Guid articleId, Item newData)
+        {
+            var existingItem = _entities.Find(x => x.ArticleId == articleId);
+
+            existingItem.Order = newData.Order;
+            existingItem.Code = newData.Code;
+            existingItem.Designation = newData.Designation;
+            existingItem.Article = newData.Article;
+            existingItem.ArticleId = newData.ArticleId;
+            existingItem.Quantity = newData.Quantity;
+            existingItem.UnitPrice = newData.UnitPrice;
+            existingItem.Discount = newData.Discount;
+            existingItem.Vat  = newData.Vat;
+            existingItem.VatRate = newData.VatRate;
+            existingItem.VatRateId = newData.VatRateId;
+            existingItem.VatDesignation = newData.VatDesignation;
+            existingItem.ExemptionReason = newData.ExemptionReason;
+            existingItem.VatExemptionReason = newData.VatExemptionReason;
+        }
+
+        private bool ItemExists(Guid articleId)
+        {
+            return _entities.Exists(x => x.ArticleId == articleId);
+        }
+
 
         protected override void AddColumns()
         {

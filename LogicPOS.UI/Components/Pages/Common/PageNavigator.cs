@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnDelete = CreateButton("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
             BtnRefresh = CreateButton("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
 
-            AddButtonsEventHandlers();
+            AddEventHandlers();
         }
 
         public void Next()
@@ -133,15 +133,32 @@ namespace LogicPOS.UI.Components.Pages
             _page.GridView.SetCursor(_page.GridViewSettings.Path, null, false);
         }
 
-        private void AddButtonsEventHandlers()
+        private void AddEventHandlers()
         {
             BtnPrevious.Clicked += delegate { Previous(); };
             BtnNext.Clicked += delegate { Next(); };
-            BtnInsert.Clicked += delegate { _page.RunModal(EntityEditionModalMode.Insert); };
+            BtnInsert.Clicked += delegate { RunPageEntityModal(EntityEditionModalMode.Insert); };
             BtnView.Clicked += delegate { _page.RunModal(EntityEditionModalMode.View); };
-            BtnUpdate.Clicked += delegate { _page.RunModal(EntityEditionModalMode.Update); };
-            BtnDelete.Clicked += delegate { _page.DeleteEntity(); };
+            BtnUpdate.Clicked += delegate { RunPageEntityModal(EntityEditionModalMode.Update); };
+            BtnDelete.Clicked += BtnDelete_Clicked;
             BtnRefresh.Clicked += delegate { _page.Refresh(); };
+        }
+
+        private void BtnDelete_Clicked(object sender, System.EventArgs e)
+        {
+            if (_page.DeleteEntity())
+            {
+                _page.Refresh();
+            }
+        }
+
+        private void RunPageEntityModal(EntityEditionModalMode mode)
+        {
+            var response = (ResponseType) _page.RunModal(mode);
+            if(response == ResponseType.Ok)
+            {
+                _page.Refresh();
+            }
         }
 
         public IconButtonWithText CreateButton(string name,
