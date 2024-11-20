@@ -218,7 +218,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             return new IconButton(
                 new ButtonSettings
                 {
-                    Name = string.Format("touchButton", pObjectName),
+                    Name = "buttonUserId",
                     Icon = pFileNameIcon,
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(30, 30)

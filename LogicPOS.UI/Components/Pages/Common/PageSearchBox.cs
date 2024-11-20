@@ -38,10 +38,10 @@ namespace LogicPOS.UI.Components.Pages
 
 
             TxtSearch = new EntryBoxValidation(SourceWindow,
-                                            GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
-                                            KeyboardMode.AlfaNumeric,
-                                            regexAlfaNumericExtended,
-                                            false);
+                                               GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
+                                               KeyboardMode.AlfaNumeric,
+                                               regexAlfaNumericExtended,
+                                               false);
 
             TxtSearch.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
 
