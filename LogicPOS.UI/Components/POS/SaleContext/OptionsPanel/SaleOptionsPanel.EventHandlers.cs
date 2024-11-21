@@ -367,58 +367,59 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
-            ResponseType response = (ResponseType)dialog.Run();
+            //Thcialo
+            //PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
+            //ResponseType response = (ResponseType)dialog.Run();
 
-            if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
-            {
-                if (response == ResponseType.Ok)
-                {
-                    OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                    pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
-                    pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
+            //if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
+            //{
+            //    if (response == ResponseType.Ok)
+            //    {
+            //        OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
+            //        pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
+            //        pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
 
-                    if (xNewTable.TableStatus != TableStatus.Free)
-                    {
-                        CustomAlerts.Error(POSWindow.Instance)
-                                    .WithSize(new Size(400, 280))
-                                    .WithTitleResource("global_error")
-                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
-                                    .ShowAlert();
-                    }
-                    else
-                    {
-                        //Put Old table Status to Free
-                        xOldTable.TableStatus = TableStatus.Free;
-                        xOldTable.Save();
-                        XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), xOldTable.Designation));
+            //        if (xNewTable.TableStatus != TableStatus.Free)
+            //        {
+            //            CustomAlerts.Error(POSWindow.Instance)
+            //                        .WithSize(new Size(400, 280))
+            //                        .WithTitleResource("global_error")
+            //                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
+            //                        .ShowAlert();
+            //        }
+            //        else
+            //        {
+            //            //Put Old table Status to Free
+            //            xOldTable.TableStatus = TableStatus.Free;
+            //            xOldTable.Save();
+            //            XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), xOldTable.Designation));
 
-                        //Put New table Status to Open
-                        xNewTable.TableStatus = TableStatus.Open;
-                        xNewTable.Save();
-                        XPOUtility.Audit("TABLE_CLOSE", string.Format(GeneralUtils.GetResourceByName("audit_message_table_close"), xNewTable.Designation));
+            //            //Put New table Status to Open
+            //            xNewTable.TableStatus = TableStatus.Open;
+            //            xNewTable.Save();
+            //            XPOUtility.Audit("TABLE_CLOSE", string.Format(GeneralUtils.GetResourceByName("audit_message_table_close"), xNewTable.Designation));
 
-                        //Change DocumentOrderMain table, If OpenOrder Exists in That table
-                        Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(documentOrderMainOid);
-                        if (xDocumentOrderMain != null)
-                        {
-                            xDocumentOrderMain.PlaceTable = xNewTable;
-                            xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
-                            xDocumentOrderMain.Save();
-                        }
-                        //Assign Session Data
-                        currentOrderMain.Table.Oid = xNewTable.Oid;
-                        currentOrderMain.Table.Name = xNewTable.Designation;
-                        currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-                        currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-                        currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
-                        POSSession.CurrentSession.Save();
+            //            //Change DocumentOrderMain table, If OpenOrder Exists in That table
+            //            Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
+            //            fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(documentOrderMainOid);
+            //            if (xDocumentOrderMain != null)
+            //            {
+            //                xDocumentOrderMain.PlaceTable = xNewTable;
+            //                xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
+            //                xDocumentOrderMain.Save();
+            //            }
+            //            //Assign Session Data
+            //            currentOrderMain.Table.Oid = xNewTable.Oid;
+            //            currentOrderMain.Table.Name = xNewTable.Designation;
+            //            currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
+            //            currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
+            //            currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
+            //            POSSession.CurrentSession.Save();
 
-                    }
-                }
-                dialog.Destroy();
-            };
+            //        }
+            //    }
+            //    dialog.Destroy();
+            //};
         }
 
         private void BtnListMode_Clicked(object sender, EventArgs e)

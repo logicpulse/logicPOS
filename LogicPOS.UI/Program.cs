@@ -73,10 +73,10 @@ namespace LogicPOS.UI
                 {
                     if (InitializeCulture() == false)
                     {
-                        CustomAlerts.Error(null)
-                            .WithTitle("Erro")
-                            .WithMessage("Não foi possível initalizar o idioma do sistema.")
-                            .Show();
+                       SimpleAlerts.Error()
+                                   .WithTitle("Erro")
+                                   .WithMessage("Não foi possível initalizar o idioma do sistema.")
+                                   .ShowAlert();
 
                         return;
                     }
@@ -185,7 +185,8 @@ namespace LogicPOS.UI
 
             if (getSystemInformationsResult.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(null, getSystemInformationsResult.FirstError);
+                SimpleAlerts.ShowApiErrorAlert(getSystemInformationsResult.FirstError);
+
                 return false;
             }
 

@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Alerts
         private ButtonsType _buttonsType = ButtonsType.Ok;
         private Window _parentWindow = null;
 
-        public ResponseType Show()
+        public ResponseType ShowAlert()
         {
             MessageDialog dialog = new MessageDialog(_parentWindow,
                                                      _flags,

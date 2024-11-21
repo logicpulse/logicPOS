@@ -2,13 +2,9 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
-using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
-using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
-using LogicPOS.PDFViewer.Winforms;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -19,7 +15,6 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -187,7 +182,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var documentType = DocumentTab.GetDocumentType();
 
-            if(documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice())
+            if (documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice())
             {
                 command.PaymentMethods = PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
             }
@@ -233,7 +228,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var documentType = DocumentTab.GetDocumentType();
 
-            if(documentType == null)
+            if (documentType == null)
             {
                 return validatableTabs;
             }

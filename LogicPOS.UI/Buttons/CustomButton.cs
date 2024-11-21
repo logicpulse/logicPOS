@@ -8,7 +8,6 @@ namespace LogicPOS.UI.Buttons
     public class CustomButton : Button
     {
         public EventBox BackgroundColorEventBox { get; set; }
-        public string Token { get; set; }
         public Guid CurrentButtonId { get; set; }
         protected ButtonSettings _settings;
 
@@ -32,7 +31,6 @@ namespace LogicPOS.UI.Buttons
 
             if (_settings.Widget != null) BackgroundColorEventBox.Add(_settings.Widget);
             Add(BackgroundColorEventBox);
-          
             ShowAll();
         }
 
@@ -46,8 +44,6 @@ namespace LogicPOS.UI.Buttons
                 eventBox.VisibleWindow = false;
                 return;
             }
-
-            eventBox.VisibleWindow = true;
 
             Color normal = color;
             Color prelight = normal.Lighten();

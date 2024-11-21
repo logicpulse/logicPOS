@@ -65,6 +65,7 @@ namespace LogicPOS.UI.Components.Documents
             return new IconButtonWithText(
                 new ButtonSettings
                 {
+                    Name = "touchButton_Green",
                     BackgroundColor = ColorSettings.DefaultButtonBackground,
                     Text = GeneralUtils.GetResourceByName(textResource),
                     Font = FontSettings.Button,

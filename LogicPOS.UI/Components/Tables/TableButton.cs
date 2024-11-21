@@ -1,12 +1,8 @@
 ﻿using Gtk;
+using LogicPOS.Api.Enums;
+using LogicPOS.Globalization;
 using System;
 using System.Drawing;
-using LogicPOS.Globalization;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Domain.Enums;
-using LogicPOS.UI.Extensions;
 
 namespace LogicPOS.UI.Buttons
 {
@@ -16,16 +12,19 @@ namespace LogicPOS.UI.Buttons
         private Color _buttonColor;
         private Color _colorPosTablePadTableTableStatusOpenButtonBackground;
         private Color _colorPosTablePadTableTableStatusReservedButtonBackground;
-     
         private Label _labelTotalOrStatus;
         private EventBox _eventBoxTotalOrStatus;
+        public readonly Api.Entities.Table Table;
 
-        public readonly TableButtonSettings TableSettings;
-
-        public TableButton(TableButtonSettings settings)
-            : base(settings,false)
+        public TableButton(Api.Entities.Table table)
+            : base(new ButtonSettings
+            {
+                Name = "buttonTableId",
+                Text = table.Designation,
+                ButtonSize = LogicPOS.Settings.AppSettings.Instance.sizePosTableButton,
+            }, false)
         {
-            TableSettings = settings;
+            Table = table;
             _settings.Widget = CreateWidget();
             Initialize();
         }
@@ -57,14 +56,14 @@ namespace LogicPOS.UI.Buttons
             vbox.PackStart(labelDateTableOpenOrClosed);
             vbox.PackStart(_eventBoxTotalOrStatus);
 
-            switch (TableSettings.TableStatus)
+            switch (Table.Status)
             {
                 case TableStatus.Free:
                     SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Open:
-                    _labelTotalOrStatus.Text = Utility.DataConversionUtils.DecimalToStringCurrency(TableSettings.Total, XPOSettings.ConfigurationSystemCurrency.Acronym);
-                    if (TableSettings.OpenedAt != null) labelDateTableOpenOrClosed.Text = string.Format(LocalizedString.Instance["pos_button_label_table_open_at"], TableSettings.OpenedAt.ToString(LogicPOS.Settings.CultureSettings.DateTimeFormatHour));
+                    _labelTotalOrStatus.Text = "TotalXD";
+                    if (Table.OpennedAt != null) labelDateTableOpenOrClosed.Text = string.Format(LocalizedString.Instance["pos_button_label_table_open_at"], Table.OpennedAt.Value.ToString("HH:mm"));
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:
@@ -76,33 +75,6 @@ namespace LogicPOS.UI.Buttons
             }
 
             return vbox;
-        }
-
-        public void ChangeTableStatus(Guid pTableOid,
-                                      TableStatus pTableStatus)
-        {
-            pos_configurationplacetable xTable = XPOUtility.GetEntityById<pos_configurationplacetable>(pTableOid);
-           
-            if (pTableStatus == TableStatus.Reserved)
-            {
-                _labelTotalOrStatus.Text = LocalizedString.Instance["global_reserved_table"];
-                _eventBoxTotalOrStatus.VisibleWindow = true;
-                SetBackgroundColor(_colorPosTablePadTableTableStatusReservedButtonBackground, _eventBoxTotalOrStatus);
-                xTable.TableStatus = TableStatus.Reserved;
-                XPOUtility.Audit("TABLE_RESERVED", string.Format(LocalizedString.Instance["audit_message_table_reserved"], xTable.Designation));
-            }
-            else
-            {
-                _labelTotalOrStatus.Text = string.Empty;
-                _eventBoxTotalOrStatus.VisibleWindow = false;
-                SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
-                xTable.TableStatus = TableStatus.Free;
-                XPOUtility.Audit("TABLE_UNRESERVED", string.Format(LocalizedString.Instance["audit_message_table_unreserved"], xTable.Designation));
-            }
- 
-            TableSettings.TableStatus = pTableStatus;
-
-            xTable.Save();
         }
     }
 }

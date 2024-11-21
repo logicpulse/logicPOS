@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.Terminals.AddTerminal;
 using LogicPOS.Api.Features.Terminals.UpdateTerminal;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Modals
@@ -51,13 +52,13 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewDesignation = _txtDesignation.Text,
                 NewTimerInterval = uint.Parse(_txtTimerInterval.Text),
-                NewPlaceId = _comboPlaces.SelectedEntity?.Id,
-                NewPrinterId = _comboPrinters.SelectedEntity?.Id,
-                NewThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id,
-                NewPoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id,
-                NewWeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id,
-                NewBarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id,
-                NewCardReaderId = _comboCardReaders.SelectedEntity?.Id,
+                NewPlaceId = _comboPlaces.SelectedEntity?.Id ?? Guid.Empty,
+                NewPrinterId = _comboPrinters.SelectedEntity?.Id ?? Guid.Empty,
+                NewThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id ?? Guid.Empty,
+                NewPoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id ?? Guid.Empty,
+                NewWeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id ?? Guid.Empty,
+                NewBarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id ?? Guid.Empty,
+                NewCardReaderId = _comboCardReaders.SelectedEntity?.Id ?? Guid.Empty,
                 NewNotes = _txtNotes.Value.Text                
             };
         }

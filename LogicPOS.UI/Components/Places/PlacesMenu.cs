@@ -1,11 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
-using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.Terminals;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -15,18 +13,18 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class TablesMenu : Gtk.Table
+    public class PlacesMenu : Gtk.Table
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public int ScrollerHeight { get; set; } = 0;
         public int ButtonFontSize = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
         public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
-        public List<(Api.Entities.Table Table, CustomButton Button)> Buttons { get; set; } = new List<(Api.Entities.Table, CustomButton)>();
+        public List<(Place Place, CustomButton Button)> Buttons { get; set; } = new List<(Place, CustomButton)>();
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
         public bool ToggleMode { get; set; } = true;
-        public Api.Entities.Table InitialTable { get; set; }
+        public Place InitialPlace { get; set; }
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }
         public int CurrentPage { get; set; }
@@ -34,19 +32,19 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton BtnPrevious { get; set; }
         public CustomButton BtnNext { get; set; }
         public uint Rows { get; set; } = 5;
-        public uint Columns { get; set; } = 4;
+        public uint Columns { get; set; } = 1;
         public Size ButtonSize { get; set; } = AppSettings.Instance.sizePosTableButton;
-        public Api.Entities.Table SelectedTable { get; set; }
-        public CustomButton SelectedButton { get; set; }
-        public event Action<Api.Entities.Table> TableSelected;
-        public List<Api.Entities.Table> AllTables{ get; set; }
-        public PlacesMenu PlacesMenu { get;  }
 
-        public TablesMenu(CustomButton btnPrevious, CustomButton btnNext, PlacesMenu palcesMenu) : base(5, 4, true)
+        public Window SourceWindow { get; set; }
+        public Place SelectedPlace { get; set; }
+        public CustomButton SelectedButton { get; set; }
+
+        public event Action<Place> PlaceSelected;
+
+        public PlacesMenu(CustomButton btnPrevious, CustomButton btnNext) : base(5, 1, true)
         {
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
-            PlacesMenu = palcesMenu;
             AddEventHandlers();
             LoadEntities();
         }
@@ -55,12 +53,6 @@ namespace LogicPOS.UI.Components.Menus
         {
             BtnPrevious.Clicked += BtnPrevious_Clicked;
             BtnNext.Clicked += BtnNext_Clicked;
-            PlacesMenu.PlaceSelected += PlacesMenu_PlaceSelected;
-        }
-
-        private void PlacesMenu_PlaceSelected(Place place)
-        {
-            Refresh();
         }
 
         public virtual CustomButton InitializeButton()
@@ -68,6 +60,7 @@ namespace LogicPOS.UI.Components.Menus
             return new ImageButton(
                 new ButtonSettings
                 {
+                    Name = "buttonFamilyId",
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,
@@ -155,19 +148,6 @@ namespace LogicPOS.UI.Components.Menus
             Update();
         }
 
-        private void LoadAllTables()
-        {
-            var tables = _mediator.Send(new GetAllTablesQuery()).Result;
-            
-            if (tables.IsError == false)
-            {
-                AllTables = tables.Value.ToList();
-                return;
-            }
-
-            AllTables = new List<Api.Entities.Table>();
-        }
-
         public void LoadEntities()
         {
             if (AppSettings.Instance.useImageOverlay == false)
@@ -178,25 +158,42 @@ namespace LogicPOS.UI.Components.Menus
             CurrentPage = 1;
             CustomButton currentButton = null;
 
-            SelectedTable = (InitialTable != null) ? InitialTable : null;
+            SelectedPlace = InitialPlace;
 
             if (Buttons.Count > 0)
             {
                 Buttons.Clear();
             }
 
-            if (AllTables == null)
+            IEnumerable<Place> places = Enumerable.Empty<Place>();
+            var getPlacesResult = _mediator.Send(new GetAllPlacesQuery()).Result;
+
+            if (getPlacesResult.IsError == false)
             {
-                LoadAllTables();
+                places = getPlacesResult.Value;
             }
 
-            var tables = AllTables.Where(x => x.PlaceId == PlacesMenu.SelectedPlace.Id).ToList();
-
-            if (tables.Count > 0)
+            if(TerminalService.Terminal.PlaceId != null)
             {
-                foreach (var table in tables)
+                places = places.Where(t => t.Id == TerminalService.Terminal.PlaceId);
+            }
+
+
+            if (places.Any())
+            {
+                foreach (var place in places)
                 {
-                    ButtonLabel = table.Designation;
+                    if (SelectedPlace == null)
+                    {
+                        SelectedPlace = place;
+
+                        if (InitialPlace == null)
+                        {
+                            InitialPlace = SelectedPlace;
+                        }
+                    }
+
+                    ButtonLabel = place.Designation;
 
                     ButtonImage = null;
 
@@ -207,10 +204,10 @@ namespace LogicPOS.UI.Components.Menus
 
                     currentButton = InitializeButton();
                     currentButton.Clicked += Button_Clicked;
-                    Buttons.Add((table, currentButton));
-                    currentButton.CurrentButtonId = table.Id;
+                    Buttons.Add((place, currentButton));
+                    currentButton.CurrentButtonId = place.Id;
 
-                    if (SaleContext.CurrentTable != null &&  table.Id == SaleContext.CurrentTable.Id)
+                    if (place.Id == InitialPlace.Id)
                     {
                         if (ToggleMode)
                         {
@@ -250,14 +247,14 @@ namespace LogicPOS.UI.Components.Menus
                 SelectedButton.Sensitive = false;
             }
 
-            SelectedTable = Buttons.Find(x => x.Button == SelectedButton).Table;
+            SelectedPlace = Buttons.Find(x => x.Button == SelectedButton).Place;
 
-            TableSelected?.Invoke(SelectedTable);
+            PlaceSelected?.Invoke(SelectedPlace);
         }
 
         internal void Refresh()
         {
-            Buttons = new List<(Api.Entities.Table, CustomButton)>();
+            Buttons = new List<(Place, CustomButton)>();
             LoadEntities();
         }
     }

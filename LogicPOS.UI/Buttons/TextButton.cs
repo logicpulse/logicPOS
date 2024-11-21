@@ -7,9 +7,8 @@ namespace LogicPOS.UI.Buttons
     {
         public Gtk.Label ButtonLabel { get; set; }
 
-        public TextButton(
-            ButtonSettings settings,
-            bool initialize = true) :
+        public TextButton(ButtonSettings settings,
+                          bool initialize = true) :
             base(settings)
         {
             ButtonLabel = new Gtk.Label(settings.Text);

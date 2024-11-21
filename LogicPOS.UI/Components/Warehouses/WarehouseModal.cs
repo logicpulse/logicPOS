@@ -151,7 +151,7 @@ namespace LogicPOS.UI.Components.Modals
                                           .WithParent(this)
                                           .WithTitleResource("global_warning")
                                           .WithMessageResource("dialog_message_delete_record")
-                                          .Show();
+                                          .ShowAlert();
 
                 if (responseType != ResponseType.Yes)
                 {

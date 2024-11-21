@@ -2,7 +2,6 @@
 using Gtk;
 using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.shared.Enums;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -358,60 +357,6 @@ namespace LogicPOS.UI.Components
 
         }
 
-        private void BtnChangeTable_Clicked(object sender, EventArgs e)
-        {
-            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
-            ResponseType response = (ResponseType)dialog.Run();
-
-            if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
-            {
-                if (response == ResponseType.Ok)
-                {
-                    OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-                    pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
-                    pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
-
-                    if (xNewTable.TableStatus != TableStatus.Free)
-                    {
-                        CustomAlerts.Error(POSWindow.Instance)
-                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
-                                    .ShowAlert();
-                    }
-                    else
-                    {
-                        //Put Old table Status to Free
-                        xOldTable.TableStatus = TableStatus.Free;
-                        xOldTable.Save();
-                        XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), xOldTable.Designation));
-
-                        //Put New table Status to Open
-                        xNewTable.TableStatus = TableStatus.Open;
-                        xNewTable.Save();
-                        XPOUtility.Audit("TABLE_CLOSE", string.Format(GeneralUtils.GetResourceByName("audit_message_table_close"), xNewTable.Designation));
-
-                        //Change DocumentOrderMain table, If OpenOrder Exists in That table
-                        Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-                        fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(documentOrderMainOid);
-                        if (xDocumentOrderMain != null)
-                        {
-                            xDocumentOrderMain.PlaceTable = xNewTable;
-                            xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
-                            xDocumentOrderMain.Save();
-                        }
-                        //Assign Session Data
-                        currentOrderMain.Table.Oid = xNewTable.Oid;
-                        currentOrderMain.Table.Name = xNewTable.Designation;
-                        currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-                        currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-                        currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
-                        POSSession.CurrentSession.Save();
-                        //Finally Update Status Bar, Table Name, Totals Etc
-                        UpdateOrderStatusBar();
-                    }
-                }
-                dialog.Destroy();
-            };
-        }
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
@@ -472,24 +417,6 @@ namespace LogicPOS.UI.Components
         {
             Guid result = new Guid();
             return result;
-        }
-
-        private void BtnSelectTable_Clicked(object sender, EventArgs e)
-        {
-            PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent);
-            ResponseType response = (ResponseType)dialog.Run();
-
-            if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
-            {
-                if (response == ResponseType.Ok)
-                {
-                    SelectTableOrder(dialog.CurrentTableOid);
-                    UpdateArticleBag();
-                    UpdateSaleOptionsPanelOrderButtons();
-                    UpdateOrderStatusBar();
-                }
-                dialog.Destroy();
-            };
         }
 
         public void SelectTableOrder(Guid tableId)

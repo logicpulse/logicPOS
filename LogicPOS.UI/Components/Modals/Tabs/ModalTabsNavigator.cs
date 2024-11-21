@@ -46,22 +46,20 @@ namespace LogicPOS.UI.Components.Modals.Common
                 page.Button = new IconButtonWithText(
                     new ButtonSettings
                     {
-                        Name = page.TabName,
+                        Name = "buttonUserId",
                         Text = page.TabName,
                         Font = BtnNavigatorFont,
                         FontColor = Color.White,
                         Icon = page.TabIcon,
                         IconSize = BtnNavigatorIconSize,
-                        ButtonSize = BtnNavigatorSize,
-                        BackgroundColor = HotButtonBackgroundColor
+                        ButtonSize = BtnNavigatorSize
                     });
 
                 page.Button.Sensitive = (i == 0);
 
                 if (i == 0)
                 {
-                    page.Button.ModifyBg(StateType.Normal,
-                                         HotButtonBackgroundColor.ToGdkColor());
+                    page.Button.ModifyBg(StateType.Normal,HotButtonBackgroundColor.ToGdkColor());
 
                     CurrentTab = page;
                 }
@@ -110,7 +108,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             BtnPrevious = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "buttonPrev",
+                    Name = "buttonUserId",
                     BackgroundColor = HotButtonBackgroundColor,
                     Text = GeneralUtils.GetResourceByName("pos_button_label_prev_pages_toolbar"),
                     Font = BtnNavigatorFont,
@@ -124,7 +122,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             BtnNext = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "buttonNext",
+                    Name = "buttonUserId",
                     BackgroundColor = HotButtonBackgroundColor,
                     Text = GeneralUtils.GetResourceByName("pos_button_label_next_pages_toolbar"),
                     Font = BtnNavigatorFont,
@@ -190,6 +188,7 @@ namespace LogicPOS.UI.Components.Modals.Common
         {
             CurrentTab.Button.Sensitive = true;
             CurrentTab.Button.ModifyBg(StateType.Normal, HotButtonBackgroundColor.ToGdkColor());
+
 
             if (CurrentTab.Visible == false)
             {

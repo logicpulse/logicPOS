@@ -12,7 +12,6 @@ namespace LogicPOS.Settings
 
         public static string DateFormat { get; set; } = "yyyy-MM-dd";
         public static string DateTimeFormat { get; set; } = "yyyy-MM-dd HH:mm:ss";
-        public static string DateTimeFormatHour { get; set; } = "HH:mm:ss";
         public static string DecimalFormat { get; set; } = "0.00";
         public static string DecimalFormatStockQuantity { get; set; } = "0.00000000";
         public static string FileFormatDateTime { get; set; }
