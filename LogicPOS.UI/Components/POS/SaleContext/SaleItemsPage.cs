@@ -57,6 +57,7 @@ namespace LogicPOS.UI.Components.POS
             model.Clear();
 
             SetTicketModeBackGround();
+            UpdateLabelTotalValue();
         }
 
         private void InitializeGridView()
@@ -238,7 +239,7 @@ namespace LogicPOS.UI.Components.POS
         public void UpdateLabelTotalValue()
         {
             var total = Ticket?.TotalFinal ?? Order?.TotalFinal ?? 0;
-            LabelTotalValue.Text = total.ToString("0.00");
+            LabelTotalValue.Text = total.ToString("C");
         }
 
         private void GridViewRow_Changed(object sender, EventArgs e)

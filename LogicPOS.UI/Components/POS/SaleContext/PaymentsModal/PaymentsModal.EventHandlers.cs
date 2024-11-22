@@ -132,9 +132,8 @@ namespace LogicPOS.UI.Components.POS
 
         private void ProcessPartialPayment()
         {
-            SaleContext.ItemsPage.Clear(true);
             SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);
-            SaleContext.UpdatePOSLabels();
+            SaleContext.ReloadCurrentOrder();
         }
 
         private void ProcessFullPayment()

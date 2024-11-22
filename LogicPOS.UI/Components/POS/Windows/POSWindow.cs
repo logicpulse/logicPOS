@@ -641,7 +641,7 @@ namespace LogicPOS.UI.Components.Windows
             saleItemsPageEventBox.HeightRequest = size.Height;
 
             dynamic saleItemsPageTheme = theme.Objects.EventBoxPosTicketList;
-            SaleContext.ItemsPage = new SaleItemsPage(this, saleItemsPageTheme, SaleContext.CurrentOrder);
+            SaleContext.ItemsPage = new SaleItemsPage(this, saleItemsPageTheme);
             saleItemsPageEventBox.Add(SaleContext.ItemsPage);
 
             FixedWindow.Put(saleItemsPageEventBox, position.X, position.Y);
