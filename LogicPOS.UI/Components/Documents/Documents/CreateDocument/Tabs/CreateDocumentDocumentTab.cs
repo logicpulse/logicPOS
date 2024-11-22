@@ -352,7 +352,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (documentType.IsGuide())
             {
-                TxtOriginDocument.Require(true);
+                TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(false, false);
                 TxtNotes.Require(false);
             }
@@ -365,7 +365,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
             else if (documentType.IsInvoice())
             {
-                TxtOriginDocument.Require(false, false);
+                TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(true);
                 TxtNotes.Require(false);
 

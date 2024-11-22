@@ -29,69 +29,11 @@ namespace LogicPOS.UI.Components.POS
         private void AddEventHandlers()
         {
             BtnClearCustomer.Clicked += BtnClearCustomer_Clicked;
-            BtnMoney.Clicked += BtnMoney_Clicked;
-            BtnCheck.Clicked += BtnCheck_Clicked;
-            BtnMB.Clicked += BtnMB_Clicked;
-            BtnCreditCard.Clicked += BtnCreditCard_Clicked;
-            BtnDebitCard.Clicked += BtnDebitCard_Clicked;
-            BtnVisa.Clicked += BtnVisa_Clicked;
-            BtnCustomerCard.Clicked += BtnCustomerCard_Clicked;
-            BtnCurrentAccount.Clicked += BtnCurrentAccount_Clicked;
-            PaymentMethodButtons.ForEach(button => { button.Clicked += BtnPaymentMethod_Clicked; });
             BtnInvoice.Clicked += BtnInvoice_Clicked;
             BtnNewCustomer.Clicked += BtnNewCustomer_Clicked;
             BtnOk.Clicked += BtnOk_Clicked;
             BtnPartialPayment.Clicked += BtnPartialPayment_Clicked;
             BtnFullPayment.Clicked += BtnFullPayment_Clicked;
-        }
-
-        private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("CURRENT_ACCOUNT");
-        }
-
-        private void BtnCustomerCard_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("CUSTOMER_CARD");
-        }
-
-        private void BtnVisa_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("VISA");
-        }
-
-        private void BtnDebitCard_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("DEBIT_CARD");
-        }
-
-        private void BtnCreditCard_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("CREDIT_CARD");
-        }
-
-        private void BtnMB_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("CASH_MACHINE");
-        }
-
-        private void BtnCheck_Clicked(object sender, EventArgs e)
-        {
-            SelectPaymentMethodByToken("BANK_CHECK");
-        }
-
-        private void BtnMoney_Clicked(object sender, EventArgs e)
-        {
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(this, TotalFinal);
-
-            if (result.Response != ResponseType.Ok)
-            {
-                return;
-            }
-
-            SelectPaymentMethodByToken("MONEY");
-
-            TotalDelivery = result.Value;
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)
@@ -215,10 +157,24 @@ namespace LogicPOS.UI.Components.POS
             Clear();
         }
 
-        private void BtnPaymentMethod_Clicked(object sender, EventArgs e)
+        private void PaymentMethodSelected(PaymentMethod paymentMethod)
         {
-            EnableAllPaymentMethodButtons();
-            (sender as IconButtonWithText).Sensitive = false;
+            if (paymentMethod.Acronym == "NU")
+            {
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(this, TotalFinal);
+
+                if (result.Response == ResponseType.Ok)
+                {
+                    TotalDelivery = result.Value;
+                    TotalChange = TotalDelivery - TotalFinal;
+                }
+                else
+                {
+                    TotalDelivery = TotalFinal;
+                    TotalChange = 0;
+                }
+            }
+
             UncheckInvoiceMode();
             UpdateTotals();
         }
@@ -240,7 +196,7 @@ namespace LogicPOS.UI.Components.POS
 
             EnableAllPaymentMethodButtons();
             BtnInvoice.Sensitive = false;
-            _selectedPaymentMethod = null;
+            PaymentMethodsMenu.SelectedPaymentMethod = null;
 
             UpdateTotals();
         }

@@ -30,10 +30,10 @@ namespace LogicPOS.UI.Components.POS
     {
         private IEnumerable<PaymentMethod> _paymentMethods;
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        private PaymentMethod _selectedPaymentMethod;
         private PaymentCondition _selectedPaymentCondition;
         private PaymentMode _paymentMode = PaymentMode.Full;
         private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
+        private PaymentMethod PaymentMethod => PaymentMethodsMenu.SelectedPaymentMethod;
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
@@ -41,21 +41,14 @@ namespace LogicPOS.UI.Components.POS
 
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
-                                                   new Size(633, 620),
+                                                   new Size(640, 700),
                                                    PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_payments.png")
         {
-            _paymentMethods = GetPaymentMethods();
-            SelectDefaultPaymentMethod();
+      
             UpdateLabels();
         }
 
-        private void SelectDefaultPaymentMethod()
-        {
-            SelectPaymentMethodByToken("MONEY");
-            BtnMoney.Sensitive = false;
-            TotalDelivery = TotalFinal;
-        }
-
+ 
         private void UpdateLabels()
         {
             LabelTotalValue.Text = TotalFinal.ToString("C");
@@ -94,9 +87,9 @@ namespace LogicPOS.UI.Components.POS
 
         private void EnableAllPaymentMethodButtons(bool enable = true)
         {
-            foreach (var button in PaymentMethodButtons)
+            foreach (var button in PaymentMethodsMenu.Buttons)
             {
-                button.Sensitive = enable;
+                button.Button.Sensitive = enable;
             }
         }
 
@@ -117,16 +110,11 @@ namespace LogicPOS.UI.Components.POS
             return false;
         }
 
-        private void SelectPaymentMethodByToken(string token)
-        {
-            _selectedPaymentMethod = _paymentMethods.FirstOrDefault(x => x.Token == token);
-        }
-
         private void UpdateTotals()
         {
             UpdateTotalFinal();
 
-            if (_selectedPaymentMethod == null || _selectedPaymentMethod.Acronym != "NU")
+            if (PaymentMethod == null || PaymentMethod.Acronym != "NU")
             {
                 TotalDelivery = TotalFinal;
                 TotalChange = 0;
@@ -177,19 +165,6 @@ namespace LogicPOS.UI.Components.POS
             TxtCountry.Text = customer.Country.Designation;
             TxtCountry.SelectedEntity = customer.Country;
             TxtNotes.Text = customer.Notes;
-        }
-
-        private IEnumerable<PaymentMethod> GetPaymentMethods()
-        {
-            var getResult = _mediator.Send(new GetAllPaymentMethodsQuery()).Result;
-
-            if (getResult.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(this, getResult.FirstError);
-                return Enumerable.Empty<PaymentMethod>();
-            }
-
-            return getResult.Value;
         }
 
         private void Clear()
@@ -258,14 +233,14 @@ namespace LogicPOS.UI.Components.POS
         {
             var paymentMethods = new List<AddDocumentPaymentMethodDto>();
 
-            if (_selectedPaymentMethod == null)
+            if (PaymentMethod == null)
             {
                 return null;
             }
 
             paymentMethods.Add(new AddDocumentPaymentMethodDto
             {
-                PaymentMethodId = _selectedPaymentMethod.Id,
+                PaymentMethodId = PaymentMethod.Id,
                 Amount = TotalFinal
             });
 

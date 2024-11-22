@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using LogicPOS.UI.Extensions;
+using System.Drawing;
+using LogicPOS.UI.Components.Menus;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -30,16 +32,12 @@ namespace LogicPOS.UI.Components.POS
                                                                                                             PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_partial.png");
         private IconButtonWithText BtnInvoice { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
                                                                                                                    GeneralUtils.GetResourceByName("global_documentfinance_type_title_ft"),
-                                                                                                                  PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png");
-        private IconButtonWithText BtnCurrentAccount { get; set; }
-        private IconButtonWithText BtnMoney { get; set; }
-        private IconButtonWithText BtnCheck { get; set; }
-        private IconButtonWithText BtnMB { get; set; }
-        private IconButtonWithText BtnCreditCard { get; set; }
-        private IconButtonWithText BtnDebitCard { get; set; }
-        private IconButtonWithText BtnVisa { get; set; }
-        private IconButtonWithText BtnCustomerCard { get; set; }
-        private List<IconButtonWithText> PaymentMethodButtons { get; set; }
+                                                                                                                 PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png");
+
+        private IconButton BtnPrevious { get; set; }
+        private IconButton BtnNext { get; set; }
+
+        private PaymentMethodsMenu PaymentMethodsMenu { get; set; }
 
         private PageTextBox TxtCustomer { get; set; }
         private PageTextBox TxtFiscalNumber { get; set; }
@@ -83,12 +81,8 @@ namespace LogicPOS.UI.Components.POS
         {
             InitializeTextFields();
             VBox verticalLayout = new VBox(false, 0);
-
-            HBox topPanel = new HBox(false, 0);
-            topPanel.PackStart(CreatePaymentMethodsTable(), true, true, 0);
-            topPanel.PackStart(CreateTotalsTable(), true, true, 0);
-
-            verticalLayout.PackStart(topPanel, true, true, 0);
+            verticalLayout.PackStart(CreateTotalsTable(), true, true, 0);
+            verticalLayout.PackStart(CreatePaymentMethodsPanel(), true, true, 0);
             verticalLayout.PackStart(PageTextBox.CreateHbox(TxtFiscalNumber, TxtCardNumber), true, true, 0);
             verticalLayout.PackStart(PageTextBox.CreateHbox(TxtCustomer, TxtDiscount), true, true, 0);
             verticalLayout.PackStart(TxtAddress.Component, true, true, 0);
@@ -99,31 +93,23 @@ namespace LogicPOS.UI.Components.POS
             return verticalLayout;
         }
 
-        private IconButtonWithText CreatePaymentMethodButton(string text, string iconPath)
+        private HBox CreatePaymentMethodsPanel()
         {
-            var font = AppSettings.Instance.fontBaseDialogButton;
-            var fontColor = AppSettings.Instance.colorBaseDialogDefaultButtonFont;
-            var buttonIconSize = AppSettings.Instance.sizeBaseDialogDefaultButtonIcon;
-            var buttonSize = AppSettings.Instance.sizeBaseDialogDefaultButton;
-
-            return new IconButtonWithText(
-                new ButtonSettings
-                {
-                    Name = "touchButton_Green",
-                    Text = text,
-                    Font = font,
-                    FontColor = fontColor,
-                    Icon = iconPath,
-                    IconSize = buttonIconSize,
-                    ButtonSize = buttonSize
-                });
+            HBox hbox = new HBox(false, 0);
+            PaymentMethodsMenu = new PaymentMethodsMenu(BtnPrevious, BtnNext);
+            PaymentMethodsMenu.PaymentMethodSelected += PaymentMethodSelected;
+            hbox.HeightRequest = AppSettings.Instance.sizeBaseDialogDefaultButton.Height + 10;
+            hbox.PackStart(BtnPrevious, false, false, 0);
+            hbox.PackStart(PaymentMethodsMenu, true, true, 0);
+            hbox.PackEnd(BtnNext, false, false, 0);
+            return hbox;
         }
 
         private EventBox CreateTotalsTable()
         {
-            uint padding = 9;
+            uint padding = 5;
             Gtk.Table table = new Gtk.Table(3, 2, false);
-            table.HeightRequest = 132;
+            table.HeightRequest = 100;
 
             //Row 1
             table.Attach(LabelTotal, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
@@ -138,31 +124,11 @@ namespace LogicPOS.UI.Components.POS
             table.Attach(LabelChangeValue, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 
             EventBox eventBox = new EventBox();
-            eventBox.BorderWidth = 4;
+            eventBox.BorderWidth = 2;
             eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.colorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
             eventBox.Add(table);
 
             return eventBox;
-        }
-
-        private Gtk.Table CreatePaymentMethodsTable()
-        {
-            uint padding = 0;
-            Gtk.Table table = new Gtk.Table(2, 3, true) { BorderWidth = 2 };
-
-            //Row 1
-            table.Attach(BtnMoney, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnMB, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnDebitCard, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnVisa, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-
-            //Row 2
-            table.Attach(BtnCheck, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnCreditCard, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnCurrentAccount, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnCustomerCard, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-
-            return table;
         }
 
         private void InitializeTextFields()
@@ -298,47 +264,38 @@ namespace LogicPOS.UI.Components.POS
 
         private void InitializeButtons()
         {
-            InitializePaymentMethodButtons();
-
-            PaymentMethodButtons = new List<IconButtonWithText> {
-                BtnMoney,
-                BtnCheck,
-                BtnMB,
-                BtnCreditCard,
-                BtnDebitCard,
-                BtnVisa,
-                BtnCustomerCard,
-                BtnCurrentAccount};
-
+            InitializeScrollersButtons();
             AddEventHandlers();
             BtnFullPayment.Sensitive = false;
         }
 
-        private void InitializePaymentMethodButtons()
+        private void InitializeScrollersButtons()
         {
-            BtnMoney = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_money"),
-                                                             PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_money.png");
+            BtnPrevious = new IconButton(
+              new ButtonSettings
+              {
+                  BackgroundColor = Color.White,
+                  Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
+                  IconSize = new Size(62, 31),
+                  ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+              });
 
-            BtnCheck = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_bank_check"),
-                                                 PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_bank_check.png");
+            BtnNext = new IconButton(
+               new ButtonSettings
+               {
+                   BackgroundColor = Color.White,
+                   Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
+                   IconSize = new Size(62, 31),
+                   ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+               });
 
-            BtnMB = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_cash_machine"),
-                                              PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_cash_machine.png");
+            BtnPrevious.Relief = ReliefStyle.None;
+            BtnPrevious.BorderWidth = 0;
+            BtnPrevious.CanFocus = false;
 
-            BtnCreditCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_credit_card"),
-                                                      PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_credit_card.png");
-
-            BtnDebitCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_debit_card"),
-                                                     PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_debit_card.png");
-
-            BtnVisa = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_visa"),
-                                                PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_visa.png");
-
-            BtnCustomerCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_customer_card"),
-                                                        PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_customer_card.png");
-
-            BtnCurrentAccount = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_current_account"),
-                                                          PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_current_account.png");
+            BtnNext.Relief = ReliefStyle.None;
+            BtnNext.BorderWidth = 0;
+            BtnNext.CanFocus = false;
         }
     }
 }
