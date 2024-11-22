@@ -18,26 +18,34 @@ namespace LogicPOS.UI.Components.POS
         public static SaleItemsPage ItemsPage { get; set; }
         public static Table CurrentTable { get; private set; }
         public static PosOrder CurrentOrder { get; private set; }
-        public static List<PosOrder> Orders { get; private set; } = new List<PosOrder>();
+
+        public static void ReloadCurrentOrder()
+        {
+            if(CurrentOrder.Id == null)
+            {
+                return;
+            }
+
+            CurrentOrder = OrdersService.GetPosOrder(CurrentOrder.Id.Value);
+            ItemsPage.Clear(true);
+            ItemsPage.PresentOrderItems();
+            UpdatePOSLabels();
+        }
 
         public static void SetCurrentTable(Table table)
         {
             CurrentTable = table;
-            ReloadOrders();
-            CurrentOrder = Orders.FirstOrDefault(o => o.Table.Id == table.Id);
+            CurrentOrder = OrdersService.GetOpenPosOrders(table.Id)
+                                        .FirstOrDefault();
 
             if (CurrentOrder == null)
             {
                 CurrentOrder = new PosOrder(table);
-                Orders.Add(CurrentOrder);
             }
 
-            UpdatePOSLabels();
-
             ItemsPage.Clear(true);
-            ItemsPage.Order = CurrentOrder;
             ItemsPage.PresentOrderItems();
-            ItemsPage.UpdateLabelTotalValue();
+            UpdatePOSLabels();
         }
 
         public static void UpdatePOSLabels()
@@ -52,13 +60,6 @@ namespace LogicPOS.UI.Components.POS
             {
                 POSWindow.Instance.LabelTotalTable.Text = POSWindow.Instance.LabelTotalTable.Text = $"{CurrentOrder.TotalFinal:0.00} : #{CurrentOrder.Tickets.Count}";
             }
-        }
-
-        public static void ReloadOrders()
-        {
-            Orders.Clear();
-            var orders = OrdersService.GetOpenPosOrders();
-            Orders.AddRange(orders);
         }
 
         public static void Initialize()

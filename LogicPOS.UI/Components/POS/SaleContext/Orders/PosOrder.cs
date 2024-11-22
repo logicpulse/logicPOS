@@ -63,6 +63,11 @@ namespace LogicPOS.UI.Components.POS
            return SaleItem.GetOrderDetailsFromSaleItems(GetOrderItems());
         }
 
+        public bool ReduceItems(IEnumerable<SaleItem> items)
+        {
+            return OrdersService.ReduceOrderItems(Id.Value, items);
+        }
+
         public void Close()
         {
             if(Id != null)

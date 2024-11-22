@@ -132,7 +132,9 @@ namespace LogicPOS.UI.Components.POS
 
         private void ProcessPartialPayment()
         {
-            throw new NotImplementedException();
+            SaleContext.ItemsPage.Clear(true);
+            SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);
+            SaleContext.UpdatePOSLabels();
         }
 
         private void ProcessFullPayment()
@@ -296,10 +298,10 @@ namespace LogicPOS.UI.Components.POS
 
             if (response == ResponseType.Ok && partialPaymentModal.Page.SelectedItems.Any())
             {
-                _paymentMode = PaymentMode.Partial;
                 _partialPaymentItems = partialPaymentModal.Page.SelectedItems;
                 TotalDelivery = _partialPaymentItems.Sum(x => x.TotalFinal);
                 TotalChange = 0;
+                _paymentMode = (TotalDelivery >= TotalFinal) ? PaymentMode.Full : PaymentMode.Partial;
             }
             partialPaymentModal.Destroy();
 

@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Orders.AddTicket;
 using LogicPOS.Api.Features.Orders.CloseOrder;
 using LogicPOS.Api.Features.Orders.CreateOrder;
 using LogicPOS.Api.Features.Orders.GetAllOrders;
+using LogicPOS.Api.Features.Orders.ReduceItems;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Errors;
 using MediatR;
@@ -110,6 +111,49 @@ namespace LogicPOS.UI.Services
             }
 
             return true;
+        }
+
+        public static bool ReduceOrderItems(Guid orderId, IEnumerable<SaleItem> items)
+        {
+            var command = new ReduceOrderItemsCommand();
+            items = SaleItem.Compact(items);
+
+            command.OrderId = orderId;
+            command.Items = items.Select(i => new ReduceOrderItemDto
+            {
+                ArticleId = i.Article.Id,
+                Quantity = (int)i.Quantity,
+                UnitPrice = i.UnitPrice
+            }).ToList();
+
+            var reduceResult = _mediator.Send(command).Result;
+
+            if (reduceResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(reduceResult.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static PosOrder GetPosOrder(Guid orderId)
+        {
+            var orders = GetOpenOrders();
+
+            if (orders == null)
+            {
+                return null;
+            }
+
+            var order = orders.FirstOrDefault(o => o.Id == orderId);
+
+            if (order == null)
+            {
+                return null;
+            }
+
+            return new PosOrder(order);
         }
     }
 }
