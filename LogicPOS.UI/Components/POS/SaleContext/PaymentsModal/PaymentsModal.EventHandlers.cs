@@ -9,18 +9,42 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace LogicPOS.UI.Components.POS
 {
     public partial class PaymentsModal
     {
+        private void AddEventHandlers()
+        {
+            BtnClearCustomer.Clicked += BtnClearCustomer_Clicked;
+            BtnMoney.Clicked += BtnMoney_Clicked;
+            BtnCheck.Clicked += BtnCheck_Clicked;
+            BtnMB.Clicked += BtnMB_Clicked;
+            BtnCreditCard.Clicked += BtnCreditCard_Clicked;
+            BtnDebitCard.Clicked += BtnDebitCard_Clicked;
+            BtnVisa.Clicked += BtnVisa_Clicked;
+            BtnCustomerCard.Clicked += BtnCustomerCard_Clicked;
+            BtnCurrentAccount.Clicked += BtnCurrentAccount_Clicked;
+            PaymentMethodButtons.ForEach(button => { button.Clicked += BtnPaymentMethod_Clicked; });
+            BtnInvoice.Clicked += BtnInvoice_Clicked;
+            BtnNewCustomer.Clicked += BtnNewCustomer_Clicked;
+            BtnOk.Clicked += BtnOk_Clicked;
+            BtnPartialPayment.Clicked += BtnPartialPayment_Clicked;
+            BtnFullPayment.Clicked += BtnFullPayment_Clicked;
+        }
+
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
             SelectPaymentMethodByToken("CURRENT_ACCOUNT");
@@ -85,14 +109,38 @@ namespace LogicPOS.UI.Components.POS
 
             if (addDocumentResult.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, addDocumentResult.FirstError);
+                ErrorHandlingService.HandleApiError(addDocumentResult.FirstError, source: this);
                 Run();
                 return;
             }
+
+            ProcesPayment();
+
             PrintDocument(addDocumentResult.Value);
         }
 
+        private void ProcesPayment()
+        {
+            if (_paymentMode == PaymentMode.Full)
+            {
+                ProcessFullPayment();
+                return;
+            }
 
+            ProcessPartialPayment();
+        }
+
+        private void ProcessPartialPayment()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ProcessFullPayment()
+        {
+            SaleContext.ItemsPage.Clear(true);
+            SaleContext.CurrentOrder.Close();
+            SaleContext.UpdatePOSLabels();
+        }
 
         private void PrintDocument(Guid id)
         {
@@ -112,7 +160,6 @@ namespace LogicPOS.UI.Components.POS
             CompanyPrintingInformationsDto companyInformationsDto = GetCompanyPrintingInformation();
             new ThermalPrinting(printer, companyInformationsDto, docCopyName, document, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
         }
-
 
         protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
         {
@@ -162,10 +209,6 @@ namespace LogicPOS.UI.Components.POS
             };
         }
 
-
-
-
-
         private void BtnNewCustomer_Clicked(object sender, EventArgs e)
         {
             Clear();
@@ -174,8 +217,8 @@ namespace LogicPOS.UI.Components.POS
         private void BtnPaymentMethod_Clicked(object sender, EventArgs e)
         {
             EnableAllPaymentMethodButtons();
-            BtnInvoice.Sensitive = true;
             (sender as IconButtonWithText).Sensitive = false;
+            UncheckInvoiceMode();
             UpdateTotals();
         }
 
@@ -246,5 +289,40 @@ namespace LogicPOS.UI.Components.POS
             base.OnResponse(response);
         }
 
+        private void BtnPartialPayment_Clicked(object sender, EventArgs e)
+        {
+            var partialPaymentModal = new PartialPaymentModal(this);
+            ResponseType response = (ResponseType)partialPaymentModal.Run();
+
+            if (response == ResponseType.Ok && partialPaymentModal.Page.SelectedItems.Any())
+            {
+                _paymentMode = PaymentMode.Partial;
+                _partialPaymentItems = partialPaymentModal.Page.SelectedItems;
+                TotalDelivery = _partialPaymentItems.Sum(x => x.TotalFinal);
+                TotalChange = 0;
+            }
+            partialPaymentModal.Destroy();
+
+            UncheckInvoiceMode();
+            UpdateButtons();
+            UpdateTotals();
+        }
+
+        private void BtnFullPayment_Clicked(object sender, EventArgs e)
+        {
+            _paymentMode = PaymentMode.Full;
+            TotalFinal = OrderTotalFinal;
+            TotalDelivery = OrderTotalFinal;
+            TotalChange = 0;
+            UncheckInvoiceMode();
+            UpdateButtons();
+            UpdateTotals();
+        }
+
+        private void UpdateButtons()
+        {
+            BtnPartialPayment.Sensitive = _paymentMode == PaymentMode.Full;
+            BtnFullPayment.Sensitive = _paymentMode == PaymentMode.Partial;
+        }
     }
 }

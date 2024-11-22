@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.AddDocument;
+using LogicPOS.Api.Features.Orders.CreateOrder;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -11,10 +12,12 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -29,6 +32,8 @@ namespace LogicPOS.UI.Components.POS
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private PaymentMethod _selectedPaymentMethod;
         private PaymentCondition _selectedPaymentCondition;
+        private PaymentMode _paymentMode = PaymentMode.Full;
+        private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
@@ -53,9 +58,9 @@ namespace LogicPOS.UI.Components.POS
 
         private void UpdateLabels()
         {
-            LabelTotalValue.Text = TotalFinal.ToString();
-            LabelDeliveryValue.Text = TotalDelivery.ToString();
-            LabelChangeValue.Text = TotalChange.ToString();
+            LabelTotalValue.Text = TotalFinal.ToString("C");
+            LabelDeliveryValue.Text = TotalDelivery.ToString("C");
+            LabelChangeValue.Text = TotalChange.ToString("C");
         }
 
         private void InitializeLabels()
@@ -87,46 +92,12 @@ namespace LogicPOS.UI.Components.POS
             LabelChangeValue.ModifyFont(fontDescriptionValue);
         }
 
-        private void InitializeButtons()
-        {
-            InitializePaymentMethodButtons();
-
-            PaymentMethodButtons = new List<IconButtonWithText> {
-                BtnMoney,
-                BtnCheck,
-                BtnMB,
-                BtnCreditCard,
-                BtnDebitCard,
-                BtnVisa,
-                BtnCustomerCard,
-                BtnCurrentAccount};
-
-            AddEventHandlers();
-        }
-
         private void EnableAllPaymentMethodButtons(bool enable = true)
         {
             foreach (var button in PaymentMethodButtons)
             {
                 button.Sensitive = enable;
             }
-        }
-
-        private void AddEventHandlers()
-        {
-            BtnClearCustomer.Clicked += BtnClearCustomer_Clicked;
-            BtnMoney.Clicked += BtnMoney_Clicked;
-            BtnCheck.Clicked += BtnCheck_Clicked;
-            BtnMB.Clicked += BtnMB_Clicked;
-            BtnCreditCard.Clicked += BtnCreditCard_Clicked;
-            BtnDebitCard.Clicked += BtnDebitCard_Clicked;
-            BtnVisa.Clicked += BtnVisa_Clicked;
-            BtnCustomerCard.Clicked += BtnCustomerCard_Clicked;
-            BtnCurrentAccount.Clicked += BtnCurrentAccount_Clicked;
-            PaymentMethodButtons.ForEach(button => { button.Clicked += BtnPaymentMethod_Clicked; });
-            BtnInvoice.Clicked += BtnInvoice_Clicked;
-            BtnNewCustomer.Clicked += BtnNewCustomer_Clicked;
-            BtnOk.Clicked += BtnOk_Clicked;
         }
 
         private bool SelectPaymentCondition()
@@ -151,42 +122,9 @@ namespace LogicPOS.UI.Components.POS
             _selectedPaymentMethod = _paymentMethods.FirstOrDefault(x => x.Token == token);
         }
 
-        private void InitializePaymentMethodButtons()
-        {
-            BtnMoney = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_money"),
-                                                             PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_money.png");
-
-            BtnCheck = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_bank_check"),
-                                                 PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_bank_check.png");
-
-            BtnMB = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_cash_machine"),
-                                              PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_cash_machine.png");
-
-            BtnCreditCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_credit_card"),
-                                                      PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_credit_card.png");
-
-            BtnDebitCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_debit_card"),
-                                                     PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_debit_card.png");
-
-            BtnVisa = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_visa"),
-                                                PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_visa.png");
-
-            BtnCustomerCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_customer_card"),
-                                                        PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_customer_card.png");
-
-            BtnCurrentAccount = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_current_account"),
-                                                          PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_current_account.png");
-        }
-
         private void UpdateTotals()
         {
-            if (!decimal.TryParse(TxtDiscount.Text, out decimal discount))
-            {
-                discount = 0;
-            }
-
-            var discountPrice = OrderTotalFinal * discount / 100;
-            TotalFinal = OrderTotalFinal - discountPrice;
+            UpdateTotalFinal();
 
             if (_selectedPaymentMethod == null || _selectedPaymentMethod.Acronym != "NU")
             {
@@ -199,6 +137,32 @@ namespace LogicPOS.UI.Components.POS
             }
 
             UpdateLabels();
+        }
+
+        private void UpdateTotalFinal()
+        {
+            switch (_paymentMode)
+            {
+                case PaymentMode.Full:
+                    TotalFinal = OrderTotalFinal;
+                    break;
+                case PaymentMode.Partial:
+                    TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
+                    break;
+            }
+
+            ApplyGlobalDiscount();
+        }
+
+        private void ApplyGlobalDiscount()
+        {
+            if (!decimal.TryParse(TxtDiscount.Text, out decimal discount))
+            {
+                discount = 0;
+            }
+
+            var discountPrice = TotalFinal * discount / 100;
+            TotalFinal = TotalFinal - discountPrice;
         }
 
         public void ShowCustomerData(Customer customer)
@@ -281,15 +245,20 @@ namespace LogicPOS.UI.Components.POS
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()
-        {
-            return SaleContext.CurrentOrder.GetDocumentDetails();
+        {   
+            if(_paymentMode == PaymentMode.Full)
+            {
+                return SaleContext.CurrentOrder.GetDocumentDetails();
+            }
+
+            return SaleItem.GetOrderDetailsFromSaleItems(_partialPaymentItems);
         }
 
         private IEnumerable<AddDocumentPaymentMethodDto> GetPaymentMethodsDtos()
         {
             var paymentMethods = new List<AddDocumentPaymentMethodDto>();
 
-            if(_selectedPaymentMethod == null)
+            if (_selectedPaymentMethod == null)
             {
                 return null;
             }
@@ -320,6 +289,12 @@ namespace LogicPOS.UI.Components.POS
             command.Details = GetDocumentDetails().ToList();
 
             return command;
+        }
+
+        private void UncheckInvoiceMode()
+        {
+            _selectedPaymentCondition = null;
+            BtnInvoice.Sensitive = true;
         }
     }
 }

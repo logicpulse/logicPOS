@@ -277,7 +277,10 @@ namespace LogicPOS.UI.Components.POS
             if (response != ResponseType.Ok && response != ResponseType.Cancel)
             {
                 Run();
+                return;
             }
+
+            base.OnResponse(response);
         }
     }
 }

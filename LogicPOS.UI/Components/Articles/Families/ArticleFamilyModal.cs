@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Components.Modals
                 Id = _entity.Id,
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
-                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
+                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
                 NewDesignation = _txtDesignation.Text,
                 NewButton = GetButton(),
                 NewNotes = _txtNotes.Value.Text,

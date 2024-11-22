@@ -14,13 +14,12 @@ namespace LogicPOS.UI.Components.Modals
         public Size SelectionPageSize => new Size(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
         public Page<TEntity> Page { get; private set; }
 
-        public EntitySelectionModal(
-            Page<TEntity> page,
-            string title) : base(page.SourceWindow,
-                                 title,
-                                 LogicPOSAppContext.MaxWindowSize,
-                                 $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
-                                 render: false)
+        public EntitySelectionModal(Page<TEntity> page,
+                                    string title) : base(page.SourceWindow,
+                                                         title,
+                                                         LogicPOSAppContext.MaxWindowSize,
+                                                         $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
+                                                         render: false)
         {
             Page = page;
             Page.SetSizeRequest(SelectionPageSize.Width, SelectionPageSize.Height);

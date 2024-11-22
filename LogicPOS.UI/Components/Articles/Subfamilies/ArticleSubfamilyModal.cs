@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,10 +41,10 @@ namespace LogicPOS.UI.Components.Modals
                 NewOrder = uint.Parse(_txtOrder.Text),
                 NewCode = _txtCode.Text,
                 NewFamilyId = _comboFamilies.SelectedEntity.Id,
-                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
-                NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
-                NewVatOnTableId = _comboVatOnTable.SelectedEntity?.Id,
-                NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id,
+                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
+                NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty,
+                NewVatOnTableId = _comboVatOnTable.SelectedEntity?.Id ?? Guid.Empty,
+                NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id ?? Guid.Empty,
                 NewDesignation = _txtDesignation.Text,
                 NewButton = GetButton(),
                 NewNotes = _txtNotes.Value.Text,

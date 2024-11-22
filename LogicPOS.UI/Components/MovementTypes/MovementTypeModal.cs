@@ -1,11 +1,10 @@
-﻿using DevExpress.Schedule;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.MovementTypes.AddMovementType;
 using LogicPOS.Api.Features.MovementTypes.UpdateMovementType;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class MovementTypeModal: EntityEditionModal<MovementType>
+    public partial class MovementTypeModal : EntityEditionModal<MovementType>
     {
         public MovementTypeModal(EntityEditionModalMode modalMode, MovementType entity = null) : base(modalMode, entity)
         {
@@ -30,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewDesignation = _txtDesignation.Text,
                 NewNotes = _txtNotes.Value.Text,
-                VatDirectSelling= _checkVatDirectSelling.Active,
+                VatDirectSelling = _checkVatDirectSelling.Active,
                 IsDeleted = _checkDisabled.Active
             };
         }

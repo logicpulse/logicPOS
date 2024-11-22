@@ -57,6 +57,8 @@ namespace LogicPOS.UI.Components.POS
  
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
+
+            SetTicketModeBackGround();
         }
 
         private void InitializeGridView()

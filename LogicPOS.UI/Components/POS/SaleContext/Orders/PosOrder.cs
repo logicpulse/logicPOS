@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,28 +36,7 @@ namespace LogicPOS.UI.Components.POS
 
             var ticketsItems = Tickets.SelectMany(t => t.Items);
 
-            foreach (var item in ticketsItems)
-            {
-                var existingItem = orderItems.FirstOrDefault(i => i.Article.Id == item.Article.Id);
-
-                if (existingItem == null)
-                {
-                    orderItems.Add(new SaleItem
-                    {
-                        Article = item.Article,
-                        Quantity = item.Quantity,
-                        UnitPrice = item.UnitPrice,
-                        Discount = item.Discount,
-                        Vat = item.Vat
-                    });
-                }
-                else
-                {
-                    existingItem.Quantity += item.Quantity;
-                }
-            }
-
-            return orderItems;
+            return SaleItem.Compact(ticketsItems).ToList();
         }
 
         public PosTicket AddTicket(IEnumerable<SaleItem> items)
@@ -80,22 +60,20 @@ namespace LogicPOS.UI.Components.POS
 
         public IEnumerable<DocumentDetailDto> GetDocumentDetails()
         {
-            var saleItems = GetOrderItems();
-            var details = saleItems.Select(item =>
-            {
-                return new DocumentDetailDto
-                {
-                    ArticleId = item.Article.Id,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    Discount = item.Discount
-                };
-            });
-
-            return details;
+           return SaleItem.GetOrderDetailsFromSaleItems(GetOrderItems());
         }
 
-        public void Clear()
+        public void Close()
+        {
+            if(Id != null)
+            {
+                OrdersService.CloseOrder(Id.Value);
+            }
+
+            Clear();
+        }
+
+        private void Clear()
         {
             Tickets.Clear();
             Id = null;

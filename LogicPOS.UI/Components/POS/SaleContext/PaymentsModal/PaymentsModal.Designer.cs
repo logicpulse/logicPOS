@@ -109,6 +109,7 @@ namespace LogicPOS.UI.Components.POS
             return new IconButtonWithText(
                 new ButtonSettings
                 {
+                    Name = "touchButton_Green",
                     Text = text,
                     Font = font,
                     FontColor = fontColor,
@@ -293,6 +294,51 @@ namespace LogicPOS.UI.Components.POS
 
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
             ValidatableFields.Add(TxtCustomer);
+        }
+
+        private void InitializeButtons()
+        {
+            InitializePaymentMethodButtons();
+
+            PaymentMethodButtons = new List<IconButtonWithText> {
+                BtnMoney,
+                BtnCheck,
+                BtnMB,
+                BtnCreditCard,
+                BtnDebitCard,
+                BtnVisa,
+                BtnCustomerCard,
+                BtnCurrentAccount};
+
+            AddEventHandlers();
+            BtnFullPayment.Sensitive = false;
+        }
+
+        private void InitializePaymentMethodButtons()
+        {
+            BtnMoney = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_money"),
+                                                             PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_money.png");
+
+            BtnCheck = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_bank_check"),
+                                                 PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_bank_check.png");
+
+            BtnMB = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_cash_machine"),
+                                              PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_cash_machine.png");
+
+            BtnCreditCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_credit_card"),
+                                                      PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_credit_card.png");
+
+            BtnDebitCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_debit_card"),
+                                                     PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_debit_card.png");
+
+            BtnVisa = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_visa"),
+                                                PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_visa.png");
+
+            BtnCustomerCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_customer_card"),
+                                                        PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_customer_card.png");
+
+            BtnCurrentAccount = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_current_account"),
+                                                          PathsSettings.ImagesFolderLocation + @"Icons/icon_pos_payment_type_current_account.png");
         }
     }
 }

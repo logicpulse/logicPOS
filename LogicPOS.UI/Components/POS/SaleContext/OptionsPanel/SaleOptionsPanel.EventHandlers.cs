@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             SaleContext.ItemsPage.Clear(true);
-            SaleContext.CurrentOrder.Clear();
+            SaleContext.CurrentOrder.Close();
             SaleContext.ItemsPage.SetTicketModeBackGround();
             SaleContext.UpdatePOSLabels();
         }
@@ -300,14 +300,6 @@ namespace LogicPOS.UI.Components.POS
             var modal = new PaymentsModal(SourceWindow);
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
-
-            if (response == ResponseType.Ok)
-            {
-                SaleContext.ItemsPage.Clear(true);
-                SaleContext.CurrentOrder.Clear();
-                SaleContext.ItemsPage.SetTicketModeBackGround();
-                SaleContext.UpdatePOSLabels();
-            }
         }
 
         private void BtnBarcode_Clicked(object sender, EventArgs e)

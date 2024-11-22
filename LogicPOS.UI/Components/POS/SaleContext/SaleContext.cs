@@ -23,12 +23,10 @@ namespace LogicPOS.UI.Components.POS
         public static void SetCurrentTable(Table table)
         {
             CurrentTable = table;
-
             ReloadOrders();
-
             CurrentOrder = Orders.FirstOrDefault(o => o.Table.Id == table.Id);
-            
-            if(CurrentOrder == null)
+
+            if (CurrentOrder == null)
             {
                 CurrentOrder = new PosOrder(table);
                 Orders.Add(CurrentOrder);
@@ -36,13 +34,10 @@ namespace LogicPOS.UI.Components.POS
 
             UpdatePOSLabels();
 
-            if (ItemsPage != null)
-            {
-                ItemsPage.Clear(true);
-                ItemsPage.Order = CurrentOrder;
-                ItemsPage.PresentOrderItems();
-                ItemsPage.UpdateLabelTotalValue();
-            }
+            ItemsPage.Clear(true);
+            ItemsPage.Order = CurrentOrder;
+            ItemsPage.PresentOrderItems();
+            ItemsPage.UpdateLabelTotalValue();
         }
 
         public static void UpdatePOSLabels()
@@ -68,26 +63,20 @@ namespace LogicPOS.UI.Components.POS
 
         public static void Initialize()
         {
-            ReloadOrders();
-
             if (CurrentTable == null)
             {
                 var defaultTable = GetDefaultTable();
-                SetCurrentTable(defaultTable);
+
+                if (defaultTable != null)
+                {
+                    SetCurrentTable(defaultTable);
+                }
             }
         }
 
         private static Table GetDefaultTable()
         {
-            var tables = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetAllTablesQuery()).Result;
-
-            if (tables.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(POSWindow.Instance, tables.FirstError);
-                Gtk.Application.Quit();
-            }
-
-            return tables.Value.First();
+            return TablesService.GetFreeTables().FirstOrDefault();
         }
     }
 }
