@@ -19,6 +19,8 @@ namespace LogicPOS.Printing.Tickets
         //Parameters
         private readonly Session _session;
         private readonly List<TicketColumn> _columnsProperties;
+        private System.Windows.Forms.Integration.ElementHost elementHost1;
+
         //Other
         private readonly char _columnDivider = ' ';
 
@@ -222,7 +224,7 @@ namespace LogicPOS.Printing.Tickets
                 for (int i = 0; i < this.Columns.Count; i++)
                 {
                     ticketColumn = (TicketColumn)this.Columns[i].ExtendedProperties["Ticket"];
-                    ticketColumn.Width = 30;
+                    if(ticketColumn.Width<0)ticketColumn.Width = 20;
                     string formatedColumn;
                     //Title Mode
                     if (pDataRow == null)
@@ -266,10 +268,10 @@ namespace LogicPOS.Printing.Tickets
                     switch (ticketColumn.Align)
                     {
                         case TicketColumnsAlignment.Left:
-                            formatedColumn = formatedColumn.PadRight(ticketColumn.Width-1);
+                            formatedColumn = formatedColumn.PadRight(ticketColumn.Width);
                             break;
                         case TicketColumnsAlignment.Right:
-                            formatedColumn = formatedColumn.PadLeft(ticketColumn.Width-1);
+                            formatedColumn = formatedColumn.PadLeft(ticketColumn.Width);
                             break;
                     }
 
@@ -406,6 +408,23 @@ namespace LogicPOS.Printing.Tickets
             }
 
             return result;
+        }
+
+        private void InitializeComponent()
+        {
+            this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+            ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
+            // 
+            // elementHost1
+            // 
+            this.elementHost1.Location = new System.Drawing.Point(0, 0);
+            this.elementHost1.Name = "elementHost1";
+            this.elementHost1.Size = new System.Drawing.Size(200, 100);
+            this.elementHost1.TabIndex = 0;
+            this.elementHost1.Text = "elementHost1";
+            this.elementHost1.Child = null;
+            ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
+
         }
     }
 }

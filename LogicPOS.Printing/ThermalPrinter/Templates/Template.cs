@@ -8,6 +8,7 @@ using LogicPOS.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 
 namespace LogicPOS.Printing.Templates
@@ -29,9 +30,10 @@ namespace LogicPOS.Printing.Templates
 
         public Template(
            PrinterDto printer,
-           string terminalDesignation)
+           string terminalDesignation, string userName)
         {
-
+            _terminalDesignation = terminalDesignation;
+            _userName = userName;
         }
 
 
@@ -83,7 +85,22 @@ namespace LogicPOS.Printing.Templates
         }
 
         /* IN009055 */
-        protected void PrintHeader()
+
+        string ConvertBase64ToBmp(string base64String)
+        {
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            var file = Path.GetTempFileName()+".bmp";
+            using (MemoryStream ms = new MemoryStream(imageBytes))
+            {
+                using (Image image = Image.FromStream(ms))
+                {
+                    image.Save(file, System.Drawing.Imaging.ImageFormat.Bmp);
+                }
+            }
+            return file;
+        }
+
+            protected void PrintHeader()
         {
             PrintHeader(false); /* IN009055 - "true" when Order, and "false" when Invoice */
         }
@@ -93,35 +110,26 @@ namespace LogicPOS.Printing.Templates
         /// Please see IN009055 for more details.
         /// </summary>
         /// <param name="isOrder">"true" when Order, and "false" when Invoice</param>
+        /// 
         protected void PrintHeader(bool isOrder)
         {
             _printer.SetAlignCenter();
 
-            string sql = "SELECT value FROM cfg_configurationpreferenceparameter where token = 'TICKET_FILENAME_loggerO';";
-            string result = XPOSettings.Session.ExecuteScalar(sql).ToString();
-
-            string logo = string.Format(
-                @"{0}{1}",
-                PathsSettings.Paths["assets"],
-                _companyInformationsDto
-            );
+           
+            string logo = _companyInformationsDto.Logo;
 
             var printComercialName = _companyInformationsDto.ComercialName;
 
             //Print Logo or Name + BusinessName
             //TK016249 - Impressoras - Diferenciação entre Tipos
 
-            string companyBusinessName = _companyInformationsDto.BusinessName;// _customVars["COMPANY_BUSINESS_NAME"];
+            string companyBusinessName = _companyInformationsDto.BusinessName;
             if (string.IsNullOrEmpty(companyBusinessName))
             {
                 companyBusinessName = _companyInformationsDto.Name;
             }
-            if (File.Exists(logo) )//&& TerminalSettings.LoggedTerminal.ThermalPrinter.ThermalPrintLogo)
+            if (File.Exists(logo))
             {
-                if (!string.IsNullOrEmpty(result))
-                {
-                    logo = result;
-                }
                 _printer.PrintImage(logo);
             }
 

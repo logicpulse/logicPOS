@@ -2,6 +2,7 @@
 using Gtk;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -10,6 +11,7 @@ using LogicPOS.Domain.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
@@ -169,8 +171,7 @@ namespace LogicPOS.UI.Components.POS
                                         LocalizedString.Instance["ticket_title_worksession_terminal_open"],
                                         0.0m,
                                         dialogCashDrawer.TotalAmountInCashDrawer,
-                                        dialogCashDrawer.MovementDescription,
-                                        dialogCashDrawer.MovementDescription);
+                                        dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
                                 }
                             }
                             //Enable UI Buttons When Have Open Session
@@ -233,7 +234,7 @@ namespace LogicPOS.UI.Components.POS
 
                             if (resultProcess)
                             {
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
 
                                 var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                                 if (!resultOpenDoor)
@@ -314,7 +315,7 @@ namespace LogicPOS.UI.Components.POS
                             {
 
                                 //PrintCashDrawerOpenAndMoneyInOut
-                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                                FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance[moneyInOutLabel], addedMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
 
                                 //Open CashDrawer
                                 var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
@@ -371,7 +372,7 @@ namespace LogicPOS.UI.Components.POS
                             if (pResponse == ResponseType.Yes)
                             {
                                 var workSessionDto = MappingUtils.GetPrintWorkSessionDto(workSessionPeriodTerminal);
-                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, workSessionDto, TerminalService.Terminal.Designation);
+                                FrameworkCalls.PrintWorkSessionMovement(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter,new WorkSessionData(),  TerminalService.Terminal.Designation, AuthenticationService.User.Name);
                             }
 
                         }
@@ -394,7 +395,7 @@ namespace LogicPOS.UI.Components.POS
 
                         if (result)
                         {
-                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance["ticket_title_worksession_money_in"], dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation);
+                            FrameworkCalls.PrintCashDrawerOpenAndMoneyInOut(dialogCashDrawer, TerminalService.Terminal.ThermalPrinter, LocalizedString.Instance["ticket_title_worksession_money_in"], dialogCashDrawer.MovementAmountMoney, dialogCashDrawer.TotalAmountInCashDrawer, dialogCashDrawer.MovementDescription, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
 
                             var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)
@@ -447,7 +448,7 @@ namespace LogicPOS.UI.Components.POS
                                                                             dialogCashDrawer.MovementAmountMoney,
                                                                             dialogCashDrawer.TotalAmountInCashDrawer,
                                                                             dialogCashDrawer.MovementDescription,
-                                                                            TerminalService.Terminal.Designation);
+                                                                            TerminalService.Terminal.Designation, AuthenticationService.User.Name);
 
                             var resultOpenDoor = LogicPOS.Printing.Utility.PrintingUtils.OpenDoor();
                             if (!resultOpenDoor)

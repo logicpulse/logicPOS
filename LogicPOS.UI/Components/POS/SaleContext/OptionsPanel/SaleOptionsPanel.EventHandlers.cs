@@ -164,29 +164,33 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-
+            PrintOrder();
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
         }
 
-        private void PrintWorkSession()
+        private void PrintWorkSession(Guid id)
         {
-            var workSessionData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDataQuery(new Guid("3f89ea05-c00f-4ad0-be14-3b616cc7c156"))).Result.Value;
-            var pp = new PrintWorkSessionDto()
+            var workSessionDocumentsData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDocumentsDataQuery(id)).Result;
+            var workSessionReceiptsData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionReceiptsDataQuery(id)).Result;
+            var companyInformations = GetCompanyPrintingInformation();
+
+            if (workSessionDocumentsData.IsError || workSessionReceiptsData.IsError)
             {
-                StartDate = workSessionData.StartDate,
-                EndDate = (DateTime)workSessionData.EndDate,
-                TerminalDesignation = TerminalService.Terminal.Designation,
-                PeriodType = WorkSessionPeriodType.Day.ToString(),
-                SessionStatus = WorkSessionPeriodStatus.Open.ToString()
-            };
+                CustomAlerts.Error(SourceWindow)
+                            .WithMessage(workSessionDocumentsData.FirstError.Description)
+                            .WithMessage(workSessionReceiptsData.FirstError.Description)
+                            .ShowAlert();
+                return;
+            }
+
             PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
             if (printer == null)
             {
                 return;
             }
 
-            new ThermalPrinting(printer, TerminalService.Terminal.Designation, workSessionData, pp);
+            new ThermalPrinting(printer, TerminalService.Terminal.Designation, AuthenticationService.User.Name, companyInformations, workSessionDocumentsData.Value, workSessionReceiptsData.Value);
         }
 
         private void PrintOrder()

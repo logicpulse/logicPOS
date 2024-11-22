@@ -22,7 +22,6 @@ namespace LogicPOS.Printing.Templates
         protected bool _secondCopy;
         protected string _copyName = string.Empty;
         protected int _ticketTablePaddingLeftLength = 2;
-
         public BaseFinanceTemplate(
             PrinterDto printer,
             Document document,
@@ -55,11 +54,8 @@ namespace LogicPOS.Printing.Templates
             _document = document;
             _copyNames = copiesNumbers;
             _secondCopy = isSecondCopy;
-
-            if (_copyNames != null)
-            {
-                //tchial0 -> _copyNamesArray = LogicPOS.Utility.PrintingUtils.GetDocumentsCopiesNamesByNumbers(copiesNumbers);
-            }
+            _companyInformationsDto = companyInformationsDto;
+        
         }
 
         //Override Parent Template
@@ -72,8 +68,8 @@ namespace LogicPOS.Printing.Templates
                 //Call Base Template PrintHeader
                 PrintHeader();
                 //PrintExtendedHeader
-                PrintExtendedHeader();
 
+                PrintExtendedHeader();
                 //Get CopyName Position, ex 0[Original], 4[Quadriplicate], we cant use I, else 0[Original], 1[Duplicate]
                 int copyNameIndex = _copyNames[i] + 1;
                 //Overrided by Child Classes
@@ -106,15 +102,15 @@ namespace LogicPOS.Printing.Templates
             _printer.SetAlignLeft();/* IN009055 */
 
             //Extended Header
-            _printer.WriteLine(string.Format("{0}", _customVars["COMPANY_ADDRESS"]));
-            _printer.WriteLine(string.Format("{0} {1} - {2}", _customVars["COMPANY_POSTALCODE"], _customVars["COMPANY_CITY"], _customVars["COMPANY_COUNTRY"]));
+            _printer.WriteLine(string.Format("{0}",_companyInformationsDto.Address));
+            _printer.WriteLine(string.Format("{0} {1} - {2}", "00000", _companyInformationsDto.City, "COMPANY_COUNTRY"));
             /* IN009055 block */
-            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_telephone"), _customVars["COMPANY_TELEPHONE"]);
+            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_telephone"), _companyInformationsDto.Phone);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_fax, _customVars["COMPANY_FAX"]);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_email"), _customVars["COMPANY_EMAIL"]);
-            _printer.WriteLine(_customVars["COMPANY_WEBSITE"], false); /* IN009211 */
-            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber"), _customVars["COMPANY_FISCALNUMBER"]);
+            _printer.WriteLine(_companyInformationsDto.Website, false); /* IN009211 */
+            _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber"), _companyInformationsDto.FiscalNumber);
             _printer.LineFeed();
 
             //Reset to Left
@@ -180,13 +176,13 @@ namespace LogicPOS.Printing.Templates
 
         public void PrintFooterExtended()
         {
-            if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty || _customVars["TICKET_FOOTER_LINE1"] != string.Empty)
+            if (_companyInformationsDto.TicketFinalLine1 != string.Empty || _companyInformationsDto.TicketFinalLine1!= string.Empty)
             {
                 //Align Center
                 _printer.SetAlignCenter();
 
-                if (_customVars["TICKET_FOOTER_LINE1"] != string.Empty) _printer.WriteLine(_customVars["TICKET_FOOTER_LINE1"]);
-                if (_customVars["TICKET_FOOTER_LINE2"] != string.Empty) _printer.WriteLine(_customVars["TICKET_FOOTER_LINE2"]);
+                if (_companyInformationsDto.TicketFinalLine1 != string.Empty) _printer.WriteLine(_companyInformationsDto.TicketFinalLine1);
+                if (_companyInformationsDto.TicketFinalLine2 != string.Empty) _printer.WriteLine(_companyInformationsDto.TicketFinalLine2);
 
                 //Line Feed
                 _printer.LineFeed();
@@ -372,7 +368,7 @@ namespace LogicPOS.Printing.Templates
             string certificationText;
 
             //Write Certification,CopyRight and License Text 
-            if (CultureSettings.PortugalCountryId.Equals(XPOSettings.ConfigurationSystemCountry.Oid))
+            if (_document.Customer.Country.ToUpper().Equals("PT"))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
                 string prefix = (_document.IsInformative())

@@ -4,8 +4,10 @@ namespace LogicPOS.Data.XPO.Settings
 {
     public static partial class TerminalSettings
     {
+        static int result;
         public static class ThermalPrinter
         {
+             
             public static int MaxCharsPerLineNormal
             {
                 get
@@ -15,7 +17,7 @@ namespace LogicPOS.Data.XPO.Settings
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
                     }
 
-                    var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal;
+                     //result=LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormal; LUCIANO
                     
                     return (result > 0) ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineNormal;
                 }
@@ -30,7 +32,7 @@ namespace LogicPOS.Data.XPO.Settings
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineNormalBold;
                     }
 
-                    var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold;
+                    // result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineNormalBold;
                     return result > 0 ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineNormalBold;
                 }
             }
@@ -44,7 +46,7 @@ namespace LogicPOS.Data.XPO.Settings
                         return PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                     }
 
-                    var result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall;
+                    //result = LoggedTerminal.ThermalPrinter.ThermalMaxCharsPerLineSmall;
                     return result > 0 ? result : PrintingSettings.ThermalPrinter.MaxCharsPerLineSmall;
                 }
             }

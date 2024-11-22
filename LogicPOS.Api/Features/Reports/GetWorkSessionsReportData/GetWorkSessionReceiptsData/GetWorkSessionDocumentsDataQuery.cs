@@ -7,11 +7,11 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData
 {
-    public class GetWorkSessionDataQuery : IRequest<ErrorOr<WorkSessionData>>
+    public class GetWorkSessionReceiptsDataQuery : IRequest<ErrorOr<WorkSessionData>>
     {
        
 
-        public GetWorkSessionDataQuery(Guid id)
+        public GetWorkSessionReceiptsDataQuery(Guid id)
         {
             Id= id;
         }

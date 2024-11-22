@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData
 {
-    public class GetWorkSessionDataQueryHandler :
-        RequestHandler<GetWorkSessionDataQuery, ErrorOr<WorkSessionData>>
+    public class GetWorkSessionDocumentsDataQueryHandler :
+        RequestHandler<GetWorkSessionDocumentsDataQuery, ErrorOr<WorkSessionData>>
     {
-        public GetWorkSessionDataQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetWorkSessionDocumentsDataQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<WorkSessionData>> Handle(GetWorkSessionDataQuery request,
+        public override async Task<ErrorOr<WorkSessionData>> Handle(GetWorkSessionDocumentsDataQuery request,
                                                                     CancellationToken cancellationToken = default)
         {
             try
             {
-                var data = await _httpClient.GetFromJsonAsync<WorkSessionData>($"reports/worksession/{request.Id}",
+                var data = await _httpClient.GetFromJsonAsync<WorkSessionData>($"reports/worksession/documents/{request.Id}",
                                                                               cancellationToken);
                 return data;
             }

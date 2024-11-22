@@ -1,5 +1,6 @@
 ﻿using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
 using LogicPOS.Data.XPO.Utility;
@@ -1213,7 +1214,8 @@ namespace LogicPOS.Printing.Utility
         public static bool PrintWorkSessionMovement(
             PrinterDto printer,
             string terminalDesignation,
-            PrintWorkSessionDto workSessionPeriod,
+            string userName,
+            WorkSessionData workSessionPeriod,
             string workSessionMovementPrintingFileTemplate,
             Hashtable sessionPeriodSummaryDetails
             )
@@ -1231,6 +1233,7 @@ namespace LogicPOS.Printing.Utility
                         WorkSessionPrinter workSessiontPrinter = new WorkSessionPrinter(
                             printer,
                             terminalDesignation,
+                            userName,
                             workSessionPeriod,
                             SplitCurrentAccountMode.NonCurrentAcount,
                             workSessionMovementPrintingFileTemplate,
@@ -1243,6 +1246,7 @@ namespace LogicPOS.Printing.Utility
                             workSessiontPrinter = new WorkSessionPrinter(
                                 printer,
                                 terminalDesignation,
+                                userName,
                                 workSessionPeriod,
                                 SplitCurrentAccountMode.CurrentAcount,
                                 workSessionMovementPrintingFileTemplate,
@@ -1301,6 +1305,7 @@ namespace LogicPOS.Printing.Utility
         public static bool PrintCashDrawerOpenAndMoneyInOut(
             PrinterDto printer,
             string terminalDesignation,
+            string userName,
             string pTicketTitle,
             decimal pMovementAmount,
             decimal pTotalAmountInCashDrawer,
@@ -1319,7 +1324,7 @@ namespace LogicPOS.Printing.Utility
                             pTicketTitle,
                             pTotalAmountInCashDrawer,
                             pMovementAmount,
-                            terminalDesignation);
+                            terminalDesignation, userName);
 
 
                         internalDocumentCashDrawer.Print();

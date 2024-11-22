@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Tickets;
+using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
@@ -205,8 +206,8 @@ namespace LogicPOS.UI
 
         public static bool PrintWorkSessionMovement(Window parentWindow,
                                                     Api.Entities.Printer printerEntity,
-                                                    PrintWorkSessionDto workSessionPeriod,
-                                                    string terminalDesignation)
+                                                    WorkSessionData workSessionPeriod,
+                                                    string terminalDesignation, string userName)
         {
             bool result = false;
             sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
@@ -225,10 +226,10 @@ namespace LogicPOS.UI
                     };
 
                     string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
-                    var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.Id);
-
+                    var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.WorkSession.Id);
                     result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(printerDto,
                                                                                      terminalDesignation,
+                                                                                     userName,
                                                                                      workSessionPeriod,
                                                                                      workSessionMovementPrintingFileTemplate,
                                                                                      sessionPeriodSummaryDetails);
@@ -254,7 +255,7 @@ namespace LogicPOS.UI
                                                             decimal pMovementAmount,
                                                             decimal pTotalAmountInCashDrawer,
                                                             string pMovementDescription,
-                                                            string terminalDesignation)
+                                                            string terminalDesignation, string userName)
         {
             bool result = false;
 
@@ -273,6 +274,7 @@ namespace LogicPOS.UI
 
                     result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printerDto,
                                                                                              terminalDesignation,
+                                                                                             userName,
                                                                                              pTicketTitle,
                                                                                              pMovementAmount,
                                                                                              pTotalAmountInCashDrawer,

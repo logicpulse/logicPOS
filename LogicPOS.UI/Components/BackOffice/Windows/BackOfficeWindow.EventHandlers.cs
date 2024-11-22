@@ -9,7 +9,6 @@ using LogicPOS.UI.Buttons;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using LogicPOS.UI.Components.Pickers;
-using FastReport;
 using Microsoft.Extensions.DependencyInjection;
 using MediatR;
 using LogicPOS.Api.Features.Database.GetBackup;

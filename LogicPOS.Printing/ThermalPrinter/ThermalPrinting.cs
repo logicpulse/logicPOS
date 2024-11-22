@@ -20,36 +20,40 @@ namespace LogicPOS.Printing.Utility
         protected string UserName { get; set; }
         protected readonly CompanyPrintingInformationsDto CompanyInformationsDto;
         protected readonly Document DocumentMaster;
-        protected readonly WorkSessionData WorkSessionData;
-        protected readonly PrintWorkSessionDto PrintWorkSessionDto;
+        protected readonly WorkSessionData WorkSessionDocumentsData;
+        protected readonly WorkSessionData WorkSessionReceiptsData;
 
 
-        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userDesignation)
+        public ThermalPrinting(PrinterDto printerDto, string terminalDesignation,string userName, CompanyPrintingInformationsDto companyPrintingInformationsDto, WorkSessionData workSessionDocumentsData, WorkSessionData workSessionReceiptsData)
+        {
+            PrinterDto = printerDto;
+            WorkSessionReceiptsData = workSessionReceiptsData;
+            WorkSessionDocumentsData = workSessionDocumentsData;
+            TerminalDesignation = terminalDesignation;
+            UserName = userName;
+            CompanyInformationsDto = companyPrintingInformationsDto;
+            PrintWorkSession();
+        }
+
+        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userName)
         {
             PrinterDto = printerDto;
             CompanyInformationsDto = companyInformationsDto;
             OrderTicketDto = orderTicketDto;
             TerminalDesignation = terminalDesignation;
-            UserName = userDesignation;
+            UserName = userName;
             PrintOrder();
         }
 
-        public ThermalPrinting(PrinterDto printerDto, string terminalDesignation, WorkSessionData workSessionData, PrintWorkSessionDto printWorkSessionDto)
-        {
-            PrinterDto = printerDto;
-            WorkSessionData = workSessionData;
-            PrintWorkSessionDto = printWorkSessionDto;
-            TerminalDesignation = terminalDesignation;
-            PrintWorkSession();
-        }
 
-        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, List<int> docCopyName, Document documentMaster, string terminalDesignation, string userDesignation)
+
+        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, List<int> docCopyName, Document documentMaster, string terminalDesignation, string userName)
         {
             PrinterDto = printerDto;
             DocCopyName = docCopyName;
             CompanyInformationsDto = companyInformationsDto;
             DocumentMaster = documentMaster;
-            UserName = userDesignation;
+            UserName = userName;
             TerminalDesignation = terminalDesignation;
             PrintDocument();
         }
@@ -70,15 +74,8 @@ namespace LogicPOS.Printing.Utility
         }
         public void PrintWorkSession()
         {
-            var workDto = new PrintWorkSessionDto()
-            {
-                TerminalDesignation = TerminalDesignation,
-                StartDate = DateTime.Now,
-                PeriodType = WorkSessionPeriodType.Terminal.ToString(),
-                SessionStatus = WorkSessionPeriodStatus.Open.ToString(),
-            };
-            var workS = new WorkSession(PrinterDto, TerminalDesignation, WorkSessionData, PrintWorkSessionDto);
-            workS.Print();
+            var workSession = new WorkSession(PrinterDto, TerminalDesignation,UserName,WorkSessionDocumentsData, WorkSessionReceiptsData, CompanyInformationsDto);
+            workSession.Print();
         }
 
         public void PrintDocument()

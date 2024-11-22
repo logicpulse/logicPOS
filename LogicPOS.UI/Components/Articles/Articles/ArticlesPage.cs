@@ -1,5 +1,4 @@
 ﻿using ErrorOr;
-using FastReport.Data;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;

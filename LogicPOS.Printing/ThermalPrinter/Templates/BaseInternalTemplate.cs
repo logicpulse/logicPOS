@@ -9,9 +9,9 @@ namespace LogicPOS.Printing.Templates
     {
 
 
-        public BaseInternalTemplate(PrinterDto printer, string terminalDesignation)
+        public BaseInternalTemplate(PrinterDto printer, string terminalDesignation, string userName)
     : base(
-          printer, terminalDesignation)
+          printer, terminalDesignation, userName)
         {
         }
 
