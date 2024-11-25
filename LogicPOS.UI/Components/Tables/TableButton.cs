@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Enums;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Services;
 using System;
 using System.Drawing;
 
@@ -8,8 +9,6 @@ namespace LogicPOS.UI.Buttons
 {
     public class TableButton : TextButton
     {
-
-        private Color _buttonColor;
         private Color _colorPosTablePadTableTableStatusOpenButtonBackground;
         private Color _colorPosTablePadTableTableStatusReservedButtonBackground;
         private Label _labelTotalOrStatus;
@@ -25,11 +24,11 @@ namespace LogicPOS.UI.Buttons
             }, false)
         {
             Table = table;
-            _settings.Widget = CreateWidget();
+            _settings.Widget = CreateComponent();
             Initialize();
         }
 
-        public Widget CreateWidget()
+        public Widget CreateComponent()
         {
             _colorPosTablePadTableTableStatusOpenButtonBackground = LogicPOS.Settings.AppSettings.Instance.colorPosTablePadTableTableStatusOpenButtonBackground;
             _colorPosTablePadTableTableStatusReservedButtonBackground = LogicPOS.Settings.AppSettings.Instance.colorPosTablePadTableTableStatusReservedButtonBackground;
@@ -58,12 +57,14 @@ namespace LogicPOS.UI.Buttons
 
             switch (Table.Status)
             {
-                case TableStatus.Free:
-                    SetBackgroundColor(_buttonColor, _eventBoxTotalOrStatus);
-                    break;
                 case TableStatus.Open:
-                    _labelTotalOrStatus.Text = "TotalXD";
-                    if (Table.OpennedAt != null) labelDateTableOpenOrClosed.Text = string.Format(LocalizedString.Instance["pos_button_label_table_open_at"], Table.OpennedAt.Value.ToString("HH:mm"));
+                    _labelTotalOrStatus.Text = TablesService.GetTableTotal(Table.Id).ToString("C");
+                  
+                    if (Table.OpennedAt != null)
+                    {
+                        labelDateTableOpenOrClosed.Text = string.Format(LocalizedString.Instance["pos_button_label_table_open_at"], Table.OpennedAt.Value.ToString("HH:mm"));
+                    }
+
                     SetBackgroundColor(_colorPosTablePadTableTableStatusOpenButtonBackground, _eventBoxTotalOrStatus);
                     break;
                 case TableStatus.Reserved:

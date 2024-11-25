@@ -137,7 +137,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void MenuTables_TableSelected(Api.Entities.Table table)
         {
-            BtnReservation.Sensitive = (table.Status == TableStatus.Free || table.Status == TableStatus.Reserved);
+            BtnReservation.Sensitive = (table.Status == TableStatus.Free || table.Status == TableStatus.Reserved) && table.Id != SaleContext.CurrentTable.Id;
             BtnOk.Sensitive = table.Status != TableStatus.Reserved;
         }
 

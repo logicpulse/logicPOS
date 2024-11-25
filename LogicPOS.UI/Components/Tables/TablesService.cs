@@ -2,11 +2,13 @@
 using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Tables.FreeTable;
 using LogicPOS.Api.Features.Tables.GetAllTables;
+using LogicPOS.Api.Features.Tables.GetTableTotal;
 using LogicPOS.Api.Features.Tables.ReserveTable;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,12 +31,12 @@ namespace LogicPOS.UI.Services
 
             var tables = getResult.Value;
 
-            return  FilterTerminalTables(getResult.Value);
+            return FilterTerminalTables(getResult.Value);
         }
 
         private static IEnumerable<Table> FilterTerminalTables(IEnumerable<Table> tables)
         {
-            if(TerminalService.Terminal.PlaceId != null)
+            if (TerminalService.Terminal.PlaceId != null)
             {
                 return tables.Where(t => t.PlaceId == TerminalService.Terminal.PlaceId);
             }
@@ -92,5 +94,18 @@ namespace LogicPOS.UI.Services
             }
         }
 
+        public static decimal GetTableTotal(Guid tableId)
+        {
+            var query = new GetTableTotalQuery(tableId);
+            var getResult = _mediator.Send(query).Result;
+
+            if (getResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+                return 0;
+            }
+
+            return getResult.Value;
+        }
     }
 }

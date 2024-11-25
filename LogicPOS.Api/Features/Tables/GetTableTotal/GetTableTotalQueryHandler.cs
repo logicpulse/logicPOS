@@ -1,0 +1,22 @@
+﻿using ErrorOr;
+using LogicPOS.Api.Features.Common;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Tables.GetTableTotal
+{
+    public class GetTableTotalQueryHandler :
+        RequestHandler<GetTableTotalQuery, ErrorOr<decimal>>
+    {
+        public GetTableTotalQueryHandler(IHttpClientFactory factory) : base(factory)
+        {
+        }
+
+        public async override Task<ErrorOr<decimal>> Handle(GetTableTotalQuery query,
+                                                            CancellationToken cancellationToken = default)
+        {
+            return await HandleGetEntityQueryAsync<decimal>($"tables/{query.TableId}/total",cancellationToken);
+        }
+    }
+}
