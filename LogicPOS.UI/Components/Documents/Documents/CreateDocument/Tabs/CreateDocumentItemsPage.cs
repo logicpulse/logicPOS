@@ -5,12 +5,16 @@ using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentItemsPage : Page<Item>
     {
         public List<Item> Items => _entities;
+        public event Action<decimal> OnTotalChanged;
+        public decimal TotalFinal => Math.Round(_entities.Sum(x => x.TotalFinal),2);
+
         public CreateDocumentItemsPage(Window parent) : base(parent)
         {
         }
@@ -65,6 +69,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
+            OnTotalChanged?.Invoke(TotalFinal);
             return response;
         }
 
@@ -87,6 +92,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
 
             modal.Destroy();
+            OnTotalChanged?.Invoke(TotalFinal);
             return (int)response;
         }
 
@@ -114,7 +120,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             return _entities.Exists(x => x.ArticleId == articleId);
         }
-
 
         protected override void AddColumns()
         {

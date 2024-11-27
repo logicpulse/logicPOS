@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Dialogs;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Logic.License;
@@ -8,7 +7,6 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using Pango;
@@ -17,16 +15,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.Licensing
 {
     internal class PosLicenceDialog : BaseDialog
     {
         //Parameters
         private string _hardwareId;
-        private DataTable _countrys;
-        private Dictionary<int, string> _countrysList = new Dictionary<int, string>();
-        private List<string> _countrysListSource = new List<string>();
-
+        private List<string> Countries { get; } = LicensingService.GetCountries().ToList();
         //Ui
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;
@@ -63,16 +58,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _hardwareId = hardWareId;
             }
 
-            _countrys = PluginSettings.LicenceManager.GetCountries();
-
-            if (_countrys != null)
-            {
-                foreach (DataRow dr in _countrys.Rows)
-                {
-                    _countrysList.Add(Convert.ToInt32(dr["idCountry"]), dr["name"].ToString());
-                    _countrysListSource.Add(dr["name"].ToString());
-                }
-            }
 
             //Files
             string fileActionRegister = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
@@ -89,7 +74,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                     Icon = fileActionRegister,
                     IconSize = SizeSettings.ActionAreaButtonIcon,
                     ButtonSize = SizeSettings.ActionAreaButton
-                }){ Sensitive = false };
+                })
+            { Sensitive = false };
 
             _buttonContinue = new IconButtonWithText(
                 new ButtonSettings
@@ -120,7 +106,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Validate();
 
             //Init Object
-            this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
+            Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
         }
 
         private void InitUI()
@@ -134,13 +120,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //MockData
             bool useMockData = false;
-            string mockName = (useMockData) ? "Carlos Fernandes" : string.Empty;
-            string mockCompany = (useMockData) ? "LogicPulse" : string.Empty;
-            string mockFiscalNumber = (useMockData) ? "503218820" : string.Empty;
-            string mockAddress = (useMockData) ? "Rua Capitão Salgueiro Maia, nº7, 3080-245 Figueira da Foz" : string.Empty;
-            string mockPhone = (useMockData) ? "+351 233 042 347" : string.Empty;
-            string mockEmail = (useMockData) ? "portugal@logicpulse.com" : string.Empty;
-            string mockSoftwareKey = (useMockData) ? "string.Empty" : string.Empty;
+            string mockName = useMockData ? "Carlos Fernandes" : string.Empty;
+            string mockCompany = useMockData ? "LogicPulse" : string.Empty;
+            string mockFiscalNumber = useMockData ? "503218820" : string.Empty;
+            string mockAddress = useMockData ? "Rua Capitão Salgueiro Maia, nº7, 3080-245 Figueira da Foz" : string.Empty;
+            string mockPhone = useMockData ? "+351 233 042 347" : string.Empty;
+            string mockEmail = useMockData ? "portugal@logicpulse.com" : string.Empty;
+            string mockSoftwareKey = useMockData ? "string.Empty" : string.Empty;
 
             //Init Content
             _hboxMain = new HBox(false, 0) { BorderWidth = (uint)padding };
@@ -287,19 +273,14 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             labelCountryLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelCountryLabel, false, false, (uint)padding * 2);
 
-            if(_countrysList.Count == 0)
-            {
-                _countrysList[168] = "Portugal";
-            }
-
-            ComboBoxCountry = new ListComboBox(_countrysListSource, _countrysList[168]);
+            ComboBoxCountry = new ListComboBox(Countries, "Portugal");
             vboxInnerRight.PackStart(ComboBoxCountry, false, false, (uint)padding * 2);
 
         }
 
         private void Validate()
         {
-            _buttonRegister.Sensitive = (
+            _buttonRegister.Sensitive =
                 EntryBoxName.EntryValidation.Validated &&
                 EntryBoxCompany.EntryValidation.Validated &&
                 EntryBoxFiscalNumber.EntryValidation.Validated &&
@@ -307,7 +288,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 EntryBoxEmail.EntryValidation.Validated &&
                 EntryBoxPhone.EntryValidation.Validated &&
                 _entryBoxSoftwareKey.EntryValidation.Validated
-            );
+            ;
         }
 
         protected override void OnResponse(ResponseType response)
@@ -327,7 +308,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (PluginSettings.LicenceManager.ConnectToWS() == false)
             {
-               
+
                 CustomAlerts.Error(this)
                             .WithSize(new System.Drawing.Size(600, 300))
                             .WithTitleResource("global_error")
@@ -350,7 +331,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                                                                  EntryBoxPhone.EntryValidation.Text,
                                                                                  _entryBoxHardwareId.EntryValidation.Text,
                                                                                  System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                                                                                 _countrysList.FirstOrDefault(x => x.Value == ComboBoxCountry.Value).Key,
+                                                                                 Countries.IndexOf(ComboBoxCountry.Value)+1,
                                                                                  _entryBoxSoftwareKey.EntryValidation.Text);
 
                 string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
@@ -363,21 +344,21 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
                             .ShowAlert();
 
-                this.Destroy();
-                
+                Destroy();
+
                 Environment.Exit(0);
 
             }
             catch (Exception)
             {
-                
+
                 CustomAlerts.Error(this)
                             .WithSize(new System.Drawing.Size(600, 300))
                             .WithTitleResource("global_error")
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"))
                             .ShowAlert();
 
-                this.Run();
+                Run();
             }
         }
 

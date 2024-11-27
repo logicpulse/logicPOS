@@ -20,6 +20,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -61,7 +62,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnReports_Clicked(object sender, EventArgs e)
         {
-            
+
         }
 
         private void BtnLogOut_Clicked(object sender, EventArgs e)
@@ -80,7 +81,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            if(FiscalYearService.HasFiscalYear == false)
+            if (FiscalYearService.HasFiscalYear == false)
             {
                 FiscalYearService.ShowOpenFiscalYearAlert();
                 return;
@@ -120,7 +121,7 @@ namespace LogicPOS.UI.Components.Windows
             }
 
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
-            
+
             //Utils.ShowNotifications(pinModal); -> tchial0
 
             pinModal.Destroy();
@@ -201,123 +202,65 @@ namespace LogicPOS.UI.Components.Windows
 
         public void UpdateWorkSessionUI()
         {
-            return; //tchial0: prevent disabling some parts of the UI
-
-            if (XPOSettings.WorkSessionPeriodDay != null)
+            if (WorkSessionService.DayIsOpen() == false)
             {
-                if (XPOSettings.WorkSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
+                if (GeneralSettings.AppUseBackOfficeMode == false)
                 {
-                    if (XPOSettings.WorkSessionPeriodTerminal != null && XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Open)
-                    {
-                        bool isTableOpened = POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
-                          && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null;
-                        SelectedData xpoSelectedData = null;
-
-                        if (DatabaseSettings.DatabaseType.ToString() == "MySql" || DatabaseSettings.DatabaseType.ToString() == "SQLite")
-                        {
-                            string sqlQuery = @"SELECT Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc LIMIT 1";
-
-                            xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
-                        }
-                        else if (DatabaseSettings.DatabaseType.ToString() == "MSSqlServer")
-                        {
-                            string sqlQuery = @"SELECT TOP 1 Oid FROM pos_configurationplacetable WHERE (Disabled IS NULL or Disabled  <> 1) ORDER BY Code asc";
-                            xpoSelectedData = XPOSettings.Session.ExecuteQueryWithMetadata(sqlQuery);
-                        }
-
-                        SelectStatementResultRow[] selectStatementResultMeta = xpoSelectedData.ResultSet[0].Rows;
-                        SelectStatementResultRow[] selectStatementResultData = xpoSelectedData.ResultSet[1].Rows;
-                        if (!isTableOpened && !GeneralSettings.AppUseBackOfficeMode)
-                        {
-
-                            Guid currentTableOid = Guid.Parse(selectStatementResultData[0].Values[0].ToString());
-
-                            Guid newOrderMainOid = Guid.NewGuid();
-                            POSSession.CurrentSession.OrderMains.Add(newOrderMainOid, new OrderMain(newOrderMainOid, currentTableOid));
-                            OrderMain newOrderMain = POSSession.CurrentSession.OrderMains[newOrderMainOid];
-                            OrderTicket orderTicket = new OrderTicket(newOrderMain, (PriceType)newOrderMain.Table.PriceType);
-
-                            newOrderMain.OrderTickets.Add(1, orderTicket);
-
-                            OrderMain currentOrderMain = newOrderMain;
-
-                            TicketList.UpdateArticleBag();
-                            TicketList.UpdateSaleOptionsPanelOrderButtons();
-                            TicketList.UpdateOrderStatusBar();
-
-                            currentOrderMain.PersistentOid = currentOrderMain.GetOpenTableFieldValueGuid(TableId, "Oid");
-                            currentOrderMain.OrderStatus = (OrderStatus)currentOrderMain.GetOpenTableFieldValue(TableId, "OrderStatus");
-
-                            POSSession.CurrentSession.CurrentOrderMainId = currentOrderMain.Table.OrderMainOid;
-                            POSSession.CurrentSession.Save();
-                            TicketList.UpdateModel();
-
-                            SaleOptionsPanel.Sensitive = true;
-                        }
-                        if (!GeneralSettings.AppUseBackOfficeMode)
-                            MenuArticles.Sensitive = true;
-
-                        if (!SaleOptionsPanel.Sensitive == true && !GeneralSettings.AppUseBackOfficeMode)
-                            SaleOptionsPanel.Sensitive = true;
-                    }
-
-                    else if (!GeneralSettings.AppUseBackOfficeMode)
-                    {
-                        if (!SaleOptionsPanel.Sensitive == false)
-                            SaleOptionsPanel.Sensitive = false;
-                        if (!MenuArticles.Sensitive == false)
-                            MenuArticles.Sensitive = false;
-                    }
-                }
-            }
-            else if (!GeneralSettings.AppUseBackOfficeMode)
-            {
-                if (!SaleOptionsPanel.Sensitive == false)
                     SaleOptionsPanel.Sensitive = false;
-                if (!MenuArticles.Sensitive == false)
                     MenuArticles.Sensitive = false;
+                }
+
+                return;
+            }
+
+            if (!WorkSessionService.TerminalIsOpen())
+            {
+                return;
             }
         }
 
         private void StartClock()
         {
+            return; //tchial0
             GLib.Timeout.Add(1000, new GLib.TimeoutHandler(UpdateClock));
         }
 
         private bool UpdateClock()
         {
-            if (POSWindow.Instance.Visible)
+            if (POSWindow.Instance.Visible == false)
             {
-                LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
+                return true;
+            }
 
-                if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
+            LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
+
+            if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
+            {
+                UpdateGUITimer(POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId], TicketList);
+            }
+
+            if (XPOSettings.WorkSessionPeriodTerminal == null
+              || (XPOSettings.WorkSessionPeriodTerminal != null &&
+              XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
+            {
+                pos_worksessionperiod workSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
+
+                if (workSessionPeriodDay == null)
                 {
-                    UpdateGUITimer(POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId], TicketList);
-                }
-
-                if (XPOSettings.WorkSessionPeriodTerminal == null
-                  || (XPOSettings.WorkSessionPeriodTerminal != null &&
-                  XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
-                {
-                    pos_worksessionperiod workSessionPeriodDay = WorkSessionProcessor.GetSessionPeriod(WorkSessionPeriodType.Day);
-
-                    if (workSessionPeriodDay == null)
+                    if (XPOSettings.WorkSessionPeriodDay != null)
                     {
-                        if (XPOSettings.WorkSessionPeriodDay != null)
-                        {
-                            XPOUtility.WorkSession.SaveCurrentWorkSessionPeriodDayDto();
-                        }
-
-                        XPOSettings.WorkSessionPeriodDay = null;
-                        UpdateWorkSessionUI();
+                        XPOUtility.WorkSession.SaveCurrentWorkSessionPeriodDayDto();
                     }
-                    else
+
+                    XPOSettings.WorkSessionPeriodDay = null;
+                    UpdateWorkSessionUI();
+                }
+                else
+                {
+                    if (workSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
                     {
-                        if (workSessionPeriodDay.SessionStatus == WorkSessionPeriodStatus.Open)
-                        {
-                            XPOSettings.WorkSessionPeriodDay = workSessionPeriodDay;
-                            UpdateWorkSessionUI();
-                        }
+                        XPOSettings.WorkSessionPeriodDay = workSessionPeriodDay;
+                        UpdateWorkSessionUI();
                     }
                 }
             }

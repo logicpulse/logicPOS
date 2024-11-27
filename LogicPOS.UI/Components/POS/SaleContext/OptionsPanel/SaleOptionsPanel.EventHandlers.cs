@@ -75,6 +75,7 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.CurrentOrder.Close();
             SaleContext.ItemsPage.SetTicketModeBackGround();
             SaleContext.UpdatePOSLabels();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnDecrease_Clicked(object sender, EventArgs e)

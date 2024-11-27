@@ -22,6 +22,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             Design();
         }
 
+
         private void Initialize()
         {
             PaymentMethodsBox = new DocumentPaymentMethodsBox(SourceWindow);

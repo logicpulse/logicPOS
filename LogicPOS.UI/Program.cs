@@ -1,7 +1,6 @@
 using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.License;
 using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
@@ -12,6 +11,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using MediatR;

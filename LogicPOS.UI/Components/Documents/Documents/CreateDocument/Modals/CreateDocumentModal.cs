@@ -123,12 +123,12 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTabs()
         {
             DocumentTab = new CreateDocumentDocumentTab(this);
-            AddTabsEventHandlers();
             CustomerTab = new CreateDocumentCustomerTab(this);
             ArticlesTab = new CreateDocumentArticlesTab(this);
             ShipToTab = new CreateDocumentShipToTab(this);
             ShipFromTab = new CreateDocumentShipFromTab(this);
             PaymentMethodsTab = new CreateDocumentPaymentMethodsTab(this);
+            AddTabsEventHandlers();
         }
 
         private void AddTabsEventHandlers()
@@ -136,6 +136,7 @@ namespace LogicPOS.UI.Components.Modals
             DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
             DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
             DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
+            ArticlesTab.ItemsPage.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
         }
 
         private void OnDocumentTypeSelected(DocumentType documentType)

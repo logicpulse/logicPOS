@@ -2,9 +2,16 @@
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
+using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodSession;
 using LogicPOS.Api.Features.WorkSessions.GetAllWorkSessionPeriods;
-using LogicPOS.Api.Features.WorkSessions.GetLastWorkSessionPeriod;
+using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerInMovement;
+using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerOutMovement;
+using LogicPOS.Api.Features.WorkSessions.Movements.GetTotalCashInDrawer;
 using LogicPOS.Api.Features.WorkSessions.OpenWorkSessionPeriodDay;
+using LogicPOS.Api.Features.WorkSessions.Periods.DayIsOpen;
+using LogicPOS.Api.Features.WorkSessions.Periods.OpenTerminalSession;
+using LogicPOS.Api.Features.WorkSessions.Periods.TerminalIsOpen;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,46 +25,28 @@ namespace LogicPOS.UI.Services
 
         public static bool DayIsOpen()
         {
-            var lastWorkSessionPeriod = GetLastWorkSessionPeriod();
-
-            if (lastWorkSessionPeriod is null)
-            {
-                return false;
-            }
-
-            if (lastWorkSessionPeriod.Type == WorkSessionPeriodType.Terminal)
-            {
-                return true;
-            }
-
-            return lastWorkSessionPeriod.Status == WorkSessionPeriodStatus.Open;
-
-        }
-
-        public static bool TerminalSessionIsOpen()
-        {
-            var lastWorkSessionPeriod = GetLastWorkSessionPeriod(true);
-
-            if (lastWorkSessionPeriod is null)
-            {
-                return false;
-            }
-
-            return lastWorkSessionPeriod.Status == WorkSessionPeriodStatus.Open;
-        }
-
-        private static WorkSessionPeriod GetLastWorkSessionPeriod(bool terminalSession = false)
-        {
-            var getResult = _mediator.Send(new GetLastWorkSessionPeriodQuery(terminalSession)).Result;
+            var getResult = _mediator.Send(new DayIsOpenQuery()).Result;
 
             if (getResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(getResult.FirstError, true);
-                return null;
+                return false;
             }
 
             return getResult.Value;
+        }
 
+        public static bool TerminalIsOpen()
+        {
+            var getResult = _mediator.Send(new TerminalIsOpenQuery(TerminalService.Terminal.Id)).Result;
+
+            if (getResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+                return false;
+            }
+
+            return getResult.Value;
         }
 
         public static IEnumerable<WorkSessionPeriod> GetOpenTerminalSessions()
@@ -106,6 +95,72 @@ namespace LogicPOS.UI.Services
             if (openDayResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static decimal GetTotalCashInCashDrawer()
+        {
+            var terminalId = TerminalService.Terminal.Id;
+            var result = _mediator.Send(new GetTotalCashInDrawerQuery(terminalId)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
+                return -1;
+            }
+
+            return result.Value ?? -1;
+        }
+
+        public static bool OpenTerminalSession(decimal amount, string notes)
+        {
+            var command = new OpenTerminalSessionCommand(amount, notes);
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool CloseTerminalSession(decimal amount, string notes)
+        {
+            var command = new CloseTerminalSessionCommand(amount, notes);
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool AddCashDrawerInMovement(decimal amount, string notes)
+        {
+            var command = new AddCashDrawerInMovementCommand(amount, notes);
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool AddCashDrawerOutMovement(decimal amount, string notes)
+        {
+            var command = new AddCashDrawerOutMovementCommand(amount, notes);
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
                 return false;
             }
 

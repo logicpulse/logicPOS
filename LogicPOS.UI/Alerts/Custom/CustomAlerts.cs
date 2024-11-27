@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Alerts
         public static CustomAlert Information(Window parent = null)
         {
             return new CustomAlert(parent)
+                       .WithTitleResource("global_information")
                        .WithMessageType(MessageType.Info)
                        .WithButtonsType(ButtonsType.Ok);
         }
@@ -43,6 +44,13 @@ namespace LogicPOS.UI.Alerts
             return new CustomAlert(parent)
                        .WithMessageType(MessageType.Question)
                        .WithButtonsType(ButtonsType.YesNo);
+        }
+
+        public static void ShowOperationSucceededAlert(Window parent = null)
+        {
+            Information(parent)
+                .WithMessageResource("dialog_message_operation_successfully")
+                .ShowAlert();
         }
 
         public static void ShowUnderConstructionAlert(Window parent = null)

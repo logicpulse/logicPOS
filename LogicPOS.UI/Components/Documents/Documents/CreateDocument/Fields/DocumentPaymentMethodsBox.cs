@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 using LogicPOS.Settings;
+using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
             AddDocumentPaymentMethodField();
         }
 
-        private void UpdateTotal()
+        private void UpdateTotalLabel()
         {
             LabelTotal.Text = $"Total: {GetTotal()}";
         }
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
 
             Container.Remove(field.Component);
             Fields.Remove(field);
-            UpdateTotal();
+            UpdateTotalLabel();
         }
 
         private void AddDocumentPaymentMethodField()
@@ -59,8 +60,8 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
             }
 
             var field = new DocumentPaymentMethodField(SourceWindow);
-            field.TxtAmount.Entry.Changed += (sender, e) => UpdateTotal();
-            field.TxtPaymentMethod.Entry.Changed += (sender, e) => UpdateTotal();
+            field.TxtAmount.Entry.Changed += (sender, e) => UpdateTotalLabel();
+            field.TxtPaymentMethod.Entry.Changed += (sender, e) => UpdateTotalLabel();
             field.OnRemove += BtnRemovePaymentMethod_Clicked;
             field.OnAdd += () => AddDocumentPaymentMethodField();
             Container.PackStart(field.Component, false, false, 0);
@@ -80,6 +81,16 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
             verticalLayout.PackStart(LabelTotal, false, false, 0);
 
             return verticalLayout;
+        }
+
+        public void UpdateDocumentTotal(decimal total)
+        {
+            if (Fields.Count == 1)
+            {
+                Fields.First().TxtAmount.Text = total.ToString();
+            }
+
+            UpdateTotalLabel();
         }
 
         private Label CreateLabel(string labelText)

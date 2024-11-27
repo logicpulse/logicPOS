@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.POS
         private IconButtonWithText BtnSessionOpening { get; set; }
 
         public SessionOpeningModal(Window parentWindow,
-                             DialogFlags dialogFlags)
+                                   DialogFlags dialogFlags)
             : base(parentWindow, dialogFlags)
         {
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_cash");
@@ -33,15 +33,7 @@ namespace LogicPOS.UI.Components.POS
                             table,
                             null);
 
-            UpdateButtons();
-
             AddEventHandlers();
-        }
-
-        private void AddEventHandlers()
-        {
-            BtnDayOpening.Clicked += BtnDayOpening_Clicked;
-            BtnSessionOpening.Clicked += BtnSessionOpening_Clicked;
         }
 
         private Table CreateTable()
@@ -49,8 +41,6 @@ namespace LogicPOS.UI.Components.POS
             uint tablePadding = 15;
             Table table = new Table(1, 1, true);
             table.BorderWidth = tablePadding;
-
-            //Row 1
             table.Attach(BtnDayOpening, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             table.Attach(BtnSessionOpening, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, tablePadding, tablePadding);
             return table;
@@ -61,7 +51,7 @@ namespace LogicPOS.UI.Components.POS
             BtnDayOpening = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    BackgroundColor = ColorSettings.DefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_worksession_open_day"),
                     Font = FontSettings.Button,
                     FontColor = ColorSettings.DefaultButtonFont,
@@ -74,7 +64,7 @@ namespace LogicPOS.UI.Components.POS
             BtnSessionOpening = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    BackgroundColor = ColorSettings.DefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("pos_button_label_cashdrawer"),
                     Font = FontSettings.Button,
                     FontColor = ColorSettings.DefaultButtonFont,
@@ -82,9 +72,10 @@ namespace LogicPOS.UI.Components.POS
                     IconSize = new Size(50, 50),
                     ButtonSize = new Size(162, 88)
                 }
-            )
-            { Sensitive = false };
+            );
 
+
+            UpdateButtons();
         }
     }
 }

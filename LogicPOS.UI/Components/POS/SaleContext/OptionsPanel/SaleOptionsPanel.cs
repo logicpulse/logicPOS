@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Services;
 using System;
 using System.Linq;
 
@@ -135,13 +136,19 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateButtonsSensitivity()
         {
-            BtnIncrease.Sensitive = ItemsPage.Ticket  != null;
-            BtnDecrease.Sensitive = ItemsPage.Ticket != null;
-            BtnPrice.Sensitive = ItemsPage.Ticket != null;
-            BtnQuantity.Sensitive = ItemsPage.Ticket != null;
-            BtnWeight.Sensitive = ItemsPage.Ticket != null;
-            BtnFinishOrder.Sensitive = ItemsPage.Ticket != null && ItemsPage.Ticket.Items.Any();
+            bool hasTicket = ItemsPage.Ticket != null;
+            BtnIncrease.Sensitive = hasTicket;
+            BtnDecrease.Sensitive = hasTicket;
+            BtnPrice.Sensitive = hasTicket;
+            BtnQuantity.Sensitive = hasTicket;
+            BtnWeight.Sensitive = hasTicket;
+            BtnFinishOrder.Sensitive = hasTicket;
         }
 
+        public void UpdateUIState()
+        {
+            Sensitive = WorkSessionService.TerminalIsOpen();
+            UpdateButtonsSensitivity();
+        }
     }
 }
