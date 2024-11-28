@@ -176,5 +176,6 @@ namespace LogicPOS.UI.Components.POS
                         .WithMessage(string.Format(messageResource, messageTotalSummary))
                         .ShowAlert();
         }
+
     }
 }

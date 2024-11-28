@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using System;
 using System.Drawing;

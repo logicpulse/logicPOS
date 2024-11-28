@@ -15,9 +15,10 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentsTotals
         }
 
         public override async Task<ErrorOr<IEnumerable<DocumentTotals>>> Handle(GetDocumentsTotalsQuery query,
-                                                                          CancellationToken cancellationToken = default)
+                                                                                CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<DocumentTotals>("documents/totals", cancellationToken);
+            var queryUrl = query.GetUrlQuery();
+            return await HandleGetAllQueryAsync<DocumentTotals>($"documents/totals{queryUrl}", cancellationToken);
         }
     }
 }

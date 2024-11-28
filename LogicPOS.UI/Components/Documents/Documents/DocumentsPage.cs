@@ -1,14 +1,14 @@
-﻿using ErrorOr;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.GetAllDocuments;
+using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
-using LogicPOS.Domain.Entities;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,37 +17,91 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class DocumentsPage : Page<Document>
     {
-        protected override IRequest<ErrorOr<IEnumerable<Document>>> GetAllQuery => new GetAllDocumentsQuery();
+        private GetDocumentsQuery _query = GetDefaultQuery();
+        public PaginatedResult<Document> Documents { get; private set; }
         private List<DocumentTotals> _totals = new List<DocumentTotals>();
         private List<DocumentRelation> _relations = new List<DocumentRelation>();
         public List<Document> SelectedDocuments { get; private set; } = new List<Document>();
         public decimal SelectedDocumentsTotalFinal { get; private set; }
-        public event EventHandler DocumentsSelectionChanged;
-
+        public event EventHandler PageChanged;
+        
         public DocumentsPage(Window parent,
-                             Dictionary<string, string> options = null) : base(parent,options)
+                             Dictionary<string, string> options = null) : base(parent, options)
         {
+            InitializeNavigator();
+        }
+
+        private void InitializeNavigator()
+        {
+            Navigator.RightButtons.Remove(Navigator.BtnInsert);
+            Navigator.RightButtons.Remove(Navigator.BtnUpdate);
+            Navigator.RightButtons.Remove(Navigator.BtnDelete);
+            Navigator.RightButtons.Remove(Navigator.BtnRefresh);
+            Navigator.RightButtons.Remove(Navigator.BtnView);
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
+        }
+
+        private static GetDocumentsQuery GetDefaultQuery()
+        {
+            var query = new GetDocumentsQuery
+            {
+                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                EndDate = DateTime.Now,
+            };
+
+            return query;
+        }
+
+        public void BtnFilter_Clicked(object sender, EventArgs e)
+        {
+            var filterModal = new DocumentsFilterModal(SourceWindow);
+            var response = (ResponseType)filterModal.Run();
+            var query = filterModal.GetQuery();
+            filterModal.Destroy();
+
+            if (response != ResponseType.Ok)
+            {
+                return;
+            }
+
+            _query = query;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void LoadEntities()
         {
+            var getDocumentsResult = _mediator.Send(_query).Result;
+
+            if (getDocumentsResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getDocumentsResult.FirstError,
+                                                    source: SourceWindow);
+                return;
+            }
+
+            Documents = getDocumentsResult.Value;
+
+            _entities.Clear();
+            _entities.AddRange(Documents.Items);
+
             LoadDocumentsTotals();
-            base.LoadEntities();
             LoadDocumentsRelations();
         }
 
         private void LoadDocumentsTotals()
         {
-            var query = new GetDocumentsTotalsQuery();
+            var query = new GetDocumentsTotalsQuery(_entities.Select(d => d.Id));
             var result = _mediator.Send(query).Result;
 
             if (result.IsError)
             {
-                ShowApiErrorAlert(result.FirstError);
+                ErrorHandlingService.HandleApiError(result.FirstError,
+                                                    source: SourceWindow);
                 return;
             }
 
-            if(_totals.Count > 0)
+            if (_totals.Count > 0)
             {
                 _totals.Clear();
             }
@@ -62,7 +116,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (result.IsError)
             {
-                ShowApiErrorAlert(result.FirstError);
+                ErrorHandlingService.HandleApiError(result.FirstError, source: SourceWindow);
                 return;
             }
 
@@ -102,7 +156,7 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
-    
+
         protected override void AddColumns()
         {
             GridView.AppendColumn(CreateSelectColumn());
@@ -123,7 +177,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var docId = ((Document)model.GetValue(iter, 0)).Id;
                 var relatedDocuments = _relations.FirstOrDefault(x => x.DocumentId == docId)?.RelatedDocuments;
-                (cell as CellRendererText).Text = string.Join(",",relatedDocuments);
+                (cell as CellRendererText).Text = string.Join(",", relatedDocuments);
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
@@ -231,7 +285,7 @@ namespace LogicPOS.UI.Components.Pages
         private TreeViewColumn CreateSelectColumn()
         {
             TreeViewColumn selectColumn = new TreeViewColumn();
-            
+
             var selectCellRenderer = new CellRendererToggle();
             selectColumn.PackStart(selectCellRenderer, true);
 
@@ -265,7 +319,7 @@ namespace LogicPOS.UI.Components.Pages
                     SelectedDocumentsTotalFinal += document.TotalFinal;
                 }
 
-                DocumentsSelectionChanged?.Invoke(this, EventArgs.Empty);
+                PageChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -398,7 +452,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override void AddEntitiesToModel()
         {
             var model = (ListStore)GridViewSettings.Model;
-            _entities.ForEach(entity => model.AppendValues(entity,false));
+            _entities.ForEach(entity => model.AppendValues(entity, false));
         }
 
         public IEnumerable<(Document, DocumentTotals)> GetSelectedDocumentsWithTotals()

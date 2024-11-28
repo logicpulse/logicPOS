@@ -72,8 +72,12 @@ namespace LogicPOS.UI.Components.Modals.Common
             VBox layout = new VBox(false, 0) { BorderWidth = WindowSettings.BorderWidth };
             layout.PackStart(CreateTitleBarEventBox(), false, false, 0);
             layout.PackStart(WindowSettings.CreateBodyEventBox(), true, true, 0);
-            layout.PackStart(CreateActionAreaBox(), false, false, 0);
 
+            if(WindowSettings.RightButtons != null)
+            {
+                layout.PackStart(CreateActionAreaBox(), false, false, 0);
+            }
+          
             EventBox eventboxWindowBorderInner = new EventBox() { BorderWidth = 0 };
             eventboxWindowBorderInner.ModifyBg(StateType.Normal, EntitySelectionModalColors.WindowBackground.ToGdkColor());
             eventboxWindowBorderInner.Add(layout);

@@ -86,29 +86,8 @@ namespace LogicPOS.UI.Components.Pages
                 Bar.PackStart(BtnMore, false, false, 0);
                 Bar.PackStart(BtnFilter, false, false, 0);
 
-                BtnMore.Clicked += BtnMore_Clicked;
-                BtnMore.Clicked += BtnFilter_Clicked;
             }
 
         }
-
-        public event EventHandler Clicked;
-        public void BtnMore_Clicked(object sender, EventArgs e)
-        {
-            //TreeIter iterator;
-            //_filter.GetIterFirst(out iterator);
-            //_gridView.SetCursor(_filter.GetPath(iterator), _gridView.Columns[0], false);
-            ShowMoreButton = false;
-        }
-        public void BtnFilter_Clicked(object sender, EventArgs e)
-        {
-            //ShowFilterButton = true;
-            //TreeIter treeIter;
-
-            //_filter.GetIterFirst(out treeIter);
-            //_gridView.SetCursor(_filter.GetPath(treeIter), _gridView.Columns[0], false);
-            ShowFilterButton = false;
-        }
-
     }
 }

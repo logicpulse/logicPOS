@@ -252,45 +252,36 @@ namespace LogicPOS.UI.Components.Documents
 
         protected override Widget CreateBody()
         {
-            var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
+            var page = new DocumentsPage(this);
             page.SetSizeRequest(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
             Page = page;
+            UpdateModalTitle();
             AddPageEventHandlers();
             return fixedContent;
         }
 
         private void AddPageEventHandlers()
         {
-            Page.EntitySelected += OnDocumentSelected;
-            Page.DocumentsSelectionChanged += Page_DocumentsSelectionChanged;
+            Page.EntitySelected += Page_OnDocumentSelected;
+            Page.PageChanged += Page_OnChande;
         }
 
-        private void Page_DocumentsSelectionChanged(object sender, EventArgs e)
+        private void Page_OnChande(object sender, EventArgs e)
         {
-            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00}";
+            UpdateModalTitle();
         }
 
-        private void OnDocumentSelected(Document document)
+        private void UpdateModalTitle()
+        {
+            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00} " +
+                $" - Página {Page.Documents.Page} de {Page.Documents.TotalPages} | Mostrando {Page.Documents.TotalItems}  resultados";
+        }
+        
+        private void Page_OnDocumentSelected(Document document)
         {
            
-        }
-
-        protected override Widget CreateLeftContent()
-        {
-            return CreateSearchBox();
-        }
-
-        private Widget CreateSearchBox()
-        {
-            var searchBox = new PageSearchBox(Page.SourceWindow, true);
-            searchBox.TxtSearch.EntryValidation.Changed += delegate
-            {
-                Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = searchBox.TxtSearch.EntryValidation.Text;
-            };
-
-            return searchBox;
         }
     }
 }

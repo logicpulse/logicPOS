@@ -73,11 +73,10 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
         {
-            SessionOpeningModal modal = new SessionOpeningModal(this, DialogFlags.DestroyWithParent);
+            SessionOpeningModal modal = new SessionOpeningModal(this);
             modal.Run();
             modal.Destroy();
         }
-
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
