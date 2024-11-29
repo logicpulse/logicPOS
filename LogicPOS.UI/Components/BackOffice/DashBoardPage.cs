@@ -1,11 +1,6 @@
-﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
-using Gtk;
-using LogicPOS.Data.XPO.Settings;
+﻿using Gtk;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
-using LogicPOS.Shared.CustomDocument;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
@@ -28,7 +23,7 @@ namespace LogicPOS.UI.Components.BackOffice
     internal partial class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
-        private  IconButtonWithText BtnTerminals { get; set; }
+        private IconButtonWithText BtnTerminals { get; set; }
         private readonly IconButtonWithText BtnPreferenceParameters;
         private readonly IconButtonWithText BtnFiscalYears;
         private readonly IconButtonWithText BtnPrinters;
@@ -45,7 +40,7 @@ namespace LogicPOS.UI.Components.BackOffice
         private readonly IconButtonWithText botao15;
         private readonly IconButtonWithText botao16;
         private readonly ICollection collectionDocuments = null;
-        private readonly string creditNoteOid = CustomDocumentSettings.CreditNoteId.ToString();
+        private readonly string creditNoteOid = "Tchialo";
         private readonly string invoiceOid = InvoiceSettings.InvoiceId.ToString();
         private readonly string simpleInvoiceOid = DocumentSettings.SimplifiedInvoiceId.ToString();
         private readonly string invoiceAndPaymentOid = DocumentSettings.InvoiceAndPaymentId.ToString();
@@ -287,7 +282,7 @@ namespace LogicPOS.UI.Components.BackOffice
                 {
                     DateTime.Now.Year.ToString()
                 };
-          
+
                 label = new Label();
                 frame.ShadowType = (ShadowType)0;
 
@@ -383,7 +378,7 @@ namespace LogicPOS.UI.Components.BackOffice
             ShowAll();
         }
 
-      
+
 
     }
 }

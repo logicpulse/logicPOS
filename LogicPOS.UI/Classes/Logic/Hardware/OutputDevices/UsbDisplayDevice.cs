@@ -1,8 +1,7 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Api.Entities;
 using LogicPOS.Globalization;
-using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
 using System;
@@ -549,23 +548,18 @@ namespace logicpos.Classes.Logic.Hardware
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Pos Methods
 
-        public void ShowOrder(OrderDetail pOrderDetail, int pIndex)
+        public void ShowOrder(OrderDetail orderDetail, int pIndex)
         {
             try
             {
-                if (pOrderDetail.Lines.Count > 0)
-                {
+
                     ShowOrder(
-                        pOrderDetail.Lines[pIndex].Designation,
-                        pOrderDetail.Lines[pIndex].Properties.Quantity,
-                        pOrderDetail.Lines[pIndex].Properties.PriceFinal,
-                        pOrderDetail.TotalFinal
+                        orderDetail.Designation,
+                        orderDetail.Quantity,
+                        orderDetail.Price,
+                        orderDetail.TotalFinal
                     );
-                }
-                else
-                {
-                    WriteStandBy();
-                }
+
             }
             catch (Exception ex)
             {

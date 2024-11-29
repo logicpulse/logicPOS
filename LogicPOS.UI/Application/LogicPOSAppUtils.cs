@@ -4,11 +4,8 @@ using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Shared;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Terminals;
@@ -17,9 +14,7 @@ using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 
 namespace LogicPOS.UI.Application
@@ -78,9 +73,7 @@ namespace LogicPOS.UI.Application
 
             LogicPOSSettings.FirstBoot = false;
 
-            string appSessionFile = Utils.GetSessionFileName();
-            POSSession.CurrentSession = POSSession.GetSessionFromFile(appSessionFile);
-
+   
             var appScreenSize = AppSettings.Instance.appScreenSize;
 
             if (appScreenSize == new Size(0, 0))

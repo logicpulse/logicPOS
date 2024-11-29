@@ -1,8 +1,6 @@
-﻿using DevExpress.Xpo.DB;
-using Gtk;
+﻿using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Hardware;
-using logicpos.Classes.Enums.TicketList;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
@@ -10,8 +8,6 @@ using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Settings;
-using LogicPOS.Shared;
-using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Documents;
@@ -167,27 +163,24 @@ namespace LogicPOS.UI.Components.Windows
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            if (POSWindow.Instance.TicketList.CurrentOrderDetail != null)
+            switch (LogicPOSAppContext.BarCodeReader.Device)
             {
-                switch (LogicPOSAppContext.BarCodeReader.Device)
-                {
-                    case InputReaderDevice.None:
-                        break;
-                    case InputReaderDevice.BarCodeReader:
-                    case InputReaderDevice.CardReader:
-                        if (GeneralSettings.AppUseParkingTicketModule)
-                        {
-                            LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(LogicPOSAppContext.BarCodeReader.Buffer);
-                        }
-                        else
-                        {
-                            TicketList.InsertOrUpdate(LogicPOSAppContext.BarCodeReader.Buffer);
-                        }
-                        break;
+                case InputReaderDevice.None:
+                    break;
+                case InputReaderDevice.BarCodeReader:
+                case InputReaderDevice.CardReader:
+                    if (GeneralSettings.AppUseParkingTicketModule)
+                    {
+                        LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(LogicPOSAppContext.BarCodeReader.Buffer);
+                    }
+                    else
+                    {
+                        //tchial0 -> TicketList.InsertOrUpdate(LogicPOSAppContext.BarCodeReader.Buffer);
+                    }
+                    break;
 
-                    default:
-                        break;
-                }
+                default:
+                    break;
             }
         }
 
@@ -233,11 +226,6 @@ namespace LogicPOS.UI.Components.Windows
 
             LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
 
-            if (POSSession.CurrentSession.CurrentOrderMainId != Guid.Empty && POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId))
-            {
-                UpdateGUITimer(POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId], TicketList);
-            }
-
             if (XPOSettings.WorkSessionPeriodTerminal == null
               || (XPOSettings.WorkSessionPeriodTerminal != null &&
               XPOSettings.WorkSessionPeriodTerminal.SessionStatus == WorkSessionPeriodStatus.Close))
@@ -267,59 +255,14 @@ namespace LogicPOS.UI.Components.Windows
             return true;
         }
 
-        private void UpdateGUITimer(OrderMain orderMain, TicketList pTicketList)
+        private void UpdateGUITimer()
         {
-            string sqlOrderMainUpdatedAt = string.Format("SELECT UpdatedAt FROM fin_documentordermain WHERE (PlaceTable = '{0}' AND OrderStatus = {1}) ORDER BY UpdatedAt DESC", orderMain.Table.Oid, Convert.ToInt16(OrderStatus.Open));
-            var oResultUpdatedAt = XPOSettings.Session.ExecuteScalar(sqlOrderMainUpdatedAt);
 
-            if (oResultUpdatedAt != null)
-            {
-                DateTime dateLastDBUpdate = Convert.ToDateTime(oResultUpdatedAt);
-
-                if (orderMain.UpdatedAt < dateLastDBUpdate)
-                {
-                    orderMain.PersistentOid = orderMain.GetOpenTableFieldValueGuid(orderMain.Table.Oid, "Oid");
-                    orderMain.OrderStatus = (OrderStatus)orderMain.GetOpenTableFieldValue(orderMain.Table.Oid, "OrderStatus");
-                    orderMain.UpdatedAt = dateLastDBUpdate;
-
-
-                    if (pTicketList.ListMode == TicketListMode.OrderMain) pTicketList.UpdateModel();
-
-                    pTicketList.UpdateOrderStatusBar();
-                    pTicketList.UpdateSaleOptionsPanelOrderButtons();
-
-
-                    POSSession.CurrentSession.Save();
-                }
-            }
-            else
-            {
-                orderMain.PersistentOid = orderMain.GetOpenTableFieldValueGuid(orderMain.Table.Oid, "Oid");
-                orderMain.OrderStatus = (OrderStatus)orderMain.GetOpenTableFieldValue(orderMain.Table.Oid, "OrderStatus");
-
-                if (pTicketList.ListMode == TicketListMode.OrderMain) pTicketList.UpdateModel();
-
-                pTicketList.UpdateOrderStatusBar();
-                pTicketList.UpdateSaleOptionsPanelOrderButtons();
-
-                POSSession.CurrentSession.Save();
-            }
         }
 
         private void UpdateUIIfHasWorkingOrder()
         {
-            if (POSSession.CurrentSession.OrderMains.ContainsKey(POSSession.CurrentSession.CurrentOrderMainId)
-              && POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId].Table != null)
-            {
-                TicketList.UpdateOrderStatusBar();
-            }
-            else
-            {
-                TicketList.SelectTableOrder(LogicPOSSettings.XpoOidConfigurationPlaceTableDefaultOpenTable);
-                TicketList.UpdateArticleBag();
-                TicketList.UpdateSaleOptionsPanelOrderButtons();
-                TicketList.UpdateOrderStatusBar();
-            }
+            
         }
 
         private void ScrollTextViewLog(object o, SizeAllocatedArgs args)

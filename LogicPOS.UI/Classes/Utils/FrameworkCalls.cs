@@ -8,7 +8,6 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Settings;
-using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
@@ -124,53 +123,6 @@ namespace LogicPOS.UI
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //PrintTableTicket
-
-        public static bool PrintOrderRequest(Window parentWindow,
-                                             Api.Entities.Printer printerEntity,
-                                             OrderMain pDocumentOrderMain,
-                                             fin_documentorderticket orderTicket,
-                                             string terminalDesignation,
-                                             CompanyPrintingInformationsDto companyInformationsDto)
-        {
-            bool result = false;
-
-            var printerDto = new PrinterDto
-            {
-                Id = printerEntity.Id,
-                Designation = printerEntity.Designation,
-                NetworkName = printerEntity.NetworkName,
-                Token = printerEntity.Type.Token,
-                IsThermal = printerEntity.Type.ThermalPrinter
-            };
-
-            try
-            {
-                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.TableOrder))
-                {
-
-
-                    var orderTicketDto = MappingUtils.GetPrintOrderTicketDto(orderTicket);
-
-                    OrderRequest thermalPrinterInternalDocumentOrderRequest = new OrderRequest(printerDto,
-                                                                                               orderTicketDto,
-                                                                                               terminalDesignation,
-                                                                                               "userTest",
-                                                                                               companyInformationsDto);
-                    thermalPrinterInternalDocumentOrderRequest.Print();
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
-                                                          printerEntity.Designation,
-                                                          printerEntity.NetworkName,
-                                                          ex.Message);
-            }
-
-            return result;
-        }
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest

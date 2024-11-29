@@ -1,8 +1,4 @@
 ﻿using Gtk;
-using logicpos;
-using logicpos.Classes.Enums.TicketList;
-using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
@@ -13,7 +9,6 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,7 +45,7 @@ namespace LogicPOS.UI.Components.Menus
         public ArticleSubfamiliesMenu SubfamiliesMenu { get; set; }
         public List<Article> AllArticles { get; set; }
         public IEnumerable<ArticleStock> Stocks { get; private set; }
-        public SaleItemsPage SaleItemsPage { get;  }
+        public SaleItemsPage SaleItemsPage { get; }
 
         public ArticlesMenu(ArticleSubfamiliesMenu subfamiliesMenu,
                             CustomButton btnPrevious,
@@ -74,7 +69,7 @@ namespace LogicPOS.UI.Components.Menus
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(SourceWindow,result.FirstError);
+                CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
                 return;
             }
 
@@ -306,16 +301,16 @@ namespace LogicPOS.UI.Components.Menus
 
             if (totalStock - SelectedArticle.DefaultQuantity <= SelectedArticle.MinimumStock)
             {
-                var message= $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedArticle.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedArticle.MinimumStock.ToString()}";
-                
+                var message = $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedArticle.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedArticle.MinimumStock.ToString()}";
+
                 var stockWarningResponse = new CustomAlert(SourceWindow)
                                         .WithMessage(message)
-                                        .WithSize(new Size(500,350))
+                                        .WithSize(new Size(500, 350))
                                         .WithMessageType(MessageType.Question)
                                         .WithButtonsType(ButtonsType.YesNo)
                                         .WithTitleResource("global_stock_movements")
                                         .ShowAlert();
-                
+
                 if (stockWarningResponse == ResponseType.No)
                 {
                     return;
@@ -325,10 +320,10 @@ namespace LogicPOS.UI.Components.Menus
             var item = new SaleItem(SelectedArticle);
 
 
-            if(item.UnitPrice <= 0)
+            if (item.UnitPrice <= 0)
             {
                 InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), item.UnitPrice);
-              
+
                 if (result.Response == ResponseType.Cancel)
                 {
                     return;
@@ -336,7 +331,7 @@ namespace LogicPOS.UI.Components.Menus
 
                 item.UnitPrice = result.Value;
             }
-           
+
 
             SaleItemsPage.AddItem(item);
         }

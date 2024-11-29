@@ -1,5 +1,4 @@
-﻿using logicpos.shared.Enums;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Data.XPO.Settings.Terminal;
@@ -1210,7 +1209,7 @@ namespace LogicPOS.Printing.Utility
             return result;
         }
 
-   
+
         public static bool PrintWorkSessionMovement(
             PrinterDto printer,
             string terminalDesignation,

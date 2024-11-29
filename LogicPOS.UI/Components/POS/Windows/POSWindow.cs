@@ -38,7 +38,6 @@ namespace LogicPOS.UI.Components.Windows
         public Fixed FixedWindow { get; set; } = new Fixed();
         public Label LabelClock { get; set; }
         public TextView TextViewLog { get; set; }
-        public TicketList TicketList { get; set; }
         public IconButtonWithText BtnQuit { get; set; }
         public IconButtonWithText BtnBackOffice { get; set; }
         public IconButtonWithText BtnReports { get; set; }

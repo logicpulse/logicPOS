@@ -1,19 +1,13 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using logicpos.shared.Enums;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Domain.Enums;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
 using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
-using LogicPOS.Shared;
-using LogicPOS.Shared.Orders;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -29,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using PriceType = LogicPOS.Domain.Enums.PriceType;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -58,7 +51,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            if(ItemsPage.Order.Id.HasValue)
+            if (ItemsPage.Order.Id.HasValue)
             {
                 var deleteOrderResult = OrdersService.CloseOrder(ItemsPage.Order.Id.Value);
 
@@ -355,11 +348,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
-            OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            PosOrdersDialog dialog = new PosOrdersDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, currentOrderMain.Table.Name);
-            ResponseType response = (ResponseType)dialog.Run();
-            dialog.Destroy();
-
+            throw new NotImplementedException();
         }
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
