@@ -1,7 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PoleDisplays;
+using LogicPOS.Api.Features.PoleDisplays.DeletePoleDisplay;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
@@ -19,11 +21,6 @@ namespace LogicPOS.UI.Components.PoleDisplays
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PoleDisplay>>> GetAllQuery => new GetAllPoleDisplaysQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -48,6 +45,11 @@ namespace LogicPOS.UI.Components.PoleDisplays
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePoleDisplayCommand(SelectedEntity.Id);
         }
 
         #region Singleton

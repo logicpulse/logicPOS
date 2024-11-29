@@ -78,11 +78,17 @@ namespace LogicPOS.UI.Components.Documents
                 return null;
             }
 
-            var query = new GetDocumentsQuery
+            var query = new GetDocumentsQuery();
+
+            if(string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
             {
-                StartDate = DateTime.Parse(TxtStartDate.Text),
-                EndDate = DateTime.Parse(TxtEndDate.Text)
-            };
+                query.StartDate = DateTime.Parse(TxtStartDate.Text);
+            }
+
+            if (string.IsNullOrWhiteSpace(TxtEndDate.Text) == false)
+            {
+                query.EndDate = DateTime.Parse(TxtEndDate.Text);
+            }
 
             if (TxtDocumentType.SelectedEntity != null)
             {
@@ -282,7 +288,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             TxtStartDate = new PageTextBox(this,
                                            GeneralUtils.GetResourceByName("global_date_start"),
-                                           isRequired: true,
+                                           isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,
                                            includeSelectButton: true,
@@ -311,7 +317,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             TxtEndDate = new PageTextBox(this,
                                            GeneralUtils.GetResourceByName("global_date_end"),
-                                           isRequired: true,
+                                           isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,
                                            includeSelectButton: true,

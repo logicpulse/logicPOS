@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.PaymentConditions.DeletePaymentCondition;
 using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -18,10 +20,6 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 
@@ -78,6 +76,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftPaymentCondition.Acronym.CompareTo(rightPaymentCondition.Acronym);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePaymentConditionCommand(SelectedEntity.Id);
         }
 
         #region Singleton

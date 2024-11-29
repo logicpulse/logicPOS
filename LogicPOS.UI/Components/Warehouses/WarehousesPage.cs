@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Warehouses.DeleteWarehouse;
 using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -15,11 +17,6 @@ namespace LogicPOS.UI.Components.Pages
 
         public WarehousesPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new System.NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -44,6 +41,11 @@ namespace LogicPOS.UI.Components.Pages
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteWarehouseCommand(SelectedEntity.Id);
         }
 
         #region Singleton

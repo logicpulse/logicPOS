@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.MeasurementUnits.DeleteMeasurementUnit;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -21,11 +23,6 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();
        
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
-
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new MeasurementUnitModal(mode, SelectedEntity as MeasurementUnit);
@@ -79,6 +76,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftMeasurementUnit.Acronym.CompareTo(rightMeasurementUnit.Acronym);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteMeasurementUnitCommand(SelectedEntity.Id);
         }
 
         #region Singleton

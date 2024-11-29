@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -26,11 +27,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnUpdate.Visible = false;
             Navigator.BtnDelete.Visible = false;
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -141,6 +137,8 @@ namespace LogicPOS.UI.Components.Pages
                 return leftFiscalYear.Year.CompareTo(rightFiscalYear.Year);
             });
         }
+
+        protected override DeleteCommand GetDeleteCommand() => null;
 
         #region Singleton
         private static FiscalYearsPage _instance;

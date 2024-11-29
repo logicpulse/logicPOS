@@ -2,9 +2,10 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.DeleteArticle;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
 using LogicPOS.Api.Features.Articles.GetTotalStocks;
-using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<Article>>> GetAllQuery => new GetAllArticlesQuery();
         private List<ArticleStock> _totalStocks = new List<ArticleStock>();
 
-        public ArticlesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
+        public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
@@ -49,15 +50,10 @@ namespace LogicPOS.UI.Components.Pages
             _totalStocks.AddRange(result.Value);
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
-
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new ArticleModal(mode, SelectedEntity);
-            var response =modal.Run();
+            var response = modal.Run();
             modal.Destroy();
             return response;
         }
@@ -226,6 +222,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftArticle.Type?.Designation.CompareTo(rightArticle.Type?.Designation) ?? 0;
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleCommand(SelectedEntity.Id);
         }
 
         #region Singleton

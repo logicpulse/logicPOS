@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Currencies.DeleteCurrency;
 using LogicPOS.Api.Features.Currencies.GetAllCurrencies;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -16,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
 
         public CurrenciesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new System.NotImplementedException();
         }
 
         protected override void AddColumns()
@@ -75,6 +72,11 @@ namespace LogicPOS.UI.Components.Pages
             var response = modal.Run();
             modal.Destroy();
             return response;
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteCurrencyCommand(SelectedEntity.Id);
         }
 
         #region Singleton

@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -16,11 +17,6 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PaymentMethodsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PaymentMethod>>> GetAllQuery => new GetAllPaymentMethodsQuery();
@@ -78,6 +74,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftPaymentMethod.Acronym.CompareTo(rightPaymentMethod.Acronym);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            throw new NotImplementedException();
         }
 
         #region Singleton

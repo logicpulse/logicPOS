@@ -1,7 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Subfamilies.DeleteArticleSubfamily;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -15,11 +17,6 @@ namespace LogicPOS.UI.Components.Pages
     {
         public ArticleSubfamiliesPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<ArticleSubfamily>>> GetAllQuery => new GetAllArticleSubfamiliesQuery();
@@ -76,6 +73,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftArticleSubfamily.Family?.Designation.CompareTo(rightArticleSubfamily.Family?.Designation) ?? 0;
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleSubfamilyCommand(SelectedEntity.Id);
         }
 
         #region Singleton

@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.BackOffice.Windows;
@@ -146,6 +147,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnDelete_Clicked(object sender, System.EventArgs e)
         {
+            var response = CustomAlerts.ShowDeleteConfirmationAlert(_page.SourceWindow);
+
+            if (response == ResponseType.No)
+            {
+                return;
+            }
+
             if (_page.DeleteEntity())
             {
                 _page.Refresh();
@@ -165,24 +173,16 @@ namespace LogicPOS.UI.Components.Pages
                                                string label,
                                                string icon)
         {
-            string fileIcon = PathsSettings.ImagesFolderLocation + icon;
-            string font = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            Color bgColor = Color.Transparent;
-            Color fontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-            Size buttonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton;
-            Size iconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon;
-
             return new IconButtonWithText(
                 new ButtonSettings
                 {
                     Name = name,
-                    BackgroundColor = bgColor,
                     Text = label,
-                    Font = font,
-                    FontColor = fontColor,
-                    Icon = fileIcon,
-                    IconSize = iconSize,
-                    ButtonSize = buttonSize
+                    Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
+                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                    Icon = PathsSettings.ImagesFolderLocation + icon,
+                    IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                    ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
                 });
         }
 

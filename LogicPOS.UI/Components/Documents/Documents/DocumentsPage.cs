@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
@@ -17,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class DocumentsPage : Page<Document>
     {
-        private GetDocumentsQuery _query = GetDefaultQuery();
+        public GetDocumentsQuery Query { get; private set; } = GetDefaultQuery();
         public PaginatedResult<Document> Documents { get; private set; }
         private List<DocumentTotals> _totals = new List<DocumentTotals>();
         private List<DocumentRelation> _relations = new List<DocumentRelation>();
@@ -28,17 +29,20 @@ namespace LogicPOS.UI.Components.Pages
         public DocumentsPage(Window parent,
                              Dictionary<string, string> options = null) : base(parent, options)
         {
-            InitializeNavigator();
         }
 
-        private void InitializeNavigator()
+        public void BtnPreviousPage_Clicked(object sender, EventArgs e)
         {
-            Navigator.RightButtons.Remove(Navigator.BtnInsert);
-            Navigator.RightButtons.Remove(Navigator.BtnUpdate);
-            Navigator.RightButtons.Remove(Navigator.BtnDelete);
-            Navigator.RightButtons.Remove(Navigator.BtnRefresh);
-            Navigator.RightButtons.Remove(Navigator.BtnView);
-            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
+            Query.Page = Documents.Page - 1;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void BtnNextPage_Clicked(object sender, EventArgs e)
+        {
+            Query.Page = Documents.Page + 1;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private static GetDocumentsQuery GetDefaultQuery()
@@ -64,14 +68,14 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            _query = query;
+            Query = query;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void LoadEntities()
         {
-            var getDocumentsResult = _mediator.Send(_query).Result;
+            var getDocumentsResult = _mediator.Send(Query).Result;
 
             if (getDocumentsResult.IsError)
             {
@@ -126,11 +130,6 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             _relations.AddRange(result.Value);
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override void InitializeFilter()
@@ -460,5 +459,9 @@ namespace LogicPOS.UI.Components.Pages
             return SelectedDocuments.Select(document => (document, _totals.FirstOrDefault(x => x.DocumentId == document.Id)));
         }
 
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
+        }
     }
 }

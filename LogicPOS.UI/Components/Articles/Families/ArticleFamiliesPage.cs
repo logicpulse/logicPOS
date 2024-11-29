@@ -1,7 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Families.DeleteArticleFamily;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -16,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
     {
         public ArticleFamiliesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<ArticleFamily>>> GetAllQuery => new GetAllArticleFamiliesQuery();
@@ -49,8 +46,11 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(3);
         }
 
-
-
+  
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleFamilyCommand(SelectedEntity.Id);
+        }
 
         #region Singleton
         private static ArticleFamiliesPage _instance;

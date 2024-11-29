@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.PrinterTypes.DeletePrinterType;
 using LogicPOS.Api.Features.PrinterTypes.GetAllPrinterTypes;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -19,10 +21,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<PrinterType>>> GetAllQuery => new GetAllPrinterTypesQuery();
         public PrinterTypesPage(Window parent) : base(parent)
         {
-        }
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -77,6 +75,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftPrinterType.ThermalPrinter.CompareTo(rightPrinterType.ThermalPrinter);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePrinterTypeCommand(SelectedEntity.Id);
         }
 
         #region Signleton

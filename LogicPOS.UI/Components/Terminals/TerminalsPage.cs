@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -17,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<Terminal>>> GetAllQuery => new GetAllTerminalsQuery();
         public TerminalsPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -76,6 +72,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftTerminal.HardwareId.CompareTo(rightTerminal.HardwareId);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
 
         #region Singleton

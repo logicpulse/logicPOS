@@ -46,6 +46,22 @@ namespace LogicPOS.UI.Alerts
                        .WithButtonsType(ButtonsType.YesNo);
         }
 
+        public static void ShowCannotDeleteEntityErrorAlert(Window parentWindow)
+        {
+            Error(parentWindow)
+                .WithTitleResource("window_title_dialog_delete_record")
+                .WithMessageResource("dialog_message_delete_record_show_referenced_record_message")
+                .ShowAlert();
+        }
+
+        public static ResponseType ShowDeleteConfirmationAlert(Window parent = null)
+        {
+            return Question(parent)
+                .WithTitleResource("window_title_dialog_delete_record")
+                .WithMessageResource("dialog_message_delete_record")
+                .ShowAlert();
+        }
+
         public static void ShowOperationSucceededAlert(Window parent = null)
         {
             Information(parent)

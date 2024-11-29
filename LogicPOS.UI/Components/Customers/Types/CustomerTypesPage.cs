@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Customers.Types.DeleteCustomerType;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -16,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
 
         public CustomerTypePage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override void AddColumns()
@@ -45,6 +42,11 @@ namespace LogicPOS.UI.Components.Pages
             var response = modal.Run();
             modal.Destroy();
             return response;
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteCustomerTypeCommand(SelectedEntity.Id);
         }
 
         #region Singleton

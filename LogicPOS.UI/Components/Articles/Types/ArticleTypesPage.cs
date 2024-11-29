@@ -1,7 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Types.DeleteArticleType;
 using LogicPOS.Api.Features.Articles.Types.GetAllArticleTypes;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -16,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<ArticleType>>> GetAllQuery => new GetAllArticleTypesQuery();
         public ArticleTypesPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -79,6 +76,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftArticleType.HasPrice.CompareTo(rightArticleType.HasPrice);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleTypeCommand(SelectedEntity.Id);
         }
 
         #region Singleton

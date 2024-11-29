@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.WeighingMachines.DeleteWeighingMachine;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -13,16 +15,10 @@ using System.Collections.Generic;
 namespace LogicPOS.UI.Components.Pages
 {
     public class WeighingMachinesPage : Page<WeighingMachine>
-    {
-       
+    {    
         protected override IRequest<ErrorOr<IEnumerable<WeighingMachine>>> GetAllQuery => new GetAllWeighingMachinesQuery();
         public WeighingMachinesPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -47,6 +43,11 @@ namespace LogicPOS.UI.Components.Pages
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteWeighingMachineCommand(SelectedEntity.Id);
         }
 
         #region Singleton

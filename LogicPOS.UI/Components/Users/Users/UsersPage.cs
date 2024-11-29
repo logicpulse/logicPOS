@@ -9,6 +9,8 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Users.DeleteUser;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -18,11 +20,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<UserDetail>>> GetAllQuery => new GetAllUsersQuery();
         public UsersPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -135,6 +132,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftUser.FiscalNumber?.CompareTo(rightUser?.FiscalNumber) ?? 0;
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteUserCommand(SelectedEntity.Id);
         }
 
         #region Singleton

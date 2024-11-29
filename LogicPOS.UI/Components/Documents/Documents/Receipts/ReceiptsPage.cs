@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Receipts.GetAllReceipts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -23,10 +24,6 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         protected override void InitializeFilter()
         {
@@ -302,6 +299,11 @@ namespace LogicPOS.UI.Components.Pages
         {
             var model = (ListStore)GridViewSettings.Model;
             _entities.ForEach(entity => model.AppendValues(entity, false));
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
     }
 }

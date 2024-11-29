@@ -2,6 +2,8 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Users.CommissionGroups.DeleteCommissionGroup;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -16,16 +18,10 @@ using System.Threading.Tasks;
 namespace LogicPOS.UI.Components.Pages
 {
     public class CommissionGroupsPage : Page<CommissionGroup>
-    {
-       
+    {    
         protected override IRequest<ErrorOr<IEnumerable<CommissionGroup>>> GetAllQuery => new GetAllCommissionGroupsQuery();
         public CommissionGroupsPage(Window parent) : base(parent)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -81,6 +77,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftCommissionGroup.Commission.CompareTo(rightCommissionGroup.Commission);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteCommissionGroupCommand(SelectedEntity.Id);
         }
 
         #region Singleton

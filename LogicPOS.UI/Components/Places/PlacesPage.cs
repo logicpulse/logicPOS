@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Places.DeletePlace;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -19,11 +21,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Place>>> GetAllQuery => new GetAllPlacesQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -107,6 +104,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftPlace.MovementType.Designation.CompareTo(rightPlace.MovementType.Designation);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePlaceCommand(SelectedEntity.Id);
         }
 
         #region Singleton

@@ -93,12 +93,12 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleDeleteCommandAsync(string endpoint, CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<bool>> HandleDeleteCommandAsync(string endpoint, CancellationToken cancellationToken = default)
         {
             try
             {
                 var response = await _httpClient.DeleteAsync(endpoint, cancellationToken);
-                return await HandleDeleteEntityHttpResponseAsync(response);
+                return  HandleDeleteEntityHttpResponse(response);
             }
             catch (HttpRequestException)
             {
@@ -141,14 +141,14 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleDeleteEntityHttpResponseAsync(HttpResponseMessage httpResponse)
+        protected ErrorOr<bool> HandleDeleteEntityHttpResponse(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    return Unit.Value;
+                    return true;
                 case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsErrorAsync(httpResponse);
+                    return false;
                 default:
                     return ApiErrors.CommunicationError;
             }

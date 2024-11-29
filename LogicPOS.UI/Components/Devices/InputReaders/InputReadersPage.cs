@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.InputReaders.DeleteInputReader;
 using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -17,12 +19,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<InputReader>>> GetAllQuery => new GetAllInputReadersQuery();
         public InputReadersPage(Window parent) : base(parent)
         {
-        }
-
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -47,6 +43,11 @@ namespace LogicPOS.UI.Components.Pages
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteInputReaderCommand(SelectedEntity.Id);
         }
 
         #region Singleton

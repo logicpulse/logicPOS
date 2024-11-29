@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -315,5 +316,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             });
         }
 
+        protected override DeleteCommand GetDeleteCommand() => null;
     }
 }

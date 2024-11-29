@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -21,11 +22,6 @@ namespace LogicPOS.UI.Components.Pages
             CanDeleteEntity = false;
             Navigator.BtnInsert.Sensitive = false;
             Navigator.Update();
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         protected override void AddColumns()
@@ -176,6 +172,11 @@ namespace LogicPOS.UI.Components.Pages
             var response = modal.Run();
             modal.Destroy();
             return response;
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
 
         #region Singleton

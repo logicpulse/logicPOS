@@ -1,11 +1,12 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.PriceTypes.DeletePriceType;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -17,11 +18,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PriceType>>> GetAllQuery => new GetAllPriceTypesQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -45,6 +41,11 @@ namespace LogicPOS.UI.Components.Pages
             AddCodeSorting(0);
             AddDesignationSorting(1);
             AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePriceTypeCommand(SelectedEntity.Id);
         }
 
         #region Singleton

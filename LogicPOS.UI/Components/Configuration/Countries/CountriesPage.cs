@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Countries.DeleteCountry;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -33,17 +35,17 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(2);
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new CountryModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteCountryCommand(SelectedEntity.Id);
         }
 
         #region Singleton

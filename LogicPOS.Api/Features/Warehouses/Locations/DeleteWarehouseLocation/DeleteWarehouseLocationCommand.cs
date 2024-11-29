@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation
 {
-    public class DeleteWarehouseLocationCommand : IRequest<ErrorOr<Unit>>
+    public class DeleteWarehouseLocationCommand : IRequest<ErrorOr<bool>>
     {
         public Guid Id { get; }
 

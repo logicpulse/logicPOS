@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation
 {
     public class DeleteWarehouseLocationCommandHandler :
-        RequestHandler<DeleteWarehouseLocationCommand, ErrorOr<Unit>>
+        RequestHandler<DeleteWarehouseLocationCommand, ErrorOr<bool>>
     {
         public DeleteWarehouseLocationCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(DeleteWarehouseLocationCommand request, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<bool>> Handle(DeleteWarehouseLocationCommand request, CancellationToken cancellationToken = default)
         {
             return await HandleDeleteCommandAsync($"warehouses/locations/{request.Id}", cancellationToken);
         }

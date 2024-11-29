@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -20,11 +21,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<DocumentType>>> GetAllQuery => new GetAllDocumentTypesQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -84,6 +80,8 @@ namespace LogicPOS.UI.Components.Pages
                 return leftType.Acronym.CompareTo(rightType.Acronym);
             });
         }
+
+        protected override DeleteCommand GetDeleteCommand() => null;
 
         #region Singleton
         private static DocumentTypesPage _instance;

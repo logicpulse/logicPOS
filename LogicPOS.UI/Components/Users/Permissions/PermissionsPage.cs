@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfile;
@@ -263,11 +264,6 @@ namespace LogicPOS.UI.Components.Pages
             base.AddEntitiesToModel();
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
-   
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
@@ -300,6 +296,11 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
 
         #region Singleton

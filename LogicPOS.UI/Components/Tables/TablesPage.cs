@@ -1,5 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Tables.DeleteTable;
 using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -19,11 +21,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetAllTablesQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -77,6 +74,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftTable.Place.Designation.CompareTo(rightTable.Place.Designation);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteTableCommand(SelectedEntity.Id);
         }
 
         #region Signleton

@@ -1,7 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Classes.DeleteArticleClass;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -17,10 +19,7 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
+      
         protected override IRequest<ErrorOr<IEnumerable<ArticleClass>>> GetAllQuery => new GetAllArticleClassesQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -78,8 +77,14 @@ namespace LogicPOS.UI.Components.Pages
             });
         }
 
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleClassCommand(SelectedEntity.Id);
+        }
+
         #region Singleton   
         private static ArticleClassesPage _instance;
+       
         public static ArticleClassesPage Instance(Window parent)
         {
             if (_instance == null)

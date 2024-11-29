@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Printers.DeletePrinter;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -20,11 +22,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Printer>>> GetAllQuery => new GetAllPrintersQuery();
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
-        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -54,7 +51,6 @@ namespace LogicPOS.UI.Components.Pages
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
 
-
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
@@ -79,6 +75,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftPrinter.Type.Designation.CompareTo(rightPrinter.Type.Designation);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePrinterCommand(SelectedEntity.Id);
         }
 
         #region Signleton

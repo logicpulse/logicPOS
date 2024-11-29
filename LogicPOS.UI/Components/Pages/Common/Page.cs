@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -61,7 +62,25 @@ namespace LogicPOS.UI.Components.Pages
             AddEntitiesToModel();
         }
 
-        public abstract bool DeleteEntity();
+        protected abstract DeleteCommand GetDeleteCommand();
+        
+        public virtual bool DeleteEntity()
+        {
+            var result = _mediator.Send(GetDeleteCommand()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError, source: SourceWindow);
+                return false;
+            }
+
+            if (result.Value == false)
+            {
+                CustomAlerts.ShowCannotDeleteEntityErrorAlert(SourceWindow);
+            }
+
+            return result.Value;
+        }
 
         protected virtual void LoadEntities()
         {
@@ -94,6 +113,7 @@ namespace LogicPOS.UI.Components.Pages
             AddColumns();
             AddGridViewEventHandlers();
         }
+        
         protected void InitializeGridViewModel()
         {
             InitializeFilter();

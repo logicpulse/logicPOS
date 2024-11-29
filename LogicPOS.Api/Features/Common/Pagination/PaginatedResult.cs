@@ -9,6 +9,6 @@ namespace LogicPOS.Api.Features.Common.Pagination
         public int TotalItems { get; set; }
         public int Page { get; set; }
         public int PageSize { get; set; }
-        public int TotalPages => (int)Math.Ceiling((decimal)TotalItems / PageSize);
+        public int TotalPages { get; set; }
     }
 }

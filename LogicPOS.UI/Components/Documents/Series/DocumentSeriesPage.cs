@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
@@ -19,11 +20,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -113,6 +109,11 @@ namespace LogicPOS.UI.Components.Pages
 
                 return leftDocumentSerie.DocumentType.Designation.CompareTo(rightDocumentSerie.DocumentType.Designation);
             });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
 
         #region Singleton

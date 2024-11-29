@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Pagination;
 using MediatR;
 using System;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 namespace LogicPOS.Api.Features.Documents.GetDocuments
@@ -12,8 +13,8 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
         public int? Page { get; set; }
         public int? PageSize { get; set; }
         public string Search { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public string[] Types { get; set; }
         public Guid? CustomerId { get; set; }
         public Guid? PaymentMethodId { get; set; }
@@ -21,7 +22,17 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
 
         public string GetUrlQuery()
         {
-            var query = new StringBuilder($"?startDate={StartDate:yyyy-MM-dd}&endDate={EndDate:yyyy-MM-dd}");
+            var query = new StringBuilder("?");
+
+            if (StartDate.HasValue)
+            {
+                query.Append($"startDate={StartDate:yyyy-MM-dd}");
+            }
+
+            if (EndDate.HasValue)
+            {
+                query.Append($"&endDate={EndDate:yyyy-MM-dd}");
+            }
 
             if (!string.IsNullOrWhiteSpace(Search))
             {

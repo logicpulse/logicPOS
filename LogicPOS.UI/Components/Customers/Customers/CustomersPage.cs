@@ -1,10 +1,14 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Customers.DeleteCustomer;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using System;
@@ -14,15 +18,10 @@ namespace LogicPOS.UI.Components.Pages
 {
     public class CustomersPage : Page<Customer>
     {
-
         protected override IRequest<ErrorOr<IEnumerable<Customer>>> GetAllQuery => new GetAllCustomersQuery();
+        
         public CustomersPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
         {
-        }
-
-        public override bool DeleteEntity()
-        {
-            throw new NotImplementedException();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -137,8 +136,14 @@ namespace LogicPOS.UI.Components.Pages
             });
         }
 
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteCustomerCommand(SelectedEntity.Id);
+        }
+
         #region Singleton
         private static CustomersPage _instance;
+        
         public static CustomersPage Instance
         {
             get
@@ -150,6 +155,7 @@ namespace LogicPOS.UI.Components.Pages
                 return _instance;
             }
         }
+
         #endregion
     }
 }
