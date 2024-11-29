@@ -285,10 +285,6 @@
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
       <Name>LogicPOS.Settings</Name>
     </ProjectReference>
-    <ProjectReference Include="..\logicpos.shared\LogicPOS.Shared.csproj">
-      <Project>{fb74327c-1794-47ec-8f52-fd3f464f3258}</Project>
-      <Name>LogicPOS.Shared</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Utility\LogicPOS.Utility.csproj">
       <Project>{18488ce5-c06f-40f5-9339-0467a47d7985}</Project>
       <Name>LogicPOS.Utility</Name>
