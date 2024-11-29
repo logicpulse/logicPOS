@@ -907,13 +907,6 @@ namespace logicpos
             //tchial0: start Reports Menu
         }
 
-        public static void StartNewDocumentFromBackOffice(Window parentWindow)
-        {
-            var createDocumentModal = new CreateDocumentModal(parentWindow);
-            createDocumentModal.Run();
-            createDocumentModal.Destroy();
-        }
-
         public static void OpenArticleStockDialog(Window parentWindow)
         {
 

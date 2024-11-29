@@ -278,11 +278,11 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         {
             return new Dictionary<string, AccordionNode>
                 {
-                    { "DocumentsNew", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_new_finance_documents")) { Clicked = delegate { Utils.StartNewDocumentFromBackOffice(this); } } },
-                    { "DocumentsShow", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents")) { Clicked = delegate {  } } },
-                    { "DocumentsPay", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate {  } } },
-                    { "DocumentsPayments", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_payments")) { Clicked = delegate { } } },
-                    { "DocumentsCurrentAccount", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { } } }
+                    { "DocumentsNew", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_new_finance_documents")) { Clicked = delegate { BtnNewDocument_Clicked(this,EventArgs.Empty);  } } },
+                    { "DocumentsShow", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_record_finance_documents")) { Clicked = delegate { BtnDocuments_Clicked(this,EventArgs.Empty); } } },
+                    { "DocumentsPay", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_ft_unpaid")) { Clicked = delegate { BtnDocuments_Clicked(this,EventArgs.Empty);  } } },
+                    { "DocumentsPayments", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_payments")) { Clicked = delegate { BtnPayments_Clicked(this,EventArgs.Empty); } } },
+                    { "DocumentsCurrentAccount", new AccordionNode(GeneralUtils.GetResourceByName("dialog_button_label_select_finance_documents_cc")) { Clicked = delegate { BtnCurrentAccount_Clicked(this,EventArgs.Empty); } } }
                 };
         }
 

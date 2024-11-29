@@ -23,9 +23,9 @@ using System.Drawing;
 using Alignment = Gtk.Alignment;
 using Color = System.Drawing.Color;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.BackOffice
 {
-    internal class DashBoardPage : Box
+    internal partial class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
         private  IconButtonWithText BtnTerminals { get; set; }
@@ -242,8 +242,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 BtnUsers.Clicked += delegate { BtnUsers.Page = UsersPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnUsers, null); };
                 BtnTables.Clicked += delegate { BtnTables.Page = TablesPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnTables, null); };
 
-                BtnDocuments.Clicked += delegate { };
-                BtnNewDocument.Clicked += delegate { logicpos.Utils.StartNewDocumentFromBackOffice(parentWindow); };
+                BtnDocuments.Clicked += BtnDocuments_Clicked;
+                BtnNewDocument.Clicked += BtnNewDocument_Clicked;
                 botao11.Clicked += delegate { };
                 BtnArticleStock.Clicked += delegate { logicpos.Utils.OpenArticleStockDialog(_parentWindow); };
 

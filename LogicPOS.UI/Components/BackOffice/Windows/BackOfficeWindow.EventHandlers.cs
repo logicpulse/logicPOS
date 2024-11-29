@@ -1,87 +1,61 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Settings;
-using LogicPOS.Utility;
 using logicpos;
-using System;
-using System.IO;
-using LogicPOS.UI.Buttons;
 using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
-using LogicPOS.UI.Components.Pickers;
-using Microsoft.Extensions.DependencyInjection;
-using MediatR;
-using LogicPOS.Api.Features.Database.GetBackup;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Modals;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
-using DocumentFormat.OpenXml.Wordprocessing;
+using LogicPOS.Api.Features.Database.GetBackup;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pickers;
+using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Drawing;
+using System.IO;
 
 namespace LogicPOS.UI.Components.BackOffice.Windows
 {
     public partial class BackOfficeWindow
     {
-        private void BtnExit_Clicked(object sender, EventArgs args)
+
+        #region Documents
+        private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            LogicPOSAppUtils.Quit(this);
+            var modal = new CreateDocumentModal(this);
+            modal.Run();
+            modal.Destroy();
         }
 
-        private void BtnDashBoard_Clicked(object sender, EventArgs args)
+        private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            BtnDashboard.Page = new DashBoardPage(this);
-            MenuBtn_Clicked(BtnDashboard, null);
+            var modal = new DocumentsModal(this);
+            modal.Run();
+            modal.Destroy();
         }
 
-        private void BtnNewVesion_Clicked(object sender, EventArgs args)
+        private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            DateTime actualDate = DateTime.Now;
-
-            string fileName = "\\LPUpdater\\LPUpdater.exe";
-            string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-
-            if (File.Exists(lPathToUpdater))
-            {
-                var responseType = new CustomAlert(this)
-                                    .WithMessageResource("global_pos_update")
-                                    .WithSize(new Size(600,400))
-                                    .WithMessageType(MessageType.Question)
-                                    .WithButtonsType(ButtonsType.YesNo)
-                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), GeneralSettings.ServerVersion))
-                                    .ShowAlert();
-
-                if (responseType == ResponseType.Yes)
-                {
-                    System.Diagnostics.Process.Start(lPathToUpdater);
-                    LogicPOSAppUtils.QuitWithoutConfirmation();
-                }
-            }
+            var modal = new ReceiptsModal(this);
+            modal.Run();
+            modal.Destroy();
         }
 
-        public void MenuBtn_Clicked(object sender, EventArgs e)
+        private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
-            IconButtonWithText button = (IconButtonWithText)sender;
-
-            if (button.Page == null)
-            {
-                return;
-            }
-
-            if (CurrentPage != null)
-            {
-                PanelContent.Remove(CurrentPage);
-            }
-
-            CurrentPage = button.Page;
-
-            LabelActivePage.Text = button.Label;
-
-            CurrentPage.Visible = true;
-
-            PanelContent.PackStart(CurrentPage);
+            var modal = new CustomerCurrentAccountFilterModal(this);
+            modal.Run();
+            modal.Destroy();
         }
+
+        #endregion
 
         #region System
         private void BtnLogout_Clicked(object sender, EventArgs e)
@@ -98,7 +72,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
         private void BtnNotificaion_Clicked(object sender, EventArgs e)
         {
-           
+
         }
 
         private void BtnChangeLog_Clicked(object sender, EventArgs e)
@@ -149,6 +123,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog);
         }
         #endregion
+
 
         #region Export
         private void BtnExportCustomSaft_Clicked(object sender, EventArgs e)
@@ -207,6 +182,66 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         }
 
         #endregion
+
+
+        private void BtnExit_Clicked(object sender, EventArgs args)
+        {
+            LogicPOSAppUtils.Quit(this);
+        }
+
+        private void BtnDashBoard_Clicked(object sender, EventArgs args)
+        {
+            BtnDashboard.Page = new DashBoardPage(this);
+            MenuBtn_Clicked(BtnDashboard, null);
+        }
+
+        private void BtnNewVesion_Clicked(object sender, EventArgs args)
+        {
+            DateTime actualDate = DateTime.Now;
+
+            string fileName = "\\LPUpdater\\LPUpdater.exe";
+            string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
+
+            if (File.Exists(lPathToUpdater))
+            {
+                var responseType = new CustomAlert(this)
+                                    .WithMessageResource("global_pos_update")
+                                    .WithSize(new Size(600, 400))
+                                    .WithMessageType(MessageType.Question)
+                                    .WithButtonsType(ButtonsType.YesNo)
+                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), GeneralSettings.ServerVersion))
+                                    .ShowAlert();
+
+                if (responseType == ResponseType.Yes)
+                {
+                    System.Diagnostics.Process.Start(lPathToUpdater);
+                    LogicPOSAppUtils.QuitWithoutConfirmation();
+                }
+            }
+        }
+
+        public void MenuBtn_Clicked(object sender, EventArgs e)
+        {
+            IconButtonWithText button = (IconButtonWithText)sender;
+
+            if (button.Page == null)
+            {
+                return;
+            }
+
+            if (CurrentPage != null)
+            {
+                PanelContent.Remove(CurrentPage);
+            }
+
+            CurrentPage = button.Page;
+
+            LabelActivePage.Text = button.Label;
+
+            CurrentPage.Visible = true;
+
+            PanelContent.PackStart(CurrentPage);
+        }
 
     }
 }
