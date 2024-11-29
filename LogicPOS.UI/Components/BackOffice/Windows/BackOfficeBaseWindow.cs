@@ -1,7 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
@@ -175,9 +173,8 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             BtnDashboard = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "DASHBOARD_ICON",
-                    BackgroundColor = "168, 204, 79".StringToColor(),
-                    Text = "Dashboard ",
+                    Name = "touchButton_Green",
+                    Text = "Dashboard",
                     Font = fontDescription,
                     FontColor = "61, 61, 61".StringToColor(),
                     Icon = _dashboardIcon,
@@ -189,8 +186,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             BtnExit = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "EXIT_BUTTON",
-                    BackgroundColor = "201, 102, 88".StringToColor(),
+                    Name = "touchButton_Red",
                     Text = GeneralUtils.GetResourceByName("global_quit"),
                     Font = fontDescription,
                     FontColor = "255, 255, 255".StringToColor(),
@@ -203,8 +199,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             BtnPOS = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "POS",
-                    BackgroundColor = "168, 204, 79".StringToColor(),
+                    Name = "touchButton_Green",
                     Text = "LogicPOS",
                     Font = fontDescription,
                     FontColor = "61, 61, 61".StringToColor(),

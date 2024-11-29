@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDiscount = new TextBox("global_discount", true,true, RegularExpressions.Money);
         private TextBox _txtFiscalNumber = new TextBox("global_fiscal_number",true,true,RegularExpressions.FiscalNumber);
         private TextBox _txtCardNumber = new TextBox("global_card_number");
-        private TextBox _txtCardCredit = new TextBox("global_card_credit_amount",true,true, @"^\d+(\.\d+)?$");
+        private TextBox _txtCardCredit = new TextBox("global_card_credit_amount",true,true,RegularExpressions.DecimalNumber);
         private CheckButton _checkSupplier = new CheckButton(GeneralUtils.GetResourceByName("global_supplier"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
@@ -45,6 +45,8 @@ namespace LogicPOS.UI.Components.Modals
             InitializeCountriesComboBox();
             InitializePriceTypesComboBox();
             InitializeCustomerTypesComboBox();
+            _txtCardCredit.Text = "0";
+            _txtCardCredit.Component.Sensitive = false;
         }
 
         private void InitializeCustomerTypesComboBox()
@@ -100,7 +102,6 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtEmail.Entry);
             SensitiveFields.Add(_txtFiscalNumber.Entry);
             SensitiveFields.Add(_txtCardNumber.Entry);
-            SensitiveFields.Add(_txtCardCredit.Entry);
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_checkSupplier);
             SensitiveFields.Add(_txtDiscount.Entry);
@@ -116,7 +117,6 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(_txtDiscount);
             ValidatableFields.Add(_txtBirthDate);
             ValidatableFields.Add(_comboCountries);
-            ValidatableFields.Add(_txtCardCredit);
 
             if (_modalMode == EntityEditionModalMode.Update)
             {

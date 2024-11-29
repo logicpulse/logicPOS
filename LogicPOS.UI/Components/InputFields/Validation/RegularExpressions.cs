@@ -22,7 +22,6 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         public static string Integer => @"^\d+$";
         public static string IntegerGreaterThanZero => @"^[1-9][0-9]*$";
         public static string IntegerColonSeparated => @"^(\d+(:\d+)*)?$";
-        public static string Decimal => @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,4})?\s*$";
         public static string DecimalPositiveAndNegative => @"^-?\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";
         public static string DecimalGreaterThanZero => @"^\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";
         public static string DecimalGreaterEqualThanZero => @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,})?\s*$";

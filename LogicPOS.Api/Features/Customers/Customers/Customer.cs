@@ -34,15 +34,8 @@ namespace LogicPOS.Api.Entities
         public string WebSite { get; set; }
         public string FiscalNumber { get; set; } 
         public string CardNumber { get; set; }
-        public string DiscountType { get; set; }
-        public decimal? Discount { get; set; }
-        public decimal? CardCredit { get; set; }
-        public decimal? TotalDebt { get; set; }
-        public decimal? TotalCredit { get; set; }
-        public decimal? CurrentBalance { get; set; }
-        public string CreditLine { get; set; }
-        public string Remarks { get; set; }
-        public bool? Supplier { get; set; }
-        public bool? Hidden { get; set; }
+        public decimal Discount { get; set; }
+        public decimal CardCredit { get; set; }
+        public bool Supplier { get; set; }
     }
 }

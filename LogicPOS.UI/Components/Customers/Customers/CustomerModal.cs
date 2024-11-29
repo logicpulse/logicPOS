@@ -2,8 +2,10 @@
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Customers.AddCustomer;
+using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
+using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +16,33 @@ namespace LogicPOS.UI.Components.Modals
     {
         public CustomerModal(EntityEditionModalMode modalMode, Customer entity = null) : base(modalMode, entity)
         {
+            if(modalMode == EntityEditionModalMode.Update)
+            {
+                DisableFiscalInformationsEdition();
+            }
+  
+        }
 
+        private void DisableFiscalInformationsEdition()
+        {
+            if(CustomerHasDocumentsAssociated())
+            {
+                _txtFiscalNumber.Component.Sensitive = false;
+                _comboCountries.Component.Sensitive = false;
+            }
+        }
+
+        private bool CustomerHasDocumentsAssociated()
+        {
+            var result = _mediator.Send(new CustomerHasDocumentsAssociatedQuery(_entity.Id)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result.FirstError);
+                return true;
+            }
+
+            return result.Value;
         }
 
         protected override void ShowEntityData()
@@ -58,6 +86,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewCity = _txtCity.Text,
                 NewPhone = _txtPhone.Text,
                 NewMobilePhone = _txtMobile.Text,
+                NewDiscount = decimal.Parse(_txtDiscount.Text),
                 NewEmail = _txtEmail.Text,
                 NewFiscalNumber = _txtFiscalNumber.Text,
                 NewCardNumber = _txtCardNumber.Text,
@@ -86,6 +115,7 @@ namespace LogicPOS.UI.Components.Modals
                 Phone = _txtPhone.Text,
                 MobilePhone = _txtMobile.Text,
                 Email = _txtEmail.Text,
+                Discount = decimal.Parse(_txtDiscount.Text),
                 FiscalNumber = _txtFiscalNumber.Text,
                 Notes = _txtNotes.Value.Text,
                 CardNumber = _txtCardNumber.Text,
