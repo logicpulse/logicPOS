@@ -58,7 +58,9 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnReports_Clicked(object sender, EventArgs e)
         {
-
+            var modal = new ReportsModal(this);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnLogOut_Clicked(object sender, EventArgs e)
