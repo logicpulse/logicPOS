@@ -45,11 +45,6 @@ namespace LogicPOS.UI.Components.Windows
             POSWindow.ShowFrontOffice(this);
         }
 
-        private void ButtonKeyBackOffice_Clicked(object sender, EventArgs e)
-        {
-            Utils.ShowBackOffice(this);
-        }
-
         private void OnUserSelected(UserDetail user)
         {
             PinPanel.Mode = (user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;

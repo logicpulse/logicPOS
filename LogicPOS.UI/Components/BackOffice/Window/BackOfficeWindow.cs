@@ -1,26 +1,26 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
-using logicpos.Classes.Enums.Finance;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.PoleDisplays;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 
 
-namespace LogicPOS.UI.Components.BackOffice.Windows
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class BackOfficeWindow : BackOfficeBaseWindow
     {
@@ -42,14 +42,11 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             CurrentPage.Sensitive = AuthenticationService.UserHasPermission(currentNodePrivilegesToken);
         }
 
-
         private void Initialize()
         {
             InitializeMenuSections();
 
-            ResizeMenuButtons();
-
-            PanelButtons.Add(Menu);
+            AddSections();
 
             AddEventHandlers();
 
@@ -59,7 +56,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private void ShowStartPage()
         {
             CurrentPage = new DashBoardPage(this);
-            PanelContent.PackEnd(CurrentPage);
+            PageContainer.PackEnd(CurrentPage);
         }
 
         private void InitializeMenuSections()
@@ -78,19 +75,6 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             BtnPOS.Clicked += BtnPOS_Clicked;
             Shown += BackOfficeMainWindow_Show;
         }
-
-        private void ResizeMenuButtons()
-        {
-            if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
-            {
-                PanelButtons.Put(Menu, 0, 28);
-            }
-            else
-            {
-                PanelButtons.Put(Menu, 0, 40);
-            }
-        }
-
 
         private Dictionary<string, AccordionNode> CreateMenuSections()
         {
@@ -159,7 +143,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
         private Dictionary<string, AccordionNode> CreateExportSection()
         {
             Dictionary<string, AccordionNode> exportSection = new Dictionary<string, AccordionNode>();
-            exportSection.Add("System_ExportSaftPT_SaftPt", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_whole_year")) { Clicked = BtnExportYearlySaft_Clicked  });
+            exportSection.Add("System_ExportSaftPT_SaftPt", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_whole_year")) { Clicked = BtnExportYearlySaft_Clicked });
             exportSection.Add("System_ExportSaftPT_E-Fatura", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_last_month")) { Clicked = BtnExportLastMonthSaft_Clicked });
             exportSection.Add("System_ExportSaftPT_Custom", new AccordionNode(GeneralUtils.GetResourceByName("global_export_saftpt_custom")) { Clicked = BtnExportCustomSaft_Clicked });
             exportSection.Add("System_Export_Articles", new AccordionNode(GeneralUtils.GetResourceByName("global_export_articles")) { Clicked = delegate { ExcelProcessing.OpenFilePicker(this, ImportExportFileOpen.ExportArticles); } });
@@ -302,5 +286,21 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
             return articleButtons;
         }
 
+        #region Static
+        public static System.Drawing.Size ScreenSize { get; set; } = Utils.GetScreenSize();
+        public static void ShowBackOffice(Window windowToHide)
+        {
+            if (Instance == null)
+            {
+                Instance = new BackOfficeWindow();
+            }
+            else
+            {
+                Instance.Show();
+            }
+
+            windowToHide.Hide();
+        }
+        #endregion
     }
 }

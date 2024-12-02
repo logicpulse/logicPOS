@@ -6,12 +6,11 @@ using LogicPOS.Api.Features.Articles.DeleteArticle;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
 using LogicPOS.Api.Features.Articles.GetTotalStocks;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages

@@ -3,12 +3,11 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -16,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     public class TerminalsPage : Page<Terminal>
     {
         protected override IRequest<ErrorOr<IEnumerable<Terminal>>> GetAllQuery => new GetAllTerminalsQuery();
-        public TerminalsPage(Window parent) : base(parent)
+        public TerminalsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 

@@ -4,21 +4,17 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Users.CommissionGroups.DeleteCommissionGroup;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class CommissionGroupsPage : Page<CommissionGroup>
-    {    
+    {
         protected override IRequest<ErrorOr<IEnumerable<CommissionGroup>>> GetAllQuery => new GetAllCommissionGroupsQuery();
         public CommissionGroupsPage(Window parent) : base(parent)
         {
@@ -50,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
 
             var title = GeneralUtils.GetResourceByName("global_commission");
             return Columns.CreateColumn(title, 2, RenderCommission);
-            
+
         }
 
         protected override void InitializeSort()

@@ -1,18 +1,12 @@
-﻿using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
-using DevExpress.Xpo.DB;
-using Gtk;
+﻿using Gtk;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
@@ -20,8 +14,6 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -583,121 +575,8 @@ namespace logicpos
             }
         }
 
-        //Sample Test Routines : Used in Startup Window
-        public static void LargeComputation(int pMilliseconds)
-        {
-            Thread.Sleep(pMilliseconds);
-        }
 
-        public static void AddUpdateSettings(Dictionary<string, string> pValues)
-        {
-            bool debug = false;
-            string configFileName = GetApplicationConfigFileName();
 
-            try
-            {
-                var configFile = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                var settings = configFile.AppSettings.Settings;
-
-                foreach (var item in pValues)
-                {
-                    if (settings[item.Key] == null)
-                    {
-                        settings.Add(item.Key, item.Value);
-                        //Debug
-                        if (debug) _logger.Debug(string.Format("AddOrUpdateAppSettings: Add Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
-                    }
-                    else
-                    {
-                        settings[item.Key].Value = item.Value;
-                        //Debug
-                        if (debug) _logger.Debug(string.Format("AddOrUpdateAppSettings: Modified Key: [{0}] = [{1}]", item.Key, settings[item.Key].Value));
-                    }
-
-                    //Assign to Memory
-                    ConfigurationManager.AppSettings.Set(item.Key, item.Value);
-                }
-
-                //Save
-                if (Debugger.IsAttached == true)
-                {
-                    if (debug) _logger.Debug("Save AppSettings with debugger");
-                    configFile.SaveAs(configFileName, ConfigurationSaveMode.Modified);
-                }
-                else
-                {
-                    if (debug) _logger.Debug("Save AppSettings without debugger");
-                    configFile.Save(ConfigurationSaveMode.Modified);
-                }
-            }
-            catch (ConfigurationErrorsException ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-        }
-
-        public static string GetApplicationConfigFileName()
-        {
-            string result = string.Empty;
-
-            try
-            {
-                Configuration cfg = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                result = cfg.FilePath.ToLower().Replace("vshost.", string.Empty);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        public static bool CloseAllOpenTerminals(Window parentWindow, Session pSession)
-        {
-            bool result = false;
-
-            try
-            {
-                // SELECT Oid, PeriodType, SessionStatus, Designation FROM pos_worksessionperiod WHERE PeriodType = 1 AND SessionStatus = 0;
-                CriteriaOperator criteriaOperator = CriteriaOperator.Parse("PeriodType = 1 AND SessionStatus = 0");
-                SortProperty[] sortProperty = new SortProperty[2];
-                sortProperty[0] = new SortProperty("CreatedAt", SortingDirection.Ascending);
-                XPCollection xpcWorkingSessionPeriod = new XPCollection(pSession, typeof(pos_worksessionperiod), criteriaOperator, sortProperty);
-                DateTime dateTime = XPOUtility.CurrentDateTimeAtomic();
-                if (xpcWorkingSessionPeriod.Count > 0)
-                {
-                    foreach (pos_worksessionperiod item in xpcWorkingSessionPeriod)
-                    {
-                        item.SessionStatus = WorkSessionPeriodStatus.Close;
-                        item.DateEnd = dateTime;
-                        item.Save();
-                    }
-                }
-
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        public static void ShowBackOffice(Window pHideWindow)
-        {
-            if (BackOfficeWindow.Instance == null)
-            {
-                BackOfficeWindow.Instance = new BackOfficeWindow();
-            }
-            else
-            {
-                BackOfficeWindow.Instance.Show();
-            }
-
-            pHideWindow.Hide();
-        }
 
         public static string GetThemeFileLocation(string pFile)
         {
@@ -886,18 +765,6 @@ namespace logicpos
             {
                 _logger.Error(ex.Message, ex);
             }
-
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //SessionApp
-
-        public static string GetSessionFileName()
-        {
-            string result = Path.Combine(
-                PathsSettings.TempFolderLocation,
-                GeneralSettings.POSSessionJsonFileName);
 
             return result;
         }

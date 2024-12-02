@@ -4,9 +4,9 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
@@ -18,7 +18,7 @@ using System.Drawing;
 using Alignment = Gtk.Alignment;
 using Color = System.Drawing.Color;
 
-namespace LogicPOS.UI.Components.BackOffice
+namespace LogicPOS.UI.Components.Pages
 {
     internal partial class DashBoardPage : Box
     {
@@ -144,8 +144,8 @@ namespace LogicPOS.UI.Components.BackOffice
             //Cria o evento por trás da dashboard, tudo será carregado para aqui
             _eventBox = new EventBox();
             //_eventboxDashboard.ModifyBg(StateType.Normal, Utils.ColorToGdkColor(screenBackgroundColor));
-            _eventBox.WidthRequest = LogicPOSAppContext.BackOfficeScreenSize.Width;
-            _eventBox.HeightRequest = LogicPOSAppContext.BackOfficeScreenSize.Height;
+            _eventBox.WidthRequest = BackOfficeWindow.ScreenSize.Width;
+            _eventBox.HeightRequest = BackOfficeWindow.ScreenSize.Height;
             Alignment _alignmentWindow = new Alignment(0.0f, 0.0f, 0.0f, 0.0f)
             {
                 _eventBox

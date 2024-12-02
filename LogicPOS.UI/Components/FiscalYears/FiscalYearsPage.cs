@@ -4,15 +4,12 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -22,7 +19,7 @@ namespace LogicPOS.UI.Components.Pages
     public class FiscalYearsPage : Page<FiscalYear>
     {
         protected override IRequest<ErrorOr<IEnumerable<FiscalYear>>> GetAllQuery => new GetAllFiscalYearsQuery();
-       
+
         public FiscalYearsPage(Window parent) : base(parent)
         {
             Navigator.BtnUpdate.Visible = false;
@@ -31,12 +28,12 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if(mode == EntityEditionModalMode.Update)
+            if (mode == EntityEditionModalMode.Update)
             {
                 mode = EntityEditionModalMode.View;
             }
 
-            if(mode == EntityEditionModalMode.Insert)
+            if (mode == EntityEditionModalMode.Insert)
             {
                 var currentFiscalYear = _entities.FirstOrDefault(f => f.IsDeleted == false);
 
@@ -54,7 +51,7 @@ namespace LogicPOS.UI.Components.Pages
                     }
                 }
             }
-      
+
             var modal = new FiscalYearModal(modalMode: mode,
                                             entity: SelectedEntity);
             var response = modal.Run();

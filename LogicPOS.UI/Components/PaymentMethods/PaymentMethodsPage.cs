@@ -3,9 +3,9 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using System;
@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Pages
             var modal = new PaymentMethodModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
-            return response; 
+            return response;
         }
 
         protected override void AddColumns()

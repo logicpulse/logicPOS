@@ -4,18 +4,17 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.WeighingMachines.DeleteWeighingMachine;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class WeighingMachinesPage : Page<WeighingMachine>
-    {    
+    {
         protected override IRequest<ErrorOr<IEnumerable<WeighingMachine>>> GetAllQuery => new GetAllWeighingMachinesQuery();
         public WeighingMachinesPage(Window parent) : base(parent)
         {

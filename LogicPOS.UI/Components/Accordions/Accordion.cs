@@ -3,6 +3,7 @@ using logicpos;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Accordions
         protected void Initialize(Dictionary<string, AccordionNode> nodes,
                                   string nodePrivilegesTokenFormat)
         {
-            LogicPOSAppContext.BackOfficeScreenSize = Utils.GetScreenSize();
+            BackOfficeWindow.ScreenSize = Utils.GetScreenSize();
             _label = new Label();
             Nodes = nodes;
 
@@ -50,7 +51,7 @@ namespace LogicPOS.UI.Components.Accordions
                     {
                         HBox button = new HBox(false, 0);
 
-                        if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
+                        if (BackOfficeWindow.ScreenSize.Height <= 800)
                         {
                             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
                             System.Drawing.Image imageIcon;
@@ -220,12 +221,12 @@ namespace LogicPOS.UI.Components.Accordions
 
             if (accordionType == "Parent")
             {
-                if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
+                if (BackOfficeWindow.ScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeparentLowRes);
                 else _label.ModifyFont(fontPosBackOfficeParent);
             }
             else
             {
-                if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
+                if (BackOfficeWindow.ScreenSize.Height <= 800) _label.ModifyFont(fontPosBackOfficeChildLowRes);
                 else _label.ModifyFont(fontPosBackOfficeChild);
             }
             _label.ModifyFg(StateType.Normal, colNormal.ToGdkColor());

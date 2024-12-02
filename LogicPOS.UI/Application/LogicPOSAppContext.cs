@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Application
         public static ExpressionEvaluationService ExpressionEvaluator { get; set; } = new ExpressionEvaluationService();
         public static System.Drawing.Size ScreenSize { get; set; }
         public static System.Drawing.Size MaxWindowSize { get; set; }
-        public static System.Drawing.Size BackOfficeScreenSize { get; set; }
         public static string OpenFileDialogStartPath { get; set; }
         public static UsbDisplayDevice UsbDisplay { get; set; }
         public static logicpos.Classes.Logic.Hardware.InputReader BarCodeReader { get; set; }

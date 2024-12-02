@@ -487,7 +487,7 @@ namespace LogicPOS.UI.Widgets
 
             if (GeneralSettings.AppUseBackOfficeMode)
             {
-                Utils.ShowBackOffice(SourceWindow);
+                BackOfficeWindow.ShowBackOffice(SourceWindow);
                 return;
             }
 

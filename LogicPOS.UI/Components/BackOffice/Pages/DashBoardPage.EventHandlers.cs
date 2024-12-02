@@ -1,13 +1,13 @@
-﻿using LogicPOS.UI.Components.BackOffice.Windows;
-using LogicPOS.UI.Components.Documents;
+﻿using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Windows;
 using System;
 
-namespace LogicPOS.UI.Components.BackOffice
+namespace LogicPOS.UI.Components.Pages
 {
     internal partial class DashBoardPage
     {
- 
+
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {

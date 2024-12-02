@@ -3,11 +3,12 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public class ReportsModal : Modal
+    public partial class ReportsModal : Modal
     {
         #region Components
         
@@ -85,12 +86,16 @@ namespace LogicPOS.UI.Components.Modals
         private XAccordionChildButton BtnStockByArticleGainReport = new XAccordionChildButton(LocalizedString.Instance["report_list_stock_gain"]);
         #endregion
 
+        private List<VBox> Panels = new List<VBox>();
         #endregion
         public ReportsModal(Window parent) : base(parent,
                                                   LocalizedString.Instance["global_reports"],
                                                   new Size(500, 509),
                                                   PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_reports.png")
         {
+            RegisterPanels();
+            ShowPanel(PanelSummarizedFinancialReports);
+            AddEventHandlers();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons() => null;
@@ -107,6 +112,23 @@ namespace LogicPOS.UI.Components.Modals
             scrolledWindow.Add(viewport);
             scrolledWindow.ResizeMode = ResizeMode.Parent;
             return scrolledWindow;
+        }
+
+        private void RegisterPanels()
+        {
+            Panels.Add(PanelSummarizedFinancialReports);
+            Panels.Add(PanelDetailedFinancialReports);
+            Panels.Add(PanelAuxiliaryTablesReports);
+            Panels.Add(PanelOtherReports);
+            Panels.Add(PanelStockReports);
+        }
+        
+        private void ShowPanel(VBox panel)
+        {
+            foreach (var p in Panels)
+            {
+                p.Visible = p == panel;
+            }
         }
 
         private void AddSummarizedFinancialReportsPanel(VBox container)
@@ -128,6 +150,7 @@ namespace LogicPOS.UI.Components.Modals
                 PanelSummarizedFinancialReports.PackStart(BtnSalesByVatAndArticleClassReport.Button, false, false, 0);
             }
             container.PackStart(PanelSummarizedFinancialReports, false, false, 0);
+            BtnSummarizedFinancialReports.Button.Clicked += (sender, e) => ShowPanel(PanelSummarizedFinancialReports);
         }
 
         private void AddDetailedFinancialReportsPanel(VBox container)
@@ -153,6 +176,7 @@ namespace LogicPOS.UI.Components.Modals
 
             }
             container.PackStart(PanelDetailedFinancialReports, false, false, 0);
+            BtnDetailedFinancialReports.Button.Clicked += (sender, e) => ShowPanel(PanelDetailedFinancialReports);
         }
        
         private void AddAuxiliaryTablesReportsPanel(VBox container)
@@ -163,6 +187,7 @@ namespace LogicPOS.UI.Components.Modals
                 PanelAuxiliaryTablesReports.PackStart(BtnCustomersReports.Button, false, false, 0);
             }
             container.PackStart(PanelAuxiliaryTablesReports, false, false, 0);
+            BtnAuxiliaryTablesReports.Button.Clicked += (sender, e) => ShowPanel(PanelAuxiliaryTablesReports);
         }
 
         private void AddOtherReportsPanel(VBox container)
@@ -173,6 +198,7 @@ namespace LogicPOS.UI.Components.Modals
                 PanelOtherReports.PackStart(BtnComissionsReport.Button, false, false, 0);
             }
             container.PackStart(PanelOtherReports, false, false, 0);
+            BtnOtherTablesReports.Button.Clicked += (sender, e) => ShowPanel(PanelOtherReports);
         }
 
         private void AddStockReportsPanel(VBox container)
@@ -186,6 +212,7 @@ namespace LogicPOS.UI.Components.Modals
                 PanelStockReports.PackStart(BtnStockByArticleGainReport.Button, false, false, 0);
             }
             container.PackStart(PanelStockReports, false, false, 0);
+            BtnStockReports.Button.Clicked += (sender, e) => ShowPanel(PanelStockReports);
         }
 
         private VBox CreateButtonsPanel()

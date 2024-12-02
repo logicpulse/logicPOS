@@ -4,19 +4,17 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.DeleteArticleFamily;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.Utility;
+using LogicPOS.UI.Components.Windows;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleFamiliesPage : Page<ArticleFamily>
     {
-        public ArticleFamiliesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
+        public ArticleFamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
@@ -46,7 +44,7 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(3);
         }
 
-  
+
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteArticleFamilyCommand(SelectedEntity.Id);

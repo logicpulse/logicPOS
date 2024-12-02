@@ -1,6 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;

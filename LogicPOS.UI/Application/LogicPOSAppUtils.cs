@@ -7,7 +7,6 @@ using logicpos.Classes.Logic.Others;
 using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
@@ -73,7 +72,7 @@ namespace LogicPOS.UI.Application
 
             LogicPOSSettings.FirstBoot = false;
 
-   
+
             var appScreenSize = AppSettings.Instance.appScreenSize;
 
             if (appScreenSize == new Size(0, 0))

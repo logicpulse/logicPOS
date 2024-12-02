@@ -1,15 +1,14 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Extensions;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using LogicPOS.Globalization;
-using LogicPOS.UI.Extensions;
-using LogicPOS.UI.Application;
-using LogicPOS.UI.Alerts;
-using LogicPOS.Utility;
-using LogicPOS.UI.Components.BackOffice.Windows;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -260,7 +259,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         {
                             //ExChange Font Color, Highlight L2
                             currentKey.UIKey.LabelL1.ModifyFg(StateType.Normal, _colorKeyboardPadKeySecondaryFont.ToGdkColor());
-                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal,_colorKeyboardPadKeyDefaultFont.ToGdkColor());
+                            currentKey.UIKey.LabelL2.ModifyFg(StateType.Normal, _colorKeyboardPadKeyDefaultFont.ToGdkColor());
                         };
                     };
                 }
@@ -507,10 +506,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Static
 
-        public static string ReplaceDiacritial(string pInput) 
+        public static string ReplaceDiacritial(string pInput)
         {
             string result = pInput;
-            Dictionary<string,string> replace = new Dictionary<string, string>
+            Dictionary<string, string> replace = new Dictionary<string, string>
             {
                 //Important this chars are not equal, ex ("ã", "ã") in real is ("a~", "ã"), this is the trick to a good replacement
 
@@ -563,9 +562,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             };
 
             foreach (var item in replace)
-	        {
-		       result = result.Replace(item.Key, item.Value);
-	        }
+            {
+                result = result.Replace(item.Key, item.Value);
+            }
 
             return result;
         }

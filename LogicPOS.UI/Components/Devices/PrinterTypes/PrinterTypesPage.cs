@@ -4,12 +4,11 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PrinterTypes.DeletePrinterType;
 using LogicPOS.Api.Features.PrinterTypes.GetAllPrinterTypes;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 

@@ -7,10 +7,10 @@ using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using System;
@@ -189,8 +189,8 @@ namespace LogicPOS.UI.Components.Pages
                 var currentValue = (bool)_gridPermissionItems.Model.GetValue(iterator, 1);
                 _gridPermissionItems.Model.SetValue(iterator, 1, !currentValue);
 
-                var permissionItem = _gridPermissionItems.Model.GetValue(iterator, 0) as PermissionItem; 
-                
+                var permissionItem = _gridPermissionItems.Model.GetValue(iterator, 0) as PermissionItem;
+
                 if (currentValue)
                 {
                     DeleteUserProfilePermission(permissionItem);
@@ -231,9 +231,9 @@ namespace LogicPOS.UI.Components.Pages
 
         private void AddUserProfilePermission(PermissionItem permissionItem)
         {
-            var userProfile  = (UserProfile)SelectedEntity;
+            var userProfile = (UserProfile)SelectedEntity;
 
-            if(userProfile is null)
+            if (userProfile is null)
             {
                 return;
             }

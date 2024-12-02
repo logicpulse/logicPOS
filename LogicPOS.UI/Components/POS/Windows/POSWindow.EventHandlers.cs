@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos;
 using logicpos.Classes.Enums.Hardware;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Data.Services;
@@ -53,7 +52,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnBackOffice_Clicked(object sender, EventArgs e)
         {
-            Utils.ShowBackOffice(this);
+            BackOfficeWindow.ShowBackOffice(this);
         }
 
         private void BtnReports_Clicked(object sender, EventArgs e)
@@ -264,7 +263,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void UpdateUIIfHasWorkingOrder()
         {
-            
+
         }
 
         private void ScrollTextViewLog(object o, SizeAllocatedArgs args)

@@ -4,12 +4,11 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.MeasurementUnits.DeleteMeasurementUnit;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 
@@ -22,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();
-       
+
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new MeasurementUnitModal(mode, SelectedEntity as MeasurementUnit);

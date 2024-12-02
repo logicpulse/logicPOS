@@ -4,12 +4,11 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.VatRates.DeleteVatRate;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -17,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     public class VatRatesPage : Page<VatRate>
     {
         protected override IRequest<ErrorOr<IEnumerable<VatRate>>> GetAllQuery => new GetAllVatRatesQuery();
-        public VatRatesPage(Window parent, Dictionary<string,string> options = null) : base(parent,options)
+        public VatRatesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 

@@ -3,12 +3,11 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -122,7 +121,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             get
             {
-                if(_instance == null)
+                if (_instance == null)
                 {
                     _instance = new DocumentSeriesPage(BackOfficeWindow.Instance);
                 }

@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         protected override IRequest<ErrorOr<IEnumerable<Warehouse>>> GetAllQuery => new GetAllWarehousesQuery();
 
-        public WarehousesPage(Window parent) : base(parent)
+        public WarehousesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
         }
 

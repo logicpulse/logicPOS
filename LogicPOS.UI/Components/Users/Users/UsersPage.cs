@@ -1,16 +1,15 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Users.GetAllUsers;
-using MediatR;
-using System.Collections.Generic;
 using Gtk;
-using System;
-using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.Utility;
-using LogicPOS.UI.Components.BackOffice.Windows;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Users.DeleteUser;
+using LogicPOS.Api.Features.Users.GetAllUsers;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
+using MediatR;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {

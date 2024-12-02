@@ -2,14 +2,10 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -163,8 +159,8 @@ namespace LogicPOS.UI.Components.Pages
 
         private void RunPageEntityModal(EntityEditionModalMode mode)
         {
-            var response = (ResponseType) _page.RunModal(mode);
-            if(response == ResponseType.Ok)
+            var response = (ResponseType)_page.RunModal(mode);
+            if (response == ResponseType.Ok)
             {
                 _page.Refresh();
             }

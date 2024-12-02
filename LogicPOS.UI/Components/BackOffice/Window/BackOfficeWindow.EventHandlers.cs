@@ -11,8 +11,8 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
-using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
@@ -21,7 +21,7 @@ using System;
 using System.Drawing;
 using System.IO;
 
-namespace LogicPOS.UI.Components.BackOffice.Windows
+namespace LogicPOS.UI.Components.Windows
 {
     public partial class BackOfficeWindow
     {
@@ -231,7 +231,7 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             if (CurrentPage != null)
             {
-                PanelContent.Remove(CurrentPage);
+                PageContainer.Remove(CurrentPage);
             }
 
             CurrentPage = button.Page;
@@ -240,8 +240,9 @@ namespace LogicPOS.UI.Components.BackOffice.Windows
 
             CurrentPage.Visible = true;
 
-            PanelContent.PackStart(CurrentPage);
+            PageContainer.PackStart(CurrentPage);
         }
+
 
     }
 }

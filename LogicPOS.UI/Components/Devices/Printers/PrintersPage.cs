@@ -1,15 +1,13 @@
 ﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Printers.DeletePrinter;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
-using LogicPOS.UI.Components.BackOffice.Windows;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using Printer = LogicPOS.Api.Entities.Printer;
 

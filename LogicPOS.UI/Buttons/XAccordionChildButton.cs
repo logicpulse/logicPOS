@@ -2,6 +2,7 @@
 using logicpos;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using System.Drawing;
 
@@ -24,7 +25,7 @@ namespace LogicPOS.UI.Buttons
             var button = new Button(component);
             button.Name = "AccordionChildButton";
 
-            if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
+            if (BackOfficeWindow.ScreenSize.Height <= 800)
             {
                 button.HeightRequest = 23;
             }
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Buttons
             Pango.FontDescription fontPosBackOfficeChild = Pango.FontDescription.FromString(_fontPosBackOfficeChild);
 
 
-            if (LogicPOSAppContext.BackOfficeScreenSize.Height <= 800)
+            if (BackOfficeWindow.ScreenSize.Height <= 800)
             {
                 label.ModifyFont(fontPosBackOfficeChildLowRes);
             }

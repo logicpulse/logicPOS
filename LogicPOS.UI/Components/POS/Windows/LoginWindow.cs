@@ -133,7 +133,6 @@ namespace LogicPOS.UI.Components.Windows
                 PinPanel.ButtonKeyOK.Clicked += BtnOK_Clicked;
                 PinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
                 PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
-                PinPanel.ButtonKeyBackOffice.Clicked += ButtonKeyBackOffice_Clicked;
                 PinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
 
                 //Objects:TablePadUserButtonPrev
