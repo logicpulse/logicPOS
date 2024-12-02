@@ -427,6 +427,8 @@ widget '*.buttonPosScrollers*' style 'TouchButtonImageScrollers'
 #Accordion
 widget_class '*AccordionParentButton*' style 'AccordionParentButton'
 widget_class '*AccordionChildButton*' style 'AccordionChildButton'
+widget '*AccordionParentButton*' style 'AccordionParentButton'
+widget '*AccordionChildButton*' style 'AccordionChildButton'
 
 #TreeView
 #widget_class '*GenericTreeView*.*' style 'KeyboardPadKey'

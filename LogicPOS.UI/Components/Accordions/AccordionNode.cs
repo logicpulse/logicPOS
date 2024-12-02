@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Accordions
         public Widget Content { get; set; }
         public Image GroupIcon { get; set; }
         public string ExternalAppFileName { get; set; }
-        public bool Sensitive;
+        public bool Sensitive { get; set; }
         public EventHandler Clicked { get; set; }
 
         public AccordionNode(string label,
