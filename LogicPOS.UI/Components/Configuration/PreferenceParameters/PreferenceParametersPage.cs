@@ -182,7 +182,7 @@ namespace LogicPOS.UI.Components.Pages
         private static PreferenceParametersPage _companyParametersInstance;
         private static PreferenceParametersPage _systemParametersInstance;
 
-        public static PreferenceParametersPage CompanyPage
+        public static PreferenceParametersPage CompanyPageInstance
         {
             get
             {
@@ -196,7 +196,7 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        public static PreferenceParametersPage SystemPage
+        public static PreferenceParametersPage SystemPageInstance
         {
             get
             {

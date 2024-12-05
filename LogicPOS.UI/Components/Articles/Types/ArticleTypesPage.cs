@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Articles.Types.GetAllArticleTypes;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using System;
@@ -85,13 +86,16 @@ namespace LogicPOS.UI.Components.Pages
 
         #region Singleton
         private static ArticleTypesPage _instance;
-        public static ArticleTypesPage Instance(Window parent)
+        public static ArticleTypesPage Instance
         {
-            if (_instance == null)
+            get
             {
-                _instance = new ArticleTypesPage(parent);
+                if (_instance == null)
+                {
+                    _instance = new ArticleTypesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
             }
-            return _instance;
         }
         #endregion
     }

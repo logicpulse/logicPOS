@@ -86,7 +86,6 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnApply.Clicked += delegate
             {
-                BackOfficeWindow.Instance.Menu.UpdateMenuPrivileges();
                 POSWindow.Instance.SaleOptionsPanel.UpdateUIState();
             };
 

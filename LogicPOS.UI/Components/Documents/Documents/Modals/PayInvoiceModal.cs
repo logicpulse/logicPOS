@@ -222,7 +222,7 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true);
 
-            TxtDateTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            TxtDateTime.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
         }
 
         private void InitializeTxtTotalPaid()

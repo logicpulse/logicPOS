@@ -228,7 +228,7 @@ namespace LogicPOS.UI.Components.Pages
                 botao16.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_DATE");
 
                 BtnTerminals.Clicked += delegate { BtnTerminals.Page = TerminalsPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnTerminals, null); };
-                BtnPreferenceParameters.Clicked += delegate { BtnPreferenceParameters.Page = PreferenceParametersPage.CompanyPage; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnPreferenceParameters, null); };
+                BtnPreferenceParameters.Clicked += delegate { BtnPreferenceParameters.Page = PreferenceParametersPage.CompanyPageInstance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnPreferenceParameters, null); };
                 BtnFiscalYears.Clicked += delegate { BtnFiscalYears.Page = FiscalYearsPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnFiscalYears, null); };
                 BtnPrinters.Clicked += delegate { BtnPrinters.Page = PrintersPage.Instance; BackOfficeWindow.Instance.MenuBtn_Clicked(BtnPrinters, null); };
 

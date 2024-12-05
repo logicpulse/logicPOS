@@ -5,6 +5,7 @@ using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
 using LogicPOS.Api.Features.Database.GetBackup;
+using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -14,10 +15,12 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -41,7 +44,7 @@ namespace LogicPOS.UI.Components.Windows
             modal.Destroy();
         }
 
-        private void BtnPayments_Clicked(object sender, EventArgs e)
+        private void BtnReceipts_Clicked(object sender, EventArgs e)
         {
             var modal = new ReceiptsModal(this);
             modal.Run();
@@ -57,6 +60,48 @@ namespace LogicPOS.UI.Components.Windows
 
         #endregion
 
+        #region Reports
+        private void BtnReports_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsModal(this);
+            modal.Run();
+            modal.Destroy();
+        }
+        #endregion
+
+        #region Articles 
+        private void BtnStock_Clicked(object sender, EventArgs e)
+        {
+            if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
+            {
+                return;
+            }
+
+            if (PreferenceParametersService.CheckStocksMessage && !LicenseSettings.LicenseModuleStocks)
+            {
+                var messageDialog = new CustomAlert(this)
+                    .WithMessageType(MessageType.Warning)
+                    .WithButtonsType(ButtonsType.OkCancel)
+                    .WithTitleResource("global_warning")
+                    .WithMessageResource("global_warning_acquire_module_stocks")
+                    .ShowAlert();
+
+
+                if (messageDialog == ResponseType.Ok)
+                {
+                    Process.Start("https://logic-pos.com/");
+                }
+
+                return;
+            }
+
+            var addStockModal = new AddStockModal(this);
+            addStockModal.Run();
+            addStockModal.Destroy();
+
+        }
+        #endregion
+
         #region System
         private void BtnLogout_Clicked(object sender, EventArgs e)
         {
@@ -70,10 +115,6 @@ namespace LogicPOS.UI.Components.Windows
             POSWindow.Instance.ShowAll();
         }
 
-        private void BtnNotificaion_Clicked(object sender, EventArgs e)
-        {
-
-        }
 
         private void BtnChangeLog_Clicked(object sender, EventArgs e)
         {

@@ -6,13 +6,13 @@ using LogicPOS.Api.Features.PoleDisplays;
 using LogicPOS.Api.Features.PoleDisplays.DeletePoleDisplay;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.PoleDisplays;
 using MediatR;
 using System;
 using System.Collections.Generic;
 
-namespace LogicPOS.UI.Components.PoleDisplays
+namespace LogicPOS.UI.Components.Pages
 {
     public class PoleDisplaysPage : Page<PoleDisplay>
     {

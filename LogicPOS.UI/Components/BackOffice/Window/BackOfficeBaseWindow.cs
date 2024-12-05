@@ -29,7 +29,6 @@ namespace LogicPOS.UI.Components.Windows
         protected Image Logo { get; set; } = new Image();
         protected Label Reseller { get; set; }
         public System.Drawing.Size ButtonSize = new System.Drawing.Size(200, 38);
-        public Accordion Menu { get; set; }
         public IconButtonWithText BtnDashboard { get; set; }
         public IconButtonWithText BtnExit { get; set; }
         public IconButtonWithText BtnPOS { get; set; }
@@ -365,39 +364,6 @@ namespace LogicPOS.UI.Components.Windows
             Hide();
             POSWindow.Instance.ShowAll();
             args.RetVal = true;
-        }
-
-        protected void MenuButton_Clicked(object sender, EventArgs e)
-        {
-            if (sender.GetType() == typeof(AccordionParentButton))
-            {
-                return;
-            }
-
-            var button = (AccordionChildButton)sender;
-
-            if (button.Page != null)
-            {
-                if (CurrentPage != null)
-                {
-                    PageContainer.Remove(CurrentPage);
-                }
-
-                CurrentPage = button.Page;
-                Menu.CurrentPageChildButton = button;
-                LabelActivePage.Text = button.Label;
-
-                CurrentPage.Visible = true;
-
-                PageContainer.PackStart(CurrentPage);
-
-                return;
-            }
-
-            if (button.ExternalApplication != null)
-            {
-                GeneralUtils.ExecuteExternalProcess(button.ExternalApplication);
-            }
         }
 
         public void ShowPage(Widget page, string pageTitle)
