@@ -308,9 +308,6 @@
     <Analyzer Include="..\libs\System.IO.FileSystem.Primitives.dll" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ClosedXML">
-      <Version>0.102.2</Version>
-    </PackageReference>
     <PackageReference Include="DevExpress.Xpo">
       <Version>23.2.6</Version>
     </PackageReference>
