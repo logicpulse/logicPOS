@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Tickets;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
@@ -68,62 +67,7 @@ namespace LogicPOS.UI
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-        //Shared Method to call all other PrintTicketMethods to Check Licence and other Protections
-        public static bool SharedPrintTicket(Window parentWindow, Api.Entities.Printer printer, TicketType pTicketType)
-        {
-            bool result = false;
-
-            if (LicenseSettings.LicenceRegistered == false)
-            {
-                var messageDialog = new CustomAlert(parentWindow)
-                            .WithMessageResource("global_printing_function_disabled")
-                            .ShowAlert();
-
-            }
-            else
-            {
-                try
-                {
-                    //Notification : Show Message TouchTerminalWithoutAssociatedPrinter and Store user input, to Show Next Time(Yes) or Not (No)
-                    if (printer == null)
-                    {
-                        string ticketTitle = string.Empty;
-                        switch (pTicketType)
-                        {
-                            case TicketType.TableOrder:
-                                ticketTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_tt");
-                                break;
-                            case TicketType.ArticleOrder:
-                                ticketTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_ar");
-                                break;
-                            case TicketType.WorkSession:
-                                ticketTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_ws");
-                                break;
-                            case TicketType.CashDrawer:
-                                ticketTitle = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs");
-                                break;
-                            default:
-                                break;
-                        }
-                        var messageDialog = new CustomAlert(parentWindow)
-                                                .WithMessage(ticketTitle)
-                                                .ShowAlert();
-                        //Utils.ShowMessageTouchTerminalWithoutAssociatedPrinter(parentWindow, ticketTitle);
-                    }
-                    else
-                    {
-                        result = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex.Message, ex);
-                }
-            }
-            return result;
-        }
-
-
+   
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //PrintArticleRequest
 
@@ -153,97 +97,7 @@ namespace LogicPOS.UI
             return result;
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //PrintWorkSessionMovement
-
-        public static bool PrintWorkSessionMovement(Window parentWindow,
-                                                    Api.Entities.Printer printerEntity,
-                                                    WorkSessionData workSessionPeriod,
-                                                    string terminalDesignation, string userName)
-        {
-            bool result = false;
-            sys_configurationprinterstemplates template = XPOUtility.GetEntityById<sys_configurationprinterstemplates>(PrintingSettings.WorkSessionMovementPrintingTemplateId);
-
-            try
-            {
-                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.WorkSession))
-                {
-                    var printerDto = new PrinterDto
-                    {
-                        Id = printerEntity.Id,
-                        Designation = printerEntity.Designation,
-                        NetworkName = printerEntity.NetworkName,
-                        Token = printerEntity.Type.Token,
-                        IsThermal = printerEntity.Type.ThermalPrinter
-                    };
-
-                    string workSessionMovementPrintingFileTemplate = XPOUtility.WorkSession.GetWorkSessionMovementPrintingFileTemplate();
-                    var sessionPeriodSummaryDetails = WorkSessionProcessor.GetSessionPeriodSummaryDetails(workSessionPeriod.WorkSession.Id);
-                    result = Printing.Utility.PrintingUtils.PrintWorkSessionMovement(printerDto,
-                                                                                     terminalDesignation,
-                                                                                     userName,
-                                                                                     workSessionPeriod,
-                                                                                     workSessionMovementPrintingFileTemplate,
-                                                                                     sessionPeriodSummaryDetails);
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
-                                                          printerEntity.Designation,
-                                                          printerEntity.NetworkName,
-                                                          ex.Message);
-            }
-
-            return result;
-        }
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //PrintCashDrawerOpenAndMoneyInOut
-
-        public static bool PrintCashDrawerOpenAndMoneyInOut(Window parentWindow,
-                                                            Api.Entities.Printer printerEntity,
-                                                            string pTicketTitle,
-                                                            decimal pMovementAmount,
-                                                            decimal pTotalAmountInCashDrawer,
-                                                            string pMovementDescription,
-                                                            string terminalDesignation, string userName)
-        {
-            bool result = false;
-
-            try
-            {
-                if (SharedPrintTicket(parentWindow, printerEntity, TicketType.CashDrawer))
-                {
-                    var printerDto = new PrinterDto
-                    {
-                        Id = printerEntity.Id,
-                        Designation = printerEntity.Designation,
-                        NetworkName = printerEntity.NetworkName,
-                        Token = printerEntity.Type.Token,
-                        IsThermal = printerEntity.Type.ThermalPrinter
-                    };
-
-                    result = Printing.Utility.PrintingUtils.PrintCashDrawerOpenAndMoneyInOut(printerDto,
-                                                                                             terminalDesignation,
-                                                                                             userName,
-                                                                                             pTicketTitle,
-                                                                                             pMovementAmount,
-                                                                                             pTotalAmountInCashDrawer,
-                                                                                             pMovementDescription);
-                }
-            }
-            catch (Exception ex)
-            {
-                CustomAlerts.ShowErrorPrintingTicketAlert(parentWindow,
-                                                           printerEntity.Designation,
-                                                           printerEntity.NetworkName,
-                                                           ex.Message);
-            }
-
-            return result;
-        }
-
+  
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //ProtectedFiles Protection
 
