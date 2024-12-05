@@ -1,23 +1,10 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.Enums;
-using LogicPOS.Data.Services;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Domain.Enums;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Components.PoleDisplays;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.UI.Extensions;
-using LogicPOS.Utility;
 using System;
-using System.Collections.Generic;
 
 
 namespace LogicPOS.UI.Components.Windows

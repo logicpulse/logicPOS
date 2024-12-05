@@ -3,7 +3,6 @@ using logicpos;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Accordions;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
@@ -225,7 +224,7 @@ namespace LogicPOS.UI.Components.Windows
             LabelDateTime.ModifyFont(fontDescriptionStatusBar);
 
             PageContainer = new HBox(false, (int)borderWidth) { BorderWidth = borderWidth };
-            
+
             PanelLeft = new Fixed() { HasWindow = true, BorderWidth = borderWidth };
             PanelLeft.ModifyBg(StateType.Normal, colorBackOfficeAccordionFixBackground.ToGdkColor());
             PanelLeft.Put(BtnDashboard, 0, 0);
@@ -374,7 +373,7 @@ namespace LogicPOS.UI.Components.Windows
             }
 
             CurrentPage = page;
-            
+
             LabelActivePage.Text = pageTitle;
 
             CurrentPage.Visible = true;

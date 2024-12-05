@@ -2,6 +2,7 @@
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Users;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Windows
@@ -85,7 +86,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Others
         public XAccordionParentButton BtnOthersSection = new XAccordionParentButton(LocalizedString.Instance["global_other_tables"],
                                                                                     "Assets/Images/Icons/Accordion/pos_backoffice_outras_tabelas.png");
-        public VBox PanelOthers = new VBox(false, 2);   
+        public VBox PanelOthers = new VBox(false, 2);
         public XAccordionChildButton BtnCountries { get; } = new XAccordionChildButton(LocalizedString.Instance["global_country"]);
         public XAccordionChildButton BtnCurrencies { get; } = new XAccordionChildButton(LocalizedString.Instance["global_ConfigurationCurrency"]);
         public XAccordionChildButton BtnPlaces { get; } = new XAccordionChildButton(LocalizedString.Instance["global_places"]);
@@ -402,6 +403,31 @@ namespace LogicPOS.UI.Components.Windows
             Panels.Add(PanelImport);
             Panels.Add(PanelExport);
             Panels.Add(PanelSystem);
+        }
+
+        public void UpdatePrivileges()
+        {
+            #region Documents
+            BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU");
+            BtnDocuments.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSLISTALL_MENU");
+            BtnReceiptsEmission.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU");
+            BtnReceipts.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU");
+            BtnCurrentAccount.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSCURRENTACCOUNT_MENU");
+            #endregion
+
+            #region Reports
+            BtnReports.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSREPORTS_MENU");
+            #endregion
+
+            #region Articles
+            BtnArticleFamilies.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_MENU");
+            BtnArticleSubfamilies.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_MENU");
+            BtnArticles.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_MENU");
+            BtnArticleTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLETYPE_MENU");
+            BtnArticleClasses.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLECLASS_MENU");
+            BtnPriceTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRICETYPE_MENU");
+            BtnSotck.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESTOCK_MENU");
+            #endregion
         }
     }
 }
