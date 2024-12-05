@@ -277,8 +277,7 @@ namespace LogicPOS.UI.Components.Documents
 
         protected override Widget CreateBody()
         {
-            var options = PageOptions.SelectionPageOptions;
-            var page = new DocumentsPage(this, options);
+            var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
             page.SetSizeRequest(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
@@ -291,14 +290,13 @@ namespace LogicPOS.UI.Components.Documents
 
         private void AddPageEventHandlers()
         {
-            Page.EntitySelected += Page_OnDocumentSelected;
-            Page.PageChanged += Page_OnChande;
-            BtnFilter.Clicked += Page.BtnFilter_Clicked;
-            BtnPrevious.Clicked += Page.BtnPreviousPage_Clicked;
-            BtnNext.Clicked += Page.BtnNextPage_Clicked;
+            Page.PageChanged += Page_OnChanged;
+            BtnFilter.Clicked += delegate { Page.RunFilter(); };
+            BtnPrevious.Clicked += delegate { Page.MoveToPreviousPage(); };
+            BtnNext.Clicked += delegate { Page.MoveToNextPage(); };
         }
 
-        private void Page_OnChande(object sender, EventArgs e)
+        private void Page_OnChanged(object sender, EventArgs e)
         {
             UpdateModalTitle();
             UpdateNavigationButtons();
@@ -308,10 +306,6 @@ namespace LogicPOS.UI.Components.Documents
         {
             WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00} " +
                 $" - Página {Page.Documents.Page} de {Page.Documents.TotalPages} | Mostrando {Page.Documents.TotalItems}  resultados";
-        }
-
-        private void Page_OnDocumentSelected(Document document)
-        {
         }
 
         protected override Widget CreateLeftContent()

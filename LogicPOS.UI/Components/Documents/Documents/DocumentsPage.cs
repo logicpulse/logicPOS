@@ -31,14 +31,14 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        public void BtnPreviousPage_Clicked(object sender, EventArgs e)
+        public void MoveToNextPage()
         {
             Query.Page = Documents.Page - 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public void BtnNextPage_Clicked(object sender, EventArgs e)
+        public void MoveToPreviousPage()
         {
             Query.Page = Documents.Page + 1;
             Refresh();
@@ -56,11 +56,11 @@ namespace LogicPOS.UI.Components.Pages
             return query;
         }
 
-        public void BtnFilter_Clicked(object sender, EventArgs e)
+        public void RunFilter()
         {
             var filterModal = new DocumentsFilterModal(SourceWindow);
             var response = (ResponseType)filterModal.Run();
-            var query = filterModal.GetQuery();
+            var query = filterModal.GetDocumentsQuery();
             filterModal.Destroy();
 
             if (response != ResponseType.Ok)

@@ -85,8 +85,7 @@ namespace LogicPOS.UI.Components.Modals
 
             DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
         }
-
-
+        
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -154,7 +153,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void EnableTabsForDocumentType(DocumentType documentType)
         {
-            CustomerTab.Sensitive = documentType.IsCreditNote() == false && documentType.IsGuide() == false;
+            CustomerTab.Sensitive = documentType.IsCreditNote() == false;
         }
 
         private void OnOriginDocumentSelected(Document document)

@@ -2,11 +2,13 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
+using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -25,14 +27,19 @@ namespace LogicPOS.UI.Components.Documents
         private ReceiptsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment");
 
-        private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "btnPrintDocument");
-        private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "btnOpenDocument");
+        private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "touchButton_Green");
+        private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "touchButton_Green");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
-        private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "btnPrintDocumentAs");
-        private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "btnSendDocumentEmail");
-        private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("btnCancelDocument",
+        private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "touchButton_Green");
+        private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "touchButton_Green");
+        private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                          GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+
+        private IconButtonWithText BtnPrevious { get; set; }
+        private IconButtonWithText BtnNext { get; set; }
+        private PageTextBox TxtSearch { get; set; }
+        public IconButtonWithText BtnFilter { get; set; }
 
         public ReceiptsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment"),
@@ -42,12 +49,9 @@ namespace LogicPOS.UI.Components.Documents
 
         }
 
-
-
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
-            ColorButtons();
-
+            InitializeButtons();
             AddButtonsEventHandlers();
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
@@ -59,17 +63,40 @@ namespace LogicPOS.UI.Components.Documents
                 new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok),
                 new ActionAreaButton(BtnClose, ResponseType.Close),
             };
+
             return actionAreaButtons;
         }
 
-        private void ColorButtons()
+        private void InitializeButtons()
         {
-            var greenColor = Color.FromArgb(140, 187, 59);
-            BtnPrintDocument.SetBackgroundColor(greenColor);
-            BtnPrintDocumentAs.SetBackgroundColor(greenColor);
-            BtnOpenDocument.SetBackgroundColor(greenColor);
-            BtnSendDocumentEmail.SetBackgroundColor(greenColor);
-            BtnCancelDocument.SetBackgroundColor(greenColor);
+            IconButtonWithText CreateButton(string name,
+                                            string label,
+                                            string icon)
+            {
+                return new IconButtonWithText(
+                    new ButtonSettings
+                    {
+                        Name = name,
+                        Text = label,
+                        Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
+                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                        Icon = PathsSettings.ImagesFolderLocation + icon,
+                        IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                        ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                    });
+            }
+
+            BtnPrevious = CreateButton("touchButtonPrev_DialogActionArea",
+                                       LocalizedString.Instance["widget_generictreeviewnavigator_record_prev"],
+                                       @"Icons/icon_pos_nav_prev.png");
+
+            BtnNext = CreateButton("touchButtonNext_DialogActionArea",
+                                   LocalizedString.Instance["widget_generictreeviewnavigator_record_next"],
+                                   @"Icons/icon_pos_nav_next.png");
+
+            BtnFilter = CreateButton("touchButtonSearchAdvanced_DialogActionArea",
+                                    LocalizedString.Instance["global_button_label_filter"],
+                                    @"Icons\icon_pos_filter.png");
         }
 
         private void AddButtonsEventHandlers()
@@ -77,13 +104,6 @@ namespace LogicPOS.UI.Components.Documents
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
             BtnCancelDocument.Clicked += BtnCancelReceipt_Clicked;
-        }
-
-        private void BtnNewDocument_Clicked(object sender, EventArgs e)
-        {
-            var createDocumentModal = new CreateDocumentModal(this);
-            createDocumentModal.Run();
-            createDocumentModal.Destroy();
         }
 
         private void BtnCancelReceipt_Clicked(object sender, EventArgs e)
@@ -191,40 +211,60 @@ namespace LogicPOS.UI.Components.Documents
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);
             Page = page;
+            UpdateModalTitle();
             AddPageEventHandlers();
             return fixedContent;
         }
 
         private void AddPageEventHandlers()
         {
-            Page.EntitySelected += OnReceiptSelected;
-            Page.ReceiptsSelectionChanged += Page_ReceiptsSelectionChanged;
+
+            Page.PageChanged += Page_OnChanged;
+            BtnFilter.Clicked += delegate { Page.RunFilter(); };
+            BtnPrevious.Clicked += delegate { Page.MoveToPreviousPage(); };
+            BtnNext.Clicked += delegate { Page.MoveToNextPage(); };
         }
 
-        private void Page_ReceiptsSelectionChanged(object sender, EventArgs e)
+        private void Page_OnChanged(object sender, EventArgs e)
         {
-            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedReceipts.Count}) = {Page.SelectedReceiptsTotalAmount:0.00}";
+            UpdateModalTitle();
+            UpdateNavigationButtons();
         }
 
-        private void OnReceiptSelected(Receipt receipt)
+        private void UpdateModalTitle()
         {
+            WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedReceipts.Count}) = {Page.SelectedReceiptsTotalAmount:0.00} " +
+                $" - Página {Page.Receipts.Page} de {Page.Receipts.TotalPages} | Mostrando {Page.Receipts.TotalItems}  resultados";
+        }
 
+        private void UpdateNavigationButtons()
+        {
+            BtnPrevious.Sensitive = Page.Receipts.Page > 1;
+            BtnNext.Sensitive = Page.Receipts.Page < Page.Receipts.TotalPages;
         }
 
         protected override Widget CreateLeftContent()
         {
-            return CreateSearchBox();
+            HBox box = new HBox(false, 0);
+
+            TxtSearch = new PageTextBox(this,
+                                        LocalizedString.Instance["widget_generictreeviewsearch_search_label"],
+                                        isRequired: false,
+                                        isValidatable: false,
+                                        includeKeyBoardButton: true,
+                                        includeSelectButton: false);
+
+            TxtSearch.Component.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
+
+            box.PackStart(TxtSearch.Component, false, false, 0);
+            box.PackStart(BtnFilter, false, false, 0);
+            box.PackStart(BtnPrevious, false, false, 0);
+            box.PackStart(BtnNext, false, false, 0);
+
+            return box;
+
         }
 
-        private Widget CreateSearchBox()
-        {
-            var searchBox = new PageSearchBox(Page.SourceWindow, true);
-            searchBox.TxtSearch.EntryValidation.Changed += delegate
-            {
-                Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = searchBox.TxtSearch.EntryValidation.Text;
-            };
 
-            return searchBox;
-        }
     }
 }

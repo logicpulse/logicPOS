@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.GetDocuments;
+using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
@@ -71,7 +72,7 @@ namespace LogicPOS.UI.Components.Documents
             BtnClear.Clicked += BtnClear_Clicked;
         }
 
-        public GetDocumentsQuery GetQuery()
+        public GetDocumentsQuery GetDocumentsQuery()
         {
             if(AllFieldsAreValid() == false)
             {
@@ -112,6 +113,40 @@ namespace LogicPOS.UI.Components.Documents
             {
                 var paymentCondition = TxtPaymentCondition.SelectedEntity as PaymentCondition;
                 query.PaymentConditionId = paymentCondition.Id;
+            }
+
+            return query;
+        }
+
+        public GetReceiptsQuery GetReceiptsQuery()
+        {
+            if (AllFieldsAreValid() == false)
+            {
+                return null;
+            }
+
+            var query = new GetReceiptsQuery();
+
+            if (string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
+            {
+                query.StartDate = DateTime.Parse(TxtStartDate.Text);
+            }
+
+            if (string.IsNullOrWhiteSpace(TxtEndDate.Text) == false)
+            {
+                query.EndDate = DateTime.Parse(TxtEndDate.Text);
+            }
+
+            if (TxtCustomer.SelectedEntity != null)
+            {
+                var customer = TxtCustomer.SelectedEntity as Customer;
+                query.CustomerId = customer.Id;
+            }
+
+            if (TxtPaymentMethod.SelectedEntity != null)
+            {
+                var paymentMethod = TxtPaymentMethod.SelectedEntity as PaymentMethod;
+                query.PaymentMethodId = paymentMethod.Id;
             }
 
             return query;

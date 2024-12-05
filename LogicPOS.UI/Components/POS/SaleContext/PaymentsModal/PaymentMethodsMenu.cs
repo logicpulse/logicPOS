@@ -22,7 +22,6 @@ namespace LogicPOS.UI.Components.Menus
         public List<(PaymentMethod PaymentMethod, CustomButton Button)> Buttons { get; set; } = new List<(PaymentMethod, CustomButton)>();
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
-        public PaymentMethod InitialPaymentMethod { get; set; }
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }
         public int CurrentPage { get; set; }
@@ -161,8 +160,6 @@ namespace LogicPOS.UI.Components.Menus
             CurrentPage = 1;
             CustomButton currentButton = null;
 
-            SelectedPaymentMethod = InitialPaymentMethod;
-
             if (Buttons.Count > 0)
             {
                 Buttons.Clear();
@@ -180,16 +177,7 @@ namespace LogicPOS.UI.Components.Menus
             {
                 foreach (var paymentMethod in paymentMethods)
                 {
-                    if (SelectedPaymentMethod == null)
-                    {
-                        SelectedPaymentMethod = paymentMethod;
-
-                        if (InitialPaymentMethod == null)
-                        {
-                            InitialPaymentMethod = SelectedPaymentMethod;
-                        }
-                    }
-
+ 
                     ButtonLabel = paymentMethod.Designation;
 
                     ButtonImage = null;
@@ -204,13 +192,6 @@ namespace LogicPOS.UI.Components.Menus
                     currentButton.Clicked += Button_Clicked;
                     Buttons.Add((paymentMethod, currentButton));
                     currentButton.CurrentButtonId = paymentMethod.Id;
-
-                    if (paymentMethod.Id == InitialPaymentMethod.Id)
-                    {
-                        currentButton.Sensitive = false;
-                        SelectedButton = currentButton;
-                    }
-
                 }
 
                 TotalItems = Buttons.Count;
@@ -229,7 +210,11 @@ namespace LogicPOS.UI.Components.Menus
         {
             CustomButton button = (CustomButton)sender;
 
-            SelectedButton.Sensitive = true;
+            if(SelectedButton != null)
+            {
+                SelectedButton.Sensitive = true;
+            }
+    
             SelectedButton = button;
             SelectedButton.Sensitive = false;
             SelectedPaymentMethod = Buttons.Find(x => x.Button == SelectedButton).PaymentMethod;

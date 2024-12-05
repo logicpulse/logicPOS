@@ -52,8 +52,19 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
             string iconClearRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}";
             string iconAddRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_nav_new.png"}";
 
-            BtnRemove = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconClearRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
-            BtnAdd = new IconButton(new ButtonSettings { Name = "touchButtonIcon", Icon = iconAddRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
+            BtnRemove = new IconButton(
+                new ButtonSettings { 
+                    Name = "buttonUserId", 
+                    Icon = iconClearRecord, 
+                    IconSize = new Size(20, 20), 
+                    ButtonSize = new Size(30, 30) });
+
+            BtnAdd = new IconButton(
+                new ButtonSettings { 
+                    Name = "buttonUserId", 
+                    Icon = iconAddRecord, 
+                    IconSize = new Size(20, 20), 
+                    ButtonSize = new Size(30, 30) });
 
             AddButtonsEventHandlers();
         }
