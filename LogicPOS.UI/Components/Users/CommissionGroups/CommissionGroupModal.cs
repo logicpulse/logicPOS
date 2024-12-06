@@ -1,15 +1,10 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
-using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.CommissionGroups.AddCommissionGroup;
 using LogicPOS.Api.Features.CommissionGroups.UpdateCommissionGroup;
-using LogicPOS.UI.Components.Modals;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class CommissionGroupModal: EntityEditionModal<CommissionGroup>
+    public partial class CommissionGroupModal : EntityEditionModal<CommissionGroup>
     {
         public CommissionGroupModal(EntityEditionModalMode modalMode, CommissionGroup commissionGroup = null) : base(modalMode, commissionGroup)
         {
@@ -40,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
- 
+
         protected override void ShowEntityData()
         {
             _txtOrder.Text = _entity.Order.ToString();
@@ -48,7 +43,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtCommission.Text = _entity.Commission.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
-            _txtNotes.Value.Text= _entity.Notes;
+            _txtNotes.Value.Text = _entity.Notes;
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         public static string HardwareStopBits => @"^(None|One|Two|OnePointFive)$";
         public static string HardwareDataBits => @"^(7|8|9)$";
         public static string Culture = @"^(en-GB|en-US|es-ES|fr-FR|pt-AO|pt-BR|pt-MZ|pt-PT)$";
-        public static string AngolanFiscalNumber => @"^[0-9A-Za-z]{10,}$";
+        public static string AngolanFiscalNumber => @"^[0-9A-Z]{10,}$";
         public static string PortugueseFiscalNumber => @"^[0-9]{9,}$";
 
         public static string FiscalNumber
@@ -68,8 +68,6 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                 {
                     case "ao":
                         return AngolanFiscalNumber;
-                    case "pt":
-                        return PortugueseFiscalNumber;
                     default:
                         return PortugueseFiscalNumber;
                 }
