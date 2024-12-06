@@ -107,14 +107,14 @@ namespace LogicPOS.UI.Components.Pages
 
         private TreeViewColumn CreatesTotalStockColumn()
         {
-            void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            void RenderTotalStock(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var articleId = ((Article)model.GetValue(iter, 0)).Id;
-                (cell as CellRendererText).Text = _totalStocks.Find(x => x.Id == articleId)?.Quantity.ToString() ?? "0";
+                (cell as CellRendererText).Text = _totalStocks.Find(x => x.Id == articleId)?.Quantity.ToString("0.#####") ?? "0";
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_stock");
-            return Columns.CreateColumn(title, 2, RenderMonth);
+            return Columns.CreateColumn(title, 2, RenderTotalStock);
         }
 
         private TreeViewColumn CreateTypeColumn()

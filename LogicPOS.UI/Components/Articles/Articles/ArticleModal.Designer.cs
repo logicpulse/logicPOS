@@ -46,9 +46,8 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
         private CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
         private TextBox _txtDiscount = new TextBox("global_discount",true,true,RegularExpressions.Money);
-        private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity",true,true,RegularExpressions.IntegerNumber);
-        private TextBox _txtTotalStock = new TextBox("global_total_stock") { Text = "0" };
-        private TextBox _txtMinimumStock = new TextBox("global_minimum_stock",true,true,RegularExpressions.IntegerNumber);
+        private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity",true,true,RegularExpressions.DecimalNumber);
+        private TextBox _txtMinimumStock = new TextBox("global_minimum_stock",true,true,RegularExpressions.DecimalNumber);
         private TextBox _txtTare = new TextBox("global_tare", true, true, RegularExpressions.DecimalNumber) { Text = "0" };
         private TextBox _txtWeight = new TextBox("global_weight", true, true, RegularExpressions.DecimalNumber) { Text= "0"};
         private TextBox _txtBarcode = new TextBox("global_barcode", false, true, RegularExpressions.IntegerNumber);
@@ -75,7 +74,6 @@ namespace LogicPOS.UI.Components.Modals
             InitializeArticleClassesComboBox();
             InitializeArticleTypesComboBox();
 
-            _txtTotalStock.Entry.IsEditable = false;
             _checkUniqueArticles.Sensitive = false;
 
             AddEventHandlers();
@@ -265,7 +263,6 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_checkPVPVariable);
             SensitiveFields.Add(_txtDiscount.Entry);
             SensitiveFields.Add(_txtDefaultQuantity.Entry);
-            SensitiveFields.Add(_txtTotalStock.Entry);
             SensitiveFields.Add(_txtMinimumStock.Entry);
             SensitiveFields.Add(_txtTare.Entry);
             SensitiveFields.Add(_txtWeight.Entry);
@@ -366,7 +363,6 @@ namespace LogicPOS.UI.Components.Modals
             var otherDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
             
             otherDetailsTab.PackStart(_txtBarcode.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtTotalStock.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtMinimumStock.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtTare.Component, false, false, 0);
             otherDetailsTab.PackStart(_txtWeight.Component, false, false, 0);
