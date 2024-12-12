@@ -33,8 +33,8 @@ namespace LogicPOS.UI.Components.Documents
         private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "touchButton_Green");
         private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "touchButton_Green");
         private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
-                                                                                         GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
-                                                                                         PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+                                                                                                                          GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
+                                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
 
         private IconButtonWithText BtnPrevious { get; set; }
         private IconButtonWithText BtnNext { get; set; }

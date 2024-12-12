@@ -17,6 +17,9 @@ namespace LogicPOS.UI.Components.Pages
     {
         public DocumentTypesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
+            Navigator.BtnUpdate.Visible = false;
         }
 
         protected override IRequest<ErrorOr<IEnumerable<DocumentType>>> GetAllQuery => new GetAllDocumentTypesQuery();

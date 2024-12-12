@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,10 +16,10 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBoxes.CreateOrderField();
         private TextBox _txtCode = TextBoxes.CreateCodeField();
         private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtValue = new TextBox("global_vat_rate", true, true, @"-?\d+\.?\d*");
+        private TextBox _txtValue = new TextBox("global_vat_rate", true, true, RegularExpressions.DecimalNumber);
         private TextBox _txtTaxType = new TextBox("global_vat_rate_tax_type", true, true, @"^[a-zA-Z]+$");
-        private TextBox _txtTaxCode = new TextBox("global_vat_rate_tax_code", true, true, @"^[a-zA-Z]+$");
-        private TextBox _txtCountryRegionCode = new TextBox("global_vat_rate_tax_country_region", true, true, @"^[a-zA-Z0-9]+$");
+        private TextBox _txtTaxCode = new TextBox("global_vat_rate_tax_code", true, true, @"^(RED|NOR|ISE|OUT|([0-9.])*|NA|NS)$");
+        private TextBox _txtCountryRegionCode = new TextBox("global_vat_rate_tax_country_region", true, true, RegularExpressions.AlfaCountryCode2);
         private TextBox _txtDescription= new TextBox("global_vat_rate_description",true);
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion

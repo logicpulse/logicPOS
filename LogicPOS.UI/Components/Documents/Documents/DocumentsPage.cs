@@ -33,14 +33,14 @@ namespace LogicPOS.UI.Components.Pages
 
         public void MoveToNextPage()
         {
-            Query.Page = Documents.Page - 1;
+            Query.Page = Documents.Page + 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void MoveToPreviousPage()
         {
-            Query.Page = Documents.Page + 1;
+            Query.Page = Documents.Page - 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }

@@ -46,14 +46,14 @@ namespace LogicPOS.UI.Components.Pages
 
         public void MoveToNextPage()
         {
-            Query.Page = Receipts.Page - 1;
+            Query.Page = Receipts.Page + 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void MoveToPreviousPage()
         {
-            Query.Page = Receipts.Page + 1;
+            Query.Page = Receipts.Page - 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -106,7 +106,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateNumberColumn());
             GridView.AppendColumn(CreateStatusColumn());
             GridView.AppendColumn(CreateEntityColumn());
-            GridView.AppendColumn(CreateFiscalNumberColumn());
+            //GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(CreateTotalColumn());
             GridView.AppendColumn(CreateRelatedReceiptsColumn());
         }
@@ -140,7 +140,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderFiscalNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var receipt = (Receipt)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = "Fiscal Number # Tchialo";
+                (cell as CellRendererText).Text = "?????";
             }
 
             var title = GeneralUtils.GetResourceByName("global_fiscal_number");

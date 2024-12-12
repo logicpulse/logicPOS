@@ -157,14 +157,8 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            var createDocumentModal = new CreateDocumentModal(this);
-            var response = (ResponseType)createDocumentModal.Run();
-            createDocumentModal.Destroy();
-
-            if (response == ResponseType.Ok)
-            {
-                Page.Refresh();
-            }
+            CreateDocumentModal.ShowModal(this);
+            Page.Refresh();
         }
 
         private void BtnCancelDocument_Clicked(object sender, EventArgs e)

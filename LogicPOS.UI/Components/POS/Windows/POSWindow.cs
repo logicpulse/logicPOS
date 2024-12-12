@@ -666,14 +666,7 @@ namespace LogicPOS.UI.Components.Windows
             SaleContext.Initialize();
             windowToHide.Hide();
 
-            var initFiscalYearServiceResult = FiscalYearService.InitializeAsync().Result;
-            if (initFiscalYearServiceResult.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(POSWindow.Instance, initFiscalYearServiceResult.FirstError);
-                return;
-            }
-
-            if(FiscalYearService.HasFiscalYear == false)
+            if(FiscalYearService.HasFiscalYear() == false)
             {
                 FiscalYearService.ShowOpenFiscalYearAlert();
             }

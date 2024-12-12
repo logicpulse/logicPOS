@@ -209,7 +209,7 @@ namespace LogicPOS.UI.Components.POS
                 Locality = TxtLocality.Text,
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
-                Country = country.Designation,
+                Country = country.Code2,
                 CountryId = country.Id
             };
         }

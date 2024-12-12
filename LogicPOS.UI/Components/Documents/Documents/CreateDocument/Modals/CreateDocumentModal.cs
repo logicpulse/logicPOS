@@ -7,6 +7,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
@@ -264,6 +265,19 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return _countries;
+        }
+
+        public static void ShowModal(Window parent)
+        {
+            if (FiscalYearService.HasFiscalYear() == false)
+            {
+                FiscalYearService.ShowOpenFiscalYearAlert();
+                return;
+            }
+
+            var modal = new CreateDocumentModal(parent);
+            modal.Run();
+            modal.Destroy();
         }
     }
 }

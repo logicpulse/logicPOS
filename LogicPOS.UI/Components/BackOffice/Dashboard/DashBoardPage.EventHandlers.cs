@@ -11,9 +11,7 @@ namespace LogicPOS.UI.Components.Pages
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new CreateDocumentModal(BackOfficeWindow.Instance);
-            modal.Run();
-            modal.Destroy();
+            CreateDocumentModal.ShowModal(BackOfficeWindow.Instance);
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)

@@ -2,13 +2,13 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.PaymentMethods.DeletePaymentMethod;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -17,6 +17,9 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PaymentMethodsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
+            Navigator.BtnUpdate.Visible = false;
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PaymentMethod>>> GetAllQuery => new GetAllPaymentMethodsQuery();
@@ -78,7 +81,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override DeleteCommand GetDeleteCommand()
         {
-            throw new NotImplementedException();
+            return new DeletePaymentMethodCommand(SelectedEntity.Id);
         }
 
         #region Singleton

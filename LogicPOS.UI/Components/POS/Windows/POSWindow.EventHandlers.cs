@@ -77,15 +77,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            if (FiscalYearService.HasFiscalYear == false)
-            {
-                FiscalYearService.ShowOpenFiscalYearAlert();
-                return;
-            }
-
-            var modal = new CreateDocumentModal(this);
-            modal.Run();
-            modal.Destroy();
+            CreateDocumentModal.ShowModal(this);
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)

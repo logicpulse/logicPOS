@@ -32,9 +32,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new CreateDocumentModal(this);
-            modal.Run();
-            modal.Destroy();
+           CreateDocumentModal.ShowModal(this);
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
