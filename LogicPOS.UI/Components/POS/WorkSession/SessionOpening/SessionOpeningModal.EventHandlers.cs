@@ -1,15 +1,29 @@
-﻿using DevExpress.Xpo;
+﻿using Atk;
+using DevExpress.Xpo;
 using Gtk;
 using logicpos.Classes.DataLayer;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company.GetCompanyInformations;
+using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
+using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
+using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Common;
+using LogicPOS.Printing.Documents;
+using LogicPOS.Printing.Utility;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.POS.PrintingContext;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -85,8 +99,13 @@ namespace LogicPOS.UI.Components.POS
                                         .WithTitleResource("global_button_label_print")
                                         .WithMessageResource("dialog_message_request_print_document_confirmation")
                                         .ShowAlert();
+            if (pResponse == ResponseType.Yes)
+            {
+                PrintingServices.PrintWorkSessionDayReport();
+            }
         }
 
+       
         private void AddEventHandlers()
         {
             BtnDayOpening.Clicked += BtnDayOpening_Clicked;

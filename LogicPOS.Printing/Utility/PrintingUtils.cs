@@ -1308,7 +1308,8 @@ namespace LogicPOS.Printing.Utility
             string pTicketTitle,
             decimal pMovementAmount,
             decimal pTotalAmountInCashDrawer,
-            string pMovementDescription)
+            string pMovementDescription,
+            CompanyPrintingInformationsDto companyPrintingInformationsDto)
         {
             bool result = false;
 
@@ -1323,7 +1324,9 @@ namespace LogicPOS.Printing.Utility
                             pTicketTitle,
                             pTotalAmountInCashDrawer,
                             pMovementAmount,
-                            terminalDesignation, userName);
+                            terminalDesignation, 
+                            userName,
+                            companyPrintingInformationsDto);
 
 
                         internalDocumentCashDrawer.Print();

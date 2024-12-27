@@ -12,6 +12,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS.PrintingContext;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
@@ -158,120 +159,12 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-            PrintOrder();
+            PrintingServices.PrintOrder(ItemsPage);
             ItemsPage.FinishTicket();
             UpdateButtonsSensitivity();
         }
 
-        private void PrintWorkSession(Guid id)
-        {
-            var workSessionDocumentsData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionDocumentsDataQuery(id)).Result;
-            var workSessionReceiptsData = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetWorkSessionReceiptsDataQuery(id)).Result;
-            var companyInformations = GetCompanyPrintingInformation();
-
-            if (workSessionDocumentsData.IsError || workSessionReceiptsData.IsError)
-            {
-                CustomAlerts.Error(SourceWindow)
-                            .WithMessage(workSessionDocumentsData.FirstError.Description)
-                            .WithMessage(workSessionReceiptsData.FirstError.Description)
-                            .ShowAlert();
-                return;
-            }
-
-            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if (printer == null)
-            {
-                return;
-            }
-
-            new ThermalPrinting(printer, TerminalService.Terminal.Designation, AuthenticationService.User.Name, companyInformations, workSessionDocumentsData.Value, workSessionReceiptsData.Value);
-        }
-
-        private void PrintOrder()
-        {
-
-            var orderTicket = GetOrderTicket();
-
-            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if (printer == null)
-            {
-                return;
-            }
-            CompanyPrintingInformationsDto companyInformationsDto = GetCompanyPrintingInformation();
-            new ThermalPrinting(printer, companyInformationsDto, orderTicket, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
-
-        }
-
-        private PrintOrderTicketDto GetOrderTicket()
-        {
-            var orderTicket = new PrintOrderTicketDto();
-            orderTicket.OrderDetails = new List<PrintOrderDetailDto>();
-
-            orderTicket.TicketId = (int)ItemsPage.Ticket.Number;
-            orderTicket.TableDesignation = ItemsPage.Order.Table.Designation;
-            orderTicket.PlaceDesignation = ItemsPage.Order.Table.Place.Designation;
-            foreach (var item in ItemsPage.Ticket.Items)
-            {
-                orderTicket.OrderDetails.Add(new PrintOrderDetailDto()
-                {
-                    Designation = item.Article.Designation,
-                    Quantity = item.Quantity,
-                    UnitMeasure = item.Article.MeasurementUnit.Acronym
-                });
-            }
-
-            return orderTicket;
-        }
-
-        protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
-        {
-
-            if (terminal.ThermalPrinter != null)
-            {
-                return new PrinterDto()
-                {
-                    Designation = terminal.ThermalPrinter.Designation,
-                    Token = terminal.ThermalPrinter.Type.Token,
-                    IsThermal = terminal.ThermalPrinter.Type.ThermalPrinter,
-                    CutCommand = "0x42,0x00"
-                };
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private CompanyPrintingInformationsDto GetCompanyPrintingInformation()
-        {
-            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
-            }
-            var companyInformations = result.Value;
-            return new CompanyPrintingInformationsDto()
-            {
-                Address = companyInformations.Address,
-                Name = companyInformations.Name,
-                BusinessName = companyInformations.BussinessName,
-                ComercialName = companyInformations.ComercialName,
-                City = companyInformations.City,
-                Logo = companyInformations.LogoBmp,
-
-                Email = companyInformations.Email,
-                MobilePhone = companyInformations.MobilePhone,
-                FiscalNumber = companyInformations.FiscalNumber,
-                Phone = companyInformations.Phone,
-                StockCapital = companyInformations.StockCapital,
-                Website = companyInformations.Website,
-                DocumentFinalLine1 = companyInformations.DocumentFinalLine1,
-                DocumentFinalLine2 = companyInformations.DocumentFinalLine2,
-                TicketFinalLine1 = companyInformations.TicketFinalLine1,
-                TicketFinalLine2 = companyInformations.TicketFinalLine2,
-            };
-        }
-
+       
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
             if (ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)

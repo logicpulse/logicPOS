@@ -1,10 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Domain.Enums;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.Printing.Utility
@@ -19,42 +16,37 @@ namespace LogicPOS.Printing.Utility
         protected string TerminalDesignation { get; set; }
         protected string UserName { get; set; }
         protected readonly CompanyPrintingInformationsDto CompanyInformationsDto;
-        protected readonly Document DocumentMaster;
-        protected readonly WorkSessionData WorkSessionDocumentsData;
-        protected readonly WorkSessionData WorkSessionReceiptsData;
+        protected Document DocumentMaster;
+        protected WorkSessionData WorkSessionDocumentsData;
+        protected WorkSessionData WorkSessionReceiptsData;
 
 
-        public ThermalPrinting(PrinterDto printerDto, string terminalDesignation,string userName, CompanyPrintingInformationsDto companyPrintingInformationsDto, WorkSessionData workSessionDocumentsData, WorkSessionData workSessionReceiptsData)
+        public ThermalPrinting(PrinterDto printerDto, string terminalDesignation, string userName, CompanyPrintingInformationsDto companyPrintingInformationsDto)
         {
             PrinterDto = printerDto;
-            WorkSessionReceiptsData = workSessionReceiptsData;
-            WorkSessionDocumentsData = workSessionDocumentsData;
             TerminalDesignation = terminalDesignation;
             UserName = userName;
             CompanyInformationsDto = companyPrintingInformationsDto;
+        }
+        public void ThermalWorkSessionPrinting(WorkSessionData workSessionDocumentsData, WorkSessionData workSessionReceiptsData)
+        {
+            WorkSessionReceiptsData = workSessionReceiptsData;
+            WorkSessionDocumentsData = workSessionDocumentsData;
             PrintWorkSession();
         }
 
-        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, PrintOrderTicketDto orderTicketDto, string terminalDesignation, string userName)
+        public void ThermalOrderPrinting(PrintOrderTicketDto orderTicketDto)
         {
-            PrinterDto = printerDto;
-            CompanyInformationsDto = companyInformationsDto;
             OrderTicketDto = orderTicketDto;
-            TerminalDesignation = terminalDesignation;
-            UserName = userName;
             PrintOrder();
         }
 
 
 
-        public ThermalPrinting(PrinterDto printerDto, CompanyPrintingInformationsDto companyInformationsDto, List<int> docCopyName, Document documentMaster, string terminalDesignation, string userName)
+        public void ThermalDocumentPrinting(List<int> docCopyName, Document documentMaster)
         {
-            PrinterDto = printerDto;
             DocCopyName = docCopyName;
-            CompanyInformationsDto = companyInformationsDto;
             DocumentMaster = documentMaster;
-            UserName = userName;
-            TerminalDesignation = terminalDesignation;
             PrintDocument();
         }
 
@@ -74,7 +66,7 @@ namespace LogicPOS.Printing.Utility
         }
         public void PrintWorkSession()
         {
-            var workSession = new WorkSession(PrinterDto, TerminalDesignation,UserName,WorkSessionDocumentsData, WorkSessionReceiptsData, CompanyInformationsDto);
+            var workSession = new WorkSession(PrinterDto, TerminalDesignation, UserName, WorkSessionDocumentsData, WorkSessionReceiptsData, CompanyInformationsDto);
             workSession.Print();
         }
 
@@ -94,7 +86,36 @@ namespace LogicPOS.Printing.Utility
             document.Print();
         }
 
+        public bool PrintCashDrawerOpenAndMoneyInOut(
+         string pTicketTitle,
+            decimal pTotalAmountInCashDrawer,
+            decimal pMovementAmount,
+        string pMovementDescription)
+        {
+            bool result = false;
 
+            if (PrinterDto != null)
+            {
+                switch (PrinterDto.Token)
+                {
+                    case "THERMAL_PRINTER_WINDOWS":
+                        CashDrawer internalDocumentCashDrawer = new CashDrawer(
+                            PrinterDto,
+                            pTicketTitle,
+                            pTotalAmountInCashDrawer,
+                            pMovementAmount,
+                            TerminalDesignation,
+                            UserName,
+                            CompanyInformationsDto);
+
+
+                        internalDocumentCashDrawer.Print();
+                        break;
+                }
+                result = true;
+            }
+            return result;
+        }
 
     }
 }

@@ -51,7 +51,7 @@ namespace LogicPOS.Printing.Documents
                 //Parameters
                 _orderTicket = orderTicket;
                 _articlePrinterEnabled = articlePrinterEnabled;
-
+                _companyInformationsDto = companyInformationsDto;
                 //Order Request #1/3
                 _ticketTitle = string.Format("{0}: #{1}"
                     , GeneralUtils.GetResourceByName("global_order_request")
@@ -76,6 +76,7 @@ namespace LogicPOS.Printing.Documents
         {
             try
             {
+                PrintHeader();
                 //Call Base Template PrintHeader
                 PrintTitles();
 

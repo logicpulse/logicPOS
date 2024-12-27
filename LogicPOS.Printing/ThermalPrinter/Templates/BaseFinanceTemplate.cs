@@ -103,7 +103,7 @@ namespace LogicPOS.Printing.Templates
 
             //Extended Header
             _printer.WriteLine(string.Format("{0}",_companyInformationsDto.Address));
-            _printer.WriteLine(string.Format("{0} {1} - {2}", "00000", _companyInformationsDto.City, "COMPANY_COUNTRY"));
+            _printer.WriteLine(string.Format("{0} {1} - {2}", _companyInformationsDto.PostalCode, _companyInformationsDto.City, _companyInformationsDto.Country));
             /* IN009055 block */
             _printer.WriteLine(GeneralUtils.GetResourceByName("prefparam_company_telephone"), _companyInformationsDto.Phone);
             //_thermalPrinterGeneric.WriteLine(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_mobile_phone, _customVars["COMPANY_MOBILEPHONE"]);

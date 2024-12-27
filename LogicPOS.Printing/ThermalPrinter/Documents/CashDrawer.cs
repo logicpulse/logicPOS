@@ -1,4 +1,5 @@
 ﻿using LogicPOS.DTOs.Printing;
+using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
 using LogicPOS.Printing.Templates;
 using LogicPOS.Utility;
@@ -16,13 +17,17 @@ namespace LogicPOS.Printing.Documents
             PrinterDto printer,
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
-            string terminalDesignation, string userName)
+            string terminalDesignation,
+            string userName,
+            CompanyPrintingInformationsDto companyPrintingInformationsDto)
             : this(
                   printer,
                   pTicketTitle,
                   pTotalAmountInCashDrawer,
-                  0.0m, 
-                  terminalDesignation, userName)
+                  0.0m,
+                  terminalDesignation,
+                  userName,
+                  companyPrintingInformationsDto)
         { }
 
         public CashDrawer(
@@ -30,14 +35,18 @@ namespace LogicPOS.Printing.Documents
             string pTicketTitle,
             decimal pTotalAmountInCashDrawer,
             decimal pMovementAmount,
-            string terminalDesignation, string userName)
+            string terminalDesignation,
+            string userName,
+            CompanyPrintingInformationsDto companyPrintingInformationsDto)
             : this(
                   printer,
                   pTicketTitle,
                   pTotalAmountInCashDrawer,
                   pMovementAmount,
                   string.Empty,
-                  terminalDesignation, userName)
+                  terminalDesignation,
+                  userName,
+                  companyPrintingInformationsDto)
         { }
 
         public CashDrawer(
@@ -47,13 +56,15 @@ namespace LogicPOS.Printing.Documents
             decimal pMovementAmount,
             string pMovementDescription,
             string terminalDesignation,
-            string userName)
-            : base(printer, terminalDesignation, userName)
+            string userName,
+            CompanyPrintingInformationsDto companyPrintingInformationsDto)
+            : base(printer, companyPrintingInformationsDto, terminalDesignation, userName)
         {
             _ticketTitle = pTicketTitle;
             _totalAmountInCashDrawer = pTotalAmountInCashDrawer;
             _movementAmount = pMovementAmount;
             _movementDescription = pMovementDescription;
+            _printer = new GenericThermalPrinter(printer);
         }
 
         //Override Parent Template
@@ -62,6 +73,7 @@ namespace LogicPOS.Printing.Documents
             try
             {
                 //Call Base Template PrintHeader
+                PrintHeader();
                 PrintTitles();
 
                 //Align Center
@@ -100,3 +112,4 @@ namespace LogicPOS.Printing.Documents
         }
     }
 }
+

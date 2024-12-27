@@ -247,6 +247,7 @@ namespace LogicPOS.Printing.Documents
 
             //VatExemptionReason
             _printer.WriteLine(exemptionReason, WriteLineTextMode.Small); /* IN009211 - WriteLine() already checks for empties and nulls */
+            _printer.LineFeed();
         }
 
         //Totals, with TotalDelivery and TotalChange

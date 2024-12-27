@@ -10,6 +10,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
+using LogicPOS.UI.Components.POS.PrintingContext;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Errors;
@@ -57,8 +58,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             ProcesPayment();
-
-            PrintDocument(addDocumentResult.Value);
+            PrintingServices.PrintDocument(addDocumentResult.Value);
         }
 
         private void ProcesPayment()
@@ -85,72 +85,8 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.UpdatePOSLabels();
         }
 
-        private void PrintDocument(Guid id)
-        {
-            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetDocumentByIdQuery(id)).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
-            }
-            var document = result.Value;
-            List<int> docCopyName = new List<int>();
-            docCopyName.Add(0);
-            PrinterDto printer = GetTerminalThermalPrinter(TerminalService.Terminal);
-            if (printer == null)
-            {
-                return;
-            }
-            CompanyPrintingInformationsDto companyInformationsDto = GetCompanyPrintingInformation();
-            new ThermalPrinting(printer, companyInformationsDto, docCopyName, document, TerminalService.Terminal.Designation, AuthenticationService.User.Name);
-        }
+       
 
-        protected PrinterDto GetTerminalThermalPrinter(Terminal terminal)
-        {
-
-            if (terminal.ThermalPrinter != null)
-            {
-                return new PrinterDto()
-                {
-                    Designation = terminal.ThermalPrinter.Designation,
-                    Token = terminal.ThermalPrinter.Type.Token,
-                    IsThermal = terminal.ThermalPrinter.Type.ThermalPrinter,
-                    CutCommand = "0x42,0x00"
-                };
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        private CompanyPrintingInformationsDto GetCompanyPrintingInformation()
-        {
-            var result = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetCompanyInformationsQuery()).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
-            }
-            var companyInformations = result.Value;
-            return new CompanyPrintingInformationsDto()
-            {
-                Address = companyInformations.Address,
-                Name = companyInformations.Name,
-                BusinessName = companyInformations.BussinessName,
-                ComercialName = companyInformations.ComercialName,
-                City = companyInformations.City,
-                Logo = companyInformations.LogoBmp,
-                Email = companyInformations.Email,
-                MobilePhone = companyInformations.MobilePhone,
-                FiscalNumber = companyInformations.FiscalNumber,
-                Phone = companyInformations.Phone,
-                StockCapital = companyInformations.StockCapital,
-                Website = companyInformations.Website,
-                DocumentFinalLine1 = companyInformations.DocumentFinalLine1,
-                DocumentFinalLine2 = companyInformations.DocumentFinalLine2,
-                TicketFinalLine1 = companyInformations.TicketFinalLine1,
-                TicketFinalLine2 = companyInformations.TicketFinalLine2,
-            };
-        }
 
         private void BtnNewCustomer_Clicked(object sender, EventArgs e)
         {

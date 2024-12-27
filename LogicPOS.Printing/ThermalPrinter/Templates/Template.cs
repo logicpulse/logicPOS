@@ -116,7 +116,7 @@ namespace LogicPOS.Printing.Templates
             _printer.SetAlignCenter();
 
            
-            string logo = _companyInformationsDto.Logo;
+            string logo = _companyInformationsDto?.Logo;
 
             var printComercialName = _companyInformationsDto.ComercialName;
 
