@@ -119,12 +119,8 @@ namespace logicpos
 				//IN009345 - Front-End - Falta de funcionalidades em modo Retalho (Botões) 
                 int intEventBoxPosTicketPadColumns = 4;
                 int intEventBoxPosTicketPadRows = 4;
-
-                if (AppOperationModeSettings.IsDefaultTheme)
-                {
-                    //intEventBoxPosTicketPadColumns = 4;
-                    intEventBoxPosTicketPadRows = 5;
-                }
+                intEventBoxPosTicketPadRows = 5;
+                
 
                 // Detect Dynamic Size
                 bool appThemeCalcDynamicSize = AppSettings.Instance.appThemeCalcDynamicSize;

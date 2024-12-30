@@ -154,11 +154,6 @@ namespace LogicPOS.UI.Application
 
             try
             {
-                CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.GetCustomAppOperationMode();
-                GeneralSettings.AppUseParkingTicketModule = CustomAppOperationMode.PARKING.Equals(customAppOperationMode);
-
-                GeneralSettings.AppUseBackOfficeMode = CustomAppOperationMode.BACKOFFICE.Equals(customAppOperationMode);
-
                 if (GeneralSettings.AppUseParkingTicketModule)
                 {
                     LogicPOSAppContext.ParkingTicket = new ParkingTicket();

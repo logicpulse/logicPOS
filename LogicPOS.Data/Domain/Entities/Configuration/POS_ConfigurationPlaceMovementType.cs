@@ -15,11 +15,6 @@ namespace LogicPOS.Domain.Entities
         {
             Ord = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Ord");
             Code = XPOUtility.GetNextTableFieldID(nameof(pos_configurationplacemovementtype), "Code");
-
-            if (AppOperationModeSettings.AppMode == AppOperationMode.Retail)
-            {
-                VatDirectSelling = true;
-            }
         }
 
         private uint fOrd;

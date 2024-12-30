@@ -52,7 +52,7 @@ namespace LogicPOS.UI.Components.POS
         {
             if (CurrentTable != null)
             {
-                string tableDenomination = LocalizedString.Instance[string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()];
+                string tableDenomination = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()];
                 POSWindow.Instance.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
             }
 

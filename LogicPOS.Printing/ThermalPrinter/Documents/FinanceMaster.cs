@@ -131,19 +131,6 @@ namespace LogicPOS.Printing.Documents
             /* IN008024 */
             // string appOperationModeToken = LogicPOS.Settings.GeneralSettings.Settings["appOperationModeToken"].ToLower();
 
-            //ConferenceDocument : Show Table if in ConferenceDocument and in default AppMode
-            if (_documentMaster.Type == "CM" && AppOperationModeSettings.IsDefaultTheme)
-            {
-                //Table|Order #2|Name/Zone
-                string tableZone = string.Format("{0} : #{1}/{2}"
-                    , GeneralUtils.GetResourceByName(string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme.ToLower())) /* IN008024 */
-                    , "_documentMaster.TableDesignation Try"
-                    , "_documentMaster.PlaceDesignation Try"
-                );
-                _printer.WriteLine(tableZone);
-                _printer.LineFeed();
-            }
-
             //Reset Align 
             _printer.SetAlignLeft();
         }

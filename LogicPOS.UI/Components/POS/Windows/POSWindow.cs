@@ -258,7 +258,7 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = LocalizedString.Instance[string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()]; /* IN008024 */
+            string global_table = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()]; /* IN008024 */
             Label labelCurrentTableLabel = new Label(global_table);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
@@ -659,8 +659,7 @@ namespace LogicPOS.UI.Components.Windows
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
             dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-            CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, customAppOperationMode.AppOperationTheme, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName,"default", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
 
             Instance = new POSWindow(windowImageFileName);
             SaleContext.Initialize();

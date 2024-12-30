@@ -18,17 +18,7 @@ namespace LogicPOS.Domain.Entities
             Type = Session.GetObjectByKey<fin_articletype>(XPOSettings.XpoOidArticleDefaultType);
             Class = Session.GetObjectByKey<fin_articleclass>(XPOSettings.XpoOidArticleDefaultClass);
 
-            if (AppOperationModeSettings.AppMode == AppOperationMode.Default)
-            {
-                //Force users to choose Tax for both modes Normal and TakeAway
-                VatOnTable = null;
-                VatDirectSelling = null;
-            }
-            else
-            {
-                VatOnTable = null;
-                VatDirectSelling = Session.GetObjectByKey<fin_configurationvatrate>(XPOSettings.XpoOidArticleDefaultVatDirectSelling);
-            }
+          
 
             UnitMeasure = Session.GetObjectByKey<cfg_configurationunitmeasure>(XPOSettings.XpoOidArticleDefaultUnitMeasure);
             UnitSize = Session.GetObjectByKey<cfg_configurationunitsize>(XPOSettings.XpoOidArticleDefaultUnitSize);

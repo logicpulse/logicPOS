@@ -57,8 +57,7 @@ namespace LogicPOS.UI.Application
 
         //Protected Files Settings
         public static string ProtectedFilesFileName = "logicpos.exe.files";
-        public static List<string> ProtectedFilesList { get { return GetProtectedFilesList(); } }
-
+ 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //DataBase Backup System
 
@@ -90,10 +89,9 @@ namespace LogicPOS.UI.Application
 
         /* IN009035 */
         public static string FileDatabaseDataPath = @"Resources\Database\Data\{0}\{1}\databasedata.sql"; // "Resources\Database\Data\Default\en\databasedata.sql"
-        public static string FileDatabaseData = GetDatabaseFileName(false, FileDatabaseDataPath);// Default Script: "databasedata.sql";
+
         /* IN008024 */
         public static string FileDatabaseDataDemoPath = @"Resources\Database\Demos\{0}\{1}\{2}"; // "Resources\Database\Demos\Backery\en\databasedatademo_backery.sql"
-        public static string FileDatabaseDataDemo = GetDatabaseFileName(true, FileDatabaseDataDemoPath);// Default Script: "databasedatademo.sql";
 
         public static string FileDatabaseViews = @"Resources\Database\databaseviews.sql";
         // public static string FileDatabaseOtherDatabaseType = @"Resources\Database\{0}\Other\";/* IN009045: Not in use */
@@ -103,8 +101,7 @@ namespace LogicPOS.UI.Application
         //Encrypted Scripts
         /* IN009035 */
         public static string FileDatabaseOtherCommonPluginsSoftwareVendorPath = @"Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"; // "Resources\Database\Other\Plugins\SoftwareVendor\Data\Default\en"
-        public static string FileDatabaseOtherCommonPluginsSoftwareVendor = GetDatabaseFileName(false, FileDatabaseOtherCommonPluginsSoftwareVendorPath);// Default Path: "Resources\Database\Other\Plugins\SoftwareVendor"
-
+    
         //Country Scripts
         public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
         //Country Encrypted Scripts
@@ -154,89 +151,14 @@ namespace LogicPOS.UI.Application
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Helper Methods
 
-        private static List<string> GetProtectedFilesList()
-        {
-            List<string> result = new List<string>
-            {
-                @"Resources\Reports\UserReports\ReportArticle.frx",
-                @"Resources\Reports\UserReports\ReportDocumentFinance.frx",
-                @"Resources\Reports\UserReports\ReportDocumentFinancePayment.frx",
-                @"Resources\Reports\UserReports\ReportDocumentFinanceWayBill.frx",
-                @"Resources\Reports\UserReports\ReportTest.frx"
-            };
-
-            return result;
-        }
 
         private static string GetThemeFileLocation()
         {
 
-            CustomAppOperationMode customAppOperationMode = AppOperationModeSettings.CustomAppOperationMode;
-
-            var themeLocation = $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, GeneralSettings.AppTheme.ToLower(), customAppOperationMode.AppOperationTheme.ToLower())}";
+            var themeLocation = $"{PathsSettings.Paths["themes"]}{string.Format(FileFormatThemeFile, "default", "default")}";
             return themeLocation;
         }
 
-        /// <summary>
-        /// This method is responsible for loading the proper Demo database script for selected user's option during POS installation.
-        /// For further details, please see #IN008024# and #IN009035#.
-        /// </summary>
-        /// <returns></returns>
-        private static string GetDatabaseFileName(bool demo, string basePath)
-        {
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-            string result;
-
-            /* Custom scripts */
-            try
-            {
-                CustomAppOperationMode customAppOperationMode = CustomAppOperationMode.GetAppOperationMode(AppSettings.Instance.appOperationModeToken);
-
-                string cultureName = CultureSettings.CurrentCultureName;
-                string cultureCountryPrefix = cultureName.Substring(0, cultureName.IndexOf('-'));
-
-                if (demo)
-                {
-                    string appOperationModeToken = customAppOperationMode.AppOperationModeToken;
-                    string fileName = customAppOperationMode.DatabaseDemoFileName;
-
-                    result = string.Format(basePath,
-                        appOperationModeToken,
-                        cultureCountryPrefix,
-                        fileName
-                    );
-                }
-                else
-                {
-                    //Angola - Certificação [TK:016268]
-                    if (cultureName == "pt-AO" && basePath == "Resources\\Database\\Data\\{0}\\{1}\\databasedata.sql")
-                    {
-                        cultureCountryPrefix = "ao";
-                    }
-                    /* Default or Retail */
-                    string appOperationTheme = customAppOperationMode.AppOperationTheme;
-                    //Utiliza SQL para BackOfficeMode
-                    if (AppOperationModeSettings.CustomAppOperationMode.AppOperationModeToken == "BackOfficeMode")
-                    {
-                        appOperationTheme = "BackOfficeMode";
-                    }
-                    // "Resources\Database\Data\{0}\{1}\databasedata.sql"
-                    // "..\Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"
-                    result = string.Format(basePath,
-                        appOperationTheme,
-                        cultureCountryPrefix
-                    );
-                }
-            }
-            catch (Exception ex)
-            {
-                log.Error("string GetDatabaseFileName(bool demo) :: " + ex.Message, ex);
-                /* Default script for demo or data */
-                result = demo ? @"Resources\Database\databasedatademo.sql" : basePath.EndsWith(".sql") ? @"Resources\Database\databasedata.sql" : @"Resources\Database\Other\Plugins\SoftwareVendor";
-            }
-
-            return result;
-        }
+    
     }
 }

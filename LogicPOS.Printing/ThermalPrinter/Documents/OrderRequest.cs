@@ -60,7 +60,7 @@ namespace LogicPOS.Printing.Documents
 
                 //Table|Order #2|Name/Zone
                 _ticketSubTitle = string.Format("{0}: #{1}/{2}"
-                    , GeneralUtils.GetResourceByName(string.Format("global_table_appmode_{0}", AppOperationModeSettings.CustomAppOperationMode.AppOperationTheme).ToLower()) /* IN008024 */
+                    , GeneralUtils.GetResourceByName(string.Format("global_table_appmode_{0}", "tchial0_app_operation_mode").ToLower()) /* IN008024 */
                     , _orderTicket.TableDesignation
                     , _orderTicket.PlaceDesignation
                 );
