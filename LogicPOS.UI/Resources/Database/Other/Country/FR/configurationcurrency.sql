@@ -1,1 +1,0 @@
--- Currency Script for FR;
