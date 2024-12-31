@@ -63,7 +63,7 @@ namespace LogicPOS.UI.Components.POS
             );
 
 
-            UpdateButtons();
+            UpdateUI();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

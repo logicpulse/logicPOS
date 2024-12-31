@@ -307,7 +307,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnListOrder()
         {
-            var button = CreateButton(BtnListOrderName,
+            var button = CreateButton("buttonUserId",
                                       BtnListOrderText,
                                       BtnListOrderSize,
                                       BtnListOrderImageFileName);

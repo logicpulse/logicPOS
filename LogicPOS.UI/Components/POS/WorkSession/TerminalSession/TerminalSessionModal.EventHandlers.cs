@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using System;
@@ -127,12 +128,16 @@ namespace LogicPOS.UI.Components.POS
             var amount = decimal.Parse(TxtAmount.Text);
             var description = TxtDescription.Text;
 
-            if (WorkSessionService.CloseTerminalSession(amount, description))
+            if (!WorkSessionService.CloseTerminalSession(amount, description))
             {
-                CustomAlerts.Information(this)
-                         .WithMessageResource("dialog_message_worksession_terminal_close_successfully")
-                         .ShowAlert();
+                return;
             }
+
+            CustomAlerts.Information(this)
+                     .WithMessageResource("dialog_message_worksession_terminal_close_successfully")
+                     .ShowAlert();
+
+            POSWindow.Instance.UpdateUI();
         }
 
         private void OpenSession()
@@ -140,12 +145,16 @@ namespace LogicPOS.UI.Components.POS
             var amount = decimal.Parse(TxtAmount.Text);
             var description = TxtDescription.Text;
 
-            if (WorkSessionService.OpenTerminalSession(amount, description))
+            if (!WorkSessionService.OpenTerminalSession(amount, description))
             {
-                CustomAlerts.Information(this)
-                             .WithMessageResource("dialog_message_cashdrawer_open_successfully")
-                             .ShowAlert();
+                return;
             }
+
+            CustomAlerts.Information(this)
+                         .WithMessageResource("dialog_message_cashdrawer_open_successfully")
+                         .ShowAlert();
+
+            POSWindow.Instance.UpdateUI();
         }
 
         public bool AllFieldsAreValid() => GetValidatableFields().All(field => field.IsValid());

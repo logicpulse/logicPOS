@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
@@ -287,25 +286,25 @@ namespace LogicPOS.UI.Application
             _logger.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
-            DateTime currentDateTime = XPOUtility.CurrentDateTimeAtomic();
-            DateTime currentDateTimeLastBackup = DataBaseBackup.GetLastBackupDate();
-            TimeSpan timeSpanDiference = currentDateTime - currentDateTimeLastBackup;
+            //DateTime currentDateTime = XPOUtility.CurrentDateTimeAtomic();
+            //DateTime currentDateTimeLastBackup = DataBaseBackup.GetLastBackupDate();
+            //TimeSpan timeSpanDiference = currentDateTime - currentDateTimeLastBackup;
 
-            if (currentDateTime.TimeOfDay > _databaseBackupTimeSpanRangeStart && currentDateTime.TimeOfDay < _databaseBackupTimeSpanRangeEnd)
-            {
-                if (timeSpanDiference >= _backupDatabaseTimeSpan)
-                {
-                    DataBaseBackup.Backup(null);
-                }
-                else
-                {
-                    if (debug) _logger.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
-                }
-            }
-            else
-            {
-                if (debug) _logger.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
-            }
+            //if (currentDateTime.TimeOfDay > _databaseBackupTimeSpanRangeStart && currentDateTime.TimeOfDay < _databaseBackupTimeSpanRangeEnd)
+            //{
+            //    if (timeSpanDiference >= _backupDatabaseTimeSpan)
+            //    {
+            //        DataBaseBackup.Backup(null);
+            //    }
+            //    else
+            //    {
+            //        if (debug) _logger.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
+            //    }
+            //}
+            //else
+            //{
+            //    if (debug) _logger.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
+            //}
 
             return true;
         }

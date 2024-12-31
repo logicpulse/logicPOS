@@ -88,7 +88,7 @@ namespace LogicPOS.UI.Services
             return true;
         }
 
-        public static bool CloseTerminalAllSessions()
+        public static bool CloseAllTerminalSessions()
         {
             var openDayResult = _mediator.Send(new CloseAllWorkSessionsCommand()).Result;
 
@@ -132,6 +132,7 @@ namespace LogicPOS.UI.Services
         {
             var command = new CloseTerminalSessionCommand(amount, notes);
             var result = _mediator.Send(command).Result;
+
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result.FirstError);

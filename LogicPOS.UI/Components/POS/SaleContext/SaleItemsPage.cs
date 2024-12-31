@@ -13,9 +13,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItemsPage : Box
     {
-        public PosOrder Order  => SaleContext.CurrentOrder;
         public PosTicket Ticket { get; set; }
-
         public Window SourceWindow { get; }
         public TreeView GridView { get; set; }
         public SaleItem SelectedItem { get; private set; }
@@ -74,7 +72,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void PresentOrderItems()
         {
-            var orderItems = Order.GetOrderItems();
+            var orderItems = SaleContext.CurrentOrder.GetOrderItems();
 
             if(orderItems.Any() == false)
             {
@@ -238,7 +236,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateLabelTotalValue()
         {
-            var total = Ticket?.TotalFinal ?? Order?.TotalFinal ?? 0;
+            var total = Ticket?.TotalFinal ?? SaleContext.CurrentOrder?.TotalFinal ?? 0;
             LabelTotalValue.Text = total.ToString("C");
         }
 
@@ -362,7 +360,7 @@ namespace LogicPOS.UI.Components.POS
         {
             Clear(true);
             SetTicketModeBackGround();
-            Ticket = Order.AddTicket(new List<SaleItem> { item });
+            Ticket = SaleContext.CurrentOrder.AddTicket(new List<SaleItem> { item });
             PresentLastItem();
             SelectItem(item);
             UpdateLabelTotalValue();

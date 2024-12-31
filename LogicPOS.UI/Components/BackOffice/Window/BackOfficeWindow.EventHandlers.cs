@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.DataLayer;
 using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
@@ -14,7 +13,6 @@ using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
@@ -32,7 +30,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-           CreateDocumentModal.ShowModal(this);
+            CreateDocumentModal.ShowModal(this);
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
@@ -154,12 +152,12 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnRestoreDb_Clicked(object sender, EventArgs e)
         {
-            DataBaseBackup.Restore(this, DataBaseRestoreFrom.SystemBackup);
+            throw new NotImplementedException();
         }
 
         private void BtnRestoreDbFromFile_Clicked(object sender, EventArgs e)
         {
-            DataBaseBackup.Restore(this, DataBaseRestoreFrom.ChooseFromFilePickerDialog);
+            throw new NotImplementedException();
         }
         #endregion
 

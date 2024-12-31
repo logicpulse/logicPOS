@@ -4,7 +4,6 @@ using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.Api.Features.Terminals.CreateTerminal;
 using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Documents;
@@ -16,8 +15,6 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,13 +40,13 @@ namespace LogicPOS.UI.Components.POS.PrintingContext
         }
         private static async Task<ErrorOr<WorkSessionPeriod>> GetLastWorkSessionDayClosed(CancellationToken cancellationToken)
         {
-            var command= new GetLastClosedDayQuery();
+            var command = new GetLastClosedDayQuery();
             return await _mediator.Send(command, cancellationToken);
         }
         public static void PrintWorkSessionDayReport()
         {
-           
-            var workSessionDocumentsData =GetWorkSessionDocumentData().Result;
+
+            var workSessionDocumentsData = GetWorkSessionDocumentData().Result;
             var workSessionReceiptsData = GetWorkSessionReceiptData().Result;
             var companyInformations = GetCompanyPrintingInformation();
 
@@ -71,7 +68,6 @@ namespace LogicPOS.UI.Components.POS.PrintingContext
             var print = new ThermalPrinting(printer, TerminalService.Terminal.Designation, AuthenticationService.User.Name, companyInformations);
             print.ThermalWorkSessionPrinting(workSessionDocumentsData.Value, workSessionReceiptsData.Value);
         }
-
 
         private static PrinterDto GetTerminalThermalPrinter(Terminal terminal)
         {
@@ -98,7 +94,7 @@ namespace LogicPOS.UI.Components.POS.PrintingContext
             if (result.IsError)
             {
                 CustomAlerts.Error()
-                            .WithMessage( result.FirstError.Description)
+                            .WithMessage(result.FirstError.Description)
                             .ShowAlert();
             }
             var companyInformations = result.Value;
@@ -140,14 +136,14 @@ namespace LogicPOS.UI.Components.POS.PrintingContext
             print.ThermalOrderPrinting(orderTicket);
 
         }
-        private static PrintOrderTicketDto GetOrderTicket(SaleItemsPage itemsPage )
+        private static PrintOrderTicketDto GetOrderTicket(SaleItemsPage itemsPage)
         {
             var orderTicket = new PrintOrderTicketDto();
             orderTicket.OrderDetails = new List<PrintOrderDetailDto>();
 
             orderTicket.TicketId = (int)itemsPage.Ticket.Number;
-            orderTicket.TableDesignation = itemsPage.Order.Table.Designation;
-            orderTicket.PlaceDesignation = itemsPage.Order.Table.Place.Designation;
+            orderTicket.TableDesignation = SaleContext.CurrentOrder.Table.Designation;
+            orderTicket.PlaceDesignation = SaleContext.CurrentOrder.Table.Place.Designation;
             foreach (var item in itemsPage.Ticket.Items)
             {
                 orderTicket.OrderDetails.Add(new PrintOrderDetailDto()

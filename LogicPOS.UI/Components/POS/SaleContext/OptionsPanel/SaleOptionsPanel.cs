@@ -2,15 +2,12 @@
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Services;
-using System;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleOptionsPanel : Box
     {
         public SaleOptionsPanelSettings PanelSettings { get; }
-        public SaleItemsPage ItemsPage { get; set; }
 
         #region Components
         public IconButtonWithText BtnPrevious { get; set; }
@@ -36,14 +33,14 @@ namespace LogicPOS.UI.Components.POS
 
         public Window SourceWindow { get; set; }
 
-        public SaleOptionsPanel(SaleItemsPage itemsPage, dynamic buttonsTheme)
+        public SaleOptionsPanel(dynamic buttonsTheme)
         {
             PanelSettings = new SaleOptionsPanelSettings(buttonsTheme);
-            ItemsPage = itemsPage;
             InitializeButtons();
             SetButtonsVisibility();
             Add(CreateButtonsBox());
             AddEventHandlers();
+            UpdateUI();
         }
 
         private void AddEventHandlers()
@@ -65,7 +62,7 @@ namespace LogicPOS.UI.Components.POS
             BtnPayments.Clicked += BtnPayments_Clicked; ;
             BtnNext.Clicked += BtnNext_Clicked;
             BtnPrevious.Clicked += BtnPrevious_Clicked;
-            ItemsPage.TicketOpened += ItemsPage_TicketOpened;
+            SaleContext.ItemsPage.TicketOpened += ItemsPage_TicketOpened;
         }
 
         private Fixed CreateButtonsBox()
@@ -136,16 +133,25 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateButtonsSensitivity()
         {
-            bool hasTicket = ItemsPage.Ticket != null;
-            BtnIncrease.Sensitive = hasTicket;
-            BtnDecrease.Sensitive = hasTicket;
-            BtnPrice.Sensitive = hasTicket;
-            BtnQuantity.Sensitive = hasTicket;
-            BtnWeight.Sensitive = hasTicket;
-            BtnFinishOrder.Sensitive = hasTicket;
+            bool hasTicket = SaleContext.ItemsPage.Ticket != null;
+            bool hasTicketItems = hasTicket && SaleContext.ItemsPage.Ticket.Items.Count > 0;
+            BtnIncrease.Sensitive = hasTicketItems;
+            BtnPrevious.Sensitive = hasTicketItems;
+            BtnNext.Sensitive = hasTicketItems;
+            BtnDecrease.Sensitive = hasTicketItems;
+            BtnPrice.Sensitive = hasTicketItems;
+            BtnQuantity.Sensitive = hasTicketItems;
+            BtnWeight.Sensitive = hasTicketItems;
+            BtnFinishOrder.Sensitive = hasTicketItems;
+            
+            var hasOrder = SaleContext.CurrentOrder != null;
+            BtnDelete.Sensitive = hasOrder;
+
+            var hasFinshedOrder = hasOrder && SaleContext.CurrentOrder.Id != null;
+            BtnPayments.Sensitive = hasFinshedOrder;
         }
 
-        public void UpdateUIState()
+        public void UpdateUI()
         {
             Sensitive = WorkSessionService.TerminalIsOpen();
             UpdateButtonsSensitivity();

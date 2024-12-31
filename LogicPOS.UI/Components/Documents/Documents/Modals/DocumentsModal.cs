@@ -7,6 +7,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -51,7 +52,14 @@ namespace LogicPOS.UI.Components.Documents
                                                     LogicPOSAppContext.MaxWindowSize,
                                                     $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
         {
+            UpdateUI();
+        }
 
+        private void UpdateUI()
+        {
+            var hasFiscalYear = FiscalYearService.HasFiscalYear();
+            BtnNewDocument.Sensitive = hasFiscalYear;
+            BtnPayInvoice.Sensitive = hasFiscalYear;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -72,25 +80,27 @@ namespace LogicPOS.UI.Components.Documents
             };
             return actionAreaButtons;
         }
+        
+        private IconButtonWithText CreateButton(string name,
+                                                string label,
+                                                string icon)
+        {
+            return new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = name,
+                    Text = label,
+                    Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
+                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                    Icon = PathsSettings.ImagesFolderLocation + icon,
+                    IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                    ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                });
+        }
 
         private void InitializeButtons()
         {
-            IconButtonWithText CreateButton(string name,
-                                            string label,
-                                            string icon)
-            {
-                return new IconButtonWithText(
-                    new ButtonSettings
-                    {
-                        Name = name,
-                        Text = label,
-                        Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
-                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                        Icon = PathsSettings.ImagesFolderLocation + icon,
-                        IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                        ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
-                    });
-            }
+           
 
             BtnPrevious = CreateButton("touchButtonPrev_DialogActionArea",
                                        LocalizedString.Instance["widget_generictreeviewnavigator_record_prev"],

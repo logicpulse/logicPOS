@@ -491,7 +491,7 @@ namespace LogicPOS.UI.Widgets
                 return;
             }
 
-            POSWindow.ShowFrontOffice(SourceWindow);
+            POSWindow.ShowPOSWindow(SourceWindow);
         }
 
         private bool ChangePassword(Guid userId,

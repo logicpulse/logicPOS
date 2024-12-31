@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
 using System;
@@ -45,7 +44,7 @@ namespace logicpos.Classes.Logic.Hardware
                 if (TerminalService.Terminal.BarcodeReader != null)
                 {
                     _barCodeReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalService.Terminal.BarcodeReader.ReaderSizes);
-                    
+
                     for (int i = 0; i < _barCodeReaderList.Count; i++)
                     {
                         result.Add(Convert.ToInt16(_barCodeReaderList[i]), InputReaderDevice.BarCodeReader);
@@ -55,7 +54,7 @@ namespace logicpos.Classes.Logic.Hardware
                 if (TerminalService.Terminal.CardReader != null)
                 {
                     _cardReaderList = GeneralUtils.CommaDelimitedStringToIntList(TerminalService.Terminal.CardReader.ReaderSizes);
-                    
+
                     for (int i = 0; i < _cardReaderList.Count; i++)
                     {
                         //Check if BarCodeReader is Using same Value Size, if So Skip

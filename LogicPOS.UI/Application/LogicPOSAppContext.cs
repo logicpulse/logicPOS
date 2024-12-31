@@ -21,9 +21,8 @@ namespace LogicPOS.UI.Application
         public static System.Drawing.Size MaxWindowSize { get; set; }
         public static string OpenFileDialogStartPath { get; set; }
         public static UsbDisplayDevice UsbDisplay { get; set; }
-        public static logicpos.Classes.Logic.Hardware.InputReader BarCodeReader { get; set; }
+        public static InputReader BarCodeReader { get; set; }
         public static WeighingBalance WeighingBalance { get; set; }
-        public static ProtectedFiles ProtectedFiles { get; set; }
         public static ParkingTicket ParkingTicket { get; set; }
     }
 }

@@ -20,6 +20,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections;
@@ -62,11 +63,9 @@ namespace LogicPOS.UI.Components.Windows
         {
             InitializeUI();
 
-            UpdateWorkSessionUI();
-
             StartClock();
 
-            this.ScreenArea.Add(FixedWindow);
+            ScreenArea.Add(FixedWindow);
 
             bool _showMinimize = AppSettings.Instance.appShowMinimize;
             if (_showMinimize)
@@ -76,9 +75,8 @@ namespace LogicPOS.UI.Components.Windows
                 FixedWindow.Put(eventBoxMinimize, LogicPOSAppContext.ScreenSize.Width - 27 - 10, 10);
             }
 
-            this.ShowAll();
+            ShowAll();
             AddEventHandlers();
-
             InitializeBarcodeReader();
         }
 
@@ -601,8 +599,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void AddEventHandlers()
         {
-            this.WindowStateEvent += PosMainWindow_WindowStateEvent;
-            this.ExposeEvent += delegate { UpdateUIIfHasWorkingOrder(); };
+            WindowStateEvent += PosMainWindow_WindowStateEvent;
             this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
 
             BtnQuit.Clicked += BtnQuit_Clicked;
@@ -621,7 +618,7 @@ namespace LogicPOS.UI.Components.Windows
             Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketPad.Position);
             Size size = (theme.Objects.EventBoxPosTicketPad.Size as string).ToSize();
 
-            SaleOptionsPanel = new SaleOptionsPanel(SaleContext.ItemsPage, theme.Objects.EventBoxPosTicketPad.Buttons);
+            SaleOptionsPanel = new SaleOptionsPanel(theme.Objects.EventBoxPosTicketPad.Buttons);
 
             SaleOptionsPanel.SourceWindow = this;
             EventBox saleOptionsPanelEventBox = new EventBox() { VisibleWindow = false, WidthRequest = size.Width, HeightRequest = size.Height };
@@ -646,29 +643,65 @@ namespace LogicPOS.UI.Components.Windows
             FixedWindow.Put(saleItemsPageEventBox, position.X, position.Y);
         }
 
-        public static void ShowFrontOffice(Window windowToHide)
+        public void UpdateUI()
+        {
+            var fiscalYearIsOpen = FiscalYearService.HasFiscalYear();
+
+            BtnNewDocument.Sensitive = fiscalYearIsOpen;
+            BtnSessionOpening.Sensitive = fiscalYearIsOpen;
+
+            LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
+            var terminalIsOpen = WorkSessionService.TerminalIsOpen();
+            MenuArticles.Sensitive = terminalIsOpen;
+            SaleOptionsPanel.UpdateUI();
+        }
+
+        private void StartClock()
+        {
+            GLib.Timeout.Add(1000, new GLib.TimeoutHandler(UpdateClock));
+        }
+
+        private bool UpdateClock()
+        {
+            if (Visible == false)
+            {
+                return true;
+            }
+
+            LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
+
+            return true;
+        }
+
+        public static void ShowPOSWindow(Window windowToHide)
         {
             if (Instance != null)
             {
-                Instance.UpdateUI();
                 Instance.Show();
                 windowToHide.Hide();
                 return;
             }
 
-            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
-            dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
-
-            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName,"default", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
-
-            Instance = new POSWindow(windowImageFileName);
+            Instance = new POSWindow(GetBackgroundImage());
             SaleContext.Initialize();
             windowToHide.Hide();
+            Instance.UpdateUI();
 
-            if(FiscalYearService.HasFiscalYear() == false)
+            if (FiscalYearService.HasFiscalYear() == false)
             {
                 FiscalYearService.ShowOpenFiscalYearAlert();
             }
         }
+
+        public static string GetBackgroundImage()
+        {
+            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+            dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, "default", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+
+            return windowImageFileName;
+        }
+
     }
 }

@@ -1,27 +1,18 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
-using LogicPOS.Api.Features.Company.GetCompanyInformations;
-using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.DTOs.Printing;
-using LogicPOS.Printing.Documents;
-using LogicPOS.Printing.Utility;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS.PrintingContext;
-using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -31,12 +22,12 @@ namespace LogicPOS.UI.Components.POS
     {
         private void BtnPrevious_Clicked(object sender, EventArgs e)
         {
-            ItemsPage.Previous();
+            SaleContext.ItemsPage.Previous();
         }
 
         private void BtnNext_Clicked(object sender, EventArgs e)
         {
-            ItemsPage.Next();
+            SaleContext.ItemsPage.Next();
         }
 
         private void BtnDelete_Clicked(object sender, EventArgs e)
@@ -52,9 +43,9 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            if (ItemsPage.Order.Id.HasValue)
+            if (SaleContext.CurrentOrder.Id.HasValue)
             {
-                var deleteOrderResult = OrdersService.CloseOrder(ItemsPage.Order.Id.Value);
+                var deleteOrderResult = OrdersService.CloseOrder(SaleContext.CurrentOrder.Id.Value);
 
                 if (deleteOrderResult == false)
                 {
@@ -74,70 +65,71 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnDecrease_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.SelectedItem == null)
+            if (SaleContext.ItemsPage.SelectedItem == null)
             {
                 return;
             }
 
-            ItemsPage.DecreaseQuantity(ItemsPage.SelectedItem.Article.Id);
+            SaleContext.ItemsPage.DecreaseQuantity(SaleContext.ItemsPage.SelectedItem.Article.Id);
+            UpdateButtonsSensitivity();
         }
 
         private void BtnIncrease_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.SelectedItem == null)
+            if (SaleContext.ItemsPage.SelectedItem == null)
             {
                 return;
             }
 
-            ItemsPage.IncreaseQuantity(ItemsPage.SelectedItem.Article.Id);
+            SaleContext.ItemsPage.IncreaseQuantity(SaleContext.ItemsPage.SelectedItem.Article.Id);
         }
 
         private void BtnQuantity_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.SelectedItem == null)
+            if (SaleContext.ItemsPage.SelectedItem == null)
             {
                 return;
             }
 
-            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(POSWindow.Instance, ItemsPage.SelectedItem.Quantity);
+            decimal newQuantity = PosKeyboardDialog.RequestDecimalValue(POSWindow.Instance, SaleContext.ItemsPage.SelectedItem.Quantity);
 
             if (newQuantity == 0)
             {
                 return;
             }
 
-            ItemsPage.ChangeItemQuantity(ItemsPage.SelectedItem, newQuantity);
+            SaleContext.ItemsPage.ChangeItemQuantity(SaleContext.ItemsPage.SelectedItem, newQuantity);
         }
 
         private void BtnPrice_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.SelectedItem == null)
+            if (SaleContext.ItemsPage.SelectedItem == null)
             {
                 return;
             }
 
             InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
                                                                                    GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
-                                                                                   ItemsPage.SelectedItem.UnitPrice);
+                                                                                   SaleContext.ItemsPage.SelectedItem.UnitPrice);
 
             if (result.Response != ResponseType.Ok)
             {
                 return;
             }
 
-            ItemsPage.ChangeItemPrice(ItemsPage.SelectedItem, result.Value);
+            SaleContext.ItemsPage.ChangeItemPrice(SaleContext.ItemsPage.SelectedItem, result.Value);
         }
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.Ticket == null || ItemsPage.Ticket.Items.Any() == false)
+            if (SaleContext.ItemsPage.Ticket == null || SaleContext.ItemsPage.Ticket.Items.Any() == false)
             {
                 return;
             }
 
-            if (ItemsPage.Order.Id.HasValue == false)
+            if (SaleContext.CurrentOrder.Id.HasValue == false)
             {
-                var saveOrderResult = OrdersService.SavePosOrder(ItemsPage.Order);
+                var saveOrderResult = OrdersService.SavePosOrder(SaleContext.CurrentOrder);
 
                 if (saveOrderResult == false)
                 {
@@ -149,7 +141,7 @@ namespace LogicPOS.UI.Components.POS
             }
             else
             {
-                var saveTicketResult = OrdersService.SavePosTicket(ItemsPage.Order, ItemsPage.Ticket);
+                var saveTicketResult = OrdersService.SavePosTicket(SaleContext.CurrentOrder, SaleContext.ItemsPage.Ticket);
 
                 if (saveTicketResult == false)
                 {
@@ -159,20 +151,21 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-            PrintingServices.PrintOrder(ItemsPage);
-            ItemsPage.FinishTicket();
+
+            PrintingServices.PrintOrder(SaleContext.ItemsPage);
+            SaleContext.ItemsPage.FinishTicket();
+
             UpdateButtonsSensitivity();
         }
 
-       
         private void BtnPayments_Clicked(object sender, EventArgs e)
         {
-            if (ItemsPage.Order == null || ItemsPage.Order.Tickets.Any() == false)
+            if (SaleContext.CurrentOrder == null || SaleContext.CurrentOrder.Tickets.Any() == false)
             {
                 return;
             }
 
-            if (ItemsPage.Ticket != null)
+            if (SaleContext.ItemsPage.Ticket != null)
             {
                 ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
                                                           .WithSize(new Size(400, 280))
@@ -180,12 +173,12 @@ namespace LogicPOS.UI.Components.POS
                                                           .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
                                                           .ShowAlert();
 
-                if (dialogResponse != ResponseType.Ok)
+                if (dialogResponse != ResponseType.Yes)
                 {
                     return;
                 }
 
-                ItemsPage.FinishTicket();
+                SaleContext.ItemsPage.FinishTicket();
             }
 
             var modal = new PaymentsModal(SourceWindow);
@@ -218,7 +211,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            ItemsPage.AddItem(new SaleItem(getArticle.Value));
+            SaleContext.ItemsPage.AddItem(new SaleItem(getArticle.Value));
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)
@@ -246,64 +239,12 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            //Thcialo
-            //PosTablesDialog dialog = new PosTablesDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, TableFilterMode.OnlyFreeTables);
-            //ResponseType response = (ResponseType)dialog.Run();
-
-            //if (response == ResponseType.Ok || response == ResponseType.Cancel || response == ResponseType.DeleteEvent)
-            //{
-            //    if (response == ResponseType.Ok)
-            //    {
-            //        OrderMain currentOrderMain = POSSession.CurrentSession.OrderMains[POSSession.CurrentSession.CurrentOrderMainId];
-            //        pos_configurationplacetable xOldTable = XPOUtility.GetEntityById<pos_configurationplacetable>(currentOrderMain.Table.Oid);
-            //        pos_configurationplacetable xNewTable = XPOUtility.GetEntityById<pos_configurationplacetable>(dialog.CurrentTableOid);
-
-            //        if (xNewTable.TableStatus != TableStatus.Free)
-            //        {
-            //            CustomAlerts.Error(POSWindow.Instance)
-            //                        .WithSize(new Size(400, 280))
-            //                        .WithTitleResource("global_error")
-            //                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_table_is_not_free"))
-            //                        .ShowAlert();
-            //        }
-            //        else
-            //        {
-            //            //Put Old table Status to Free
-            //            xOldTable.TableStatus = TableStatus.Free;
-            //            xOldTable.Save();
-            //            XPOUtility.Audit("TABLE_OPEN", string.Format(GeneralUtils.GetResourceByName("audit_message_table_open"), xOldTable.Designation));
-
-            //            //Put New table Status to Open
-            //            xNewTable.TableStatus = TableStatus.Open;
-            //            xNewTable.Save();
-            //            XPOUtility.Audit("TABLE_CLOSE", string.Format(GeneralUtils.GetResourceByName("audit_message_table_close"), xNewTable.Designation));
-
-            //            //Change DocumentOrderMain table, If OpenOrder Exists in That table
-            //            Guid documentOrderMainOid = currentOrderMain.GetOpenTableFieldValueGuid(xOldTable.Oid, "Oid");
-            //            fin_documentordermain xDocumentOrderMain = XPOUtility.GetEntityById<fin_documentordermain>(documentOrderMainOid);
-            //            if (xDocumentOrderMain != null)
-            //            {
-            //                xDocumentOrderMain.PlaceTable = xNewTable;
-            //                xDocumentOrderMain.UpdatedAt = XPOUtility.CurrentDateTimeAtomic();
-            //                xDocumentOrderMain.Save();
-            //            }
-            //            //Assign Session Data
-            //            currentOrderMain.Table.Oid = xNewTable.Oid;
-            //            currentOrderMain.Table.Name = xNewTable.Designation;
-            //            currentOrderMain.Table.PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-            //            currentOrderMain.OrderTickets[currentOrderMain.CurrentTicketId].PriceType = (PriceType)xNewTable.Place.PriceType.EnumValue;
-            //            currentOrderMain.Table.PlaceId = xNewTable.Place.Oid;
-            //            POSSession.CurrentSession.Save();
-
-            //        }
-            //    }
-            //    dialog.Destroy();
-            //};
+            throw new NotImplementedException();
         }
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
-
+            throw new NotImplementedException();
         }
 
         private void BtnGifts_Clicked(object sender, EventArgs e)
@@ -313,7 +254,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnWeight_Clicked(object sender, EventArgs e)
         {
-
+            throw new NotImplementedException();
         }
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)

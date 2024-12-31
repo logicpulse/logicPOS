@@ -1,29 +1,15 @@
-﻿using Atk;
-using DevExpress.Xpo;
+﻿using DevExpress.Xpo;
 using Gtk;
-using logicpos.Classes.DataLayer;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Company.GetCompanyInformations;
-using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Data.Services;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
-using LogicPOS.DTOs.Printing;
 using LogicPOS.Globalization;
-using LogicPOS.Printing.Common;
-using LogicPOS.Printing.Documents;
-using LogicPOS.Printing.Utility;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.POS.PrintingContext;
-using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections;
 using System.Drawing;
@@ -44,7 +30,7 @@ namespace LogicPOS.UI.Components.POS
             OpenDay();
         }
 
-        private void CloseDay()
+        private bool HasOpenTables()
         {
             var openTables = TablesService.GetOpenTables();
 
@@ -58,9 +44,14 @@ namespace LogicPOS.UI.Components.POS
                                           openTables.Count(),
                                           $"\n{tablesNames}"))
                             .ShowAlert();
-                return;
+                return true;
             }
 
+            return false;
+        }
+
+        private bool CheckOpenTerminals()
+        {
             var openTerminalSessions = WorkSessionService.GetOpenTerminalSessions();
 
             if (openTerminalSessions.Any())
@@ -77,35 +68,66 @@ namespace LogicPOS.UI.Components.POS
 
                 if (alertResponse != ResponseType.Yes)
                 {
-                    return;
+                    return false;
                 }
 
-                WorkSessionService.CloseTerminalAllSessions();
+                WorkSessionService.CloseAllTerminalSessions();
             }
 
-            DataBaseBackup.ShowRequestBackupDialog(this);
+            return true;
+        }
+
+        private void HandleBackup()
+        {
+            var responseType = new CustomAlert(this)
+                .WithMessageResource("dialog_message_request_backup")
+                .WithMessageType(MessageType.Question)
+                .WithButtonsType(ButtonsType.YesNo)
+                .WithTitleResource("global_information")
+                .ShowAlert();
+
+        }
+
+        private void CloseDay()
+        {
+            if (HasOpenTables())
+            {
+                return;
+            }
+
+            if (CheckOpenTerminals() == false)
+            {
+                return;
+            }
+
+            HandleBackup();
 
             if (!WorkSessionService.CloseDay())
             {
                 return;
             }
 
-            UpdateButtons();
-
             //tchial0: ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
 
-            var pResponse = CustomAlerts.Question(this)
-                                        .WithSize(new Size(500, 350))
-                                        .WithTitleResource("global_button_label_print")
-                                        .WithMessageResource("dialog_message_request_print_document_confirmation")
-                                        .ShowAlert();
-            if (pResponse == ResponseType.Yes)
+            HandleDayReportPrinting();
+            UpdateUI();
+            POSWindow.Instance.UpdateUI();
+        }
+
+        private void HandleDayReportPrinting()
+        {
+            var printWorkSessionDayReportResponse = CustomAlerts.Question(this)
+                                                                .WithSize(new Size(500, 350))
+                                                                .WithTitleResource("global_button_label_print")
+                                                                .WithMessageResource("dialog_message_request_print_document_confirmation")
+                                                                .ShowAlert();
+
+            if (printWorkSessionDayReportResponse == ResponseType.Yes)
             {
                 PrintingServices.PrintWorkSessionDayReport();
             }
         }
 
-       
         private void AddEventHandlers()
         {
             BtnDayOpening.Clicked += BtnDayOpening_Clicked;
@@ -122,21 +144,19 @@ namespace LogicPOS.UI.Components.POS
                             .ShowAlert();
             }
 
-            UpdateButtons();
+            UpdateUI();
         }
 
         private void BtnSessionOpening_Clicked(object sender, EventArgs e)
         {
-            POSWindow.Instance.UpdateWorkSessionUI();
-
             TerminalSessionModal terminalSessionModal = new TerminalSessionModal(this);
             terminalSessionModal.Run();
             terminalSessionModal.Destroy();
 
-            UpdateButtons();
+            UpdateUI();
         }
 
-        public void UpdateButtons()
+        public void UpdateUI()
         {
             if (WorkSessionService.DayIsOpen())
             {
@@ -195,6 +215,5 @@ namespace LogicPOS.UI.Components.POS
                         .WithMessage(string.Format(messageResource, messageTotalSummary))
                         .ShowAlert();
         }
-
     }
 }

@@ -84,11 +84,6 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnApply.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
 
-            BtnApply.Clicked += delegate
-            {
-                POSWindow.Instance.SaleOptionsPanel.UpdateUIState();
-            };
-
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);
         }
 

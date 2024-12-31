@@ -9,6 +9,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -334,6 +335,7 @@ namespace LogicPOS.UI.Components.Menus
 
 
             SaleItemsPage.AddItem(item);
+            POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();
         }
 
         internal void Refresh()

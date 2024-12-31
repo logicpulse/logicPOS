@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
@@ -23,6 +24,13 @@ namespace LogicPOS.UI.Components.Windows
             ShowStartPage();
             ShowAll();
             ShowPanel(PanelArticles);
+            UpdateUI();
+        }
+
+        private void UpdateUI()
+        {
+            var hasFiscalYear = FiscalYearService.HasFiscalYear();
+            BtnNewDocument.Button.Sensitive = hasFiscalYear;
         }
 
         private void BackOfficeMainWindow_Show(object sender, EventArgs e)
