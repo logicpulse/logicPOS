@@ -9,7 +9,7 @@ using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using System.Drawing;
 
-namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
+namespace LogicPOS.UI.Components.Modals
 {
     internal class ChangeUserModal : BaseDialog
     {
@@ -23,9 +23,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly IconButtonWithText _buttonCancel;
         public UserDetail User { get; set; }
 
-        public ChangeUserModal(Window parentWindow,
-                                   DialogFlags pDialogFlags)
-            : base(parentWindow, pDialogFlags)
+        public ChangeUserModal(Window parentWindow)
+            : base(parentWindow, DialogFlags.DestroyWithParent)
         {
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_change_user");
@@ -43,8 +42,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
             };
 
-            this.Initialize(this,
-                            pDialogFlags,
+            Initialize(this,
+                            DialogFlags.DestroyWithParent,
                             fileDefaultWindowIcon,
                             windowTitle,
                             windowSize,

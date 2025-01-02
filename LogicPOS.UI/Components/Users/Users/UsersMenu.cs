@@ -226,7 +226,7 @@ namespace LogicPOS.UI.Components.Menus
             OnUserSelected?.Invoke(SelectedUser);
         }
 
-        internal void Refresh()
+        public void Refresh()
         {
             Buttons = new List<(UserDetail, CustomButton)>();
             LoadEntities();

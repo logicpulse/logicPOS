@@ -16,22 +16,32 @@ namespace LogicPOS.UI.Components.Windows
     {
         private void BtnOK_Clicked(object sender, EventArgs e)
         {
-            PinPanel.ProcessPassword(this, UsersMenu.SelectedUser);
+            if(MenuUsers.SelectedUser == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_warning")
+                            .WithMessage("Usuário não selecionado!")
+                            .ShowAlert();
+                return;
+            }
+
+            PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
         }
 
         private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
         {
-            string currentPin = PinPanel.EntryPin.Text;
+            string currentPin = PinPanel.TxtPin.Text;
             PinPanel.Mode = NumberPadPinMode.PasswordReset;
-            PinPanel.EntryPin.Text = currentPin;
-            PinPanel.ProcessPassword(this, UsersMenu.SelectedUser);
+            PinPanel.TxtPin.Text = currentPin;
+            PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
         }
 
-        private void StartupWindow_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                PinPanel.ProcessPassword(this, UsersMenu.SelectedUser);
+                PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
             }
         }
 
@@ -42,7 +52,8 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ButtonKeyFrontOffice_Clicked(object sender, EventArgs e)
         {
-            POSWindow.ShowPOSWindow(this);
+            Hide();
+            POSWindow.ShowPOS();
         }
 
         private void OnUserSelected(UserDetail user)
@@ -58,14 +69,12 @@ namespace LogicPOS.UI.Components.Windows
                             .ShowAlert();
             }
 
-            PinPanel.EntryPin.GrabFocus();
+            PinPanel.TxtPin.GrabFocus();
         }
 
-        public void LogOutUser(bool showLoginWindow = true)
+        private void LoginWindow_Shown(object sender, EventArgs e)
         {
-            AuthenticationService.LogoutUser();
-
-            if (showLoginWindow) LoginWindow.Instance.ShowAll();
+            MenuUsers.Refresh();
         }
 
         private void ButtonDeveloper_Clicked(object sender, EventArgs e)

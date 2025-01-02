@@ -1,29 +1,20 @@
-using DevExpress.Data.Filtering;
-using DevExpress.Xpo;
 using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Menus;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
-using System.Collections;
 using System.Drawing;
 using Image = Gtk.Image;
 
@@ -31,7 +22,6 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow : POSBaseWindow
     {
-        public static POSWindow Instance { get; set; }
         public string ClockTimeFormat => GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
 
         #region Components
@@ -162,8 +152,6 @@ namespace LogicPOS.UI.Components.Windows
             if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
 
             eventBoxImageLogo.Add(imageLogo);
-            eventBoxImageLogo.ButtonPressEvent += ImageLogo_Clicked;
-
         }
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)
@@ -599,8 +587,8 @@ namespace LogicPOS.UI.Components.Windows
 
         private void AddEventHandlers()
         {
-            WindowStateEvent += PosMainWindow_WindowStateEvent;
-            this.KeyReleaseEvent += PosMainWindow_KeyReleaseEvent;
+            WindowStateEvent += Window_StateEvent;
+            this.KeyReleaseEvent += Window_KeyReleaseEvent;
 
             BtnQuit.Clicked += BtnQuit_Clicked;
             BtnBackOffice.Clicked += BtnBackOffice_Clicked;
@@ -645,11 +633,6 @@ namespace LogicPOS.UI.Components.Windows
 
         public void UpdateUI()
         {
-            var fiscalYearIsOpen = FiscalYearService.HasFiscalYear();
-
-            BtnNewDocument.Sensitive = fiscalYearIsOpen;
-            BtnSessionOpening.Sensitive = fiscalYearIsOpen;
-
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
             var terminalIsOpen = WorkSessionService.TerminalIsOpen();
             MenuArticles.Sensitive = terminalIsOpen;
@@ -673,26 +656,22 @@ namespace LogicPOS.UI.Components.Windows
             return true;
         }
 
-        public static void ShowPOSWindow(Window windowToHide)
+        #region Static
+        public static POSWindow Instance { get; set; }
+        
+        public static void ShowPOS()
         {
             if (Instance != null)
             {
+                Instance.UpdateUI();
                 Instance.Show();
-                windowToHide.Hide();
                 return;
             }
 
             Instance = new POSWindow(GetBackgroundImage());
             SaleContext.Initialize();
-            windowToHide.Hide();
-            Instance.UpdateUI();
-
-            if (FiscalYearService.HasFiscalYear() == false)
-            {
-                FiscalYearService.ShowOpenFiscalYearAlert();
-            }
         }
-
+        
         public static string GetBackgroundImage()
         {
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
@@ -702,6 +681,6 @@ namespace LogicPOS.UI.Components.Windows
 
             return windowImageFileName;
         }
-
+        #endregion
     }
 }

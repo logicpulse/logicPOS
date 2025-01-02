@@ -9,6 +9,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -234,7 +235,13 @@ namespace LogicPOS.UI.Components.Modals
             //UpdatedBy
             VBox vboxUpdatedBy = new VBox(true, 0);
             Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
-            var lastUpdatedBy = _entity?.UpdatedBy.ToString() ?? "?";
+            string lastUpdatedBy = "?";
+
+            if(_entity != null && _entity.UpdatedBy != Guid.Empty)
+            {
+                lastUpdatedBy =  UsersService.GetUserNameById(_entity.UpdatedBy);
+            }
+
             Label labelUpdatedByValue = new Label(lastUpdatedBy);
             labelUpdatedBy.SetAlignment(0.0F, 0.5F);
             labelUpdatedByValue.SetAlignment(0.0F, 0.5F);

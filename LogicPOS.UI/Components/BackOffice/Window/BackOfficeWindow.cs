@@ -1,21 +1,13 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
-using System;
-
 
 namespace LogicPOS.UI.Components.Windows
 {
     public partial class BackOfficeWindow : BackOfficeBaseWindow
     {
-        public static BackOfficeWindow Instance { get; set; }
-
-        private readonly string _privilegesBackOfficeMenuOperation = $"{LogicPOSSettings.PrivilegesBackOfficeCRUDOperationPrefix}_{"MENU"}";
-
         public BackOfficeWindow()
         {
             RegisterPanels();
@@ -24,20 +16,12 @@ namespace LogicPOS.UI.Components.Windows
             ShowStartPage();
             ShowAll();
             ShowPanel(PanelArticles);
-            UpdateUI();
         }
 
-        private void UpdateUI()
-        {
-            var hasFiscalYear = FiscalYearService.HasFiscalYear();
-            BtnNewDocument.Button.Sensitive = hasFiscalYear;
-
-            UpdatePrivileges();
-        }
-
-        private void BackOfficeMainWindow_Show(object sender, EventArgs e)
+        public void UpdateUI()
         {
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
+            UpdatePrivileges();
         }
 
         private void ShowStartPage()
@@ -52,24 +36,32 @@ namespace LogicPOS.UI.Components.Windows
             BtnNewVersion.Clicked += BtnNewVesion_Clicked;
             BtnDashboard.Clicked += BtnDashBoard_Clicked;
             BtnPOS.Clicked += BtnPOS_Clicked;
-            Shown += BackOfficeMainWindow_Show;
+            Shown += Window_Show;
         }
 
         #region Static
-        public static System.Drawing.Size ScreenSize { get; set; } = Utils.GetScreenSize();
-        public static void ShowBackOffice(Window windowToHide)
+        private static BackOfficeWindow _instance;
+        public static BackOfficeWindow Instance
         {
-            if (Instance == null)
+            get
             {
-                Instance = new BackOfficeWindow();
-            }
-            else
-            {
-                Instance.Show();
-            }
+                if (_instance == null)
+                {
+                    _instance = new BackOfficeWindow();
+                }
 
-            windowToHide.Hide();
+                return _instance;
+            }
         }
+
+        public static System.Drawing.Size ScreenSize { get; set; } = Utils.GetScreenSize();
+
+        public static void ShowBackOffice()
+        {
+            Instance.UpdateUI();
+            Instance.Show();
+        }
+
         #endregion
     }
 }

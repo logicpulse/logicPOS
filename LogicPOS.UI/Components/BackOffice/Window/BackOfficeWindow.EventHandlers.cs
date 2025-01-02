@@ -26,6 +26,10 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class BackOfficeWindow
     {
+        private void Window_Show(object sender, EventArgs e)
+        {
+            UpdateUI();
+        }
 
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
@@ -102,7 +106,7 @@ namespace LogicPOS.UI.Components.Windows
         private void BtnLogout_Clicked(object sender, EventArgs e)
         {
             Hide();
-            LoginWindow.Instance.LogOutUser(true);
+            LoginWindow.Instance.ShowAll();
         }
 
         private void BtnPOS_Clicked(object sender, EventArgs e)

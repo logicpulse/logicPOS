@@ -1,7 +1,6 @@
 using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.App;
-using logicpos.Classes.Logic.License;
 using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
 using LogicPOS.Modules;
@@ -28,8 +27,6 @@ namespace LogicPOS.UI
 
     internal class Program
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
 
@@ -169,13 +166,13 @@ namespace LogicPOS.UI
         public static void StartFrontOffice()
         {
             LogicPOSAppUtils appUtils = new LogicPOSAppUtils();
-            appUtils.StartApp(AppMode.FrontOffice);
+            appUtils.StartApp();
         }
 
         public static void StartBackOffice()
         {
             LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-            logicPos.StartApp(AppMode.Backoffice);
+            logicPos.StartApp();
         }
 
         public static bool InitializeCulture()

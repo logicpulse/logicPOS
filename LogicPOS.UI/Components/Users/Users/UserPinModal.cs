@@ -20,10 +20,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string JwtToken { get; private set; }
 
         public UserPinModal(Window parentWindow,
-                            DialogFlags flags,
                             UserDetail user,
                             bool notLoginAuth = false)
-            : base(parentWindow, flags)
+            : base(parentWindow, DialogFlags.DestroyWithParent)
         {
             _notLoginAuth = notLoginAuth;
             bool showCancel = false;
@@ -47,7 +46,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                                              100,
                                              67,
                                              _notLoginAuth);
-            _pinPanel.ButtonKeyOK.Clicked += ButtonKeyOK_Clicked;
+            _pinPanel.BtnOk.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_pinPanel, 0, 0);
 
@@ -72,10 +71,9 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             _pinPanel.Mode = (_user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 
-            this.KeyReleaseEvent += PosPinPadDialog_KeyReleaseEvent;
 
             this.Initialize(this,
-                            flags,
+                            DialogFlags.DestroyWithParent,
                             fileDefaultWindowIcon,
                             windowTitle,
                             windowSize,
@@ -91,16 +89,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 JwtToken = _pinPanel.JwtToken;
                 Respond(ResponseType.Ok);
             }
-        }
-
-        //Removed : Conflited with Change Password, When we Implement Default Enter Key in All Dilogs, It Trigger Twice
-        private void PosPinPadDialog_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
-        {
-            //if (args.Event.Key.ToString().Equals("Return"))
-            //{
-            //    bool finishedJob = _numberPadPin.ProcessPassword(this, _selectedUserDetail);
-            //    if (finishedJob) Respond(ResponseType.Ok);
-            //}
         }
     }
 }

@@ -16,29 +16,20 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class LoginWindow : POSBaseWindow
     {
-        public static LoginWindow Instance { get; set; }
         private UserPinPanel PinPanel { get; set; }
-        public UsersMenu UsersMenu { get; set; }
+        public UsersMenu MenuUsers { get; set; }
 
-        public LoginWindow(string backgroundImage,
-                           bool needToUpdate)
+        public LoginWindow(string backgroundImage)
             : base(backgroundImage)
         {
+            AddEventHandlers();
             InitializeUI();
+        }
 
-            if (needToUpdate)
-            {
-                Utils.ShowChangeLog(this);
-            }
-
-            //Utils.ShowNotifications(this); -> tchial0
-
-            this.KeyReleaseEvent += StartupWindow_KeyReleaseEvent;
-
-            if (UsersMenu.SelectedUser != null)
-            {
-                OnUserSelected(UsersMenu.SelectedUser);
-            }
+        private void AddEventHandlers()
+        {
+            this.KeyReleaseEvent += Window_KeyReleaseEvent;
+            this.Shown += LoginWindow_Shown;
         }
 
         private dynamic GetTheme()
@@ -130,7 +121,7 @@ namespace LogicPOS.UI.Components.Windows
                 //Over NumberPadPin
                 //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                 //Events
-                PinPanel.ButtonKeyOK.Clicked += BtnOK_Clicked;
+                PinPanel.BtnOk.Clicked += BtnOK_Clicked;
                 PinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
                 PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
                 PinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
@@ -165,14 +156,14 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.BorderWidth = 0;
                 tablePadUserButtonNext.CanFocus = false;
 
-                UsersMenu = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
-                UsersMenu.OnUserSelected += OnUserSelected;
+                MenuUsers = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
+                MenuUsers.OnUserSelected += OnUserSelected;
 
                 if (showUsersMenu)
                 {
                     fix.Put(tablePadUserButtonPrev, tablePadUserButtonPrevPosition.X, tablePadUserButtonPrevPosition.Y);
                     fix.Put(tablePadUserButtonNext, tablePadUserButtonNextPosition.X, tablePadUserButtonNextPosition.Y);
-                    fix.Put(UsersMenu, tablePadUserPosition.X, tablePadUserPosition.Y);
+                    fix.Put(MenuUsers, tablePadUserPosition.X, tablePadUserPosition.Y);
                 }
 
                 //Label Version
@@ -229,7 +220,7 @@ namespace LogicPOS.UI.Components.Windows
 
                 ScreenArea.Add(fix);
 
-                PinPanel.EntryPin.GrabFocus();
+                PinPanel.TxtPin.GrabFocus();
 
                 ShowAll();
 
@@ -245,5 +236,33 @@ namespace LogicPOS.UI.Components.Windows
                 CustomAlerts.ShowThemeRenderingErrorAlert(errorMessage, this);
             }
         }
+
+        #region Static 
+        private static LoginWindow _instance;
+       
+        public static LoginWindow Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = CreateLoginWindow();
+                }
+                return _instance;
+            }
+        }
+       
+        private static LoginWindow CreateLoginWindow()
+        {
+            var predicate = (Predicate<dynamic>)((x) => x.ID == "StartupWindow");
+            var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName,
+                                                       LogicPOSAppContext.ScreenSize.Width,
+                                                       LogicPOSAppContext.ScreenSize.Height);
+
+            return new LoginWindow(windowImageFileName);
+        }
+        #endregion
     }
 }

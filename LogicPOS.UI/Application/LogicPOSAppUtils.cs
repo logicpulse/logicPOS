@@ -27,13 +27,13 @@ namespace LogicPOS.UI.Application
         private TimeSpan _databaseBackupTimeSpanRangeEnd = new TimeSpan();
         private static bool _needToUpdate = false;
 
-        public void StartApp(AppMode mode)
+        public void StartApp()
         {
             try
             {
                 Initialize();
                 LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
-                InitAppMode(mode);
+                LoginWindow.Instance.ShowAll();
                 InitBackupTimerProcess();
 
                 if (!_quitAfterBootStrap) Gtk.Application.Run();
@@ -201,51 +201,6 @@ namespace LogicPOS.UI.Application
                     StartBackupTimer();
                 }
             }
-        }
-
-        public bool ExportProtectedFiles(List<string> pFileList)
-        {
-            bool result = false;
-            string[] files = new string[pFileList.Count + 1];
-            string filename = string.Format("{0}{1}", PathsSettings.TempFolderLocation, "protected.zip");
-
-            try
-            {
-                for (int i = 0; i < pFileList.Count; i++)
-                {
-                    files[i] = pFileList[i];
-                }
-                files[pFileList.Count] = LogicPOSSettings.ProtectedFilesFileName;
-
-                //Empty password, to zip without password
-                result = CompressionUtils.ZipPack(files, filename, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex.Message, ex);
-            }
-
-            return result;
-        }
-
-        private void InitAppMode(AppMode pAppMode)
-        {
-            if (pAppMode == AppMode.Backoffice)
-            {
-                BackOfficeWindow.Instance = new BackOfficeWindow();
-            }
-            else
-            {
-                _logger.Debug("Init Theme Object ");
-                var predicate = (Predicate<dynamic>)((x) => x.ID == "StartupWindow");
-                var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
-
-                _logger.Debug("Init windowImageFileName ");
-                string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
-                _logger.Debug("StartupWindow " + windowImageFileName);
-                LoginWindow.Instance = new LoginWindow(windowImageFileName, _needToUpdate);
-
-            };
         }
 
         public static void QuitWithoutConfirmation(bool pAudit = true)

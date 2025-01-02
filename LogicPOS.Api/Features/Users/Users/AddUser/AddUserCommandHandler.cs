@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Users.AddUser
 
         public override async Task<ErrorOr<Guid>> Handle(AddUserCommand request, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("users/details", request, cancellationToken);
+            return await HandleAddCommandAsync("users", request, cancellationToken);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Logic.License;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;

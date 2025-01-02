@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Users.UpdateUser
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommandAsync($"users/details/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"users/{command.Id}", command, cancellationToken);
         }
     }
 }

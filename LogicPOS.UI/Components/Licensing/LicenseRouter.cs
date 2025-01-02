@@ -1,16 +1,16 @@
 ﻿using Gtk;
+using logicpos;
 using logicpos.Classes.Enums.App;
 using LogicPOS.Settings;
 using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System;
 using System.IO;
 
-namespace logicpos.Classes.Logic.License
+namespace LogicPOS.UI.Components.Licensing
 {
     public class LicenseRouter
     {
@@ -123,10 +123,10 @@ namespace logicpos.Classes.Logic.License
                 if (LoadApp)
                 {
                     System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));
-                    LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(logicpos.Utils.NotifyLoadingIsDone));
+                    LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                     thread.Start();
 
-                    LogicPOSAppContext.LoadingDialog = logicpos.Utils.CreateSplashScreen();
+                    LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen();
 
                     LogicPOSAppContext.LoadingDialog.Run();
                 }
@@ -138,12 +138,12 @@ namespace logicpos.Classes.Logic.License
             if (GeneralSettings.AppUseBackOfficeMode == false)
             {
                 LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp(AppMode.FrontOffice);
+                logicPos.StartApp();
             }
             else
             {
                 LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp(AppMode.Backoffice);
+                logicPos.StartApp();
             }
         }
 

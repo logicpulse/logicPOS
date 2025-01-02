@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleSubfamilyModal
     {
-        public override Size ModalSize => new Size(500, 445);
+        public override Size ModalSize => new Size(500, 460);
         public override string ModalTitleResourceName => "window_title_edit_articlesubfamily";
 
         #region Components

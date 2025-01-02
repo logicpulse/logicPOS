@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Users.DeleteUser
 
         public async override Task<ErrorOr<bool>> Handle(DeleteUserCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleDeleteCommandAsync($"users/details/{command.Id}", cancellationToken);
+            return await HandleDeleteCommandAsync($"users/{command.Id}", cancellationToken);
         }
     }
 }
