@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using LogicPOS.UI.Extensions;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Buttons
@@ -8,7 +7,6 @@ namespace LogicPOS.UI.Buttons
     public class CustomButton : Button
     {
         public EventBox BackgroundColorEventBox { get; set; }
-        public Guid CurrentButtonId { get; set; }
         protected ButtonSettings _settings;
 
         public CustomButton(ButtonSettings settings)
@@ -20,7 +18,7 @@ namespace LogicPOS.UI.Buttons
             _settings = settings;
         }
 
-   
+
         public void Initialize()
         {
             WidthRequest = _settings.ButtonSize.Width;

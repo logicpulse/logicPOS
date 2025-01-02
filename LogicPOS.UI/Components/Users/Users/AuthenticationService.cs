@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Users
 {
     public static class AuthenticationService
     {
-        public static UserDetail User { get; private set; }
+        public static User User { get; private set; }
         public static List<string> Permissions { get; private set; } = new List<string>();
 
         public static bool UserHasPermission(string permission)
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Users
             return Permissions.Contains(permission);
         }
 
-        public static void LoginUser(UserDetail user, string jwtToken)
+        public static void LoginUser(User user, string jwtToken)
         {
             User = user;
             LoadPermissions();

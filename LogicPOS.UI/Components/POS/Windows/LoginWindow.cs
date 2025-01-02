@@ -156,8 +156,13 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.BorderWidth = 0;
                 tablePadUserButtonNext.CanFocus = false;
 
-                MenuUsers = new UsersMenu(this, tablePadUserButtonPrev, tablePadUserButtonNext);
-                MenuUsers.OnUserSelected += OnUserSelected;
+                MenuUsers = new UsersMenu(7,
+                                          1,
+                                          tablePadUserButtonPrev,
+                                          tablePadUserButtonNext,
+                                          this);
+
+                MenuUsers.OnEntitySelected += OnUserSelected;
 
                 if (showUsersMenu)
                 {

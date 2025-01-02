@@ -12,224 +12,43 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class UsersMenu : Gtk.Table
+    public class UsersMenu : Menu<User>
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        public int ButtonFontSize = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
-        public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
-        public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
-        public List<(UserDetail User, CustomButton Button)> Buttons { get; set; } = new List<(UserDetail, CustomButton)>();
-        public string ButtonImage => PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
-        public string ButtonLabel { get; set; }
-        public int TotalItems { get; set; }
-        public int ItemsPerPage { get; set; }
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
-        public CustomButton BtnPrevious { get; set; }
-        public CustomButton BtnNext { get; set; }
-        public uint Rows { get; set; }
-        public uint Columns { get; set; }
-        public Size ButtonSize { get; set; } = new Size(120, 102);
-        public Window SourceWindow { get; set; }
-        public UserDetail SelectedUser { get; set; }
-        public CustomButton SelectedButton { get; set; }
 
-        public event Action<UserDetail> OnUserSelected;
-
-        public UsersMenu(Window sourceWindow,
+        public UsersMenu(uint rows,
+                         uint columns,
                          CustomButton btnPrevious,
                          CustomButton btnNext,
-                         uint rows = 7,
-                         uint columns = 1) : base(rows, columns, true)
+                         Window sourceWindow) : base(rows,
+                                                     columns,
+                                                     buttonSize: new Size(120, 102),
+                                                     buttonName: "buttonUserId",
+                                                     btnPrevious: btnPrevious,
+                                                     btnNext: btnNext,
+                                                     sourceWindow: sourceWindow)
         {
-            Rows = rows;
-            Columns = columns;
-            SourceWindow = sourceWindow;
-            BtnPrevious = btnPrevious;
-            BtnNext = btnNext;
-            AddEventHandlers();
-            LoadEntities();
         }
 
-        private void AddEventHandlers()
+        protected override void LoadEntities()
         {
-            BtnPrevious.Clicked += BtnPrevious_Clicked;
-            BtnNext.Clicked += BtnNext_Clicked;
-        }
-
-        public virtual CustomButton InitializeButton()
-        {
-            return new ImageButton(
-                new ButtonSettings
-                {
-                    Name = "buttonUserId",
-                    Text = ButtonLabel,
-                    FontSize = ButtonFontSize,
-                    Image = ButtonImage,
-                    Overlay = ButtonOverlay,
-                    ButtonSize = ButtonSize
-                });
-        }
-
-        public void Update()
-        {
-            RemoveOldButtons();
-            AddItems();
-            UpdateButtonsState();
-        }
-
-        private void UpdateButtonsState()
-        {
-            if (CurrentPage == 1)
-            {
-                BtnPrevious.Sensitive = false;
-            }
-            else
-            {
-                BtnPrevious.Sensitive = true;
-            }
-
-            if (CurrentPage == TotalPages)
-            {
-                BtnNext.Sensitive = false;
-            }
-            else
-            {
-                if (TotalPages > 1) BtnNext.Sensitive = true;
-            }
-        }
-
-        private void AddItems()
-        {
-            if (Buttons.Count <= 0)
-            {
-                return;
-            }
-
-            uint currentRow = 0, currentColumn = 0;
-            int startItem = (CurrentPage * ItemsPerPage) - ItemsPerPage;
-            int endItem = startItem + ItemsPerPage - 1;
-            for (int i = startItem; i <= endItem; i++)
-            {
-                if (i < TotalItems)
-                {
-                    this.Attach(Buttons[i].Button, currentColumn, currentColumn + 1, currentRow, currentRow + 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
-                }
-
-                if (currentColumn == this.NColumns - 1)
-                {
-                    ++currentRow;
-                    currentColumn = 0;
-                }
-                else
-                {
-                    ++currentColumn;
-                }
-            }
-
-        }
-
-        private void RemoveOldButtons()
-        {
-            int childrenLength = this.Children.Length;
-            for (int i = 0; i < childrenLength; i++)
-            {
-                this.Remove(this.Children[0]);
-            }
-        }
-
-        private void BtnPrevious_Clicked(object obj, EventArgs args)
-        {
-            CurrentPage -= 1;
-            Update();
-        }
-
-        private void BtnNext_Clicked(object obj, EventArgs args)
-        {
-            CurrentPage += 1;
-            Update();
-        }
-
-        public void LoadEntities()
-        {
-            if (AppSettings.Instance.useImageOverlay == false)
-            {
-                ButtonOverlay = null;
-            }
-
-            CurrentPage = 1;
-            CustomButton currentButton = null;
-
-            SelectedUser = AuthenticationService.User;
-
-            if (Buttons.Count > 0)
-            {
-                Buttons.Clear();
-            }
-
+            Entities.Clear();
             var getUsersResult = _mediator.Send(new GetAllUsersQuery()).Result;
-            var users = new List<UserDetail>();
 
             if (getUsersResult.IsError == false)
             {
-                users.AddRange(getUsersResult.Value);
-            }
-
-            if (users.Count > 0)
-            {
-                foreach (var user in users)
-                {
-                    ButtonLabel = user.Name;
-
-                    if (ButtonLabel.Length > MaxCharsPerButtonLabel)
-                    {
-                        ButtonLabel = ButtonLabel.Substring(0, MaxCharsPerButtonLabel) + ".";
-                    }
-
-                    currentButton = InitializeButton();
-                    currentButton.Clicked += Button_Clicked;
-                    Buttons.Add((user, currentButton));
-                    currentButton.CurrentButtonId = user.Id;
-
-                    if (SelectedUser != null && user.Id == SelectedUser.Id)
-                    {
-                        currentButton.Sensitive = false;
-                        SelectedButton = currentButton;
-                    }
-                }
-
-                TotalItems = Buttons.Count;
-                ItemsPerPage = Convert.ToInt16(Rows * Columns);
-                TotalPages = (int)Math.Ceiling((float)TotalItems / (float)ItemsPerPage);
-                Update();
-
-            }
-            else
-            {
-
-                Update();
+                Entities.AddRange(getUsersResult.Value);
             }
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        protected override string GetButtonLabel(User user)
         {
-            CustomButton button = (CustomButton)sender;
-
-            if(SelectedButton != null)
-            {
-                SelectedButton.Sensitive = true;
-            }
-
-            SelectedButton = button;
-            SelectedButton.Sensitive = false;
-            SelectedUser = Buttons.Find(x => x.Button == SelectedButton).User;
-            OnUserSelected?.Invoke(SelectedUser);
+            return user.Name;
         }
 
-        public void Refresh()
+        protected override string GetButtonImage(User entity)
         {
-            Buttons = new List<(UserDetail, CustomButton)>();
-            LoadEntities();
+            return PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
         }
     }
 }

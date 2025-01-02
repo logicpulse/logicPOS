@@ -1,11 +1,9 @@
 ﻿using Gtk;
-using logicpos;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -16,7 +14,7 @@ namespace LogicPOS.UI.Components.Windows
     {
         private void BtnOK_Clicked(object sender, EventArgs e)
         {
-            if(MenuUsers.SelectedUser == null)
+            if (MenuUsers.SelectedEntity == null)
             {
                 CustomAlerts.Warning(this)
                             .WithSize(new Size(500, 340))
@@ -26,7 +24,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
+            PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
         }
 
         private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
@@ -34,14 +32,14 @@ namespace LogicPOS.UI.Components.Windows
             string currentPin = PinPanel.TxtPin.Text;
             PinPanel.Mode = NumberPadPinMode.PasswordReset;
             PinPanel.TxtPin.Text = currentPin;
-            PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
+            PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
         }
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                PinPanel.ProcessPassword(this, MenuUsers.SelectedUser);
+                PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
             }
         }
 
@@ -56,7 +54,7 @@ namespace LogicPOS.UI.Components.Windows
             POSWindow.ShowPOS();
         }
 
-        private void OnUserSelected(UserDetail user)
+        private void OnUserSelected(User user)
         {
             PinPanel.Mode = (user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
 

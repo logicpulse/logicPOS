@@ -212,7 +212,6 @@ namespace LogicPOS.UI.Components.Menus
                 currentButton = InitializeButton();
                 currentButton.Clicked += Button_Clicked;
                 Buttons.Add((subfamily, currentButton));
-                currentButton.CurrentButtonId = subfamily.Id;
 
                 if (subfamily.Id == InitialSubfamily.Id)
                 {

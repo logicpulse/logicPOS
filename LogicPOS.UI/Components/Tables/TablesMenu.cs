@@ -200,7 +200,6 @@ namespace LogicPOS.UI.Components.Menus
                     currentButton = InitializeButton(table);
                     currentButton.Clicked += Button_Clicked;
                     Buttons.Add((table, currentButton));
-                    currentButton.CurrentButtonId = table.Id;
 
                     if (SaleContext.CurrentTable != null && table.Id == SaleContext.CurrentTable.Id)
                     {

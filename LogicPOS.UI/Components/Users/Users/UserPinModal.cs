@@ -14,13 +14,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
     internal class UserPinModal : BaseDialog
     {
-        private readonly UserDetail _user;
+        private readonly User _user;
         private readonly UserPinPanel _pinPanel;
         private readonly bool _notLoginAuth;
         public string JwtToken { get; private set; }
 
         public UserPinModal(Window parentWindow,
-                            UserDetail user,
+                            User user,
                             bool notLoginAuth = false)
             : base(parentWindow, DialogFlags.DestroyWithParent)
         {

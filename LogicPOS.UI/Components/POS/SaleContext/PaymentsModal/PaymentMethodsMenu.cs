@@ -191,7 +191,6 @@ namespace LogicPOS.UI.Components.Menus
                     currentButton = CreatePaymentMethodButton(ButtonLabel, icon);
                     currentButton.Clicked += Button_Clicked;
                     Buttons.Add((paymentMethod, currentButton));
-                    currentButton.CurrentButtonId = paymentMethod.Id;
                 }
 
                 TotalItems = Buttons.Count;

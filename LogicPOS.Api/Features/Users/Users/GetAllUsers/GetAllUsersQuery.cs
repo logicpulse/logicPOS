@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Users.GetAllUsers
 {
-    public class GetAllUsersQuery : IRequest<ErrorOr<IEnumerable<UserDetail>>>
+    public class GetAllUsersQuery : IRequest<ErrorOr<IEnumerable<User>>>
     {
     }
 }

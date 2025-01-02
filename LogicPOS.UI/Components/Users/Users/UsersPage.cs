@@ -13,10 +13,10 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class UsersPage : Page<UserDetail>
+    public class UsersPage : Page<User>
     {
 
-        protected override IRequest<ErrorOr<IEnumerable<UserDetail>>> GetAllQuery => new GetAllUsersQuery();
+        protected override IRequest<ErrorOr<IEnumerable<User>>> GetAllQuery => new GetAllUsersQuery();
         public UsersPage(Window parent) : base(parent)
         {
         }
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var user = (UserDetail)model.GetValue(iter, 0);
+                var user = (User)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = user.Name;
             }
 
@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var user = (UserDetail)model.GetValue(iter, 0);
+                var user = (User)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = user.Profile.Designation;
             }
 
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var user = (UserDetail)model.GetValue(iter, 0);
+                var user = (User)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = user.FiscalNumber;
             }
 
@@ -89,8 +89,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var leftUser = (UserDetail)model.GetValue(left, 0);
-                var rightUser = (UserDetail)model.GetValue(right, 0);
+                var leftUser = (User)model.GetValue(left, 0);
+                var rightUser = (User)model.GetValue(right, 0);
 
                 if (leftUser == null || rightUser == null)
                 {
@@ -105,8 +105,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftUser = (UserDetail)model.GetValue(left, 0);
-                var rightUser = (UserDetail)model.GetValue(right, 0);
+                var leftUser = (User)model.GetValue(left, 0);
+                var rightUser = (User)model.GetValue(right, 0);
 
                 if (leftUser == null || rightUser == null)
                 {
@@ -121,8 +121,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var leftUser = (UserDetail)model.GetValue(left, 0);
-                var rightUser = (UserDetail)model.GetValue(right, 0);
+                var leftUser = (User)model.GetValue(left, 0);
+                var rightUser = (User)model.GetValue(right, 0);
 
                 if (leftUser == null || rightUser == null)
                 {

@@ -314,7 +314,7 @@ namespace LogicPOS.UI.Widgets
         }
 
         public bool ProcessPassword(Window parentWindow,
-                                    UserDetail user,
+                                    User user,
                                     bool notLoginAuth = false)
         {
             bool result = false;
@@ -411,7 +411,7 @@ namespace LogicPOS.UI.Widgets
             return loginResult;
         }
 
-        public bool ValidatePassword(UserDetail user)
+        public bool ValidatePassword(User user)
         {
             string password = TxtPin.Text;
 
@@ -476,7 +476,7 @@ namespace LogicPOS.UI.Widgets
             ClearEntryPinStatusMessage(true);
         }
 
-        private void ProcessLogin(UserDetail user)
+        private void ProcessLogin(User user)
         {
             _mode = NumberPadPinMode.Password;
             AuthenticationService.LoginUser(user, JwtToken);

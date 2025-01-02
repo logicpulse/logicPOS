@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class UserDetail : ApiEntity, IWithCode
+    public class User : ApiEntity, IWithCode
     {
         public UserProfile Profile { get; set; }
         public Guid ProfileId { get; set; }

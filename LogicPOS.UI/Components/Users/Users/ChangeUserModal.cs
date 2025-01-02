@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly Fixed _fixedContent;
         private UsersMenu UsersMenu { get; set; }
         private readonly IconButtonWithText _buttonCancel;
-        public UserDetail User { get; set; }
+        public User User { get; set; }
 
         public ChangeUserModal(Window parentWindow)
             : base(parentWindow, DialogFlags.DestroyWithParent)
@@ -83,20 +83,18 @@ namespace LogicPOS.UI.Components.Modals
             hboxPlaceScrollers.PackStart(btnPrevious);
             hboxPlaceScrollers.PackStart(btnNext);
 
-            UsersMenu = new UsersMenu(
-                this,
-                btnPrevious,
-                btnNext,
-                5,
-                4
-            );
+            UsersMenu = new UsersMenu(rows: 5,
+                                      columns: 4,
+                                      btnPrevious: btnPrevious,
+                                      btnNext: btnNext,
+                                      sourceWindow: this);
 
-            UsersMenu.OnUserSelected += OnUserSelectd;
+            UsersMenu.OnEntitySelected += OnUserSelectd;
             _fixedContent.Put(UsersMenu, 0, 0);
             _fixedContent.Put(hboxPlaceScrollers, 0, 411);
         }
 
-        private void OnUserSelectd(UserDetail user)
+        private void OnUserSelectd(User user)
         {
             User = user;
 
