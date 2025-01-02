@@ -448,12 +448,10 @@ namespace LogicPOS.UI.Components.Windows
             btnMenuArticlesNext.CanFocus = false;
 
 
-            MenuArticles = new ArticlesMenu(MenuSubfamilies,
-                                            btnMenuArticlesPrevious,
+            MenuArticles = new ArticlesMenu(btnMenuArticlesPrevious,
                                             btnMenuArticlesNext,
-                                            SaleContext.ItemsPage);
-
-            MenuArticles.SourceWindow = this;
+                                            this,
+                                            MenuSubfamilies);
 
             if (showArticlesMenu)
             {

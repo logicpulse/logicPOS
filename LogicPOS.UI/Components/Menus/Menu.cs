@@ -53,8 +53,6 @@ namespace LogicPOS.UI.Components.Menus
             BtnNext = btnNext;
             BtnPrevious.Clicked += BtnPrevious_Clicked;
             BtnNext.Clicked += BtnNext_Clicked;
-
-            PresentEntities();
         }
 
         protected virtual CustomButton CreateMenuButton()
@@ -154,7 +152,12 @@ namespace LogicPOS.UI.Components.Menus
 
         protected abstract string GetButtonImage(TEntity entity);
 
-        public virtual void PresentEntities()
+        protected virtual IEnumerable<TEntity> GetFilteredEntities()
+        {
+            return Entities;
+        }
+
+        public virtual void PresentEntities(Predicate<IEnumerable<TEntity>> filter = null)
         {
             if (AppSettings.Instance.useImageOverlay == false)
             {
@@ -170,7 +173,9 @@ namespace LogicPOS.UI.Components.Menus
                 LoadEntities();
             }
 
-            foreach (var entity in Entities)
+            var filteredEntities = GetFilteredEntities();
+
+            foreach (var entity in filteredEntities)
             {
                 ButtonLabel = GetButtonLabel(entity);
                 ButtonImage = GetButtonImage(entity);

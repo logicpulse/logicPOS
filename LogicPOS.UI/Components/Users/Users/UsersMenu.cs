@@ -28,6 +28,8 @@ namespace LogicPOS.UI.Components.Menus
                                                      btnNext: btnNext,
                                                      sourceWindow: sourceWindow)
         {
+
+            PresentEntities();
         }
 
         protected override void LoadEntities()
