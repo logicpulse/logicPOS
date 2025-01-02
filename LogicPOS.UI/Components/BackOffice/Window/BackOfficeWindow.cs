@@ -31,6 +31,8 @@ namespace LogicPOS.UI.Components.Windows
         {
             var hasFiscalYear = FiscalYearService.HasFiscalYear();
             BtnNewDocument.Button.Sensitive = hasFiscalYear;
+
+            UpdatePrivileges();
         }
 
         private void BackOfficeMainWindow_Show(object sender, EventArgs e)

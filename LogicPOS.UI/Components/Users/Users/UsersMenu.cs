@@ -1,10 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Users.GetAllUsers;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Users;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -22,7 +21,6 @@ namespace LogicPOS.UI.Components.Menus
         public List<(UserDetail User, CustomButton Button)> Buttons { get; set; } = new List<(UserDetail, CustomButton)>();
         public string ButtonImage => PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
         public string ButtonLabel { get; set; }
-        public UserDetail InitialUser { get; set; }
         public int TotalItems { get; set; }
         public int ItemsPerPage { get; set; }
         public int CurrentPage { get; set; }
@@ -30,7 +28,7 @@ namespace LogicPOS.UI.Components.Menus
         public CustomButton BtnPrevious { get; set; }
         public CustomButton BtnNext { get; set; }
         public uint Rows { get; set; }
-        public uint Columns { get; set; } 
+        public uint Columns { get; set; }
         public Size ButtonSize { get; set; } = new Size(120, 102);
         public Window SourceWindow { get; set; }
         public UserDetail SelectedUser { get; set; }
@@ -162,7 +160,7 @@ namespace LogicPOS.UI.Components.Menus
             CurrentPage = 1;
             CustomButton currentButton = null;
 
-            SelectedUser = (InitialUser != null) ? InitialUser : null;
+            SelectedUser = AuthenticationService.User;
 
             if (Buttons.Count > 0)
             {
@@ -181,16 +179,6 @@ namespace LogicPOS.UI.Components.Menus
             {
                 foreach (var user in users)
                 {
-                    if (SelectedUser == null)
-                    {
-                        SelectedUser = user;
-
-                        if (InitialUser == null)
-                        {
-                            InitialUser = SelectedUser;
-                        }
-                    }
-
                     ButtonLabel = user.Name;
 
                     if (ButtonLabel.Length > MaxCharsPerButtonLabel)
@@ -203,12 +191,11 @@ namespace LogicPOS.UI.Components.Menus
                     Buttons.Add((user, currentButton));
                     currentButton.CurrentButtonId = user.Id;
 
-                    if (user.Id == InitialUser.Id)
+                    if (SelectedUser != null && user.Id == SelectedUser.Id)
                     {
                         currentButton.Sensitive = false;
                         SelectedButton = currentButton;
                     }
-
                 }
 
                 TotalItems = Buttons.Count;
@@ -228,7 +215,11 @@ namespace LogicPOS.UI.Components.Menus
         {
             CustomButton button = (CustomButton)sender;
 
-            SelectedButton.Sensitive = true;
+            if(SelectedButton != null)
+            {
+                SelectedButton.Sensitive = true;
+            }
+
             SelectedButton = button;
             SelectedButton.Sensitive = false;
             SelectedUser = Buttons.Find(x => x.Button == SelectedButton).User;
