@@ -20,15 +20,7 @@ namespace LogicPOS.Domain.Entities
 
         protected override void OnAfterConstruction()
         {
-            // Init EncryptedAttributes - Load Encrypted Attributes Fields if Exist - Required for New Records to have InitEncryptedAttributes else it Triggers Exception on Save
-            InitEncryptedAttributes<sys_userdetail>();
-
-            Ord = XPOUtility.GetNextTableFieldID(nameof(sys_userdetail), "Ord");
-            Code = XPOUtility.GetNextTableFieldID(nameof(sys_userdetail), "Code");
-            //Required for New Users
-            AccessPin = CryptographyUtils.GenerateSaltedString(XPOSettings.DefaultValueUserDetailAccessPin);
-            PasswordReset = true;
-            ButtonImage = string.Format("{0}{1}", PathsSettings.Paths["assets"], XPOSettings.DefaultValueUserDetailButtonImage);
+           
         }
 
         protected override void OnNewRecordSaving()

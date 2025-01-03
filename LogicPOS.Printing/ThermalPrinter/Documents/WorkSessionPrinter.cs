@@ -2,8 +2,6 @@
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Data.XPO;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
 using LogicPOS.DTOs.Printing;
 using LogicPOS.Printing.Common;
 using LogicPOS.Printing.Enums;
@@ -26,19 +24,18 @@ namespace LogicPOS.Printing.Documents
         private readonly string _workSessionMovementPrintingFileTemplate;
         private readonly Hashtable _sessionPeriodSummaryDetails;
 
-        public WorkSessionPrinter(
-            PrinterDto printer,
-            string terminalDesignation,
-            string userName,
-            WorkSessionData workSession,
-            SplitCurrentAccountMode pSplitCurrentAccountMode,
-            string workSessionMovementPrintingFileTemplate,
-            Hashtable sessionPeriodSummaryDetails)
+        public WorkSessionPrinter(PrinterDto printer,
+                                  string terminalDesignation,
+                                  string userName,
+                                  WorkSessionData workSession,
+                                  SplitCurrentAccountMode pSplitCurrentAccountMode,
+                                  string workSessionMovementPrintingFileTemplate,
+                                  Hashtable sessionPeriodSummaryDetails)
             : base(printer, terminalDesignation, userName)
         {
             _workSessionPeriod = workSession;
             _splitCurrentAccountMode = pSplitCurrentAccountMode;
-            _printer =new GenericThermalPrinter(printer);
+            _printer = new GenericThermalPrinter(printer);
             DefineTicketTitle();
 
             DefineTicketSubtitle();
@@ -73,9 +70,9 @@ namespace LogicPOS.Printing.Documents
 
         private void DefineTicketTitle()
         {
-            if (_workSessionPeriod.WorkSession.Type==WorkSessionPeriodType.Day)
+            if (_workSessionPeriod.WorkSession.Type == WorkSessionPeriodType.Day)
             {
-                if (_workSessionPeriod.WorkSession.Status== WorkSessionPeriodStatus.Open)
+                if (_workSessionPeriod.WorkSession.Status == WorkSessionPeriodStatus.Open)
                 {
                     _ticketTitle = GeneralUtils.GetResourceByName("ticket_title_worksession_day_resume");
                 }
@@ -215,7 +212,7 @@ namespace LogicPOS.Printing.Documents
             //Start to process Group
             int groupPosition = -1;
             //Assign Position to Print Payment Group Split Title
-            int groupPositionTitlePayments = (workSessionData.WorkSession.Type== WorkSessionPeriodType.Day) ? 9 : 8;
+            int groupPositionTitlePayments = (workSessionData.WorkSession.Type == WorkSessionPeriodType.Day) ? 9 : 8;
             //If CurrentAccount Mode decrease 1, it dont have PaymentMethods
             if (pSplitCurrentAccountMode == SplitCurrentAccountMode.CurrentAcount) groupPositionTitlePayments--;
 
@@ -249,7 +246,7 @@ namespace LogicPOS.Printing.Documents
                     summaryTotal = 0.0m;
 
                     //Get Group Data from group Query
-                   //xPSelectData = XPOUtility.GetSelectedDataFromQuery(item.Value.Sql);
+                    //xPSelectData = XPOUtility.GetSelectedDataFromQuery(item.Value.Sql);
 
                     //Generate Columns
                     columns = new List<TicketColumn>

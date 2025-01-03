@@ -53,11 +53,7 @@ namespace LogicPOS.Printing.Templates
                 _companyInformationsDto = pCompanyInformationsDtos;
                 _terminalDesignation = terminalDesignation;
                 _userName = userName;
-                //Init Custom Vars From FastReport
-                _customVars = PrintingSettings.FastReportCustomVars;
-                //_systemVars = GlobalFramework.FastReportSystemVars;
-                //Test FastReport Helpers with
-                //_customVars["COMPANY_NAME"])) | _systemVars["APP_NAME"])) | CustomFunctions.Res("global_printed_on_date")
+               
             }
             catch (Exception ex)
             {

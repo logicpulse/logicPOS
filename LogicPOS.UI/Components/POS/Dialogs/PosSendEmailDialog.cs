@@ -2,16 +2,15 @@
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Net.Mail;
-using LogicPOS.Settings;
-using LogicPOS.Utility;
-using LogicPOS.UI.Dialogs;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.InputFields.Validation;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -124,14 +123,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             {
                 try
                 {
-                    EmailUtils.SendMail(null,
-                                        SmtpDeliveryMethod.Network,
-                                        To,
-                                        Cc,
-                                        Bcc,
-                                        Subject,
-                                        Body,
-                                        AttachmentFileNames);
+
 
                     CustomAlerts.Information(this)
                                 .WithSize(new Size(600, 400))

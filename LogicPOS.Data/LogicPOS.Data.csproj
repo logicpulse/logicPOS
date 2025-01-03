@@ -133,7 +133,6 @@
     <Compile Include="Domain\Entities\System\SYS_SystemNotification.cs" />
     <Compile Include="Domain\Entities\System\SYS_SystemNotificationType.cs" />
     <Compile Include="Domain\Entities\System\SYS_SystemPrint.cs" />
-    <Compile Include="XPO\TemplateEntity.cs" />
     <Compile Include="Domain\Entities\Users\POS_UserCommissionGroup.cs" />
     <Compile Include="Domain\Entities\Users\SYS_UserDetail.cs" />
     <Compile Include="Domain\Entities\Users\SYS_UserPermissionGroup.cs" />

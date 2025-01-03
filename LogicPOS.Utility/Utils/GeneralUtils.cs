@@ -13,18 +13,6 @@ namespace LogicPOS.Utility
 {
     public static class GeneralUtils
     {
-        public static bool IsNullable(Type pType)
-        {
-            return (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(Nullable<>));
-        }
-        public static bool IsRunningOnMono => Type.GetType("Mono.Runtime") != null;
-
-        public static void ExecuteExternalProcess(string processFileName)
-        {
-            var process = new Process();
-            process.StartInfo.FileName = processFileName;
-            process.Start();
-        }
 
         public static bool CanConvert(string pValue, Type pType)
         {
@@ -36,22 +24,6 @@ namespace LogicPOS.Utility
                 return true;
             }
             return false;
-        }
-
-        public static object GetFieldValueFromType(Type pType, string pFieldName)
-        {
-            object result = null;
-
-            //pFieldName = "DatabaseName";//Works with Current Settings
-            //pFieldName = "AppCompanyName";//Works with Base Class
-            //object o = pType.BaseType.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly | BindingFlags.FlattenHierarchy);
-
-            //Trick to get current and base class Fields
-            FieldInfo fieldInfo = pType.GetField(pFieldName, BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
-            //Note: use first parameter has null, static classes cannot be instanced, else use object
-            if (fieldInfo != null) result = fieldInfo.GetValue(null);
-
-            return result;
         }
 
         public static bool ValidateString(string pValidate, string pRegExRule, Type pType = null)
@@ -73,54 +45,6 @@ namespace LogicPOS.Utility
             {
                 return false;
             }
-        }
-
-        public static List<T> MergeGenericLists<T>(List<List<T>> pLists)
-        {
-            List<T> result = new List<T>();
-
-            for (int i = 0; i < pLists.Count; i++)
-            {
-                result = result.Concat(pLists[i]).ToList();
-            }
-
-            return result.Distinct().ToList();
-        }
-
-        public static Dictionary<string, string> CSVFileToDictionary(string pFilePath)
-        {
-            return CSVFileToDictionary(pFilePath, ',');
-        }
-
-        public static Dictionary<string, string> CSVFileToDictionary(string pFilePath, char pSplitter)
-        {
-            Dictionary<string, string> result = new Dictionary<string, string>();
-
-            if (File.Exists(pFilePath))
-            {
-                StreamReader streamReader = new StreamReader(File.OpenRead(pFilePath));
-
-
-                while (!streamReader.EndOfStream)
-                {
-                    var line = streamReader.ReadLine();
-                    var values = line.Split(pSplitter);
-
-                    if (values.Length == 2 && !string.IsNullOrEmpty(values[0]) && !string.IsNullOrEmpty(values[1]))
-                    {
-                        string val1 = values[0];
-                        string val2 = values[1];
-
-                        if (!result.ContainsKey(val1))
-                        {
-                            result.Add(val1, val2);
-                        }
-                    }
-                }
-                streamReader.Close();
-            }
-
-            return result;
         }
 
         public static bool Validate(string pValidateValue, string pRule, bool pRequired)

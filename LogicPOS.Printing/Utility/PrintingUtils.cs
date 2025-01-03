@@ -1112,45 +1112,10 @@ namespace LogicPOS.Printing.Utility
 
         public static string GetPrinterToken(string printerToken)
         {
-            return PrintingSettings.PrintPDFEnabled ? "REPORT_EXPORT_PDF" : printerToken;
+            return "REPORT_EXPORT_PDF";
         }
 
-        private static bool SystemPrintInsert(
-            Document pDocumentFinanceMaster,
-            string pPrinterDesignation,
-            int pPrintCopies,
-            List<int> pCopyNames,
-            bool pSecondPrint,
-            string pPrintMotive)
-        {
-            return XPOUtility.InsertSystemPrint(
-                pDocumentFinanceMaster,
-                null,
-                pPrinterDesignation,
-                pPrintCopies,
-                pCopyNames,
-                pSecondPrint,
-                pPrintMotive,
-                XPOSettings.LoggedUser.Oid,
-                TerminalSettings.LoggedTerminal.Oid);
-        }
 
-        private static bool SystemPrintInsert(
-            Document pDocumentFinancePayment,
-            string pPrinterDesignation,
-            int pPrintCopies,
-            List<int> pCopyNames)
-        {
-            return XPOUtility.InsertSystemPrint(
-                pDocumentFinancePayment, null,
-                pPrinterDesignation,
-                pPrintCopies,
-                pCopyNames,
-                false,
-                string.Empty,
-                XPOSettings.LoggedUser.Oid,
-                TerminalSettings.LoggedTerminal.Oid);
-        }
 
 
         public static bool PrintFinanceDocument(PrinterDto printer,
@@ -1159,23 +1124,7 @@ namespace LogicPOS.Printing.Utility
             return PrintFinanceDocument(printer, pDocumentFinanceMaster);
         }
 
-        public static bool PrintFinanceDocument(
-            PrinterDto printer,
-            PrintDocumentMasterDto financeMaster)
-        {
-            List<int> printCopies = new List<int>();
-            for (int i = 0; i < financeMaster.DocumentType.PrintCopies; i++)
-            {
-                printCopies.Add(i);
-            }
 
-            return PrintFinanceDocument(
-                printer,
-                financeMaster,
-                printCopies,
-                false,
-                string.Empty);
-        }
 
         public static bool PrintFinanceDocument(
             PrinterDto pPrinter,
@@ -1185,11 +1134,6 @@ namespace LogicPOS.Printing.Utility
             string pMotive)
         {
             bool result;
-
-            //Commented By Tchialo: Appearently this is not used
-            //DocumentProcessingSeriesUtils.GetDocumentFinanceYearSerieTerminal(
-            //    pPrinter,
-            //    financeMaster.DocumentType.Id);
 
             var printer = LoggedTerminalSettings.GetPrinterDto();
 
@@ -1262,9 +1206,9 @@ namespace LogicPOS.Printing.Utility
         }
 
         public static bool PrintArticleRequest(PrintOrderTicketDto orderTicketDto,
-            string terminalDesignation,
-            string userName,
-            CompanyPrintingInformationsDto companyInformationsDto)
+                                               string terminalDesignation,
+                                               string userName,
+                                               CompanyPrintingInformationsDto companyInformationsDto)
         {
             bool result;
 
@@ -1324,7 +1268,7 @@ namespace LogicPOS.Printing.Utility
                             pTicketTitle,
                             pTotalAmountInCashDrawer,
                             pMovementAmount,
-                            terminalDesignation, 
+                            terminalDesignation,
                             userName,
                             companyPrintingInformationsDto);
 

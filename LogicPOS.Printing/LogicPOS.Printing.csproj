@@ -75,7 +75,6 @@
     <Compile Include="ThermalPrinter\Templates\BaseInternalTemplate.cs" />
     <Compile Include="ThermalPrinter\Templates\Template.cs" />
     <Compile Include="ThermalPrinter\Documents\FinanceMaster.cs" />
-    <Compile Include="ThermalPrinter\Documents\FinancePayment.cs" />
     <Compile Include="ThermalPrinter\Documents\CashDrawer.cs" />
     <Compile Include="ThermalPrinter\Documents\OrderRequest.cs" />
     <Compile Include="ThermalPrinter\Documents\WorkSessionPrinter.cs" />
