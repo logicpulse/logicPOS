@@ -85,9 +85,6 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.UpdatePOSLabels();
         }
 
-       
-
-
         private void BtnNewCustomer_Clicked(object sender, EventArgs e)
         {
             Clear();
@@ -117,13 +114,6 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnInvoice_Clicked(object sender, EventArgs e)
         {
-            //logicpos.Utils.ShowMessageTouch(this,
-            //                                DialogFlags.Modal,
-            //                                MessageType.Error,
-            //                                ButtonsType.Ok,
-            //                                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "global_error"),
-            //                                CultureResources.GetResourceByLanguage(CultureSettings.CurrentCultureName, "dialog_message_cant_create_cc_document_with_default_entity"));
-
             if (SelectPaymentCondition() == false)
             {
                 _selectedPaymentCondition = null;
@@ -132,7 +122,7 @@ namespace LogicPOS.UI.Components.POS
 
             EnableAllPaymentMethodButtons();
             BtnInvoice.Sensitive = false;
-            PaymentMethodsMenu.SelectedPaymentMethod = null;
+            PaymentMethodsMenu.SelectedEntity = null;
 
             UpdateTotals();
         }

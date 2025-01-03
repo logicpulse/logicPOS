@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Menus
             BtnNext.Clicked += BtnNext_Clicked;
         }
 
-        protected virtual CustomButton CreateMenuButton()
+        protected virtual CustomButton CreateMenuButton(TEntity entity)
         {
             return new ImageButton(
                 new ButtonSettings
@@ -183,7 +183,7 @@ namespace LogicPOS.UI.Components.Menus
                     ButtonLabel = ButtonLabel.Substring(0, MaxCharsPerButtonLabel) + ".";
                 }
 
-                var menuButton = CreateMenuButton();
+                var menuButton = CreateMenuButton(entity);
                 menuButton.Clicked += MenuButton_Clicked;
                 Buttons.Add((entity, menuButton));
 

@@ -46,6 +46,7 @@ namespace LogicPOS.UI.Components.POS
             ItemsPage.Clear(true);
             ItemsPage.PresentOrderItems();
             UpdatePOSLabels();
+            POSWindow.Instance.UpdateUI();
         }
 
         public static void UpdatePOSLabels()

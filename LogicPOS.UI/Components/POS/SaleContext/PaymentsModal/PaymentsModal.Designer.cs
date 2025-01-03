@@ -96,8 +96,8 @@ namespace LogicPOS.UI.Components.POS
         private HBox CreatePaymentMethodsPanel()
         {
             HBox hbox = new HBox(false, 0);
-            PaymentMethodsMenu = new PaymentMethodsMenu(BtnPrevious, BtnNext);
-            PaymentMethodsMenu.PaymentMethodSelected += PaymentMethodSelected;
+            PaymentMethodsMenu = new PaymentMethodsMenu(BtnPrevious, BtnNext,this);
+            PaymentMethodsMenu.OnEntitySelected += PaymentMethodSelected;
             hbox.HeightRequest = AppSettings.Instance.sizeBaseDialogDefaultButton.Height + 10;
             hbox.PackStart(BtnPrevious, false, false, 0);
             hbox.PackStart(PaymentMethodsMenu, true, true, 0);

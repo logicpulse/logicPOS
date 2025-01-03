@@ -5,51 +5,30 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class PaymentMethodsMenu : Gtk.Table
+    public class PaymentMethodsMenu : Menu<PaymentMethod>
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        public int ScrollerHeight { get; set; } = 0;
-        public int ButtonFontSize = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
-        public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
-        public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
-        public List<(PaymentMethod PaymentMethod, CustomButton Button)> Buttons { get; set; } = new List<(PaymentMethod, CustomButton)>();
-        public string ButtonImage { get; set; }
-        public string ButtonLabel { get; set; }
-        public int TotalItems { get; set; }
-        public int ItemsPerPage { get; set; }
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
-        public CustomButton BtnPrevious { get; set; }
-        public CustomButton BtnNext { get; set; }
         public uint Rows { get; set; } = 1;
         public uint Columns { get; set; } = 4;
         public Size ButtonSize { get; set; } = AppSettings.Instance.sizeBaseDialogDefaultButton;
-        public Window SourceWindow { get; set; }
-        public PaymentMethod SelectedPaymentMethod { get; set; }
-        public CustomButton SelectedButton { get; set; }
 
-        public event Action<PaymentMethod> PaymentMethodSelected;
-
-        public PaymentMethodsMenu(CustomButton btnPrevious, CustomButton btnNext) : base(1, 4, true)
+        public PaymentMethodsMenu(CustomButton btnPrevious,
+                                  CustomButton btnNext,
+                                  Window sourceWindow) : base(rows: 1,
+                                                              columns: 4,
+                                                              AppSettings.Instance.sizeBaseDialogDefaultButton,
+                                                              "touchButton_Green",
+                                                              btnPrevious,
+                                                              btnNext,
+                                                              sourceWindow)
         {
-            BtnPrevious = btnPrevious;
-            BtnNext = btnNext;
-            AddEventHandlers();
-            LoadEntities();
+            PresentEntities();
         }
 
-        private void AddEventHandlers()
-        {
-            BtnPrevious.Clicked += BtnPrevious_Clicked;
-            BtnNext.Clicked += BtnNext_Clicked;
-        }
 
         private IconButtonWithText CreatePaymentMethodButton(string text, string iconPath)
         {
@@ -71,153 +50,9 @@ namespace LogicPOS.UI.Components.Menus
                 });
         }
 
-        public void Update()
+        protected override CustomButton CreateMenuButton(PaymentMethod entity)
         {
-            RemoveOldButtons();
-            AddItems();
-            UpdateButtonsState();
-        }
-
-        private void UpdateButtonsState()
-        {
-            if (CurrentPage == 1)
-            {
-                BtnPrevious.Sensitive = false;
-            }
-            else
-            {
-                BtnPrevious.Sensitive = true;
-            }
-
-            if (CurrentPage == TotalPages)
-            {
-                BtnNext.Sensitive = false;
-            }
-            else
-            {
-                if (TotalPages > 1) BtnNext.Sensitive = true;
-            }
-        }
-
-        private void AddItems()
-        {
-            if (Buttons.Count <= 0)
-            {
-                return;
-            }
-
-            uint currentRow = 0, currentColumn = 0;
-            int startItem = (CurrentPage * ItemsPerPage) - ItemsPerPage;
-            int endItem = startItem + ItemsPerPage - 1;
-            for (int i = startItem; i <= endItem; i++)
-            {
-                if (i < TotalItems)
-                {
-                    this.Attach(Buttons[i].Button, currentColumn, currentColumn + 1, currentRow, currentRow + 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
-                }
-
-                if (currentColumn == this.NColumns - 1)
-                {
-                    ++currentRow;
-                    currentColumn = 0;
-                }
-                else
-                {
-                    ++currentColumn;
-                }
-            }
-
-        }
-
-        private void RemoveOldButtons()
-        {
-            int childrenLength = this.Children.Length;
-            for (int i = 0; i < childrenLength; i++)
-            {
-                this.Remove(this.Children[0]);
-            }
-        }
-
-        private void BtnPrevious_Clicked(object obj, EventArgs args)
-        {
-            CurrentPage -= 1;
-            Update();
-        }
-
-        private void BtnNext_Clicked(object obj, EventArgs args)
-        {
-            CurrentPage += 1;
-            Update();
-        }
-
-        public void LoadEntities()
-        {
-            if (AppSettings.Instance.useImageOverlay == false)
-            {
-                ButtonOverlay = null;
-            }
-
-            CurrentPage = 1;
-            CustomButton currentButton = null;
-
-            if (Buttons.Count > 0)
-            {
-                Buttons.Clear();
-            }
-
-            IEnumerable<PaymentMethod> paymentMethods = Enumerable.Empty<PaymentMethod>();
-            var getPaymentMethodsResult = _mediator.Send(new GetAllPaymentMethodsQuery()).Result;
-
-            if (getPaymentMethodsResult.IsError == false)
-            {
-                paymentMethods = getPaymentMethodsResult.Value.Where(m => m.IsDeleted == false);
-            }
-
-            if (paymentMethods.Any())
-            {
-                foreach (var paymentMethod in paymentMethods)
-                {
- 
-                    ButtonLabel = paymentMethod.Designation;
-
-                    ButtonImage = null;
-
-                    if (ButtonLabel.Length > MaxCharsPerButtonLabel)
-                    {
-                        ButtonLabel = ButtonLabel.Substring(0, MaxCharsPerButtonLabel) + ".";
-                    }
-
-                    var icon = GetIconByAcronym(paymentMethod.Acronym);
-                    currentButton = CreatePaymentMethodButton(ButtonLabel, icon);
-                    currentButton.Clicked += Button_Clicked;
-                    Buttons.Add((paymentMethod, currentButton));
-                }
-
-                TotalItems = Buttons.Count;
-                ItemsPerPage = Convert.ToInt16(Rows * Columns);
-                TotalPages = (int)Math.Ceiling((float)TotalItems / (float)ItemsPerPage);
-                Update();
-            }
-            else
-            {
-
-                Update();
-            }
-        }
-
-        private void Button_Clicked(object sender, EventArgs e)
-        {
-            CustomButton button = (CustomButton)sender;
-
-            if(SelectedButton != null)
-            {
-                SelectedButton.Sensitive = true;
-            }
-    
-            SelectedButton = button;
-            SelectedButton.Sensitive = false;
-            SelectedPaymentMethod = Buttons.Find(x => x.Button == SelectedButton).PaymentMethod;
-            PaymentMethodSelected?.Invoke(SelectedPaymentMethod);
+            return CreatePaymentMethodButton(ButtonLabel, GetIconByAcronym(entity.Acronym));
         }
 
         private string GetIconByAcronym(string acronym)
@@ -265,6 +100,30 @@ namespace LogicPOS.UI.Components.Menus
                     return PathsSettings.ImagesFolderLocation + @"Icons\no_image_icon.png";
             }
 
+        }
+
+        protected override string GetButtonLabel(PaymentMethod entity)
+        {
+            return entity.Designation;
+        }
+
+        protected override string GetButtonImage(PaymentMethod entity)
+        {
+            return null;
+        }
+
+        protected override void LoadEntities()
+        {
+            Entities.Clear();
+
+            var paymentMethods = _mediator.Send(new GetAllPaymentMethodsQuery()).Result;
+
+            if (paymentMethods.IsError != false)
+            {
+                return;
+            }
+
+            Entities.AddRange(paymentMethods.Value);
         }
     }
 }

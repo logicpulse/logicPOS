@@ -59,11 +59,15 @@ namespace LogicPOS.UI.Components.POS
         {
             var body = new Fixed();
 
-            MenuPlaces = new PlacesMenu(BtnScrollPlacesPrevious, BtnScrollPlacesNext);
+            MenuPlaces = new PlacesMenu(BtnScrollPlacesPrevious, BtnScrollPlacesNext,this);
             body.Put(MenuPlaces, 0, 0);
 
-            MenuTables = new TablesMenu(BtnScrollTablesPrevious, BtnScrollTablesNext,MenuPlaces);
-            MenuTables.TableSelected += MenuTables_TableSelected;
+            MenuTables = new TablesMenu(BtnScrollTablesPrevious,
+                                        BtnScrollTablesNext,
+                                        MenuPlaces,
+                                        this);
+
+            MenuTables.OnEntitySelected += MenuTables_TableSelected;
             body.Put(MenuTables, 143, 0);
 
             body.Put(CreatePlaceScrollersBox(), 0, 493 - AppSettings.Instance.sizePosTableButton.Height);
@@ -143,18 +147,18 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnReservation_Clicked(object sender, EventArgs e)
         {
-            if(MenuTables.SelectedTable == null)
+            if(MenuTables.SelectedEntity == null)
             {
                 return;
             }
 
-            if(MenuTables.SelectedTable.Status == TableStatus.Free)
+            if(MenuTables.SelectedEntity.Status == TableStatus.Free)
             {
-                TablesService.ReserveTable(MenuTables.SelectedTable);
+                TablesService.ReserveTable(MenuTables.SelectedEntity);
             }
-            else if (MenuTables.SelectedTable.Status == TableStatus.Reserved)
+            else if (MenuTables.SelectedEntity.Status == TableStatus.Reserved)
             {
-                TablesService.FreeTable(MenuTables.SelectedTable);
+                TablesService.FreeTable(MenuTables.SelectedEntity);
             }
 
             MenuTables.Refresh(MenuTables.Filter);
@@ -162,33 +166,33 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnFilterAll_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedPlace = null;
+            MenuPlaces.SelectedEntity = null;
             MenuTables.Refresh();
         }
 
         private void BtnFilterReserved_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedPlace = null;
+            MenuPlaces.SelectedEntity = null;
             MenuTables.Refresh(TableStatus.Reserved);
         }
 
         private void BtnFilterOpen_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedPlace = null;
+            MenuPlaces.SelectedEntity = null;
             MenuTables.Refresh(TableStatus.Open);
         }
 
         private void BtnFilterFree_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedPlace = null;
+            MenuPlaces.SelectedEntity = null;
             MenuTables.Refresh(TableStatus.Free);
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            if(MenuTables.SelectedTable != null)
+            if(MenuTables.SelectedEntity != null)
             {
-                SaleContext.SetCurrentTable(MenuTables.SelectedTable);
+                SaleContext.SetCurrentTable(MenuTables.SelectedEntity);
             }
         }
 

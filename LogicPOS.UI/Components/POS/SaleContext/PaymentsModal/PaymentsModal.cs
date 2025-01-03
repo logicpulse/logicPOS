@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.POS
         private PaymentCondition _selectedPaymentCondition;
         private PaymentMode _paymentMode = PaymentMode.Full;
         private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
-        private PaymentMethod PaymentMethod => PaymentMethodsMenu.SelectedPaymentMethod;
+        private PaymentMethod PaymentMethod => PaymentMethodsMenu.SelectedEntity;
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }

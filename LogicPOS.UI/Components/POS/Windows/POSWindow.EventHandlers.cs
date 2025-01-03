@@ -13,6 +13,28 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
     {
+        private void AddEventHandlers()
+        {
+            WindowStateEvent += Window_StateEvent;
+            this.KeyReleaseEvent += Window_KeyReleaseEvent;
+            this.Shown += POSWindow_Shown;
+
+            BtnQuit.Clicked += BtnQuit_Clicked;
+            BtnBackOffice.Clicked += BtnBackOffice_Clicked;
+            BtnReports.Clicked += BtnReports_Clicked;
+            BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
+            BtnLogOut.Clicked += BtnLogOut_Clicked;
+            BtnChangeUser.Clicked += BtnChangeUser_Clicked;
+            BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnDocuments.Clicked += BtnDocuments_Clicked;
+        }
+
+        private void POSWindow_Shown(object sender, EventArgs e)
+        {
+            UpdateUI();
+        }
+
         private void Window_StateEvent(object o, WindowStateEventArgs args)
         {
             if (args.Event.NewWindowState == Gdk.WindowState.Fullscreen)

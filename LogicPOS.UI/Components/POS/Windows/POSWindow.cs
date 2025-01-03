@@ -68,6 +68,7 @@ namespace LogicPOS.UI.Components.Windows
             ShowAll();
             AddEventHandlers();
             InitializeBarcodeReader();
+            UpdateUI();
         }
 
         private void InitializeBarcodeReader()
@@ -586,22 +587,6 @@ namespace LogicPOS.UI.Components.Windows
             eventboxToolbar.Add(hboxToolbar);
         }
 
-        private void AddEventHandlers()
-        {
-            WindowStateEvent += Window_StateEvent;
-            this.KeyReleaseEvent += Window_KeyReleaseEvent;
-
-            BtnQuit.Clicked += BtnQuit_Clicked;
-            BtnBackOffice.Clicked += BtnBackOffice_Clicked;
-            BtnReports.Clicked += BtnReports_Clicked;
-            BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
-            BtnLogOut.Clicked += BtnLogOut_Clicked;
-            BtnChangeUser.Clicked += BtnChangeUser_Clicked;
-            BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
-            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
-            BtnDocuments.Clicked += BtnDocuments_Clicked;
-        }
-
         private void InitializeSaleOptionsPanel(dynamic theme)
         {
             Point position = Utils.StringToPosition(theme.Objects.EventBoxPosTicketPad.Position);
@@ -635,8 +620,7 @@ namespace LogicPOS.UI.Components.Windows
         public void UpdateUI()
         {
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
-            var terminalIsOpen = WorkSessionService.TerminalIsOpen();
-            MenuArticles.Sensitive = terminalIsOpen;
+            MenuArticles.Sensitive = WorkSessionService.TerminalIsOpen();
             SaleOptionsPanel.UpdateUI();
         }
 
