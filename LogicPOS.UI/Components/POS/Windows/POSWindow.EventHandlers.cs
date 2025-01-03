@@ -13,13 +13,11 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
     {
-        private Guid TableId = Guid.Empty;
-
         private void Window_StateEvent(object o, WindowStateEventArgs args)
         {
             if (args.Event.NewWindowState == Gdk.WindowState.Fullscreen)
             {
-                MenuFamilies.SelectedFamily = null;
+                MenuFamilies.SelectedEntity = null;
                 MenuFamilies.Refresh();
                 MenuSubfamilies.Refresh();
                 MenuArticles.Refresh();
@@ -60,7 +58,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
         {
-            if(FiscalYearService.HasFiscalYear() == false)
+            if (FiscalYearService.HasFiscalYear() == false)
             {
                 FiscalYearService.ShowOpenFiscalYearAlert();
                 return;
@@ -86,36 +84,26 @@ namespace LogicPOS.UI.Components.Windows
         private void BtnChangeUser_Clicked(object sender, EventArgs e)
         {
             ChangeUserModal changeUserModal = new ChangeUserModal(this);
-
-            var changeUserModalResponse = (ResponseType)changeUserModal.Run();
-
-            if (changeUserModalResponse != ResponseType.Ok)
-            {
-                changeUserModal.Destroy();
-                return;
-            }
-
-            UserPinModal pinModal = new UserPinModal(changeUserModal, changeUserModal.User);
-            var pinModalResponse = (ResponseType)pinModal.Run();
-
-            if (pinModalResponse != ResponseType.Ok)
-            {
-                pinModal.Destroy();
-                changeUserModal.Destroy();
-                return;
-            }
-
-            UpdateUI();
-            BackOfficeWindow.Instance?.UpdateUI();
-
-            pinModal.Destroy();
+            changeUserModal.Run();
             changeUserModal.Destroy();
         }
 
-        private void ButtonFavorites_Clicked(object sender, EventArgs e)
+        private void BtnFavorites_Clicked(object sender, EventArgs e)
         {
-            if (MenuFamilies.SelectedButton != null && !MenuFamilies.SelectedButton.Sensitive) MenuFamilies.SelectedButton.Sensitive = true;
-            if (MenuSubfamilies.SelectedButton != null && !MenuSubfamilies.SelectedButton.Sensitive) MenuSubfamilies.SelectedButton.Sensitive = true;
+            if (MenuFamilies.SelectedButton != null &&
+                MenuFamilies.SelectedButton.Sensitive == false)
+            {
+                MenuFamilies.SelectedButton.Sensitive = true;
+            }
+
+            if (MenuSubfamilies.SelectedButton != null &&
+                MenuSubfamilies.SelectedButton.Sensitive == false)
+            {
+                MenuSubfamilies.SelectedButton.Sensitive = true;
+            }
+
+            MenuArticles.PresentFavorites = true;
+            MenuArticles.Refresh();
         }
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)

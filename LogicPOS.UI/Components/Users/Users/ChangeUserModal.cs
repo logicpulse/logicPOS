@@ -1,10 +1,12 @@
 ﻿using Gtk;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -43,12 +45,14 @@ namespace LogicPOS.UI.Components.Modals
             };
 
             Initialize(this,
-                            DialogFlags.DestroyWithParent,
-                            fileDefaultWindowIcon,
-                            windowTitle,
-                            windowSize,
-                            _fixedContent,
-                            actionAreaButtons);
+                       DialogFlags.DestroyWithParent,
+                       fileDefaultWindowIcon,
+                       windowTitle,
+                       windowSize,
+                       _fixedContent,
+                       actionAreaButtons);
+
+            UsersMenu.Refresh();
         }
 
         private void InitUsersMenu()
@@ -107,7 +111,20 @@ namespace LogicPOS.UI.Components.Modals
                             .ShowAlert();
             }
 
-            Respond(ResponseType.Ok);
+
+            UserPinModal pinModal = new UserPinModal(this, user);
+            var pinModalResponse = (ResponseType)pinModal.Run();
+
+            if (pinModalResponse != ResponseType.Ok)
+            {
+                pinModal.Destroy();
+                return;
+            }
+
+            pinModal.Destroy();
+
+            //POSWindow.Instance.UpdateUI();
+            //BackOfficeWindow.Instance.UpdateUI();
         }
     }
 }

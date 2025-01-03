@@ -29,7 +29,6 @@ namespace LogicPOS.UI.Components.Menus
                                                      sourceWindow: sourceWindow)
         {
 
-            PresentEntities();
         }
 
         protected override void LoadEntities()
@@ -48,9 +47,31 @@ namespace LogicPOS.UI.Components.Menus
             return user.Name;
         }
 
-        protected override string GetButtonImage(User entity)
+        protected override string GetButtonImage(User user)
         {
             return PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
         }
+
+        public static IconButton CreatePreviousButton()
+        {
+            var buttonSize = AppSettings.Instance.sizeStartupWindowObjectsTablePadUserButton;
+
+            IconButton button = new IconButton(
+                   new ButtonSettings
+                   {
+                       Name = "TablePadUserButtonPrev",
+                       Icon = @"Assets\Images\Buttons\Pos\button_family_scroll_up.png",
+                       IconSize = new Size(buttonSize.Width - 2, buttonSize.Height - 2),
+                       ButtonSize = buttonSize
+                   });
+
+            button.Relief = ReliefStyle.None;
+            button.BorderWidth = 0;
+            button.CanFocus = false;
+
+            return button;
+        }
+
+
     }
 }

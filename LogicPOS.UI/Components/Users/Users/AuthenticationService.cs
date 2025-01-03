@@ -1,16 +1,23 @@
-﻿using LogicPOS.Api.Entities;
+﻿using ErrorOr;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Authentication;
+using LogicPOS.Api.Features.Authentication.Login;
 using LogicPOS.Api.Features.Users.GetUserPermissions;
+using LogicPOS.UI.Components.Terminals;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Users
 {
     public static class AuthenticationService
     {
+        private static readonly IMediator _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public static User User { get; private set; }
         public static List<string> Permissions { get; private set; } = new List<string>();
+
 
         public static bool UserHasPermission(string permission)
         {
@@ -24,10 +31,10 @@ namespace LogicPOS.UI.Components.Users
             AuthenticationData.Token = jwtToken;
         }
 
-        public static void LogoutUser()
+        public static ErrorOr<string> Login(Guid userId, string password)
         {
-            User = null;
-            Permissions.Clear();
+            var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
+            return loginResult;
         }
 
         private static void LoadPermissions()

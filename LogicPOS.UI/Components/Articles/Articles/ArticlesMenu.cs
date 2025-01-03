@@ -23,8 +23,9 @@ namespace LogicPOS.UI.Components.Menus
     public class ArticlesMenu : Menu<Article>
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        public ArticleSubfamiliesMenu SubfamiliesMenu { get; }
+        public ArticleSubfamiliesMenu MenuSubfamilies { get; }
         public IEnumerable<ArticleStock> Stocks { get; private set; }
+        public bool PresentFavorites { get; set; }
 
         public ArticlesMenu(CustomButton btnPrevious,
                             CustomButton btnNext,
@@ -38,7 +39,7 @@ namespace LogicPOS.UI.Components.Menus
                                                                            sourceWindow,
                                                                            toggleMode: false)
         {
-            SubfamiliesMenu = subfamiliesMenu;
+            MenuSubfamilies = subfamiliesMenu;
             LoadStocks();
             AddEventHandlers();
             PresentEntities();
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Components.Menus
 
         private void AddEventHandlers()
         {
-            SubfamiliesMenu.SubfamilySelected += SubfamiliesMenu_SubfamilySelected;
+            MenuSubfamilies.OnEntitySelected += SubfamiliesMenu_SubfamilySelected;
             OnEntitySelected += BtnArticle_Clicked;
         }
 
@@ -71,12 +72,18 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override IEnumerable<Article> GetFilteredEntities()
         {
-            if (SubfamiliesMenu.SelectedSubfamily == null)
+            if (PresentFavorites)
+            {
+                PresentFavorites = false;
+                return Entities.Where(a => a.Favorite);
+            }
+
+            if (MenuSubfamilies.SelectedEntity == null)
             {
                 return Entities;
             }
 
-            return Entities.Where(a => a.SubfamilyId == SubfamiliesMenu.SelectedSubfamily.Id);
+            return Entities.Where(a => a.SubfamilyId == MenuSubfamilies.SelectedEntity.Id);
         }
 
         private void BtnArticle_Clicked(Article article)
@@ -148,7 +155,6 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             Entities.AddRange(articles.Value);
-
         }
     }
 }

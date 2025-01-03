@@ -35,7 +35,6 @@ namespace LogicPOS.UI.Widgets
         private string _newPassword;
         private bool _notLoginAuth;
         public string JwtToken { get; private set; }
-
         private NumberPadPinMode _mode;
 
         public NumberPadPinMode Mode
@@ -44,7 +43,7 @@ namespace LogicPOS.UI.Widgets
             set
             {
                 _mode = value;
-                UpdateStatusLabels();
+                UpdateLables();
             }
         }
 
@@ -337,7 +336,7 @@ namespace LogicPOS.UI.Widgets
                     {
                         _oldPassword = TxtPin.Text;
                         _mode = NumberPadPinMode.PasswordNew;
-                        UpdateStatusLabels();
+                        UpdateLables();
                     }
                     break;
                 case NumberPadPinMode.PasswordNew:
@@ -354,7 +353,7 @@ namespace LogicPOS.UI.Widgets
                     {
                         _newPassword = TxtPin.Text;
                         _mode = NumberPadPinMode.PasswordNewConfirm;
-                        UpdateStatusLabels();
+                        UpdateLables();
                     }
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
@@ -380,7 +379,7 @@ namespace LogicPOS.UI.Widgets
 
                         ClearEntryPinStatusMessage(true);
                         _mode = NumberPadPinMode.PasswordNew;
-                        UpdateStatusLabels();
+                        UpdateLables();
                         _newPassword = string.Empty;
                     }
                     break;
@@ -388,7 +387,7 @@ namespace LogicPOS.UI.Widgets
                     if (ValidatePassword(user))
                     {
                         _mode = NumberPadPinMode.PasswordNew;
-                        UpdateStatusLabels();
+                        UpdateLables();
                     }
                     else
                     {
@@ -449,7 +448,7 @@ namespace LogicPOS.UI.Widgets
             }
         }
 
-        private void UpdateStatusLabels()
+        private void UpdateLables()
         {
             switch (_mode)
             {
@@ -481,7 +480,7 @@ namespace LogicPOS.UI.Widgets
             _mode = NumberPadPinMode.Password;
             AuthenticationService.LoginUser(user, JwtToken);
 
-            UpdateStatusLabels();
+            UpdateLables();
 
             if (GeneralSettings.AppUseBackOfficeMode)
             {

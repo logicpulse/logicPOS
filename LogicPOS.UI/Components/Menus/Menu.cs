@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Menus
     {
         private int ButtonFontSize { get; } = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
         public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
-        public string ButtonOverlay { get; set; } = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png";
+        private readonly string _buttonOverlay;
         public List<(TEntity Entity, CustomButton Button)> Buttons { get; set; } = new List<(TEntity, CustomButton)>();
         public string ButtonImage { get; set; }
         public string ButtonLabel { get; set; }
@@ -49,6 +49,8 @@ namespace LogicPOS.UI.Components.Menus
             _rows = rows;
             _columns = columns;
 
+            _buttonOverlay = (AppSettings.Instance.useImageOverlay) ? PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png" : null;
+
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
             BtnPrevious.Clicked += BtnPrevious_Clicked;
@@ -64,19 +66,19 @@ namespace LogicPOS.UI.Components.Menus
                     Text = ButtonLabel,
                     FontSize = ButtonFontSize,
                     Image = ButtonImage,
-                    Overlay = ButtonOverlay,
+                    Overlay = _buttonOverlay,
                     ButtonSize = _buttonSize,
                 });
         }
 
-        public void Update()
+        public void UpdateUI()
         {
-            RemoveOldButtons();
-            AddItems();
-            UpdateButtonsState();
+            RemoveOldPage();
+            PresentCurrentPage();
+            UpdateNavigationButtons();
         }
 
-        private void UpdateButtonsState()
+        private void UpdateNavigationButtons()
         {
             if (CurrentPage == 1)
             {
@@ -97,7 +99,7 @@ namespace LogicPOS.UI.Components.Menus
             }
         }
 
-        private void AddItems()
+        private void PresentCurrentPage()
         {
             if (Buttons.Count <= 0)
             {
@@ -127,7 +129,7 @@ namespace LogicPOS.UI.Components.Menus
 
         }
 
-        private void RemoveOldButtons()
+        private void RemoveOldPage()
         {
             int childrenLength = this.Children.Length;
             for (int i = 0; i < childrenLength; i++)
@@ -139,13 +141,13 @@ namespace LogicPOS.UI.Components.Menus
         private void BtnPrevious_Clicked(object obj, EventArgs args)
         {
             CurrentPage -= 1;
-            Update();
+            UpdateUI();
         }
 
         private void BtnNext_Clicked(object obj, EventArgs args)
         {
             CurrentPage += 1;
-            Update();
+            UpdateUI();
         }
 
         protected abstract string GetButtonLabel(TEntity entity);
@@ -157,15 +159,9 @@ namespace LogicPOS.UI.Components.Menus
             return Entities;
         }
 
-        public virtual void PresentEntities(Predicate<IEnumerable<TEntity>> filter = null)
+        public virtual void PresentEntities()
         {
-            if (AppSettings.Instance.useImageOverlay == false)
-            {
-                ButtonOverlay = null;
-            }
-
             CurrentPage = 1;
-
             Buttons.Clear();
 
             if (Entities == null || Entities.Count == 0)
@@ -174,6 +170,8 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             var filteredEntities = GetFilteredEntities();
+
+            SelectedEntity = default;
 
             foreach (var entity in filteredEntities)
             {
@@ -188,13 +186,20 @@ namespace LogicPOS.UI.Components.Menus
                 var menuButton = CreateMenuButton();
                 menuButton.Clicked += MenuButton_Clicked;
                 Buttons.Add((entity, menuButton));
+
+                if (_toggleMode && SelectedEntity == null)
+                {
+                    SelectedEntity = entity;
+                    SelectedButton = menuButton;
+                    SelectedButton.Sensitive = false;
+                }
             }
 
             TotalItems = Buttons.Count;
             ItemsPerPage = Convert.ToInt16(_rows * _columns);
             TotalPages = (int)Math.Ceiling((float)TotalItems / (float)ItemsPerPage);
 
-            Update();
+            UpdateUI();
         }
 
         protected abstract void LoadEntities();
@@ -223,6 +228,11 @@ namespace LogicPOS.UI.Components.Menus
         {
             Buttons.Clear();
             PresentEntities();
+
+            if (SelectedEntity != null)
+            {
+                OnEntitySelected?.Invoke(SelectedEntity);
+            }
         }
     }
 }

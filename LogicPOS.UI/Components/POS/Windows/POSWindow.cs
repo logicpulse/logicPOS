@@ -316,7 +316,7 @@ namespace LogicPOS.UI.Components.Windows
                 });
 
 
-            buttonFavorites.Clicked += ButtonFavorites_Clicked;
+            buttonFavorites.Clicked += BtnFavorites_Clicked;
 
             if (buttonFavoritesVisible) FixedWindow.Put(buttonFavorites, buttonFavoritesPosition.X, buttonFavoritesPosition.Y);
         }
@@ -398,8 +398,9 @@ namespace LogicPOS.UI.Components.Windows
             btnFamiliesNext.CanFocus = false;
 
 
-            MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious, btnFamiliesNext);
-            MenuFamilies.SourceWindow = this;
+            MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
+                                                   btnFamiliesNext,
+                                                   this);
 
             if (showFamiliesMenu)
             {
@@ -427,8 +428,10 @@ namespace LogicPOS.UI.Components.Windows
             btnSubfamiliesNext.BorderWidth = 0;
             btnSubfamiliesNext.CanFocus = false;
 
-            MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies, btnSubfamiliesPrevious, btnSubfamiliesNext);
-            MenuSubfamilies.SourceWindow = this;
+            MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies,
+                                                         btnSubfamiliesPrevious,
+                                                         btnSubfamiliesNext,
+                                                         this);
 
             if (showSubfamiliesMenu)
             {
