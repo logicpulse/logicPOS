@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Menus
         private readonly string _buttonName;
         public Window SourceWindow { get; }
         public TEntity SelectedEntity { get; set; }
-        public CustomButton SelectedButton { get; private set; }
+        public CustomButton SelectedButton { get; set; }
         public List<TEntity> Entities { get; set; } = new List<TEntity>();
         public event Action<TEntity> OnEntitySelected;
 

@@ -98,6 +98,20 @@ namespace LogicPOS.UI.Components.Menus
             Filter = tableStatus;
             LoadEntities();
             PresentEntities();
+            SelectCurrentTable();
+        }
+
+        private void SelectCurrentTable()
+        {
+            if (SelectedEntity == null || SelectedEntity.Id == SaleContext.CurrentTable.Id)
+            {
+                return;
+            }
+
+            SelectedEntity = SaleContext.CurrentTable;
+            SelectedButton.Sensitive = true;
+            SelectedButton = Buttons.FirstOrDefault(x => x.Item1.Id == SaleContext.CurrentTable.Id).Button;
+            SelectedButton.Sensitive = false;
         }
     }
 }
