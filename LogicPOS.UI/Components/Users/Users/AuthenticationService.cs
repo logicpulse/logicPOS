@@ -6,7 +6,6 @@ using LogicPOS.Api.Features.Users.GetUserPermissions;
 using LogicPOS.UI.Components.Terminals;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 
@@ -44,7 +43,7 @@ namespace LogicPOS.UI.Components.Users
             var mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
             var getPermissionsResult = mediator.Send(new GetUserPermissionsQuery(User.Id)).Result;
 
-            if(getPermissionsResult.IsError)
+            if (getPermissionsResult.IsError)
             {
                 return;
             }

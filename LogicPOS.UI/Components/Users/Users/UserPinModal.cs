@@ -3,9 +3,9 @@ using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Dialogs;
-using LogicPOS.UI.Widgets;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -37,15 +37,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             Fixed fixedContent = new Fixed();
 
             _pinPanel = new UserPinPanel(parentWindow,
-                                             "numberPadPin",
-                                             Color.Transparent,
-                                             fontNumberPadPinButtonKeysTextAndLabel,
-                                             "12",
-                                             Color.White,
-                                             Color.Black,
-                                             100,
-                                             67,
-                                             _notLoginAuth);
+                                         "numberPadPin",
+                                         Color.Transparent,
+                                         fontNumberPadPinButtonKeysTextAndLabel,
+                                         "12",
+                                         Color.White,
+                                         Color.Black,
+                                         100,
+                                         67,
+                                         _notLoginAuth);
             _pinPanel.BtnOk.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_pinPanel, 0, 0);
@@ -83,7 +83,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            bool result = _pinPanel.ProcessPassword(this, _user, _notLoginAuth);
+            bool result = _pinPanel.ProcessPassword(_user, _notLoginAuth);
             if (result)
             {
                 JwtToken = _pinPanel.JwtToken;

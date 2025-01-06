@@ -1,4 +1,4 @@
-using Gdk;
+﻿using Gdk;
 using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
@@ -8,36 +8,16 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
-using LogicPOS.UI.Widgets;
 using System;
 using Image = Gtk.Image;
 
+
 namespace LogicPOS.UI.Components.Windows
 {
-    public partial class LoginWindow : POSBaseWindow
+    public partial class LoginWindow 
     {
         private UserPinPanel PinPanel { get; set; }
         public UsersMenu MenuUsers { get; set; }
-
-        public LoginWindow(string backgroundImage)
-            : base(backgroundImage)
-        {
-            AddEventHandlers();
-            InitializeUI();
-        }
-
-        private void AddEventHandlers()
-        {
-            this.KeyReleaseEvent += Window_KeyReleaseEvent;
-            this.Shown += LoginWindow_Shown;
-        }
-
-        private dynamic GetTheme()
-        {
-            var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
-            var theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
-            return theme;
-        }
 
         private void InitializeUI()
         {
@@ -122,9 +102,9 @@ namespace LogicPOS.UI.Components.Windows
                 //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                 //Events
                 PinPanel.BtnOk.Clicked += BtnOK_Clicked;
-                PinPanel.ButtonKeyResetPassword.Clicked += ButtonKeyResetPassword_Clicked;
-                PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
-                PinPanel.ButtonKeyQuit.Clicked += ButtonKeyQuit_Clicked;
+                PinPanel.BtnResetPassword.Clicked += BtnResetPassword_Clicked;
+                //PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
+                PinPanel.BtnQuit.Clicked += ButtonKeyQuit_Clicked;
 
                 //Objects:TablePadUserButtonPrev
                 IconButton tablePadUserButtonPrev = new IconButton(
@@ -178,7 +158,7 @@ namespace LogicPOS.UI.Components.Windows
                     LicenseSettings.LicenseReseller.ToString().ToLower() != "")
                 {
                     //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                    appVersion = string.Format("Powered by {0}� Vers. {1}", LicenseSettings.LicenseReseller, GeneralSettings.ProductVersion);
+                    appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, GeneralSettings.ProductVersion);
                 }
                 else
                 {
@@ -199,13 +179,6 @@ namespace LogicPOS.UI.Components.Windows
 
                 //Put in Fix
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
-
-                if (Program.DebugMode)
-                {
-                    Button buttonDeveloper = new Button("Developer");
-                    fix.Put(buttonDeveloper, 10, 100);
-                    buttonDeveloper.Clicked += ButtonDeveloper_Clicked;
-                }
 
                 //LOGO
                 if (PluginSettings.LicenceManager != null)
@@ -229,12 +202,6 @@ namespace LogicPOS.UI.Components.Windows
 
                 ShowAll();
 
-                PinPanel.ExposeEvent += delegate
-                {
-                    PinPanel.ButtonKeyFrontOffice.Hide();
-                    PinPanel.ButtonKeyBackOffice.Hide();
-                };
-
             }
             else
             {
@@ -242,32 +209,5 @@ namespace LogicPOS.UI.Components.Windows
             }
         }
 
-        #region Static 
-        private static LoginWindow _instance;
-       
-        public static LoginWindow Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = CreateLoginWindow();
-                }
-                return _instance;
-            }
-        }
-       
-        private static LoginWindow CreateLoginWindow()
-        {
-            var predicate = (Predicate<dynamic>)((x) => x.ID == "StartupWindow");
-            var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
-
-            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName,
-                                                       LogicPOSAppContext.ScreenSize.Width,
-                                                       LogicPOSAppContext.ScreenSize.Height);
-
-            return new LoginWindow(windowImageFileName);
-        }
-        #endregion
     }
 }

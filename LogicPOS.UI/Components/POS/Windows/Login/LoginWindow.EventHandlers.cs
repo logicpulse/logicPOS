@@ -24,22 +24,22 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
+            PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
         }
 
-        private void ButtonKeyResetPassword_Clicked(object sender, EventArgs e)
+        private void BtnResetPassword_Clicked(object sender, EventArgs e)
         {
             string currentPin = PinPanel.TxtPin.Text;
             PinPanel.Mode = NumberPadPinMode.PasswordReset;
             PinPanel.TxtPin.Text = currentPin;
-            PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
+            PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
         }
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                PinPanel.ProcessPassword(this, MenuUsers.SelectedEntity);
+                PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
             }
         }
 
@@ -73,11 +73,6 @@ namespace LogicPOS.UI.Components.Windows
         private void LoginWindow_Shown(object sender, EventArgs e)
         {
             MenuUsers.Refresh();
-        }
-
-        private void ButtonDeveloper_Clicked(object sender, EventArgs e)
-        {
-
         }
     }
 }
