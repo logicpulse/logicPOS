@@ -26,11 +26,9 @@ namespace LogicPOS.UI.Components
     public partial class UserPinPanel : Box
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        protected Gtk.Table _table;
         private Window SourceWindow { get; }
         private int _tempCursorPosition = 0;
         private bool _entryPinShowStatus = false;
-        private readonly Label _labelStatus;
         private string _oldPassword;
         private string _newPassword;
         private bool _notLoginAuth;
@@ -47,35 +45,21 @@ namespace LogicPOS.UI.Components
             }
         }
 
-        public EventBox Eventbox { get; set; }
-
-        public ValidatableTextBox TxtPin { get; set; }
-        public TextButton BtnOk { get; set; }
-        public IconButton BtnResetPassword { get; set; }
-        public TextButton BtnQuit { get; set; }
 
         public UserPinPanel(Window parentWindow,
-                            string name,
-                            Color btnColor,
-                            string font,
-                            string labelStatusFont,
-                            Color fontColor,
                             Color labelStatusFontColor,
-                            byte btnWidth,
-                            byte btnHeight,
+                            Size buttonSize,
                             bool notLoginAuth,
                             bool showSystemButtons = false,
-                            bool showWindow = false,
                             uint labelStatusRowSpacing = 20,
                             uint systemButtonsRowSpacing = 40,
                             byte padding = 3)
         {
             SourceWindow = parentWindow;
-            Name = name;
+            Name = "numberPadPin";
             _notLoginAuth = notLoginAuth;
             uint tableRows = showSystemButtons ? 5 : (uint)3;
-
-            Eventbox = new EventBox() { VisibleWindow = showWindow };
+            _btnSize = buttonSize;
 
             _table = new Gtk.Table(tableRows, 3, true);
             _table.Homogeneous = false;
@@ -90,7 +74,7 @@ namespace LogicPOS.UI.Components
                 Visibility = false
             };
 
-            TxtPin.ModifyFont(Pango.FontDescription.FromString(font));
+            TxtPin.ModifyFont(Pango.FontDescription.FromString(Font));
             TxtPin.Alignment = 0.5F;
 
             string resetPasswordImage = PathsSettings.ImagesFolderLocation + @"Icons\Other\pinpad_password_reset.png";
@@ -109,20 +93,14 @@ namespace LogicPOS.UI.Components
             //Start Validated
             TxtPin.Validate();
             //Event
-            TxtPin.Changed += TxtPin_Changed;
-            TxtPin.KeyReleaseEvent += TxtPin_KeyReleaseEvent;
 
             //Label Status
             _labelStatus = new Label(GeneralUtils.GetResourceByName("pos_pinpad_message_type_password"));
-            _labelStatus.ModifyFont(Pango.FontDescription.FromString(labelStatusFont));
+            _labelStatus.ModifyFont(Pango.FontDescription.FromString(StatusLabelFont));
             _labelStatus.ModifyFg(StateType.Normal, labelStatusFontColor.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
 
-            var buttonSize = new Size(btnWidth, btnHeight);
-
             TextButton buttonKey1 = CreateNumberedButton("1");
-            var color = buttonKey1.Style.Background(StateType.Normal);
-
             TextButton buttonKey2 = CreateNumberedButton("2");
             TextButton buttonKey3 = CreateNumberedButton("3");
             TextButton buttonKey4 = CreateNumberedButton("4");
@@ -137,10 +115,9 @@ namespace LogicPOS.UI.Components
                new ButtonSettings
                {
                    Name = "touchButtonKeyCE_Red",
-                   BackgroundColor = btnColor,
                    Text = "CE",
-                   Font = font,
-                   FontColor = fontColor,
+                   Font = Font,
+                   FontColor = ButtonFontColor,
                    ButtonSize = buttonSize
                });
 
@@ -149,11 +126,10 @@ namespace LogicPOS.UI.Components
             BtnOk = new TextButton(new ButtonSettings
             {
                 Name = "touchButtonKeyOK_Green",
-                BackgroundColor = btnColor,
                 Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok"),
-                Font = font,
-                FontColor = fontColor,
-                ButtonSize = new Size(btnWidth, btnHeight)
+                Font = Font,
+                FontColor = ButtonFontColor,
+                ButtonSize = _btnSize
             })
             { Sensitive = false };
 
@@ -165,11 +141,10 @@ namespace LogicPOS.UI.Components
                    new ButtonSettings
                    {
                        Name = "touchButtonKeyQuit_DarkGrey",
-                       BackgroundColor = btnColor,
                        Text = GeneralUtils.GetResourceByName("global_quit_title"),
-                       Font = font,
-                       FontColor = fontColor,
-                       ButtonSize = new Size(btnWidth, btnHeight)
+                       Font = Font,
+                       FontColor = ButtonFontColor,
+                       ButtonSize = _btnSize
                    });
 
                 _buttonQuitOrOk = BtnQuit;
@@ -235,122 +210,104 @@ namespace LogicPOS.UI.Components
             Eventbox.Add(_table);
             Add(Eventbox);
 
-            TextButton CreateNumberedButton(string number)
-            {
-                return new TextButton(
-                    new ButtonSettings
-                    {
-                        Name = "buttonUserId",
-                        BackgroundColor = btnColor,
-                        Text = number,
-                        Font = font,
-                        FontColor = fontColor,
-                        ButtonSize = buttonSize
-                    });
-            }
+
+
+            AddEventHandlers();
+
         }
 
-        public bool ProcessPassword(User user,
-                                    bool notLoginAuth = false)
+
+        public bool ProcessPassword(Guid userId, string password)
         {
-            bool result = false;
-            _notLoginAuth = notLoginAuth;
+            TxtPin.GrabFocus();
 
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    if (PasswordIsValid(user.Id, TxtPin.Text))
-                    {
-                        if (_notLoginAuth == false)
-                        {
-                            ProcessLogin(user);
-                        }
-                        result = true;
-                    }
-                    break;
+                    return PasswordIsValid(userId, password);
                 case NumberPadPinMode.PasswordOld:
-                    if (PasswordIsValid(user.Id, TxtPin.Text))
-                    {
-                        _oldPassword = TxtPin.Text;
-                        _mode = NumberPadPinMode.PasswordNew;
-                        UpdateLables();
-                    }
+                    ProcessOldPassword(userId, password);
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    if (TxtPin.Text == _oldPassword)
-                    {
-                        CustomAlerts.Error(SourceWindow)
-                                    .WithTitleResource("window_title_dialog_change_password")
-                                    .WithMessageResource("pos_pinpad_message_password_equal_error")
-                                    .ShowAlert();
-
-                        ClearEntryPinStatusMessage(true);
-                    }
-                    else
-                    {
-                        _newPassword = TxtPin.Text;
-                        _mode = NumberPadPinMode.PasswordNewConfirm;
-                        UpdateLables();
-                    }
+                    ProcessNewPassword(password);
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    if (_newPassword == TxtPin.Text)
-                    {
-                        ChangePassword(user.Id, _oldPassword, _newPassword);
-
-                        CustomAlerts.Information(SourceWindow)
-                                    .WithTitleResource("window_title_dialog_change_password")
-                                    .WithMessageResource("pos_pinpad_message_password_changed")
-                                    .ShowAlert();
-
-                        ProcessLogin(user);
-                        result = true;
-                    }
-                    else
-                    {
-
-                        CustomAlerts.Error(SourceWindow)
-                                    .WithTitleResource("window_title_dialog_change_password")
-                                    .WithMessageResource("pos_pinpad_message_password_confirmation_error")
-                                    .ShowAlert();
-
-                        ClearEntryPinStatusMessage(true);
-                        _mode = NumberPadPinMode.PasswordNew;
-                        UpdateLables();
-                        _newPassword = string.Empty;
-                    }
+                    ProcessNewPasswordConfirmation(userId, password);
                     break;
                 case NumberPadPinMode.PasswordReset:
-                    if (PasswordIsValid(user.Id, TxtPin.Text))
-                    {
-                        _oldPassword = TxtPin.Text;
-                        _mode = NumberPadPinMode.PasswordNew;
-                        UpdateLables();
-                    }
-                    else
-                    {
-                        _mode = NumberPadPinMode.Password;
-                    }
-                    break;
-                default:
+                    ProcessPasswordReset(userId, password);
                     break;
             }
 
-            TxtPin.GrabFocus();
-
-            return result;
+            return false;
         }
 
-        private ErrorOr<string> Login(Guid userId, string password)
+        private void ProcessPasswordReset(Guid userId, string password)
         {
-            var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
-            JwtToken = loginResult.IsError ? null : loginResult.Value;
-            return loginResult;
+            if (PasswordIsValid(userId, password) == false)
+            {
+                _mode = NumberPadPinMode.Password;
+                return;
+            }
+
+            _oldPassword = password;
+            Mode = NumberPadPinMode.PasswordNew;
+        }
+
+        private void ProcessNewPasswordConfirmation(Guid userId, string password)
+        {
+            if (_newPassword == password && ChangePassword(userId, _oldPassword, _newPassword))
+            {
+                CustomAlerts.Information(SourceWindow)
+                      .WithTitleResource("window_title_dialog_change_password")
+                      .WithMessageResource("pos_pinpad_message_password_changed")
+                      .ShowAlert();
+
+
+                Mode = NumberPadPinMode.Password;
+                return;
+            }
+
+            CustomAlerts.Error(SourceWindow)
+                        .WithTitleResource("window_title_dialog_change_password")
+                        .WithMessageResource("pos_pinpad_message_password_confirmation_error")
+                        .ShowAlert();
+
+            ClearEntryPinStatusMessage(true);
+            Mode = NumberPadPinMode.PasswordNew;
+            _newPassword = string.Empty;
+        }
+
+        private void ProcessNewPassword(string password)
+        {
+            if (password == _oldPassword)
+            {
+                CustomAlerts.Error(SourceWindow)
+                            .WithTitleResource("window_title_dialog_change_password")
+                            .WithMessageResource("pos_pinpad_message_password_equal_error")
+                            .ShowAlert();
+
+                ClearEntryPinStatusMessage(true);
+            }
+            else
+            {
+                _newPassword = password;
+                Mode = NumberPadPinMode.PasswordNewConfirm;
+            }
+        }
+
+        private void ProcessOldPassword(Guid userId, string password)
+        {
+            if (PasswordIsValid(userId, password))
+            {
+                _oldPassword = password;
+                Mode = NumberPadPinMode.PasswordNew;
+            }
         }
 
         public bool PasswordIsValid(Guid userId, string password)
         {
-            var loginResult = Login(userId, password);
+            var loginResult = AuthenticationService.Authenticate(userId, password);
 
             if (loginResult.IsError)
             {
@@ -370,6 +327,8 @@ namespace LogicPOS.UI.Components
             TxtPin.ModifyText(StateType.Normal, Color.Black.ToGdkColor());
             TxtPin.Visibility = false;
             _entryPinShowStatus = false;
+            JwtToken = loginResult.Value;
+            Mode = NumberPadPinMode.Password;
             return true;
         }
 
@@ -409,23 +368,6 @@ namespace LogicPOS.UI.Components
             }
 
             ClearEntryPinStatusMessage(true);
-        }
-
-        private void ProcessLogin(User user)
-        {
-            _mode = NumberPadPinMode.Password;
-            AuthenticationService.LoginUser(user, JwtToken);
-
-            UpdateLables();
-
-            if (GeneralSettings.AppUseBackOfficeMode)
-            {
-                SourceWindow.Hide();
-                BackOfficeWindow.ShowBackOffice();
-                return;
-            }
-            SourceWindow.Hide();
-            POSWindow.ShowPOS();
         }
 
         private bool ChangePassword(Guid userId,

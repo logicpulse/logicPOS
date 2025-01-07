@@ -2,9 +2,12 @@
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.Data.XPO.Settings;
+using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Drawing;
 
@@ -12,7 +15,7 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class LoginWindow
     {
-        private void BtnOK_Clicked(object sender, EventArgs e)
+        private void PinPanel_BtnOK_Clicked(object sender, EventArgs e)
         {
             if (MenuUsers.SelectedEntity == null)
             {
@@ -24,7 +27,12 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
+            if (!PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text))
+            {
+                return;
+            }
+
+            ProcessLogin();
         }
 
         private void BtnResetPassword_Clicked(object sender, EventArgs e)
@@ -32,26 +40,38 @@ namespace LogicPOS.UI.Components.Windows
             string currentPin = PinPanel.TxtPin.Text;
             PinPanel.Mode = NumberPadPinMode.PasswordReset;
             PinPanel.TxtPin.Text = currentPin;
-            PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
+
+            PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text);
+        }
+
+        private void ProcessLogin()
+        {
+            AuthenticationService.LoginUser(MenuUsers.SelectedEntity, PinPanel.JwtToken);
+            PinPanel.Mode = NumberPadPinMode.Password;
+
+            if (GeneralSettings.AppUseBackOfficeMode)
+            {
+                BackOfficeWindow.ShowBackOffice();
+                return;
+            } else
+            {
+                POSWindow.ShowPOS();
+            }
+
+            Hide();
         }
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                PinPanel.ProcessPassword(MenuUsers.SelectedEntity);
+                PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text);
             }
         }
 
-        private void ButtonKeyQuit_Clicked(object sender, EventArgs e)
+        private void BtnQuit_Clicked(object sender, EventArgs e)
         {
             LogicPOSAppUtils.Quit(this);
-        }
-
-        private void ButtonKeyFrontOffice_Clicked(object sender, EventArgs e)
-        {
-            Hide();
-            POSWindow.ShowPOS();
         }
 
         private void OnUserSelected(User user)

@@ -3,6 +3,7 @@ using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -373,7 +374,7 @@ namespace LogicPOS.UI.Components.POS
             SetOrderModeBackGround();
             PresentOrderItems();
             UpdateLabelTotalValue();
-            SaleContext.UpdatePOSLabels();
+            POSWindow.Instance.UpdateUI();
         }
 
         public void SetOrderModeBackGround()

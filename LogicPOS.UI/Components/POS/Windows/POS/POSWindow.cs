@@ -621,6 +621,18 @@ namespace LogicPOS.UI.Components.Windows
         {
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
             MenuArticles.Sensitive = WorkSessionService.TerminalIsOpen();
+
+            if (SaleContext.CurrentTable != null)
+            {
+                string tableDenomination = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()];
+                Instance.LabelCurrentTable.Text = $"{tableDenomination} {SaleContext.CurrentTable.Designation}";
+            }
+
+            if (SaleContext.CurrentOrder != null)
+            {
+                Instance.LabelTotalTable.Text = Instance.LabelTotalTable.Text = $"{SaleContext.CurrentOrder.TotalFinal:0.00} : #{SaleContext.CurrentOrder.Tickets.Count}";
+            }
+
             SaleOptionsPanel.UpdateUI();
         }
 
@@ -642,21 +654,27 @@ namespace LogicPOS.UI.Components.Windows
         }
 
         #region Static
-        public static POSWindow Instance { get; set; }
-        
+        private static POSWindow _instance;
+
+        public static POSWindow Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new POSWindow(GetBackgroundImage());
+                }
+
+                return _instance;
+            }
+        }
+
         public static void ShowPOS()
         {
-            if (Instance != null)
-            {
-                Instance.UpdateUI();
-                Instance.Show();
-                return;
-            }
-
-            Instance = new POSWindow(GetBackgroundImage());
+            Instance.Show();
             SaleContext.Initialize();
         }
-        
+
         public static string GetBackgroundImage()
         {
             Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");

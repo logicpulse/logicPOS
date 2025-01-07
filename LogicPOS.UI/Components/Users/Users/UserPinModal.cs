@@ -31,21 +31,15 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
-            string fontNumberPadPinButtonKeysTextAndLabel = AppSettings.Instance.fontNumberPadPinButtonKeysTextAndLabel;
             ActionAreaButtons actionAreaButtons;
 
             Fixed fixedContent = new Fixed();
 
-            _pinPanel = new UserPinPanel(parentWindow,
-                                         "numberPadPin",
-                                         Color.Transparent,
-                                         fontNumberPadPinButtonKeysTextAndLabel,
-                                         "12",
-                                         Color.White,
-                                         Color.Black,
-                                         100,
-                                         67,
+            _pinPanel = new UserPinPanel(parentWindow: parentWindow,
+                                         labelStatusFontColor: Color.Black,
+                                         new Size(100, 67),
                                          _notLoginAuth);
+
             _pinPanel.BtnOk.Clicked += ButtonKeyOK_Clicked;
 
             fixedContent.Put(_pinPanel, 0, 0);
@@ -83,10 +77,11 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            bool result = _pinPanel.ProcessPassword(_user, _notLoginAuth);
+            bool result = _pinPanel.ProcessPassword(_user.Id, _pinPanel.TxtPin.Text);
             if (result)
             {
-                JwtToken = _pinPanel.JwtToken;
+                var jwt = _pinPanel.JwtToken;
+                AuthenticationService.LoginUser(_user, jwt);
                 Respond(ResponseType.Ok);
             }
         }

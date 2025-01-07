@@ -15,7 +15,6 @@ namespace LogicPOS.UI.Components.Windows
     {
         protected EventBox _eventBoxMinimize;
         protected bool _showMinimize;
-        public LoginWindow SourceWindow { get; set; }
         public EventBox ScreenArea { get; set; }
 
         private dynamic GetTheme()
@@ -130,14 +129,6 @@ namespace LogicPOS.UI.Components.Windows
         private void PosBaseWindow_DeleteEvent(object o, DeleteEventArgs args)
         {
             Hide();
-
-            if (SourceWindow == null)
-            {
-                LogicPOSAppUtils.Quit(this);
-            }
-
-            SourceWindow.ShowAll();
-
             args.RetVal = true;
         }
 

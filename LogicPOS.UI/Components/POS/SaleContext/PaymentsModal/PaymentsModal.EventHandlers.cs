@@ -13,6 +13,7 @@ using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.POS.PrintingContext;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components.POS
         {
             SaleContext.ItemsPage.Clear(true);
             SaleContext.CurrentOrder.Close();
-            SaleContext.UpdatePOSLabels();
+            POSWindow.Instance.UpdateUI();
         }
 
         private void BtnNewCustomer_Clicked(object sender, EventArgs e)

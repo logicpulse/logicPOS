@@ -115,16 +115,13 @@ namespace LogicPOS.UI.Components.Modals
             UserPinModal pinModal = new UserPinModal(this, user);
             var pinModalResponse = (ResponseType)pinModal.Run();
 
-            if (pinModalResponse != ResponseType.Ok)
+            if(pinModalResponse == ResponseType.Ok)
             {
-                pinModal.Destroy();
-                return;
+                POSWindow.Instance.UpdateUI();
+                BackOfficeWindow.Instance.UpdateUI();
             }
 
             pinModal.Destroy();
-
-            //POSWindow.Instance.UpdateUI();
-            //BackOfficeWindow.Instance.UpdateUI();
         }
     }
 }

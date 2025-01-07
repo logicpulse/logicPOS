@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.POS
             CurrentOrder = OrdersService.GetPosOrder(CurrentOrder.Id.Value);
             ItemsPage.Clear(true);
             ItemsPage.PresentOrderItems();
-            UpdatePOSLabels();
+            POSWindow.Instance.UpdateUI();
         }
 
         public static void SetCurrentTable(Table table)
@@ -45,22 +45,7 @@ namespace LogicPOS.UI.Components.POS
 
             ItemsPage.Clear(true);
             ItemsPage.PresentOrderItems();
-            UpdatePOSLabels();
             POSWindow.Instance.UpdateUI();
-        }
-
-        public static void UpdatePOSLabels()
-        {
-            if (CurrentTable != null)
-            {
-                string tableDenomination = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()];
-                POSWindow.Instance.LabelCurrentTable.Text = $"{tableDenomination} {CurrentTable.Designation}";
-            }
-
-            if (CurrentOrder != null)
-            {
-                POSWindow.Instance.LabelTotalTable.Text = POSWindow.Instance.LabelTotalTable.Text = $"{CurrentOrder.TotalFinal:0.00} : #{CurrentOrder.Tickets.Count}";
-            }
         }
 
         public static void Initialize()

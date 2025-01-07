@@ -37,15 +37,12 @@ namespace LogicPOS.UI.Components.Windows
                 //Objects:NumberPadPin
                 System.Drawing.Point numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
                 System.Drawing.Size numberPadPinButtonSize = (theme.Objects.NumberPadPin.ButtonSize as string).ToSize();
-                string numberPadPinFont = theme.Objects.NumberPadPin.Font;
                 System.Drawing.Color numberPadPinFontColor = (theme.Objects.NumberPadPin.FontColor as string).StringToColor();
                 uint numberPadPinRowSpacingSystemButtons = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingSystemButtons);
                 uint numberPadPinRowSpacingLabelStatus = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingLabelStatus);
                 //Objects:NumberPadPin:LabelStatus
-                string numberPadPinLabelStatusFont = theme.Objects.NumberPadPin.LabelStatus.Font;
                 System.Drawing.Color numberPadPinLabelStatusFontColor = (theme.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
                 //Objects:NumberPadPin:Size (EventBox)
-                bool NumberPadPinVisibleWindow = Convert.ToBoolean(theme.Objects.NumberPadPin.VisibleWindow);
                 System.Drawing.Size numberPadPinSize = (theme.Objects.NumberPadPin.Size as string).ToSize();
 
 
@@ -75,20 +72,13 @@ namespace LogicPOS.UI.Components.Windows
                 }
 
                 //NumberPadPin
-                PinPanel = new UserPinPanel(this,
-                                                 "numberPadPin",
-                                                 System.Drawing.Color.Transparent,
-                                                 numberPadPinFont,
-                                                 numberPadPinLabelStatusFont,
-                                                 numberPadPinFontColor,
-                                                 numberPadPinLabelStatusFontColor,
-                                                 Convert.ToByte(numberPadPinButtonSize.Width),
-                                                 Convert.ToByte(numberPadPinButtonSize.Height),
-                                                 false,
-                                                 true,
-                                                 NumberPadPinVisibleWindow,
-                                                 numberPadPinRowSpacingLabelStatus,
-                                                 numberPadPinRowSpacingSystemButtons);
+                PinPanel = new UserPinPanel(parentWindow: this,
+                                            numberPadPinLabelStatusFontColor,
+                                            numberPadPinButtonSize,
+                                            false,
+                                            true,
+                                            numberPadPinRowSpacingLabelStatus,
+                                            numberPadPinRowSpacingSystemButtons);
 
                 if (numberPadPinSize.Width > 0 || numberPadPinSize.Height > 0)
                 {
@@ -101,10 +91,10 @@ namespace LogicPOS.UI.Components.Windows
                 //Over NumberPadPin
                 //fix.Put(touchButtonKeyPasswordReset, numberPadPinButtonPasswordResetPosition.X, numberPadPinButtonPasswordResetPosition.Y);
                 //Events
-                PinPanel.BtnOk.Clicked += BtnOK_Clicked;
+                PinPanel.BtnOk.Clicked += PinPanel_BtnOK_Clicked;
                 PinPanel.BtnResetPassword.Clicked += BtnResetPassword_Clicked;
                 //PinPanel.ButtonKeyFrontOffice.Clicked += ButtonKeyFrontOffice_Clicked;
-                PinPanel.BtnQuit.Clicked += ButtonKeyQuit_Clicked;
+                PinPanel.BtnQuit.Clicked += BtnQuit_Clicked;
 
                 //Objects:TablePadUserButtonPrev
                 IconButton tablePadUserButtonPrev = new IconButton(

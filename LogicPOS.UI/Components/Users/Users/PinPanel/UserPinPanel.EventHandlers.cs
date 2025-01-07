@@ -8,6 +8,12 @@ namespace LogicPOS.UI.Components
 {
     public partial class UserPinPanel
     {
+        private void AddEventHandlers()
+        {
+            TxtPin.Changed += TxtPin_Changed;
+            TxtPin.KeyReleaseEvent += TxtPin_KeyReleaseEvent;
+        }
+
         private void TxtPin_Changed(object sender, EventArgs e)
         {
             ValidatableTextBox entry = (ValidatableTextBox)sender;

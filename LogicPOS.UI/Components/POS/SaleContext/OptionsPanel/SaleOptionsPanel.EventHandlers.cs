@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.ItemsPage.Clear(true);
             SaleContext.CurrentOrder.Close();
             SaleContext.ItemsPage.SetTicketModeBackGround();
-            SaleContext.UpdatePOSLabels();
+            POSWindow.Instance.UpdateUI();
             UpdateButtonsSensitivity();
         }
 

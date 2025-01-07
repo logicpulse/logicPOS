@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Components.Users
             AuthenticationData.Token = jwtToken;
         }
 
-        public static ErrorOr<string> Login(Guid userId, string password)
+        public static ErrorOr<string> Authenticate(Guid userId, string password)
         {
             var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
             return loginResult;
