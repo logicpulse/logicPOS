@@ -111,7 +111,11 @@ namespace LogicPOS.UI.Components.Menus
             SelectedEntity = SaleContext.CurrentTable;
             SelectedButton.Sensitive = true;
             SelectedButton = Buttons.FirstOrDefault(x => x.Item1.Id == SaleContext.CurrentTable.Id).Button;
-            SelectedButton.Sensitive = false;
+            
+            if(SelectedButton != null)
+            {
+                SelectedButton.Sensitive = false;
+            }
         }
     }
 }

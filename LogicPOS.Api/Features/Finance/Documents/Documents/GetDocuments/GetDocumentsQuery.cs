@@ -3,7 +3,6 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Pagination;
 using MediatR;
 using System;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 namespace LogicPOS.Api.Features.Documents.GetDocuments
@@ -19,6 +18,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
         public Guid? CustomerId { get; set; }
         public Guid? PaymentMethodId { get; set; }
         public Guid? PaymentConditionId { get; set; }
+        public DocumentPaymentStatusFilter? PaymentStatus { get; set; }
 
         public string GetUrlQuery()
         {
@@ -54,7 +54,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
                 for (int i = 0; i < Types.Length; i++)
                 {
                     query.Append($"&types={Types[i]}");
-                }     
+                }
             }
 
             if (CustomerId.HasValue)
@@ -70,6 +70,11 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
             if (PaymentConditionId.HasValue)
             {
                 query.Append($"&paymentConditionId={PaymentConditionId}");
+            }
+
+            if (PaymentStatus != null && PaymentStatus != DocumentPaymentStatusFilter.All)
+            {
+                query.Append($"&paymentStatus={(int)PaymentStatus}");
             }
 
             return query.ToString();

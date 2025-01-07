@@ -234,7 +234,7 @@ namespace LogicPOS.UI.Components.Documents
         private void UpdateModalTitle()
         {
             WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedReceipts.Count}) = {Page.SelectedReceiptsTotalAmount:0.00} " +
-                $" - Página {Page.Receipts.Page} de {Page.Receipts.TotalPages} | Mostrando {Page.Receipts.TotalItems}  resultados";
+                $" - Página {Page.Receipts.Page} de {Page.Receipts.TotalPages} | Mostrando {Page.Receipts.ItemsCount}  resultados";
         }
 
         private void UpdateNavigationButtons()

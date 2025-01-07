@@ -309,7 +309,7 @@ namespace LogicPOS.UI.Components.Documents
         private void UpdateModalTitle()
         {
             WindowSettings.Title.Text = $"{WindowTitleBase} ({Page.SelectedDocuments.Count}) = {Page.SelectedDocumentsTotalFinal:0.00} " +
-                $" - Página {Page.Documents.Page} de {Page.Documents.TotalPages} | Mostrando {Page.Documents.TotalItems}  resultados";
+                $" - Página {Page.Documents.Page} de {Page.Documents.TotalPages} | Mostrando {Page.Documents.ItemsCount}  resultados";
         }
 
         protected override Widget CreateLeftContent()

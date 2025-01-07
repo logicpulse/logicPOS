@@ -28,6 +28,7 @@ namespace LogicPOS.UI.Components.Documents
         private PageTextBox TxtCustomer { get; set; }
         private PageTextBox TxtPaymentMethod { get; set; }
         private PageTextBox TxtPaymentCondition { get; set; }
+        private PageComboBox<int> ComboPaymentStatus { get; set; } 
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
@@ -115,6 +116,12 @@ namespace LogicPOS.UI.Components.Documents
                 query.PaymentConditionId = paymentCondition.Id;
             }
 
+            int paymentStatus = ComboPaymentStatus.GetSelectedItem();
+            if (paymentStatus != 0)
+            {
+                query.PaymentStatus = (DocumentPaymentStatusFilter)ComboPaymentStatus.GetSelectedItem();
+            }
+
             return query;
         }
 
@@ -183,18 +190,17 @@ namespace LogicPOS.UI.Components.Documents
 
         protected override Widget CreateBody()
         {
-            var vbox = new VBox(false, 2);
+            var verticalLayout = new VBox(false, 2);
 
             InitializeTextBoxes();
+            verticalLayout.PackStart(PageTextBox.CreateHbox(TxtStartDate, TxtEndDate), false, false, 0);
+            verticalLayout.PackStart(TxtDocumentType.Component, false, false, 0);
+            verticalLayout.PackStart(TxtCustomer.Component, false, false, 0);
+            verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
+            verticalLayout.PackStart(TxtPaymentCondition.Component, false, false, 0);
+            verticalLayout.PackStart(ComboPaymentStatus.Component, false, false, 0);
 
-            vbox.PackStart(TxtStartDate.Component, false, false, 0);
-            vbox.PackStart(TxtEndDate.Component, false, false, 0);
-            vbox.PackStart(TxtDocumentType.Component, false, false, 0);
-            vbox.PackStart(TxtCustomer.Component, false, false, 0);
-            vbox.PackStart(TxtPaymentMethod.Component, false, false, 0);
-            vbox.PackStart(TxtPaymentCondition.Component, false, false, 0);
-
-            return vbox;
+            return verticalLayout;
         }
 
         private void InitializeTextBoxes()
@@ -205,6 +211,15 @@ namespace LogicPOS.UI.Components.Documents
             InitializeTxtCustomer();
             InitializeTxtPaymentMethod();
             InitializeTxtPaymentCondition();
+            InitializeComboPaymentStatus();
+        }
+
+        private void InitializeComboPaymentStatus()
+        {
+            ComboPaymentStatus = new PageComboBox<int>("Estado do Pagamento");
+            ComboPaymentStatus.AddItem(0, "Todos");
+            ComboPaymentStatus.AddItem(1, "Pago");
+            ComboPaymentStatus.AddItem(2, "Não Pago");
         }
 
         private void InitializeTxtCustomer()
@@ -221,7 +236,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
 
-        private void BtnSelectCustomer_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -249,7 +264,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }
 
-        private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectDocumentType_Clicked(object sender, EventArgs e)
         {
             var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
