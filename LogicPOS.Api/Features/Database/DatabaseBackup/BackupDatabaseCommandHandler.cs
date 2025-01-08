@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Database.DatabaseBackup
+namespace LogicPOS.Api.Features.Database
 {
     public class BackupDatabaseCommandHandler :
         RequestHandler<BackupDatabaseCommand, ErrorOr<Unit>>

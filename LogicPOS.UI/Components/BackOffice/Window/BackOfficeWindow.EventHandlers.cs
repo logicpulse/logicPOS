@@ -2,7 +2,7 @@
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
-using LogicPOS.Api.Features.Database.DatabaseBackup;
+using LogicPOS.Api.Features.Database;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -147,7 +147,27 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnRestoreDb_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var restoreDatabaseResponse = CustomAlerts.Question(this)
+                                                      .WithTitle("Restauro")
+                                                      .WithMessage("Tem a certeza que pretende restaurar a base de dados?\n")
+                                                      .ShowAlert();
+
+            if (restoreDatabaseResponse != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var restoreResult = DependencyInjection.Services.GetRequiredService<ISender>().Send(new RestoreDatabaseCommand()).Result;
+
+            if (restoreResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(restoreResult.FirstError, source: this);
+                return;
+            }
+
+            CustomAlerts.Information(this)
+                         .WithMessage("Por favor reinicie completamente o sistema (API, Aplicação)!")
+                         .ShowAlert();
         }
         #endregion
 
