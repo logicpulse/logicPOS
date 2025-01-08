@@ -1,9 +1,8 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.Enums;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
-using LogicPOS.Api.Features.Database.GetBackup;
+using LogicPOS.Api.Features.Database.DatabaseBackup;
 using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -13,6 +12,7 @@ using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
@@ -115,7 +115,6 @@ namespace LogicPOS.UI.Components.Windows
             POSWindow.Instance.ShowAll();
         }
 
-
         private void BtnChangeLog_Clicked(object sender, EventArgs e)
         {
             Utils.ShowChangeLog(this);
@@ -123,43 +122,30 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnBackupDb_Clicked(object sender, EventArgs e)
         {
-            FilePicker picker = new FilePicker(this,
-                                               DialogFlags.DestroyWithParent,
-                                               FilePicker.GetFileFilterBackups(),
-                                               FileChooserAction.Save,
-                                               "Backup Database");
+            var createBackupResponse = CustomAlerts.Question(this)
+                                                   .WithTitle("Backup")
+                                                   .WithMessage("Tem a certeza que pretende fazer o backup da base de dados?")
+                                                   .ShowAlert();
 
-            picker.FileChooser.SelectMultiple = false;
-
-            var result = (ResponseType)picker.Run();
-
-            if (result != ResponseType.Ok || Directory.Exists(picker.FileChooser.Filename))
+            if (createBackupResponse != ResponseType.Yes)
             {
-                picker.Destroy();
                 return;
             }
 
-            string backupFileDestination = picker.FileChooser.Filename + ".bak";
+            var backupResult = DependencyInjection.Services.GetRequiredService<ISender>().Send(new BackupDatabaseCommand()).Result;
 
-            var getBackup = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetSqliteBackupQuery()).Result;
-
-            if (getBackup.IsError)
+            if (backupResult.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, getBackup.FirstError);
-                picker.Destroy();
+                ErrorHandlingService.HandleApiError(backupResult.FirstError, source: this);
                 return;
             }
 
-            File.Copy(getBackup.Value, backupFileDestination, true);
-            picker.Destroy();
+            CustomAlerts.Information(this)
+                         .WithMessage("Backup criado com sucesso.")
+                         .ShowAlert();
         }
 
         private void BtnRestoreDb_Clicked(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void BtnRestoreDbFromFile_Clicked(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
