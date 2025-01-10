@@ -349,35 +349,36 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void UpdateValidatableFields()
         {
             var documentType = GetDocumentType();
+            var analyzer = documentType.Analyzer;
 
-            if (documentType.IsGuide())
+            if (analyzer.IsGuide())
             {
                 TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(false, false);
                 TxtNotes.Require(false);
             }
-            else if (documentType.IsInformative())
+            else if (analyzer.IsInformative())
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(true);
                 TxtNotes.Require(false);
 
             }
-            else if (documentType.IsInvoice())
+            else if (analyzer.IsInvoice())
             {
                 TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(true);
                 TxtNotes.Require(false);
 
             }
-            else if (documentType.IsInvoiceReceipt())
+            else if (analyzer.IsInvoiceReceipt())
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(false, false);
                 TxtNotes.Require(false);
             }
 
-            else if (documentType.IsCreditNote())
+            else if (analyzer.IsCreditNote())
             {
                 TxtOriginDocument.Require(true);
                 TxtPaymentCondition.Require(false, false);

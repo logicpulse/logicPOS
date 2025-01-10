@@ -148,13 +148,14 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowTabsForDocumentType(DocumentType documentType)
         {
-            ShipToTab.ShowTab = ShipFromTab.ShowTab = documentType.IsGuide();
-            PaymentMethodsTab.ShowTab = documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice();
+            var analyzer = documentType.Analyzer;
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
+            PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
         }
 
         private void EnableTabsForDocumentType(DocumentType documentType)
         {
-            CustomerTab.Sensitive = documentType.IsCreditNote() == false;
+            CustomerTab.Sensitive = documentType.Analyzer.IsCreditNote() == false;
         }
 
         private void OnOriginDocumentSelected(Document document)
@@ -168,7 +169,7 @@ namespace LogicPOS.UI.Components.Modals
             CustomerTab.ImportDataFromDocument(document);
             ArticlesTab.ImportDataFromDocument(document);
 
-            if (document.IsGuide())
+            if (document.TypeAnalyzer.IsGuide())
             {
                 ShipFromTab.ImportDataFromDocument(document);
                 ShipToTab.ImportDataFromDocument(document);
@@ -183,7 +184,9 @@ namespace LogicPOS.UI.Components.Modals
 
             var documentType = DocumentTab.GetDocumentType();
 
-            if (documentType.IsInvoiceReceipt() || documentType.IsSimplifiedInvoice())
+            var analyzer = documentType.Analyzer;
+
+            if (analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice())
             {
                 command.PaymentMethods = PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
             }
@@ -207,7 +210,7 @@ namespace LogicPOS.UI.Components.Modals
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
 
-            if (documentType.IsGuide())
+            if (analyzer.IsGuide())
             {
                 command.ShipToAdress = ShipToTab.GetAddress();
                 command.ShipFromAdress = ShipFromTab.GetAddress();
@@ -234,12 +237,14 @@ namespace LogicPOS.UI.Components.Modals
                 return validatableTabs;
             }
 
-            if (documentType.IsInvoiceReceipt() || documentType.IsInvoiceReceipt())
+            var analyzer = documentType.Analyzer;
+
+            if (analyzer.IsInvoiceReceipt() || analyzer.IsInvoiceReceipt())
             {
                 validatableTabs.Add(PaymentMethodsTab);
             }
 
-            if (documentType.IsGuide())
+            if (analyzer.IsGuide())
             {
                 validatableTabs.Add(ShipToTab);
                 validatableTabs.Add(ShipFromTab);

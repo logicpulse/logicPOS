@@ -44,25 +44,8 @@ namespace LogicPOS.Api.Entities
         public IList<DocumentDetail> Details { get; set; }
         public bool IsCancelled => Status == "A";
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
-        public bool IsInvoice() => Type == "FT";
-        public bool IsInvoiceReceipt() => Type == "FR";
-        public bool IsCreditNote() => Type == "NC";
-        public bool IsDebitNote() => Type == "ND";
-        public bool IsReceipt() => Type == "RC";
-        public bool IsSimplifiedInvoice() => Type == "FS";
-        public bool IsDeliveryNote() => Type == "GR";
-        public bool IsTransportGuide() => Type == "GT";
-        public bool IsManagementOfFixedAssetsForm() => Type == "GA";
-        public bool IsConsignmentGuide() => Type == "GC";
-        public bool IsReturnSlip() => Type == "GD";
-        public bool IsBudget() => Type == "OR";
-        public bool IsProform() => Type == "PF";
-        public bool IsTableConsult() => Type == "CM";
-        public bool IsConsignmentCredit() => Type == "CC";
-        public bool IsConsignmentInvoice() => Type == "FC";
 
-        public bool IsInformative() => IsProform() || IsBudget() || IsReceipt();
-        public bool IsGuide() => IsTransportGuide() || IsConsignmentGuide() || IsManagementOfFixedAssetsForm() || IsDeliveryNote() || IsReturnSlip();
+        public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
 
         public List<TaxResume> GetTaxResumes()
         {

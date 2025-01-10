@@ -371,7 +371,7 @@ namespace LogicPOS.Printing.Templates
             if (_document.Customer.Country.ToUpper().Equals("PT"))
             {
                 //All Finance Documents use Processed, else Payments that use Emmited 
-                string prefix = (_document.IsInformative())
+                string prefix = (_document.TypeAnalyzer.IsInformative())
                     ? GeneralUtils.GetResourceByName("global_report_overlay_software_certification_emitted")
                     : GeneralUtils.GetResourceByName("global_report_overlay_software_certification_processed")
                 ;

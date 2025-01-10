@@ -83,7 +83,12 @@ namespace LogicPOS.Printing.Documents
             //VERIFICAÇÃO XPO COMENTADO - LUCIANO
             if (_documentMaster.Customer.Country.ToUpper() == "PT" || _documentMaster.Customer.Country.ToUpper() == "AO")
             {
-                if (_documentMaster.IsInvoice() || _documentMaster.IsSimplifiedInvoice() || _documentMaster.IsInvoiceReceipt() || _documentMaster.IsConsignmentInvoice()) 
+                var typeAnalyzer = _documentMaster.TypeAnalyzer;
+
+                if (typeAnalyzer.IsInvoice() ||
+                   typeAnalyzer.IsSimplifiedInvoice() ||
+                   typeAnalyzer.IsInvoiceReceipt() ||
+                   typeAnalyzer.IsConsignmentInvoice()) 
                 {
                     PrintDocumentTypeFooterString("global_documentfinance_type_report_invoice_footer_at"); 
                 }
@@ -388,7 +393,9 @@ namespace LogicPOS.Printing.Documents
 
         public void PrintDocumenWayBillDetails()
         {
-            if (_documentMaster.IsGuide())
+            var typeAnalyzer = _documentMaster.TypeAnalyzer;
+
+            if (typeAnalyzer.IsGuide())
             {
                 //WayBill Local Load
                 _printer.WriteLine(GeneralUtils.GetResourceByName("global_documentfinance_waybill_local_load"), WriteLineTextMode.Bold);

@@ -196,7 +196,7 @@ namespace LogicPOS.UI.Components.Documents
             {
                 canCancel = false;
             }
-            else if (selectedDocument.IsGuide() && selectedDocument.ShipFromAdress.DeliveryDate < DateTime.Now)
+            else if (selectedDocument.TypeAnalyzer.IsGuide() && selectedDocument.ShipFromAdress.DeliveryDate < DateTime.Now)
             {
                 canCancel = false;
             }
