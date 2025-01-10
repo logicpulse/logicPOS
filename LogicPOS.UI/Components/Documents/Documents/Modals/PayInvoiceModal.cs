@@ -1,5 +1,4 @@
-﻿using ErrorOr;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Documents.PayDocuments;
@@ -14,8 +13,6 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Patagames.Pdf;
-using Patagames.Pdf.Enums;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -28,7 +25,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-       
+
         public PageTextBox TxtPaymentMethod { get; private set; }
         public PageTextBox TxtCurrency { get; private set; }
         public PageTextBox TxtExchangeRate { get; private set; }
@@ -37,7 +34,7 @@ namespace LogicPOS.UI.Components.Modals
         public PageTextBox TxtDateTime { get; private set; }
         public PageTextBox TxtNotes { get; private set; }
         private List<IValidatableField> ValidatableFields { get; set; } = new List<IValidatableField>();
-        public  List<(Document Invoice, DocumentTotals Totals)> Invoices { get; } = new List<(Document, DocumentTotals)>();
+        public List<(Document Invoice, DocumentTotals Totals)> Invoices { get; } = new List<(Document, DocumentTotals)>();
         private readonly decimal _invoicesTotalFinal;
         private string TitleBase { get; set; }
 
@@ -58,14 +55,14 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle()
         {
-            var totalPaidPercentage = (CalculateSystemCurrencyTotalPaid() / _invoicesTotalFinal )*100;
+            var totalPaidPercentage = (CalculateSystemCurrencyTotalPaid() / _invoicesTotalFinal) * 100;
             totalPaidPercentage = Math.Round(totalPaidPercentage, 2);
             WindowSettings.Title.Text = $"{TitleBase} ({Invoices.Count} = {_invoicesTotalFinal:0.00}) - {totalPaidPercentage}%";
         }
 
         private decimal CalculateSystemCurrencyTotalPaid()
         {
-            if(TxtTotalPaid.IsValid() == false || TxtExchangeRate.IsValid() == false)
+            if (TxtTotalPaid.IsValid() == false || TxtExchangeRate.IsValid() == false)
             {
                 return 0;
             }
@@ -150,7 +147,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void TxtExchangeRate_Changed(object sender, EventArgs e)
         {
-            if(TxtExchangeRate.IsValid())
+            if (TxtExchangeRate.IsValid())
             {
                 UpdateTitle();
                 UpdateSystemCurrencyTotalPaid();
@@ -184,7 +181,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            DocumentPdfUtils.ViewReceiptPdf(this,result.Value);
+            DocumentPdfUtils.ViewReceiptPdf(this, result.Value);
         }
 
         private PayDocumentsCommand CreateCommand()
