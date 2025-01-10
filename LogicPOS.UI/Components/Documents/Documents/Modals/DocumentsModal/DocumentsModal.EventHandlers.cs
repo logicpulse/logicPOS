@@ -42,11 +42,16 @@ namespace LogicPOS.UI.Components.Documents
 
         protected override void OnResponse(ResponseType response)
         {
-            if (response != ResponseType.Close)
+            if (_selectionMode && response != ResponseType.Ok)
+            {
+                Page.SelectedEntity = null;
+            }
+
+            if (response != ResponseType.Close && _selectionMode == false)
             {
                 Run();
             }
-
+           
             base.OnResponse(response);
         }
 

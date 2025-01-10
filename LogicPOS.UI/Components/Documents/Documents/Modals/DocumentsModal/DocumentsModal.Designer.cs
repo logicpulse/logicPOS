@@ -6,11 +6,6 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -26,6 +21,8 @@ namespace LogicPOS.UI.Components.Documents
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "touchButton_Green");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "touchButton_Green");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
+        private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Ok);
+        private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Cancel);
         private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "touchButton_Green");
         private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "touchButton_Green");
         private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
@@ -59,17 +56,20 @@ namespace LogicPOS.UI.Components.Documents
             InitializeButtons();
             AddButtonsEventHandlers();
 
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
-            {
-                new ActionAreaButton(BtnPayInvoice, ResponseType.Ok),
-                new ActionAreaButton(BtnNewDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
-                new ActionAreaButton(BtnCancelDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnOpenDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok),
-                new ActionAreaButton(BtnClose, ResponseType.Close),
-            };
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+
+            actionAreaButtons.Add(new ActionAreaButton(BtnPayInvoice, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancelDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnOpenDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnClose, ResponseType.Close));
+             
+            actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancel, ResponseType.Cancel));
+
             return actionAreaButtons;
         }
 

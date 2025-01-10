@@ -104,30 +104,30 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
         {
-            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-            ResponseType response = (ResponseType)selectModal.Run();
-            selectModal.Destroy();
+            var modal = new DocumentsModal(SourceWindow, selectionMode: true);
+            ResponseType response = (ResponseType)modal.Run();
 
-            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
-                var docType = GetDocumentTypeFromDocument(page.SelectedEntity);
+                var docType = GetDocumentTypeFromDocument(modal.Page.SelectedEntity);
                 TxtDocumentType.SelectedEntity = docType;
                 TxtDocumentType.Text = docType.Designation;
 
                 UpdateValidatableFields();
 
-                TxtCopyDocument.Text = page.SelectedEntity.Number;
-                TxtCopyDocument.SelectedEntity = page.SelectedEntity;
+                TxtCopyDocument.Text = modal.Page.SelectedEntity.Number;
+                TxtCopyDocument.SelectedEntity = modal.Page.SelectedEntity;
 
-                TxtPaymentCondition.SelectedEntity = page.SelectedEntity.PaymentCondition;
-                TxtPaymentCondition.Text = page.SelectedEntity.PaymentCondition?.Designation;
+                TxtPaymentCondition.SelectedEntity = modal.Page.SelectedEntity.PaymentCondition;
+                TxtPaymentCondition.Text = modal.Page.SelectedEntity.PaymentCondition?.Designation;
 
-                TxtCurrency.SelectedEntity = page.SelectedEntity.Currency;
-                TxtCurrency.Text = page.SelectedEntity.Currency.Designation;
+                TxtCurrency.SelectedEntity = modal.Page.SelectedEntity.Currency;
+                TxtCurrency.Text = modal.Page.SelectedEntity.Currency.Designation;
 
-                CopyDocumentSelected?.Invoke(page.SelectedEntity);
+                CopyDocumentSelected?.Invoke(modal.Page.SelectedEntity);
             }
+
+            modal.Destroy();
         }
 
         private DocumentType GetDocumentTypeFromDocument(Document document)
@@ -151,17 +151,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
         {
-            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-            ResponseType response = (ResponseType)selectModal.Run();
-            selectModal.Destroy();
+            var modal = new DocumentsModal(SourceWindow, selectionMode: true);
+            ResponseType response = (ResponseType)modal.Run();
 
-            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
-                TxtOriginDocument.Text = page.SelectedEntity.Number;
-                TxtOriginDocument.SelectedEntity = page.SelectedEntity;
-                OriginDocumentSelected?.Invoke(page.SelectedEntity);
+                TxtOriginDocument.Text = modal.Page.SelectedEntity.Number;
+                TxtOriginDocument.SelectedEntity = modal.Page.SelectedEntity;
+                OriginDocumentSelected?.Invoke(modal.Page.SelectedEntity);
             }
+
+            modal.Destroy();
         }
 
         private void InitializeTxtCurrency()

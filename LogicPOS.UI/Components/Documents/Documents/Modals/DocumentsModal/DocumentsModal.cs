@@ -19,16 +19,44 @@ namespace LogicPOS.UI.Components.Documents
     public partial class DocumentsModal : Modal
     {
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
-        private DocumentsPage Page { get; set; }
+        public DocumentsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
+        private bool _selectionMode;
 
-
-        public DocumentsModal(Window parent) : base(parent,
+        public DocumentsModal(Window parent,
+                              bool selectionMode = false) : base(parent,
                                                     GeneralUtils.GetResourceByName("window_title_select_finance_document"),
                                                     LogicPOSAppContext.MaxWindowSize,
                                                     $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
         {
+            _selectionMode = selectionMode;
+
+            if (selectionMode)
+            {
+                UseSelectionMode();
+            } else
+            {
+                BtnOk.Visible = false;
+                BtnCancel.Visible = false;
+            }
+
             UpdateUI();
+        }
+
+        private void UseSelectionMode()
+        {
+            BtnPrintDocument.Visible = false;
+            BtnPrintDocumentAs.Visible = false;
+            BtnSendDocumentEmail.Visible = false;
+            BtnNewDocument.Visible = false;
+            BtnPayInvoice.Visible = false;
+            BtnCancelDocument.Visible = false;
+            BtnPrintDocument.Visible = false;
+            BtnOpenDocument.Visible = false;
+            BtnClose.Visible = false;
+
+            BtnOk.Visible = true;
+            BtnCancel.Visible = true;
         }
 
         private void UpdateUI()

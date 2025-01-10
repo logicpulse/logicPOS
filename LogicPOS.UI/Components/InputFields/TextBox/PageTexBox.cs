@@ -31,7 +31,8 @@ namespace LogicPOS.UI.Components.InputFields
                            bool isValidatable = false,
                            string regex = null,
                            bool includeSelectButton = true,
-                           bool includeKeyBoardButton = false)
+                           bool includeKeyBoardButton = false,
+                           bool includeClearButton = true)
         {
             if (isValidatable && string.IsNullOrEmpty(regex))
             {
@@ -44,7 +45,9 @@ namespace LogicPOS.UI.Components.InputFields
             IsRequired = isRequired;
             IsValidatable = isValidatable;
             Regex = regex;
-            Component = CreateComponent(includeSelectButton,includeKeyBoardButton);
+            Component = CreateComponent(includeSelectButton,
+                                        includeKeyBoardButton,
+                                        includeClearButton);
             AddEventHandlers();
             UpdateValidationColors();
         }
@@ -91,7 +94,9 @@ namespace LogicPOS.UI.Components.InputFields
             return label;
         }
 
-        private EventBox CreateComponent(bool includeSelectButton, bool includeKeyBoardButton)
+        private EventBox CreateComponent(bool includeSelectButton,
+                                         bool includeKeyBoardButton,
+                                         bool includeClearButton)
         {
             var verticalLayout = new VBox(false, 2);
             verticalLayout.PackStart(Label, false, false, 0);
@@ -99,6 +104,8 @@ namespace LogicPOS.UI.Components.InputFields
 
             var hbox = new HBox(false, 2);
             hbox.PackStart(Entry, true, true, 0);
+
+            
 
             if (includeSelectButton)
             {
@@ -108,6 +115,11 @@ namespace LogicPOS.UI.Components.InputFields
             if (includeKeyBoardButton)
             {
                 hbox.PackStart(CreateKeyBoardButton(), false, false, 0);
+            }
+
+            if(includeClearButton)
+            {
+                hbox.PackStart(CreateClearButton(), false, false, 0);
             }
 
             verticalLayout.PackStart(hbox, false, false, 0);
@@ -136,6 +148,22 @@ namespace LogicPOS.UI.Components.InputFields
                });
 
             button.Clicked += (sender, args) => CallKeyboard();
+
+            return button;
+        }
+
+        private IconButton CreateClearButton()
+        {
+            var button = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonUserId",
+                    Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}",
+                    IconSize = new Size(20, 20),
+                    ButtonSize = new Size(30, 30)
+                });
+
+            button.Clicked += (sender, args) => Clear();
 
             return button;
         }
