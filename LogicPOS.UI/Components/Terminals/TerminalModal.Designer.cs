@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using Printer = LogicPOS.Api.Entities.Printer;
 
 namespace LogicPOS.UI.Components.Modals
@@ -68,7 +69,8 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeThermalPrintersComboBox()
         {
-            var printers = GetPrinters();
+            var printers = GetPrinters().Where(p => p.Type.ThermalPrinter);
+
             var labelText = GeneralUtils.GetResourceByName("global_printer_thermal_printer");
             var currentPrinter = _entity != null ? _entity.ThermalPrinter : null;
 

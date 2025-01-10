@@ -368,34 +368,6 @@ namespace logicpos
             return string.Format("{0} : {1}", LogicPOSSettings.AppName, pTitle);
         }
 
-        /// <summary>
-        /// This method is responsible for dinamic dialog title creation, based on option chosen by user on BackOffice action menu.
-        /// Related to #IN009039.
-        /// </summary>
-        /// <param name="pTitle"></param>
-        /// <param name="dialogMode"></param>
-        /// <returns></returns>
-        public static string GetWindowTitle(string dialogWindowTitle, logicpos.Classes.Enums.Dialogs.DialogMode dialogMode)
-        {
-            string action = string.Empty;
-
-            switch (dialogMode)
-            {
-                case Classes.Enums.Dialogs.DialogMode.Insert:
-                    action = GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert");
-                    break;
-                case Classes.Enums.Dialogs.DialogMode.Update:
-                    action = GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update");
-                    break;
-                case Classes.Enums.Dialogs.DialogMode.View:
-                    action = GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view");
-                    break;
-                default:
-                    break;
-            }
-
-            return string.Format("{0} :: {1} {2}", LogicPOSSettings.AppName, action, dialogWindowTitle); // FrameworkUtils.ProductVersion
-        }
 
         public static Size GetScreenSize()
         {
@@ -486,7 +458,6 @@ namespace logicpos
         }
 
 
-
         /// <summary>
         /// Method responsible for screen resolution validation and if necessary, sets the default resolution settings.
         /// <para>See also "IN008023: apply "800x600" settings as default"</para>
@@ -559,23 +530,6 @@ namespace logicpos
                 LogicPOSAppContext.LoadingDialog.Destroy();
             }
         }
-
-        public static void ThreadStart(Window sourceWindow,
-                                       Thread thread,
-                                       string backupProcess)
-        {
-            LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(NotifyLoadingIsDone));
-            thread.Start();
-
-            if (sourceWindow != null)
-            {
-                LogicPOSAppContext.LoadingDialog = CreateSplashScreen(backupProcess);
-
-                LogicPOSAppContext.LoadingDialog.Run();
-            }
-        }
-
-
 
 
         public static string GetThemeFileLocation(string pFile)

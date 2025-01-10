@@ -17,6 +17,8 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<Terminal>>> GetAllQuery => new GetAllTerminalsQuery();
         public TerminalsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
         }
 
         public override int RunModal(EntityEditionModalMode mode)

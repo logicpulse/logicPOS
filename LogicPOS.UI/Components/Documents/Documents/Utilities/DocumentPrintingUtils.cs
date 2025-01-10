@@ -20,5 +20,14 @@ namespace LogicPOS.UI.Components.Documents
             pdf.Print();
             pdf.Dispose();
         }
+
+        public static void Print(string fileLocation, string printerName)
+        {
+            PdfDocument pdf = new PdfDocument();
+            pdf.LoadFromFile(fileLocation);
+            pdf.PrintSettings.PrinterName = printerName;
+            pdf.Print();
+            pdf.Dispose();
+        }
     }
 }
