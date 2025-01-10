@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            DocumentPrintingUtils.PrintWithNativeDialog(pdfLocation);
+            PdfPrinter.PrintWithNativeDialog(pdfLocation);
         }
 
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            DocumentPrintingUtils.Print(pdfLocation,printer.Designation);
+            PdfPrinter.Print(pdfLocation,printer.Designation);
         }
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)

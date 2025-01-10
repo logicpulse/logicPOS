@@ -1,9 +1,9 @@
 ﻿using Spire.Pdf;
 using System.Windows.Forms;
 
-namespace LogicPOS.UI.Components.Documents
+namespace LogicPOS.Printing.Services
 {
-    public static class DocumentPrintingUtils
+    public static class PdfPrinter
     {
         public static void PrintWithNativeDialog(string fileLocation)
         {
@@ -14,6 +14,10 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
+            var printerName = printDialog.PrinterSettings.PrinterName;
+
+            printDialog.Dispose();
+
             PdfDocument pdf = new PdfDocument();
             pdf.LoadFromFile(fileLocation);
             pdf.PrintSettings.PrinterName = printDialog.PrinterSettings.PrinterName;
@@ -21,7 +25,8 @@ namespace LogicPOS.UI.Components.Documents
             pdf.Dispose();
         }
 
-        public static void Print(string fileLocation, string printerName)
+        public static void Print(string fileLocation, 
+                                 string printerName)
         {
             PdfDocument pdf = new PdfDocument();
             pdf.LoadFromFile(fileLocation);

@@ -31,6 +31,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+   <Reference Include="Spire.Pdf, Version=8.6.0.0, Culture=neutral, PublicKeyToken=663f351905198cb3, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\SpirePDF\Spire.Pdf.dll</HintPath>
+    </Reference>
     <Reference Include="FastReport.Mono">
       <HintPath>..\libs\fastreport\FastReport.Mono.dll</HintPath>
     </Reference>
@@ -65,6 +69,7 @@
     <Compile Include="Enums\WorkSessionMovementResumeQueryMode.cs" />
     <Compile Include="Enums\WriteLineTextMode.cs" />
     <Compile Include="Common\GenericThermalPrinter.cs" />
+    <Compile Include="Services\PdfPrinter.cs" />
     <Compile Include="ThermalPrinter\Documents\CompanyPrintingInformationsDto.cs" />
     <Compile Include="ThermalPrinter\Documents\WorkSession.cs" />
     <Compile Include="ThermalPrinter\Documents\WorkSession.DataTableGroupProperties.cs" />
@@ -91,6 +96,7 @@
     <Compile Include="Windows\Print.cs" />
     <Compile Include="Windows\RawPrinterHelper.cs" />
   </ItemGroup>
+  
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
       <Project>{267C627F-2248-4500-9247-CE7F30431A25}</Project>
@@ -121,6 +127,7 @@
       <Name>LogicPOS.Utility</Name>
     </ProjectReference>
   </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="DevExpress.Xpo">
       <Version>23.2.6</Version>
@@ -135,10 +142,12 @@
       <Version>0.7.0</Version>
     </PackageReference>
   </ItemGroup>
+  
   <ItemGroup>
     <EmbeddedResource Include="Tickets\TicketTable.resx">
       <DependentUpon>TicketTable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

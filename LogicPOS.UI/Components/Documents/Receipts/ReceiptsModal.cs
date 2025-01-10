@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.Globalization;
+using LogicPOS.Printing.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -182,7 +183,7 @@ namespace LogicPOS.UI.Components.Documents
                     return;
                 }
 
-                DocumentPrintingUtils.PrintWithNativeDialog(pdfLocation);
+                PdfPrinter.PrintWithNativeDialog(pdfLocation);
             }
         }
 
@@ -264,7 +265,6 @@ namespace LogicPOS.UI.Components.Documents
             return box;
 
         }
-
 
     }
 }
