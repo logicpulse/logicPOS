@@ -12,16 +12,7 @@ namespace LogicPOS.UI
         {
             var services = new ServiceCollection();
 
-            services.AddHttpClient("Default", config =>
-            {
-                config.DefaultRequestHeaders.Add("Accept", "application/json");
-                config.BaseAddress = new Uri("http://localhost:5011/");
-            });
-
-            services.AddMediatR(config =>
-            {
-                config.RegisterServicesFromAssemblyContaining<ApiAssemblyReference>();
-            });
+            services.AddApi();
 
             Services = services.BuildServiceProvider();
         }
