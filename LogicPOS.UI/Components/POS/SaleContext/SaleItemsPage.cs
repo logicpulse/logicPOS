@@ -361,7 +361,7 @@ namespace LogicPOS.UI.Components.POS
         {
             Clear(true);
             SetTicketModeBackGround();
-            Ticket = SaleContext.CurrentOrder.AddTicket(new List<SaleItem> { item });
+            Ticket = SaleContext.CurrentOrder?.AddTicket(new List<SaleItem> { item });
             PresentLastItem();
             SelectItem(item);
             UpdateLabelTotalValue();
@@ -389,6 +389,11 @@ namespace LogicPOS.UI.Components.POS
 
         private void PresentLastItem()
         {
+            if(Ticket == null)
+            {
+                return;
+            }
+
             var model = (ListStore)GridViewSettings.Model;
             model.AppendValues(Ticket.Items.Last());
         }

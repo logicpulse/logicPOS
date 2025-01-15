@@ -103,7 +103,7 @@ namespace LogicPOS.UI.Components.Menus
 
         private void SelectCurrentTable()
         {
-            if (SelectedEntity == null || SelectedEntity.Id == SaleContext.CurrentTable.Id)
+            if (SelectedEntity == null || SaleContext.CurrentTable == null || SelectedEntity.Id == SaleContext.CurrentTable.Id)
             {
                 return;
             }

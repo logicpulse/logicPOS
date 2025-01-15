@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS.PrintingContext;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using MediatR;
@@ -152,7 +153,7 @@ namespace LogicPOS.UI.Components.POS
                 }
             }
 
-            PrintingServices.PrintOrder(SaleContext.ItemsPage);
+            ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket);
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
