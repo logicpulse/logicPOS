@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Terminals
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public static Terminal Terminal { get; private set; }
 
+        public static bool HasThermalPrinter => Terminal != null && Terminal.ThermalPrinter != null;
         private static async Task<ErrorOr<Guid>> CreateTerminalAsync(CancellationToken ct = default)
         {
             var command = new CreateTerminalCommand();

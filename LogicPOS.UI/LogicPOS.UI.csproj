@@ -98,7 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="**\*.cs" Exclude="obj\**\*.cs;Properties\**\*.cs;Resources\**\*.cs" />
-    <Compile Include="Components\POS\PrintingContext\PrintingServices.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
