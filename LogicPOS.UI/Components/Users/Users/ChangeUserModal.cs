@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
@@ -107,7 +106,7 @@ namespace LogicPOS.UI.Components.Modals
                 CustomAlerts.Information(this)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_information")
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, XPOSettings.DefaultValueUserDetailAccessPin))
+                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, "0000"))
                             .ShowAlert();
             }
 
@@ -115,7 +114,7 @@ namespace LogicPOS.UI.Components.Modals
             UserPinModal pinModal = new UserPinModal(this, user);
             var pinModalResponse = (ResponseType)pinModal.Run();
 
-            if(pinModalResponse == ResponseType.Ok)
+            if (pinModalResponse == ResponseType.Ok)
             {
                 POSWindow.Instance.UpdateUI();
                 BackOfficeWindow.Instance.UpdateUI();

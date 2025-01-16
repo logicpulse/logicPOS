@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogicPOS.Data\LogicPOS.Data.csproj" />
     <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj" />
   </ItemGroup>
 

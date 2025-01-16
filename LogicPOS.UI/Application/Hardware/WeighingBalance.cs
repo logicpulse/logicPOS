@@ -1,8 +1,4 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Domain.Entities;
-using LogicPOS.Globalization;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
@@ -45,8 +41,8 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_initializing_weighing_balance"),TerminalService.Terminal.Designation,ex.Message);
-               
+                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_initializing_weighing_balance"), TerminalService.Terminal.Designation, ex.Message);
+
                 CustomAlerts.Error(LoginWindow.Instance)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_error")

@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -51,7 +50,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 Ticket = null;
             }
- 
+
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
 
@@ -75,7 +74,7 @@ namespace LogicPOS.UI.Components.POS
         {
             var orderItems = SaleContext.CurrentOrder.GetOrderItems();
 
-            if(orderItems.Any() == false)
+            if (orderItems.Any() == false)
             {
                 SetTicketModeBackGround();
                 return;
@@ -83,15 +82,15 @@ namespace LogicPOS.UI.Components.POS
 
             SetOrderModeBackGround();
             var model = (ListStore)GridViewSettings.Model;
-          
+
             orderItems.ForEach(entity => model.AppendValues(entity));
-            
+
             UpdateLabelTotalValue();
         }
 
         public void PresentTicketItems()
         {
-            if(Ticket == null)
+            if (Ticket == null)
             {
                 return;
             }
@@ -339,7 +338,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void AddItem(SaleItem item)
         {
-            if(Ticket == null)
+            if (Ticket == null)
             {
                 OpenTicket(item);
                 return;
@@ -389,7 +388,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void PresentLastItem()
         {
-            if(Ticket == null)
+            if (Ticket == null)
             {
                 return;
             }

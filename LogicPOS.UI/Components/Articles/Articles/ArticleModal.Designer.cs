@@ -1,14 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Components.Warehouses;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;

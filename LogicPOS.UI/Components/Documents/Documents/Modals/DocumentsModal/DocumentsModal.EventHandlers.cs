@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Documents
             {
                 Run();
             }
-           
+
             base.OnResponse(response);
         }
 
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            PdfPrinter.Print(pdfLocation,printer.Designation);
+            PdfPrinter.Print(pdfLocation, printer.Designation);
         }
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)

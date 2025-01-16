@@ -1,10 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
@@ -329,18 +327,18 @@ namespace LogicPOS.UI.Components.Pages
                 selAno.Changed += delegate
                {
                    annualTotal = 0;
-                   foreach (fin_documentfinancemaster item in collectionDocuments)
-                   {
-                       if (item.Date.Year.ToString() == selAno.ActiveText.ToString())
-                       {
-                           if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
-                           {
-                               annualTotal -= Convert.ToDecimal(item.TotalFinal);
-                           }
-                           else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
-                               annualTotal += Convert.ToDecimal(item.TotalFinal);
-                       }
-                   }
+                   //foreach (fin_documentfinancemaster item in collectionDocuments)
+                   //{
+                   //    if (item.Date.Year.ToString() == selAno.ActiveText.ToString())
+                   //    {
+                   //        if (item.DocumentType.Oid.ToString() == creditNoteOid && item.DocumentStatusStatus != "A")
+                   //        {
+                   //            annualTotal -= Convert.ToDecimal(item.TotalFinal);
+                   //        }
+                   //        else if (item.DocumentStatusStatus != "A" && (item.DocumentType.Oid.ToString() == invoiceOid || item.DocumentType.Oid.ToString() == invoiceAndPaymentOid || item.DocumentType.Oid.ToString() == simpleInvoiceOid))
+                   //            annualTotal += Convert.ToDecimal(item.TotalFinal);
+                   //    }
+                   //}
                    label.Text = string.Format("{0} {3}\n\n{1} {3}\n\n{2} {3}",
                     Convert.ToInt64(Math.Round(dailyTotal, 0)).ToString(),
                     Convert.ToInt64(Math.Round(MonthlyTotal, 0)).ToString(),

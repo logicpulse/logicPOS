@@ -3,7 +3,6 @@ using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -24,7 +23,6 @@ using System.IO.Ports;
 using System.Net;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading;
 
 namespace logicpos
 {
@@ -592,7 +590,7 @@ namespace logicpos
         {
             WebClient wc = new WebClient();
             byte[] raw = wc.DownloadData("http://box.logicpulse.pt/files/changelogs/pos.txt");
-           
+
             System.Text.Encoding iso = System.Text.Encoding.GetEncoding("ISO-8859-1");
             System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
             byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
@@ -727,7 +725,7 @@ namespace logicpos
         public static void OpenArticleStockDialog(Window parentWindow)
         {
 
-            if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
+            if (LicenseSettings.LicenseModuleStocks)
             {
                 //tchial0: Open Stock Management
             }

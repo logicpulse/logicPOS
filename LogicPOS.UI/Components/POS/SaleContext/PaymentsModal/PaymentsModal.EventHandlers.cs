@@ -1,28 +1,13 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Company.GetCompanyInformations;
-using LogicPOS.Api.Features.Documents.GetDocumentById;
-using LogicPOS.DTOs.Printing;
-using LogicPOS.Printing.Documents;
-using LogicPOS.Printing.Utility;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
-using LogicPOS.UI.Components.POS.PrintingContext;
-using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -59,7 +44,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             ProcesPayment();
-            PrintingServices.PrintDocument(addDocumentResult.Value);
+           
         }
 
         private void ProcesPayment()

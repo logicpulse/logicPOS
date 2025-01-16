@@ -1,13 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
-using LogicPOS.Data.XPO.Settings;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Drawing;
 
@@ -53,7 +51,8 @@ namespace LogicPOS.UI.Components.Windows
             {
                 BackOfficeWindow.ShowBackOffice();
                 return;
-            } else
+            }
+            else
             {
                 POSWindow.ShowPOS();
             }
@@ -83,7 +82,7 @@ namespace LogicPOS.UI.Components.Windows
                 CustomAlerts.Information(this)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_information")
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), user.Name, XPOSettings.DefaultValueUserDetailAccessPin))
+                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), user.Name, "0000"))
                             .ShowAlert();
             }
 

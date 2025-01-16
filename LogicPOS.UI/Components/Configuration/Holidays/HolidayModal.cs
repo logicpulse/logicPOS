@@ -1,11 +1,10 @@
-﻿using DevExpress.Schedule;
-using LogicPOS.Api.Features.Holidays.AddHoliday;
+﻿using LogicPOS.Api.Features.Holidays.AddHoliday;
 using LogicPOS.Api.Features.Holidays.UpdateHoliday;
 using Holiday = LogicPOS.Api.Entities.Holiday;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class HolidayModal: EntityEditionModal<Holiday>
+    public partial class HolidayModal : EntityEditionModal<Holiday>
     {
         public HolidayModal(EntityEditionModalMode modalMode, Holiday entity = null) : base(modalMode, entity)
         {

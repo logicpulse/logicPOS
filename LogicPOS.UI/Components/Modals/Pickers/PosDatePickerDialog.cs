@@ -1,11 +1,10 @@
 ﻿using Gtk;
-using System;
-using System.Drawing;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -19,12 +18,12 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public Calendar Calendar { get; set; }
 
         public PosDatePickerDialog(Window parentWindow, DialogFlags pDialogFlags)
-            : this(parentWindow, pDialogFlags, LocalizedString.Instance["window_title_dialog_datepicker"], XPOUtility.CurrentDateTimeAtomic())
+            : this(parentWindow, pDialogFlags, LocalizedString.Instance["window_title_dialog_datepicker"],DateTime.Now)
         {
         }
 
         public PosDatePickerDialog(Window parentWindow, DialogFlags pDialogFlags, string pDialogTitle)
-            : this(parentWindow, pDialogFlags, pDialogTitle, XPOUtility.CurrentDateTimeAtomic())
+            : this(parentWindow, pDialogFlags, pDialogTitle, DateTime.Now)
         {
         }
 

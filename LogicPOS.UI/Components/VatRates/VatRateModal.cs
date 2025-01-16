@@ -1,12 +1,10 @@
-﻿using DevExpress.Schedule;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatRates.AddVatRate;
 using LogicPOS.Api.Features.VatRates.UpdateVatRate;
-using System.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class VatRateModal: EntityEditionModal<VatRate>
+    public partial class VatRateModal : EntityEditionModal<VatRate>
     {
         public VatRateModal(EntityEditionModalMode modalMode, VatRate entity = null) : base(modalMode, entity)
         {
@@ -51,8 +49,8 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtValue.Text = _entity.Value.ToString();
             _txtTaxType.Text = _entity.TaxType;
-            _txtTaxCode.Text= _entity.TaxCode;
-            _txtCountryRegionCode.Text= _entity.CountryRegion;
+            _txtTaxCode.Text = _entity.TaxCode;
+            _txtCountryRegionCode.Text = _entity.CountryRegion;
             _txtDescription.Text = _entity.Description;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;

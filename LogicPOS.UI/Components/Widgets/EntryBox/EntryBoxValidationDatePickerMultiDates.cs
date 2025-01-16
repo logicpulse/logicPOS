@@ -1,14 +1,13 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using LogicPOS.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Utility;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Alerts;
 using System.Drawing;
-using LogicPOS.UI.Components.InputFields.Validation;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -50,7 +49,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public EntryBoxValidationDatePickerMultiDates(Window parentWindow, string pLabelText, string pWindowTitle, List<DateTime> pInitialDatesList)
         {
-            string initialDate = XPOUtility.CurrentDateTimeAtomic().ToString(CultureSettings.DateFormat);
+            string initialDate = DateTime.Now.ToString(CultureSettings.DateFormat);
 
             //Parameters
             _sourceWindow = parentWindow;

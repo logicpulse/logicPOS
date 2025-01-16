@@ -4,23 +4,16 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.DiscountGroups.DeleteDiscountGroup;
-using LogicPOS.Domain.Entities;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class DiscountGroupsPage : Page<DiscountGroup>
     {
-       
+
         protected override IRequest<ErrorOr<IEnumerable<DiscountGroup>>> GetAllQuery => new GetAllDiscountGroupsQuery();
         public DiscountGroupsPage(Window parent) : base(parent)
         {

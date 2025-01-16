@@ -1,15 +1,11 @@
 using Gtk;
 using logicpos;
-using logicpos.Classes.Enums.App;
 using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
-using LogicPOS.Modules;
-using LogicPOS.Modules.StockManagement;
 using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
@@ -70,10 +66,10 @@ namespace LogicPOS.UI
                 {
                     if (InitializeCulture() == false)
                     {
-                       SimpleAlerts.Error()
-                                   .WithTitle("Erro")
-                                   .WithMessage("Não foi possível initalizar o idioma do sistema.")
-                                   .ShowAlert();
+                        SimpleAlerts.Error()
+                                    .WithTitle("Erro")
+                                    .WithMessage("Não foi possível initalizar o idioma do sistema.")
+                                    .ShowAlert();
 
                         return;
                     }
@@ -118,7 +114,8 @@ namespace LogicPOS.UI
 
         private static void InitializeStockModule()
         {
-            ModulesSettings.StockManagementModule = PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>();
+            throw new NotImplementedException();
+            //ModulesSettings.StockManagementModule = PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>();
         }
 
         private static void InitializeSoftwareVendorPlugin()
@@ -137,7 +134,7 @@ namespace LogicPOS.UI
 
             if (intializeTerminalResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(intializeTerminalResult.FirstError,true);
+                ErrorHandlingService.HandleApiError(intializeTerminalResult.FirstError, true);
                 return;
             }
 

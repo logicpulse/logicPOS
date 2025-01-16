@@ -1,14 +1,13 @@
 ﻿
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using System;
-using System.Drawing;
 using LogicPOS.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Utility;
-using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.Utility;
+using System;
+using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -30,7 +29,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             //pastMonths=0 to Work in Curent Month Range, pastMonths=1 Works in Past Month, pastMonths=2 Two months Ago etc
             int pastMonths = 1;
-            DateTime workingDate = XPOUtility.CurrentDateTimeAtomic().AddMonths(-pastMonths);
+            DateTime workingDate = DateTime.Now.AddMonths(-pastMonths);
             DateTime firstDayOfMonth = new DateTime(workingDate.Year, workingDate.Month, 1);
             DateTime lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
             DateTime dateTimeStart = firstDayOfMonth;

@@ -1,10 +1,9 @@
 ﻿using Gtk;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using System;
 using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.UI;
-using LogicPOS.Data.XPO.Utility;
+using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -24,37 +23,37 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public event EventHandler ClosePopup;
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pRule, bool pRequired)
-            :this(parentWindow, pLabelText, LocalizedString.Instance["global_date"], XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired)
+            : this(parentWindow, pLabelText, LocalizedString.Instance["global_date"], DateTime.Now, pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired)
-            :this(parentWindow, pLabelText, pWindowTitle, XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired)
+            : this(parentWindow, pLabelText, pWindowTitle, DateTime.Now, pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, string pRule, bool pRequired, string pDateFormat)
-            :this(parentWindow, pLabelText, pWindowTitle, XPOUtility.CurrentDateTimeAtomic(), pRule, pRequired, pDateFormat)
+            : this(parentWindow, pLabelText, pWindowTitle, DateTime.Now, pRule, pRequired, pDateFormat)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, DateTime pDateTime, string pRule, bool pRequired)
-            :this(parentWindow, pLabelText, LocalizedString.Instance["global_date"], pDateTime, pRule, pRequired)
+            : this(parentWindow, pLabelText, LocalizedString.Instance["global_date"], pDateTime, pRule, pRequired)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired)
-            :this(parentWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, LogicPOS.Settings.CultureSettings.DateFormat)
+            : this(parentWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, LogicPOS.Settings.CultureSettings.DateFormat)
         {
         }
         /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired, string pDateFormat, bool pBOSource = false)
-            :this(parentWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.AlfaNumeric, pRule, pRequired, pDateFormat, pBOSource)
+            : this(parentWindow, pLabelText, string.Empty, pDateTime, KeyboardMode.AlfaNumeric, pRule, pRequired, pDateFormat, pBOSource)
         {
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, KeyboardMode pKeyboardMode, string pRule, bool pRequired, string pDateFormat, bool pBOSource = false)
-            : base(parentWindow, pLabelText, pKeyboardMode, pRule, pRequired,"", pBOSource)
+            : base(parentWindow, pLabelText, pKeyboardMode, pRule, pRequired, "", pBOSource)
         {
             //Parameters
             _sourceWindow = parentWindow;
@@ -101,7 +100,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 ResponseType response = (ResponseType)dialog.Run();
                 if (response == ResponseType.Ok)
                 {
-                    DateTime now = XPOUtility.CurrentDateTimeAtomic();
+                    DateTime now = DateTime.Now;
                     //Get Date from Calendar Widget
                     DateTime date = dialog.Calendar.Date;
                     //Transform Date to DateTime, Date + Current Hour
@@ -141,10 +140,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
 
             GtkUtils.UpdateWidgetColorsAfterValidation(
-                _entryValidation, 
-                _entryValidation.Validated, 
-                _entryValidation.Label, 
-                _entryValidation.Label2, 
+                _entryValidation,
+                _entryValidation.Validated,
+                _entryValidation.Label,
+                _entryValidation.Label2,
                 _entryValidation.Label3);
         }
     }

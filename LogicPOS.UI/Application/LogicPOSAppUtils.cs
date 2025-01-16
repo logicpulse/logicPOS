@@ -1,9 +1,7 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.Enums.App;
 using logicpos.Classes.Logic.Hardware;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Data.XPO.Utility;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
@@ -163,7 +161,6 @@ namespace LogicPOS.UI.Application
                 _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GeneralSettings.AppUseParkingTicketModule));
             }
 
-            XPOUtility.SystemNotification();
 #if DEBUG
             LicenseSettings.LicenseModuleStocks = true;
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";

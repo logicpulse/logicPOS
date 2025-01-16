@@ -1,5 +1,4 @@
-﻿using DevExpress.Data.Browsing.Design;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using System;
@@ -16,13 +15,13 @@ namespace LogicPOS.UI.Components.Modals.Common
                      Size size,
                      string icon = null,
                      DialogFlags flags = DialogFlags.DestroyWithParent,
-                     bool render = true) : base(title,parent, flags)
+                     bool render = true) : base(title, parent, flags)
         {
             if (string.IsNullOrEmpty(icon))
             {
                 icon = ModalIconsSettings.Default.WindowIcon;
             }
-         
+
             InitializeWindow(parent, title, size, icon);
 
             if (render)
@@ -73,11 +72,11 @@ namespace LogicPOS.UI.Components.Modals.Common
             layout.PackStart(CreateTitleBarEventBox(), false, false, 0);
             layout.PackStart(WindowSettings.CreateBodyEventBox(), true, true, 0);
 
-            if(WindowSettings.RightButtons != null)
+            if (WindowSettings.RightButtons != null)
             {
                 layout.PackStart(CreateActionAreaBox(), false, false, 0);
             }
-          
+
             EventBox eventboxWindowBorderInner = new EventBox() { BorderWidth = 0 };
             eventboxWindowBorderInner.ModifyBg(StateType.Normal, EntitySelectionModalColors.WindowBackground.ToGdkColor());
             eventboxWindowBorderInner.Add(layout);

@@ -1,23 +1,12 @@
-﻿using DevExpress.Xpo.DB;
-using Gtk;
-using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.Widgets;
+﻿using Gtk;
 using LogicPOS.Api.Entities.Enums;
-using LogicPOS.Data.XPO;
-using LogicPOS.Data.XPO.Settings;
-using LogicPOS.Data.XPO.Utility;
-using LogicPOS.Domain.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Dialogs;
-using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
-using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -48,7 +37,7 @@ namespace LogicPOS.UI.Components.POS
                                  WorkSessionService.GetTotalCashInCashDrawer().ToString("C")),
                    new Size(462, 310),
                    PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_cash_drawer.png")
-        {    
+        {
 
         }
 

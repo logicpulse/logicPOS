@@ -3,7 +3,6 @@ using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Company.GetAngolaSaft;
 using LogicPOS.Api.Features.Database;
-using LogicPOS.Modules;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -72,7 +71,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Articles 
         private void BtnStock_Clicked(object sender, EventArgs e)
         {
-            if (LicenseSettings.LicenseModuleStocks && ModulesSettings.StockManagementModule != null)
+            if (LicenseSettings.LicenseModuleStocks )
             {
                 return;
             }

@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using logicpos.Classes.Gui.Gtk.WidgetsXPO;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -19,7 +18,7 @@ namespace LogicPOS.UI.Components.InputFieds
         public object FieldValue { get; set; }
         public string ValidationRule { get; set; }
         public bool Required { get; set; }
-        public bool ValidationFunctionResult { get; set; } 
+        public bool ValidationFunctionResult { get; set; }
         public bool Validated { get; set; }
         public Type FieldType { get; set; }
         public PropertyInfo FieldProperty { get; set; }
@@ -76,7 +75,7 @@ namespace LogicPOS.UI.Components.InputFieds
                 case "Entry":
                     var textField = Widget as Entry;
                     if (GetFieldValueFromEntity() != null)
-                    {     
+                    {
                         textField.Text = (string)Convert.ChangeType(GetFieldValueFromEntity(), typeof(string), Settings.CultureSettings.CurrentCultureNumberFormat);
 
                         if (FieldType == typeof(decimal) && Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
@@ -93,7 +92,7 @@ namespace LogicPOS.UI.Components.InputFieds
                     {
                         textField.Text = string.Empty;
                     }
-                    
+
 
                     if (ValidationRule != string.Empty)
                     {
@@ -215,16 +214,6 @@ namespace LogicPOS.UI.Components.InputFieds
                     }
                     break;
 
-                case "XPOComboBox":
-                    //InitialValue : Defined in XPOComboBox Object
-                    //Validation
-                    //Removed check Required to ValidateField, else wont work in no Required Fields
-                    //if (_required)
-                    //{
-                    ValidateField();
-                    (Widget as XPOComboBox).Changed += delegate { ValidateField(); };
-                    //}
-                    break;
 
                 //Used outside BackOffice (Touch)
                 case "EntryBoxValidation":
@@ -299,31 +288,7 @@ namespace LogicPOS.UI.Components.InputFieds
                 UpdateWidget(currentWidget, Validated && ValidationFunctionResult);
             }
 
-            //XPOComboBox
-            else if (Widget.GetType() == typeof(XPOComboBox))
-            {
-                //Required + Validate
-                if ((Widget as XPOComboBox).Value != null)
-                {
-                    Validated = GeneralUtils.ValidateString((Widget as XPOComboBox).Value.Oid.ToString(), ValidationRule);
-                    //Call Validate Func Here
-                    if (function != null) ValidationFunctionResult = function();
-
-                }
-                else if (Required && (Widget as XPOComboBox).Value == null)
-                {
-                    Validated = false;
-                }
-                else if (!Required && (Widget as XPOComboBox).Value == null)
-                {
-                    Validated = true;
-                };
-                //Style Widget
-                var currentWidget = Widget as XPOComboBox;
-                //Call update Widget UI 
-                UpdateWidget(currentWidget, Validated && ValidationFunctionResult);
-            }
-
+           
             //TODO :WIP - Cant Change FileChooserButton BackGround
             //FileChooserButton
             else if (Widget.GetType() == typeof(FileChooserButton))

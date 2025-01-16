@@ -1,8 +1,6 @@
-﻿using DevExpress.Schedule;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatExemptionReasons.AddVatExemptionReason;
 using LogicPOS.Api.Features.VatExemptionReasons.UpdateVatExemptionReason;
-using System.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -38,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity () => ExecuteAddCommand(CreateAddCommand());
+        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
 
         protected override void ShowEntityData()
         {
@@ -51,6 +49,6 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void UpdateEntity()=> ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
     }
 }

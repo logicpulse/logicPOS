@@ -1,5 +1,4 @@
-﻿using LogicPOS.Data.XPO.Settings;
-using System;
+﻿using System;
 using System.Net;
 
 namespace logicpos.Classes.Logic.Others
@@ -72,84 +71,6 @@ namespace logicpos.Classes.Logic.Others
             //}
         }
 
-        /// <summary>
-        /// Method responsible for communicates to "AccessTrackParkingTicketService.TimeService" to retrieve parking tivket details.
-        /// </summary>
-        /// <param name="ean"></param>
-        /// <returns></returns>
-        /// 
-        private ParkingTicketResult GetTicketInformation(string ean)
-        {
-            ParkingTicketResult parkingTicketResult = new ParkingTicketResult();
-            AccessTrackParkingTicketService.TimeService accessTrackParkingTicketService = new AccessTrackParkingTicketService.TimeService();
-            //IN009279 Parking ticket Service - implementar Cartão cliente
-            if (ean.Length == 13)
-            {
-
-                try
-                {
-                    //accessTrackParkingTicketService.Url = System.Configuration.ConfigurationManager.AppSettings["wsParkingURL"].ToString();
-                    //accessTrackParkingTicketService.Url = "http://localhost/wstimetrack/service.asmx".ToString();
-                    _logger.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
-                    System.Data.DataTable accessTrackParkingTicketServiceResult = accessTrackParkingTicketService.getTicketInformation(ean);
-
-                    /* Business rules defined that only one ticket will be created at a time */
-                    foreach (System.Data.DataRow ticketInformationItem in accessTrackParkingTicketServiceResult.Rows)
-                    {
-                        parkingTicketResult = ExtractTicketInformation(ticketInformationItem);
-                        parkingTicketResult.Ean = ean;
-                    }
-                }
-                catch (WebException ex)
-                {
-                    _logger.Error("ParkingTicketResult GetTicketInformation([ " + ean + " ]) :: " + ex.Message, ex);
-                    parkingTicketResult = null;
-                    // throw ex;
-                }
-            }
-            else
-            {
-                //IN009279
-                if (!accessTrackParkingTicketService.getCardInformation(ean))
-                {
-                    DateTime localDate = DateTime.Now;
-                    string dateNow = localDate.ToString();
-                    _logger.Debug("ParkingTicket URL([ " + accessTrackParkingTicketService.Url + " ]) :: ");
-                    accessTrackParkingTicketService.addInCard(ean, dateNow);
-                }
-                string sql = "SELECT Price1 FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getCardPrice = XPOSettings.Session.ExecuteScalar(sql);
-                parkingTicketResult.Price = Convert.ToInt32(getCardPrice);
-                parkingTicketResult.Ean = ean;
-                string sql2 = "SELECT DefaultQuantity FROM[logicposdb].[dbo].[fin_article] where Oid = '32829702-33fa-48d5-917c-4c1db8720777'";
-                var getDefaultQuantitysql = XPOSettings.Session.ExecuteScalar(sql2);
-
-                int quantity = Convert.ToInt32(getDefaultQuantitysql);
-                parkingTicketResult.Quantity = quantity.ToString();
-                parkingTicketResult.Quantity = string.Format("{0}", quantity.ToString());
-            }
-
-            return parkingTicketResult;
-        }
-
-        private static ParkingTicketResult ExtractTicketInformation(System.Data.DataRow ticketInformationItem)
-        {
-
-            ParkingTicketResult parkingTicketResult = new ParkingTicketResult
-            {
-                Date = ticketInformationItem["date"].ToString(),
-                Minutes = ticketInformationItem["minutes"].ToString(),
-                Quantity = ticketInformationItem["quantity"].ToString(),
-                Price = decimal.Parse(ticketInformationItem["price"].ToString()),
-                AlreadyPaid = Convert.ToBoolean(ticketInformationItem["alreadyPaid"]),
-                AlreadyExit = Convert.ToBoolean(ticketInformationItem["alreadyExit"].ToString()),
-                Description = ticketInformationItem["description"].ToString(),
-                DatePaid = ticketInformationItem["datePaid"].ToString(),
-                DateExits = ticketInformationItem["dateExit"].ToString(),
-                DateTolerance = ticketInformationItem["dateTolerance"].ToString()
-            };
-
-            return parkingTicketResult;
-        }
+    
     }
 }
