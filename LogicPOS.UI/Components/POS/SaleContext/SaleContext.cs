@@ -63,7 +63,14 @@ namespace LogicPOS.UI.Components.POS
 
         private static Table GetDefaultTable()
         {
-            return TablesService.GetFreeTables().FirstOrDefault();
+            var freeTable = TablesService.GetFreeTables().FirstOrDefault();
+
+            if (freeTable != null)
+            {
+                return freeTable;
+            }
+
+            return TablesService.GetOpenTables().FirstOrDefault();  
         }
     }
 }
