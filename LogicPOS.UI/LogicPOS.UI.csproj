@@ -218,10 +218,6 @@
       <Project>{267c627f-2248-4500-9247-ce7f30431a25}</Project>
       <Name>LogicPOS.Api</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj">
-      <Project>{e23bdf58-f0a9-40ac-acce-57235fb7a7f1}</Project>
-      <Name>LogicPOS.DTOs</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj">
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>

@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LogicPOS.DTOs\LogicPOS.DTOs.csproj" />
     <ProjectReference Include="..\LogicPOS.Globalization\LogicPOS.Globalization.csproj" />
     <ProjectReference Include="..\LogicPOS.Settings\LogicPOS.Settings.csproj" />
   </ItemGroup>
