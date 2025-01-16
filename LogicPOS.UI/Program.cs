@@ -114,7 +114,6 @@ namespace LogicPOS.UI
 
         private static void InitializeStockModule()
         {
-            throw new NotImplementedException();
             //ModulesSettings.StockManagementModule = PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>();
         }
 
