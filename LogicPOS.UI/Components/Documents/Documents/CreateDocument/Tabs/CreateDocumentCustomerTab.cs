@@ -17,7 +17,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentCustomerTab : ModalTab
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public PageTextBox TxtCustomer { get; set; }
         public PageTextBox TxtFiscalNumber { get; set; }
         public PageTextBox TxtCardNumber { get; set; }
@@ -170,6 +169,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.DecimalNumber);
+
+            TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
+
             TxtDiscount.Text = "0";
         }
 

@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Components.InputFields
         public string FieldName => Label.Text;
         public event EventHandler SelectEntityClicked;
         public object SelectedEntity { get; set; }
+        public Predicate<string> IsValidFunction { get; set; }
 
         public PageTextBox(Window sourceWindow,
                            string labelText,
@@ -52,6 +53,8 @@ namespace LogicPOS.UI.Components.InputFields
             UpdateValidationColors();
         }
 
+
+
         public bool IsValid()
         {
             if (IsEmpty)
@@ -65,7 +68,16 @@ namespace LogicPOS.UI.Components.InputFields
             {
                 if (IsValidatable)
                 {
-                    return System.Text.RegularExpressions.Regex.IsMatch(Entry.Text, Regex);
+                    var isValid = System.Text.RegularExpressions.Regex.IsMatch(Entry.Text, Regex);
+                    if (!isValid)
+                    {
+                        return false;
+                    }
+
+                    if (IsValidFunction != null)
+                    {
+                        return IsValidFunction(Entry.Text);
+                    }
                 }
             }
 

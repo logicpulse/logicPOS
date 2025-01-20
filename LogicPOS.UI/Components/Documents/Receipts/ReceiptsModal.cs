@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Services;
@@ -11,7 +10,6 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
@@ -174,9 +172,24 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
         {
+            if (Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            var modal = new RePrintDocumentModal(this, Page.SelectedEntity.RefNo);
+            ResponseType reponse = (ResponseType)modal.Run();
+            var copyNumber = modal.CopyNumber;
+            modal.Destroy();
+
+            if (reponse != ResponseType.Ok)
+            {
+                return;
+            }
+
             if (Page.SelectedEntity != null)
             {
-                var pdfLocation = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id);
+                var pdfLocation = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id,copyNumber);
 
                 if (pdfLocation == null)
                 {

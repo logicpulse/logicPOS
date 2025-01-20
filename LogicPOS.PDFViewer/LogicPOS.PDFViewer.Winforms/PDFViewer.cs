@@ -15,7 +15,7 @@ namespace LogicPOS.PDFViewer.Winforms
 
             InitializeComponent(docPath, width, height);
 
-            pdfToolStripMain1.Enabled = false;
+           // pdfToolStripMain1.Enabled = false;
         }
 
         private void pdfToolStripMain1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

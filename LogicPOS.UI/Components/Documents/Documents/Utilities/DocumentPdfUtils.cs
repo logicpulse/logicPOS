@@ -16,10 +16,10 @@ namespace LogicPOS.UI.Components.Documents.Utilities
             }
         }
 
-        public static string GetDocumentPdfFileLocation(Guid documentId)
+        public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber = 1)
         {
             var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-            var command = new GetDocumentPdfQuery { Id = documentId };
+            var command = new GetDocumentPdfQuery (documentId, copyNumber);
             var result = mediator.Send(command).Result;
 
             if (result.IsError)
@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static void ViewReceiptPdf(Gtk.Window source, Guid documentId)
         {
-            var fileLocation = GetReceiptPdfFileLocation(documentId);
+            var fileLocation = GetReceiptPdfFileLocation(documentId,1);
 
             if (fileLocation == null)
             {
@@ -60,10 +60,10 @@ namespace LogicPOS.UI.Components.Documents.Utilities
             }
         }
 
-        public static string GetReceiptPdfFileLocation(Guid documentId)
+        public static string GetReceiptPdfFileLocation(Guid documentId, uint copyNumber)
         {
             var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
-            var command = new GetReceiptPdfQuery { Id = documentId };
+            var command = new GetReceiptPdfQuery(documentId, copyNumber);
             var result = mediator.Send(command).Result;
 
             if (result.IsError)

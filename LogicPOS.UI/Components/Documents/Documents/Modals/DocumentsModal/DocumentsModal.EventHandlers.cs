@@ -18,11 +18,17 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            var modal = new RePrintDocumentModal(this, Page.SelectedEntity);
-            modal.Run();
+            var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
+            ResponseType reponse = (ResponseType) modal.Run();
+            var copyNumber = modal.CopyNumber;
             modal.Destroy();
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id);
+            if (reponse != ResponseType.Ok)
+            {       
+                return;
+            }
+
+            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id,copyNumber);
 
             if (pdfLocation == null)
             {

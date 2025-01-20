@@ -271,6 +271,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.DecimalNumber);
 
+            TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
+
             TxtDiscount.Text = "0";
 
             ValidatableFields.Add(TxtDiscount);
