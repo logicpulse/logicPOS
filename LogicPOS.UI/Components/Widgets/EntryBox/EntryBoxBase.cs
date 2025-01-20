@@ -330,7 +330,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 int response = dialog.Run();
                 if (response == (int)ResponseType.Ok)
                 {
-                    string input = DataConversionUtils.DecimalToString(dialog.Amount);
+                    string input = dialog.Amount.ToString();
                     if (input != null)
                     {
                         if (pBoxObject.GetType() == typeof(ValidatableTextBox))

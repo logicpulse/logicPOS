@@ -88,7 +88,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             decimal result;
             string regexDecimalGreaterThanZero = RegularExpressions.DecimalGreaterThanZero;
-            string defaultValue = (pUseDefaultValue) ? DataConversionUtils.DecimalToString(pDefaultValue) : string.Empty;
+            string defaultValue = (pUseDefaultValue) ? pDefaultValue.ToString() : string.Empty;
 
             PosKeyboardDialog dialog = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
             int response = dialog.Run();

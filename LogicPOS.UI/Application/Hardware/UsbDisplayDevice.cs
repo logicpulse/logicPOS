@@ -569,18 +569,18 @@ namespace logicpos.Classes.Logic.Hardware
 
         public void ShowOrder(string pArticle, decimal pQuantity, decimal pPrice, decimal pTotal)
         {
-            string article = string.Format("{0} x {1}", DataConversionUtils.DecimalToString(pQuantity), pArticle);
-            string price = string.Format("{0}", DataConversionUtils.DecimalToString(pPrice));
+            string article = string.Format("{0} x {1}", pQuantity, pArticle);
+            string price = string.Format("{0}", pPrice);
             string line1 = TextJustified(article, price, Convert.ToInt16(_charactersPerLine));
             Write(RemoveAccents(line1), 1);
-            WriteJustified(RemoveAccents(LocalizedString.Instance["global_pole_display_global_total"]), DataConversionUtils.DecimalToString(pTotal), 2);
+            WriteJustified(RemoveAccents(LocalizedString.Instance["global_pole_display_global_total"]), pTotal.ToString(), 2);
             EnableStandBy();
         }
 
         public void ShowPayment(string pPaymentType, decimal pTotalDelivery, decimal pTotalChange)
         {
             Write(pPaymentType, 1);
-            WriteJustified(DataConversionUtils.DecimalToString(pTotalDelivery), DataConversionUtils.DecimalToString(pTotalChange), 2);
+            WriteJustified(pTotalDelivery.ToString(), pTotalChange.ToString(), 2);
             EnableStandBy();
         }
 

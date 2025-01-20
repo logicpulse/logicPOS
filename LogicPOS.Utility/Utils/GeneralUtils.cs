@@ -127,7 +127,7 @@ namespace LogicPOS.Utility
             }
             var minWordLengthConsidered = Convert.ToInt16(GeneralSettings.Settings["MinWordLengthConsidered"]);
 
-            result.Words = StringUtils.GetNumWords(
+            result.Words = GetNumWords(
                 result.Text,
                 minWordLengthConsidered);
 
@@ -136,7 +136,7 @@ namespace LogicPOS.Utility
                 if (result.Words > pMaxWords)
                 {
                     result.Words = pMaxWords;
-                    result.Text = StringUtils.GetWords(result.Text, pMaxWords);
+                    result.Text = GetWords(result.Text, pMaxWords);
                 }
                 maxWordsLabelText = string.Format("{0}: {1}/{2}", LocalizedString.Instance[ "global_words"], result.Words, pMaxWords);
             }
@@ -188,6 +188,73 @@ namespace LogicPOS.Utility
         public static string GetResourceByName(string resourceName)
         {
             return LocalizedString.Instance[resourceName];
+        }
+
+        public static string PrepareCutWord(string pText)
+        {
+            string tmpText = pText;
+
+            tmpText = tmpText.Replace('.', ' ');
+            tmpText = tmpText.Replace(',', ' ');
+            tmpText = tmpText.Replace(';', ' ');
+            tmpText = tmpText.Replace(':', ' ');
+            tmpText = tmpText.Replace('+', ' ');
+            tmpText = tmpText.Replace('/', ' ');
+            tmpText = tmpText.Replace('$', ' ');
+            tmpText = tmpText.Replace('=', ' ');
+            tmpText = tmpText.Replace('#', ' ');
+            tmpText = tmpText.Replace('"', ' ');
+            tmpText = tmpText.Replace('!', ' ');
+
+            return (tmpText);
+        }
+
+        public static string GetWords(string text, int numWords)
+        {
+            string result = string.Empty;
+
+            text = text.Replace("\n", " ");
+            text = text.Replace(".", " ");
+            text = text.Replace(",", " ");
+            text = text.Replace(";", " ");
+            text = text.Replace(":", " ");
+            text = text.Replace("+", " ");
+            text = text.Replace("/", " ");
+            text = text.Replace("$", " ");
+            text = text.Replace("=", " ");
+            text = text.Replace("#", " ");
+            text = text.Replace("\\", " ");
+            text = text.Replace("!", " ");
+            string[] res = text.Split(' ');
+            for (int i = 0; i < numWords; i++)
+            {
+                result += res[i];
+                if (i < numWords - 1) result += " ";
+            }
+
+            return (result);
+        }
+
+        public static int GetNumWords(string text, int minWordLengthConsidered)
+        {
+            int result = 0;
+
+            text = PrepareCutWord(text);
+
+            text = text.Replace("\n", " ");
+            string[] res = text.Split(' ');
+            for (int i = 0; i < res.Length; i++)
+            {
+                if (res[i] != "")
+                {
+                    if (res[i].Length >= minWordLengthConsidered)
+                    {
+                        result++;
+                    }
+                }
+            }
+
+            return (result);
         }
 
     }

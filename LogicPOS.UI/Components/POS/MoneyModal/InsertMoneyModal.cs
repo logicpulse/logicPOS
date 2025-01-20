@@ -116,7 +116,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
-            string defaultValue = DataConversionUtils.DecimalToString(pInitialValue);
+            string defaultValue = pInitialValue.ToString();
 
             InsertMoneyModal modal;
 
