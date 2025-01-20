@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
             }
         }
 
-        public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber = 1)
+        public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber)
         {
             var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
             var command = new GetDocumentPdfQuery (documentId, copyNumber);
@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static void ViewDocumentPdf(Gtk.Window source, Guid documentId)
         {
-            var fileLocation = GetDocumentPdfFileLocation(documentId);
+            var fileLocation = GetDocumentPdfFileLocation(documentId,1);
 
             if (fileLocation == null)
             {

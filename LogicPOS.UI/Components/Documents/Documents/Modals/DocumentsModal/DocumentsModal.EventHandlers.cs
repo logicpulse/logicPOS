@@ -75,12 +75,20 @@ namespace LogicPOS.UI.Components.Documents
                 CustomAlerts.Warning(this)
                             .WithMessage("Não foi possível encontrar a impressora configurada para o terminal.")
                             .ShowAlert();
-
-                BtnPrintDocumentAs_Clicked(sender, e);
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id);
+            var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
+            ResponseType reponse = (ResponseType)modal.Run();
+            var copyNumber = modal.CopyNumber;
+            modal.Destroy();
+
+            if (reponse != ResponseType.Ok)
+            {
+                return;
+            }
+
+            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id,copyNumber);
 
             if (pdfLocation == null)
             {
