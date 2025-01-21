@@ -1,11 +1,15 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.AddArticle;
+using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
+using LogicPOS.Api.Features.Articles.GetArticleChildren;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
 using LogicPOS.Api.Features.Articles.Types.GetAllArticleTypes;
 using LogicPOS.Api.Features.Articles.UpdateArticle;
+using LogicPOS.Api.Features.Articles.UpdateArticleChildren;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
@@ -20,9 +24,9 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleModal : EntityEditionModal<Article>
     {
-        private string _temporaryButtonImageLocation;
 
         private IEnumerable<ArticleSubfamily> _subfamilies;
+
         public ArticleModal(EntityEditionModalMode modalMode, Article entity = null) : base(modalMode, entity)
         {
             UpdateCompositionTabVisibility();
@@ -107,7 +111,23 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override void AddEntity()
+        {
+            var result = ExecuteAddCommand(CreateAddCommand());
+
+            if (result.IsError || _checkIsComposed.Active == false)
+            {
+                return;
+            }
+
+            var addChildrenCommand = new AddArticleChildrenCommand
+            {
+                Id = result.Value,
+                Children = _addArticlesBox.GetArticleChildren()
+            };
+
+            ExecuteAddCommand(addChildrenCommand);
+        }
 
         protected override void ShowEntityData()
         {
@@ -130,6 +150,12 @@ namespace LogicPOS.UI.Components.Modals
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
+
+            if (_entity.IsComposed)
+            {
+                var children = ExecuteGetEntitiesQuery(new GetArticleChildrenQuery { Id = _entity.Id });
+                _addArticlesBox.AddArticleChildren(children);
+            }
         }
 
         private void ComboBox_Changed(object sender, EventArgs e)
@@ -159,10 +185,26 @@ namespace LogicPOS.UI.Components.Modals
             _comboVatExemptionReasons.UpdateValidationColors();
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override void UpdateEntity()
+        {
+           var result =  ExecuteUpdateCommand(CreateUpdateCommand());
 
-        private IEnumerable<ArticleType> GetTypes() => ExecuteGetAllQuery(new GetAllArticleTypesQuery());
-        private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetAllQuery(new GetAllArticleFamiliesQuery());
+            if (result.IsError || _checkIsComposed.Active == false)
+            {
+                return;
+            }
+
+            var updateChildrenCommand = new UpdateArticleChildrenCommand
+            {
+                Id = _entity.Id,
+                Children = _addArticlesBox.GetArticleChildren()
+            };
+
+            ExecuteUpdateCommand(updateChildrenCommand);
+        }
+
+        private IEnumerable<ArticleType> GetTypes() => ExecuteGetEntitiesQuery(new GetAllArticleTypesQuery());
+        private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
         private IEnumerable<ArticleSubfamily> GetSubfamilies(Guid? familyId = null)
         {
             if (familyId == null)
@@ -172,18 +214,18 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_subfamilies == null)
             {
-                _subfamilies = ExecuteGetAllQuery(new GetAllArticleSubfamiliesQuery());
+                _subfamilies = ExecuteGetEntitiesQuery(new GetAllArticleSubfamiliesQuery());
             }
 
             return _subfamilies.Where(s => s.FamilyId == familyId);
         }
-        private IEnumerable<DiscountGroup> GetDiscountGroups() => ExecuteGetAllQuery(new GetAllDiscountGroupsQuery());
-        private IEnumerable<VatRate> GetVatRates() => ExecuteGetAllQuery(new GetAllVatRatesQuery());
-        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetAllQuery(new GetAllPriceTypesQuery());
-        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetAllQuery(new GetAllCommissionGroupsQuery());
-        private IEnumerable<ArticleClass> GetClasses() => ExecuteGetAllQuery(new GetAllArticleClassesQuery());
-        private IEnumerable<MeasurementUnit> GetMeasurementUnits() => ExecuteGetAllQuery(new GetAllMeasurementUnitsQuery());
-        private IEnumerable<SizeUnit> GetSizeUnits() => ExecuteGetAllQuery(new GetAllSizeUnitsQuery());
-        private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => ExecuteGetAllQuery(new GetAllVatExemptionReasonsQuery());
+        private IEnumerable<DiscountGroup> GetDiscountGroups() => ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());
+        private IEnumerable<VatRate> GetVatRates() => ExecuteGetEntitiesQuery(new GetAllVatRatesQuery());
+        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
+        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
+        private IEnumerable<ArticleClass> GetClasses() => ExecuteGetEntitiesQuery(new GetAllArticleClassesQuery());
+        private IEnumerable<MeasurementUnit> GetMeasurementUnits() => ExecuteGetEntitiesQuery(new GetAllMeasurementUnitsQuery());
+        private IEnumerable<SizeUnit> GetSizeUnits() => ExecuteGetEntitiesQuery(new GetAllSizeUnitsQuery());
+        private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => ExecuteGetEntitiesQuery(new GetAllVatExemptionReasonsQuery());
     }
 }

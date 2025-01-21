@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        private IEnumerable<PrinterType> GetPrinterTypes() => ExecuteGetAllQuery(new GetAllPrinterTypesQuery());
+        private IEnumerable<PrinterType> GetPrinterTypes() => ExecuteGetEntitiesQuery(new GetAllPrinterTypesQuery());
 
         protected override void ShowEntityData()
         {

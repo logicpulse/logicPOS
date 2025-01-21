@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.InputFields
         public event System.Action<ArticleField, Article> OnRemove;
         public event System.Action OnAdd;
 
-        public ArticleField(Article article = null, uint quantity = 0)
+        public ArticleField(Article article = null, decimal quantity = 0)
         {
             Article = article;
             TxtQuantity.Text = quantity.ToString();

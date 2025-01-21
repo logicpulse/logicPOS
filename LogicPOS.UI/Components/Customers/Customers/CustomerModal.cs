@@ -138,9 +138,9 @@ namespace LogicPOS.UI.Components.Modals
             return getCountriesResult.Value;
         }
 
-        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetAllQuery(new GetAllPriceTypesQuery());
+        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
 
-        private IEnumerable<CustomerType> GetCustomerTypes()=>ExecuteGetAllQuery(new GetAllCustomerTypesQuery());
+        private IEnumerable<CustomerType> GetCustomerTypes()=>ExecuteGetEntitiesQuery(new GetAllCustomerTypesQuery());
 
     }
 }

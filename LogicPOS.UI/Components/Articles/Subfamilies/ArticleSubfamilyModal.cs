@@ -67,11 +67,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
 
-        private IEnumerable<Printer> GetPrinters() => ExecuteGetAllQuery(new GetAllPrintersQuery());
-        private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetAllQuery(new GetAllArticleFamiliesQuery());
-        private IEnumerable<DiscountGroup> GetDiscountGroups()=> ExecuteGetAllQuery(new GetAllDiscountGroupsQuery());
-        private IEnumerable<VatRate> GetVatRates()=>ExecuteGetAllQuery(new GetAllVatRatesQuery());
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
+        private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
+        private IEnumerable<DiscountGroup> GetDiscountGroups()=> ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());
+        private IEnumerable<VatRate> GetVatRates()=>ExecuteGetEntitiesQuery(new GetAllVatRatesQuery());
 
-        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetAllQuery(new GetAllCommissionGroupsQuery());
+        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
     }
 }

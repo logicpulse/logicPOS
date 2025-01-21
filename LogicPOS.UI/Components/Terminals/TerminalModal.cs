@@ -19,11 +19,11 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        private IEnumerable<Place> GetPlaces() => ExecuteGetAllQuery(new GetAllPlacesQuery());
-        private IEnumerable<InputReader> GetInputReaders() => ExecuteGetAllQuery(new GetAllInputReadersQuery());
-        private IEnumerable<Printer> GetPrinters() => ExecuteGetAllQuery(new GetAllPrintersQuery());
-        private IEnumerable<PoleDisplay> GetPoleDisplays() => ExecuteGetAllQuery(new GetAllPoleDisplaysQuery());
-        private IEnumerable<WeighingMachine> GetWeighingMachines() => ExecuteGetAllQuery(new GetAllWeighingMachinesQuery());
+        private IEnumerable<Place> GetPlaces() => ExecuteGetEntitiesQuery(new GetAllPlacesQuery());
+        private IEnumerable<InputReader> GetInputReaders() => ExecuteGetEntitiesQuery(new GetAllInputReadersQuery());
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
+        private IEnumerable<PoleDisplay> GetPoleDisplays() => ExecuteGetEntitiesQuery(new GetAllPoleDisplaysQuery());
+        private IEnumerable<WeighingMachine> GetWeighingMachines() => ExecuteGetEntitiesQuery(new GetAllWeighingMachinesQuery());
 
         private AddTerminalCommand CreateAddCommand()
         {

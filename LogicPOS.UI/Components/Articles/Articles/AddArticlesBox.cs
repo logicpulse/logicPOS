@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Articles
         public AddArticlesBox()
         {
             Component = CreateScrolledWindow();
-            AddArticleField();
+            AddArticle();
         }
 
         private void BtnRemoveArticle_Clicked(ArticleField field, Article article)
@@ -36,19 +36,47 @@ namespace LogicPOS.UI.Components.Articles
             Fields.Remove(field);
         }
 
-        private void AddArticleField(Article article = null)
+        private void AddArticle(Article article = null, decimal quantity = 0)
         {
-            if (Fields.Any() && Fields.Last().Article == null)
+            var lastSlotIsNull = Fields.Any() && Fields.Last().Article == null;
+
+            if (lastSlotIsNull)
             {
                 return;
             }
 
-            var field = new ArticleField(article);
+            var field = new ArticleField(article, quantity);
             field.OnRemove += BtnRemoveArticle_Clicked;
-            field.OnAdd += () => AddArticleField();
+            field.OnAdd += () => AddArticle();
             Container.PackStart(field.Component, false, false, 0);
             field.Component.ShowAll();
             Fields.Add(field);
+        }
+
+        public void AddArticleChildren(IEnumerable<Api.Features.Articles.GetArticleChildren.ArticleChild> children)
+        {
+            if (children.Count() == 0)
+            {
+                return;
+            }
+
+            Clear();
+
+            foreach (var child in children)
+            {
+                var field = new ArticleField(child.Article, child.Quantity);
+                field.OnRemove += BtnRemoveArticle_Clicked;
+                field.OnAdd += () => AddArticle();
+                Container.PackStart(field.Component, false, false, 0);
+                field.Component.ShowAll();
+                Fields.Add(field);
+            }
+        }
+
+        private void Clear()
+        {
+            Fields.ForEach(f => Container.Remove(f.Component));
+            Fields.Clear();
         }
 
         private ScrolledWindow CreateScrolledWindow()
@@ -71,6 +99,15 @@ namespace LogicPOS.UI.Components.Articles
             return Fields.Select(f => new ArticleStock
             {
                 Id = f.Article.Id,
+                Quantity = decimal.Parse(f.TxtQuantity.Text)
+            });
+        }
+
+        public IEnumerable<ArticleChild> GetArticleChildren()
+        {
+            return Fields.Select(f => new ArticleChild
+            {
+                ArticleId = f.Article.Id,
                 Quantity = decimal.Parse(f.TxtQuantity.Text)
             });
         }

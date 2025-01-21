@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using Unit = MediatR.Unit;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -298,27 +299,30 @@ namespace LogicPOS.UI.Components.Modals
             return notebook;
         }
 
-        protected void ExecuteCommand<Response>(IRequest<ErrorOr<Response>> command)
+        protected ErrorOr<Response> ExecuteCommand<Response>(IRequest<ErrorOr<Response>> command)
         {
             var result = _mediator.Send(command).Result;
 
             if (result.IsError)
             {
                 HandleApiError(result.FirstError);
-                return;
+                return result;
             }
+
+            return result.Value;
         }
 
-        protected void ExecuteAddCommand(IRequest<ErrorOr<Guid>> command) => ExecuteCommand(command);
+        protected ErrorOr<Guid> ExecuteAddCommand(IRequest<ErrorOr<Guid>> command) => ExecuteCommand(command);
 
-        protected void ExecuteUpdateCommand(IRequest<ErrorOr<MediatR.Unit>> command) => ExecuteCommand(command);
+        protected ErrorOr<Unit> ExecuteUpdateCommand(IRequest<ErrorOr<Unit>> command) => ExecuteCommand(command);
 
-        protected IEnumerable<TE> ExecuteGetAllQuery<TE>(IRequest<ErrorOr<IEnumerable<TE>>> query)
+        protected IEnumerable<TE> ExecuteGetEntitiesQuery<TE>(IRequest<ErrorOr<IEnumerable<TE>>> query)
         {
             var result = _mediator.Send(query).Result;
 
             if (result.IsError)
             {
+                HandleApiError(result.FirstError);
                 return Enumerable.Empty<TE>();
             }
 

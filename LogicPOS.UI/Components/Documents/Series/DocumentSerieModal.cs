@@ -14,8 +14,8 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        private IEnumerable<FiscalYear> GetFiscalYears() => ExecuteGetAllQuery(new GetAllFiscalYearsQuery());
-        private IEnumerable<DocumentType> GetDocumentTypes() => ExecuteGetAllQuery(new GetAllDocumentTypesQuery());
+        private IEnumerable<FiscalYear> GetFiscalYears() => ExecuteGetEntitiesQuery(new GetAllFiscalYearsQuery());
+        private IEnumerable<DocumentType> GetDocumentTypes() => ExecuteGetEntitiesQuery(new GetAllDocumentTypesQuery());
 
         private AddDocumentSerieCommand CreateAddCommand()
         {

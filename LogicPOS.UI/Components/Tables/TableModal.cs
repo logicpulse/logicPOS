@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        private IEnumerable<Place> GetPlaces() => ExecuteGetAllQuery(new GetAllPlacesQuery());
+        private IEnumerable<Place> GetPlaces() => ExecuteGetEntitiesQuery(new GetAllPlacesQuery());
 
         protected override void ShowEntityData()
         {
