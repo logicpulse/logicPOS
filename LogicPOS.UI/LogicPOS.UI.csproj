@@ -222,10 +222,6 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogicPOS.PDFViewer\LogicPOS.PDFViewer.Winforms\LogicPOS.PDFViewer.Winforms.csproj">
-      <Project>{e39a7986-4c2f-4ebe-a31b-59c766150eac}</Project>
-      <Name>LogicPOS.PDFViewer.Winforms</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
       <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
       <Name>LogicPOS.Plugin</Name>
