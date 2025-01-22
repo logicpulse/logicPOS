@@ -3,7 +3,7 @@
     public class CompanyInformations
     {
         public string Name { get; set; }
-        public string BussinessName { get; set; }
+        public string BusinessName { get; set; }
         public string ComercialName { get; set; }
         public string LogoPng { get; set; }
         public string LogoBmp { get; set; }

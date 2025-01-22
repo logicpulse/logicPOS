@@ -1,6 +1,9 @@
 ﻿using ESC_POS_USB_NET.Printer;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
+using System;
+using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
 {
@@ -20,14 +23,19 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public static void PrintTicket(PosTicket ticket)
+        public static void PrintTicket(PosTicket ticket, Table table)
         {
             if (!TerminalService.HasThermalPrinter)
             {
                 return;
             }
 
-            new PosTicketPrinter(Printer, ticket).Print();
+            new PosTicketPrinter(Printer, ticket, table).Print();
+        }
+
+        public static void PrintDocument( Guid documentId)
+        {
+            new PosInvoicePrinter(Printer, documentId).Print();
         }
     }
 }

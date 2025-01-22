@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
@@ -43,7 +44,9 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
+            ThermalPrintingService.PrintDocument(addDocumentResult.Value);
             ProcesPayment();
+            
            
         }
 

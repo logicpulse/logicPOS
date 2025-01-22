@@ -31,8 +31,31 @@ namespace LogicPOS.UI.Printing
             }
 
             var bytes = System.Convert.FromBase64String(base64Logo);
+            var LogoRegularSize = new Bitmap(new System.IO.MemoryStream(bytes));
+            return new Bitmap(LogoRegularSize, new Size(5*300, 7*300));
+        }
 
-            return new Bitmap(new System.IO.MemoryStream(bytes));
+        protected void PrintHeader()
+        {
+            var companyInformations = GetCompanyInformations();
+            var logo = GetCompanyLogo();
+
+            _printer.AlignCenter();
+            _printer.DoubleWidth2();
+            if (logo != null)
+            {
+                _printer.Image(logo);
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(companyInformations.BusinessName))
+                {
+                    companyInformations.BusinessName = companyInformations.Name;
+                }
+                _printer.Append(companyInformations.BusinessName);
+
+            }
+            _printer.NormalWidth();
         }
     }
 }

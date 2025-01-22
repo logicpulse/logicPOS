@@ -152,7 +152,7 @@ namespace LogicPOS.UI.Components.POS
                 }
             }
 
-            ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket);
+            ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
