@@ -32,8 +32,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         public string Body { get => _entryBoxValidationMultiLine.EntryMultiline.Value.Text; }
         public List<string> AttachmentFileNames { get; }
 
-        public PosSendEmailDialog(Window parentWindow, DialogFlags pDialogFlags, Size pSize, string pWindowTitle, string pSubject, string pTo, string pBody, List<string> attachmentFileNames)
-            : base(parentWindow, pDialogFlags)
+        public PosSendEmailDialog(Window parentWindow,
+                                  DialogFlags pDialogFlags,
+                                  Size pSize,
+                                  string pWindowTitle,
+                                  string pSubject,
+                                  string pTo,
+                                  string pBody,
+                                  List<string> attachmentFileNames)
+            : base(parentWindow,
+                   pDialogFlags)
         {
             // Init Local Vars
             string windowTitle = pWindowTitle;

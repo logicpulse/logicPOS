@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
         public event EventHandler PageChanged;
 
         public ReceiptsPage(Window parent,
-                             Dictionary<string, string> options = null) : base(parent, options)
+                            Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 

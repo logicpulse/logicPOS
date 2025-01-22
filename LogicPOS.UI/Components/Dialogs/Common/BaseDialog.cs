@@ -345,6 +345,5 @@ namespace LogicPOS.UI.Dialogs
             Destroyed += delegate { WindowSettings.Mask.Destroy(); };
         }
 
-
     }
 }
