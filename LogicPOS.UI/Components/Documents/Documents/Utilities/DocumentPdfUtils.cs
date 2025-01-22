@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
+using LogicPOS.UI.PDFViewer;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -10,10 +11,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
     {
         public static void ViewPdf(Gtk.Window source, string fileLocation)
         {
-            using (var pdfViewer = new LogicPOS.PDFViewer.Winforms.PDFViewer(fileLocation))
-            {
-                pdfViewer.ShowDialog();
-            }
+            new LogicPOSPDFViewer(fileLocation).ShowDialog();
         }
 
         public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber)
@@ -39,10 +37,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
                 return;
             }
 
-            using (var pdfViewer = new LogicPOS.PDFViewer.Winforms.PDFViewer(fileLocation))
-            {
-                pdfViewer.ShowDialog();
-            }
+            new LogicPOSPDFViewer(fileLocation).ShowDialog();
         }
 
         public static void ViewReceiptPdf(Gtk.Window source, Guid documentId)
@@ -54,10 +49,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
                 return;
             }
 
-            using (var pdfViewer = new LogicPOS.PDFViewer.Winforms.PDFViewer(fileLocation))
-            {
-                pdfViewer.ShowDialog();
-            }
+            new LogicPOSPDFViewer(fileLocation).ShowDialog();
         }
 
         public static string GetReceiptPdfFileLocation(Guid documentId, uint copyNumber)
