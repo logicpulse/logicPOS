@@ -106,7 +106,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateNumberColumn());
             GridView.AppendColumn(CreateStatusColumn());
             GridView.AppendColumn(CreateEntityColumn());
-            //GridView.AppendColumn(CreateFiscalNumberColumn());
+            GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(CreateTotalColumn());
             GridView.AppendColumn(CreateRelatedReceiptsColumn());
         }
@@ -140,7 +140,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderFiscalNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var receipt = (Receipt)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = "?????";
+                (cell as CellRendererText).Text = receipt.CustomerFiscalNumber;
             }
 
             var title = GeneralUtils.GetResourceByName("global_fiscal_number");
@@ -152,7 +152,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderEntity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var receipt = (Receipt)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = "Customer Name";
+                (cell as CellRendererText).Text = receipt.Customer;
             }
 
             var title = GeneralUtils.GetResourceByName("global_entity");
