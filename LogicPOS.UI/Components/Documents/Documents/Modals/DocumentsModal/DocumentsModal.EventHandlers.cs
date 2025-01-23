@@ -157,7 +157,9 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
         {
-            new SendDocumentByEmailModal(this).Run();
+            var modal = new SendDocumentByEmailModal(this);
+            var response = (ResponseType)modal.Run();
+            modal.Destroy();
         }
     }
 }

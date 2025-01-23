@@ -60,7 +60,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtSubject = new PageTextBox(this,
                                         LocalizedString.Instance["global_email_subject"],
-                                        true);
+                                        true,
+                                        includeSelectButton:false,
+                                        includeKeyBoardButton: true);
         }
 
         private void InitializeTxtTo()
@@ -69,7 +71,9 @@ namespace LogicPOS.UI.Components.Modals
                                     LocalizedString.Instance["global_email_to"],
                                     true,
                                     true,
-                                    RegularExpressions.Email);
+                                    RegularExpressions.Email,
+                                    includeSelectButton: false,
+                                    includeKeyBoardButton: true);
         }
 
         private void InitializeTxtCc()
@@ -78,7 +82,9 @@ namespace LogicPOS.UI.Components.Modals
                                     LocalizedString.Instance["global_email_cc"],
                                     true,
                                     true,
-                                    RegularExpressions.Email);
+                                    RegularExpressions.Email,
+                                    includeSelectButton: false,
+                                    includeKeyBoardButton: true);
         }
 
         private void InitializeTxtBcc()
@@ -87,7 +93,9 @@ namespace LogicPOS.UI.Components.Modals
                                      LocalizedString.Instance["global_email_bcc"],
                                      true,
                                      true,
-                                     RegularExpressions.Email);
+                                     RegularExpressions.Email,
+                                     includeSelectButton: false,
+                                     includeKeyBoardButton: true);
         }
     }
 }
