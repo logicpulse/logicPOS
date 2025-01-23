@@ -1,11 +1,20 @@
 ﻿using Gtk;
+using logicpos.Classes.Enums.Keyboard;
+using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
+using LogicPOS.Api.Features.Documents.SendDocumentsByEmail;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Errors;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -18,13 +27,19 @@ namespace LogicPOS.UI.Components.Modals
         private PageTextBox TxtTo { get; set; }
         private PageTextBox TxtCc { get; set; }
         private PageTextBox TxtBcc { get; set; }
+        private EntryBoxValidationMultiLine TxtBody { get; set; }
+        private List<IValidatableField> ValidatableFields { get; set; } = new List<IValidatableField>();
         #endregion
 
-        public SendDocumentByEmailModal(Window parent) : base(parent,
+        private readonly IEnumerable<Guid> _documentsIds;
+
+        public SendDocumentByEmailModal(IEnumerable<Guid> documentsIds,
+                                        Window parent) : base(parent,
                                                               LocalizedString.Instance["window_title_send_email"],
                                                               new Size(800, 640),
                                                               PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_send_email.png")
         {
+            _documentsIds = documentsIds;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -44,6 +59,7 @@ namespace LogicPOS.UI.Components.Modals
             verticalLayout.PackStart(TxtTo.Component, false, false, 0);
             verticalLayout.PackStart(TxtCc.Component, false, false, 0);
             verticalLayout.PackStart(TxtBcc.Component, false, false, 0);
+            verticalLayout.PackStart(TxtBody, true, true, 0);
 
             return verticalLayout;
         }
@@ -54,6 +70,21 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtTo();
             InitializeTxtCc();
             InitializeTxtBcc();
+            InitializeTxtBody();
+
+            ValidatableFields.Add(TxtSubject);
+            ValidatableFields.Add(TxtTo);
+            ValidatableFields.Add(TxtCc);
+            ValidatableFields.Add(TxtBcc);
+        }
+
+        private void InitializeTxtBody()
+        {
+            TxtBody = new EntryBoxValidationMultiLine(this,
+                                                      LocalizedString.Instance["global_email_body"],
+                                                      KeyboardMode.AlfaNumeric,
+                                                      string.Empty,
+                                                      false);
         }
 
         private void InitializeTxtSubject()
@@ -61,7 +92,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtSubject = new PageTextBox(this,
                                         LocalizedString.Instance["global_email_subject"],
                                         true,
-                                        includeSelectButton:false,
+                                        includeSelectButton: false,
                                         includeKeyBoardButton: true);
         }
 
@@ -97,5 +128,50 @@ namespace LogicPOS.UI.Components.Modals
                                      includeSelectButton: false,
                                      includeKeyBoardButton: true);
         }
+
+        protected override void OnResponse(ResponseType response)
+        {
+            if (response == ResponseType.Ok)
+            {
+
+                if (AllFieldsAreValid() == false)
+                {
+                    ShowValidationErrors();
+                    Run();
+                    return;
+                }
+
+                SendDocumentsByEmailCommand command = CreateSendDocumentsByEmailCommand();
+                var result = DependencyInjection.Mediator.Send(command).Result;
+
+                if (result.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(result.FirstError, source: this);
+                    Run();
+                    return;
+                }
+
+                CustomAlerts.Information(this)
+                            .WithMessageResource("dialog_message_mail_sent_successfully")
+                            .ShowAlert();
+            }
+        }
+
+        private SendDocumentsByEmailCommand CreateSendDocumentsByEmailCommand()
+        {
+            return new SendDocumentsByEmailCommand
+            {
+                DocumentsIds = _documentsIds,
+                Subject = TxtSubject.Text,
+                To = TxtTo.Text,
+                Cc = TxtCc.Text,
+                Bcc = TxtBcc.Text,
+                Body = TxtBody.EntryMultiline.Value.Text
+            };
+        }
+
+        public bool AllFieldsAreValid() => ValidatableFields.All(field => field.IsValid());
+
+        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(ValidatableFields);
     }
 }
