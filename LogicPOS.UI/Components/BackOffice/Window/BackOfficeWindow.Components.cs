@@ -404,30 +404,5 @@ namespace LogicPOS.UI.Components.Windows
             Panels.Add(PanelExport);
             Panels.Add(PanelSystem);
         }
-
-        public void UpdatePrivileges()
-        {
-            #region Documents
-            BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU");
-            BtnDocuments.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSLISTALL_MENU");
-            BtnReceiptsEmission.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU");
-            BtnReceipts.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU");
-            BtnCurrentAccount.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSCURRENTACCOUNT_MENU");
-            #endregion
-
-            #region Reports
-            BtnReports.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSREPORTS_MENU");
-            #endregion
-
-            #region Articles
-            BtnArticleFamilies.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_MENU");
-            BtnArticleSubfamilies.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_MENU");
-            BtnArticles.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_MENU");
-            BtnArticleTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLETYPE_MENU");
-            BtnArticleClasses.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLECLASS_MENU");
-            BtnPriceTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRICETYPE_MENU");
-            BtnSotck.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESTOCK_MENU");
-            #endregion
-        }
     }
 }
