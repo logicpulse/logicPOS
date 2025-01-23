@@ -74,6 +74,7 @@ namespace LogicPOS.UI.Components.Documents
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
             BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
+            BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
         }
 
         private static bool CanCancelDocument(Document document)

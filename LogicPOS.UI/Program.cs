@@ -62,34 +62,32 @@ namespace LogicPOS.UI
 
                 InitializeGtk();
 
-                if (true)
+
+                if (InitializeCulture() == false)
                 {
-                    if (InitializeCulture() == false)
-                    {
-                        SimpleAlerts.Error()
-                                    .WithTitle("Erro")
-                                    .WithMessage("Não foi possível initalizar o idioma do sistema.")
-                                    .ShowAlert();
+                    SimpleAlerts.Error()
+                                .WithTitle("Erro")
+                                .WithMessage("Não foi possível initalizar o idioma do sistema.")
+                                .ShowAlert();
 
-                        return;
-                    }
-
-                    ShowLoadingScreen();
-
-                    InitializePlugins();
-
-                    CloseLoadingScreen();
-
-                    KeepUIResponsive();
-
-                    if (singleProgramInstance.IsSingleInstance == false)
-                    {
-                        SimpleAlerts.ShowInstanceAlreadyRunningAlert();
-                        return;
-                    }
-
-                    StartApp();
+                    return;
                 }
+
+                ShowLoadingScreen();
+
+                InitializePlugins();
+
+                CloseLoadingScreen();
+
+                KeepUIResponsive();
+
+                if (singleProgramInstance.IsSingleInstance == false)
+                {
+                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
+                    return;
+                }
+
+                StartApp();
             }
         }
 

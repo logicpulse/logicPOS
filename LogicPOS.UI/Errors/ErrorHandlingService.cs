@@ -10,7 +10,17 @@ namespace LogicPOS.UI.Errors
     {
         public static void HandleApiError(Error error, bool closeApplication = false, Window source = null)
         {
-            CustomAlerts.ShowApiErrorAlert(source ?? POSWindow.Instance, error);
+            if (source == null)
+            {
+                source = (POSWindow.HasInstance && POSWindow.Instance.Visible) ? BackOfficeWindow.Instance : null;
+               
+                if (source == null)
+                {
+                    source = BackOfficeWindow.HasInstance ? BackOfficeWindow.Instance : null;
+                }
+            }
+
+            CustomAlerts.ShowApiErrorAlert(source, error);
 
             if (closeApplication)
             {

@@ -41,6 +41,7 @@ namespace LogicPOS.UI.Components.Windows
 
         #region Static
         private static BackOfficeWindow _instance;
+        public static bool HasInstance => _instance != null;
         public static BackOfficeWindow Instance
         {
             get

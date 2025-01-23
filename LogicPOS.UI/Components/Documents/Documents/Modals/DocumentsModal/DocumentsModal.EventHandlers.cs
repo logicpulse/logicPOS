@@ -154,5 +154,10 @@ namespace LogicPOS.UI.Components.Documents
             UpdateModalTitle();
             UpdateNavigationButtons();
         }
+
+        private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
+        {
+            new SendDocumentByEmailModal(this).Run();
+        }
     }
 }

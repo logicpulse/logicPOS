@@ -655,7 +655,7 @@ namespace LogicPOS.UI.Components.Windows
 
         #region Static
         private static POSWindow _instance;
-
+        public static bool HasInstance => _instance != null;
         public static POSWindow Instance
         {
             get
