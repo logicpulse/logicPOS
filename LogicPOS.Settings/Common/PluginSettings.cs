@@ -80,13 +80,9 @@ namespace LogicPOS.Settings
             SaftSettings.SaftVersionPrefixAO = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersionPrefixAO));
             SaftSettings.SaftVersion = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersion));
             SaftSettings.SaftVersionAO = GetSoftwareVendorValueAsString(nameof(SaftSettings.SaftVersionAO));
-            DocumentSettings.HashControl = GetSoftwareVendorValueAsInt(nameof(DocumentSettings.HashControl));
             SaftSettings.TaxAccountingBasis = GetSoftwareVendorValueAsString(nameof(SaftSettings.TaxAccountingBasis));
             CultureSettings.SaftCurrencyCode = GetSoftwareVendorValueAsString(nameof(CultureSettings.SaftCurrencyCode));
             CultureSettings.SaftCurrencyCodeAO = GetSoftwareVendorValueAsString(nameof(CultureSettings.SaftCurrencyCodeAO));
-
-            DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix = GetSoftwareVendorValueAsBool(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryUseRandomAcronymPrefix));
-            DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat = GetSoftwareVendorValueAsString(nameof(DocumentSettings.DocumentFinanceSeriesGenerationFactoryAcronymLastSerieFormat));
         }
 
         public static string PluginsFolderLocation => PathsSettings.Paths["plugins"].ToString();

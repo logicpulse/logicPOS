@@ -9,7 +9,7 @@ namespace LogicPOS.UI
     {
         public static EventBox CreateMinimizeButton()
         {
-            string minimizeWindowIconLocation = GtkSettings.DefaultMinimizeWindowIconLocation;
+            string minimizeWindowIconLocation = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_window_minimize.png";
 
             Gdk.Pixbuf pixBuffer = new Gdk.Pixbuf(minimizeWindowIconLocation);
             Gtk.Image buttonImage = new Gtk.Image(pixBuffer);
