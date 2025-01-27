@@ -137,26 +137,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Service References\ServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Service References\ServiceReference\configuration.svcinfo" />
-    <None Include="Service References\ServiceReference\configuration91.svcinfo" />
-    <None Include="Service References\ServiceReference\Service1.disco" />
-    <None Include="Service References\ServiceReference\Service1.wsdl" />
-    <None Include="Service References\ServiceReference\Service1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\ServiceReference\Service11.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\ServiceReference\Service12.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Service References\ServiceReference\Service13.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <Content Include="Assets\Themes\theme_default_retail.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -204,7 +184,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-    <WCFMetadataStorage Include="Service References\ServiceReference\" />
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
@@ -224,19 +203,6 @@
       <Project>{a4e7f0ea-8360-41f2-a625-517f6e943a29}</Project>
       <Name>LogicPOS.Settings</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://192.168.1.86/POS/service.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\AccessTrackParkingTicketService\</RelPath>
-      <UpdateFromURL>http://192.168.1.86/POS/service.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>logicpos_AccessTrackParkingTicketService_TimeService</CachedSettingsPropName>
-    </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ErrorOr">
