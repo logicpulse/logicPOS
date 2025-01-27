@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.FiscalYears
 
             if (getFiscalYear.IsError)
             {
-                ErrorHandlingService.HandleApiError(getFiscalYear.FirstError);
+                ErrorHandlingService.HandleApiError(getFiscalYear);
                 return;
             }
 

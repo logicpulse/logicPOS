@@ -9,11 +9,6 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 {
     public static class DocumentPdfUtils
     {
-        public static void ViewPdf(Gtk.Window source, string fileLocation)
-        {
-            new LogicPOSPDFViewer(fileLocation).ShowDialog();
-        }
-
         public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber)
         {
             var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
@@ -37,7 +32,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
                 return;
             }
 
-            new LogicPOSPDFViewer(fileLocation).ShowDialog();
+            LogicPOSPDFViewer.ShowPDF(fileLocation);
         }
 
         public static void ViewReceiptPdf(Gtk.Window source, Guid documentId)
@@ -49,7 +44,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
                 return;
             }
 
-            new LogicPOSPDFViewer(fileLocation).ShowDialog();
+            LogicPOSPDFViewer.ShowPDF(fileLocation);
         }
 
         public static string GetReceiptPdfFileLocation(Guid documentId, uint copyNumber)

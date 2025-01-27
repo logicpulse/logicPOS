@@ -131,7 +131,7 @@ namespace LogicPOS.UI
 
             if (intializeTerminalResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(intializeTerminalResult.FirstError, true);
+                ErrorHandlingService.HandleApiError(intializeTerminalResult, true);
                 return;
             }
 

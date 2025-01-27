@@ -52,9 +52,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
-            var modal = new CustomerCurrentAccountFilterModal(this);
-            modal.Run();
-            modal.Destroy();
+            CustomerCurrentAccountFilterModal.ShowModal(this);
         }
 
         #endregion
@@ -62,9 +60,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Reports
         private void BtnReports_Clicked(object sender, EventArgs e)
         {
-            var modal = new ReportsModal(this);
-            modal.Run();
-            modal.Destroy();
+            ReportsModal.ShowModal(this);
         }
         #endregion
 
@@ -135,7 +131,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (backupResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(backupResult.FirstError, source: this);
+                ErrorHandlingService.HandleApiError(backupResult, source: this);
                 return;
             }
 
@@ -160,7 +156,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (restoreResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(restoreResult.FirstError, source: this);
+                ErrorHandlingService.HandleApiError(restoreResult, source: this);
                 return;
             }
 

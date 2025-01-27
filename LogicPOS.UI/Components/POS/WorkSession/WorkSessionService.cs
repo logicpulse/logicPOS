@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Services
 
             if (getResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+                ErrorHandlingService.HandleApiError(getResult, true);
                 return false;
             }
 
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Services
 
             if (getResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+                ErrorHandlingService.HandleApiError(getResult, true);
                 return false;
             }
 
@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Services
 
             if (getResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult.FirstError, true);
+                ErrorHandlingService.HandleApiError(getResult, true);
             }
 
             return getResult.Value;
@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Services
 
             if (openDayResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                ErrorHandlingService.HandleApiError(openDayResult);
                 return false;
             }
 
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Services
 
             if (openDayResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                ErrorHandlingService.HandleApiError(openDayResult);
                 return false;
             }
 
@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Services
 
             if (openDayResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(openDayResult.FirstError);
+                ErrorHandlingService.HandleApiError(openDayResult);
                 return false;
             }
 
@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Services
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return -1;
             }
 
@@ -121,7 +121,7 @@ namespace LogicPOS.UI.Services
             var result = _mediator.Send(command).Result;
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return false;
             }
 
@@ -135,7 +135,7 @@ namespace LogicPOS.UI.Services
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return false;
             }
 
@@ -148,7 +148,7 @@ namespace LogicPOS.UI.Services
             var result = _mediator.Send(command).Result;
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return false;
             }
 
@@ -161,7 +161,7 @@ namespace LogicPOS.UI.Services
             var result = _mediator.Send(command).Result;
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return false;
             }
 

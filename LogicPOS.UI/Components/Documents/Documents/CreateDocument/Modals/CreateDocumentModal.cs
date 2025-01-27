@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError, source: this);
+                ErrorHandlingService.HandleApiError(result, source: this);
                 Run();
                 return;
             }

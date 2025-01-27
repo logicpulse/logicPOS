@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Errors
 {
     public class ErrorHandlingService
     {
-        public static void HandleApiError(Error error, bool closeApplication = false, Window source = null)
+        public static void HandleApiError<TResult>(ErrorOr<TResult> error, bool closeApplication = false, Window source = null)
         {
             if (source == null)
             {
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Errors
                 }
             }
 
-            CustomAlerts.ShowApiErrorAlert(source, error);
+            CustomAlerts.ShowApiErrorAlert(source, error.FirstError);
 
             if (closeApplication)
             {

@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return Enumerable.Empty<string>();
             }
 

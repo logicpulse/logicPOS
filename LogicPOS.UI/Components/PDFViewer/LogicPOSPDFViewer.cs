@@ -6,7 +6,7 @@ namespace LogicPOS.UI.PDFViewer
     {
         private readonly string _pdfLocation;
 
-        public LogicPOSPDFViewer(string pdfLocation)
+        private LogicPOSPDFViewer(string pdfLocation)
         {
             InitializeComponent();
             _pdfLocation = pdfLocation;
@@ -16,6 +16,12 @@ namespace LogicPOS.UI.PDFViewer
         {
             var document = PdfiumViewer.PdfDocument.Load(_pdfLocation);
             pdfViewer.Document = document;
+        }
+
+        public static void ShowPDF(string pdfLocation)
+        {
+            var pdfViewer = new LogicPOSPDFViewer(pdfLocation);
+            pdfViewer.ShowDialog();
         }
     }
 }

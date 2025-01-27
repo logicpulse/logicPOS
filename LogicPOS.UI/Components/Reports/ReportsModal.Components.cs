@@ -2,11 +2,7 @@
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Modals
 {

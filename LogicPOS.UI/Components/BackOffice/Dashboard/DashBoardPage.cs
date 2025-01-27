@@ -43,11 +43,12 @@ namespace LogicPOS.UI.Components.Pages
             BtnPayments.Clicked += BtnPayments_Clicked;
             BtnArticleStock.Clicked += BtnArticleStock_Clicked;
 
-            BtnReportsMenu.Clicked += BtnReportsMenu_Clicked;
+            BtnReportsMenu.Clicked += BtnReports_Clicked;
             BtnPrintReportRouter.Clicked += BtnPrintReportRouter_Clicked;
 
             BtnCustomerBalanceDetails.Clicked += BtnCustomerBalanceDetails_Clicked;
             BtnSalesPerDate.Clicked += BtnSalesPerDate_Clicked;
+
         }
 
     }

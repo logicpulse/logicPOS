@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (addDocumentResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(addDocumentResult.FirstError, source: this);
+                ErrorHandlingService.HandleApiError(addDocumentResult, source: this);
                 Run();
                 return;
             }

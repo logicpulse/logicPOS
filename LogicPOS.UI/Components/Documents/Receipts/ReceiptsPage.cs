@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getReceiptsResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getReceiptsResult.FirstError,
+                ErrorHandlingService.HandleApiError(getReceiptsResult,
                                                     source: SourceWindow);
                 return;
             }

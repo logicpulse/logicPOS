@@ -79,7 +79,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getDocumentsResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getDocumentsResult.FirstError,
+                ErrorHandlingService.HandleApiError(getDocumentsResult,
                                                     source: SourceWindow);
                 return;
             }
@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError,
+                ErrorHandlingService.HandleApiError(result,
                                                     source: SourceWindow);
                 return;
             }
@@ -120,7 +120,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError, source: SourceWindow);
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
                 return;
             }
 

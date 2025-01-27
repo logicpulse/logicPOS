@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.PDFViewer;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Components.Modals
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
         #endregion
 
-        public CustomerCurrentAccountFilterModal(Window parent) : base(parent,
+        private CustomerCurrentAccountFilterModal(Window parent) : base(parent,
                                                                        GeneralUtils.GetResourceByName("report_customer_balance_summary"),
                                                                        new Size(500, 509),
                                                                        PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
             }
 
-            DocumentPdfUtils.ViewPdf(this, result.Value);
+            LogicPOSPDFViewer.ShowPDF(result.Value);
         }
 
         private GetCustomerCurrentAccountPdfQuery CreateQuery()
@@ -204,6 +205,13 @@ namespace LogicPOS.UI.Components.Modals
         protected bool AllFieldsAreValid()
         {
             return ValidatableFields.All(txt => txt.IsValid());
+        }
+
+        public static void ShowModal(Window parent)
+        {
+            var modal = new CustomerCurrentAccountFilterModal(parent);
+            modal.Run();
+            modal.Destroy();
         }
     }
 }

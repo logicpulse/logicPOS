@@ -717,10 +717,6 @@ namespace logicpos
             return result;
         }
 
-        public static void StartReportsMenuFromBackOffice(Window parentWindow)
-        {
-            //tchial0: start Reports Menu
-        }
 
         public static void OpenArticleStockDialog(Window parentWindow)
         {

@@ -30,9 +30,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
-            var modal = new CustomerCurrentAccountFilterModal(BackOfficeWindow.Instance);
-            modal.Run();
-            modal.Destroy();
+            CustomerCurrentAccountFilterModal.ShowModal(BackOfficeWindow.Instance);
         }
 
         #endregion
@@ -52,9 +50,9 @@ namespace LogicPOS.UI.Components.Pages
             throw new NotImplementedException();
         }
 
-        private void BtnReportsMenu_Clicked(object sender, EventArgs e)
+        private void BtnReports_Clicked(object sender, EventArgs e)
         {
-            logicpos.Utils.StartReportsMenuFromBackOffice(_parentWindow);
+            ReportsModal.ShowModal(BackOfficeWindow.Instance);
         }
 
         private void BtnArticleStock_Clicked(object sender, EventArgs e)

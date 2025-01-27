@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result.FirstError, source: SourceWindow);
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
                 return false;
             }
 

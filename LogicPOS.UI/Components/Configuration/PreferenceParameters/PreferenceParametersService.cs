@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Services
 
             if (companyInformations.IsError)
             {
-                ErrorHandlingService.HandleApiError(companyInformations.FirstError, true);
+                ErrorHandlingService.HandleApiError(companyInformations, true);
                 return;
             }
 

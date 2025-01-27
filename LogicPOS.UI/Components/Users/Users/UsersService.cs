@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Users
 
             if (getUserNameResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getUserNameResult.FirstError);
+                ErrorHandlingService.HandleApiError(getUserNameResult);
                 return null;
             }
 
