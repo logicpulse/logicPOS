@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace LogicPOS.UI.ActivationService {
+namespace LogicPOS.Licensing {
     using System.Diagnostics;
     using System;
     using System.Xml.Serialization;
