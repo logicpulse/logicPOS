@@ -1,0 +1,1718 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://tempuri.org/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="AddMessage">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="contact" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="message" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="client" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="AddMessageResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="AddMessageResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="productID" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentVersionResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateCurrentVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="productID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionApp" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="UpdateCurrentVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="UpdateCurrentVersionResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNumberOfAvailableLicences">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="productID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetNumberOfAvailableLicencesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetNumberOfAvailableLicencesResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="VerifyUpdatesAvailability">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ProductCode" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="VerifyUpdatesAvailabilityResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="VerifyUpdatesAvailabilityResult" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionWithCompareKeys">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ProductID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="licence" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="keysLicence">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionWithCompareKeysResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentLicenceVersionWithCompareKeysResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersion">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ProductID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentLicenceVersionResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionForWebSite">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ProductID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionForWebSiteResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentLicenceVersionForWebSiteResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionLinux">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="ProductID" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinux" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetCurrentLicenceVersionLinuxResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="GetCurrentLicenceVersionLinuxResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cliente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="subject" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="body" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="attach" type="s:base64Binary" />
+            <s:element minOccurs="0" maxOccurs="1" name="attachFilename" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="version" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmailResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendPDFEmail">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="cliente" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="subject" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="body" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="attachFilename" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="version" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="date" type="s:dateTime" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendPDFEmailResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendEmailNewClient">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="clientName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="productName" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmailNewClientResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendEmailUpdateAfterUpdateDate">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="clientName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="productName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="serverVersion" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="localVersion" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmailUpdateAfterUpdateDateResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="SendEmailSMSWarning">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="account" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="emails" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="body" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="SendEmailSMSWarningResponse">
+        <s:complexType />
+      </s:element>
+      <s:element name="AllCountries">
+        <s:complexType />
+      </s:element>
+      <s:element name="AllCountriesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="AllCountriesResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithSoftwareKey">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithSoftwareKeyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateTimeTrackWithSoftwareKeyResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithSoftwareKeyWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithSoftwareKeyWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateTimeTrackWithSoftwareKeyWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrack">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateTimeTrackResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateTimeTrackWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateTimeTrackWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithSoftwareKey">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithSoftwareKeyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateAccessWithSoftwareKeyResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithSoftwareKeyWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithSoftwareKeyWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateAccessWithSoftwareKeyWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccess">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateAccessResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateAccessWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateAccessWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateVehicle">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateVehicleResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateVehicleResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateVehicleWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateVehicleWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateVehicleWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateQTrack">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateQTrackResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateQTrackResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateQTrackWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateQTrackWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateQTrackWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateLibrary">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateLibraryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateLibraryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateLibraryWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateLibraryWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateLibraryWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOS">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinux" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivatelogicPOSResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinux" type="s:boolean" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivatelogicPOSWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithSoftwareKey">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinux" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithSoftwareKeyResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivatelogicPOSWithSoftwareKeyResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithSoftwareKeyWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="isLinux" type="s:boolean" />
+            <s:element minOccurs="0" maxOccurs="1" name="softwareKey" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivatelogicPOSWithSoftwareKeyWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivatelogicPOSWithSoftwareKeyWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateSales">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateSalesResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateSalesResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateSalesWithCountry">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="name" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="company" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="nif" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="adress" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="email" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="telefone" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="versionNumber" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="idCountry" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="ActivateSalesWithCountryResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="ActivateSalesWithCountryResult" type="s:base64Binary" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertCloudReport">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="hardwareID" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="dataTable">
+              <s:complexType>
+                <s:sequence>
+                  <s:any minOccurs="0" maxOccurs="unbounded" namespace="http://www.w3.org/2001/XMLSchema" processContents="lax" />
+                  <s:any minOccurs="1" namespace="urn:schemas-microsoft-com:xml-diffgram-v1" processContents="lax" />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="InsertCloudReportResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="InsertCloudReportResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="AddMessageSoapIn">
+    <wsdl:part name="parameters" element="tns:AddMessage" />
+  </wsdl:message>
+  <wsdl:message name="AddMessageSoapOut">
+    <wsdl:part name="parameters" element="tns:AddMessageResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateCurrentVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateCurrentVersion" />
+  </wsdl:message>
+  <wsdl:message name="UpdateCurrentVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateCurrentVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetNumberOfAvailableLicencesSoapIn">
+    <wsdl:part name="parameters" element="tns:GetNumberOfAvailableLicences" />
+  </wsdl:message>
+  <wsdl:message name="GetNumberOfAvailableLicencesSoapOut">
+    <wsdl:part name="parameters" element="tns:GetNumberOfAvailableLicencesResponse" />
+  </wsdl:message>
+  <wsdl:message name="VerifyUpdatesAvailabilitySoapIn">
+    <wsdl:part name="parameters" element="tns:VerifyUpdatesAvailability" />
+  </wsdl:message>
+  <wsdl:message name="VerifyUpdatesAvailabilitySoapOut">
+    <wsdl:part name="parameters" element="tns:VerifyUpdatesAvailabilityResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionWithCompareKeysSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionWithCompareKeys" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionWithCompareKeysSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionWithCompareKeysResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersion" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionForWebSiteSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionForWebSite" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionForWebSiteSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionForWebSiteResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionLinuxSoapIn">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionLinux" />
+  </wsdl:message>
+  <wsdl:message name="GetCurrentLicenceVersionLinuxSoapOut">
+    <wsdl:part name="parameters" element="tns:GetCurrentLicenceVersionLinuxResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSoapIn">
+    <wsdl:part name="parameters" element="tns:SendEmail" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSoapOut">
+    <wsdl:part name="parameters" element="tns:SendEmailResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendPDFEmailSoapIn">
+    <wsdl:part name="parameters" element="tns:SendPDFEmail" />
+  </wsdl:message>
+  <wsdl:message name="SendPDFEmailSoapOut">
+    <wsdl:part name="parameters" element="tns:SendPDFEmailResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailNewClientSoapIn">
+    <wsdl:part name="parameters" element="tns:SendEmailNewClient" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailNewClientSoapOut">
+    <wsdl:part name="parameters" element="tns:SendEmailNewClientResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailUpdateAfterUpdateDateSoapIn">
+    <wsdl:part name="parameters" element="tns:SendEmailUpdateAfterUpdateDate" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailUpdateAfterUpdateDateSoapOut">
+    <wsdl:part name="parameters" element="tns:SendEmailUpdateAfterUpdateDateResponse" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSMSWarningSoapIn">
+    <wsdl:part name="parameters" element="tns:SendEmailSMSWarning" />
+  </wsdl:message>
+  <wsdl:message name="SendEmailSMSWarningSoapOut">
+    <wsdl:part name="parameters" element="tns:SendEmailSMSWarningResponse" />
+  </wsdl:message>
+  <wsdl:message name="AllCountriesSoapIn">
+    <wsdl:part name="parameters" element="tns:AllCountries" />
+  </wsdl:message>
+  <wsdl:message name="AllCountriesSoapOut">
+    <wsdl:part name="parameters" element="tns:AllCountriesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithSoftwareKeySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithSoftwareKey" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithSoftwareKeySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithSoftwareKeyResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithSoftwareKeyWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithSoftwareKeyWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithSoftwareKeyWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithSoftwareKeyWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrack" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateTimeTrackWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateTimeTrackWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithSoftwareKeySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithSoftwareKey" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithSoftwareKeySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithSoftwareKeyResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithSoftwareKeyWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithSoftwareKeyWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithSoftwareKeyWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithSoftwareKeyWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateAccess" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateAccessResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateAccessWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateAccessWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateVehicleSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateVehicle" />
+  </wsdl:message>
+  <wsdl:message name="ActivateVehicleSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateVehicleResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateVehicleWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateVehicleWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateVehicleWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateVehicleWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateQTrackSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateQTrack" />
+  </wsdl:message>
+  <wsdl:message name="ActivateQTrackSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateQTrackResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateQTrackWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateQTrackWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateQTrackWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateQTrackWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateLibrarySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateLibrary" />
+  </wsdl:message>
+  <wsdl:message name="ActivateLibrarySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateLibraryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateLibraryWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateLibraryWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateLibraryWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateLibraryWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOS" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithSoftwareKeySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithSoftwareKey" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithSoftwareKeySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithSoftwareKeyResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithSoftwareKeyWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithSoftwareKeyWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivatelogicPOSWithSoftwareKeyWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivatelogicPOSWithSoftwareKeyWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateSalesSoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateSales" />
+  </wsdl:message>
+  <wsdl:message name="ActivateSalesSoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateSalesResponse" />
+  </wsdl:message>
+  <wsdl:message name="ActivateSalesWithCountrySoapIn">
+    <wsdl:part name="parameters" element="tns:ActivateSalesWithCountry" />
+  </wsdl:message>
+  <wsdl:message name="ActivateSalesWithCountrySoapOut">
+    <wsdl:part name="parameters" element="tns:ActivateSalesWithCountryResponse" />
+  </wsdl:message>
+  <wsdl:message name="InsertCloudReportSoapIn">
+    <wsdl:part name="parameters" element="tns:InsertCloudReport" />
+  </wsdl:message>
+  <wsdl:message name="InsertCloudReportSoapOut">
+    <wsdl:part name="parameters" element="tns:InsertCloudReportResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ActivationServiceSoap">
+    <wsdl:operation name="AddMessage">
+      <wsdl:input message="tns:AddMessageSoapIn" />
+      <wsdl:output message="tns:AddMessageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentVersion">
+      <wsdl:input message="tns:GetCurrentVersionSoapIn" />
+      <wsdl:output message="tns:GetCurrentVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCurrentVersion">
+      <wsdl:input message="tns:UpdateCurrentVersionSoapIn" />
+      <wsdl:output message="tns:UpdateCurrentVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfAvailableLicences">
+      <wsdl:input message="tns:GetNumberOfAvailableLicencesSoapIn" />
+      <wsdl:output message="tns:GetNumberOfAvailableLicencesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="VerifyUpdatesAvailability">
+      <wsdl:input message="tns:VerifyUpdatesAvailabilitySoapIn" />
+      <wsdl:output message="tns:VerifyUpdatesAvailabilitySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionWithCompareKeys">
+      <wsdl:input message="tns:GetCurrentLicenceVersionWithCompareKeysSoapIn" />
+      <wsdl:output message="tns:GetCurrentLicenceVersionWithCompareKeysSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersion">
+      <wsdl:input message="tns:GetCurrentLicenceVersionSoapIn" />
+      <wsdl:output message="tns:GetCurrentLicenceVersionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionForWebSite">
+      <wsdl:input message="tns:GetCurrentLicenceVersionForWebSiteSoapIn" />
+      <wsdl:output message="tns:GetCurrentLicenceVersionForWebSiteSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionLinux">
+      <wsdl:input message="tns:GetCurrentLicenceVersionLinuxSoapIn" />
+      <wsdl:output message="tns:GetCurrentLicenceVersionLinuxSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendEmail">
+      <wsdl:input message="tns:SendEmailSoapIn" />
+      <wsdl:output message="tns:SendEmailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendPDFEmail">
+      <wsdl:input message="tns:SendPDFEmailSoapIn" />
+      <wsdl:output message="tns:SendPDFEmailSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailNewClient">
+      <wsdl:input message="tns:SendEmailNewClientSoapIn" />
+      <wsdl:output message="tns:SendEmailNewClientSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailUpdateAfterUpdateDate">
+      <wsdl:input message="tns:SendEmailUpdateAfterUpdateDateSoapIn" />
+      <wsdl:output message="tns:SendEmailUpdateAfterUpdateDateSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailSMSWarning">
+      <wsdl:input message="tns:SendEmailSMSWarningSoapIn" />
+      <wsdl:output message="tns:SendEmailSMSWarningSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="AllCountries">
+      <wsdl:input message="tns:AllCountriesSoapIn" />
+      <wsdl:output message="tns:AllCountriesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKey">
+      <wsdl:input message="tns:ActivateTimeTrackWithSoftwareKeySoapIn" />
+      <wsdl:output message="tns:ActivateTimeTrackWithSoftwareKeySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKeyWithCountry">
+      <wsdl:input message="tns:ActivateTimeTrackWithSoftwareKeyWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateTimeTrackWithSoftwareKeyWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrack">
+      <wsdl:input message="tns:ActivateTimeTrackSoapIn" />
+      <wsdl:output message="tns:ActivateTimeTrackSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithCountry">
+      <wsdl:input message="tns:ActivateTimeTrackWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateTimeTrackWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKey">
+      <wsdl:input message="tns:ActivateAccessWithSoftwareKeySoapIn" />
+      <wsdl:output message="tns:ActivateAccessWithSoftwareKeySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKeyWithCountry">
+      <wsdl:input message="tns:ActivateAccessWithSoftwareKeyWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateAccessWithSoftwareKeyWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccess">
+      <wsdl:input message="tns:ActivateAccessSoapIn" />
+      <wsdl:output message="tns:ActivateAccessSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithCountry">
+      <wsdl:input message="tns:ActivateAccessWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateAccessWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicle">
+      <wsdl:input message="tns:ActivateVehicleSoapIn" />
+      <wsdl:output message="tns:ActivateVehicleSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicleWithCountry">
+      <wsdl:input message="tns:ActivateVehicleWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateVehicleWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrack">
+      <wsdl:input message="tns:ActivateQTrackSoapIn" />
+      <wsdl:output message="tns:ActivateQTrackSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrackWithCountry">
+      <wsdl:input message="tns:ActivateQTrackWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateQTrackWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibrary">
+      <wsdl:input message="tns:ActivateLibrarySoapIn" />
+      <wsdl:output message="tns:ActivateLibrarySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibraryWithCountry">
+      <wsdl:input message="tns:ActivateLibraryWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateLibraryWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOS">
+      <wsdl:input message="tns:ActivatelogicPOSSoapIn" />
+      <wsdl:output message="tns:ActivatelogicPOSSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithCountry">
+      <wsdl:input message="tns:ActivatelogicPOSWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivatelogicPOSWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKey">
+      <wsdl:input message="tns:ActivatelogicPOSWithSoftwareKeySoapIn" />
+      <wsdl:output message="tns:ActivatelogicPOSWithSoftwareKeySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKeyWithCountry">
+      <wsdl:input message="tns:ActivatelogicPOSWithSoftwareKeyWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivatelogicPOSWithSoftwareKeyWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSales">
+      <wsdl:input message="tns:ActivateSalesSoapIn" />
+      <wsdl:output message="tns:ActivateSalesSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSalesWithCountry">
+      <wsdl:input message="tns:ActivateSalesWithCountrySoapIn" />
+      <wsdl:output message="tns:ActivateSalesWithCountrySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertCloudReport">
+      <wsdl:input message="tns:InsertCloudReportSoapIn" />
+      <wsdl:output message="tns:InsertCloudReportSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ActivationServiceSoap" type="tns:ActivationServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AddMessage">
+      <soap:operation soapAction="http://tempuri.org/AddMessage" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentVersion">
+      <soap:operation soapAction="http://tempuri.org/GetCurrentVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCurrentVersion">
+      <soap:operation soapAction="http://tempuri.org/UpdateCurrentVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfAvailableLicences">
+      <soap:operation soapAction="http://tempuri.org/GetNumberOfAvailableLicences" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyUpdatesAvailability">
+      <soap:operation soapAction="http://tempuri.org/VerifyUpdatesAvailability" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionWithCompareKeys">
+      <soap:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionWithCompareKeys" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersion">
+      <soap:operation soapAction="http://tempuri.org/GetCurrentLicenceVersion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionForWebSite">
+      <soap:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionForWebSite" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionLinux">
+      <soap:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionLinux" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmail">
+      <soap:operation soapAction="http://tempuri.org/SendEmail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendPDFEmail">
+      <soap:operation soapAction="http://tempuri.org/SendPDFEmail" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailNewClient">
+      <soap:operation soapAction="http://tempuri.org/SendEmailNewClient" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailUpdateAfterUpdateDate">
+      <soap:operation soapAction="http://tempuri.org/SendEmailUpdateAfterUpdateDate" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailSMSWarning">
+      <soap:operation soapAction="http://tempuri.org/SendEmailSMSWarning" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AllCountries">
+      <soap:operation soapAction="http://tempuri.org/AllCountries" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKey">
+      <soap:operation soapAction="http://tempuri.org/ActivateTimeTrackWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKeyWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateTimeTrackWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrack">
+      <soap:operation soapAction="http://tempuri.org/ActivateTimeTrack" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateTimeTrackWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKey">
+      <soap:operation soapAction="http://tempuri.org/ActivateAccessWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKeyWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateAccessWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccess">
+      <soap:operation soapAction="http://tempuri.org/ActivateAccess" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateAccessWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicle">
+      <soap:operation soapAction="http://tempuri.org/ActivateVehicle" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicleWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateVehicleWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrack">
+      <soap:operation soapAction="http://tempuri.org/ActivateQTrack" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrackWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateQTrackWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibrary">
+      <soap:operation soapAction="http://tempuri.org/ActivateLibrary" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibraryWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateLibraryWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOS">
+      <soap:operation soapAction="http://tempuri.org/ActivatelogicPOS" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivatelogicPOSWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKey">
+      <soap:operation soapAction="http://tempuri.org/ActivatelogicPOSWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKeyWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivatelogicPOSWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSales">
+      <soap:operation soapAction="http://tempuri.org/ActivateSales" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSalesWithCountry">
+      <soap:operation soapAction="http://tempuri.org/ActivateSalesWithCountry" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertCloudReport">
+      <soap:operation soapAction="http://tempuri.org/InsertCloudReport" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ActivationServiceSoap12" type="tns:ActivationServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="AddMessage">
+      <soap12:operation soapAction="http://tempuri.org/AddMessage" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentVersion">
+      <soap12:operation soapAction="http://tempuri.org/GetCurrentVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCurrentVersion">
+      <soap12:operation soapAction="http://tempuri.org/UpdateCurrentVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetNumberOfAvailableLicences">
+      <soap12:operation soapAction="http://tempuri.org/GetNumberOfAvailableLicences" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="VerifyUpdatesAvailability">
+      <soap12:operation soapAction="http://tempuri.org/VerifyUpdatesAvailability" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionWithCompareKeys">
+      <soap12:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionWithCompareKeys" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersion">
+      <soap12:operation soapAction="http://tempuri.org/GetCurrentLicenceVersion" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionForWebSite">
+      <soap12:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionForWebSite" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetCurrentLicenceVersionLinux">
+      <soap12:operation soapAction="http://tempuri.org/GetCurrentLicenceVersionLinux" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmail">
+      <soap12:operation soapAction="http://tempuri.org/SendEmail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendPDFEmail">
+      <soap12:operation soapAction="http://tempuri.org/SendPDFEmail" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailNewClient">
+      <soap12:operation soapAction="http://tempuri.org/SendEmailNewClient" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailUpdateAfterUpdateDate">
+      <soap12:operation soapAction="http://tempuri.org/SendEmailUpdateAfterUpdateDate" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SendEmailSMSWarning">
+      <soap12:operation soapAction="http://tempuri.org/SendEmailSMSWarning" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AllCountries">
+      <soap12:operation soapAction="http://tempuri.org/AllCountries" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKey">
+      <soap12:operation soapAction="http://tempuri.org/ActivateTimeTrackWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithSoftwareKeyWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateTimeTrackWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrack">
+      <soap12:operation soapAction="http://tempuri.org/ActivateTimeTrack" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateTimeTrackWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateTimeTrackWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKey">
+      <soap12:operation soapAction="http://tempuri.org/ActivateAccessWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithSoftwareKeyWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateAccessWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccess">
+      <soap12:operation soapAction="http://tempuri.org/ActivateAccess" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateAccessWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateAccessWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicle">
+      <soap12:operation soapAction="http://tempuri.org/ActivateVehicle" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateVehicleWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateVehicleWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrack">
+      <soap12:operation soapAction="http://tempuri.org/ActivateQTrack" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateQTrackWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateQTrackWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibrary">
+      <soap12:operation soapAction="http://tempuri.org/ActivateLibrary" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateLibraryWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateLibraryWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOS">
+      <soap12:operation soapAction="http://tempuri.org/ActivatelogicPOS" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivatelogicPOSWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKey">
+      <soap12:operation soapAction="http://tempuri.org/ActivatelogicPOSWithSoftwareKey" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivatelogicPOSWithSoftwareKeyWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivatelogicPOSWithSoftwareKeyWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSales">
+      <soap12:operation soapAction="http://tempuri.org/ActivateSales" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="ActivateSalesWithCountry">
+      <soap12:operation soapAction="http://tempuri.org/ActivateSalesWithCountry" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InsertCloudReport">
+      <soap12:operation soapAction="http://tempuri.org/InsertCloudReport" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ActivationService">
+    <wsdl:port name="ActivationServiceSoap" binding="tns:ActivationServiceSoap">
+      <soap:address location="http://licence.logicpulse.pt:8082/ws/ActivationService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ActivationServiceSoap12" binding="tns:ActivationServiceSoap12">
+      <soap12:address location="http://licence.logicpulse.pt:8082/ws/ActivationService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

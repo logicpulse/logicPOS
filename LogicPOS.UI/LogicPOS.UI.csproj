@@ -112,7 +112,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Web References\AccessTrackParkingTicketService\Reference.cs">
+    <Compile Include="Web References\Licensing.ActivationService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -121,16 +121,10 @@
     <Content Include="Assets\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Service References\ServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.CompositeType.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\ServiceReference\LogicPOS.UI.ServiceReference.ServicesATSoapResult.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
+    <None Include="Web References\Licensing.ActivationService\ActivationService.wsdl" />
+    <None Include="Web References\Licensing.ActivationService\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
@@ -294,5 +288,20 @@
       <Version>8.0.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://licence.logicpulse.pt/ws/ActivationService.asmx%3fWSDL">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\Licensing.ActivationService\</RelPath>
+      <UpdateFromURL>http://licence.logicpulse.pt/ws/ActivationService.asmx%3fWSDL</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>logicpos_Licensing_ActivationService_ActivationService</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
 </Project>

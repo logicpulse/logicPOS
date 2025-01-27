@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.10.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.12.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,40 +25,11 @@ namespace LogicPOS.UI.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://licence.logicpulse.pt/ws/ActivationService.asmx")]
-        public string logicpos_WSIntellilock_ActivationService {
-            get {
-                return ((string)(this["logicpos_WSIntellilock_ActivationService"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.86/POS/service.asmx")]
-        public string logicpos_ParkingTicketService_TimeService {
+        [global::System.Configuration.DefaultSettingValueAttribute("http://licence.logicpulse.pt:8082/ws/ActivationService.asmx")]
+        public string ActivationServiceUrl {
             get {
-                return ((string)(this["logicpos_ParkingTicketService_TimeService"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.86/POS/service.asmx")]
-        public string logicpos_ParkingTicketService1_TimeService {
-            get {
-                return ((string)(this["logicpos_ParkingTicketService1_TimeService"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://192.168.1.86/POS/service.asmx")]
-        public string logicpos_AccessTrackParkingTicketService_TimeService {
-            get {
-                return ((string)(this["logicpos_AccessTrackParkingTicketService_TimeService"]));
+                return ((string)(this["ActivationServiceUrl"]));
             }
         }
     }
