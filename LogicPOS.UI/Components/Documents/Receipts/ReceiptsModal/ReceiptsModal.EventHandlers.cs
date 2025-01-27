@@ -10,6 +10,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.Terminals;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -159,5 +160,19 @@ namespace LogicPOS.UI.Components.Modals
             return canCancel;
         }
 
+        private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedReceipts.Count == 0)
+            {
+                return;
+            }
+
+            var modal = new SendDocumentByEmailModal(Page.SelectedReceipts.Select(d => d.Id),
+                                                     true,
+                                                     this);
+
+            var response = (ResponseType)modal.Run();
+            modal.Destroy();
+        }
     }
 }

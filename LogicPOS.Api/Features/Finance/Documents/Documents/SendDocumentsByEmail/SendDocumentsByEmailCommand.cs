@@ -12,6 +12,7 @@ namespace LogicPOS.Api.Features.Documents.SendDocumentsByEmail
         public string Cc { get; set; }
         public string Bcc { get; set; }
         public string Body { get; set; }
+        public bool SendReceipts { get; set; }
         public IEnumerable<Guid> DocumentsIds { get; set; }
     }
 }

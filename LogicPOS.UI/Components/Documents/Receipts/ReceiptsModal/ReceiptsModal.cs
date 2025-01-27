@@ -38,7 +38,9 @@ namespace LogicPOS.UI.Components.Modals
             BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
             BtnCancelDocument.Clicked += BtnCancelReceipt_Clicked;
             BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
+            BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
         }
+
 
         private void ShowCannotCancelReceiptMessage(string refNo)
         {

@@ -162,7 +162,9 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => d.Id),this);
+            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => d.Id),
+                                                     false,
+                                                     this);
             var response = (ResponseType)modal.Run();
             modal.Destroy();
         }

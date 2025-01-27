@@ -10,7 +10,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Errors;
-using LogicPOS.Utility;
+using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -32,14 +32,17 @@ namespace LogicPOS.UI.Components.Modals
         #endregion
 
         private readonly IEnumerable<Guid> _documentsIds;
+        private readonly bool _sendReceipts;
 
         public SendDocumentByEmailModal(IEnumerable<Guid> documentsIds,
+                                        bool sendReceipts,
                                         Window parent) : base(parent,
                                                               LocalizedString.Instance["window_title_send_email"],
                                                               new Size(800, 640),
                                                               PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_send_email.png")
         {
             _documentsIds = documentsIds;
+            _sendReceipts = sendReceipts;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -85,6 +88,8 @@ namespace LogicPOS.UI.Components.Modals
                                                       KeyboardMode.AlfaNumeric,
                                                       string.Empty,
                                                       false);
+
+            TxtBody.EntryMultiline.Value.Text = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_BODY");
         }
 
         private void InitializeTxtSubject()
@@ -94,6 +99,8 @@ namespace LogicPOS.UI.Components.Modals
                                         true,
                                         includeSelectButton: false,
                                         includeKeyBoardButton: true);
+
+            TxtSubject.Text = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT");
         }
 
         private void InitializeTxtTo()
@@ -109,10 +116,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeTxtCc()
         {
-            TxtCc = new PageTextBox(this,
-                                    LocalizedString.Instance["global_email_cc"],
-                                    true,
-                                    true,
+            TxtCc = new PageTextBox(sourceWindow: this,
+                                    labelText: LocalizedString.Instance["global_email_cc"],
+                                    isRequired: false,
+                                    isValidatable: true,
                                     RegularExpressions.Email,
                                     includeSelectButton: false,
                                     includeKeyBoardButton: true);
@@ -120,10 +127,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeTxtBcc()
         {
-            TxtBcc = new PageTextBox(this,
-                                     LocalizedString.Instance["global_email_bcc"],
-                                     true,
-                                     true,
+            TxtBcc = new PageTextBox(sourceWindow: this,
+                                     labelText: LocalizedString.Instance["global_email_bcc"],
+                                     isRequired: false,
+                                     isValidatable: true,
                                      RegularExpressions.Email,
                                      includeSelectButton: false,
                                      includeKeyBoardButton: true);
@@ -141,7 +148,7 @@ namespace LogicPOS.UI.Components.Modals
                     return;
                 }
 
-                SendDocumentsByEmailCommand command = CreateSendDocumentsByEmailCommand();
+                SendDocumentsByEmailCommand command = CreateSendEmailCommand();
                 var result = DependencyInjection.Mediator.Send(command).Result;
 
                 if (result.IsError)
@@ -157,15 +164,16 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private SendDocumentsByEmailCommand CreateSendDocumentsByEmailCommand()
+        private SendDocumentsByEmailCommand CreateSendEmailCommand()
         {
             return new SendDocumentsByEmailCommand
             {
                 DocumentsIds = _documentsIds,
+                SendReceipts = _sendReceipts,
                 Subject = TxtSubject.Text,
                 To = TxtTo.Text,
-                Cc = TxtCc.Text,
-                Bcc = TxtBcc.Text,
+                Cc = string.IsNullOrWhiteSpace(TxtCc.Text) ? null : TxtCc.Text,
+                Bcc = string.IsNullOrWhiteSpace(TxtBcc.Text) ? null : TxtBcc.Text,
                 Body = TxtBody.EntryMultiline.Value.Text
             };
         }
