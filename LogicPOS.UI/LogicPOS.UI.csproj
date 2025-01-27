@@ -112,7 +112,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Web References\Licensing.ActivationService\Reference.cs">
+    <Compile Include="Web References\ActivationService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -121,8 +121,8 @@
     <Content Include="Assets\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="Web References\Licensing.ActivationService\ActivationService.wsdl" />
-    <None Include="Web References\Licensing.ActivationService\Reference.map">
+    <None Include="Web References\ActivationService\ActivationService.wsdl" />
+    <None Include="Web References\ActivationService\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -173,9 +173,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Components\Documents\PDFViewer\LogicPOSPDFViewer.resx">
-      <DependentUpon>LogicPOSPDFViewer.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Components\PDFViewer\LogicPOSPDFViewer.resx">
       <DependentUpon>LogicPOSPDFViewer.cs</DependentUpon>
     </EmbeddedResource>
@@ -263,7 +260,7 @@
   <ItemGroup>
     <WebReferenceUrl Include="http://licence.logicpulse.pt/ws/ActivationService.asmx%3fWSDL">
       <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\Licensing.ActivationService\</RelPath>
+      <RelPath>Web References\ActivationService\</RelPath>
       <UpdateFromURL>http://licence.logicpulse.pt/ws/ActivationService.asmx%3fWSDL</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>

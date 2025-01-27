@@ -32,5 +32,15 @@ namespace LogicPOS.UI.Properties {
                 return ((string)(this["ActivationServiceUrl"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://licence.logicpulse.pt:8082/ws/ActivationService.asmx")]
+        public string logicpos_Licensing_ActivationService_ActivationService {
+            get {
+                return ((string)(this["logicpos_Licensing_ActivationService_ActivationService"]));
+            }
+        }
     }
 }
