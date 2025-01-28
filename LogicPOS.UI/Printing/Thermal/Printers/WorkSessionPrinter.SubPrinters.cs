@@ -3,13 +3,12 @@ using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.Utility;
-using System.Collections.Generic;
-using System.Data;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Printing
 {
-    public partial class PosWorkSessionPrinter
+    public partial class WorkSessionPrinter
     {
 
         void PrintSubfamilyTotal(WorkSessionData workSessionData)
@@ -105,7 +104,7 @@ namespace LogicPOS.UI.Printing
                                 new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
-            var ticketTable= new TicketTable(columns);
+            var ticketTable = new TicketTable(columns);
 
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
@@ -137,7 +136,6 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-
         void PrintPaymentMethodsTotal(WorkSessionData workSessionData)
         {
             var columns = new List<TicketColumn>
@@ -147,7 +145,7 @@ namespace LogicPOS.UI.Printing
                                 new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
-            var ticketTable= new TicketTable(columns);
+            var ticketTable = new TicketTable(columns);
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
             foreach (var item in workSessionData.PaymentReportItems)
@@ -263,7 +261,6 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-
         void PrintUsersTotal(WorkSessionData workSessionData)
         {
             var columns = new List<TicketColumn>
@@ -273,7 +270,7 @@ namespace LogicPOS.UI.Printing
                                 new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
-            var ticketTable= new TicketTable(columns);
+            var ticketTable = new TicketTable(columns);
 
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 

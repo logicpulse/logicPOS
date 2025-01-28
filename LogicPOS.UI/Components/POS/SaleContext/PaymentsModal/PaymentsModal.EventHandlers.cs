@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            ThermalPrintingService.PrintDocument(addDocumentResult.Value);
+            ThermalPrintingService.PrintInvoice(addDocumentResult.Value);
             ProcesPayment();
             
            

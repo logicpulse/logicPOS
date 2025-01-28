@@ -34,9 +34,9 @@ namespace LogicPOS.UI.Printing
             new PosTicketPrinter(Printer, ticket, table).Print();
         }
 
-        public static void PrintDocument( Guid documentId)
+        public static void PrintInvoice(Guid documentId)
         {
-            new PosDocumentPrinter(Printer, documentId).Print();
+            new InvoicePrinter(Printer, documentId).Print();
         }
 
         public static void PrintWorkSessionReport(Guid workSessionId)
@@ -46,8 +46,9 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new PosWorkSessionPrinter(Printer, workSessionId).Print();
+            new WorkSessionPrinter(Printer, workSessionId).Print();
         }
+       
         public static void PrintWorkSessionDayOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -55,8 +56,13 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawer(Printer, totalAmountInCashDrawer, movementAmount, WorkSessionMovementType.CashDrawerOpen, movementDescription).Print();
+            new CashDrawerMovementPrinter(Printer,
+                                          totalAmountInCashDrawer,
+                                          movementAmount,
+                                          WorkSessionMovementType.CashDrawerOpen,
+                                          movementDescription).Print();
         }
+       
         public static void PrintCashDrawerOpen(decimal totalAmountInCashDrawer, decimal movementAmount=0, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -64,8 +70,13 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawer(Printer, totalAmountInCashDrawer, movementAmount, WorkSessionMovementType.CashDrawerOpen, movementDescription).Print();
+            new CashDrawerMovementPrinter(Printer,
+                                          totalAmountInCashDrawer,
+                                          movementAmount,
+                                          WorkSessionMovementType.CashDrawerOpen,
+                                          movementDescription).Print();
         }
+        
         public static void PrintCashDrawerInMovement(decimal totalAmountInCashDrawer, decimal movementAmount, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -73,8 +84,13 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawer(Printer, totalAmountInCashDrawer, movementAmount, WorkSessionMovementType.CashDrawerIn, movementDescription).Print();
+            new CashDrawerMovementPrinter(Printer,
+                                          totalAmountInCashDrawer,
+                                          movementAmount,
+                                          WorkSessionMovementType.CashDrawerIn,
+                                          movementDescription).Print();
         }
+        
         public static void PrintCashDrawerOutMovement(decimal totalAmountInCashDrawer, decimal movementAmount, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -82,7 +98,11 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawer(Printer, totalAmountInCashDrawer, movementAmount, WorkSessionMovementType.CashDrawerOut, movementDescription).Print();
+            new CashDrawerMovementPrinter(Printer,
+                                          totalAmountInCashDrawer,
+                                          movementAmount,
+                                          WorkSessionMovementType.CashDrawerOut,
+                                          movementDescription).Print();
         }
     }
 }

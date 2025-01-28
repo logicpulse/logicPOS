@@ -19,11 +19,11 @@ using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
 {
-    public class PosDocumentPrinter : ThermalPrinter
+    public class InvoicePrinter : ThermalPrinter
     {
         private readonly Document _document;
         protected readonly CompanyInformations _companyInformations;
-        public PosDocumentPrinter(Printer printer, Guid documentId) : base(printer)
+        public InvoicePrinter(Printer printer, Guid documentId) : base(printer)
         {
             _companyInformations = GetCompanyInformations();
             var result = _mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
@@ -67,6 +67,7 @@ namespace LogicPOS.UI.Printing
             }
             _printer.NewLine();
         }
+       
         public void PrintDocumentDetail(TicketTable pTicketTable, DocumentDetail documentDetail, string pPaddingLeftFormat)
         {
             string designation = (documentDetail.Designation.Length <= 48) ? documentDetail.Designation : documentDetail.Designation.Substring(0, 48);
@@ -89,6 +90,7 @@ namespace LogicPOS.UI.Printing
             pTicketTable.Print(_printer, true, pPaddingLeftFormat);
             _printer.Append(exemptionReason);
         }
+       
         private void PrintTotalTax()
         {
             var TaxResume = _document.GetTaxResumes();
@@ -113,6 +115,7 @@ namespace LogicPOS.UI.Printing
             ticketTable.Print(_printer);
             _printer.NewLine();
         }
+       
         protected void PrintDocumentPaymentDetails()
         {
             _printer.AlignCenter();
@@ -130,6 +133,7 @@ namespace LogicPOS.UI.Printing
             _printer.Append(GeneralUtils.GetResourceByName("global_currency_field") + ": " + _document.Currency.Acronym); /* IN009055 */
             _printer.NewLine();
         }
+       
         protected void PrintCustomer(DocumentCustomer customer)
         {
             /* IN009055 block - begin */
@@ -156,6 +160,7 @@ namespace LogicPOS.UI.Printing
             _printer.AlignLeft();
             _printer.Separator(' ');
         }
+       
         public void PrintFooter()
         {
             if (_companyInformations.TicketFinalLine1 != string.Empty || _companyInformations.TicketFinalLine1 != string.Empty)
@@ -179,6 +184,7 @@ namespace LogicPOS.UI.Printing
                 _printer.AlignLeft();
             }
         }
+        
         public override void Print()
         {
             var typeAnalyzer = _document.TypeAnalyzer;

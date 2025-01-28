@@ -16,22 +16,21 @@ using System.Linq;
 
 namespace LogicPOS.UI.Printing
 {
-    public partial class PosWorkSessionPrinter : ThermalPrinter
+    public partial class WorkSessionPrinter : ThermalPrinter
     {
         private readonly WorkSessionData _workSessionReceiptsData;
         private readonly WorkSessionData _workSessionDocumentsData;
         protected string _SubTitle;
         protected string _Title;
 
-        public PosWorkSessionPrinter(Printer printer, Guid workSessionId) : base(printer)
+        public WorkSessionPrinter(Printer printer, Guid workSessionId) : base(printer)
         {
-
-
             _workSessionDocumentsData = GetWorkSessionDocumentsData(workSessionId);
             _workSessionReceiptsData = GetWorkSessionReceiptsData(workSessionId);
             DefineTicketTitle();
             DefineTicketSubtitle();
         }
+
         WorkSessionData GetWorkSessionDocumentsData(Guid workSessionId)
         {
             var result = _mediator.Send(new GetWorkSessionDocumentsDataQuery(workSessionId)).Result;
@@ -138,11 +137,8 @@ namespace LogicPOS.UI.Printing
 
         }
 
-
-        public bool PrintWorkSessionMovement(
-            WorkSessionData workSessionDocumentsData,
-           WorkSessionData workSessionReceiptsData
-           )
+        public bool PrintWorkSessionMovement(WorkSessionData workSessionDocumentsData,
+                                             WorkSessionData workSessionReceiptsData)
         {
             string dateCloseDisplay = workSessionDocumentsData.WorkSession.StartDate.ToString(CultureSettings.DateTimeFormat);
 

@@ -7,7 +7,7 @@ using System;
 
 namespace LogicPOS.UI.Printing
 {
-    public class CashDrawer : ThermalPrinter
+    public class CashDrawerMovementPrinter : ThermalPrinter
     {
 
         private decimal _totalAmountInCashDrawer;
@@ -15,7 +15,11 @@ namespace LogicPOS.UI.Printing
         private string _movementDescription;
         private readonly WorkSessionMovementType _movementType;
 
-        public CashDrawer(Printer printer, decimal totalAmountInCashDrawer, decimal movementAmount, WorkSessionMovementType workSessionMovementType, string movementDescription) : base(printer)
+        public CashDrawerMovementPrinter(Printer printer,
+                                 decimal totalAmountInCashDrawer,
+                                 decimal movementAmount,
+                                 WorkSessionMovementType workSessionMovementType,
+                                 string movementDescription) : base(printer)
         {
             _totalAmountInCashDrawer = totalAmountInCashDrawer;
             _movementAmount = movementAmount;
@@ -32,6 +36,7 @@ namespace LogicPOS.UI.Printing
             _printer.PrintDocument();
             _printer.Clear();
         }
+        
         private void PrintDocumentDetails()
         {
             _printer.AlignCenter();
