@@ -1,9 +1,14 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
+using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -117,7 +122,14 @@ namespace LogicPOS.UI.Components.POS
 
             if (printWorkSessionDayReportResponse == ResponseType.Yes)
             {
-               
+                var command = new GetLastClosedDayQuery();
+                var _mediator =DependencyInjection.Services.GetRequiredService<ISender>();
+                var result= _mediator.Send(command).Result;
+                if (result.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(result);
+                }
+                ThermalPrintingService.PrintWorkSessionReport(result.Value.Id);
             }
         }
 

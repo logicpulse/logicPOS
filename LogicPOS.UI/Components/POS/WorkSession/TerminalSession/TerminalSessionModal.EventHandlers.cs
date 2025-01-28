@@ -3,13 +3,15 @@ using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
@@ -95,7 +97,7 @@ namespace LogicPOS.UI.Components.POS
             var amount = decimal.Parse(TxtAmount.Text);
             var description = TxtDescription.Text;
 
-            if(_totalCashInrawer < amount)
+            if (_totalCashInrawer < amount)
             {
                 CustomAlerts.Error(this)
                              .WithMessage(string.Format(LocalizedString.Instance["dialog_message_cashdrawer_money_out_error"],
@@ -109,6 +111,17 @@ namespace LogicPOS.UI.Components.POS
             if (WorkSessionService.AddCashDrawerOutMovement(amount, description))
             {
                 CustomAlerts.ShowOperationSucceededAlert(this);
+
+                var response= CustomAlerts.Question(this)
+                                            .WithSize(new Size(620, 300))
+                                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                            .ShowAlert();
+
+                if (response == ResponseType.Yes)
+                {
+                    var totalInCashDrawer = WorkSessionService.GetTotalCashInCashDrawer();
+                    ThermalPrintingService.PrintCashDrawerOutMovement(totalInCashDrawer, amount, description);
+                }
             }
         }
 
@@ -120,6 +133,16 @@ namespace LogicPOS.UI.Components.POS
             if (WorkSessionService.AddCashDrawerInMovement(amount, description))
             {
                 CustomAlerts.ShowOperationSucceededAlert(this);
+                var response = CustomAlerts.Question(this)
+                                            .WithSize(new Size(620, 300))
+                                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                            .ShowAlert();
+
+                if (response == ResponseType.Yes)
+                {
+                    var totalInCashDrawer = WorkSessionService.GetTotalCashInCashDrawer();
+                    ThermalPrintingService.PrintCashDrawerInMovement(totalInCashDrawer, amount, description);
+                }
             }
         }
 
@@ -144,6 +167,7 @@ namespace LogicPOS.UI.Components.POS
         {
             var amount = decimal.Parse(TxtAmount.Text);
             var description = TxtDescription.Text;
+            var totalInCashDrawer = WorkSessionService.GetTotalCashInCashDrawer();
 
             if (!WorkSessionService.OpenTerminalSession(amount, description))
             {
@@ -153,6 +177,25 @@ namespace LogicPOS.UI.Components.POS
             CustomAlerts.Information(this)
                          .WithMessageResource("dialog_message_cashdrawer_open_successfully")
                          .ShowAlert();
+
+            var response = CustomAlerts.Question(this)
+                                       .WithSize(new Size(620, 300))
+                                       .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                       .ShowAlert();
+
+            if (response == ResponseType.Yes)
+            {
+                ThermalPrintingService.PrintCashDrawerOpen(totalInCashDrawer, amount, description);
+                var newTotalInCashDrawer = WorkSessionService.GetTotalCashInCashDrawer();
+                if (newTotalInCashDrawer > totalInCashDrawer)
+                {
+                    ThermalPrintingService.PrintCashDrawerInMovement(newTotalInCashDrawer, amount - totalInCashDrawer, description);
+                }
+                if (newTotalInCashDrawer<totalInCashDrawer)
+                {
+                    ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer-newTotalInCashDrawer , description);
+                }
+            }
 
             POSWindow.Instance.UpdateUI();
         }
@@ -181,10 +224,11 @@ namespace LogicPOS.UI.Components.POS
             UpdateButtonsColors();
             UpdateValidatableFields();
 
-            if(MovementType == WorkSessionMovementType.CashDrawerOpen || MovementType == WorkSessionMovementType.CashDrawerClose)
+            if (MovementType == WorkSessionMovementType.CashDrawerOpen || MovementType == WorkSessionMovementType.CashDrawerClose)
             {
                 TxtAmount.Text = _totalCashInrawer.ToString();
-            } else
+            }
+            else
             {
                 TxtAmount.Text = string.Empty;
             }

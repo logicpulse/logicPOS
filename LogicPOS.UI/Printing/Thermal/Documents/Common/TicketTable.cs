@@ -16,12 +16,12 @@ namespace LogicPOS.UI.Printing.Tickets
         private readonly char _columnDivider = ' ';
         public int TableWidth { get; set; }
 
-        /*public TicketTable(List<TicketColumn> pColumnsProperties, int pTableWidth)
+        /*public ticketTable(List<TicketColumn> pColumnsProperties, int pTableWidth)
             : this(pColumnsProperties, pTableWidth)
         {
         }*/
 
-        public TicketTable(List<TicketColumn> pColumnsProperties, int pTableWidth)
+        public TicketTable(List<TicketColumn> pColumnsProperties, int pTableWidth=48)
         {
             //Parameters
             _columnsProperties = pColumnsProperties;
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Printing.Tickets
             }
         }
 
-        /*public TicketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
+        /*public ticketTable(DataTable pDataTable, List<TicketColumn> pColumnsProperties, int pTableWidth)
         {
             _columnsProperties = pColumnsProperties;
             TableWidth = pTableWidth;
@@ -281,7 +281,7 @@ namespace LogicPOS.UI.Printing.Tickets
                 //Print Row
                 if (i == 0)
                 {
-                    thermalPrinter.BoldMode(table[i]);
+                    thermalPrinter.Append(table[i]);
                     thermalPrinter.NewLine();
                 }
                 else

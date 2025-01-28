@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Printing
 
             //Prepare Table with Padding
             DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
-            TicketTable ticketTable = new TicketTable(columns, 48);
+            TicketTable ticketTable = new TicketTable(columns);
 
             //Print Items
             DataRow dataRow;
