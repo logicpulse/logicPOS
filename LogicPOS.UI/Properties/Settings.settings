@@ -1,12 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LogicPOS.UI.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
   <Profiles />
-  <Settings>
-    <Setting Name="ActivationServiceUrl" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://licence.logicpulse.pt:8082/ws/ActivationService.asmx</Value>
-    </Setting>
-    <Setting Name="logicpos_Licensing_ActivationService_ActivationService" Type="(Web Service URL)" Scope="Application">
-      <Value Profile="(Default)">http://licence.logicpulse.pt:8082/ws/ActivationService.asmx</Value>
-    </Setting>
-  </Settings>
+  <Settings />
 </SettingsFile>
