@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Windows;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
@@ -8,8 +9,6 @@ namespace LogicPOS.UI.Components.Pages
     internal partial class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
-
-
 
         public DashBoardPage(Window parentWindow)
         {
@@ -24,6 +23,10 @@ namespace LogicPOS.UI.Components.Pages
             Design(parentWindow, themeWindow);
 
             ShowAll();
+
+            UpdatePrivileges();
+
+            LastInstanciated = this;
         }
 
         private void AddEventHandlers()
@@ -51,5 +54,6 @@ namespace LogicPOS.UI.Components.Pages
 
         }
 
+        public static DashBoardPage LastInstanciated { get; private set; }
     }
 }

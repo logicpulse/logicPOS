@@ -1,4 +1,5 @@
-﻿using LogicPOS.UI.Components.Users;
+﻿using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Users;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -6,6 +7,8 @@ namespace LogicPOS.UI.Components.Windows
     {
         public void UpdatePrivileges()
         {
+            DashBoardPage.LastInstanciated?.UpdatePrivileges();
+
             #region Documents
             BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU");
             BtnDocuments.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSLISTALL_MENU");
