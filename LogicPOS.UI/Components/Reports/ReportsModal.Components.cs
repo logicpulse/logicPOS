@@ -35,20 +35,20 @@ namespace LogicPOS.UI.Components.Modals
         private VBox PanelDetailedFinancialReports = new VBox(false, 2);
         private XAccordionChildButton BtnCustomerBalanceDetailsReport = new XAccordionChildButton(LocalizedString.Instance["report_customer_balance_details"]);
         private XAccordionChildButton BtnCurrentAccountReport = new XAccordionChildButton(LocalizedString.Instance["report_list_current_account"]);
-        private XAccordionChildButton BtnDetailedSalesByDocumentReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_finance_document"]);
-        private XAccordionChildButton BtnDetailedSalesByDateReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_date"]);
-        private XAccordionChildButton BtnDetailedSalesByUserReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_user"]);
-        private XAccordionChildButton BtnDetailedSalesByTerminalReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_terminal"]);
-        private XAccordionChildButton BtnDetailedSalesByCustomerReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_customer"]);
-        private XAccordionChildButton BtnDetailedSalesByPaymentMethodReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_payment_method"]);
-        private XAccordionChildButton BtnDetailedSalesByPaymentConditionReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_payment_condition"]);
-        private XAccordionChildButton BtnDetailedSalesByCurrencyReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_currency"]);
-        private XAccordionChildButton BtnDetailedSalesByCountryReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_country"]);
-        private XAccordionChildButton BtnDetailedSalesByFamilyReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_family"]);
+        private XAccordionChildButton BtnDetailedSalesByDocumentReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por tipo de documento fiscal (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByDateReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por dia (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByUserReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por funcionário (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByTerminalReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por terminal (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByCustomerReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por cliente (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByPaymentMethodReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por método de pagamento (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByPaymentConditionReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por condição de pagamento (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByCurrencyReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por moeda (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByCountryReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por país (Detalhado)"]);
+        private XAccordionChildButton BtnDetailedSalesByFamilyReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por família (Detalhado)"]);
         private XAccordionChildButton BtnDetailedSalesBySubfamilyReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_family_and_subfamily"]);
-        private XAccordionChildButton BtnDetailedSalesByPlaceReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_place"]);
+        private XAccordionChildButton BtnDetailedSalesByPlaceReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por zona (Detalhado)"]);
         private XAccordionChildButton BtnDetailedSalesByTableReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_per_place_table"]);
-        private XAccordionChildButton BtnDetailedSalesByVatReport = new XAccordionChildButton(LocalizedString.Instance["report_sales_detail_group_per_vat"]);
+        private XAccordionChildButton BtnDetailedSalesByVatReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por taxa IVA (Detalhado/Agrupado)"]);
         #endregion
 
         #region Grouped Detailed Financial Reports

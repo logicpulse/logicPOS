@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Services;
 using System;
 
@@ -9,18 +10,18 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnCompanyBillingReport_Clicked(object sender, EventArgs e)
         {
             var modal = new ReportsFilterModal(this);
-			var response = (ResponseType)modal.Run();
+            var response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok)
             {
                 ReportsService.ShowCompanyBillingReport(modal.StartDate, modal.EndDate);
             }
             modal.Destroy();
-		}
+        }
 
         private void BtnCustomerBalanceSummaryReport_Clicked(object sender, EventArgs e)
         {
-           CustomerCurrentAccountFilterModal.ShowModal(this);
+            CustomerCurrentAccountFilterModal.ShowModal(this);
         }
 
         private void BtnSalesByDocumentReport_Clicked(object sender, EventArgs e)
@@ -53,6 +54,337 @@ namespace LogicPOS.UI.Components.Modals
             if (response == ResponseType.Ok)
             {
                 ReportsService.ShowSalesByUserReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByTerminalReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByTerminalReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByCustomerReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByCustomerReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByPaymentMethodReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByPaymentConditionReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByCurrencyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByCurrencyReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByCountryReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByCountryReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByVatAndArticleTypeReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtVatRate.SelectedEntity != null)
+                {
+                    ReportsService.ShowSalesByVatAndArticleTypeReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate).Id);
+                }
+                else
+                {
+                    ReportsService.ShowSalesByVatAndArticleTypeReport(modal.StartDate, modal.EndDate);
+                }
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByVatAndArticleClassReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtVatRate.SelectedEntity != null)
+                {
+                    ReportsService.ShowSalesByVatAndArticleClassReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate).Id);
+                }
+                else
+                {
+                    ReportsService.ShowSalesByVatAndArticleClassReport(modal.StartDate, modal.EndDate);
+                }
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCustomerReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowDetailedSalesByCustomerReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnCustomerBalanceDetailsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtCustomer.SelectedEntity != null)
+                {
+                    ReportsService.ShowCustomerBalanceDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as Customer).Id);
+                }
+            }
+            modal.Destroy();
+        }
+
+
+        private void BtnDetailedSalesByDocumentReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByDocumentDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByDateReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByDateDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByUserReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByUserDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByTerminalReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByTerminalDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByPaymentConditionDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByPaymentMethodDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCurrencyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByCurrencyDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCountryReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByCountryDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByFamilyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByFamilyDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesBySubfamilyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesBySubfamilyDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPlaceReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByPlaceDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByTableReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByTableDetailsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByVatGroupReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtVatRate.SelectedEntity != null)
+                {
+                    ReportsService.ShowSalesByVatGroupDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate).Id);
+                }
+                else
+                {
+                    ReportsService.ShowSalesByVatGroupDetailsReport(modal.StartDate, modal.EndDate);
+                }
+            }
+            modal.Destroy();
+        }
+
+        private void BtnArticlesReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowArticlesReport();
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnCustomersReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowCustomersReport();
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowCommissionsReport(modal.StartDate, modal.EndDate);
+
             }
             modal.Destroy();
         }

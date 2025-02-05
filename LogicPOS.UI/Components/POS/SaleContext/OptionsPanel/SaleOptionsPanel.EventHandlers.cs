@@ -1,6 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
+using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
+using LogicPOS.Api.Features.Reports.GetCustomerReportPdf;
+using LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf;
+using LogicPOS.Api.Features.Reports.GetSalesByTaxGroupDetailedReportPdf;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -151,7 +155,7 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-
+            
             ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
             SaleContext.ItemsPage.FinishTicket();
 
