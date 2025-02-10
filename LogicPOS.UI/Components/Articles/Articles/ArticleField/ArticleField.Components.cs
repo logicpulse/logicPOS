@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Components.InputFields
         public Label Label { get; set; } = new Label(GeneralUtils.GetResourceByName("global_article"));
         private EntityComboBox<Warehouse> _comboWarehouse { get; set; }
         private EntityComboBox<WarehouseLocation> _comboWarehouseLocation { get; set; }
-        private TextBox _txtPrice { get; set; } = TextBox.Simple("global_price",false,true,RegularExpressions.Money);
+        private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price",false,true,RegularExpressions.Money);
 
         private readonly List<TextBox> _serialNumberFields = new List<TextBox>();
         private VBox _serialNumberFieldsContainer { get; set; } = new VBox(false, 2);
@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Components.InputFields
             var hbox = new HBox(false, 2);
             hbox.PackStart(_comboWarehouse.Component, true, true, 0);
             hbox.PackStart(_comboWarehouseLocation.Component, true, true, 0);
-            hbox.PackStart(_txtPrice.Component, false, false, 0);
+            hbox.PackStart(TxtPrice.Component, false, false, 0);
             return hbox;
         }
 
@@ -122,19 +122,6 @@ namespace LogicPOS.UI.Components.InputFields
                 _comboWarehouseLocation.Entities = _comboWarehouse.SelectedEntity?.Locations;
                 _comboWarehouseLocation.ReLoad();
             };
-        }
-
-        private IEnumerable<Warehouse> GetWarehouses()
-        {
-            var result = _mediator.Send(new GetAllWarehousesQuery()).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return Enumerable.Empty<Warehouse>();
-            }
-
-            return result.Value;
         }
 
         private void UpdateSerialNumbersComponents()

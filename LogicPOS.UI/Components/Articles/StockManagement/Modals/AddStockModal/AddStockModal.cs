@@ -1,11 +1,17 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Extensions;
+using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -14,6 +20,8 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockModal : Modal
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+
         public AddStockModal(Window parent) : base(parent,
                                                    LocalizedString.Instance["window_title_dialog_article_stock"],
                                                    new Size(500, 660),
@@ -34,6 +42,14 @@ namespace LogicPOS.UI.Components.Modals
             if (AllFieldsAreValid() == false)
             {
                 return;
+            }
+
+            var result = _mediator.Send(CreateCommand()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                Run();
             }
         }
 
@@ -80,5 +96,18 @@ namespace LogicPOS.UI.Components.Modals
             return ValidatableFields.All(txt => txt.IsValid());
         }
 
+        private AddStockMovementCommand CreateCommand()
+        {
+            var command = new AddStockMovementCommand
+            {
+                Date = TxtDate.Text.FromISO8601DateOnly(),
+                DocumentNumber = TxtDocumnetNumber.Text,
+                Notes = TxtNotes.Text,
+                SupplierId = (TxtSupplier.SelectedEntity as Customer).Id,
+                Items = ArticlesContainer.GetStockMovementItems()
+            };
+
+            return command;
+        }
     }
 }

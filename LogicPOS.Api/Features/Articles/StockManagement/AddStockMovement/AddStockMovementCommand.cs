@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
 {
-    public class AddArticlesStockCommand : IRequest<ErrorOr<Unit>>
+    public class AddStockMovementCommand : IRequest<ErrorOr<Unit>>
     {
         public Guid SupplierId { get; set; }
         public DateTime Date { get; set; }

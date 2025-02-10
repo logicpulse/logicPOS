@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 
@@ -115,13 +116,41 @@ namespace LogicPOS.UI.Components.Articles
             return Fields.All(f => f.IsValid());
         }
 
-        public IEnumerable<StockMovementItem> GetArticlesStocks()
+        public IEnumerable<StockMovementItem> GetStockMovementItems()
         {
-            return Fields.Select(f => new StockMovementItem
+            foreach (ArticleField field in Fields)
             {
-                ArticleId = f.Article.Id,
-                Quantity = decimal.Parse(f.TxtQuantity.Text)
-            });
+                var baseStockMovementItem = new StockMovementItem
+                {
+                    ArticleId = field.Article.Id,
+                    Quantity = decimal.Parse(field.TxtQuantity.Text),
+                };
+
+                var serialNumbers = field.SerialNumbers;
+
+                if (_mode == ArticlesBoxMode.StockManagement)
+                {
+                    baseStockMovementItem.Price = field.Price;
+                    baseStockMovementItem.WarehouseLocationId = field.WarehouseLocationId;
+
+                    foreach (var serialNumber in serialNumbers)
+                    {
+                        yield return new StockMovementItem
+                        {
+                            ArticleId = baseStockMovementItem.ArticleId,
+                            Quantity = 1,
+                            Price = baseStockMovementItem.Price,
+                            WarehouseLocationId = baseStockMovementItem.WarehouseLocationId,
+                            SerialNumber = serialNumber
+                        };
+                    }
+                }
+
+                if(serialNumbers.Count() == 0)
+                {
+                    yield return baseStockMovementItem;
+                }
+            }
         }
 
         public IEnumerable<ArticleChild> GetArticleChildren()

@@ -1,10 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
@@ -109,5 +111,24 @@ namespace LogicPOS.UI.Components.InputFields
 
             return result;
         }
+       
+        private IEnumerable<Warehouse> GetWarehouses()
+        {
+            var result = _mediator.Send(new GetAllWarehousesQuery()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return Enumerable.Empty<Warehouse>();
+            }
+
+            return result.Value;
+        }
+
+        public IEnumerable<string> SerialNumbers => _serialNumberFields.Where(f => string.IsNullOrWhiteSpace(f.Text) == false).Select(f => f.Text);
+
+        public decimal Price => string.IsNullOrEmpty(TxtPrice.Text) ? 0 : decimal.Parse(TxtPrice.Text);
+
+        public Guid? WarehouseLocationId => _comboWarehouseLocation.SelectedEntity?.Id;
     }
 }

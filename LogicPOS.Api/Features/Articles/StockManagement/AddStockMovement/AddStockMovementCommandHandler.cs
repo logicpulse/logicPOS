@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
 {
-    public class AddArticlesStocksCommandHandler :
-        RequestHandler<AddArticlesStockCommand, ErrorOr<Unit>>
+    public class AddStockMovementCommandHandler :
+        RequestHandler<AddStockMovementCommand, ErrorOr<Unit>>
     {
-        public AddArticlesStocksCommandHandler(IHttpClientFactory factory) : base(factory)
+        public AddStockMovementCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(AddArticlesStockCommand command,
+        public override async Task<ErrorOr<Unit>> Handle(AddStockMovementCommand command,
                                                          CancellationToken cancellationToken = default)
         {
             try

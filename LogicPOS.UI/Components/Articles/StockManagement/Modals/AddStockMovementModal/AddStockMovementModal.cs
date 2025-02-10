@@ -3,11 +3,10 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,20 +45,20 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 Run();
             }
         }
 
-        private AddArticlesStockCommand CreateCommand()
+        private AddStockMovementCommand CreateCommand()
         {
-            var command = new AddArticlesStockCommand
+            var command = new AddStockMovementCommand
             {
                 Date = TxtDate.Text.FromISO8601DateOnly(),
                 DocumentNumber = TxtDocumnetNumber.Text,
                 Notes = TxtNotes.Text,
                 SupplierId = (TxtSupplier.SelectedEntity as Customer).Id,
-                Items = AddArticlesBox.GetArticlesStocks()
+                Items = AddArticlesBox.GetStockMovementItems()
             };
 
             return command;
