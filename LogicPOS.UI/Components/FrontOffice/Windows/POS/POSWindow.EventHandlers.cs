@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.Users;
 using System;
 
 namespace LogicPOS.UI.Components.Windows
@@ -152,6 +153,13 @@ namespace LogicPOS.UI.Components.Windows
         private void ScrollTextViewLog(object o, SizeAllocatedArgs args)
         {
             TextViewLog.ScrollToIter(TextViewLog.Buffer.EndIter, 0, false, 0, 0);
+        }
+
+        public void UpdatePrivileges()
+        {
+            BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_ACCESS");
+            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_ALL");
+            BtnReports.Sensitive = AuthenticationService.UserHasPermission("REPORT_ACCESS");
         }
     }
 }

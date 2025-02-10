@@ -632,7 +632,7 @@ namespace LogicPOS.UI.Components.Windows
             {
                 Instance.LabelTotalTable.Text = Instance.LabelTotalTable.Text = $"{SaleContext.CurrentOrder.TotalFinal:0.00} : #{SaleContext.CurrentOrder.Tickets.Count}";
             }
-
+            UpdatePrivileges();
             SaleOptionsPanel.UpdateUI();
         }
 

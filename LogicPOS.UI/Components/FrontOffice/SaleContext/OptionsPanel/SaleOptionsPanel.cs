@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 
 namespace LogicPOS.UI.Components.POS
@@ -145,16 +146,24 @@ namespace LogicPOS.UI.Components.POS
             BtnFinishOrder.Sensitive = hasTicketItems;
             
             var hasOrder = SaleContext.CurrentOrder != null;
-            BtnDelete.Sensitive = hasOrder;
+            //BtnDelete.Sensitive = hasOrder;
 
             var hasFinshedOrder = hasOrder && SaleContext.CurrentOrder.Id != null;
             BtnPayments.Sensitive = hasFinshedOrder;
+
+            UpdatePrivileges();
         }
 
         public void UpdateUI()
         {
             Sensitive = WorkSessionService.TerminalIsOpen();
             UpdateButtonsSensitivity();
+        }
+
+        public void UpdatePrivileges()
+        {
+            BtnPrice.Sensitive = AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
+            BtnDelete.Sensitive = AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
         }
     }
 }
