@@ -163,7 +163,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Components\PDFViewer\LogicPOSPDFViewer.resx">
+    <EmbeddedResource Include="Components\Others\PDFViewer\LogicPOSPDFViewer.resx">
       <DependentUpon>LogicPOSPDFViewer.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -171,10 +171,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-    <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Api\LogicPOS.Api.csproj">
@@ -243,8 +239,5 @@
     <PackageReference Include="System.IO.Ports">
       <Version>8.0.0</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WebReferences Include="Web References\" />
   </ItemGroup>
 </Project>
