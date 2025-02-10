@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Warehouses.DeleteWarehouse
 
         public async override Task<ErrorOr<bool>> Handle(DeleteWarehouseCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleDeleteCommandAsync($"warehouses/{command.Id}", cancellationToken);
+            return await HandleDeleteCommandAsync($"articles/stocks/warehouses/{command.Id}", cancellationToken);
         }
     }
 }

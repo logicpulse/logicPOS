@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Warehouses.AddWarehouse
         public override async Task<ErrorOr<Guid>> Handle(AddWarehouseCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("warehouses", command, cancellationToken);
+            return await HandleAddCommandAsync("articles/stocks/warehouses", command, cancellationToken);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Warehouses.Locations.AddWarehouseLocations
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync($"/warehouses/{command.Id}/locations", command, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync($"articles/stocks/warehouses/{command.Id}/locations", command, cancellationToken);
                 return await HandleHttpResponseAsync(response);
             }
             catch (HttpRequestException)

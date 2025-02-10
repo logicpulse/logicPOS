@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Warehouses.UpdateWarehouse
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateWarehouseCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommandAsync($"/warehouses/{command.Id}", command, cancellationToken);
+            return await HandleUpdateCommandAsync($"articles/stocks/warehouses/{command.Id}", command, cancellationToken);
         }
     }
 }
