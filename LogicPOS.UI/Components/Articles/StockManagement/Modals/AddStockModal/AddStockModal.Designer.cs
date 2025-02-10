@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtDate.Component, false, false, 0);
             vbox.PackStart(TxtDocumnetNumber.Component, false, false, 0);
             vbox.PackStart(TxtNotes.Component, false, false, 0);
-            vbox.PackStart(_articlesContainer.Component, true, true, 0);
+            vbox.PackStart(ArticlesContainer.Component, true, true, 0);
             return vbox;
         }
     }

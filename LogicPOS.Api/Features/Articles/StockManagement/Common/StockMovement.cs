@@ -7,13 +7,9 @@ namespace LogicPOS.Api.Entities
     {
         public Customer Customer { get; set; }
         public Guid? CustomerId { get; set; }
-
         public Article Article { get; set; }
         public Guid ArticleId { get; set; }
-
-        public ArticleSerialNumber SerialNumber { get; set; }
-        public Guid? SerialNumberId { get; set; }
-
+        public string SerialNumber { get; set; }
         public string DocumentNumber { get; set; }
         public decimal Quantity { get; set; }
         public DateTime Date { get; set; }
