@@ -1,9 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
-using LogicPOS.Api.Features.Articles.GetTotalStocks;
-using LogicPOS.Settings;
+using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
@@ -13,7 +11,6 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -24,7 +21,7 @@ namespace LogicPOS.UI.Components.Menus
     {
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public ArticleSubfamiliesMenu MenuSubfamilies { get; }
-        public IEnumerable<ArticleStock> Stocks { get; private set; }
+        public IEnumerable<TotalStock> Stocks { get; private set; }
         public bool PresentFavorites { get; set; }
 
         public ArticlesMenu(CustomButton btnPrevious,
@@ -88,7 +85,7 @@ namespace LogicPOS.UI.Components.Menus
 
         private void BtnArticle_Clicked(Article article)
         {
-            var totalStock = Stocks.FirstOrDefault(x => x.Id == SelectedEntity.Id)?.Quantity ?? 0;
+            var totalStock = Stocks.FirstOrDefault(x => x.ArticleId == SelectedEntity.Id)?.Quantity ?? 0;
 
             if (totalStock - SelectedEntity.DefaultQuantity <= SelectedEntity.MinimumStock)
             {

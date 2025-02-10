@@ -747,7 +747,7 @@ namespace logicpos
             }
             else
             {
-                var addStockModal = new AddStockModal(parentWindow);
+                var addStockModal = new AddStockMovementModal(parentWindow);
                 addStockModal.Run();
                 addStockModal.Destroy();
             }

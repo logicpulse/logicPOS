@@ -16,9 +16,9 @@ namespace LogicPOS.UI.Components.Modals
         public override string ModalTitleResourceName => "window_title_edit_configurationpreferenceparameter";
 
         #region Components
-        private TextBox _txtOrder = TextBoxes.CreateOrderField();
-        private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtToken = new TextBox("global_token");
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtToken = TextBox.Simple("global_token");
         private PreferenceParameterInputField _field;
         #endregion
 

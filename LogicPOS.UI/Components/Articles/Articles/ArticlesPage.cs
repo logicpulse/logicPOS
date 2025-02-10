@@ -1,10 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.DeleteArticle;
 using LogicPOS.Api.Features.Articles.GetAllArticles;
-using LogicPOS.Api.Features.Articles.GetTotalStocks;
+using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -18,7 +17,7 @@ namespace LogicPOS.UI.Components.Pages
     public class ArticlesPage : Page<Article>
     {
         protected override IRequest<ErrorOr<IEnumerable<Article>>> GetAllQuery => new GetAllArticlesQuery();
-        private List<ArticleStock> _totalStocks = new List<ArticleStock>();
+        private List<TotalStock> _totalStocks = new List<TotalStock>();
 
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
@@ -110,7 +109,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalStock(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var articleId = ((Article)model.GetValue(iter, 0)).Id;
-                (cell as CellRendererText).Text = _totalStocks.Find(x => x.Id == articleId)?.Quantity.ToString("0.#####") ?? "0";
+                (cell as CellRendererText).Text = _totalStocks.Find(x => x.ArticleId == articleId)?.Quantity.ToString("0.#####") ?? "0";
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_stock");

@@ -11,11 +11,11 @@ namespace LogicPOS.UI.Components.Modals
     public partial class ArticleModal
     {
         #region Components
-        private TextBox _txtOrder = TextBoxes.CreateOrderField();
-        private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtCodeDealer = new TextBox("global_record_code_dealer");
-        private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtButtonName = new TextBox("global_button_name");
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtCodeDealer = TextBox.Simple("global_record_code_dealer");
+        private TextBox _txtDesignation = TextBox.CreateDesignationField();
+        private TextBox _txtButtonName = TextBox.Simple("global_button_name");
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
@@ -34,18 +34,18 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkUseWeighingBalance = new CheckButton(GeneralUtils.GetResourceByName("global_use_weighing_balance"));
         private CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
         private CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
-        private TextBox _txtDiscount = new TextBox("global_discount", true, true, RegularExpressions.Money);
-        private TextBox _txtDefaultQuantity = new TextBox("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber);
-        private TextBox _txtMinimumStock = new TextBox("global_minimum_stock", true, true, RegularExpressions.DecimalNumber);
-        private TextBox _txtTare = new TextBox("global_tare", true, true, RegularExpressions.DecimalNumber) { Text = "0" };
-        private TextBox _txtWeight = new TextBox("global_weight", true, true, RegularExpressions.DecimalNumber) { Text = "0" };
-        private TextBox _txtBarcode = new TextBox("global_barcode", false, true, RegularExpressions.IntegerNumber);
+        private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.Money);
+        private TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber);
+        private TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber);
+        private TextBox _txtTare = TextBox.Simple("global_tare", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);
         private ArticlePriceField _price1;
         private ArticlePriceField _price2;
         private ArticlePriceField _price3;
         private ArticlePriceField _price4;
         private ArticlePriceField _price5;
-        private AddArticlesBox _addArticlesBox = new AddArticlesBox();
+        private ArticleFieldsContainer _addArticlesBox = new ArticleFieldsContainer();
         private VBox _compositionTab;
         #endregion
 

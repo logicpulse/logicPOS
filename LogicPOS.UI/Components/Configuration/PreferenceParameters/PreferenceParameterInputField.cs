@@ -208,7 +208,7 @@ namespace LogicPOS.UI.Components.InputFieds
 
         private void InitializeTextBox()
         {
-            TextBox = new TextBox(_entity.ResourceString, _entity.Required);
+            TextBox = TextBox.Simple(_entity.ResourceString, _entity.Required);
             TextBox.Text = _entity.Value;
         }
     }

@@ -13,10 +13,10 @@ namespace LogicPOS.UI.Components.Modals
         public override string ModalTitleResourceName => "global_article_class";
 
         #region Components
-        private TextBox _txtOrder = TextBoxes.CreateOrderField();
-        private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtAcronym= new TextBox("global_acronym", true, true, "^.{1}$");
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtDesignation = TextBox.CreateDesignationField();
+        private TextBox _txtAcronym= TextBox.Simple("global_acronym", true, true, "^.{1}$");
         private CheckButton _checkWorkInStock = new CheckButton(GeneralUtils.GetResourceByName("global_work_in_stock"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion

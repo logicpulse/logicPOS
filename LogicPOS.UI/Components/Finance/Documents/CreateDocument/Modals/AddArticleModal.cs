@@ -1,0 +1,462 @@
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Settings;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Documents.CreateDocument
+{
+    public class AddArticleModal : Modal
+    {
+        private EntityEditionModalMode _mode;
+        public Item Item { get; }
+        public IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+        public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+        public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
+        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        public TextBox TxtArticle { get; set; }
+        public TextBox TxtQuantity { get; set; }
+        public TextBox TxtPrice { get; set; }
+        public TextBox TxtDiscount { get; set; }
+        public TextBox TxtTotal { get; set; }
+        public TextBox TxtTotalWithTax { get; set; }
+        public TextBox TxtTax { get; set; }
+        public TextBox TxtVatExemptionReason { get; set; }
+        public TextBox TxtNotes { get; set; }
+        private decimal _vatRateValue;
+
+        public AddArticleModal(Window parent,
+                               EntityEditionModalMode mode,
+                               Item item = null) : base(parent,
+                                                     GeneralUtils.GetResourceByName("global_insert_articles"),
+                                                     new Size(900, 360),
+                                                     PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png")
+        {
+            _mode = mode;
+            Item = item;
+
+            HandleModalMode();
+        }
+
+        private void HandleModalMode()
+        {
+            if (_mode != EntityEditionModalMode.Insert)
+            {
+                ShowItemData(Item);
+            }
+
+            if(_mode == EntityEditionModalMode.View)
+            {
+                DisableFields();
+            }
+
+            if (_mode == EntityEditionModalMode.Update)
+            {
+                TxtArticle.Component.Sensitive = false;
+            }
+        }
+
+        private void DisableFields()
+        {
+            TxtArticle.Component.Sensitive = false;
+            TxtPrice.Component.Sensitive = false;
+            TxtQuantity.Component.Sensitive = false;
+            TxtDiscount.Component.Sensitive = false;
+            TxtTax.Component.Sensitive = false;
+            TxtVatExemptionReason.Component.Sensitive = false;
+            TxtNotes.Component.Sensitive = false;
+        }
+
+        private void ShowItemData(Item item)
+        {
+            TxtArticle.SelectedEntity = item.Article;
+            TxtArticle.Text = item.Designation;
+            TxtPrice.Text = item.UnitPrice.ToString();
+            TxtQuantity.Text = item.Quantity.ToString();
+            TxtDiscount.Text = item.Discount.ToString();
+            TxtVatExemptionReason.SelectedEntity = item.VatExemptionReason;
+            TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
+            TxtTax.SelectedEntity = item.VatRate;
+            TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
+            _vatRateValue = item.Vat;
+            TxtNotes.Text = item.Notes;
+            UpdateTotals();
+            UpdateValidatableFields();
+        }
+
+        private void Initialize()
+        {
+            InitializeTxtArticle();
+            InitializeTxtQuantity();
+            InitializeTxtPrice();
+            InitializeTxtDiscount();
+            InitializeTxtTotal();
+            InitializeTxtTotalWithTax();
+            InitializeTxtTax();
+            InitializeTxtVatExemptionReason();
+            InitializeTxtNotes();
+            AddEventHandlers();
+        }
+
+        private void AddEventHandlers()
+        {
+            BtnClear.Clicked += BtnClear_Clicked;
+            BtnOk.Clicked += BtnOk_Clicked;
+        }
+
+        private void BtnOk_Clicked(object sender, EventArgs e)
+        {
+            Validate();
+
+            if (AllFieldsAreValid() == false)
+            {
+                return;
+            }
+
+            if (_mode == EntityEditionModalMode.Update)
+            {
+                Item.Article = TxtArticle.SelectedEntity as Article;
+                Item.ArticleId = (TxtArticle.SelectedEntity as Article)?.Id ?? Item.ArticleId;
+                Item.Code = Item.Article?.Code ?? Item.Code;
+                Item.Designation = TxtArticle?.Text ?? Item.Designation;
+                Item.UnitPrice = decimal.Parse(TxtPrice.Text);
+                Item.Quantity = decimal.Parse(TxtQuantity.Text);
+                Item.Discount = decimal.Parse(TxtDiscount.Text);
+                Item.VatRate = TxtTax.SelectedEntity as VatRate;
+                Item.VatRateId = (TxtTax.SelectedEntity as VatRate)?.Id ?? Item.VatRateId;
+                Item.VatDesignation = TxtTax.Text;
+                Item.Vat = _vatRateValue;
+                Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
+                Item.ExemptionReason = Item.VatExemptionReason is null ? TxtVatExemptionReason.Text : Item.VatExemptionReason.Designation;
+                Item.Notes = TxtNotes.Text;
+            }
+        }
+
+        private void BtnClear_Clicked(object sender, EventArgs e)
+        {
+            Clear();
+            Run();
+        }
+
+        private void InitializeTxtNotes()
+        {
+            TxtNotes = new TextBox(WindowSettings.Source,
+                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtVatExemptionReason()
+        {
+            TxtVatExemptionReason = new TextBox(WindowSettings.Source,
+                                                    GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
+                                                    isRequired: true,
+                                                    isValidatable: false,
+                                                    includeSelectButton: true,
+                                                    includeKeyBoardButton: false);
+
+            TxtVatExemptionReason.Entry.IsEditable = false;
+
+            TxtVatExemptionReason.SelectEntityClicked += BtnSelectVatExemptionReason_Clicked;
+
+            ValidatableFields.Add(TxtVatExemptionReason);
+        }
+
+        private void BtnSelectVatExemptionReason_Clicked(object sender, EventArgs e)
+        {
+            var page = new VatExemptionReasonsPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<VatExemptionReason>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtVatExemptionReason.Text = page.SelectedEntity.Designation;
+                TxtVatExemptionReason.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void InitializeTxtTax()
+        {
+            TxtTax = new TextBox(WindowSettings.Source,
+                                     GeneralUtils.GetResourceByName("global_vat_rate"),
+                                     isRequired: true,
+                                     isValidatable: false,
+                                     includeSelectButton: true,
+                                     includeKeyBoardButton: false,
+                                     regex: RegularExpressions.DecimalNumber);
+
+            TxtTax.Entry.IsEditable = false;
+
+            TxtTax.SelectEntityClicked += BtnSelectTax_Clicked;
+
+            ValidatableFields.Add(TxtTax);
+        }
+
+        private void BtnSelectTax_Clicked(object sender, EventArgs e)
+        {
+            var page = new VatRatesPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<VatRate>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtTax.Text = page.SelectedEntity.Designation;
+                TxtTax.SelectedEntity = page.SelectedEntity;
+                _vatRateValue = page.SelectedEntity.Value;
+                UpdateTotals();
+                UpdateValidatableFields();
+            }
+        }
+
+        private void UpdateValidatableFields()
+        {
+            if (_vatRateValue != 0)
+            {
+                TxtVatExemptionReason.Clear();
+                ValidatableFields.Remove(TxtVatExemptionReason);
+                TxtVatExemptionReason.Component.Sensitive = false;
+            }
+            else
+            {
+                ValidatableFields.Add(TxtVatExemptionReason);
+                TxtVatExemptionReason.IsRequired = true;
+                TxtVatExemptionReason.Component.Sensitive = true;
+            }
+        }
+
+        private void InitializeTxtTotalWithTax()
+        {
+            TxtTotalWithTax = new TextBox(WindowSettings.Source,
+                                              GeneralUtils.GetResourceByName("global_total_per_item_vat"),
+                                              isRequired: false,
+                                              isValidatable: false,
+                                              includeSelectButton: false,
+                                              includeKeyBoardButton: false);
+
+            TxtTotalWithTax.Entry.IsEditable = false;
+        }
+
+        private void InitializeTxtTotal()
+        {
+            TxtTotal = new TextBox(WindowSettings.Source,
+                                       GeneralUtils.GetResourceByName("global_total_article_tab"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: false);
+
+            TxtTotal.Entry.IsEditable = false;
+        }
+
+        private void InitializeTxtDiscount()
+        {
+            TxtDiscount = new TextBox(WindowSettings.Source,
+                                          GeneralUtils.GetResourceByName("global_discount"),
+                                          isRequired: true,
+                                          isValidatable: true,
+                                          includeSelectButton: false,
+                                          includeKeyBoardButton: true,
+                                          regex: RegularExpressions.DecimalNumber);
+
+            TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
+
+            TxtDiscount.Text = "0";
+
+            ValidatableFields.Add(TxtDiscount);
+
+            TxtDiscount.Entry.Changed += (sender, args) => UpdateTotals();
+        }
+
+        private void InitializeTxtPrice()
+        {
+            TxtPrice = new TextBox(WindowSettings.Source,
+                                       GeneralUtils.GetResourceByName("global_price"),
+                                       isRequired: true,
+                                       isValidatable: true,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: true,
+                                       regex: RegularExpressions.Money);
+
+            TxtPrice.Text = "0";
+            ValidatableFields.Add(TxtPrice);
+            TxtPrice.Entry.Changed += (sender, args) => UpdateTotals();
+        }
+
+        private void InitializeTxtQuantity()
+        {
+            TxtQuantity = new TextBox(WindowSettings.Source,
+                                          GeneralUtils.GetResourceByName("global_quantity"),
+                                          isRequired: true,
+                                          isValidatable: true,
+                                          includeSelectButton: false,
+                                          includeKeyBoardButton: true,
+                                          regex: RegularExpressions.PositiveQuantity);
+
+            TxtQuantity.Text = "1";
+
+            ValidatableFields.Add(TxtQuantity);
+            TxtQuantity.Entry.Changed += (sender, args) => UpdateTotals();
+        }
+
+        private void InitializeTxtArticle()
+        {
+            TxtArticle = new TextBox(WindowSettings.Source,
+                                          GeneralUtils.GetResourceByName("global_article"),
+                                          isRequired: true,
+                                          isValidatable: false,
+                                          includeSelectButton: true,
+                                          includeKeyBoardButton: false);
+
+            TxtArticle.Entry.IsEditable = false;
+
+            TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
+
+            ValidatableFields.Add(TxtArticle);
+        }
+
+        private void BtnSelectArticle_Clicked(object sender, EventArgs e)
+        {
+            var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<Article>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtArticle.Text = page.SelectedEntity.Designation;
+                TxtArticle.SelectedEntity = page.SelectedEntity;
+                ShowArticleData(page.SelectedEntity);
+                UpdateTotals();
+                UpdateValidatableFields();
+            }
+        }
+
+        private void ShowArticleData(Article article)
+        {
+            TxtPrice.Text = article.Price1.Value.ToString();
+            TxtQuantity.Text = article.DefaultQuantity.ToString();
+            TxtDiscount.Text = article.Discount.ToString();
+            TxtVatExemptionReason.SelectedEntity = article.VatExemptionReason;
+            TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;
+            TxtTax.SelectedEntity = article.VatDirectSelling;
+            TxtTax.Text = article.VatDirectSelling?.Designation;
+            _vatRateValue = article.VatDirectSelling.Value;
+            TxtNotes.Text = article.Notes;
+        }
+
+        protected override ActionAreaButtons CreateActionAreaButtons()
+        {
+            return new ActionAreaButtons
+            {
+                new ActionAreaButton(BtnOk, ResponseType.Ok),
+                new ActionAreaButton(BtnCancel, ResponseType.Cancel),
+                new ActionAreaButton(BtnClear, ResponseType.DeleteEvent)
+            };
+        }
+
+        protected override Widget CreateBody()
+        {
+            Initialize();
+
+            var vbox = new VBox(false, 2);
+            vbox.PackStart(TxtArticle.Component, false, false, 0);
+            vbox.PackStart(TextBox.CreateHbox(TxtPrice,
+                                                  TxtQuantity,
+                                                  TxtDiscount,
+                                                  TxtTotal,
+                                                  TxtTotalWithTax), false, false, 0);
+
+            vbox.PackStart(TextBox.CreateHbox(TxtTax, TxtVatExemptionReason), false, false, 0);
+
+            vbox.PackStart(TxtNotes.Component, false, false, 0);
+
+            return vbox;
+        }
+
+        private void Clear()
+        {
+            TxtArticle.Clear();
+            TxtPrice.Clear();
+            TxtQuantity.Clear();
+            TxtDiscount.Clear();
+            TxtTotal.Clear();
+            TxtTotalWithTax.Clear();
+            TxtTax.Clear();
+            TxtVatExemptionReason.Clear();
+            TxtNotes.Clear();
+        }
+
+        public Item GetItem()
+        {
+            return new Item
+            {
+                Order = (TxtArticle.SelectedEntity as Article).Order,
+                Code = (TxtArticle.SelectedEntity as Article).Code,
+                Designation = TxtArticle.Text,
+                Article = TxtArticle.SelectedEntity as Article,
+                ArticleId = (TxtArticle.SelectedEntity as Article).Id,
+                UnitPrice = decimal.Parse(TxtPrice.Text),
+                Quantity = decimal.Parse(TxtQuantity.Text),
+                Discount = decimal.Parse(TxtDiscount.Text),
+                VatRate = TxtTax.SelectedEntity as VatRate,
+                VatDesignation = TxtTax.Text,
+                Vat = _vatRateValue,
+                VatRateId = (TxtTax.SelectedEntity as VatRate).Id,
+                VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,
+                ExemptionReason = TxtVatExemptionReason.Text,
+                Notes = TxtNotes.Text
+            };
+        }
+
+        protected void Validate()
+        {
+            if (AllFieldsAreValid())
+            {
+                return;
+            }
+
+            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+
+            Run();
+        }
+
+        protected bool AllFieldsAreValid()
+        {
+            return ValidatableFields.All(txt => txt.IsValid());
+        }
+
+        private void UpdateTotals()
+        {
+            if (decimal.TryParse(TxtPrice.Text, out decimal price) &&
+                decimal.TryParse(TxtQuantity.Text, out decimal quantity) &&
+                decimal.TryParse(TxtDiscount.Text, out decimal discount))
+            {
+                var subTotal = price * quantity;
+                var discountPrice = subTotal * discount / 100;
+                var totalNet = subTotal - discountPrice;
+                TxtTotal.Text = totalNet.ToString("0.00");
+                var vatRatePrice = totalNet * _vatRateValue / 100;
+                var totalWithTax = totalNet + vatRatePrice;
+                TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
+
+                return;
+            }
+
+            TxtTotal.Clear();
+            TxtTotalWithTax.Clear();
+        }
+    }
+}

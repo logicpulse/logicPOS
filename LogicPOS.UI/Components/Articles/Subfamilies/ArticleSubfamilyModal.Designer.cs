@@ -14,10 +14,10 @@ namespace LogicPOS.UI.Components.Modals
         public override string ModalTitleResourceName => "window_title_edit_articlesubfamily";
 
         #region Components
-        private TextBox _txtOrder = TextBoxes.CreateOrderField();
-        private TextBox _txtCode = TextBoxes.CreateCodeField();
-        private TextBox _txtDesignation = TextBoxes.CreateDesignationField();
-        private TextBox _txtButtonName = new TextBox("global_button_name");
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtDesignation = TextBox.CreateDesignationField();
+        private TextBox _txtButtonName = TextBox.Simple("global_button_name");
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
