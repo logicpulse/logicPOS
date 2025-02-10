@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void AddWarehouseManagementTab()
         {
-            var tab = new VBox(false, 0);
+            var tab = new WarehouseArticlesPage(this);
             Notebook.AppendPage(tab, new Label(LocalizedString.Instance["global_warehose_management"]));
         }
 

@@ -144,7 +144,7 @@ namespace LogicPOS.UI.Components.InputFields
             for (int i = _serialNumberFields.Count; i < quantity; i++)
             {
                 var textBox = TextBox.Simple("global_serial_number",
-                                             true,
+                                             false,
                                              true,
                                              RegularExpressions.AlfaNumericExtended);
 

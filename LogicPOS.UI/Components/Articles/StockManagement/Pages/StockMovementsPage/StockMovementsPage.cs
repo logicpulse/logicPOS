@@ -18,8 +18,12 @@ namespace LogicPOS.UI.Components.Pages
         public GetStockMovementsQuery Query { get; private set; } = GetDefaultQuery();
         public PaginatedResult<StockMovement> Movements { get; private set; }
 
-        public StockMovementsPage(Window parent,
-                                  Dictionary<string, string> options = null) : base(parent, options)
+        public StockMovementsPage(Window parent) : base(parent)
+        {
+            RemoveForbiddenButtons();
+        }
+
+        private void RemoveForbiddenButtons()
         {
             Navigator.RightButtons.Remove(Navigator.BtnView);
             Navigator.RightButtons.Remove(Navigator.BtnDelete);
@@ -45,6 +49,11 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
+            if(mode != EntityEditionModalMode.Insert)
+            {
+                return (int)ResponseType.Cancel;
+            }
+
             var modal = new AddStockModal(SourceWindow);
             var response = modal.Run();
             modal.Destroy();
