@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation;
 using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.UI.Errors;
 using System.Collections.Generic;
@@ -24,7 +25,16 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity()
         {
-            throw new System.NotImplementedException();
+            var result = _mediator.Send(new ChangeArticleLocationCommand() 
+                                        {
+                                          WarehouseArticleId=_entity.Id, 
+                                          LocationId=_comboWarehouseLocation.SelectedEntity.Id
+                                        }).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+            }
         }
 
         private IEnumerable<Warehouse> GetWarehouses()
