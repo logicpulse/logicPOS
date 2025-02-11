@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void AddArticleHistoryTab()
         {
-            var tab = new VBox(false, 0);
+            var tab = new ArticleHistoryPage(this);
             Notebook.AppendPage(tab, new Label(LocalizedString.Instance["global_article_history"]));
         }
 

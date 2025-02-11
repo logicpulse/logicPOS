@@ -7,7 +7,6 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class WarehouseArticlesPage
     {
-
         #region Creators
         private TreeViewColumn CreateWarehouseColumn()
         {
@@ -72,15 +71,15 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var a = (string)model.GetValue(left, 1);
-                var b = (string)model.GetValue(right, 1);
+                var a = (WarehouseArticle)model.GetValue(left, 0);
+                var b = (WarehouseArticle)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
                     return 0;
                 }
 
-                return a.CompareTo(b);
+                return a.WarehouseLocation.Warehouse.Designation.CompareTo(b.WarehouseLocation.Warehouse.Designation);
             });
         }
 
@@ -88,13 +87,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var a = (string)model.GetValue(left, 2);
-                var b = (string)model.GetValue(right, 2);
+                var a = (WarehouseArticle)model.GetValue(left, 0);
+                var b = (WarehouseArticle)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
                 }
-                return a.CompareTo(b);
+                return a.WarehouseLocation.Designation.CompareTo(b.WarehouseLocation.Designation);
             });
         }
 
@@ -102,13 +101,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var a = (string)model.GetValue(left, 3);
-                var b = (string)model.GetValue(right, 3);
+                var a = (WarehouseArticle)model.GetValue(left, 0);
+                var b = (WarehouseArticle)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
                 }
-                return a.CompareTo(b);
+                return a.Article.Designation.CompareTo(b.Article.Designation);
             });
         }
 
@@ -116,13 +115,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var a = (string)model.GetValue(left, 4);
-                var b = (string)model.GetValue(right, 4);
-                if (a == null || b == null)
+                var a = (WarehouseArticle)model.GetValue(left, 0);
+                var b = (WarehouseArticle)model.GetValue(right, 0);
+                if (a == null || b == null || a.SerialNumber == null || b.SerialNumber == null)
                 {
                     return 0;
                 }
-                return a.CompareTo(b);
+                return a.SerialNumber.CompareTo(b.SerialNumber);
             });
         }
 

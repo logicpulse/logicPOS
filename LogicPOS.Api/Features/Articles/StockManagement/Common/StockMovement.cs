@@ -12,6 +12,7 @@ namespace LogicPOS.Api.Entities
         public string SerialNumber { get; set; }
         public string DocumentNumber { get; set; }
         public decimal Quantity { get; set; }
+        public decimal Price { get; set; }
         public DateTime Date { get; set; }
         public DocumentDetail Detail { get; set; }
         public Guid? DetailId { get; set; }

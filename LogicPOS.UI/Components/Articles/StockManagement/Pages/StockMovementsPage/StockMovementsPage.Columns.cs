@@ -82,15 +82,15 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var a = (string)model.GetValue(left, 1);
-                var b = (string)model.GetValue(right, 1);
+                var a = (StockMovement)model.GetValue(left, 0);
+                var b = (StockMovement)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
                     return 0;
                 }
 
-                return a.CompareTo(b);
+                return a.Quantity.CompareTo(b.Quantity);
             });
         }
 
