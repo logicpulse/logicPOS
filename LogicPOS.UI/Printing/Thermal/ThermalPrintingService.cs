@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Printing
         {
             get
             {
-                if (_printer == null)
+                if (_printer == null && TerminalService.HasThermalPrinter)
                 {
                     _printer = new Printer(TerminalService.Terminal.ThermalPrinter.Designation);
                 }
@@ -36,6 +36,10 @@ namespace LogicPOS.UI.Printing
 
         public static void PrintInvoice(Guid documentId)
         {
+            if (!TerminalService.HasThermalPrinter)
+            {
+                return;
+            }
             new InvoicePrinter(Printer, documentId).Print();
         }
 

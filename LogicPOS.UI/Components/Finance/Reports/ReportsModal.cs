@@ -2,6 +2,7 @@
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Users;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -16,6 +17,7 @@ namespace LogicPOS.UI.Components.Modals
             RegisterPanels();
             ShowPanel(PanelSummarizedFinancialReports);
             AddEventHandlers();
+            UpdatePrivileges();
         }
 
         private void ShowPanel(VBox panel)
@@ -67,6 +69,45 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new ReportsModal(parent);
             modal.Run();
             modal.Destroy();
+        }
+
+        public void UpdatePrivileges()
+        {
+            BtnCustomerBalanceSummaryReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_CUSTOMER_BALANCE_SUMMARY");
+            BtnAuditReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_AUDIT_TABLE");
+            BtnCustomersReports.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_CUSTOMERS");
+            BtnArticlesReports.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_FAMILY_SUBFAMILY_ARTICLES");
+            BtnStockMovementsReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_MOVEMENTS");
+            BtnComissionsReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_USER_COMMISSION");
+            BtnSalesByCountryReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_COUNTRY");
+            BtnSalesByCurrencyReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_CURRENCY");
+            BtnSalesByCustomerReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_CUSTOMER");
+            BtnSalesByDateReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_DATE");
+            BtnSalesByDocumentReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_FINANCE_DOCUMENT");
+            BtnSalesByPaymentConditionReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_PAYMENT_CONDITION");
+            BtnSalesByPaymentMethodReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_PAYMENT_METHOD");
+            BtnSalesByTerminalReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_TERMINAL");
+            BtnSalesByUserReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_USER");
+            BtnStockByWarehouseReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_WAREHOUSE");
+            BtnStockByArticleReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_ARTICLE");
+            BtnStockBySupplierReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_SUPPLIER");
+            BtnStockByArticleGainReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_GAIN");
+            BtnSalesByVatReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_VAT");
+            BtnSalesByVatAndArticleClassReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS");
+            BtnDetailedSalesByCountryReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_COUNTRY");
+            BtnDetailedSalesByCurrencyReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_CURRENCY");
+            BtnDetailedSalesByCustomerReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_CUSTOMER");
+            BtnDetailedSalesByDateReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_DATE");
+            BtnDetailedSalesByDocumentReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_FINANCE_DOCUMENT");
+            BtnDetailedSalesByFamilyReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_FAMILY");
+            BtnDetailedSalesByPaymentConditionReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_PAYMENT_CONDITION");
+            BtnDetailedSalesByPaymentMethodReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_PAYMENT_METHOD");
+            BtnDetailedSalesByPlaceReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_PLACE");
+            BtnDetailedSalesByTableReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_PLACE_TABLE");
+            BtnDetailedSalesByTerminalReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_TERMINAL");
+            BtnDetailedSalesByUserReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_USER");
+            BtnDetailedSalesByVatReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_GROUP_PER_VAT");
+            BtnDetailedSalesBySubfamilyReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_FAMILY_AND_SUBFAMILY");
         }
     }
 }

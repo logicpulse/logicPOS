@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Printing
         {
             _companyInformations = GetCompanyInformations();
             var result = _mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
+            
             if (result.IsError)
             {
                 CustomAlerts.Error()

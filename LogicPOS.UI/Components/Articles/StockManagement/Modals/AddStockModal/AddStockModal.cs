@@ -37,10 +37,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            Validate();
-
+           
             if (AllFieldsAreValid() == false)
             {
+                Validate();
                 return;
             }
 
