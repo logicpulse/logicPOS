@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getPermissionItemsResult.IsError)
             {
-                ShowApiErrorAlert(getPermissionItemsResult.FirstError);
+                HandleErrorResult(getPermissionItemsResult);
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getPermissionProfiles.IsError)
             {
-                ShowApiErrorAlert(getPermissionProfiles.FirstError);
+                HandleErrorResult(getPermissionProfiles);
                 return;
             }
 
@@ -204,7 +204,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void DeleteUserProfilePermission(PermissionItem permissionItem)
         {
-            var userProfile = (UserProfile)SelectedEntity;
+            var userProfile = SelectedEntity;
 
             if (userProfile is null)
             {
@@ -225,13 +225,13 @@ namespace LogicPOS.UI.Components.Pages
 
             if (deleteResult.IsError)
             {
-                ShowApiErrorAlert(deleteResult.FirstError);
+                HandleErrorResult(deleteResult);
             }
         }
 
         private void AddUserProfilePermission(PermissionItem permissionItem)
         {
-            var userProfile = (UserProfile)SelectedEntity;
+            var userProfile = SelectedEntity;
 
             if (userProfile is null)
             {
@@ -246,14 +246,14 @@ namespace LogicPOS.UI.Components.Pages
 
             if (addResult.IsError)
             {
-                ShowApiErrorAlert(addResult.FirstError);
+                HandleErrorResult(addResult);
             }
         }
 
         protected override void GridViewRow_Changed(object sender, EventArgs e)
         {
             base.GridViewRow_Changed(sender, e);
-            ShowUserProfilePermissions((UserProfile)SelectedEntity);
+            ShowUserProfilePermissions(SelectedEntity);
         }
 
         public override void Refresh()
@@ -266,7 +266,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new UserProfileModal(mode, SelectedEntity as UserProfile);
+            var modal = new UserProfileModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf
 
         public override async Task<ErrorOr<string>> Handle(GetDocumentPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"documents/{query.Id}/pdf?copyNumber={query.CopyNumber}");
+            return await HandleGetFileQueryAsync($"documents/pdf{query.GetUrlQuery()}");
         }
     }
 }

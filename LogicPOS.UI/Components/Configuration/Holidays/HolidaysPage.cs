@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new HolidayModal(mode, SelectedEntity as Holiday);
+            var modal = new HolidayModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

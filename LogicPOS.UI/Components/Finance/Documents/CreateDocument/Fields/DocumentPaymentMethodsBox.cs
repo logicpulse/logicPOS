@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields
     public class DocumentPaymentMethodsBox : IValidatableField
     {
         public List<DocumentPaymentMethodField> Fields { get; } = new List<DocumentPaymentMethodField>();
-        public VBox Container { get; } = new VBox(false, 5) { BorderWidth = (uint)5 };
+        public VBox Container { get; } = new VBox(false, 5) { BorderWidth = 5 };
         public Widget Component { get; private set; }
         public Window SourceWindow { get; set; }
         public Label LabelTotal { get; set; }

@@ -40,7 +40,7 @@ namespace logicpos
 
             // ExpressionEvaluator, add reference to dynamic Object
             _expressionEvaluatorReference = parsedObject;
-            LogicPOSAppContext.ExpressionEvaluator.Variables.Add("themeRoot", (_expressionEvaluatorReference as dynamic));
+            LogicPOSAppContext.ExpressionEvaluator.Variables.Add("themeRoot", _expressionEvaluatorReference);
 
             XElement rootElement = rootElement = XElement.Parse(xml);
 

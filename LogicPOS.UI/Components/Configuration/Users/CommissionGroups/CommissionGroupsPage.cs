@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new CommissionGroupModal(mode, SelectedEntity as CommissionGroup);
+            var modal = new CommissionGroupModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

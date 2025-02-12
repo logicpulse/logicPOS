@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos;
+using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using System.IO;
@@ -17,7 +18,7 @@ namespace LogicPOS.UI.Buttons
             Initialize();
         }
 
-        public Widget CreateWidget(ButtonSettings settings)
+        private Widget CreateWidget(ButtonSettings settings)
         {
             System.Drawing.Image buttonIcon;
 
@@ -79,6 +80,23 @@ namespace LogicPOS.UI.Buttons
             hbox.PackStart(ButtonLabel, true, true, 0);
 
             return hbox;
+        }
+
+        public static IconButtonWithText Create(string name,
+                                                      string label,
+                                                      string icon)
+        {
+            return new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = name,
+                    Text = label,
+                    Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
+                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                    Icon = PathsSettings.ImagesFolderLocation + icon,
+                    IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                    ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                });
         }
     }
 }

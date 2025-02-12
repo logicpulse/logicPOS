@@ -16,5 +16,6 @@ namespace LogicPOS.Api.Entities
         public DateTime Date { get; set; }
         public DocumentDetail Detail { get; set; }
         public Guid? DetailId { get; set; }
+        public string ExternalDocument { get; set; }
     }
 }

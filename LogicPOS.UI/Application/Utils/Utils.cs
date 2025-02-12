@@ -173,12 +173,12 @@ namespace logicpos
                 int sourceHeight = pImage.Height;
 
                 Bitmap bitmap = new Bitmap(pSize.Width, pSize.Height);
-                Graphics graphics = Graphics.FromImage((System.Drawing.Image)bitmap);
+                Graphics graphics = Graphics.FromImage(bitmap);
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.DrawImage(pImage, 0, 0, pSize.Width, pSize.Height);
                 graphics.Dispose();
 
-                return (System.Drawing.Image)bitmap;
+                return bitmap;
             }
             catch
             {
@@ -209,7 +209,7 @@ namespace logicpos
                 //);
 
                 Bitmap bmpCrop = bmpImage.Clone(pCropArea, bmpImage.PixelFormat);
-                return (System.Drawing.Image)(bmpCrop);
+                return bmpCrop;
             }
             catch (Exception ex)
             {
@@ -261,13 +261,13 @@ namespace logicpos
                 iHelper1 = pImageWidth;
                 iHelper2 = pTargetImageHeight;
                 iHelper3 = pImageHeight;
-                targetResizeImageWidth = (int)((float)iHelper1 * (float)iHelper2 / (float)iHelper3);
+                targetResizeImageWidth = (int)(iHelper1 * (float)iHelper2 / iHelper3);
                 targetResizeImageHeight = pTargetImageHeight;
                 //required PROTECTION, para nunca calacular abaixo da targetImageWight, senao qnd as imagens sao mais pequenas da problemas
                 if (targetResizeImageWidth < pTargetImageWidth)
                 {
                     targetResizeImageWidth = pTargetImageWidth;
-                    targetResizeImageHeight = (int)((float)pImageHeight * (float)pTargetImageWidth / (float)pImageWidth);
+                    targetResizeImageHeight = (int)(pImageHeight * (float)pTargetImageWidth / pImageWidth);
                 }
             }
             else
@@ -276,11 +276,11 @@ namespace logicpos
                 iHelper2 = pTargetImageWidth;
                 iHelper3 = pImageWidth;
                 targetResizeImageWidth = pTargetImageWidth;
-                targetResizeImageHeight = (int)((float)iHelper1 * (float)iHelper2 / (float)iHelper3);
+                targetResizeImageHeight = (int)(iHelper1 * (float)iHelper2 / iHelper3);
                 //required PROTECTION, para nunca calacular abaixo da targetImageHeight, senao qnd as imagens sao mais pequenas da problemas
                 if (targetResizeImageHeight < pTargetImageHeight)
                 {
-                    targetResizeImageWidth = (int)((float)pImageWidth * (float)pTargetImageHeight / (float)pImageHeight);
+                    targetResizeImageWidth = (int)(pImageWidth * (float)pTargetImageHeight / pImageHeight);
                     targetResizeImageHeight = pTargetImageHeight;
                 }
             };

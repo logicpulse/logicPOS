@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private bool InitializeTheme()
         {
-            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+            Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
             Theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             if (Theme == null)
@@ -677,7 +677,7 @@ namespace LogicPOS.UI.Components.Windows
 
         public static string GetBackgroundImage()
         {
-            Predicate<dynamic> predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosMainWindow");
+            Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
             dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, "default", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);

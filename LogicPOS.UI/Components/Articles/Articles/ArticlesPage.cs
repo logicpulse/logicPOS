@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (result.IsError)
             {
-                ShowApiErrorAlert(result.FirstError);
+                HandleErrorResult(result);
                 return;
             }
 

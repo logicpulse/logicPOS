@@ -6,7 +6,7 @@ using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.InputFieds
+namespace LogicPOS.UI.Components.InputFields
 {
     public class PreferenceParameterInputField
     {

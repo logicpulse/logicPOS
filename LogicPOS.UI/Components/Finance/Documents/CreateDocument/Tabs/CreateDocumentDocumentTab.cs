@@ -209,7 +209,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 TxtCurrency.Text = page.SelectedEntity.Designation;
                 TxtCurrency.SelectedEntity = page.SelectedEntity;
-                var selectedCurrency = page.SelectedEntity as Currency;
+                var selectedCurrency = page.SelectedEntity;
                 TxtExchangeRate.Entry.Sensitive = selectedCurrency.Id != CompanyCurrency.Id;
 
                 if (selectedCurrency.Id != CompanyCurrency.Id)

@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new CurrencyModal(mode, SelectedEntity as Currency);
+            var modal = new CurrencyModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

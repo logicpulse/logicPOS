@@ -52,7 +52,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.Update();
         }
 
-        protected void ShowApiErrorAlert(Error error) => CustomAlerts.ShowApiErrorAlert(SourceWindow, error);
+        protected void HandleErrorResult<TResult>(ErrorOr<TResult> result) => ErrorHandlingService.HandleApiError(result, source: SourceWindow);
 
         public virtual void Refresh()
         {
@@ -95,7 +95,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getEntitiesResult.IsError)
             {
-                ShowApiErrorAlert(getEntitiesResult.FirstError);
+                HandleErrorResult(getEntitiesResult);
                 return;
             }
 

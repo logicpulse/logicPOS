@@ -18,8 +18,6 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public partial class ArticleField
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-
         public EventBox Component { get; } = new EventBox();
         public IconButton BtnSelect { get; set; }
         public IconButton BtnRemove { get; set; }

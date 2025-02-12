@@ -143,7 +143,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (getParametersResult.IsError)
             {
-                ShowApiErrorAlert(getParametersResult.FirstError);
+                HandleErrorResult(getParametersResult);
                 return;
             }
 

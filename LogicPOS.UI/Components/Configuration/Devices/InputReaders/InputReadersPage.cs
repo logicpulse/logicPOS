@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new InputReaderModal(mode, SelectedEntity as InputReader);
+            var modal = new InputReaderModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

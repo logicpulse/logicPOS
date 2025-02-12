@@ -21,7 +21,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync("articles/stocks", command, cancellationToken);
+                var response = await _httpClient.PostAsJsonAsync("articles/stocks/movements", command, cancellationToken);
                 return await HandleHttpResponseAsync(response);
             }
             catch (HttpRequestException)

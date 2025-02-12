@@ -9,6 +9,8 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,6 +21,8 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public partial class ArticleField : IValidatableField
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+
         public Article Article { get; set; }
         public string FieldName => Label.Text;
         public event System.Action<ArticleField, Article> OnRemove;
@@ -65,7 +69,7 @@ namespace LogicPOS.UI.Components.InputFields
 
         private bool QuantityIsValid()
         {
-            return Regex.IsMatch(TxtQuantity.Text, RegularExpressions.Quantity) && int.Parse(TxtQuantity.Text) > 0;
+            return Regex.IsMatch(TxtQuantity.Text, RegularExpressions.Quantity);
         }
 
         private void AddEventHandlers()

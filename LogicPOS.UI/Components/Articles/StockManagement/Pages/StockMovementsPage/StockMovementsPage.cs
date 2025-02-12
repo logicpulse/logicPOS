@@ -4,9 +4,11 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.PDFViewer;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -17,17 +19,42 @@ namespace LogicPOS.UI.Components.Pages
     {
         public GetStockMovementsQuery Query { get; private set; } = GetDefaultQuery();
         public PaginatedResult<StockMovement> Movements { get; private set; }
+        private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
 
         public StockMovementsPage(Window parent) : base(parent)
         {
             RemoveForbiddenButtons();
+            AddOpenDocumentButton();
+        }
+
+        private void AddOpenDocumentButton()
+        {
+            BtnOpenDocument.ButtonLabel.Text = "Documento";
+            BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
+            Navigator.RightButtons.PackStart(BtnOpenDocument, false, false, 0);
+        }
+
+        private void BtnOpenDocument_Clicked(object sender, EventArgs e)
+        {
+            if (SelectedEntity == null)
+            {
+                return;
+            }
+
+            if(SelectedEntity.Quantity > 0 && SelectedEntity.ExternalDocument != null)
+            {
+                var filePath = System.IO.Path.GetTempFileName();
+                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(SelectedEntity.ExternalDocument));
+                LogicPOSPDFViewer.ShowPDF(filePath);
+                return;
+            }
+
         }
 
         private void RemoveForbiddenButtons()
         {
             Navigator.RightButtons.Remove(Navigator.BtnView);
             Navigator.RightButtons.Remove(Navigator.BtnDelete);
-            Navigator.RightButtons.Remove(Navigator.BtnUpdate);
         }
 
         protected override void LoadEntities()
@@ -49,11 +76,29 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if(mode != EntityEditionModalMode.Insert)
+            if (mode == EntityEditionModalMode.Insert)
+            {
+                return RunInsertModal();
+            }
+
+            if(SelectedEntity.Quantity < 0)
             {
                 return (int)ResponseType.Cancel;
             }
 
+            return RunUpdateModal();
+        }
+
+        private int RunUpdateModal()
+        {
+            var modal = new UpdateStockMovementModal(SelectedEntity);
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        private int RunInsertModal()
+        {
             var modal = new AddStockModal(SourceWindow);
             var response = modal.Run();
             modal.Destroy();

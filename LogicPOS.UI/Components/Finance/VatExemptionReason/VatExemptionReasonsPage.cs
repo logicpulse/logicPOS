@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new VatExemptionReasonModal(mode, SelectedEntity as VatExemptionReason);
+            var modal = new VatExemptionReasonModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

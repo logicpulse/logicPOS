@@ -12,5 +12,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
         public string DocumentNumber { get; set; }
         public string Notes { get; set; }
         public IEnumerable<StockMovementItem> Items { get; set; }
+        public string ExternalDocument { get; set; }
+
     }
 }

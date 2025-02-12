@@ -197,7 +197,7 @@ namespace LogicPOS.UI.Components.Menus
 
             TotalItems = Buttons.Count;
             ItemsPerPage = Convert.ToInt16(_rows * _columns);
-            TotalPages = (int)Math.Ceiling((float)TotalItems / (float)ItemsPerPage);
+            TotalPages = (int)Math.Ceiling(TotalItems / (float)ItemsPerPage);
 
             UpdateUI();
         }

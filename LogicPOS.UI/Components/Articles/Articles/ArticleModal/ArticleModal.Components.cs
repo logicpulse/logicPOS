@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Articles;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 
@@ -56,6 +56,7 @@ namespace LogicPOS.UI.Components.Modals
             yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
             yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateUniqueArticlesTab(), GeneralUtils.GetResourceByName("global_serial_number"));
         }
 
         private VBox CreateDetailsTab()
@@ -158,5 +159,11 @@ namespace LogicPOS.UI.Components.Modals
             return vbox;
         }
 
+        private VBox CreateUniqueArticlesTab()
+        {
+            var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            vbox.PackStart(new UniqueArticleFieldsContainer().Component, true, true, 0);
+            return vbox;
+        }
     }
 }

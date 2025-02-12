@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Pages
         public IconButtonWithText BtnRefresh { get; set; }
         public IconButtonWithText BtnApply { get; set; }
         public HBox Bar { get; set; } = new HBox(false, 0);
-        public HBox RightButtons { get; set; } = new HBox(true, 0);
+        public HBox RightButtons { get; set; } = new HBox(false, 0);
         #endregion
 
         public int CurrentRecord { get; set; }
@@ -78,9 +78,9 @@ namespace LogicPOS.UI.Components.Pages
         {
             ExtraButtonSpace = new HBox(false, 0);
 
-            BtnApply = CreateButton("touchButtonApplyPrivileges_DialogActionArea",
-                                    GeneralUtils.GetResourceByName("global_user_apply_privileges"),
-                                    @"Icons/icon_pos_nav_refresh.png");
+            BtnApply = IconButtonWithText.Create("touchButtonApplyPrivileges_DialogActionArea",
+                                                       GeneralUtils.GetResourceByName("global_user_apply_privileges"),
+                                                       @"Icons/icon_pos_nav_refresh.png");
 
             BtnApply.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
 
@@ -89,13 +89,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeButtons()
         {
-            BtnPrevious = CreateButton("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            BtnNext = CreateButton("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            BtnInsert = CreateButton("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            BtnView = CreateButton("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            BtnUpdate = CreateButton("touchButtonUpdate_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            BtnDelete = CreateButton("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            BtnRefresh = CreateButton("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            BtnPrevious = IconButtonWithText.Create("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
+            BtnNext = IconButtonWithText.Create("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
+            BtnInsert = IconButtonWithText.Create("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
+            BtnView = IconButtonWithText.Create("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
+            BtnUpdate = IconButtonWithText.Create("touchButtonUpdate_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
+            BtnDelete = IconButtonWithText.Create("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
+            BtnRefresh = IconButtonWithText.Create("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
 
             AddEventHandlers();
         }
@@ -158,24 +158,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 _page.Refresh();
             }
-        }
-
-        public IconButtonWithText CreateButton(string name,
-                                               string label,
-                                               string icon)
-        {
-            return new IconButtonWithText(
-                new ButtonSettings
-                {
-                    Name = name,
-                    Text = label,
-                    Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
-                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + icon,
-                    IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                    ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
-                });
-        }
+        }   
 
         public void UpdateButtonsSensitivity()
         {

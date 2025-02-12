@@ -1,44 +1,49 @@
-﻿using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Articles;
-using LogicPOS.UI.Components.Enums;
-using LogicPOS.UI.Components.InputFields.Validation;
+﻿
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
-using System.Collections.Generic;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class AddStockModal
+    public partial class UpdateStockMovementModal
     {
-        private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
-        private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+        public override Size ModalSize => new Size(450, 520);
+        public override string ModalTitleResourceName => "global_stock_movement";
+
+        #region Components
         private TextBox TxtSupplier { get; set; }
         private TextBox TxtDate { get; set; }
         private TextBox TxtDocumnetNumber { get; set; }
-        private TextBox TxtNotes { get; set; }
-        private ArticleFieldsContainer ArticlesContainer { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockManagement);
-        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        private TextBox TxtQuantity { get; set; } = TextBox.Simple("global_quantity", true, true, RegularExpressions.Quantity);
+        private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price", true, true, RegularExpressions.Money);
+        #endregion
+
+        protected override void BeforeDesign()
+        {
+            InitializeComponents();
+        }
 
         private void InitializeComponents()
         {
             InitializeTxtSupplier();
             InitializeTxtDate();
             InitializeTxtDocumnetNumber();
-            InitializeTxtNotes();
-            ValidatableFields.Add(ArticlesContainer);
-            AddEventHandlers();
         }
 
         private void InitializeTxtSupplier()
         {
-            TxtSupplier = new TextBox(WindowSettings.Source,
+            TxtSupplier = new TextBox(this,
                                           GeneralUtils.GetResourceByName("global_supplier"),
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false,
-                                          style: TextBoxStyle.Lite);
+                                          style: TextBoxStyle.Lite,
+                                          includeClearButton: false);
 
             TxtSupplier.Entry.IsEditable = false;
 
@@ -47,26 +52,16 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(TxtSupplier);
         }
 
-        private void InitializeTxtNotes()
-        {
-            TxtNotes = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_notes"),
-                                       isRequired: false,
-                                       isValidatable: false,
-                                       includeSelectButton: false,
-                                       includeKeyBoardButton: false,
-                                       style: TextBoxStyle.Lite);
-        }
-
         private void InitializeTxtDocumnetNumber()
         {
-            TxtDocumnetNumber = new TextBox(WindowSettings.Source,
+            TxtDocumnetNumber = new TextBox(this,
                                             GeneralUtils.GetResourceByName("global_document_number"),
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: true,
                                             includeKeyBoardButton: false,
-                                            style: TextBoxStyle.Lite);
+                                            style: TextBoxStyle.Lite,
+                                            includeClearButton: false);
 
             TxtDocumnetNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }
@@ -79,12 +74,37 @@ namespace LogicPOS.UI.Components.Modals
                                       isValidatable: false,
                                       includeSelectButton: true,
                                       includeKeyBoardButton: false,
-                                      style: TextBoxStyle.Lite);
+                                      style: TextBoxStyle.Lite,
+                                      includeClearButton: false);
 
             TxtDate.Entry.IsEditable = false;
             TxtDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtDate.SelectEntityClicked += TxtDate_SelectEntityClicked;
+        }
+
+        protected override void AddValidatableFields()
+        {
+            ValidatableFields.Add(TxtSupplier);
+            ValidatableFields.Add(TxtDate);
+            ValidatableFields.Add(TxtQuantity);
+            ValidatableFields.Add(TxtPrice);
+        }
+
+        protected override void AddSensitiveFields() { }
+
+
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
+        {
+            var tab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            tab.PackStart(TxtSupplier.Component, false, false, 0);
+            tab.PackStart(TxtDate.Component, false, false, 0);
+            tab.PackStart(TxtDocumnetNumber.Component, false, false, 0);
+            tab.PackStart(TxtQuantity.Component, false, false, 0);
+            tab.PackStart(TxtPrice.Component, false, false, 0);
+
+            yield return (tab, GeneralUtils.GetResourceByName("Movimento de Entrada"));
         }
     }
 }

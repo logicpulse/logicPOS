@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new ArticleClassModal(mode, SelectedEntity as ArticleClass);
+            var modal = new ArticleClassModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

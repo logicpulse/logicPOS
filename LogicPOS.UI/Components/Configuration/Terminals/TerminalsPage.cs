@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new TerminalModal(mode, SelectedEntity as Terminal);
+            var modal = new TerminalModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;

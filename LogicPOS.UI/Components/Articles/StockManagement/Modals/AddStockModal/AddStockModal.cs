@@ -8,12 +8,14 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
@@ -79,6 +81,19 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
+        private void BtnSelectDocumentNumber_Clicked(object sender, EventArgs e)
+        {
+            var path = FilePicker.GetOpenFilePath(this, "Selecionar Documento", FilePicker.GetFileFilterPDF());
+
+            if (string.IsNullOrEmpty(path))
+            {
+                return;
+            }
+
+            TxtDocumnetNumber.Text = System.IO.Path.GetFileNameWithoutExtension(path);
+            TxtDocumnetNumber.SelectedEntity = Convert.ToBase64String(File.ReadAllBytes(path));
+        }
+
         protected void Validate()
         {
             if (AllFieldsAreValid())
@@ -104,7 +119,8 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentNumber = TxtDocumnetNumber.Text,
                 Notes = TxtNotes.Text,
                 SupplierId = (TxtSupplier.SelectedEntity as Customer).Id,
-                Items = ArticlesContainer.GetStockMovementItems()
+                Items = ArticlesContainer.GetStockMovementItems(),
+                ExternalDocument = TxtDocumnetNumber.SelectedEntity as string
             };
 
             return command;

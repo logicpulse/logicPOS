@@ -7,7 +7,7 @@ using System;
 using System.Drawing;
 using System.Reflection;
 
-namespace LogicPOS.UI.Components.InputFieds
+namespace LogicPOS.UI.Components.InputFields
 {
     internal abstract class InputField<TEntity>
     {

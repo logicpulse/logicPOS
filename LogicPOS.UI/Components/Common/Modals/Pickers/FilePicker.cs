@@ -160,5 +160,29 @@ namespace LogicPOS.UI.Components.Pickers
 
             return backupFileDestination;
         }
+
+        public static string GetOpenFilePath(Window sourceWindow,
+                                             string title,
+                                             FileFilter filter)
+        {
+            FilePicker picker = new FilePicker(sourceWindow,
+                                               DialogFlags.DestroyWithParent,
+                                               filter,
+                                               FileChooserAction.Open,
+                                               title);
+
+            picker.FileChooser.SelectMultiple = false;
+
+            var result = (ResponseType)picker.Run();
+            if (result != ResponseType.Ok)
+            {
+                picker.Destroy();
+                return null;
+            }
+
+            string path = picker.FileChooser.Filename;
+            picker.Destroy();
+            return path;
+        }
     }
 }
