@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetAllWarehouseArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerOutMovement;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -21,11 +22,50 @@ namespace LogicPOS.UI.Components.Pages
         private IconButtonWithText BtnPrintSerialNumber { get; set; } = IconButtonWithText.Create("buttonUserId",
                                                                                                   "Cod.Barras",
                                                                                                   @"Icons/Dialogs/icon_pos_dialog_action_print.png");
+        private IconButtonWithText BtnOpenExternalDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
+        private IconButtonWithText BtnOpenSaleDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
 
         public ArticleHistoryPage(Window parent) : base(parent)
         {
             RemoveForbiddenButtons();
             AddPrintSerialNumberButton();
+            AddOpenExternalDocumentButton();
+            AddOpenSaleDocumentButton();
+        }
+
+        private void AddOpenSaleDocumentButton()
+        {
+            BtnOpenSaleDocument.ButtonLabel.Text = "Doc.Venda";
+            BtnOpenSaleDocument.Clicked += BtnOpenSaleDocument_Clicked;
+            Navigator.RightButtons.PackStart(BtnOpenSaleDocument, false, false, 0);
+        }
+
+        private void BtnOpenSaleDocument_Clicked(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void AddOpenExternalDocumentButton()
+        {
+            BtnOpenExternalDocument.ButtonLabel.Text = "Doc.Origem";
+            BtnOpenExternalDocument.Clicked += BtnOpenExternalDocument_Clicked;
+            Navigator.RightButtons.PackStart(BtnOpenExternalDocument, false, false, 0);
+        }
+
+        private void BtnOpenExternalDocument_Clicked(object sender, EventArgs e)
+        {
+            if (SelectedEntity == null)
+            {
+                return;
+            }
+
+            if (SelectedEntity.InStockMovement.Quantity > 0 && SelectedEntity.InStockMovement.ExternalDocument != null)
+            {
+                var filePath = System.IO.Path.GetTempFileName();
+                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(SelectedEntity.InStockMovement.ExternalDocument));
+                LogicPOSPDFViewer.ShowPDF(filePath);
+                return;
+            }
         }
 
         private void AddPrintSerialNumberButton()

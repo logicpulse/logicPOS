@@ -48,7 +48,6 @@ namespace LogicPOS.UI.Components.Pages
                 LogicPOSPDFViewer.ShowPDF(filePath);
                 return;
             }
-
         }
 
         private void RemoveForbiddenButtons()
