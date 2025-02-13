@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
     {
         public static string GetDocumentPdfFileLocation(Guid documentId, uint copyNumber)
         {
-            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var mediator = DependencyInjection.Mediator;
             var command = new GetDocumentPdfQuery (documentId, copyNumber);
             var result = mediator.Send(command).Result;
 
@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static string GetReceiptPdfFileLocation(Guid documentId, uint copyNumber)
         {
-            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var mediator = DependencyInjection.Mediator;
             var command = new GetReceiptPdfQuery(documentId, copyNumber);
             var result = mediator.Send(command).Result;
 

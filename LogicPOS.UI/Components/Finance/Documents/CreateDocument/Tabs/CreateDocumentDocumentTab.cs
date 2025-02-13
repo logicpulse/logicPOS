@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public class CreateDocumentDocumentTab : ModalTab
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         public IEnumerable<DocumentType> DocumentTypes { get; private set; }
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtPaymentCondition { get; set; }
@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private IEnumerable<DocumentType> GetDocumentTypes()
         {
-            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var mediator = DependencyInjection.Mediator;
             var documentTypes = mediator.Send(new GetAllDocumentTypesQuery()).Result;
 
             if (documentTypes.IsError)

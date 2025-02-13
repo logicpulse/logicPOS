@@ -123,7 +123,7 @@ namespace LogicPOS.UI.Components.POS
             if (printWorkSessionDayReportResponse == ResponseType.Yes)
             {
                 var command = new GetLastClosedDayQuery();
-                var _mediator =DependencyInjection.Services.GetRequiredService<ISender>();
+                var _mediator =DependencyInjection.Mediator;
                 var result= _mediator.Send(command).Result;
                 if (result.IsError)
                 {

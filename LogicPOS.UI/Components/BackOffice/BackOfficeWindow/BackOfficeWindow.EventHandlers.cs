@@ -117,7 +117,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            var backupResult = DependencyInjection.Services.GetRequiredService<ISender>().Send(new BackupDatabaseCommand()).Result;
+            var backupResult = DependencyInjection.Mediator.Send(new BackupDatabaseCommand()).Result;
 
             if (backupResult.IsError)
             {
@@ -142,7 +142,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            var restoreResult = DependencyInjection.Services.GetRequiredService<ISender>().Send(new RestoreDatabaseCommand()).Result;
+            var restoreResult = DependencyInjection.Mediator.Send(new RestoreDatabaseCommand()).Result;
 
             if (restoreResult.IsError)
             {
@@ -184,7 +184,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            var getSaft = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetAngolaSaftQuery(startDate, endDate)).Result;
+            var getSaft = DependencyInjection.Mediator.Send(new GetAngolaSaftQuery(startDate, endDate)).Result;
 
             if (getSaft.IsError)
             {

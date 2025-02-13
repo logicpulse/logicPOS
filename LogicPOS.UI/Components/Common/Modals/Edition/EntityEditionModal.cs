@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Modals
     public abstract class EntityEditionModal<TEntity> : Dialog where TEntity : ApiEntity
     {
         protected TEntity _entity;
-        protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+        protected readonly ISender _mediator = DependencyInjection.Mediator;
         protected readonly EntityEditionModalMode _modalMode;
         protected int _boxSpacing = 5;
         public abstract Size ModalSize { get; }

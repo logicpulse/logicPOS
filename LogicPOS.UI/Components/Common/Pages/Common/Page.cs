@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public abstract class Page<TEntity> : Box where TEntity : ApiEntity
     {
-        protected readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+        protected readonly ISender _mediator = DependencyInjection.Mediator;
         protected readonly List<TEntity> _entities = new List<TEntity>();
         protected virtual IRequest<ErrorOr<IEnumerable<TEntity>>> GetAllQuery { get; set; }
 

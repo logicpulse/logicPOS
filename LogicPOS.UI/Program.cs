@@ -171,7 +171,7 @@ namespace LogicPOS.UI
 
         public static bool InitializeCulture()
         {
-            var meditator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var meditator = DependencyInjection.Mediator;
             var getSystemInformationsResult = meditator.Send(new GetSystemInformationsQuery()).Result;
 
             if (getSystemInformationsResult.IsError)

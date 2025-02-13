@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Services
 {
     public static class WorkSessionService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+        private static readonly ISender _mediator = DependencyInjection.Mediator;
 
         public static bool DayIsOpen()
         {

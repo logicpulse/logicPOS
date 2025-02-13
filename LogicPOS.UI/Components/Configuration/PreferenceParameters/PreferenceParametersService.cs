@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Services
 
         private static void LoadPreferenceParameters()
         {
-            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var mediator = DependencyInjection.Mediator;
             var preferenceParameters = mediator.Send(new GetAllPreferenceParametersQuery()).Result;
            
             if (preferenceParameters.IsError)
@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Services
 
         private static void LoadCompanyInformations()
         {
-            var mediator = DependencyInjection.Services.GetRequiredService<ISender>();
+            var mediator = DependencyInjection.Mediator;
             var companyInformations = mediator.Send(new GetCompanyInformationsQuery()).Result;
 
             if (companyInformations.IsError)

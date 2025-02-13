@@ -1,5 +1,9 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Articles.StockManagement.GetUniqueArticles;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -7,19 +11,33 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public class UniqueArticleFieldsContainer
     {
+        protected readonly ISender _mediator = DependencyInjection.Mediator;
+        private readonly Guid _articleId;
         private List<UniqueArticleField> Fields { get; } = new List<UniqueArticleField>();
 
         public Widget Component { get; private set; }
 
-        public UniqueArticleFieldsContainer()
+        public UniqueArticleFieldsContainer(Guid articleId)
         {
-            Fields.Add(new UniqueArticleField());
-            Fields.Add(new UniqueArticleField());
-            Fields.Add(new UniqueArticleField());
-            Fields.Add(new UniqueArticleField());
-            Fields.Add(new UniqueArticleField());
-
+            _articleId = articleId;
+            InitializeFields();
             Component = CreateComponent();
+        }
+
+        private void InitializeFields()
+        {
+            var result = _mediator.Send(new GetUniqueArticlesQuery(_articleId)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return;
+            }
+
+            foreach (var uniqueArticle in result.Value)
+            {
+                var field = new UniqueArticleField(uniqueArticle);
+                Fields.Add(field);
+            }
         }
 
         private Widget CreateComponent()

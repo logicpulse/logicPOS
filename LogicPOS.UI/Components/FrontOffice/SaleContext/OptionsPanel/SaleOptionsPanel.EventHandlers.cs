@@ -202,7 +202,7 @@ namespace LogicPOS.UI.Components.POS
 
             var code = response.Text;
 
-            var getArticle = DependencyInjection.Services.GetRequiredService<ISender>().Send(new GetArticleByCodeQuery(code)).Result;
+            var getArticle = DependencyInjection.Mediator.Send(new GetArticleByCodeQuery(code)).Result;
 
             if (getArticle.IsError)
             {

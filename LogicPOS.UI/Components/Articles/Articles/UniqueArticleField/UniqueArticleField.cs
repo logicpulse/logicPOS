@@ -13,69 +13,41 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public class UniqueArticleField : IValidatableField
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        
+        public WarehouseArticle WarehouseArticle { get; private set; }
         private TextBox TxtSerialNumber { get; set; } = TextBox.Simple("global_serial_number", true);
-        private EntityComboBox<Warehouse> _comboWarehouse { get; set; }
-        private EntityComboBox<WarehouseLocation> _comboWarehouseLocation { get; set; }
         public string FieldName => TxtSerialNumber.FieldName;
+        private WarehouseSelectionField _warehouseSelectionField;
         public Widget Component { get; private set; }
 
-        public UniqueArticleField()
+        public UniqueArticleField(WarehouseArticle warehouseArticle)
         {
-            InitializeComboboxes();
+            WarehouseArticle = warehouseArticle;
+            ShowEntityData();
             Component = CreateComponent();
+        }
+
+        private void ShowEntityData()
+        {
+            TxtSerialNumber.Text = WarehouseArticle.SerialNumber;
+            _warehouseSelectionField = new WarehouseSelectionField(WarehouseArticle);
+
+            TxtSerialNumber.Entry.IsEditable = false;
+            _warehouseSelectionField.WarehouseField.ComboBox.Sensitive = false;
+            _warehouseSelectionField.LocationField.ComboBox.Sensitive = false;
         }
 
         public Widget CreateComponent()
         {
             var hbox = new HBox(false, 2);
             hbox.PackStart(TxtSerialNumber.Component, true, true, 0);
-            hbox.PackStart(_comboWarehouse.Component, true, true, 0);
-            hbox.PackStart(_comboWarehouseLocation.Component, true, true, 0);
+            hbox.PackStart(_warehouseSelectionField.WarehouseField.Component, true, true, 0);
+            hbox.PackStart(_warehouseSelectionField.LocationField.Component, true, true, 0);
             return hbox;
         }
 
         public bool IsValid()
         {
-            return TxtSerialNumber.IsValid() && _comboWarehouse.IsValid() && _comboWarehouseLocation.IsValid();
+            return TxtSerialNumber.IsValid() && _warehouseSelectionField.IsValid();
         }
-
-        private void InitializeComboboxes()
-        {
-            var warehouses = GetWarehouses();
-            var labelText = GeneralUtils.GetResourceByName("global_warehouse");
-
-            _comboWarehouse = new EntityComboBox<Warehouse>(labelText,
-                                                            warehouses,
-                                                            null,
-                                                            true);
-
-            _comboWarehouseLocation = new EntityComboBox<WarehouseLocation>(GeneralUtils.GetResourceByName("global_locations"),
-                                                                            Enumerable.Empty<WarehouseLocation>(),
-                                                                            null,
-                                                                            true);
-
-
-            _comboWarehouse.ComboBox.Changed += (sender, e) =>
-            {
-                _comboWarehouseLocation.Entities = _comboWarehouse.SelectedEntity?.Locations;
-                _comboWarehouseLocation.ReLoad();
-            };
-        }
-
-        private IEnumerable<Warehouse> GetWarehouses()
-        {
-            var result = _mediator.Send(new GetAllWarehousesQuery()).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return Enumerable.Empty<Warehouse>();
-            }
-
-            return result.Value;
-        }
-
     }
 }
