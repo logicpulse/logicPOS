@@ -5,6 +5,7 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -32,6 +33,7 @@ namespace LogicPOS.UI.Components.InputFields
 
         private readonly List<TextBox> _serialNumberFields = new List<TextBox>();
         private VBox _serialNumberFieldsContainer { get; set; } = new VBox(false, 2);
+        private WarehouseSelectionField _location { get; set; } = new WarehouseSelectionField();
 
         public void SetStockMovementStyle()
         {
@@ -82,8 +84,8 @@ namespace LogicPOS.UI.Components.InputFields
         private HBox CreateWarehouseHbox()
         {
             var hbox = new HBox(false, 2);
-            hbox.PackStart(_comboWarehouse.Component, true, true, 0);
-            hbox.PackStart(_comboWarehouseLocation.Component, true, true, 0);
+            hbox.PackStart(_location.WarehouseField.Component, true, true, 0);
+            hbox.PackStart(_location.LocationField.Component, true, true, 0);
             hbox.PackStart(TxtPrice.Component, false, false, 0);
             return hbox;
         }

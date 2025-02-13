@@ -33,16 +33,16 @@ namespace LogicPOS.UI.Components
                                                             _warehouseArticle?.WarehouseLocation.Warehouse,
                                                             true);
 
-            Warehouse currentWarehouse = null;
+            Warehouse currentWarehouse = null;// WarehouseField.Entities.First();
 
             if (_warehouseArticle != null)
             {
                 currentWarehouse = warehouses.Where(x => x.Id == _warehouseArticle.WarehouseLocation.Warehouse.Id).First();
             }
-
+            
             LocationField = new EntityComboBox<WarehouseLocation>(GeneralUtils.GetResourceByName("global_locations"),
                                                                              currentWarehouse?.Locations ?? Enumerable.Empty<WarehouseLocation>(),
-                                                                             _warehouseArticle.WarehouseLocation,
+                                                                             _warehouseArticle?.WarehouseLocation,
                                                                             true);
 
 
