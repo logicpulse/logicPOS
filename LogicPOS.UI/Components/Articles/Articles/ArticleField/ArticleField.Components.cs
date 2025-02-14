@@ -27,13 +27,10 @@ namespace LogicPOS.UI.Components.InputFields
         public Entry TxtQuantity { get; set; } = new Entry() { WidthRequest = 50 };
         public Entry TxtCode { get; set; } = new Entry() { WidthRequest = 50, IsEditable = false };
         public Label Label { get; set; } = new Label(GeneralUtils.GetResourceByName("global_article"));
-        private EntityComboBox<Warehouse> _comboWarehouse { get; set; }
-        private EntityComboBox<WarehouseLocation> _comboWarehouseLocation { get; set; }
         private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price",false,true,RegularExpressions.Money);
-
-        private readonly List<TextBox> _serialNumberFields = new List<TextBox>();
+        private readonly List<SerialNumberField> _serialNumberFields = new List<SerialNumberField>();
         private VBox _serialNumberFieldsContainer { get; set; } = new VBox(false, 2);
-        private WarehouseSelectionField _location { get; set; } = new WarehouseSelectionField();
+        private WarehouseSelectionField _locationField { get; set; } 
 
         public void SetStockMovementStyle()
         {
@@ -56,7 +53,7 @@ namespace LogicPOS.UI.Components.InputFields
             vbox.PackStart(Label, false, false, 0);
             vbox.PackStart(CreateArticleHBox(), false, false, 0);
 
-            if (_enableSerialNumbers)
+            if (_isUniqueArticle)
             {
                 vbox.PackStart(CreateWarehouseHbox(), false, false, 0);
                 vbox.PackStart(_serialNumberFieldsContainer, false, false, 0);
@@ -84,8 +81,8 @@ namespace LogicPOS.UI.Components.InputFields
         private HBox CreateWarehouseHbox()
         {
             var hbox = new HBox(false, 2);
-            hbox.PackStart(_location.WarehouseField.Component, true, true, 0);
-            hbox.PackStart(_location.LocationField.Component, true, true, 0);
+            hbox.PackStart(_locationField.WarehouseField.Component, true, true, 0);
+            hbox.PackStart(_locationField.LocationField.Component, true, true, 0);
             hbox.PackStart(TxtPrice.Component, false, false, 0);
             return hbox;
         }
@@ -99,29 +96,6 @@ namespace LogicPOS.UI.Components.InputFields
             BtnSelect = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconSelectRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             BtnRemove = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconClearRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             BtnAdd = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconAddRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
-        }
-
-        private void InitializeComboboxes()
-        {
-            var warehouses = GetWarehouses();
-            var labelText = GeneralUtils.GetResourceByName("global_warehouse");
-
-            _comboWarehouse = new EntityComboBox<Warehouse>(labelText,
-                                                            warehouses,
-                                                            null,
-                                                            true);
-
-            _comboWarehouseLocation = new EntityComboBox<WarehouseLocation>(GeneralUtils.GetResourceByName("global_locations"),
-                                                                            Enumerable.Empty<WarehouseLocation>(),
-                                                                            null,
-                                                                            true);
-
-
-            _comboWarehouse.ComboBox.Changed += (sender, e) =>
-            {
-                _comboWarehouseLocation.Entities = _comboWarehouse.SelectedEntity?.Locations;
-                _comboWarehouseLocation.ReLoad();
-            };
         }
 
         private void UpdateSerialNumbersComponents()
@@ -141,28 +115,29 @@ namespace LogicPOS.UI.Components.InputFields
                 return;
             }
 
-            for (int i = _serialNumberFields.Count; i < quantity; i++)
+            for (int i = 0; i < quantity; i++)
             {
-                var textBox = TextBox.Simple("global_serial_number",
-                                             false,
-                                             true,
-                                             RegularExpressions.AlfaNumericExtended);
-
-                textBox.Entry.Changed += (sender, args) => { UpdateValidationColors(); };
-                _serialNumberFields.Add(textBox);
-                _serialNumberFieldsContainer.PackStart(textBox.Component, false, false, 10);
+                var field = new SerialNumberField();
+                if(Article != null && Article.IsComposed)
+                {
+                    field.LoadArticleChildren(Article.Id);
+                }
+                _serialNumberFields.Add(field);
+                _serialNumberFieldsContainer.PackStart(field.Component, false, false, 10);
             }
 
             _serialNumberFields.ForEach(f =>
             {
-                f.IsValidFunction = SerialNumberIsUnique;
+                f.TxtSerialNumber.IsValidFunction = SerialNumberIsUnique;
 
             });
+
+            Component.ShowAll();
         }
 
         private bool SerialNumberIsUnique(string serialNumber)
         {
-            return _serialNumberFields.Select(f => f.Text).Count(s => s == serialNumber) == 1;
+            return _serialNumberFields.Select(f => f.TxtSerialNumber.Text).Count(s => s == serialNumber) == 1;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using Gtk;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -10,8 +12,12 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddSensitiveFields()
         {
-            throw new System.NotImplementedException();
+
         }
 
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

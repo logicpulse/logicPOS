@@ -1,7 +1,4 @@
-﻿using Gtk;
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -16,15 +13,6 @@ namespace LogicPOS.UI.Components.Modals
             throw new System.NotImplementedException();
         }
 
-        protected override void AddValidatableFields()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
-        {
-            throw new System.NotImplementedException();
-        }
 
         protected override void ShowEntityData()
         {

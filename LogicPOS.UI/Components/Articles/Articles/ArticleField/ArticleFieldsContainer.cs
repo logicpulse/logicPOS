@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Articles
                 return;
             }
 
-            var field = new ArticleField(article, quantity, enableSerialNumbers: _mode == ArticlesBoxMode.StockManagement);
+            var field = new ArticleField(article, quantity, isUniqueArticle: _mode == ArticlesBoxMode.StockManagement);
             field.OnRemove += BtnRemoveArticle_Clicked;
             field.OnAdd += () => AddArticle();
 
@@ -118,39 +118,19 @@ namespace LogicPOS.UI.Components.Articles
 
         public IEnumerable<StockMovementItem> GetStockMovementItems()
         {
+            List<StockMovementItem> items = new List<StockMovementItem>();
             foreach (ArticleField field in Fields)
             {
-                var baseStockMovementItem = new StockMovementItem
-                {
-                    ArticleId = field.Article.Id,
-                    Quantity = decimal.Parse(field.TxtQuantity.Text),
-                };
-
-                var serialNumbers = field.SerialNumbers;
-
                 if (_mode == ArticlesBoxMode.StockManagement)
                 {
-                    baseStockMovementItem.Price = field.Price;
-                    baseStockMovementItem.WarehouseLocationId = field.WarehouseLocationId;
-
-                    foreach (var serialNumber in serialNumbers)
-                    {
-                        yield return new StockMovementItem
-                        {
-                            ArticleId = baseStockMovementItem.ArticleId,
-                            Quantity = 1,
-                            Price = baseStockMovementItem.Price,
-                            WarehouseLocationId = baseStockMovementItem.WarehouseLocationId,
-                            SerialNumber = serialNumber
-                        };
-                    }
+                    items.AddRange(field.GetLocalizedStockMovementItems());
+                    continue;
                 }
 
-                if(serialNumbers.Count() == 0)
-                {
-                    yield return baseStockMovementItem;
-                }
+                items.AddRange(field.GetNonLocalizedStockMovementItems());
             }
+
+            return items;
         }
 
         public IEnumerable<ArticleChild> GetArticleChildren()

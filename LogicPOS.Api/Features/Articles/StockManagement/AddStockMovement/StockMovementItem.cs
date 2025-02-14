@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
 {
@@ -9,5 +10,6 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
         public string SerialNumber { get; set; }
         public Guid? WarehouseLocationId { get; set; }
         public decimal Price { get; set; }
+        public IEnumerable<Guid> ChildUniqueArticles { get; set; }
     }
 }

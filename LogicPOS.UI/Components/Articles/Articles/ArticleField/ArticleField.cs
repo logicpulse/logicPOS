@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
@@ -21,28 +22,26 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public partial class ArticleField : IValidatableField
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-
         public Article Article { get; set; }
         public string FieldName => Label.Text;
-        public event System.Action<ArticleField, Article> OnRemove;
+        public event Action<ArticleField, Article> OnRemove;
         public event System.Action OnAdd;
-        private readonly bool _enableSerialNumbers;
+        private readonly bool _isUniqueArticle;
         public ArticleField(Article article = null,
                             decimal quantity = 0,
-                            bool enableSerialNumbers = false)
+                            bool isUniqueArticle = false)
         {
-            _enableSerialNumbers = enableSerialNumbers;
+            _isUniqueArticle = isUniqueArticle;
             Article = article;
             TxtQuantity.Text = quantity.ToString();
             Label.SetAlignment(0, 0.5f);
             InitializeButtons();
 
-            if (enableSerialNumbers)
+            if (isUniqueArticle)
             {
-                InitializeComboboxes();
+                _locationField = new WarehouseSelectionField();
             }
-              
+
             PackComponents();
             AddEventHandlers();
             UpdateValidationColors();
@@ -51,11 +50,18 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void ShowEntity()
         {
-            if (Article != null)
+            if (Article == null)
             {
-                TxtCode.Text = Article.Code;
-                TxtDesignation.Text = Article.Designation;
-                TxtQuantity.Text = "1";
+                return;
+            }
+
+            TxtCode.Text = Article.Code;
+            TxtDesignation.Text = Article.Designation;
+            TxtQuantity.Text = "1";
+
+            if (_isUniqueArticle)
+            {
+                UpdateSerialNumbersComponents();
             }
         }
 
@@ -79,7 +85,7 @@ namespace LogicPOS.UI.Components.InputFields
             TxtQuantity.Changed += (s, e) => UpdateValidationColors();
             BtnSelect.Clicked += BtnSelect_Clicked;
 
-            if(_enableSerialNumbers)
+            if (_isUniqueArticle)
             {
                 TxtQuantity.Changed += (s, e) =>
                 {
@@ -87,7 +93,7 @@ namespace LogicPOS.UI.Components.InputFields
                     Component.ShowAll();
                 };
             }
-           
+
         }
 
         private void BtnSelect_Clicked(object sender, System.EventArgs e)
@@ -108,31 +114,47 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var result = (Article != null) && QuantityIsValid();
 
-            if (_enableSerialNumbers)
+            if (_isUniqueArticle)
             {
-                result = result && _comboWarehouse.IsValid() && _comboWarehouseLocation.IsValid() && _serialNumberFields.All(f => f.IsValid());
+                result = result && _locationField.IsValid() && _serialNumberFields.All(f => f.IsValid());
             }
 
             return result;
         }
-       
-        private IEnumerable<Warehouse> GetWarehouses()
+
+        public IEnumerable<StockMovementItem> GetNonLocalizedStockMovementItems()
         {
-            var result = _mediator.Send(new GetAllWarehousesQuery()).Result;
-
-            if (result.IsError)
+            yield return new StockMovementItem
             {
-                ErrorHandlingService.HandleApiError(result);
-                return Enumerable.Empty<Warehouse>();
-            }
-
-            return result.Value;
+                ArticleId = Article.Id,
+                Quantity = decimal.Parse(TxtQuantity.Text)
+            };
         }
 
-        public IEnumerable<string> SerialNumbers => _serialNumberFields.Where(f => string.IsNullOrWhiteSpace(f.Text) == false).Select(f => f.Text);
+        public IEnumerable<StockMovementItem> GetLocalizedStockMovementItems()
+        {
+            foreach (var serialNumberField in _serialNumberFields)
+            {
+                var item = new StockMovementItem
+                {
+                    ArticleId = Article.Id,
+                    Quantity = decimal.Parse(TxtQuantity.Text),
+                    SerialNumber = serialNumberField.TxtSerialNumber.Text,
+                    WarehouseLocationId = WarehouseLocationId,
+                    Price = Price
+                };
 
-        public decimal Price => string.IsNullOrEmpty(TxtPrice.Text) ? 0 : decimal.Parse(TxtPrice.Text);
+                if (string.IsNullOrWhiteSpace(serialNumberField.TxtSerialNumber.Text) == false && Article.IsComposed)
+                {
+                    item.ChildUniqueArticles = serialNumberField.Children.Select(c => c.UniqueArticelId);
+                }
 
-        public Guid? WarehouseLocationId => _comboWarehouseLocation.SelectedEntity?.Id;
+                yield return item;
+            }
+        }
+
+        private decimal Price => string.IsNullOrEmpty(TxtPrice.Text) ? 0 : decimal.Parse(TxtPrice.Text);
+
+        private Guid? WarehouseLocationId => _locationField?.LocationField.SelectedEntity?.Id;
     }
 }

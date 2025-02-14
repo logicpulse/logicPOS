@@ -153,7 +153,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_entity.IsComposed)
             {
-                var children = ExecuteGetEntitiesQuery(new GetArticleChildrenQuery { Id = _entity.Id });
+                var children = ExecuteGetEntitiesQuery(new GetArticleChildrenQuery(_entity.Id));
                 _addArticlesBox.AddArticleChildren(children);
             }
         }

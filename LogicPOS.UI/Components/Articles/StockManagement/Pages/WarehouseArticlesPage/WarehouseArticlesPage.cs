@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
     public partial class WarehouseArticlesPage : Page<WarehouseArticle>
     {
         protected override IRequest<ErrorOr<IEnumerable<WarehouseArticle>>> GetAllQuery => new GetAllWarehouseArticlesQuery();
-        public WarehouseArticlesPage(Window parent) : base(parent)
+        public WarehouseArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             RemoveForbiddenButtons();
         }
@@ -53,6 +54,15 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting();
             AddSerialNumberSorting();
             AddQuantitySorting();
+        }
+
+        public void ApplyFilter(Predicate<WarehouseArticle> predicate)
+        {
+            LoadEntities();
+            _entities.RemoveAll(e => !predicate(e));
+            var model = (ListStore)GridViewSettings.Model;
+            model.Clear();
+            AddEntitiesToModel();
         }
     }
 }
