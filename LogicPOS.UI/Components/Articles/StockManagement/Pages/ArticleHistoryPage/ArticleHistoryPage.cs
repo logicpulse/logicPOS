@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnPrintSerialNumber_Clicked(object sender, EventArgs e)
         {
-            if(SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.WarehouseArticle.SerialNumber))
+            if (SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.WarehouseArticle.SerialNumber))
             {
                 return;
             }
@@ -101,7 +101,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            throw new System.NotImplementedException();
+            var modal = new UpdateUniqueArticleModal(SelectedEntity);
+            int response = modal.Run();
+            modal.Destroy();
+            return response;
         }
 
         protected override void AddColumns()

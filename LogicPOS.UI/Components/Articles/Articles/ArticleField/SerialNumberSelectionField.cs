@@ -14,12 +14,12 @@ namespace LogicPOS.UI.Components
     {
         public string FieldName => LocalizedString.Instance["global_serial_number"];
         private readonly Article _article;
-        public Guid UniqueArticelId { get; private set; } 
+        public Guid UniqueArticelId { get; set; } 
         public Widget Component { get; private set; }
         public TextBox TxtSerialNumber { get; private set; } = new TextBox(null,
                                                                             LocalizedString.Instance["global_serial_number"],
                                                                             isRequired: true,
-                                                                            includeClearButton: true,
+                                                                            includeClearButton: false,
                                                                             style: TextBoxStyle.Lite);
         public SerialNumberSelectionField(Article article)
         {

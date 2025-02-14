@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
 using LogicPOS.Api.Features.FiscalYears.CreateDefaultSeries;
 using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -64,7 +65,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 

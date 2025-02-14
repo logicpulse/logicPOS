@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Articles.GetArticleChildren;
+using LogicPOS.Api.Features.Articles.StockManagement.GetUniqueArticleChildren;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -24,9 +25,9 @@ namespace LogicPOS.UI.Components
             Component.PackStart(TxtSerialNumber.Component, false, false, 0);
         }
 
-        public void LoadArticleChildren(Guid parentArticleId)
+        public void LoadArticleChildren(Guid articleId)
         {
-            var result = DependencyInjection.Mediator.Send(new GetArticleChildrenQuery(parentArticleId)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticleChildrenQuery(articleId)).Result;
 
             if (result.IsError)
             {
@@ -37,6 +38,27 @@ namespace LogicPOS.UI.Components
             foreach (var child in result.Value)
             {
                 Children.Add(new SerialNumberSelectionField(child.Article));
+            }
+
+            PresentChildFields();
+        }
+
+        public void LoadUniqueArticleChildren(Guid uniqueArticleId)
+        {
+            var result = DependencyInjection.Mediator.Send(new GetUniqueArticleChildrenQuery(uniqueArticleId)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return;
+            }
+
+            foreach (var child in result.Value)
+            {
+                var field = new SerialNumberSelectionField(child.Article);
+                field.TxtSerialNumber.Text = child.SerialNumber;
+                field.UniqueArticelId = child.Id;
+                Children.Add(field);
             }
 
             PresentChildFields();

@@ -17,7 +17,15 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            throw new System.NotImplementedException();
+            yield return (CreateSerialNumberTab(), "Editar");
+        }
+
+        private VBox CreateSerialNumberTab()
+        {
+            var tab = new VBox();
+            tab.PackStart(new Label($"Artigo: {_entity.WarehouseArticle.Article.Designation}"), false, false, 5);
+            tab.PackStart(SerialNumberField.Component, false, false, 0);
+            return tab;
         }
     }
 }

@@ -7,6 +7,7 @@ using LogicPOS.Api.Features.Warehouses.Locations.UpdateWarehouseLocation;
 using LogicPOS.Api.Features.Warehouses.UpdateWarehouse;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Warehouses;
+using LogicPOS.UI.Errors;
 using System;
 using System.Linq;
 
@@ -55,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 
@@ -87,7 +88,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
         }
@@ -99,7 +100,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
         }
@@ -174,7 +175,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 

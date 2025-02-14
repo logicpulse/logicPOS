@@ -5,12 +5,12 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class UpdateUniqueArticleModal
     {
-        private TextBox TxtSerialNumber { get; set; } = TextBox.Simple("global_serial_number", true);
+        private SerialNumberField SerialNumberField { get; set; } = new SerialNumberField();
 
         protected override void AddValidatableFields()
         {
-            throw new System.NotImplementedException();
+            SerialNumberField.TxtSerialNumber.IsRequired = true;
+            ValidatableFields.Add(SerialNumberField);
         }
-
     }
 }

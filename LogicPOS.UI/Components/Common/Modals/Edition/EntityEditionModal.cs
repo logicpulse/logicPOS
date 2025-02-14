@@ -1,18 +1,16 @@
 ﻿using ErrorOr;
 using Gtk;
 using logicpos;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             _modalMode = modalMode;
 
-            if(modalMode != EntityEditionModalMode.Insert)
+            if (modalMode != EntityEditionModalMode.Insert)
             {
                 _entity = entity;
             }
@@ -54,7 +52,7 @@ namespace LogicPOS.UI.Components.Modals
             BeforeDesign();
             Design();
             HandleModalMode();
-            AddValidatableFields();      
+            AddValidatableFields();
             ShowAll();
         }
 
@@ -72,12 +70,6 @@ namespace LogicPOS.UI.Components.Modals
 
             ShowValidationErrors();
 
-            this.Run();
-        }
-
-        protected virtual void HandleApiError(Error error)
-        {
-            CustomAlerts.ShowApiErrorAlert(this,error);
             this.Run();
         }
 
@@ -103,7 +95,7 @@ namespace LogicPOS.UI.Components.Modals
 
             VBox.PackStart(CreateNoteBook(), true, true, 0);
 
-            if(_modalMode != EntityEditionModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
                 AddStatusBar();
             }
@@ -211,7 +203,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected virtual void ButtonOk_Clicked(object sender, EventArgs e)
         {
-            if(AllFieldsAreValid() == false)
+            if (AllFieldsAreValid() == false)
             {
                 Validate();
                 return;
@@ -238,9 +230,9 @@ namespace LogicPOS.UI.Components.Modals
             Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
             string lastUpdatedBy = "?";
 
-            if(_entity != null && _entity.UpdatedBy != Guid.Empty)
+            if (_entity != null && _entity.UpdatedBy != Guid.Empty)
             {
-                lastUpdatedBy =  UsersService.GetUserNameById(_entity.UpdatedBy);
+                lastUpdatedBy = UsersService.GetUserNameById(_entity.UpdatedBy);
             }
 
             Label labelUpdatedByValue = new Label(lastUpdatedBy);
@@ -305,7 +297,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return result;
             }
 
@@ -322,7 +314,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                HandleApiError(result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return Enumerable.Empty<TE>();
             }
 

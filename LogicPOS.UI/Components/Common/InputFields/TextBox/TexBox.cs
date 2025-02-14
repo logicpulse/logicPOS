@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.InputFields
         public string Text { get => Entry.Text; set => Entry.Text = value; }
         public Label Label { get; private set; }
         public bool IsRequired { get; set; }
-        private bool IsEmpty => string.IsNullOrEmpty(Entry.Text);
+        private bool IsEmpty => string.IsNullOrWhiteSpace(Entry.Text);
         public bool IsValidatable { get; set; }
         public string Regex { get; set; }
         public Widget Component { get; private set; }
