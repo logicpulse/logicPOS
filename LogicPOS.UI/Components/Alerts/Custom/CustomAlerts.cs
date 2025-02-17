@@ -149,67 +149,6 @@ namespace LogicPOS.UI.Alerts
 
         }
 
-        public static ResponseType ShowMessageTouchSimplifiedInvoiceMaxValueExceedAlert(Window parentWindow,
-                                                                                        ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode pMode,
-                                                                                        decimal pCurrentTotal,
-                                                                                        decimal pMaxTotal,
-                                                                                        decimal pCurrentTotalServices,
-                                                                                        decimal pMaxTotalServices)
-        {
-            ResponseType result = ResponseType.No;
-
-            string message = string.Empty;
-            string messageMaxExceed = string.Empty;
-            string messageMaxExceedServices = string.Empty;
-            string messageMode = string.Empty;
-            MessageType messageType = MessageType.Other;
-            ButtonsType buttonsType = ButtonsType.None;
-
-            switch (pMode)
-            {
-                case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.PaymentsDialog:
-                    messageMode = GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog");
-                    messageType = MessageType.Question;
-                    buttonsType = ButtonsType.YesNo;
-                    break;
-                case ShowMessageTouchSimplifiedInvoiceMaxValueExceedMode.DocumentFinanceDialog:
-                    messageMode = GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog_documentfinancedialog");
-                    messageType = MessageType.Info;
-                    buttonsType = ButtonsType.Close;
-                    break;
-            }
-
-            if (pCurrentTotal > pMaxTotal)
-            {
-                messageMaxExceed = $"{GeneralUtils.GetResourceByName("global_total")}: {pCurrentTotal}{Environment.NewLine}{GeneralUtils.GetResourceByName("global_maximum")}: {pMaxTotal}";
-            }
-
-            if (pCurrentTotalServices > pMaxTotalServices)
-            {
-                messageMaxExceedServices = $"{GeneralUtils.GetResourceByName("global_services")}: {pCurrentTotalServices}{Environment.NewLine}{GeneralUtils.GetResourceByName("global_maximum")}: {pMaxTotalServices}";
-            }
-
-            if (pCurrentTotal > pMaxTotal || pCurrentTotalServices > pMaxTotalServices)
-            {
-                if (messageMaxExceed != string.Empty) message += messageMaxExceed;
-                if (messageMaxExceedServices != string.Empty)
-                {
-                    if (message != string.Empty) message += $"{Environment.NewLine}{Environment.NewLine}";
-                    message += messageMaxExceedServices;
-                }
-
-                result = new CustomAlert(parentWindow)
-                    .WithSize(new System.Drawing.Size(550, 440))
-                    .WithMessageType(messageType)
-                    .WithButtonsType(buttonsType)
-                    .WithTitleResource("global_warning")
-                    .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_max_value"), message, messageMode))
-                    .ShowAlert();
-            }
-
-            return result;
-        }
-
         public static void ShowCannotDeleteProtectedEntityErrorAlert(Window parentWindow)
         {
             Error(parentWindow)
