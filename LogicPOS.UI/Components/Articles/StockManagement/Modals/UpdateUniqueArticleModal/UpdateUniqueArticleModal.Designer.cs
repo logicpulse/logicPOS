@@ -18,6 +18,8 @@ namespace LogicPOS.UI.Components.Modals
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
             yield return (CreateSerialNumberTab(), "Editar");
+            yield return (CreateExchangeTab(), "Troca");
+            yield return (CreateOutputTab(), "Movimento de Saída");
         }
 
         private VBox CreateSerialNumberTab()
@@ -25,6 +27,24 @@ namespace LogicPOS.UI.Components.Modals
             var tab = new VBox();
             tab.PackStart(new Label($"Artigo: {_entity.WarehouseArticle.Article.Designation}"), false, false, 5);
             tab.PackStart(SerialNumberField.Component, false, false, 0);
+            return tab;
+        }
+
+        private VBox CreateOutputTab()
+        {
+            var tab = new VBox();
+            tab.PackStart(TxtSaleDocument.Component, false, false, 0);
+            tab.PackStart(TxtSaleDate.Component, false, false, 0);
+            tab.PackStart(BtnSell, false, false, 0);
+            return tab;
+        }
+
+        private VBox CreateExchangeTab()
+        {
+            var tab = new VBox();
+            tab.PackStart(TxtArticle.Component, false, false, 0);
+            tab.PackStart(TxtExchangeArticle.Component, false, false, 0);
+            tab.PackStart(BtnExchange, false, false, 0);
             return tab;
         }
     }

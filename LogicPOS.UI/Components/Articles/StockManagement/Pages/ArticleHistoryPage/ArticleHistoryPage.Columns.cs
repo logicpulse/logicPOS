@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderProvider(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.InStockMovement.Customer.Name;
+                (cell as CellRendererText).Text = history.InStockMovement?.Customer?.Name;
             }
             var title = "Fornecedor";
             return Columns.CreateColumn(title, 6, RenderProvider);

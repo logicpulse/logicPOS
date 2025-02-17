@@ -63,11 +63,11 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumnetNumber()
         {
             TxtDocumnetNumber = new TextBox(WindowSettings.Source,
-                                                GeneralUtils.GetResourceByName("global_document_number"),
-                                                isRequired: false,
-                                                isValidatable: false,
-                                                includeSelectButton: false,
-                                                includeKeyBoardButton: true);
+                                            GeneralUtils.GetResourceByName("global_document_number"),
+                                            isRequired: false,
+                                            isValidatable: false,
+                                            includeSelectButton: false,
+                                            includeKeyBoardButton: true);
         }
 
         private void InitializeTxtDate()
