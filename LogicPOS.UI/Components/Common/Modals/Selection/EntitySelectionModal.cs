@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private Widget CreateSearchBox()
         {
-            var searchBox = new PageSearchBox(Page.SourceWindow, true);
+            var searchBox = new PageSearchBox(Page.SourceWindow);
             searchBox.TxtSearch.EntryValidation.Changed += delegate
             {
                 Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = searchBox.TxtSearch.EntryValidation.Text;

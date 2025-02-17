@@ -1,14 +1,12 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
@@ -63,12 +61,12 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected abstract DeleteCommand GetDeleteCommand();
-        
+
         public virtual bool DeleteEntity()
         {
             var command = GetDeleteCommand();
 
-            if(command == null)
+            if (command == null)
             {
                 return false;
             }
@@ -120,7 +118,7 @@ namespace LogicPOS.UI.Components.Pages
             AddColumns();
             AddGridViewEventHandlers();
         }
-        
+
         protected void InitializeGridViewModel()
         {
             InitializeFilter();

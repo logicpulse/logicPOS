@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
@@ -17,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class StockMovementsPage : Page<StockMovement>
     {
-        public GetStockMovementsQuery Query { get; private set; } = GetDefaultQuery();
+        public GetStockMovementsQuery CurrentQuery { get; private set; } = GetDefaultQuery();
         public PaginatedResult<StockMovement> Movements { get; private set; }
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
 
@@ -25,6 +26,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             RemoveForbiddenButtons();
             AddOpenDocumentButton();
+            AddEventHandlers();
+        }
+
+
+        private void AddEventHandlers()
+        {
+            Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
         }
 
         private void AddOpenDocumentButton()
@@ -32,22 +40,6 @@ namespace LogicPOS.UI.Components.Pages
             BtnOpenDocument.ButtonLabel.Text = "Documento";
             BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
             Navigator.RightButtons.PackStart(BtnOpenDocument, false, false, 0);
-        }
-
-        private void BtnOpenDocument_Clicked(object sender, EventArgs e)
-        {
-            if (SelectedEntity == null)
-            {
-                return;
-            }
-
-            if(SelectedEntity.Quantity > 0 && SelectedEntity.ExternalDocument != null)
-            {
-                var filePath = System.IO.Path.GetTempFileName();
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(SelectedEntity.ExternalDocument));
-                LogicPOSPDFViewer.ShowPDF(filePath);
-                return;
-            }
         }
 
         private void RemoveForbiddenButtons()
@@ -58,7 +50,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void LoadEntities()
         {
-            var getMovements = _mediator.Send(Query).Result;
+            var getMovements = _mediator.Send(CurrentQuery).Result;
 
             if (getMovements.IsError)
             {

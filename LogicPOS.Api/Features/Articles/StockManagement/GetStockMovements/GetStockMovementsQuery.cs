@@ -46,5 +46,18 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements
             }
             return query.ToString();
         }
+
+        public GetStockMovementsQuery GetNextPageQuery()
+        {
+            return new GetStockMovementsQuery
+            {
+                Page = (Page ?? 0) + 1,
+                PageSize = PageSize,
+                StartDate = StartDate,
+                EndDate = EndDate,
+                ArticleId = ArticleId,
+                CustomerId = CustomerId
+            };
+        }
     }
 }

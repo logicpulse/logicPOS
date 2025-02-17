@@ -7,7 +7,6 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
@@ -25,69 +24,58 @@ namespace LogicPOS.UI.Components.Pages
         public string BtnMoreIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
         public string BtnFilterIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
 
-        public PageSearchBox(Window parentWindow, bool showFilterAndMoreButtons)
+        public PageSearchBox(Window parentWindow)
         {
             SourceWindow = parentWindow;
-            Design(showFilterAndMoreButtons);
+            Design();
         }
 
-        private void Design(bool showFilterAndMoreButtons)
+        private void Design()
         {
-           
-            string regexAlfaNumericExtended = RegularExpressions.AlfaNumericExtended;
-
-
             TxtSearch = new EntryBoxValidation(SourceWindow,
                                                GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
                                                KeyboardMode.AlfaNumeric,
-                                               regexAlfaNumericExtended,
+                                               RegularExpressions.AlfaNumericExtended,
                                                false);
 
             TxtSearch.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
 
             Bar.PackStart(TxtSearch, true, true, 0);
 
+
+
+            BtnMore = CreateIconButton("touchButtonSearchAdvanced_DialogActionArea",
+                                       GeneralUtils.GetResourceByName("global_button_label_more"),
+                                       BtnMoreIcon);
+
+            BtnFilter = CreateIconButton("touchButtonSearchAdvanced_DialogActionArea",
+                                         GeneralUtils.GetResourceByName("global_button_label_filter"),
+                                         BtnFilterIcon);
+
+            Bar.PackStart(BtnMore, false, false, 0);
+            Bar.PackStart(BtnFilter, false, false, 0);
+
             PackStart(Bar);
+        }
 
+        private IconButtonWithText CreateIconButton(string name, string text, string icon)
+        {
+            Size buttonSize = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
+            Size buttonIconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
 
-            if (showFilterAndMoreButtons)
-            {
-                Size buttonSize = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
-                Size buttonIconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
-
-                BtnMore = new IconButtonWithText(
-                    new ButtonSettings
-                    {
-                        Name = "touchButtonSearchAdvanced_DialogActionArea",
-                        BackgroundColor = Color.Transparent,
-                        Text = GeneralUtils.GetResourceByName("global_button_label_more"),
-                        Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
-                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                        Icon = BtnMoreIcon,
-                        IconSize = buttonIconSize,
-                        ButtonSize = buttonSize
-                    })
-                { Sensitive = true };
-
-                BtnFilter = new IconButtonWithText(
-                    new ButtonSettings
-                    {
-                        Name = "touchButtonSearchAdvanced_DialogActionArea",
-                        BackgroundColor = Color.Transparent,
-                        Text = GeneralUtils.GetResourceByName("global_button_label_filter"),
-                        Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
-                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                        Icon = BtnFilterIcon,
-                        IconSize = buttonIconSize,
-                        ButtonSize = buttonSize
-                    })
-                { Sensitive = true };
-
-                Bar.PackStart(BtnMore, false, false, 0);
-                Bar.PackStart(BtnFilter, false, false, 0);
-
-            }
-
+            return new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = name,
+                    BackgroundColor = Color.Transparent,
+                    Text = text,
+                    Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
+                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                    Icon = icon,
+                    IconSize = buttonIconSize,
+                    ButtonSize = buttonSize
+                })
+            { Sensitive = true };
         }
     }
 }

@@ -22,8 +22,8 @@ namespace LogicPOS.UI.Components.Modals
         
         protected override void ShowEntityData()
         {
-            TxtSupplier.Text = _entity.Customer.Name;
-            TxtSupplier.SelectedEntity = _entity.Customer;
+            TxtSupplier.Text = _entity.Customer?.Name;
+            TxtSupplier.SelectedEntity = _entity?.Customer;
             TxtDate.Text = _entity.Date.ToString("yyyy-MM-dd");
             TxtDocumnetNumber.Text = _entity.DocumentNumber;
             TxtQuantity.Text = _entity.Quantity.ToString();

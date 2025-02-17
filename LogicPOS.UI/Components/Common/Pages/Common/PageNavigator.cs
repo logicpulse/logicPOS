@@ -63,9 +63,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeSearchBox()
         {
-            bool showFilterAndMoreButtons = true;
-
-            SearchBox = new PageSearchBox(_page.SourceWindow, showFilterAndMoreButtons);
+            SearchBox = new PageSearchBox(_page.SourceWindow);
 
             SearchBox.TxtSearch.EntryValidation.Changed += delegate
             {
