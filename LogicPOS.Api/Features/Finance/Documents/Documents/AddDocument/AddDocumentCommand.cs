@@ -22,5 +22,6 @@ namespace LogicPOS.Api.Features.Documents.AddDocument
         public string Notes { get; set; }
         public List<DocumentDetail> Details { get; set; }
         public decimal? ExchangeRate { get; set; }
+        public bool IsDraft { get; set; }
     }
 }
