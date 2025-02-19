@@ -29,6 +29,11 @@ using LogicPOS.Api.Features.Reports.GetSalesByTerminalDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByTerminalReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleClassReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleTypeReportPdf;
+using LogicPOS.Api.Features.Reports.GetStockByArticleGainReportPdf;
+using LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf;
+using LogicPOS.Api.Features.Reports.GetStockBySupplierReportPdfReportPdf;
+using LogicPOS.Api.Features.Reports.GetStockMovementReportPdf;
+using LogicPOS.Api.Features.Reports.GetStockReportPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
@@ -202,6 +207,31 @@ namespace LogicPOS.UI.Services
         public static void ShowCommissionsReport(DateTime startDate, DateTime endDate)
         {
             ShowReport(new GetSalesByCommissionReportPdfQuery(startDate, endDate));
+        }
+
+        public static void ShowStockMovementsReport(DateTime startDate, DateTime endDate)
+        {
+            ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate));
+        }
+
+        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid articleId, Guid warehouseId, string serialNumber)
+        {
+            ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseId, serialNumber));
+        }
+
+        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid articleId=new Guid())
+        {
+            ShowReport(new GetStockByArticleReportPdfQuery(startDate, endDate, articleId));
+        }
+
+        public static void ShowStockBySupplierReport(DateTime startDate, DateTime endDate, Guid supplierId = new Guid(), string documentNumber="")
+        {
+            ShowReport(new GetStockBySupplierReportPdfQuery(startDate, endDate, supplierId, documentNumber));
+        }
+
+        public static void ShowStockByArticleGainReport(DateTime startDate, DateTime endDate, Guid articleId = new Guid(), Guid customerId = new Guid())
+        {
+            ShowReport(new GetStockByArticleGainReportPdfQuery(startDate, endDate, articleId, customerId));
         }
     }
 }

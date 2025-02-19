@@ -388,5 +388,136 @@ namespace LogicPOS.UI.Components.Modals
             }
             modal.Destroy();
         }
+
+        private void BtnStockMovementsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowStockMovementsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByWarehouseReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtArticle.SelectedEntity == null && modal.TxtWarehouse.SelectedEntity != null)
+                {
+                    ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
+                                                    Guid.Empty,
+                                                    (modal.TxtWarehouse.SelectedEntity as Warehouse).Id,
+                                                    modal.TxtSerialNumber.Text);
+                }
+                else
+                if (modal.TxtArticle.SelectedEntity != null && modal.TxtWarehouse.SelectedEntity == null)
+                {
+                    ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
+                                                   (modal.TxtArticle.SelectedEntity as Article).Id,
+                                                    Guid.Empty,
+                                                    modal.TxtSerialNumber.Text);
+                }
+                else
+                if (modal.TxtArticle.SelectedEntity == null && modal.TxtWarehouse.SelectedEntity == null)
+                {
+                    ReportsService.ShowStockByWarehouseReport(modal.StartDate, 
+                                                    modal.EndDate,
+                                                    Guid.Empty,
+                                                    Guid.Empty,
+                                                    modal.TxtSerialNumber.Text);
+                }
+                else
+                {
+                    
+                        ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
+                                                        (modal.TxtArticle?.SelectedEntity as Article).Id,
+                                                        (modal.TxtWarehouse.SelectedEntity as Warehouse).Id,
+                                                        modal.TxtSerialNumber.Text);
+                }
+
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByArticleReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtArticle.SelectedEntity==null)
+                {
+                    ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate);
+                }
+                else
+                {
+                    ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate, (modal.TxtArticle.SelectedEntity as Article).Id);
+                }
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockBySupplierReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtCustomer.SelectedEntity == null)
+                {
+                    ReportsService.ShowStockBySupplierReport(modal.StartDate, modal.EndDate, Guid.Empty, modal.TxtDocumentNumber.Text);
+                }
+                else
+                {
+                    ReportsService.ShowStockBySupplierReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as Customer).Id, modal.TxtDocumentNumber.Text);
+                }
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByArticleGainReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtArticle.SelectedEntity == null && modal.TxtCustomer.SelectedEntity != null)
+                {
+                    ReportsService.ShowStockByArticleGainReport(modal.StartDate, modal.EndDate,
+                                                              Guid.Empty,
+                                                              (modal.TxtCustomer.SelectedEntity as Customer).Id);
+                }
+                else
+               if (modal.TxtArticle.SelectedEntity != null && modal.TxtCustomer.SelectedEntity == null)
+                {
+                    ReportsService.ShowStockByArticleGainReport(modal.StartDate, modal.EndDate,
+                                                                       (modal.TxtArticle.SelectedEntity as Article).Id,
+                                                                        Guid.Empty);
+                }
+                else
+               if (modal.TxtArticle.SelectedEntity == null && modal.TxtCustomer.SelectedEntity == null)
+                {
+                    ReportsService.ShowStockByArticleGainReport(modal.StartDate,
+                                                                        modal.EndDate,
+                                                                        Guid.Empty,
+                                                                        Guid.Empty);
+                }
+                else
+                {
+
+                    ReportsService.ShowStockByArticleGainReport(modal.StartDate, modal.EndDate,
+                                                                        (modal.TxtArticle.SelectedEntity as Article).Id,
+                                                                        (modal.TxtCustomer.SelectedEntity as Customer).Id);
+                }
+            }
+            modal.Destroy();
+        }
     }
 }

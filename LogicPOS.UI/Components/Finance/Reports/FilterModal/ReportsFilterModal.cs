@@ -23,7 +23,11 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtCustomer { get; set; }
         public TextBox TxtWarehouse { get; set; }
+        public TextBox TxtArticle { get; set; }
         public TextBox TxtVatRate { get; set; }
+        public TextBox TxtSerialNumber { get; set; }
+        public TextBox TxtDocumentNumber { get; set; }
+
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
@@ -32,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
         public ReportsFilterModal(Window parent) :
           base(parent,
               LocalizedString.Instance["window_title_dialog_report_filter"],
-              new Size(540, 568),
+              new Size(540, 678) /*originally was -> (540, 568): Luciano*/,
               PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
@@ -80,6 +84,9 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtCustomer.Component, false, false, 0);
             vbox.PackStart(TxtWarehouse.Component, false, false, 0);
             vbox.PackStart(TxtVatRate.Component, false, false, 0);
+            vbox.PackStart(TxtArticle.Component, false, false, 0);
+            vbox.PackStart(TxtSerialNumber.Component, false, false, 0);
+            vbox.PackStart(TxtDocumentNumber.Component, false, false, 0);
 
             return vbox;
         }
@@ -92,6 +99,9 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtCustomer();
             InitializeTxtWarehouse();
             InitializeTxtVatRate();
+            InitializeTxtArticle();
+            InitializeTxtSerialNumber();
+            InitializeTxtDocumentNumber();
         }
 
         private void InitializeTxtCustomer()
@@ -179,6 +189,48 @@ namespace LogicPOS.UI.Components.Modals
             TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
+        }
+
+        private void InitializeTxtArticle()
+        {
+            TxtArticle= new TextBox(this,
+                                    GeneralUtils.GetResourceByName("global_articles"),
+                                    isRequired: false,
+                                    isValidatable: false,
+                                    includeSelectButton: true,
+                                    includeKeyBoardButton: false);
+
+            TxtArticle.Entry.IsEditable = false;
+
+            TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
+        }
+
+        private void InitializeTxtSerialNumber()
+        {
+            TxtSerialNumber = new TextBox(this,
+                                              GeneralUtils.GetResourceByName("global_serialnumber"),
+                                              isRequired: false,
+                                              isValidatable: false,
+                                              includeSelectButton: true,
+                                              includeKeyBoardButton: false);
+
+            TxtSerialNumber.Entry.IsEditable = false;
+
+            TxtSerialNumber.SelectEntityClicked += BtnSelectSerialNumber_Clicked;
+        }
+
+        private void InitializeTxtDocumentNumber()
+        {
+            TxtDocumentNumber = new TextBox(this,
+                                              GeneralUtils.GetResourceByName("global_document_number"),
+                                              isRequired: false,
+                                              isValidatable: false,
+                                              includeSelectButton: true,
+                                              includeKeyBoardButton: false);
+
+            TxtDocumentNumber.Entry.IsEditable = false;
+
+            TxtDocumentNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }
 
         public DateTime StartDate =>  DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);

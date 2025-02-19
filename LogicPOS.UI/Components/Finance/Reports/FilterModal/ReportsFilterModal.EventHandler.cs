@@ -2,6 +2,7 @@
 
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
@@ -112,6 +113,47 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
+        private void BtnSelectArticle_Clicked(object sender, System.EventArgs e)
+        {
+            var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<Article>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtArticle.Text = page.SelectedEntity.Designation;
+                TxtArticle.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void BtnSelectSerialNumber_Clicked(object sender, System.EventArgs e)
+        {
+            var page = new ArticleHistoryPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<ArticleHistory>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtSerialNumber.Text = page.SelectedEntity.WarehouseArticle.SerialNumber;
+                TxtSerialNumber.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void BtnSelectDocumentNumber_Clicked(object sender, System.EventArgs e)
+        {
+            var page = new StockMovementsPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<StockMovement>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtDocumentNumber.Text = page.SelectedEntity.DocumentNumber;
+                TxtDocumentNumber.SelectedEntity = page.SelectedEntity;
+            }
+        }
         protected override void OnResponse(ResponseType response)
         {
             if (response == ResponseType.None)

@@ -29,7 +29,9 @@ namespace LogicPOS.UI.Components.Pages
             AddEventHandlers();
         }
 
-
+        public StockMovementsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
+        {
+        }
         private void AddEventHandlers()
         {
             Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;

@@ -32,7 +32,9 @@ namespace LogicPOS.UI.Components.Pages
             AddOpenExternalDocumentButton();
             AddOpenSaleDocumentButton();
         }
-
+        public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
+        {
+        }
         private void AddOpenSaleDocumentButton()
         {
             BtnOpenSaleDocument.ButtonLabel.Text = "Doc.Venda";
