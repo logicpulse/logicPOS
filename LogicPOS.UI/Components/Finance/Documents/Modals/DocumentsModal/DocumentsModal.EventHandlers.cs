@@ -1,9 +1,13 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Errors;
 using System;
 using System.Linq;
 
@@ -19,16 +23,16 @@ namespace LogicPOS.UI.Components.Documents
             }
 
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
-            ResponseType reponse = (ResponseType) modal.Run();
+            ResponseType reponse = (ResponseType)modal.Run();
             var copyNumber = modal.CopyNumber;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
-            {       
+            {
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id,copyNumber);
+            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
             if (pdfLocation == null)
             {
@@ -88,7 +92,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id,copyNumber);
+            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
             if (pdfLocation == null)
             {
@@ -104,7 +108,13 @@ namespace LogicPOS.UI.Components.Documents
             {
                 return;
             }
-
+            if (Page.SelectedEntity.IsDraft)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage($"Rascunhos não podem ser liquidados")
+                            .ShowAlert();
+                return;
+            }
             var paidDocuments = string.Join(",", Page.SelectedDocuments.Where(x => x.Paid).Select(x => x.Number));
 
             if (paidDocuments != string.Empty)
@@ -137,7 +147,18 @@ namespace LogicPOS.UI.Components.Documents
             var selectedDocument = Page.SelectedEntity;
             if (selectedDocument == null)
             {
+
                 return;
+            }
+
+            if (1==1/*Page.SelectedEntity.IsDraft*/)
+            {
+                var deleteResult = DependencyInjection.Mediator.Send(new DeleteDraftCommand(Page.SelectedEntity.Id)).Result;
+                if (deleteResult.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(deleteResult);
+                    return ;
+                }
             }
 
             if (CanCancelDocument(selectedDocument) == false)
@@ -157,7 +178,7 @@ namespace LogicPOS.UI.Components.Documents
 
         private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
         {
-            if(Page.SelectedDocuments.Count == 0)
+            if (Page.SelectedDocuments.Count == 0)
             {
                 return;
             }
