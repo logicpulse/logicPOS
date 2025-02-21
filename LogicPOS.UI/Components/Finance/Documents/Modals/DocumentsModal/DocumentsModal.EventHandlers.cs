@@ -151,7 +151,7 @@ namespace LogicPOS.UI.Components.Documents
                 return;
             }
 
-            if (1==1/*Page.SelectedEntity.IsDraft*/)
+            if (Page.SelectedEntity.IsDraft)
             {
                 var deleteResult = DependencyInjection.Mediator.Send(new DeleteDraftCommand(Page.SelectedEntity.Id)).Result;
                 if (deleteResult.IsError)
