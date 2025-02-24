@@ -158,7 +158,10 @@ namespace LogicPOS.UI.Components.Documents
                 {
                     ErrorHandlingService.HandleApiError(deleteResult);
                     return ;
-                }
+                } 
+                 Page.Refresh();
+                return;
+               
             }
 
             if (CanCancelDocument(selectedDocument) == false)
