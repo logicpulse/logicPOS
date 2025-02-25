@@ -6,7 +6,6 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;

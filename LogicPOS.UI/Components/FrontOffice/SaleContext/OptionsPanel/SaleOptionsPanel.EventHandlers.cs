@@ -221,19 +221,13 @@ namespace LogicPOS.UI.Components.POS
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_cardcode_small"), string.Empty, RegularExpressions.AlfaNumericExtended, true);
-
-            if (dialogResponse.ResponseType == ResponseType.Ok)
-            {
-                if (GeneralSettings.AppUseParkingTicketModule) /* IN009239 */
-                {
-                    LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(dialogResponse.Text);
-                }
-                else
-                {
-
-                }
-            }
+            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance,
+                                                                                     DialogFlags.Modal,
+                                                                                     fileWindowIcon,
+                                                                                     GeneralUtils.GetResourceByName("global_cardcode_small"),
+                                                                                     string.Empty,
+                                                                                     RegularExpressions.AlfaNumericExtended,
+                                                                                     true);
         }
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)

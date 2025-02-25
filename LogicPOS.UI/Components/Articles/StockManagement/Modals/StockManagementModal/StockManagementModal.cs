@@ -1,6 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
+using LogicPOS.Settings;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
+using System.Diagnostics;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -14,6 +20,30 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
+        public static void RunModal()
+        {
+            if (LicenseSettings.LicenseModuleStocks)
+            {
+                var parentWindow = BackOfficeWindow.Instance;
+                var stockManagementModal = new StockManagementModal(parentWindow);
+                stockManagementModal.Run();
+                stockManagementModal.Destroy();
+            }
+            else
+            {
+                var messageDialog = new CustomAlert(BackOfficeWindow.Instance)
+                    .WithMessageType(MessageType.Warning)
+                    .WithButtonsType(ButtonsType.OkCancel)
+                    .WithTitleResource("global_warning")
+                    .WithMessageResource("global_warning_acquire_module_stocks")
+                    .ShowAlert();
+
+                if (messageDialog == ResponseType.Ok)
+                {
+                    Process.Start("https://logic-pos.com/");
+                }
+            }
+        }
 
     }
 }

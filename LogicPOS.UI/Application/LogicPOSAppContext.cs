@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
-using logicpos.Classes.Logic.Others;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 
@@ -23,6 +22,5 @@ namespace LogicPOS.UI.Application
         public static UsbDisplayDevice UsbDisplay { get; set; }
         public static InputReader BarCodeReader { get; set; }
         public static WeighingBalance WeighingBalance { get; set; }
-        public static ParkingTicket ParkingTicket { get; set; }
     }
 }

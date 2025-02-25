@@ -366,7 +366,6 @@ namespace logicpos
             return string.Format("{0} : {1}", LogicPOSSettings.AppName, pTitle);
         }
 
-
         public static Size GetScreenSize()
         {
             Size result = new Size();
@@ -715,43 +714,6 @@ namespace logicpos
             }
 
             return result;
-        }
-
-
-        public static void OpenArticleStockDialog(Window parentWindow)
-        {
-
-            if (LicenseSettings.LicenseModuleStocks)
-            {
-                //tchial0: Open Stock Management
-            }
-            else if (PreferenceParametersService.CheckStocksMessage && !LicenseSettings.LicenseModuleStocks)
-            {
-                var messageDialog = new CustomAlert(parentWindow)
-                    .WithMessageType(MessageType.Warning)
-                    .WithButtonsType(ButtonsType.OkCancel)
-                    .WithTitleResource("global_warning")
-                    .WithMessageResource("global_warning_acquire_module_stocks")
-                    .ShowAlert();
-
-
-                if (messageDialog == ResponseType.Ok)
-                {
-                    Process.Start("https://logic-pos.com/");
-                }
-
-                var documentsMenu = new DocumentsMenuModal(parentWindow);
-                documentsMenu.Run();
-                documentsMenu.Destroy();
-
-            }
-            else
-            {
-                var addStockModal = new AddStockMovementModal(parentWindow);
-                addStockModal.Run();
-                addStockModal.Destroy();
-            }
-
         }
 
         public static bool IsPortOpen(string portName)

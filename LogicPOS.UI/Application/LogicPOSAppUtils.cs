@@ -149,18 +149,6 @@ namespace LogicPOS.UI.Application
                         .ShowAlert();
             }
 
-            try
-            {
-                if (GeneralSettings.AppUseParkingTicketModule)
-                {
-                    LogicPOSAppContext.ParkingTicket = new ParkingTicket();
-                }
-            }
-            catch (Exception)
-            {
-                _logger.Error(string.Format("void Init() :: Missing AppUseParkingTicketModule Token in Settings, using default value: [{0}]", GeneralSettings.AppUseParkingTicketModule));
-            }
-
 #if DEBUG
             LicenseSettings.LicenseModuleStocks = true;
             PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";

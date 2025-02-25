@@ -135,16 +135,7 @@ namespace LogicPOS.UI.Components.Windows
                     break;
                 case InputReaderDevice.BarCodeReader:
                 case InputReaderDevice.CardReader:
-                    if (GeneralSettings.AppUseParkingTicketModule)
-                    {
-                        LogicPOSAppContext.ParkingTicket.GetTicketDetailFromWS(LogicPOSAppContext.BarCodeReader.Buffer);
-                    }
-                    else
-                    {
-                        //tchial0 -> TicketList.InsertOrUpdate(LogicPOSAppContext.BarCodeReader.Buffer);
-                    }
-                    break;
-
+                    throw new NotImplementedException();
                 default:
                     break;
             }

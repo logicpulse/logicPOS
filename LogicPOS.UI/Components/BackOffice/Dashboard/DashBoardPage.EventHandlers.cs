@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnArticleStock_Clicked(object sender, EventArgs e)
         {
-            logicpos.Utils.OpenArticleStockDialog(_parentWindow);
+            StockManagementModal.RunModal();
         }
 
         private void BtnTables_Clicked(object sender, EventArgs e)
