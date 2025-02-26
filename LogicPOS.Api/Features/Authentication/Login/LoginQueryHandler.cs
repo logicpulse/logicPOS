@@ -30,7 +30,7 @@ namespace LogicPOS.Api.Features.Authentication.Login
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
     }

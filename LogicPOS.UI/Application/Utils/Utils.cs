@@ -12,6 +12,7 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -28,8 +29,6 @@ namespace logicpos
 {
     internal static class Utils
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
-
 
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //Request Text Dialog
@@ -69,7 +68,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
             finally
             {
@@ -196,7 +195,7 @@ namespace logicpos
             {
                 Bitmap bmpImage = new Bitmap(pImage);
 
-                //_logger.Debug(
+                //Log.Debug(
                 //  "CropImage():" +
                 //  ": image.Width:" + pImage.Width +
                 //  ", image.Height:" + pImage.Height +
@@ -213,7 +212,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
                 return pImage;
             }
         }
@@ -238,7 +237,7 @@ namespace logicpos
             pImage = CropImage(pImage, rectCropArea);
             //drawingImage.Save(image + ".croped.png");
 
-            //_logger.Debug(
+            //Log.Debug(
             //  "ResizeAndCrop()" +
             //  ": resizeImageSize.Width:" + resizeImageSize.Width +
             //  ", resizeImageSize.Height:" + resizeImageSize.Height +
@@ -285,7 +284,7 @@ namespace logicpos
                 }
             };
 
-            //_logger.Debug(
+            //Log.Debug(
             //  "ImageFindResizeSize()" +
             //  ": imageWidth=" + pImageWidth +
             //  ", imageHeight=" + pImageHeight +
@@ -336,7 +335,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
                 return resultTableConfig;
             }
             return resultTableConfig;
@@ -472,7 +471,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
+                Log.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
 
                 LogicPOSAppContext.DialogThreadNotify.WakeupMain();
 
@@ -558,7 +557,7 @@ namespace logicpos
             }
             else
             {
-                _logger.Error(string.Format("Missing Theme[{0}] Image: [{1}]", GeneralSettings.AppTheme, fileImageBackground));
+                Log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", GeneralSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -686,13 +685,13 @@ namespace logicpos
                     //Test
                     if (pDebug)
                     {
-                        _logger.Debug(string.Format("{0}:{1}", "HardwareId", LicenseSettings.LicenseHardwareId));
-                        _logger.Debug(string.Format("{0}:{1}", "Company", LicenseSettings.LicenseCompany));
-                        _logger.Debug(string.Format("{0}:{1}", "Nif", LicenseSettings.LicenseNif));
-                        _logger.Debug(string.Format("{0}:{1}", "Address", LicenseSettings.LicenseAddress));
-                        _logger.Debug(string.Format("{0}:{1}", "Email", LicenseSettings.LicenseEmail));
-                        _logger.Debug(string.Format("{0}:{1}", "Telephone", LicenseSettings.LicenseTelephone));
-                        _logger.Debug(string.Format("{0}:{1}", "Reseller", LicenseSettings.LicenseReseller));
+                        Log.Debug(string.Format("{0}:{1}", "HardwareId", LicenseSettings.LicenseHardwareId));
+                        Log.Debug(string.Format("{0}:{1}", "Company", LicenseSettings.LicenseCompany));
+                        Log.Debug(string.Format("{0}:{1}", "Nif", LicenseSettings.LicenseNif));
+                        Log.Debug(string.Format("{0}:{1}", "Address", LicenseSettings.LicenseAddress));
+                        Log.Debug(string.Format("{0}:{1}", "Email", LicenseSettings.LicenseEmail));
+                        Log.Debug(string.Format("{0}:{1}", "Telephone", LicenseSettings.LicenseTelephone));
+                        Log.Debug(string.Format("{0}:{1}", "Reseller", LicenseSettings.LicenseReseller));
                     }
                     iNIFile.Flush();
 
@@ -710,7 +709,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
 
             return result;
@@ -727,7 +726,7 @@ namespace logicpos
             }
             catch (Exception)
             {
-                _logger.Debug(string.Format("Port already in use: [{0}]", portName));
+                Log.Debug(string.Format("Port already in use: [{0}]", portName));
                 return false;
             }
         }

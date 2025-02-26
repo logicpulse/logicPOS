@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Users.GetAllUsers
 
         public override async Task<ErrorOr<IEnumerable<User>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<User>("users",cancellationToken);
+            return await HandleGetEntitiesQueryAsync<User>("users",cancellationToken);
         }
     }
 }

@@ -7,6 +7,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Drawing;
 
@@ -25,9 +26,6 @@ namespace logicpos
 
         public static void ExpressionEvaluator_EvaluateFunction(object sender, FunctionEvaluationEventArg e)
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             // Size
             if (e.Name.Equals("Size") && e.Args.Count == 2)
             {
@@ -54,9 +52,6 @@ namespace logicpos
 
         public static void InitVariablesStartupWindow()
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             // Put in Config and Load From Config
             try
             {
@@ -98,18 +93,12 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
         }
 
         public static void InitVariablesPosMainWindow()
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
-
-            // Put in Config and Load From Config
-
             // ConfigValues to ExpressionVars
             try
             {
@@ -231,7 +220,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex.Message, ex);
+                    Log.Error(ex,"Exception");
                     var messageDialog = new CustomAlert(LoginWindow.Instance)
                                               .WithMessage($"Unsupported Resolution Detected: {LogicPOSAppContext.ScreenSize.Width}x{LogicPOSAppContext.ScreenSize.Height}")
                                               .WithMessageType(MessageType.Error)
@@ -330,7 +319,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
         }
     }

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Terminals.GetAllTerminals
 
         public override async Task<ErrorOr<IEnumerable<Terminal>>> Handle(GetAllTerminalsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<Terminal>("terminals",cancellationToken);
+            return await HandleGetEntitiesQueryAsync<Terminal>("terminals",cancellationToken);
         }
     }
 }

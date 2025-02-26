@@ -6,6 +6,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -15,9 +16,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
     internal class KeyBoardPad : Box
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Public Properties
         public PosKeyboardDialog ParentDialog { get; set; }
         public KeyboardMode KeyboardMode { get; set; } = KeyboardMode.AlfaNumeric;
@@ -77,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 for (int j = 0; j < currentKeyboardRow.Count; j++)
                 {
                     //Debug
-                    //_logger.Debug(string.Format("InitVirtualKeyboard(): tmpKey{0}:{1}:{2}", i, j, currentKey.L1.Glyph));
+                    //Log.Debug(string.Format("InitVirtualKeyboard(): tmpKey{0}:{1}:{2}", i, j, currentKey.L1.Glyph));
 
                     currentKey = currentKeyboardRow[j];
 
@@ -365,7 +363,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         }
                         catch (Exception ex)
                         {
-                            _logger.Error(ex.Message, ex);
+                            Log.Error(ex,"Exception");
                         }
                     }
                     else
@@ -470,7 +468,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     };
 
                     //Debug
-                    //_logger.Debug(string.Format("keyboardKey_Clicked(): L1.Glyph:[{1}] L1.UnicodeId:[{2}] L1.CharacterName:[{3}] unicodeChar[{4}]", vKey.Properties.Type, vKeyProperties.Glyph, vKeyProperties.UnicodeId, vKeyProperties.CharacterName, _unicodeChar));
+                    //Log.Debug(string.Format("keyboardKey_Clicked(): L1.Glyph:[{1}] L1.UnicodeId:[{2}] L1.CharacterName:[{3}] unicodeChar[{4}]", vKey.Properties.Type, vKeyProperties.Glyph, vKeyProperties.UnicodeId, vKeyProperties.CharacterName, _unicodeChar));
 
                     //Add to TextEntry
                     _tempCursorPosition = TextEntry.Position;

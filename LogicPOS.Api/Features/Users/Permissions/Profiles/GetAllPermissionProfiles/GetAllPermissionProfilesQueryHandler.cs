@@ -22,7 +22,7 @@ namespace LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfi
         public override async Task<ErrorOr<IEnumerable<PermissionProfile>>> Handle(GetAllPermissionProfilesQuery request,
                                                                        CancellationToken cancellationToken = default)
         {
-           return await HandleGetAllQueryAsync<PermissionProfile>("users/permission-profiles", cancellationToken);
+           return await HandleGetEntitiesQueryAsync<PermissionProfile>("users/permission-profiles", cancellationToken);
         }
 
 

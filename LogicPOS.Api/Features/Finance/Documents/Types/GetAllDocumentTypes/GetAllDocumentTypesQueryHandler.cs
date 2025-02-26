@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes
         public override async Task<ErrorOr<IEnumerable<DocumentType>>> Handle(GetAllDocumentTypesQuery query,
                                                                         CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<DocumentType>("documents/types", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<DocumentType>("documents/types", cancellationToken);
         }
     }
 }

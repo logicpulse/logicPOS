@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears
         public override async Task<ErrorOr<IEnumerable<FiscalYear>>> Handle(GetAllFiscalYearsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<FiscalYear>("fiscalyears", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<FiscalYear>("fiscalyears", cancellationToken);
         }
     }
 }

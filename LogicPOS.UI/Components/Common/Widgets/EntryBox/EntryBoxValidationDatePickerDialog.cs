@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.UI;
+using Serilog;
 using System;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -76,7 +77,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ex.Message, ex);
+                        Log.Error(ex,"Exception");
                     }
                 }
             };
@@ -118,7 +119,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
         }
 

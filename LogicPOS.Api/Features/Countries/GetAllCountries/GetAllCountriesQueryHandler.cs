@@ -19,16 +19,7 @@ namespace LogicPOS.Api.Features.Countries.GetAllCountries
         public override async Task<ErrorOr<IEnumerable<Country>>> Handle(GetAllCountriesQuery query,
                                                                          CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<Country>>("countries",
-                                                                              cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<Country>("countries", cancellationToken);
         }
     }
 }

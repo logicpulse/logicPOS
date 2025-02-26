@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.WorkSessions.GetAllWorkSessionPeriods
         {
             int status = (int)request.Status;
             int type = (int)request.Type;
-            return await HandleGetAllQueryAsync<WorkSessionPeriod>($"worksessions/periods?status={status}&type={type}", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<WorkSessionPeriod>($"worksessions/periods?status={status}&type={type}", cancellationToken);
         }
     }
 }

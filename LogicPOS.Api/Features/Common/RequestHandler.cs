@@ -27,7 +27,7 @@ namespace LogicPOS.Api.Features.Common
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
-        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetAllQueryAsync<TEntity>(string endpoint,
+        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetEntitiesQueryAsync<TEntity>(string endpoint,
                                                                                             CancellationToken cancellationToken = default)
         {
             try
@@ -37,7 +37,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -59,7 +59,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -80,10 +80,9 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
-
 
 
         protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(string endpoint,
@@ -97,7 +96,22 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
+            }
+        }
+
+        protected async Task<ErrorOr<Unit>> HandlePostCommandAsync(string endpoint,
+                                                                   TRequest command,
+                                                                   CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
+                return await HandleHttpResponseAsync(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -112,7 +126,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -125,7 +139,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -137,19 +151,19 @@ namespace LogicPOS.Api.Features.Common
                     var response = await httpResponse.Content.ReadFromJsonAsync<AddEntityResponse>();
                     return response.Id;
                 case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsErrorAsync(httpResponse);
+                    return await GetProblemDetailsFromResponseAsync(httpResponse);
                 default:
-                    return ApiErrors.CommunicationError;
+                    return ApiErrors.UnknownAPIResponse;
             }
         }
 
-        private async Task<Error> GetProblemDetailsErrorAsync(HttpResponseMessage httpResponse)
+        private async Task<Error> GetProblemDetailsFromResponseAsync(HttpResponseMessage httpResponse)
         {
             var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
 
-        protected async Task<ErrorOr<Unit>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
+        private async Task<ErrorOr<Unit>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
@@ -158,9 +172,9 @@ namespace LogicPOS.Api.Features.Common
                 case HttpStatusCode.NoContent:
                     return Unit.Value;
                 case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsErrorAsync(httpResponse);
+                    return await GetProblemDetailsFromResponseAsync(httpResponse);
                 default:
-                    return ApiErrors.CommunicationError;
+                    return ApiErrors.UnknownAPIResponse;
             }
         }
 
@@ -173,7 +187,7 @@ namespace LogicPOS.Api.Features.Common
                 case HttpStatusCode.BadRequest:
                     return false;
                 default:
-                    return ApiErrors.CommunicationError;
+                    return ApiErrors.UnknownAPIResponse;
             }
         }
 
@@ -186,7 +200,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
 
@@ -201,7 +215,7 @@ namespace LogicPOS.Api.Features.Common
             }
             catch (HttpRequestException)
             {
-                return ApiErrors.CommunicationError;
+                return ApiErrors.APICommunication;
             }
         }
     }

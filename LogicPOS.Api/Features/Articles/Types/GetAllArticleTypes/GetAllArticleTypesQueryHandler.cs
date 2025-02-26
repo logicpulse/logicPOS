@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Articles.Types.GetAllArticleTypes
         public override async Task<ErrorOr<IEnumerable<ArticleType>>> Handle(GetAllArticleTypesQuery request,
                                                                               CancellationToken cancellationToken = default)
         {
-           return await HandleGetAllQueryAsync<ArticleType>("articles/types", cancellationToken);
+           return await HandleGetEntitiesQueryAsync<ArticleType>("articles/types", cancellationToken);
         }
     }
 }

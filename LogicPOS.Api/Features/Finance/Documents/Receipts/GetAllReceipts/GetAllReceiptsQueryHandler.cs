@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Receipts.GetAllReceipts
 
         public async override Task<ErrorOr<IEnumerable<Receipt>>> Handle(GetAllReceiptsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<Receipt>("receipts", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<Receipt>("receipts", cancellationToken);
         }
     }
 }

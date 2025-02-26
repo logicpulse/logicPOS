@@ -90,7 +90,7 @@ namespace LogicPOS.UI.Buttons
                 {
 
                     System.Drawing.Image imageButton = new System.Drawing.Bitmap(image);
-                    //_logger.Debug(string.Format("CreateThumbnail(): imageButton: {0}x{1} resize to targetImageSize: {2}x{3}", imageButton.Width, imageButton.Height, targetImageSize.Width, targetImageSize.Height));
+                    //Log.Debug(string.Format("CreateThumbnail(): imageButton: {0}x{1} resize to targetImageSize: {2}x{3}", imageButton.Width, imageButton.Height, targetImageSize.Width, targetImageSize.Height));
 
                     if (debug)
                     {

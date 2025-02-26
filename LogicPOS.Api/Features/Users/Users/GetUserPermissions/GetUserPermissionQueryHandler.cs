@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Users.GetUserPermissions
         public override async Task<ErrorOr<IEnumerable<string>>> Handle(GetUserPermissionsQuery query,
                                                                  CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<string>($"users/{query.Id}/permissions", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<string>($"users/{query.Id}/permissions", cancellationToken);
         }
     }
 }

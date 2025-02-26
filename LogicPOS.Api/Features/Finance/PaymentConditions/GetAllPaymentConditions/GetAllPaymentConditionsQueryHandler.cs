@@ -18,18 +18,9 @@ namespace LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition
         }
 
         public override async Task<ErrorOr<IEnumerable<PaymentCondition>>> Handle(GetAllPaymentConditionsQuery query,
-                                                                     CancellationToken cancellationToken = default)
+                                                                                  CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<PaymentCondition>>("payment/conditions",
-                                                                                cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<PaymentCondition>("payment/conditions", cancellationToken);
         }
     }
 }

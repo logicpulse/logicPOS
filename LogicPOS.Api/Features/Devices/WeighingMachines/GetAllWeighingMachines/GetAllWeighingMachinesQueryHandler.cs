@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines
 
         public override async Task<ErrorOr<IEnumerable<WeighingMachine>>> Handle(GetAllWeighingMachinesQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<WeighingMachine>("weighingmachines", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<WeighingMachine>("weighingmachines", cancellationToken);
         }
     }
 }

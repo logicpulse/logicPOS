@@ -1,6 +1,7 @@
 ﻿using logicpos.Classes.Enums.Xml;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -131,9 +132,6 @@ namespace logicpos
         /// </summary>
         private static string ReplaceRegEx(string pInput, ReplaceType pReplaceType)
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             string patternBase = @"(?<={0}\[)(.*?)(?=\])";
             string patternPrefix = string.Empty;
             string result = pInput;
@@ -175,11 +173,11 @@ namespace logicpos
                 {
                     string nodeValue = funcGetValue(match.Value);
                     if (nodeValue != string.Empty) result = result.Replace(string.Format("{0}[{1}]", patternPrefix, match), nodeValue);
-                    //if (_debug) _logger.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
+                    //if (_debug) Log.Debug(string.Format("item[{0}]: [{1}]=[{2}] result={3}", Enum.GetName(typeof(ReplaceType), pReplaceType), match, nodeValue, result));
                 }
                 catch (Exception ex)
                 {
-                    log.Error(ex.Message, ex);
+                    Log.Error(ex,"Exception");
                 }
             }
 
@@ -193,9 +191,6 @@ namespace logicpos
 
         private static string GetEvaluationResult(string expression, bool debug)
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             string result = expression;
 
             try
@@ -212,7 +207,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                log.Error(ex.Message, ex);
+                Log.Error(ex, "Exception");
             }
 
             return result;

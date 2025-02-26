@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 
 namespace LogicPOS.UI
@@ -14,9 +15,8 @@ namespace LogicPOS.UI
         static DependencyInjection()
         {
             var services = new ServiceCollection();
-
+            services.AddSerilog(Log.Logger);
             services.AddApi();
-
             Services = services.BuildServiceProvider();
         }
     }

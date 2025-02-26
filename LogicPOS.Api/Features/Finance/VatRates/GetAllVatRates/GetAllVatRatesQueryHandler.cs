@@ -20,16 +20,7 @@ namespace LogicPOS.Api.Features.VatRates.GetAllVatRate
         public override async Task<ErrorOr<IEnumerable<VatRate>>> Handle(GetAllVatRatesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<VatRate>>("vatrates",
-                                                                                cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<VatRate>("vatrates", cancellationToken);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Tables.GetAllTables
         {
             var endpoint = "tables" + (query.Status.HasValue ? $"?status={(int)query.Status}" : string.Empty);
 
-            return await HandleGetAllQueryAsync<Table>(endpoint, cancellationToken);
+            return await HandleGetEntitiesQueryAsync<Table>(endpoint, cancellationToken);
         }
     }
 }

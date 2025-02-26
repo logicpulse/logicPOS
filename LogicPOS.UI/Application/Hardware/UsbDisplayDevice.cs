@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Globalization;
 using System.Text;
@@ -12,9 +13,6 @@ namespace logicpos.Classes.Logic.Hardware
 {
     public class UsbDisplayDevice
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private const bool _debug = false;
         private UsbDevice _usbDevice;
         private readonly UsbEndpointWriter _usbWriter;
@@ -74,18 +72,18 @@ namespace logicpos.Classes.Logic.Hardware
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error("Error opening Port: " + COM + ": " + ex.Message);
+                        Log.Error(ex,"Error opening Port: " + COM);
                     }
 
 
                     //message = string.Format("UsbDisplayDevice: Device Not Found VID:{0} PID:{1}", pVid, pPid);
-                    //_logger.Error(message);
+                    //Log.Error(message);
                     //throw new Exception("UsbDisplayDevice(int pVid, int pPid, WriteEndpointID pWriteEndpointID) :: " + message);
                 }
                 else
                 {
                     message = string.Format("UsbDisplayDevice: Device Found VID:{0} PID:{1}", pVid, pPid);
-                    _logger.Debug(message);
+                    Log.Debug(message);
                 }
 
                 // If this is a "whole" usb device (libusb-win32, linux libusb)
@@ -126,7 +124,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _logger.Error((_usbErrorCode != ErrorCode.None ? _usbErrorCode + ":" : string.Empty) + ex.Message);
+                Log.Error((_usbErrorCode != ErrorCode.None ? _usbErrorCode + ":" : string.Empty) + ex.Message);
             }
         }
 
@@ -138,10 +136,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                //Utils.ShowMessageTouch(GlobalApp.WindowStartup, DialogFlags.Modal, new Size(500, 340), MessageType.Error, ButtonsType.Ok, CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_error"),
-                //    string.Format(CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "dialog_message_error_initializing_weighing_balance"), TerminalService.Terminal.WeighingMachine.Designation, ex.Message)
-                //    );
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
                 return false;
             }
         }
@@ -193,7 +188,7 @@ namespace logicpos.Classes.Logic.Hardware
                     {
                         Close();
                         // Write that output to the console.
-                        _logger.Error((string.IsNullOrEmpty(UsbDevice.LastErrorString)) ? _usbErrorCode.ToString() : UsbDevice.LastErrorString);
+                        Log.Error((string.IsNullOrEmpty(UsbDevice.LastErrorString)) ? _usbErrorCode.ToString() : UsbDevice.LastErrorString);
                         //throw new Exception(UsbDevice.LastErrorString);
                     }
                 }
@@ -204,7 +199,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
         }
 
@@ -304,7 +299,7 @@ namespace logicpos.Classes.Logic.Hardware
         {
             _writeAfterSecondsRemain = _writeAfterSecondsRemain - 1000;
             bool result;
-            //_logger.Debug(string.Format("_writeAfterSecondsRemain: [{0}]", _writeAfterSecondsRemain));
+            //Log.Debug(string.Format("_writeAfterSecondsRemain: [{0}]", _writeAfterSecondsRemain));
 
             if (_writeAfterSecondsRemain <= 0)
             {
@@ -518,9 +513,6 @@ namespace logicpos.Classes.Logic.Hardware
         /// <returns></returns>
         public static UsbDisplayDevice InitDisplay()
         {
-            //Log4Net
-            log4net.ILog log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
             UsbDisplayDevice result = null;
 
             try
@@ -539,7 +531,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                log.Error("UsbDisplayDevice InitDisplay() :: " + ex.Message, ex);
+                Log.Error(ex, "Exception");
             }
 
             return result;
@@ -563,7 +555,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex, "Exception");
             }
         }
 

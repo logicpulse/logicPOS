@@ -7,9 +7,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class CheckButtonBox : EventBox
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Protected
         protected Pango.FontDescription _fontDescription;
         protected CheckButton _checkButton;

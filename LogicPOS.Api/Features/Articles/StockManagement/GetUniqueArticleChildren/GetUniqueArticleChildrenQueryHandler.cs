@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetUniqueArticleChildre
         public async override Task<ErrorOr<IEnumerable<WarehouseArticle>>> Handle(GetUniqueArticleChildrenQuery query,
                                                                             CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<WarehouseArticle>($"articles/uniques/{query.Id}/children", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<WarehouseArticle>($"articles/uniques/{query.Id}/children", cancellationToken);
         }
     }
 }

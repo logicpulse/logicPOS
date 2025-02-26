@@ -22,16 +22,7 @@ namespace LogicPOS.Api.Features.Currencies.GetAllCurrencies
         public override async Task<ErrorOr<IEnumerable<Currency>>> Handle(GetAllCurrenciesQuery request,
                                                                     CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<Currency>>("currencies",
-                                                                              cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<Currency>("currencies",cancellationToken);
         }
     }
 }

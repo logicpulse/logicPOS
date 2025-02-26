@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes
         public override async Task<ErrorOr<IEnumerable<PriceType>>> Handle(GetAllPriceTypesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<PriceType>("articles/pricetypes", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<PriceType>("articles/pricetypes", cancellationToken);
         }
     }
 }

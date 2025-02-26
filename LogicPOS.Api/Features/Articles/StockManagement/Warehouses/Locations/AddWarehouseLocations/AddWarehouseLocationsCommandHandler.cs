@@ -18,15 +18,7 @@ namespace LogicPOS.Api.Features.Warehouses.Locations.AddWarehouseLocations
 
         public override async Task<ErrorOr<Unit>> Handle(AddWarehouseLocationsCommand command, CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync($"articles/stocks/warehouses/{command.Id}/locations", command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandlePostCommandAsync($"articles/stocks/warehouses/{command.Id}/locations", command, cancellationToken);
         }
     }
 }

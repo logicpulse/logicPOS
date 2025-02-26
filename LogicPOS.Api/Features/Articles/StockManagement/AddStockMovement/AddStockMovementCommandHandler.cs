@@ -19,15 +19,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
         public override async Task<ErrorOr<Unit>> Handle(AddStockMovementCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync("articles/stocks/movements", command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandlePostCommandAsync("articles/stocks/movements", command, cancellationToken);
         }
     }
 }

@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +18,6 @@ namespace LogicPOS.UI.Application
 {
     internal class LogicPOSAppUtils
     {
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         private bool _quitAfterBootStrap = false;
         private bool _autoBackupFlowIsEnabled = false;
         private TimeSpan _backupDatabaseTimeSpan = new TimeSpan();
@@ -120,7 +120,7 @@ namespace LogicPOS.UI.Application
 
                 if (TerminalService.Terminal.WeighingMachine.PortName == TerminalService.Terminal.PoleDisplay.COMPort)
                 {
-                    _logger.Debug(string.Format("Port " + TerminalService.Terminal.WeighingMachine.PortName + "Already taken by pole display"));
+                    Log.Debug(string.Format("Port " + TerminalService.Terminal.WeighingMachine.PortName + "Already taken by pole display"));
                 }
                 else
                 {
@@ -138,7 +138,7 @@ namespace LogicPOS.UI.Application
             {
                 LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
 
-                _logger.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
+                Log.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
 
                 var messageDialog = new CustomAlert(LoginWindow.Instance)
                         .WithMessageResource("dialog_message_error_plugin_softwarevendor_not_registered")
@@ -217,13 +217,13 @@ namespace LogicPOS.UI.Application
             }
             catch (Exception ex)
             {
-                _logger.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: " + ex.Message, ex);
+                Log.Error("void StartBackupTimer() :: _autoBackupFlowIsActive: [" + _autoBackupFlowIsEnabled + "] :: " + ex.Message, ex);
             }
         }
 
         private bool UpdateBackupTimer()
         {
-            _logger.Debug("bool UpdateBackupTimer()");
+            Log.Debug("bool UpdateBackupTimer()");
             bool debug = false;
 
             //DateTime currentDateTime = XPOUtility.CurrentDateTimeAtomic();
@@ -238,12 +238,12 @@ namespace LogicPOS.UI.Application
             //    }
             //    else
             //    {
-            //        if (debug) _logger.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
+            //        if (debug) Log.Debug(string.Format("Inside of TimeRange: currentDateTime:[{0}], backupLastDateTime:[{1}], timeSpanDiference:[{2}], backupDatabaseTimeSpan:[{3}] ", currentDateTime, currentDateTimeLastBackup, timeSpanDiference, _backupDatabaseTimeSpan));
             //    }
             //}
             //else
             //{
-            //    if (debug) _logger.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
+            //    if (debug) Log.Debug(string.Format("Outside of TimeRange: [{0}] > [{1}] && [{2}] < [{3}]", currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeStart, currentDateTime.TimeOfDay, _databaseBackupTimeSpanRangeEnd));
             //}
 
             return true;

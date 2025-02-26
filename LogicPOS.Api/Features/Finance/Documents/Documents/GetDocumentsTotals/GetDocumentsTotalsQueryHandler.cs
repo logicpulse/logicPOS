@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentsTotals
                                                                                 CancellationToken cancellationToken = default)
         {
             var queryUrl = query.GetUrlQuery();
-            return await HandleGetAllQueryAsync<DocumentTotals>($"documents/totals{queryUrl}", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<DocumentTotals>($"documents/totals{queryUrl}", cancellationToken);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories
         public override async Task<ErrorOr<IEnumerable<ArticleHistory>>> Handle(GetArticlesHistoriesQuery query,
                                                                           CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<ArticleHistory>("articles/stocks/histories", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<ArticleHistory>("articles/stocks/histories", cancellationToken);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Orders.GetAllOrders
                                                                        CancellationToken cancellationToken = default)
         {
             var endpoint = "orders" + (query.TableId.HasValue ? $"?tableId={query.TableId}" : "");
-            return await HandleGetAllQueryAsync<Order>(endpoint, cancellationToken);
+            return await HandleGetEntitiesQueryAsync<Order>(endpoint, cancellationToken);
         }
     }
 }

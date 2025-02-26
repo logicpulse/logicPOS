@@ -13,9 +13,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     public abstract class EntryBoxBase : EventBox
     {
-        //Log4Net
-        protected static log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Protected
         protected Window _sourceWindow;
         protected Label _label;

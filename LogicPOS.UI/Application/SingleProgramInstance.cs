@@ -1,3 +1,4 @@
+using Serilog;
 using System;
 using System.Reflection;
 using System.Threading;
@@ -6,7 +7,6 @@ namespace logicpos
 {
     public class SingleProgramInstance : IDisposable
     {
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         private static readonly string _appGuid = "bfb677c2-a44a-46f8-93ab-d2d6a54e0b53";
         private readonly Mutex _mutex;
         private bool _owned = false;
@@ -46,7 +46,7 @@ namespace logicpos
             }
             catch (Exception exception)
             {
-                _logger.Error("SingleProgramInstance release:  ", exception);
+                Log.Error("SingleProgramInstance release:  ", exception);
             }
         }
 

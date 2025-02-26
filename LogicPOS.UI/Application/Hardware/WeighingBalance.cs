@@ -3,6 +3,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -14,9 +15,6 @@ namespace logicpos.Classes.Logic.Hardware
 {
     public class WeighingBalance
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private readonly SerialPortService _communicationManager;
 
         public WeighingBalance(WeighingMachine weighingMachine)
@@ -49,7 +47,7 @@ namespace logicpos.Classes.Logic.Hardware
                             .WithMessage(message)
                             .ShowAlert();
 
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
                 return false;
             }
         }
@@ -74,7 +72,7 @@ namespace logicpos.Classes.Logic.Hardware
         /// </summary>
         public void WeighArticle(decimal articlePricePerKg)
         {
-            //_logger.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
+            //Log.Debug(string.Format("WeighArticle articlePricePerKg: [{0}]", articlePricePerKg));
             // Round Price to 0.00, to force ex 5,00, else we have 5 and it acts has 0,50
             string priceString = articlePricePerKg.ToString("0.00").ToString().Replace(",", string.Empty).Replace(".", string.Empty);
             // Format it

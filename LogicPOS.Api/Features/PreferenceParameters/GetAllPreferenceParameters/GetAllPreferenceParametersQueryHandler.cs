@@ -19,16 +19,7 @@ namespace LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters
         public override async Task<ErrorOr<IEnumerable<PreferenceParameter>>> Handle(GetAllPreferenceParametersQuery query,
                                                                                CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<PreferenceParameter>>("preferenceparameters",
-                                                                                  cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<PreferenceParameter>("preferenceparameters", cancellationToken);
         }
     }
 }

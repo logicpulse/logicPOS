@@ -2,6 +2,7 @@
 using logicpos.Classes.Enums.Hardware;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 
@@ -9,9 +10,6 @@ namespace logicpos.Classes.Logic.Hardware
 {
     public class InputReader
     {
-        //Log4Net
-        private static readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         private readonly uint _timerInterval;
         private bool _timerEnabled = false;
         private static List<int> _barCodeReaderList;
@@ -67,7 +65,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                _logger.Error(ex.Message, ex);
+                Log.Error(ex,"Exception");
             }
 
             return result;

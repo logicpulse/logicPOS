@@ -1,8 +1,6 @@
 ﻿using Gtk;
 using logicpos;
-using logicpos.Classes.Enums.App;
 using LogicPOS.Settings;
-using LogicPOS.UI;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;

@@ -2,7 +2,7 @@
 
 namespace LogicPOS.Api.Features.Common
 {
-    public class AddEntityResponse
+    public struct AddEntityResponse
     {
         public Guid Id { get; set; }
     }

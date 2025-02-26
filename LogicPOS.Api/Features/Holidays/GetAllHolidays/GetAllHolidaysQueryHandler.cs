@@ -20,16 +20,7 @@ namespace LogicPOS.Api.Features.Holidays.GetAllHolidays
         public override async Task<ErrorOr<IEnumerable<Holiday>>> Handle(GetAllHolidaysQuery request,
                                                                               CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var holidays = await _httpClient.GetFromJsonAsync<List<Holiday>>("/holidays", cancellationToken);
-
-                return holidays;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<Holiday>("holidays", cancellationToken);
         }
     }
 }

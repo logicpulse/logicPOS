@@ -9,14 +9,12 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Configuration;
 using System.Globalization;
 using System.Threading;
 
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
 
 namespace LogicPOS.UI
 {
@@ -56,6 +54,8 @@ namespace LogicPOS.UI
         [STAThread]
         public static void Main(string[] args)
         {
+            ConfigureLogging();
+
             using (var singleProgramInstance = new SingleProgramInstance())
             {
                 PathsSettings.InitializePaths();
@@ -89,6 +89,8 @@ namespace LogicPOS.UI
 
                 StartApp();
             }
+
+            Log.CloseAndFlush();
         }
 
         private static void InitializePlugins()
@@ -189,6 +191,15 @@ namespace LogicPOS.UI
             return true;
         }
 
+        public static void ConfigureLogging()
+        {
+            Log.Logger = new LoggerConfiguration()
+                              .Enrich.FromLogContext()
+                              .WriteTo.File("logs/log.txt",
+                                            rollingInterval: RollingInterval.Year,
+                                            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}")
+                              .CreateLogger();
+        }
 
 #if (DEBUG)
         public static readonly bool DebugMode = true;

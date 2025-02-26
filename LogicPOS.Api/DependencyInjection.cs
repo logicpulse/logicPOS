@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using LogicPOS.Api.Features.Common;
+using MediatR;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -23,7 +25,10 @@ namespace LogicPOS.Api
             services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssemblyContaining<ApiAssemblyReference>();
+               
             });
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestLoggingPipelineBehavior<,>));
 
             return services;
         }

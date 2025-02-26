@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Printers.GetAllPrinters
 
         public override async Task<ErrorOr<IEnumerable<Printer>>> Handle(GetAllPrintersQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<Printer>("printers", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<Printer>("printers", cancellationToken);
         }
     }
 }

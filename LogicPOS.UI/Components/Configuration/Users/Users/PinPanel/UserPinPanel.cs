@@ -14,6 +14,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using MediatR;
@@ -311,9 +312,9 @@ namespace LogicPOS.UI.Components
 
             if (loginResult.IsError)
             {
-                if (loginResult.FirstError == ApiErrors.CommunicationError)
+                if (loginResult.FirstError == ApiErrors.APICommunication)
                 {
-                    CustomAlerts.ShowApiErrorAlert(SourceWindow, loginResult.FirstError);
+                    ErrorHandlingService.HandleApiError(loginResult, source: SourceWindow);
                     return false;
                 }
 

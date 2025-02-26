@@ -121,7 +121,7 @@ namespace LogicPOS.Utility
         private void DisplayData(MessageType type, string msg)
         {
             string outMsg = msg.Replace("\n", string.Empty);
-            //_logger.Debug($"MessageType: [{type}], outMsg: [{outMsg}]");
+            //Log.Debug($"MessageType: [{type}], outMsg: [{outMsg}]");
 
             //    _displayWindow.Invoke(new EventHandler(delegate
             //{
@@ -134,7 +134,7 @@ namespace LogicPOS.Utility
             {
                 //_displayWindow.AppendText(CalculateFromHex(msg));
                 List<int> result = CalculateFromHex(msg);
-                //_logger.Debug($"Weight: [{result[0]}], Total: [{result[1]}]");
+                //Log.Debug($"Weight: [{result[0]}], Total: [{result[1]}]");
             }
             //    _displayWindow.ScrollToCaret();
             //}));

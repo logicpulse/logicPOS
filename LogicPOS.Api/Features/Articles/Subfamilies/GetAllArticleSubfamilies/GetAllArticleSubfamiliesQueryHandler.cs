@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies
         public override async Task<ErrorOr<IEnumerable<ArticleSubfamily>>> Handle(GetAllArticleSubfamiliesQuery request,
                                                                             CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<ArticleSubfamily>("articles/subfamilies", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<ArticleSubfamily>("articles/subfamilies", cancellationToken);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticleChildren
 
         public override async Task<ErrorOr<IEnumerable<ArticleChild>>> Handle(GetArticleChildrenQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<ArticleChild>($"articles/{query.Id}/children", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<ArticleChild>($"articles/{query.Id}/children", cancellationToken);
         }
     }
 }

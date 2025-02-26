@@ -20,16 +20,7 @@ namespace LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods
         public override async Task<ErrorOr<IEnumerable<PaymentMethod>>> Handle(GetAllPaymentMethodsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<PaymentMethod>>("payment/methods",
-                                                                                cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.CommunicationError;
-            }
+            return await HandleGetEntitiesQueryAsync<PaymentMethod>("payment/methods", cancellationToken);
         }
     }
 }

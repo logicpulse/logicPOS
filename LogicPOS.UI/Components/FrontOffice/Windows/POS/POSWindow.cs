@@ -542,7 +542,7 @@ namespace LogicPOS.UI.Components.Windows
             if (eventboxToolbarVisibleWindow) eventboxToolbar.ModifyBg(StateType.Normal, eventboxToolbarBackgroundColor);
             if (eventboxToolbarVisible) FixedWindow.Put(eventboxToolbar, eventboxToolbarPosition.X, eventboxToolbarPosition.Y);
 
-            //_logger.Debug("Local Func to Get Shared Buttons");
+            //Log.Debug("Local Func to Get Shared Buttons");
             //Local Func to Get Shared Buttons
             Func<string, string, string, IconButtonWithText> getButton = (pName, pText, pImageFileName)
                 => new IconButtonWithText(

@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Settings;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,9 +11,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
     public class VirtualKeyBoard
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Public Properties
         private List<List<VirtualKey>> _internalKeyBoard = new List<List<VirtualKey>>();
         public List<List<VirtualKey>> KeyBoard
@@ -105,7 +103,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             }
             catch (Exception ex)
             {
-                _logger.Error(string.Format("AddKey(): {0}", ex.Message), ex);
+                Log.Error(string.Format("AddKey(): {0}", ex.Message), ex);
             }
 
             return (result);

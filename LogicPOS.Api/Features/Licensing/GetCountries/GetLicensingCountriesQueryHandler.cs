@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Licensing.GetCountries
         public override async Task<ErrorOr<IEnumerable<string>>> Handle(GetLicensingCountriesQuery query,
                                                                   CancellationToken cancellationToken = default)
         {
-            return await HandleGetAllQueryAsync<string>("licensing/countries", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<string>("licensing/countries", cancellationToken);
         }
     }
 }

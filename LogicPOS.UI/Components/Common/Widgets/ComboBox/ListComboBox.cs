@@ -6,9 +6,6 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 {
     internal class ListComboBox : ComboBox
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Private Members
         private ListStore _comboBoxListStore;
         private Dictionary<int, TreeIter> _treeInterDictionary;
@@ -105,7 +102,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             {
                 Value = (string)combo.Model.GetValue(iter, 1);
             };
-            //_logger.Debug(string.Format("_value: [{0}]", _value));
+            //Log.Debug(string.Format("_value: [{0}]", _value));
         }
     }
 }

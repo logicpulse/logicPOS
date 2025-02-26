@@ -6,9 +6,6 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public class MultilineTextBox : EventBox
     {
-        //Log4Net
-        private readonly log4net.ILog _logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-
         //Parameters
         protected Window _sourceWindow;
         //Public Properties

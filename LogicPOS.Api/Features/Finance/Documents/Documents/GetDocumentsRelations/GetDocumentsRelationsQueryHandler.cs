@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentsRelations
                                                                             CancellationToken cancellationToken = default)
         {
             var httpQuery = string.Join("&", query.DocumentIds.Select(id => $"documentIds={id}"));
-            return await HandleGetAllQueryAsync<DocumentRelation>($"documents/relations?{httpQuery}", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<DocumentRelation>($"documents/relations?{httpQuery}", cancellationToken);
         }
     }
 }
