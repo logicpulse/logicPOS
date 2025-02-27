@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="apiSettings.json">
+    <None Update="apisettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

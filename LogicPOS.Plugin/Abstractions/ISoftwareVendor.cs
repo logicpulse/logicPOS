@@ -84,12 +84,7 @@ namespace LogicPOS.Plugin.Abstractions
 
         string SignDataToSHA1Base64(string secretKey, string encryptData, bool debug = false);
 
-        bool BackupDatabase(string secretKey, string[] files, string fileDestination);
-
-        bool RestoreBackup(string secretKey, string fileName, string destinationPath, bool flattenFoldersOnExtract = false);
-
-        void ValidateEmbeddedResources();
-
+   
         string Encrypt(string toEncrypt);
         string Decrypt(string cipherString);
 

@@ -195,7 +195,7 @@ namespace LogicPOS.UI
         {
             Log.Logger = new LoggerConfiguration()
                               .Enrich.FromLogContext()
-                              .WriteTo.File("logs/log.txt",
+                              .WriteTo.File("Logs/log.txt",
                                             rollingInterval: RollingInterval.Year,
                                             outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}")
                               .CreateLogger();
