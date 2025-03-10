@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
         #endregion
 
         private ModalTabsNavigator Navigator { get; set; }
-        public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Gudardar como Rascunho") { };
+        public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
 
         private void InitializeNavigator()
         {
