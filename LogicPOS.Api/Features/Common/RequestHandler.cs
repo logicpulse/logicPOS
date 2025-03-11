@@ -186,6 +186,8 @@ namespace LogicPOS.Api.Features.Common
                     return true;
                 case HttpStatusCode.BadRequest:
                     return false;
+                case HttpStatusCode.NotFound:
+                    return false;
                 default:
                     return ApiErrors.UnknownAPIResponse;
             }
