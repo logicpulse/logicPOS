@@ -5,7 +5,7 @@ namespace LogicPOS.Api.Entities
 {
     public class VatRate : ApiEntity, IWithDesignation, IWithCode
     {
-        public uint Order {  get; set; }
+        public uint Order { get; set; }
         public string Code { get; set; }
         public string Designation { get; set; }
         public decimal Value { get; set; }
