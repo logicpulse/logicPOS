@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons
         public override async Task<ErrorOr<IEnumerable<VatExemptionReason>>> Handle(GetAllVatExemptionReasonsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<VatExemptionReason>("VatExemptionReasons", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<VatExemptionReason>("vat-exemption-reasons", cancellationToken);
         }
     }
 }

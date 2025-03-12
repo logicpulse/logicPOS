@@ -69,8 +69,8 @@ namespace LogicPOS.UI.Components.Modals
 
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
         private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
-        private IEnumerable<DiscountGroup> GetDiscountGroups()=> ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());
-        private IEnumerable<VatRate> GetVatRates()=>ExecuteGetEntitiesQuery(new GetAllVatRatesQuery());
+        private IEnumerable<DiscountGroup> GetDiscountGroups() => ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());
+        private IEnumerable<VatRate> GetVatRates() => ExecuteGetEntitiesQuery(new GetAllVatRatesQuery());
 
         private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
     }

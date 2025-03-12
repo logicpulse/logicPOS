@@ -1,10 +1,8 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +18,7 @@ namespace LogicPOS.Api.Features.VatRates.GetAllVatRate
         public override async Task<ErrorOr<IEnumerable<VatRate>>> Handle(GetAllVatRatesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<VatRate>("vatrates", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<VatRate>("vat-rates", cancellationToken);
         }
     }
 }
