@@ -26,7 +26,7 @@ namespace LogicPOS.Api.Entities
         public string Type { get; set; }
         public string Number { get; set; }
         public string Status { get; set; }
-        public string Date { get; set; }
+        public string Date => CreatedAt.ToShortDateString();
         public ShipAddress ShipToAdress { get; set; }
         public ShipAddress ShipFromAdress { get; set; }
         public decimal TotalNet { get; set; }
