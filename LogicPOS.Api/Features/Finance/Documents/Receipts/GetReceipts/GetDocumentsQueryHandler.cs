@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Receipts.GetReceipts
         public async override Task<ErrorOr<PaginatedResult<Receipt>>> Handle(GetReceiptsQuery query, CancellationToken cancellationToken = default)
         {
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<Receipt>>($"receipts/paginated{urlQuery}", cancellationToken);
+            return await HandleGetEntityQueryAsync<PaginatedResult<Receipt>>($"receipts{urlQuery}", cancellationToken);
         }
     }
 }
