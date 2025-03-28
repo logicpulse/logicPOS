@@ -131,6 +131,17 @@ namespace LogicPOS.UI.Components.Pages
             var title = LocalizedString.Instance["global_ConfigurationDevice_PlaceTerminal"];
             return Columns.CreateColumn(title, 11, RenderLocation);
         }
+
+        private TreeViewColumn CreateUpdatedAtColumn()
+        {
+            void RenderUpdatedAt(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var history = (ArticleHistory)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = history.WarehouseArticle.UpdatedAt.ToLocalTime().ToString();
+            }
+            var title = LocalizedString.Instance["global_record_date_updated"];
+            return Columns.CreateColumn(title, 12, RenderUpdatedAt);
+        }
         #endregion
 
         #region Sorting

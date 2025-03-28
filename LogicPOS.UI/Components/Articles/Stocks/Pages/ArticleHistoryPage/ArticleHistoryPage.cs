@@ -1,14 +1,10 @@
 ﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.GetAllWarehouseArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerOutMovement;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
 using System;
@@ -122,7 +118,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateSaleDocumentColumn());
             GridView.AppendColumn(CreateWarehouseColumn());
             GridView.AppendColumn(CreateLocationColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(12));
+            GridView.AppendColumn(CreateUpdatedAtColumn());
         }
 
         protected override DeleteCommand GetDeleteCommand() => null;

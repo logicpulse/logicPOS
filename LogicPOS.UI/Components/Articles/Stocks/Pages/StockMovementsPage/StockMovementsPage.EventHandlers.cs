@@ -42,7 +42,10 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
         }
-
+        private void BtnFilter_Clicked(object sender, EventArgs e)
+        {
+            RunFilter();
+        }
         private void BtnMore_Clicked(object sender, EventArgs e)
         {
             if(CurrentQuery.Page >= Movements.TotalPages)

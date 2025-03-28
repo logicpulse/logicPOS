@@ -6,12 +6,15 @@ using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles.Stocks.Movements;
+using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using LogicPOS.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -21,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
         public GetStockMovementsQuery CurrentQuery { get; private set; } = GetDefaultQuery();
         public PaginatedResult<StockMovement> Movements { get; private set; }
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
-
+        public event EventHandler PageChanged;
         public StockMovementsPage(Window parent) : base(parent)
         {
             RemoveForbiddenButtons();
@@ -35,6 +38,7 @@ namespace LogicPOS.UI.Components.Pages
         private void AddEventHandlers()
         {
             Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
         }
 
         private void AddOpenDocumentButton()
@@ -64,7 +68,9 @@ namespace LogicPOS.UI.Components.Pages
             Movements = getMovements.Value;
 
             _entities.Clear();
-            _entities.AddRange(Movements.Items);
+            if (Movements.Items!=null) {
+                _entities.AddRange(Movements.Items); 
+            }
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -96,6 +102,23 @@ namespace LogicPOS.UI.Components.Pages
             var response = modal.Run();
             modal.Destroy();
             return response;
+        }
+
+        public void RunFilter()
+        {
+            var filterModal = new StockMovementsFilterModal(SourceWindow);
+            var response = (ResponseType)filterModal.Run();
+            var query = filterModal.GetStockMovementsQuery();
+            filterModal.Destroy();
+
+            if (response != ResponseType.Ok)
+            {
+                return;
+            }
+
+            CurrentQuery = query;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void AddColumns()
