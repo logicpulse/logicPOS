@@ -2,7 +2,6 @@
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
-using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Articles.GetArticleChildren;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
@@ -13,9 +12,11 @@ using LogicPOS.Api.Features.Articles.UpdateArticleChildren;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
+using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +73,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private UpdateArticleCommand CreateUpdateCommand()
         {
+            VerifyAssociation();
             return new UpdateArticleCommand
             {
                 Id = _entity.Id,
@@ -109,6 +111,18 @@ namespace LogicPOS.UI.Components.Modals
                 NewNotes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
+        }
+
+        private void VerifyAssociation()
+        {
+            if (_comboPrinters.SelectedEntity != null)
+            {
+                PrinterAssociationService.CreatePrinterAssociation(_comboPrinters.SelectedEntity.Id, _entity.Id);
+            }
+            else
+            {
+                PrinterAssociationService.RemovePrinterAssociation(_entity.Id);
+            }
         }
 
         protected override void AddEntity()
@@ -226,6 +240,7 @@ namespace LogicPOS.UI.Components.Modals
         private IEnumerable<ArticleClass> GetClasses() => ExecuteGetEntitiesQuery(new GetAllArticleClassesQuery());
         private IEnumerable<MeasurementUnit> GetMeasurementUnits() => ExecuteGetEntitiesQuery(new GetAllMeasurementUnitsQuery());
         private IEnumerable<SizeUnit> GetSizeUnits() => ExecuteGetEntitiesQuery(new GetAllSizeUnitsQuery());
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
         private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => ExecuteGetEntitiesQuery(new GetAllVatExemptionReasonsQuery());
     }
 }

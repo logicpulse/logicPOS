@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
+using Printer = LogicPOS.Api.Entities.Printer;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -26,6 +27,8 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;
         private EntityComboBox<VatRate> _comboVatDirectSelling;
         private EntityComboBox<MeasurementUnit> _comboMeasurementUnits;
+
+        private EntityComboBox<Printer> _comboPrinters;
         private EntityComboBox<SizeUnit> _comboSizeUnits;
         private EntityComboBox<VatExemptionReason> _comboVatExemptionReasons;
         private CheckButton _checkIsComposed = new CheckButton(GeneralUtils.GetResourceByName("global_composite_article"));
@@ -129,6 +132,7 @@ namespace LogicPOS.UI.Components.Modals
             otherDetailsTab.PackStart(_comboSizeUnits.Component, false, false, 0);
             otherDetailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
             otherDetailsTab.PackStart(_comboDiscountGroups.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboPrinters.Component, false, false, 0);
 
             return otherDetailsTab;
         }

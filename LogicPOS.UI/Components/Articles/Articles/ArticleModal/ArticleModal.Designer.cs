@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
 using System.Drawing;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeSizeUnitsComboBox();
             InitializeArticleClassesComboBox();
             InitializeArticleTypesComboBox();
+            InitializePrinterComboBox();
 
             _checkUniqueArticles.Sensitive = false;
 
@@ -176,6 +178,18 @@ namespace LogicPOS.UI.Components.Modals
                                                              units,
                                                              currentUnit,
                                                              true);
+        }
+
+        private void InitializePrinterComboBox()
+        {
+            var printers = GetPrinters();
+            var labelText = GeneralUtils.GetResourceByName("global_printers");
+            var currentPrinter = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
+
+            _comboPrinters = new EntityComboBox<Printer>(labelText,
+                                                         printers,
+                                                         currentPrinter,
+                                                         false);
         }
 
         private Api.ValueObjects.Button GetButton()
