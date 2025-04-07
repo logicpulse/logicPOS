@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -25,6 +26,7 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;
         private EntityComboBox<VatRate> _comboVatOnTable;
         private EntityComboBox<VatRate> _comboVatDirectSelling;
+        private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         #endregion
 
         protected override void BeforeDesign()
@@ -34,6 +36,20 @@ namespace LogicPOS.UI.Components.Modals
             InitializeDiscountGroupsComboBox();
             InitializeVatOnTableComboBox();
             InitializeVatDirectSellingComboBox();
+            InitializePrintersComboBox();
+
+        }
+
+        private void InitializePrintersComboBox()
+        {
+            var printers = GetPrinters();
+            var labelText = GeneralUtils.GetResourceByName("global_printers");
+            var currentPrinter = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
+
+            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
+                                                         printers,
+                                                         currentPrinter,
+                                                         false);
         }
 
         private void InitializeCommissionGroupsComboBox()
@@ -172,6 +188,7 @@ namespace LogicPOS.UI.Components.Modals
             details2Tab.PackStart(_comboDiscountGroups.Component, false, false, 0);
             details2Tab.PackStart(_comboVatOnTable.Component, false, false, 0);
             details2Tab.PackStart(_comboVatDirectSelling.Component, false, false, 0);
+            details2Tab.PackStart(_comboPrinters.Component, false, false, 0);
 
             return details2Tab;
         }

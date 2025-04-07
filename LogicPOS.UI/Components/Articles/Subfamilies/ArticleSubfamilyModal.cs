@@ -6,9 +6,9 @@ using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -35,6 +35,14 @@ namespace LogicPOS.UI.Components.Modals
 
         private UpdateArticleSubfamilyCommand CreateUpdateCommand()
         {
+            if (_comboPrinters.SelectedEntity != null)
+            {
+                PrinterAssociationService.CreateOrRemoveAssociation(_entity.Id, _comboPrinters.SelectedEntity.Id);
+            }
+            else
+            {
+                PrinterAssociationService.CreateOrRemoveAssociation(_entity.Id);
+            }
             return new UpdateArticleSubfamilyCommand
             {
                 Id = _entity.Id,

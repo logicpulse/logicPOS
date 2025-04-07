@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +11,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleFamilyModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 550);
         public override string ModalTitleResourceName => "global_article_class";
 
         #region Components
@@ -21,11 +22,13 @@ namespace LogicPOS.UI.Components.Modals
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
+        private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         #endregion
 
         protected override void BeforeDesign()
         {
             InitializeCommissionGroupsComboBox();
+            InitializePrintersComboBox();
         }
 
         private Api.ValueObjects.Button GetButton()
@@ -47,6 +50,18 @@ namespace LogicPOS.UI.Components.Modals
             _comboCommissionGroups = new EntityComboBox<CommissionGroup>(labelText,
                                                              groups,
                                                              currentCommissionGroup);
+        }
+
+        private void InitializePrintersComboBox()
+        {
+            var printers = GetPrinters();
+            var labelText = GeneralUtils.GetResourceByName("global_printers");
+            var currentPrinter = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
+
+            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
+                                                         printers,
+                                                         currentPrinter,
+                                                         false);
         }
 
         protected override void AddSensitiveFields()
@@ -96,6 +111,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtButtonName.Component, false, false, 0);
             detailsTab.PackStart(_imagePicker.Component, false, false, 0);
             detailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
+            detailsTab.PackStart(_comboPrinters.Component, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {

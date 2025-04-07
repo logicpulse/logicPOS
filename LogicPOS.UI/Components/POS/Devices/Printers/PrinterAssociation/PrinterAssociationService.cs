@@ -7,7 +7,6 @@ using LogicPOS.UI.Components.Windows;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 {
@@ -15,29 +14,40 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
     {
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
 
-        public static void CreatePrinterAssociation(Guid printerId, Guid entityId)
+        public static void CreateOrRemoveAssociation(Guid entityId, Guid? printerId=null)
         {
-            var createAssociationResult =  _mediator.Send(new AddPrinterAssociationCommand(printerId, entityId)).Result;
+            if (printerId.HasValue)
+            {
+                PrinterAssociationService.CreatePrinterAssociation((Guid)printerId, entityId);
+            }
+            else
+            {
+                PrinterAssociationService.RemovePrinterAssociation(entityId);
+            }
+        }
+        private static void CreatePrinterAssociation(Guid printerId, Guid entityId)
+        {
+            var createAssociationResult = _mediator.Send(new AddPrinterAssociationCommand(printerId, entityId)).Result;
             if (createAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
-                            .WithMessage("Não foi possível associar a impressora. Tente novamente.")
+                            .WithMessage(createAssociationResult.FirstError.Description)
                             .ShowAlert();
-                            return;
+                return;
             }
         }
 
-        public static  void RemovePrinterAssociation(Guid entityId)
+        private static void RemovePrinterAssociation(Guid entityId)
         {
             var removeAssociationResult = _mediator.Send(new RemoveEntityAssociatedPrinterCommand(entityId)).Result;
             if (removeAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
-                            .WithMessage("Não foi possível desassociar a impressora. Tente novamente.")
+                            .WithMessage(removeAssociationResult.FirstError.Description)
                             .ShowAlert();
                 return;
             }
-           
+
         }
 
         public static Printer GetEntityAssociatedPrinterById(Guid entityId)

@@ -73,7 +73,11 @@ namespace LogicPOS.UI.Components.Modals
 
         private UpdateArticleCommand CreateUpdateCommand()
         {
-            VerifyAssociation();
+          if (_comboPrinters.SelectedEntity != null)
+            {
+                PrinterAssociationService.CreateOrRemoveAssociation(_comboPrinters.SelectedEntity.Id, _entity.Id);
+            }
+
             return new UpdateArticleCommand
             {
                 Id = _entity.Id,
@@ -111,18 +115,6 @@ namespace LogicPOS.UI.Components.Modals
                 NewNotes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
-        }
-
-        private void VerifyAssociation()
-        {
-            if (_comboPrinters.SelectedEntity != null)
-            {
-                PrinterAssociationService.CreatePrinterAssociation(_comboPrinters.SelectedEntity.Id, _entity.Id);
-            }
-            else
-            {
-                PrinterAssociationService.RemovePrinterAssociation(_entity.Id);
-            }
         }
 
         protected override void AddEntity()
