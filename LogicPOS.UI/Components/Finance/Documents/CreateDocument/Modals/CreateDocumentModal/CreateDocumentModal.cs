@@ -3,17 +3,12 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.CreateDocument;
-using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
