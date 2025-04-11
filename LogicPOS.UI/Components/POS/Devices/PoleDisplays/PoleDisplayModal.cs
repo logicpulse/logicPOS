@@ -4,7 +4,7 @@ using LogicPOS.Api.Features.PoleDisplays.AddPoleDisplay;
 using LogicPOS.Api.Features.PoleDisplays.UpdatePoleDisplay;
 using LogicPOS.UI.Components.Modals;
 
-namespace LogicPOS.UI.Components.PoleDisplays
+namespace LogicPOS.UI.Components.Modals
 {
     public partial class PoleDisplayModal : EntityEditionModal<PoleDisplay>
     {

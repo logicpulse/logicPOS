@@ -1,21 +1,11 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
-using LogicPOS.Globalization;
-using LogicPOS.Printing.Services;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.InputFields;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals

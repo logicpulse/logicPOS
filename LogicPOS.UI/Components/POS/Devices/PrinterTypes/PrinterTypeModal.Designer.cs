@@ -12,16 +12,6 @@ namespace LogicPOS.UI.Components.Modals
 
         public override Size ModalSize => new Size(500, 400);
         public override string ModalTitleResourceName => "global_printer_type";
-
-        #region Components
-        private TextBox _txtOrder = TextBox.CreateOrderField();
-        private TextBox _txtCode = TextBox.CreateCodeField();
-        private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private TextBox _txtToken = TextBox.Simple("global_DialogConfigurationPrintersTypetoken", true);
-        private CheckButton _checkThermalPrinter = new CheckButton(GeneralUtils.GetResourceByName("global_printer_thermal_printer"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        #endregion
-
         protected override void AddSensitiveFields()
         {
             SensitiveFields.Add(_txtOrder.Entry);

@@ -52,11 +52,7 @@ namespace LogicPOS.UI.Components.Modals
                 TypeId = _comboPrinterTypes.SelectedEntity.Id
             };
         }
-
-       
-
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
-
 
     }
 }

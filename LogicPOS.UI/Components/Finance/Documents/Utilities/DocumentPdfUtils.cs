@@ -1,8 +1,6 @@
 ﻿using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
 using LogicPOS.UI.PDFViewer;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace LogicPOS.UI.Components.Documents.Utilities

@@ -1,13 +1,9 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Components.Pages;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,26 +13,10 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ReportsFilterModal : Modal
     {
-        #region Components
-        public TextBox TxtStartDate { get; set; }
-        public TextBox TxtEndDate { get; set; }
-        public TextBox TxtDocumentType { get; set; }
-        public TextBox TxtCustomer { get; set; }
-        public TextBox TxtWarehouse { get; set; }
-        public TextBox TxtArticle { get; set; }
-        public TextBox TxtVatRate { get; set; }
-        public TextBox TxtSerialNumber { get; set; }
-        public TextBox TxtDocumentNumber { get; set; }
-
-        private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
-        private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-        private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
-        #endregion
-
         public ReportsFilterModal(Window parent) :
           base(parent,
               LocalizedString.Instance["window_title_dialog_report_filter"],
-              new Size(540, 678) /*originally was -> (540, 568): Luciano*/,
+              new Size(540, 678),
               PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
@@ -89,148 +69,6 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtDocumentNumber.Component, false, false, 0);
 
             return vbox;
-        }
-
-        private void InitializeTextBoxes()
-        {
-            InitializeTxtStartDate();
-            InitializeTxtEndDate();
-            InitializeTxtDocumentType();
-            InitializeTxtCustomer();
-            InitializeTxtWarehouse();
-            InitializeTxtVatRate();
-            InitializeTxtArticle();
-            InitializeTxtSerialNumber();
-            InitializeTxtDocumentNumber();
-        }
-
-        private void InitializeTxtCustomer()
-        {
-            TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
-                                          isRequired: false,
-                                          isValidatable: false,
-                                          includeSelectButton: true,
-                                          includeKeyBoardButton: false);
-
-            TxtCustomer.Entry.IsEditable = false;
-
-            TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
-        }
-
-        private void InitializeTxtDocumentType()
-        {
-            TxtDocumentType = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"),
-                                              isRequired: false,
-                                              isValidatable: false,
-                                              includeSelectButton: true,
-                                              includeKeyBoardButton: false);
-
-            TxtDocumentType.Entry.IsEditable = false;
-
-            TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
-        }
-
-        private void InitializeTxtVatRate()
-        {
-            TxtVatRate = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_vat_rates"),
-                                         isRequired: false,
-                                         isValidatable: false,
-                                         includeSelectButton: true,
-                                         includeKeyBoardButton: false);
-
-            TxtVatRate.Entry.IsEditable = false;
-
-            TxtVatRate.SelectEntityClicked += BtnSelectVatRate_Clicked;
-        }
-
-        private void InitializeTxtWarehouse()
-        {
-            TxtWarehouse = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_warehouse"),
-                                           isRequired: false,
-                                           isValidatable: false,
-                                           includeSelectButton: true,
-                                           includeKeyBoardButton: false);
-
-            TxtWarehouse.Entry.IsEditable = false;
-
-            TxtWarehouse.SelectEntityClicked += BtnSelectWarehouse_Clicked;
-        }
-
-        private void InitializeTxtStartDate()
-        {
-            TxtStartDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_start"),
-                                           isRequired: false,
-                                           isValidatable: true,
-                                           regex: RegularExpressions.Date,
-                                           includeSelectButton: true,
-                                           includeKeyBoardButton: true);
-
-            var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            TxtStartDate.Text = firstDayOfMonth.ToString("yyyy-MM-dd");
-
-            TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
-        }
-
-        private void InitializeTxtEndDate()
-        {
-            TxtEndDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_end"),
-                                           isRequired: false,
-                                           isValidatable: true,
-                                           regex: RegularExpressions.Date,
-                                           includeSelectButton: true,
-                                           includeKeyBoardButton: true);
-
-            TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-
-            TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
-        }
-
-        private void InitializeTxtArticle()
-        {
-            TxtArticle= new TextBox(this,
-                                    GeneralUtils.GetResourceByName("global_articles"),
-                                    isRequired: false,
-                                    isValidatable: false,
-                                    includeSelectButton: true,
-                                    includeKeyBoardButton: false);
-
-            TxtArticle.Entry.IsEditable = false;
-
-            TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
-        }
-
-        private void InitializeTxtSerialNumber()
-        {
-            TxtSerialNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_serialnumber"),
-                                              isRequired: false,
-                                              isValidatable: false,
-                                              includeSelectButton: true,
-                                              includeKeyBoardButton: false);
-
-            TxtSerialNumber.Entry.IsEditable = false;
-
-            TxtSerialNumber.SelectEntityClicked += BtnSelectSerialNumber_Clicked;
-        }
-
-        private void InitializeTxtDocumentNumber()
-        {
-            TxtDocumentNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_document_number"),
-                                              isRequired: false,
-                                              isValidatable: false,
-                                              includeSelectButton: true,
-                                              includeKeyBoardButton: false);
-
-            TxtDocumentNumber.Entry.IsEditable = false;
-
-            TxtDocumentNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }
 
         public DateTime StartDate =>  DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);

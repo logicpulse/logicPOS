@@ -18,8 +18,6 @@ namespace LogicPOS.UI.Components.Pages
         public PaymentConditionsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
-
-
         protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -29,7 +27,6 @@ namespace LogicPOS.UI.Components.Pages
             modal.Destroy();
             return response;
         }
-
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
@@ -37,7 +34,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateAcronymColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
-
         private TreeViewColumn CreateAcronymColumn()
         {
             void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
@@ -49,7 +45,6 @@ namespace LogicPOS.UI.Components.Pages
             var title = GeneralUtils.GetResourceByName("global_ConfigurationPaymentCondition_Acronym");
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
-
         protected override void InitializeSort()
         {
 
@@ -60,7 +55,6 @@ namespace LogicPOS.UI.Components.Pages
             AddAcronymSorting();
             AddUpdatedAtSorting(3);
         }
-
         private void AddAcronymSorting()
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
@@ -76,7 +70,6 @@ namespace LogicPOS.UI.Components.Pages
                 return leftPaymentCondition.Acronym.CompareTo(rightPaymentCondition.Acronym);
             });
         }
-
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeletePaymentConditionCommand(SelectedEntity.Id);

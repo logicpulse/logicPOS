@@ -13,14 +13,6 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 400);
         public override string ModalTitleResourceName => "global_ConfigurationInputReader";
 
-        #region Components
-        private TextBox _txtOrder = TextBox.CreateOrderField();
-        private TextBox _txtCode = TextBox.CreateCodeField();
-        private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private TextBox _txtReaderSizes = TextBox.Simple("global_input_reader_card_reader_sizes", true,true, @"^\d+(,\d+)*$");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        #endregion
-
         protected override void AddSensitiveFields()
         {
             SensitiveFields.Add(_txtOrder.Entry);

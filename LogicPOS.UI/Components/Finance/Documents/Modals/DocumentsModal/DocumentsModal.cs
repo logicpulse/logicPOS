@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 
-namespace LogicPOS.UI.Components.Documents
+namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal : Modal
     {

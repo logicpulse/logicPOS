@@ -16,16 +16,6 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 450);
         public override string ModalTitleResourceName => "dialog_edit_DialogConfigurationPrinters_tab1_label";
 
-        #region Components
-        private TextBox _txtOrder = TextBox.CreateOrderField();
-        private TextBox _txtCode = TextBox.CreateCodeField();
-        private TextBox _txtNetworkName = TextBox.Simple("global_networkname");
-        private ComboBox _comboDesignation;
-        private Label _labelDesignation => CreateDesignationLabel("global_designation");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        private EntityComboBox<PrinterType> _comboPrinterTypes;
-        #endregion
-
         protected override void BeforeDesign()
         {
             InitializePrinterTypesComboBox();
@@ -43,7 +33,6 @@ namespace LogicPOS.UI.Components.Modals
                                                              currentPrinterType,
                                                              true);
         }
-
 
         protected override void AddSensitiveFields()
         {
@@ -99,7 +88,6 @@ namespace LogicPOS.UI.Components.Modals
 
             return detailsTab;
         }
-
 
         private ComboBox CreatePrinterDesignationCombobox()
         {

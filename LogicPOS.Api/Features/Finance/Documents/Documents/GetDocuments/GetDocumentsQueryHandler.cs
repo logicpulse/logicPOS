@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
         public async override Task<ErrorOr<PaginatedResult<Document>>> Handle(GetDocumentsQuery query, CancellationToken cancellationToken = default)
         {
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<Document>>($"documents/paginated{urlQuery}", cancellationToken);
+            return await HandleGetEntityQueryAsync<PaginatedResult<Document>>($"documents/{urlQuery}", cancellationToken);
         }
     }
 }

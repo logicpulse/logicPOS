@@ -2,14 +2,11 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.PoleDisplays;
 using LogicPOS.Api.Features.PoleDisplays.DeletePoleDisplay;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.UI.Components.PoleDisplays;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages

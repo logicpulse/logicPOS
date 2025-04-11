@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public class ReceiptsPage : Page<Receipt>
+    public partial class ReceiptsPage : Page<Receipt>
     {
         public GetReceiptsQuery Query { get; private set; } = GetDefaultQuery();
         public PaginatedResult<Receipt> Receipts { get; private set; }
