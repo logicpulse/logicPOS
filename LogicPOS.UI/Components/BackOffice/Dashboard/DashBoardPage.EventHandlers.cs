@@ -1,6 +1,6 @@
-﻿using LogicPOS.UI.Components.Documents;
-using LogicPOS.UI.Components.Modals;
+﻿using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using System;
 
 namespace LogicPOS.UI.Components.Pages

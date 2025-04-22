@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 
@@ -9,29 +8,6 @@ namespace LogicPOS.UI.Components.POS
     public partial class SaleOptionsPanel : Box
     {
         public SaleOptionsPanelSettings PanelSettings { get; }
-
-        #region Components
-        public IconButtonWithText BtnPrevious { get; set; }
-        public IconButtonWithText BtnNext { get; set; }
-        public IconButtonWithText BtnDecrease { get; set; }
-        public IconButtonWithText BtnIncrease { get; set; }
-        public IconButtonWithText BtnDelete { get; set; }
-        public IconButtonWithText BtnQuantity { get; set; }
-        public IconButtonWithText BtnPrice { get; set; }
-        public IconButtonWithText BtnListMode { get; set; }
-        public IconButtonWithText BtnListOrder { get; set; }
-        public IconButtonWithText BtnSplitAccount { get; set; }
-        public IconButtonWithText BtnMessages { get; set; }
-        public IconButtonWithText BtnWeight { get; set; }
-        public IconButtonWithText BtnGifts { get; set; }
-        public IconButtonWithText BtnChangeTable { get; set; }
-        public IconButtonWithText BtnFinishOrder { get; set; }
-        public IconButtonWithText BtnPayments { get; set; }
-        public IconButtonWithText BtnBarcode { get; set; }
-        public IconButtonWithText BtnCardCode { get; set; }
-        public IconButtonWithText BtnSelectTable { get; set; }
-        #endregion
-
         public Window SourceWindow { get; set; }
 
         public SaleOptionsPanel(dynamic buttonsTheme)

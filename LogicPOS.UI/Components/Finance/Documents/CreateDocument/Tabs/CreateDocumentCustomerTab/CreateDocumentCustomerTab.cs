@@ -1,0 +1,116 @@
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
+using LogicPOS.Settings;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Documents.CreateDocument
+{
+    public partial class CreateDocumentCustomerTab : ModalTab
+    {
+        
+        public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
+                                                               name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
+                                                               icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
+        {
+            Initialize();
+            Design();
+        }
+
+        private void Initialize()
+        {
+            InitializeTxtCustomer();
+            InitializeTxtFiscalNumber();
+            InitializeTxtCardNumber();
+            InitializeTxtDiscount();
+            InitializeTxtAddress();
+            InitializeTxtLocality();
+            InitializeTxtZipCode();
+            InitializeTxtCity();
+            InitializeTxtCountry();
+            InitializeTxtPhone();
+            InitializeTxtEmail();
+            InitializeTxtNotes();
+        }
+
+        private Country GetCountryById(Guid countryId)
+        {
+            return CreateDocumentModal.GetCountries().FirstOrDefault(c => c.Id == countryId);
+        }
+
+       
+       
+
+        public void ShowCustomerData(Customer customer)
+        {
+            TxtFiscalNumber.Text = customer.FiscalNumber;
+            TxtCardNumber.Text = customer.CardNumber;
+            TxtDiscount.Text = customer.Discount.ToString();
+            TxtAddress.Text = customer.Address;
+            TxtLocality.Text = customer.Locality;
+            TxtZipCode.Text = customer.ZipCode;
+            TxtCity.Text = customer.City;
+            TxtCountry.Text = customer.Country.Designation;
+            TxtCountry.SelectedEntity = customer.Country;
+            TxtPhone.Text = customer.Phone;
+            TxtEmail.Text = customer.Email;
+            TxtNotes.Text = customer.Notes;
+        }
+
+        public void ImportDataFromDocument(Document document)
+        {
+            CustomerId = document.CustomerId;
+            TxtCustomer.Text = document.Customer.Name;
+            TxtFiscalNumber.Text = document.Customer.FiscalNumber;
+            TxtAddress.Text = document.Customer.Address;
+            TxtLocality.Text = document.Customer.Locality;
+            TxtZipCode.Text = document.Customer.ZipCode;
+            TxtCity.Text = document.Customer.City;
+            TxtDiscount.Text = document.Discount.ToString();
+            TxtPhone.Text = document.Customer.Phone;
+            TxtEmail.Text = document.Customer.Email;
+
+            var country = GetCountryById(document.Customer.CountryId);
+            TxtCountry.Text = country?.Designation;
+            TxtCountry.SelectedEntity = country;
+        }
+        public Customer GetCustomer()
+        {
+            return TxtCustomer.SelectedEntity as Customer;
+        }
+
+        public DocumentCustomer GetDocumentCustomer()
+        {
+            return new DocumentCustomer
+            {
+                Name = TxtCustomer.Text,
+                FiscalNumber = TxtFiscalNumber.Text,
+                Address = TxtAddress.Text,
+                Locality = TxtLocality.Text,
+                ZipCode = TxtZipCode.Text,
+                City = TxtCity.Text,
+                Country = (TxtCountry.SelectedEntity as Country)?.Code2,
+                CountryId = (TxtCountry.SelectedEntity as Country).Id,
+                Email = TxtEmail.Text,
+                Phone = TxtPhone.Text
+            };
+        }
+
+        public override bool IsValid()
+        {
+            return TxtCustomer.IsValid() &&
+                   TxtFiscalNumber.IsValid() &&
+                   TxtDiscount.IsValid() &&
+                   TxtCountry.IsValid();
+        }
+    }
+}

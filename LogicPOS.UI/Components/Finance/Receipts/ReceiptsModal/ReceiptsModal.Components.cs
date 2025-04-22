@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                           GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
                                                                                                                           PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
-
         private IconButtonWithText BtnPrevious { get; set; }
         private IconButtonWithText BtnNext { get; set; }
         private TextBox TxtSearch { get; set; }

@@ -4,8 +4,6 @@ using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -4,10 +4,7 @@ using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.UI.Errors;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {

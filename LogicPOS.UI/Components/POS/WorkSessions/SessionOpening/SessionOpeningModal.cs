@@ -4,7 +4,6 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.POS

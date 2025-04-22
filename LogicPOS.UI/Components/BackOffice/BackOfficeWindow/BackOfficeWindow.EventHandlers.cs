@@ -274,7 +274,5 @@ namespace LogicPOS.UI.Components.Windows
 
             PageContainer.PackStart(CurrentPage);
         }
-
-
     }
 }

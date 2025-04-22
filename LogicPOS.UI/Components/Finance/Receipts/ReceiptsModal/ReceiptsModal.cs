@@ -1,7 +1,10 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using MediatR;
@@ -62,6 +65,42 @@ namespace LogicPOS.UI.Components.Modals
         {
             BtnPrevious.Sensitive = Page.Receipts.Page > 1;
             BtnNext.Sensitive = Page.Receipts.Page < Page.Receipts.TotalPages;
+        }
+        private void CancelReceipt(Receipt receipt)
+        {
+            var cancelReasonDialog = logicpos.Utils.GetInputText(this,
+                                                             DialogFlags.Modal,
+                                                             PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png",
+                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), receipt.RefNo),
+                                                             string.Empty,
+                                                             RegularExpressions.AlfaNumericExtendedForMotive,
+                                                             true);
+
+            if (cancelReasonDialog.ResponseType != ResponseType.Ok)
+            {
+                return;
+            }
+            var result = _meditaor.Send(new CancelReceiptCommand { Id = receipt.Id, Reason = cancelReasonDialog.Text }).Result;
+
+            if (result.IsError)
+            {
+                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                return;
+            }
+
+            Page.Refresh();
+        }
+
+        private static bool CanCancelReceipt(Receipt receipt)
+        {
+            bool canCancel = true;
+
+            if (receipt.IsCancelled || receipt.HasPassed48Hours)
+            {
+                canCancel = false;
+            }
+
+            return canCancel;
         }
     }
 }

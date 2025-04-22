@@ -15,7 +15,6 @@ namespace LogicPOS.UI.Components.Modals
         private EntityEditionModalMode _mode;
         public Item Item { get; }
         private decimal _vatRateValue;
-
         public AddArticleModal(Window parent,
                                EntityEditionModalMode mode,
                                Item item = null) : base(parent,

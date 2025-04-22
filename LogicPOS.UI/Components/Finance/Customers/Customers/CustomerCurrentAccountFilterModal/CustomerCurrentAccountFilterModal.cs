@@ -1,0 +1,49 @@
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
+using LogicPOS.Settings;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Drawing;
+using System.Globalization;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class CustomerCurrentAccountFilterModal : Modal
+    {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+
+        private CustomerCurrentAccountFilterModal(Window parent) : base(parent,
+                                                                       GeneralUtils.GetResourceByName("report_customer_balance_summary"),
+                                                                       new Size(500, 509),
+                                                                       PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
+        {
+        }
+
+        private void Initialize()
+        {
+            InitializeTxtCustomer();
+            InitializeTxtStartDate();
+            InitializeTxtEndDate();
+            AddEventsHandlers();
+        }
+
+        private void AddEventsHandlers()
+        {
+            BtnOk.Clicked += BtnOk_Clicked;
+        }
+
+        private GetCustomerCurrentAccountPdfQuery CreateQuery()
+        {
+            return new GetCustomerCurrentAccountPdfQuery
+            {
+                CustomerId = (TxtCustomer.SelectedEntity as Customer).Id,
+                StartDate = DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",CultureInfo.InvariantCulture),
+                EndDate = DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+            };
+        }
+    }
+}

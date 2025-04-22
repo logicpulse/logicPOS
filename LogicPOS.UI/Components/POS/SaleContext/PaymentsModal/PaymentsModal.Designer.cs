@@ -15,51 +15,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class PaymentsModal
     {
-        #region Components
-        private IconButtonWithText BtnOk { get; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
-        private IconButtonWithText BtnCancel { get; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-        private IconButtonWithText BtnClearCustomer { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
-                                                                                                           GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"),
-                                                                                                           PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png");
-        private IconButtonWithText BtnNewCustomer { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
-                                                                                                          GeneralUtils.GetResourceByName("dialog_button_label_new_client"),
-                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_clients.png");
-        private IconButtonWithText BtnFullPayment { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea",
-                                                                                                          GeneralUtils.GetResourceByName("global_button_label_payment_dialog_full_payment"),
-                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
-        private IconButtonWithText BtnPartialPayment { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
-                                                                                                            GeneralUtils.GetResourceByName("global_button_label_payment_dialog_partial_payment"),
-                                                                                                            PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_partial.png");
-        private IconButtonWithText BtnInvoice { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
-                                                                                                                   GeneralUtils.GetResourceByName("global_documentfinance_type_title_ft"),
-                                                                                                                 PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png");
-
-        private IconButton BtnPrevious { get; set; }
-        private IconButton BtnNext { get; set; }
-
-        private PaymentMethodsMenu PaymentMethodsMenu { get; set; }
-
-        private TextBox TxtCustomer { get; set; }
-        private TextBox TxtFiscalNumber { get; set; }
-        private TextBox TxtCountry { get; set; }
-        private TextBox TxtDiscount { get; set; }
-        private TextBox TxtCardNumber { get; set; }
-        private TextBox TxtAddress { get; set; }
-        private TextBox TxtLocality { get; set; }
-        private TextBox TxtZipCode { get; set; }
-        private TextBox TxtCity { get; set; }
-        private TextBox TxtNotes { get; set; }
-
-        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
-
-        private Label LabelTotal { get; } = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay") + ":");
-        private Label LabelDelivery { get; } = new Label(GeneralUtils.GetResourceByName("global_total_deliver") + ":");
-        private Label LabelChange { get; } = new Label(GeneralUtils.GetResourceByName("global_total_change") + ":");
-        private Label LabelTotalValue { get; } = new Label("0");
-        private Label LabelDeliveryValue { get; } = new Label("0");
-        private Label LabelChangeValue { get; } = new Label("0");
-        #endregion
-
+        
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             InitializeButtons();
@@ -130,7 +86,12 @@ namespace LogicPOS.UI.Components.POS
 
             return eventBox;
         }
-
+        private void InitializeButtons()
+        {
+            InitializeScrollersButtons();
+            AddEventHandlers();
+            BtnFullPayment.Sensitive = false;
+        }
         private void InitializeTextFields()
         {
             InitializeTxtCustomer();
@@ -145,157 +106,6 @@ namespace LogicPOS.UI.Components.POS
             InitializeTxtNotes();
         }
 
-        private void InitializeTxtCountry()
-        {
-            TxtCountry = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_country"),
-                                         isRequired: true,
-                                         isValidatable: false,
-                                         includeSelectButton: true,
-                                         includeKeyBoardButton: false);
 
-            TxtCountry.Entry.IsEditable = false;
-            TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
-            ValidatableFields.Add(TxtCountry);
-        }
-
-        private void InitializeTxtCity()
-        {
-            TxtCity = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("global_city"),
-                                      isRequired: false,
-                                      isValidatable: false,
-                                      includeSelectButton: false,
-                                      includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtZipCode()
-        {
-            TxtZipCode = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_zipcode"),
-                                         isRequired: false,
-                                         isValidatable: false,
-                                         includeSelectButton: false,
-                                         includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtNotes()
-        {
-            TxtNotes = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_notes"),
-                                       isRequired: false,
-                                       isValidatable: false,
-                                       includeSelectButton: false,
-                                       includeKeyBoardButton: true);
-
-            TxtNotes.Entry.IsEditable = true;
-        }
-
-        private void InitializeTxtLocality()
-        {
-            TxtLocality = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_locality"),
-                                          isRequired: false,
-                                          isValidatable: false,
-                                          includeSelectButton: false,
-                                          includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtAddress()
-        {
-            TxtAddress = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_address"),
-                                         isRequired: false,
-                                         isValidatable: false,
-                                         includeSelectButton: false,
-                                         includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtDiscount()
-        {
-            TxtDiscount = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_discount"),
-                                          isRequired: true,
-                                          isValidatable: true,
-                                          includeSelectButton: false,
-                                          includeKeyBoardButton: true,
-                                          regex: RegularExpressions.DecimalNumber);
-
-            TxtDiscount.Text = 0.00M.ToString("");
-            TxtDiscount.Entry.Changed += (s, args) => UpdateTotals();
-            ValidatableFields.Add(TxtDiscount);
-        }
-
-        private void InitializeTxtCardNumber()
-        {
-            TxtCardNumber = new TextBox(this,
-                                            GeneralUtils.GetResourceByName("global_card_number"),
-                                            isRequired: false,
-                                            isValidatable: false,
-                                            includeSelectButton: false,
-                                            includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtFiscalNumber()
-        {
-            TxtFiscalNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_fiscal_number"),
-                                              isRequired: true,
-                                              isValidatable: true,
-                                              regex: RegularExpressions.FiscalNumber,
-                                              includeSelectButton: false,
-                                              includeKeyBoardButton: true);
-
-            ValidatableFields.Add(TxtFiscalNumber);
-        }
-
-        private void InitializeTxtCustomer()
-        {
-            TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
-                                          isRequired: true,
-                                          isValidatable: false,
-                                          includeSelectButton: true,
-                                          includeKeyBoardButton: true);
-
-            TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
-            ValidatableFields.Add(TxtCustomer);
-        }
-
-        private void InitializeButtons()
-        {
-            InitializeScrollersButtons();
-            AddEventHandlers();
-            BtnFullPayment.Sensitive = false;
-        }
-
-        private void InitializeScrollersButtons()
-        {
-            BtnPrevious = new IconButton(
-              new ButtonSettings
-              {
-                  BackgroundColor = Color.White,
-                  Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
-                  IconSize = new Size(62, 31),
-                  ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
-              });
-
-            BtnNext = new IconButton(
-               new ButtonSettings
-               {
-                   BackgroundColor = Color.White,
-                   Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
-                   IconSize = new Size(62, 31),
-                   ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
-               });
-
-            BtnPrevious.Relief = ReliefStyle.None;
-            BtnPrevious.BorderWidth = 0;
-            BtnPrevious.CanFocus = false;
-
-            BtnNext.Relief = ReliefStyle.None;
-            BtnNext.BorderWidth = 0;
-            BtnNext.CanFocus = false;
-        }
     }
 }

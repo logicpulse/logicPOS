@@ -144,11 +144,21 @@ namespace LogicPOS.UI.Components.Pages
 
                 var entity = model.GetValue(iterator, 0) as TEntity;
 
-                if (entity != null && (entity as IWithDesignation).Designation.ToLower().Contains(search))
+                if (entity != null && ((entity as IWithDesignation) != null))
                 {
-                    return true;
+                    if (entity != null && (entity as IWithDesignation).Designation.ToLower().Contains(search))
+                    {
+                        return true;
+                    }
                 }
 
+                if (entity != null && ((entity as IWithName) != null))
+                {
+                    if (entity != null && (entity as IWithName).Name.ToLower().Contains(search))
+                    {
+                        return true;
+                    }
+                }
                 return false;
             };
         }

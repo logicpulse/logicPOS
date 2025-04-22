@@ -66,32 +66,25 @@ namespace LogicPOS.UI.Components.Menus
             {
                 tables = tables.Where(x => x.Status == Filter);
             }
-
             return tables;
         }
-
-
         protected override string GetButtonLabel(Table entity)
         {
             return entity.Designation;
         }
-
         protected override string GetButtonImage(Table entity)
         {
             return null;
         }
-
         protected override void LoadEntities()
         {
             Entities.Clear();
             Entities.AddRange(TablesService.GetAllTables());
         }
-
         public override void Refresh()
         {
             Refresh(null);
         }
-
         public void Refresh(TableStatus? tableStatus = null)
         {
             Buttons.Clear();
@@ -100,7 +93,6 @@ namespace LogicPOS.UI.Components.Menus
             PresentEntities();
             SelectCurrentTable();
         }
-
         private void SelectCurrentTable()
         {
             if (SelectedEntity == null || SaleContext.CurrentTable == null || SelectedEntity.Id == SaleContext.CurrentTable.Id)

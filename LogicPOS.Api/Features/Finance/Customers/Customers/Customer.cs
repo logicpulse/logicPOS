@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class Customer : ApiEntity, IWithCode
+    public class Customer : ApiEntity, IWithCode, IWithName
     {
         #region  Relations
         public CustomerType CustomerType { get; set; }

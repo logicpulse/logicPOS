@@ -1,10 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Settings;
-using LogicPOS.UI.Components.Documents.Documents.CreateDocument.Fields;
+using LogicPOS.UI.Components.Documents.CreateDocument.Fields;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument

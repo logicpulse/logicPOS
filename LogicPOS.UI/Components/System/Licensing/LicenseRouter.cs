@@ -114,10 +114,6 @@ namespace LogicPOS.UI.Components.Licensing
                     }
 
                 }
-
-
-
-
                 if (LoadApp)
                 {
                     System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));

@@ -1,0 +1,109 @@
+﻿using Gtk;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class CustomerCurrentAccountFilterModal
+    {
+        private void InitializeTxtEndDate()
+        {
+            TxtEndDate = new TextBox(this,
+                                         GeneralUtils.GetResourceByName("global_date_end"),
+                                         isRequired: true,
+                                         isValidatable: false,
+                                         includeSelectButton: true,
+                                         includeKeyBoardButton: false);
+
+            TxtEndDate.Entry.IsEditable = false;
+            TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+
+            TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
+        }
+
+        private void InitializeTxtCustomer()
+        {
+            TxtCustomer = new TextBox(WindowSettings.Source,
+                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          isRequired: true,
+                                          isValidatable: false,
+                                          includeSelectButton: true,
+                                          includeKeyBoardButton: false);
+
+            TxtCustomer.Entry.IsEditable = false;
+
+            TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
+
+            ValidatableFields.Add(TxtCustomer);
+        }
+
+        private void InitializeTxtStartDate()
+        {
+            TxtStartDate = new TextBox(this,
+                                      GeneralUtils.GetResourceByName("global_date_start"),
+                                      isRequired: true,
+                                      isValidatable: false,
+                                      includeSelectButton: true,
+                                      includeKeyBoardButton: false);
+
+            TxtStartDate.Entry.IsEditable = false;
+            TxtStartDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+
+            TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
+        }
+
+        protected override ActionAreaButtons CreateActionAreaButtons()
+        {
+            return new ActionAreaButtons
+            {
+                new ActionAreaButton(BtnOk, ResponseType.Ok),
+                new ActionAreaButton(BtnCancel, ResponseType.Cancel)
+            };
+        }
+
+        protected override Widget CreateBody()
+        {
+            Initialize();
+
+            var verticalLayout = new VBox(false, 0);
+
+            verticalLayout.PackStart(TxtCustomer.Component, false, false, 0);
+            verticalLayout.PackStart(TxtStartDate.Component, false, false, 0);
+            verticalLayout.PackStart(TxtEndDate.Component, false, false, 0);
+
+            return verticalLayout;
+        }
+
+        protected void Validate()
+        {
+            if (AllFieldsAreValid())
+            {
+                return;
+            }
+
+            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+
+            Run();
+        }
+
+        protected bool AllFieldsAreValid()
+        {
+            return ValidatableFields.All(txt => txt.IsValid());
+        }
+
+        public static void ShowModal(Window parent)
+        {
+            var modal = new CustomerCurrentAccountFilterModal(parent);
+            modal.Run();
+            modal.Destroy();
+        }
+    }
+}

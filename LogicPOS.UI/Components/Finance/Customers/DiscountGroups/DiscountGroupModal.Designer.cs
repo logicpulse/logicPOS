@@ -15,13 +15,6 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 309);
         public override string ModalTitleResourceName => "dialog_edit_CustomerDiscountGroup_tab1_label";
 
-        #region Components
-        private TextBox _txtOrder = TextBox.CreateOrderField();
-        private TextBox _txtCode = TextBox.CreateCodeField();
-        private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        #endregion
-
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
             yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
