@@ -11,5 +11,13 @@ namespace LogicPOS.Api.Features.Common.Pagination
         public int Page { get; set; }
         public int PageSize { get; set; }
         public int TotalPages { get; set; }
+
+        public static PaginatedResult<T> Empty()
+        {
+            return new PaginatedResult<T>
+            {
+                Items = Array.Empty<T>()
+            };
+        }
     }
 }

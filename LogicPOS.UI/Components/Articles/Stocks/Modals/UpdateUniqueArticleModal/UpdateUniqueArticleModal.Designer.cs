@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Modals
         private VBox CreateSerialNumberTab()
         {
             var tab = new VBox();
-            tab.PackStart(new Label($"Artigo: {_entity.WarehouseArticle.Article.Designation}"), false, false, 5);
+            tab.PackStart(new Label($"Artigo: {_entity.Article}"), false, false, 5);
             tab.PackStart(SerialNumberField.Component, false, false, 0);
             return tab;
         }

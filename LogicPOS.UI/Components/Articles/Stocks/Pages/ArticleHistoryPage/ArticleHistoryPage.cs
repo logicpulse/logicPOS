@@ -2,9 +2,14 @@
 using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
+using LogicPOS.Api.Features.Articles.Stocks.Common;
+using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
 using System;
@@ -14,7 +19,8 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class ArticleHistoryPage : Page<ArticleHistory>
     {
-        protected override IRequest<ErrorOr<IEnumerable<ArticleHistory>>> GetAllQuery => new GetArticlesHistoriesQuery();
+        public GetArticlesHistoriesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
+        public PaginatedResult<ArticleHistory> Histories { get; private set; }
         private IconButtonWithText BtnPrintSerialNumber { get; set; } = IconButtonWithText.Create("buttonUserId",
                                                                                                   "Cod.Barras",
                                                                                                   @"Icons/Dialogs/icon_pos_dialog_action_print.png");
@@ -28,9 +34,11 @@ namespace LogicPOS.UI.Components.Pages
             AddOpenExternalDocumentButton();
             AddOpenSaleDocumentButton();
         }
+       
         public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
+
         private void AddOpenSaleDocumentButton()
         {
             BtnOpenSaleDocument.ButtonLabel.Text = "Doc.Venda";
@@ -57,10 +65,18 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            if (SelectedEntity.InStockMovement.Quantity > 0 && SelectedEntity.InStockMovement.ExternalDocument != null)
+            if (SelectedEntity.HasExternalDocument)
             {
                 var filePath = System.IO.Path.GetTempFileName();
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(SelectedEntity.InStockMovement.ExternalDocument));
+                var result = _mediator.Send(new GetStockMovementByIdQuery(SelectedEntity.InMovementId)).Result;
+
+                if (result.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                    return;
+                }
+
+                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
                 LogicPOSPDFViewer.ShowPDF(filePath);
                 return;
             }
@@ -74,12 +90,12 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnPrintSerialNumber_Clicked(object sender, EventArgs e)
         {
-            if (SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.WarehouseArticle.SerialNumber))
+            if (SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.SerialNumber))
             {
                 return;
             }
 
-            var result = _mediator.Send(new GetArticleSerialNumberPdfQuery(SelectedEntity.WarehouseArticle.Id)).Result;
+            var result = _mediator.Send(new GetArticleSerialNumberPdfQuery(SelectedEntity.Id)).Result;
 
             if (result.IsError)
             {
@@ -95,6 +111,26 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.RightButtons.Remove(Navigator.BtnView);
             Navigator.RightButtons.Remove(Navigator.BtnDelete);
             Navigator.RightButtons.Remove(Navigator.BtnInsert);
+        }
+
+        protected override void LoadEntities()
+        {
+            var getHistories = _mediator.Send(CurrentQuery).Result;
+
+            if (getHistories.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getHistories,
+                                                    source: SourceWindow);
+                return;
+            }
+
+            Histories = getHistories.Value;
+
+            _entities.Clear();
+            if (Histories.Items != null)
+            {
+                _entities.AddRange(Histories.Items);
+            }
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -126,6 +162,11 @@ namespace LogicPOS.UI.Components.Pages
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+        }
+
+        private static GetArticlesHistoriesQuery GetDefaultQuery()
+        {
+            return new GetArticlesHistoriesQuery();
         }
     }
 }

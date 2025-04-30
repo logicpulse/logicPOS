@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
 
@@ -7,12 +8,23 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class StockMovementsPage 
     {
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(CreateMovementTypeColumn());
+            GridView.AppendColumn(CreateDateColumn());
+            GridView.AppendColumn(CreateEntityColumn());
+            GridView.AppendColumn(CreateDocumentNumberColumn());
+            GridView.AppendColumn(CreateArticleColumn());
+            GridView.AppendColumn(CreateQuantityColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(7));
+        }
+
         #region Creators
         private TreeViewColumn CreateMovementTypeColumn()
         {
             void RenderMovementType(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = movement.Quantity >= 0 ? "Entrada" : "Saída";
             }
 
@@ -24,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = movement.Date.ToShortDateString();
             }
             var title = LocalizedString.Instance["global_date"];
@@ -35,8 +47,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderEntity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = movement.Customer?.Name;
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = movement.Customer;
             }
             var title = LocalizedString.Instance["global_entity"];
             return Columns.CreateColumn(title, 3, RenderEntity);
@@ -46,7 +58,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDocumetNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = movement.DocumentNumber;
             }
             var title = LocalizedString.Instance["global_document_number"];
@@ -57,8 +69,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderArticle(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = movement.Article?.Designation ?? movement.Detail?.Designation;
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = movement.Article;
             }
             var title = LocalizedString.Instance["global_article"];
             return Columns.CreateColumn(title, 5, RenderArticle);
@@ -68,7 +80,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var movement = (StockMovement)model.GetValue(iter, 0);
+                var movement = (StockMovementViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = movement.Quantity.ToString();
             }
             var title = LocalizedString.Instance["global_quantity"];
@@ -78,6 +90,20 @@ namespace LogicPOS.UI.Components.Pages
         #endregion
 
         #region Sorting
+
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddMovementTypeSorting();
+            AddDateSorting();
+            AddEntitySorting();
+            AddDocumentNumberSorting();
+            AddArticleSorting();
+            AddQuantitySorting();
+            AddUpdatedAtSorting(7);
+        }
+
         private void AddMovementTypeSorting()
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>

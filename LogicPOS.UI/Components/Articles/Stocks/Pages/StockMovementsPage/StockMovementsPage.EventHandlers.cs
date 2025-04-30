@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
@@ -15,10 +16,18 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            if (SelectedEntity.Quantity > 0 && SelectedEntity.ExternalDocument != null)
+            if (SelectedEntity.Quantity > 0 && SelectedEntity.HasExternalDocument)
             {
                 var filePath = System.IO.Path.GetTempFileName();
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(SelectedEntity.ExternalDocument));
+                var result = _mediator.Send(new GetStockMovementByIdQuery(SelectedEntity.Id)).Result;
+
+                if (result.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                    return;
+                }
+
+                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
                 LogicPOSPDFViewer.ShowPDF(filePath);
                 return;
             }
@@ -42,10 +51,12 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
         }
+
         private void BtnFilter_Clicked(object sender, EventArgs e)
         {
             RunFilter();
         }
+
         private void BtnMore_Clicked(object sender, EventArgs e)
         {
             if(CurrentQuery.Page >= Movements.TotalPages)

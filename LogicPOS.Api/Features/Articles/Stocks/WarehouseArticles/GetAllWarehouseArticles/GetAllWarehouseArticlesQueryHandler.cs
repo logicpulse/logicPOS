@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetAllWarehouseArticles
         public async override Task<ErrorOr<IEnumerable<WarehouseArticle>>> Handle(GetAllWarehouseArticlesQuery query,
                                                                             CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<WarehouseArticle>("articles/stocks", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<WarehouseArticle>("articles/warehouse-articles", cancellationToken);
         }
     }
 }

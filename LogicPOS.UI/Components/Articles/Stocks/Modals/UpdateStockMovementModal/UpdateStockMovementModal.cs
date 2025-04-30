@@ -9,12 +9,13 @@ using System;
 using System.IO;
 using LogicPOS.Api.Extensions;
 using LogicPOS.UI.Errors;
+using LogicPOS.Api.Features.Articles.Stocks.Common;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class UpdateStockMovementModal : EntityEditionModal<StockMovement>
+    public partial class UpdateStockMovementModal : EntityEditionModal<StockMovementViewModel>
     {
-        public UpdateStockMovementModal(StockMovement entity) : base(EntityEditionModalMode.Update, entity)
+        public UpdateStockMovementModal(StockMovementViewModel entity) : base(EntityEditionModalMode.Update, entity)
         {
         }
 
@@ -22,20 +23,21 @@ namespace LogicPOS.UI.Components.Modals
         
         protected override void ShowEntityData()
         {
-            TxtSupplier.Text = _entity.Customer?.Name;
-            TxtSupplier.SelectedEntity = _entity?.Customer;
+            TxtSupplier.Text = _entity.Customer;
             TxtDate.Text = _entity.Date.ToString("yyyy-MM-dd");
             TxtDocumnetNumber.Text = _entity.DocumentNumber;
             TxtQuantity.Text = _entity.Quantity.ToString();
             TxtPrice.Text = _entity.Price.ToString();
         }
 
+        private Guid? GetSupplierId() => (TxtSupplier.SelectedEntity == null) ? (Guid?)null : (TxtSupplier.SelectedEntity as ApiEntity).Id;
+
         protected override void UpdateEntity()
         {
             var command = new UpdateStockMovementCommand
             {
                 Id = _entity.Id,
-                SupplierId = (TxtSupplier.SelectedEntity as ApiEntity).Id,
+                SupplierId = GetSupplierId(),
                 Date = TxtDate.Text.FromISO8601DateOnly(),
                 DocumentNumber = TxtDocumnetNumber.Text,
                 Quantity = Convert.ToInt32(TxtQuantity.Text),

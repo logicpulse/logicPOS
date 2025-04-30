@@ -1,30 +1,26 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
+using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
-using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
-using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles.Stocks.Movements;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.PDFViewer;
-using LogicPOS.Utility;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class StockMovementsPage : Page<StockMovement>
+    public partial class StockMovementsPage : Page<StockMovementViewModel>
     {
         public GetStockMovementsQuery CurrentQuery { get; private set; } = GetDefaultQuery();
-        public PaginatedResult<StockMovement> Movements { get; private set; }
+        public PaginatedResult<StockMovementViewModel> Movements { get; private set; }
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
         public event EventHandler PageChanged;
+       
         public StockMovementsPage(Window parent) : base(parent)
         {
             RemoveForbiddenButtons();
@@ -35,6 +31,7 @@ namespace LogicPOS.UI.Components.Pages
         public StockMovementsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
+        
         private void AddEventHandlers()
         {
             Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
@@ -68,8 +65,9 @@ namespace LogicPOS.UI.Components.Pages
             Movements = getMovements.Value;
 
             _entities.Clear();
-            if (Movements.Items!=null) {
-                _entities.AddRange(Movements.Items); 
+            if (Movements.Items != null)
+            {
+                _entities.AddRange(Movements.Items);
             }
         }
 
@@ -80,7 +78,7 @@ namespace LogicPOS.UI.Components.Pages
                 return RunInsertModal();
             }
 
-            if(SelectedEntity.Quantity < 0)
+            if (SelectedEntity.Quantity < 0)
             {
                 return (int)ResponseType.Cancel;
             }
@@ -121,31 +119,8 @@ namespace LogicPOS.UI.Components.Pages
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(CreateMovementTypeColumn());
-            GridView.AppendColumn(CreateDateColumn());
-            GridView.AppendColumn(CreateEntityColumn());
-            GridView.AppendColumn(CreateDocumentNumberColumn());
-            GridView.AppendColumn(CreateArticleColumn());
-            GridView.AppendColumn(CreateQuantityColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(7));
-        }
-
+     
         protected override DeleteCommand GetDeleteCommand() => null;
-
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-
-            AddMovementTypeSorting();
-            AddDateSorting();
-            AddEntitySorting();
-            AddDocumentNumberSorting();
-            AddArticleSorting();
-            AddQuantitySorting();
-            AddUpdatedAtSorting(7);
-        }
 
         private static GetStockMovementsQuery GetDefaultQuery()
         {

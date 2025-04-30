@@ -2,10 +2,8 @@
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Services;
 using System.Diagnostics;
 using System.Drawing;
 

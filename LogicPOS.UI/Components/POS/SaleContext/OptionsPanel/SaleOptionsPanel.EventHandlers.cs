@@ -1,21 +1,15 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Api.Features.Articles.GetArticleByCode;
-using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
-using LogicPOS.Api.Features.Reports.GetCustomerReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByTaxGroupDetailedReportPdf;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -155,7 +149,7 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-            
+
             ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
             SaleContext.ItemsPage.FinishTicket();
 
@@ -202,20 +196,14 @@ namespace LogicPOS.UI.Components.POS
 
             var code = response.Text;
 
-            var getArticle = DependencyInjection.Mediator.Send(new GetArticleByCodeQuery(code)).Result;
+            var article = ArticlesService.GetArticleByCode(code);
 
-            if (getArticle.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(SourceWindow, getArticle.FirstError);
-                return;
-            }
-
-            if (getArticle.Value == null)
+            if (article == null)
             {
                 return;
             }
 
-            SaleContext.ItemsPage.AddItem(new SaleItem(getArticle.Value));
+            SaleContext.ItemsPage.AddItem(new SaleItem(ArticleViewModel.FromEntity(article)));
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)

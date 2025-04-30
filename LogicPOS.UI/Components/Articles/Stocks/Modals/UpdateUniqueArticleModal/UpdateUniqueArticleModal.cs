@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         private void TxtExchangeArticle_SelectEntityClicked(object sender, EventArgs e)
         {
             var page = new WarehouseArticlesPage(null, PageOptions.SelectionPageOptions);
-            page.ApplyFilter(x => x.Id != _entity.WarehouseArticle.ArticleId && x.SerialNumber != null);
+            page.ApplyFilter(x => x.Id != _entity.ArticleId && x.SerialNumber != null);
             var selectArticleModal = new EntitySelectionModal<WarehouseArticle>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             return new ExchangeUniqueArticleCommand
             {
-                ReturnedArticleId = _entity.WarehouseArticle.Id,
+                ReturnedArticleId = _entity.Id,
                 ExchangeArticleId = (TxtExchangeArticle.SelectedEntity as ApiEntity).Id
             };
         }
@@ -118,17 +118,17 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void ShowEntityData()
         {
-            SerialNumberField.TxtSerialNumber.Text = _entity.WarehouseArticle.SerialNumber;
-            TxtArticle.Text = _entity.WarehouseArticle.Article.Designation;
+            SerialNumberField.TxtSerialNumber.Text = _entity.SerialNumber;
+            TxtArticle.Text = _entity.Article;
 
-            if (_entity.WarehouseArticle.Status == Api.Enums.ArticleSerialNumberStatus.Sold || 
-               _entity.WarehouseArticle.Status == Api.Enums.ArticleSerialNumberStatus.Exchanged)
+            if (_entity.Status == Api.Enums.ArticleSerialNumberStatus.Sold || 
+               _entity.Status == Api.Enums.ArticleSerialNumberStatus.Exchanged)
             {
-                TxtSaleDocument.Text = _entity.OutStockMovement?.DocumentNumber;
-                TxtSaleDate.Text = _entity.OutStockMovement?.Date.ToString("yyyy-MM-dd");
+                TxtSaleDocument.Text = _entity.SaleDocument;
+                TxtSaleDate.Text = _entity.SaleDate?.ToString("yyyy-MM-dd");
             }
 
-            SerialNumberField.LoadUniqueArticleChildren(_entity.WarehouseArticle.Id);
+            SerialNumberField.LoadUniqueArticleChildren(_entity.Id);
         }
 
         protected override void UpdateEntity()
@@ -141,7 +141,7 @@ namespace LogicPOS.UI.Components.Modals
             var childUniqueArticles = SerialNumberField.Children.Select(x => x.UniqueArticelId).ToList();
             return new UpdateUniqueArticleCommand
             {
-                Id = _entity.WarehouseArticle.Id,
+                Id = _entity.Id,
                 SerialNumber = SerialNumberField.TxtSerialNumber.Text,
                 ChildUniqueArticles = childUniqueArticles
             };
@@ -158,10 +158,10 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     new StockMovementItem
                     {
-                        ArticleId = _entity.WarehouseArticle.ArticleId,
+                        ArticleId = _entity.ArticleId,
                         Quantity = -1,
-                        SerialNumber = _entity.WarehouseArticle.SerialNumber,
-                        Price = _entity.WarehouseArticle.Article.Price1.Value,
+                        SerialNumber = _entity.SerialNumber,
+                        Price = _entity.ArticlePrice,
                     }
                 }
             };

@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.GetAllArticles;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
+using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
@@ -17,12 +19,11 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class ArticlesMenu : Menu<Article>
+    public class ArticlesMenu : Menu<ArticleViewModel>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public ArticleSubfamiliesMenu MenuSubfamilies { get; }
-        public IEnumerable<TotalStock> Stocks { get; private set; }
-        public bool PresentFavorites { get; set; }
+        private PaginatedResult<ArticleViewModel> Articles { get; set; }
+        public bool PresentFavorites { get;  set; }
 
         public ArticlesMenu(CustomButton btnPrevious,
                             CustomButton btnNext,
@@ -37,55 +38,39 @@ namespace LogicPOS.UI.Components.Menus
                                                                            toggleMode: false)
         {
             MenuSubfamilies = subfamiliesMenu;
-            LoadStocks();
             AddEventHandlers();
             PresentEntities();
         }
 
-        private void LoadStocks()
-        {
-            var query = new GetArticlesTotalStocksQuery();
-            var result = _mediator.Send(query).Result;
-
-            if (result.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(SourceWindow, result.FirstError);
-                return;
-            }
-
-            Stocks = result.Value;
-        }
-
         private void AddEventHandlers()
         {
-            MenuSubfamilies.OnEntitySelected += SubfamiliesMenu_SubfamilySelected;
+            MenuSubfamilies.OnEntitySelected += OnSubfamilySelected;
             OnEntitySelected += BtnArticle_Clicked;
         }
 
-        private void SubfamiliesMenu_SubfamilySelected(ArticleSubfamily subfamily)
+        private void OnSubfamilySelected(ArticleSubfamily subfamily)
         {
             Refresh();
         }
 
-        protected override IEnumerable<Article> GetFilteredEntities()
+        protected override IEnumerable<ArticleViewModel> GetFilteredEntities()
         {
-            if (PresentFavorites)
+            var query = new GetArticlesQuery
             {
-                PresentFavorites = false;
-                return Entities.Where(a => a.Favorite);
-            }
+                SubFamilyId = MenuSubfamilies.SelectedEntity?.Id,
+                Favorite = PresentFavorites,
+                Page = Articles.Page,
+                PageSize = Articles.PageSize
+            };
 
-            if (MenuSubfamilies.SelectedEntity == null)
-            {
-                return Entities;
-            }
+            Articles = ArticlesService.GetArticles(query);
 
-            return Entities.Where(a => a.SubfamilyId == MenuSubfamilies.SelectedEntity.Id);
+            return Articles.Items;
         }
 
-        private void BtnArticle_Clicked(Article article)
+        private void BtnArticle_Clicked(ArticleViewModel article)
         {
-            var totalStock = Stocks.FirstOrDefault(x => x.ArticleId == SelectedEntity.Id)?.Quantity ?? 0;
+            var totalStock =  ArticleTotalStockService.GetArticleTotalStock(article.Id);
 
             if (totalStock - SelectedEntity.DefaultQuantity <= SelectedEntity.MinimumStock)
             {
@@ -125,17 +110,17 @@ namespace LogicPOS.UI.Components.Menus
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();
         }
 
-        protected override string GetButtonLabel(Article entity)
+        protected override string GetButtonLabel(ArticleViewModel entity)
         {
-            return entity.Button.Label ?? entity.Designation;
+            return entity.ButtonLabel ?? entity.Designation;
         }
 
-        protected override string GetButtonImage(Article article)
+        protected override string GetButtonImage(ArticleViewModel article)
         {
-            if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
-            {
-                return ArticleImageRepository.GetImage(article.Id) ?? ArticleImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
-            }
+            //if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
+            //{
+            //    return ArticleImageRepository.GetImage(article.Id) ?? ArticleImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
+            //}
 
             return null;
         }
@@ -144,14 +129,9 @@ namespace LogicPOS.UI.Components.Menus
         {
             Entities.Clear();
 
-            var articles = _mediator.Send(new GetAllArticlesQuery()).Result;
+            Articles = ArticlesService.GetArticles(new GetArticlesQuery());
 
-            if (articles.IsError != false)
-            {
-                return;
-            }
-
-            Entities.AddRange(articles.Value);
+            Entities.AddRange(Articles.Items);
         }
     }
 }

@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Printing
                 dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Article.Designation;
                 dataRow[1] = item.Quantity;
-                dataRow[2] = item.Article.MeasurementUnit.Acronym;
+                dataRow[2] = item.Article.Unit;
                 //Add DataRow to Table, Ready for Print
                 ticketTable.Rows.Add(dataRow);
 

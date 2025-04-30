@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtExchangeArticle.Entry.IsEditable = false;
             TxtArticle.Component.Sensitive = false;
 
-            switch (_entity.WarehouseArticle.Status)
+            switch (_entity.Status)
             {
                 case ArticleSerialNumberStatus.Exchanged:
                 case ArticleSerialNumberStatus.Sold:

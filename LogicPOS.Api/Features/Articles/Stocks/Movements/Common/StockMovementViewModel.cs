@@ -1,21 +1,19 @@
 ﻿using LogicPOS.Api.Features.Common;
 using System;
 
-namespace LogicPOS.Api.Entities
+namespace LogicPOS.Api.Features.Articles.Stocks.Common
 {
-    public class StockMovement : ApiEntity
+    public sealed class StockMovementViewModel : ApiEntity
     {
-        public Customer Customer { get; set; }
+        public string Customer { get; set; }
         public Guid? CustomerId { get; set; }
-        public Article Article { get; set; }
+        public string Article { get; set; }
         public Guid ArticleId { get; set; }
         public string SerialNumber { get; set; }
         public string DocumentNumber { get; set; }
         public decimal Quantity { get; set; }
         public decimal Price { get; set; }
         public DateTime Date { get; set; }
-        public DocumentDetail Detail { get; set; }
-        public Guid? DetailId { get; set; }
-        public string ExternalDocument { get; set; }
+        public bool HasExternalDocument { get; set; }
     }
 }

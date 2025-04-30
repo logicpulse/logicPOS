@@ -211,6 +211,12 @@ namespace LogicPOS.UI.Components.Pages
 
         protected abstract void InitializeSort();
 
+        public virtual void Search(string searchText)
+        {
+            GridViewSettings.Filter.Refilter();
+            this.Navigator.Update();
+        }
+
         protected abstract void AddColumns();
 
         public abstract int RunModal(EntityEditionModalMode mode);

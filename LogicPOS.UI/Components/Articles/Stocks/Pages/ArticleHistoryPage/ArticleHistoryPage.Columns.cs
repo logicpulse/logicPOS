@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.Article.Designation;
+                (cell as CellRendererText).Text = history.Article;
             }
             var title = LocalizedString.Instance["global_designation"];
             return Columns.CreateColumn(title, 1, RenderDesignation);
@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderSerialNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.SerialNumber;
+                (cell as CellRendererText).Text = history.SerialNumber;
             }
             var title = LocalizedString.Instance["global_serial_number"];
             return Columns.CreateColumn(title, 2, RenderSerialNumber);
@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.Status.ToFriendlyString();
+                (cell as CellRendererText).Text = history.Status.ToFriendlyString();
             }
             var title = "Estado";
             return Columns.CreateColumn(title, 3, RenderStatus);
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderIsComposed(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.Article.IsComposed ? "Sim" : "Não";
+                (cell as CellRendererText).Text = history.IsComposed ? "Sim" : "Não";
             }
             var title = "Artigo Composto";
             return Columns.CreateColumn(title, 4, RenderIsComposed);
@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderPurchaseDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.OutStockMovement?.Date.ToString();
+                (cell as CellRendererText).Text = history.SaleDate?.Date.ToString();
             }
             var title = "Data de Compra";
             return Columns.CreateColumn(title, 5, RenderPurchaseDate);
@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderProvider(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.InStockMovement?.Customer?.Name;
+                (cell as CellRendererText).Text = history.Supplier;
             }
             var title = "Fornecedor";
             return Columns.CreateColumn(title, 6, RenderProvider);
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderPurchasePrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.InStockMovement.Price.ToString();
+                (cell as CellRendererText).Text = history.PurchaseDate.ToString();
             }
             var title = LocalizedString.Instance["global_purchase_price"];
             return Columns.CreateColumn(title, 7, RenderPurchasePrice);
@@ -92,7 +92,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderOriginDocument(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.InStockMovement.DocumentNumber;
+                (cell as CellRendererText).Text = history.OriginDocument;
             }
             var title = "Documento de Origem";
             return Columns.CreateColumn(title, 8, RenderOriginDocument);
@@ -103,7 +103,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderSaleDocument(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.OutStockMovement?.DocumentNumber;
+                (cell as CellRendererText).Text = history.SaleDocument;
             }
             var title = "Documento de Venda";
             return Columns.CreateColumn(title, 9, RenderSaleDocument);
@@ -114,7 +114,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderWarehouse(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.WarehouseLocation.Warehouse.Designation;
+                (cell as CellRendererText).Text = history.Warehouse;
             }
 
             var title = LocalizedString.Instance["global_warehouse"];
@@ -126,7 +126,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderLocation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.WarehouseLocation.Designation;
+                (cell as CellRendererText).Text = history.WarehouseLocation;
             }
             var title = LocalizedString.Instance["global_ConfigurationDevice_PlaceTerminal"];
             return Columns.CreateColumn(title, 11, RenderLocation);
@@ -137,7 +137,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderUpdatedAt(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.WarehouseArticle.UpdatedAt.ToLocalTime().ToString();
+                (cell as CellRendererText).Text = history.UpdatedAt.ToLocalTime().ToString();
             }
             var title = LocalizedString.Instance["global_record_date_updated"];
             return Columns.CreateColumn(title, 12, RenderUpdatedAt);
@@ -233,7 +233,7 @@ namespace LogicPOS.UI.Components.Pages
 
                 var entity = model.GetValue(iterator, 0) as ArticleHistory;
 
-                if (entity != null && entity.WarehouseArticle.Article.Designation.ToLower().Contains(search))
+                if (entity != null && entity.Article.ToLower().Contains(search))
                 {
                     return true;
                 }

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks
         public override async Task<ErrorOr<IEnumerable<TotalStock>>> Handle(GetArticlesTotalStocksQuery query,
                                                                         CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<TotalStock>("articles/stocks/totals", cancellationToken);
+            return await HandleGetEntitiesQueryAsync<TotalStock>($"articles/stocks/totals{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
@@ -8,18 +9,18 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItem : IWithCode
     {
-        public SaleItem(Article article)
+        public SaleItem(ArticleViewModel article)
         {
             Article = article;
-            UnitPrice = article.Price1.Price;
+            UnitPrice = article.Price;
             Quantity = article.DefaultQuantity > 0 ? article.DefaultQuantity : 1;
-            Vat = article.VatDirectSelling?.Value ?? 0;
+            Vat = article.VatDirectSelling ?? 0;
             Discount = article.Discount;
         }
 
         public SaleItem(OrderDetail detail)
         {
-            Article = detail.Article;
+            Article = ArticleViewModel.FromEntity(detail.Article);
             UnitPrice = detail.Price;
             Quantity = detail.Quantity;
             Vat = detail.Vat;
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.POS
         {
         }
 
-        public Article Article { get; set; }
+        public ArticleViewModel Article { get; set; }
         public decimal Discount { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal Quantity { get; set; }

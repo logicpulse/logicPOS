@@ -67,10 +67,11 @@ namespace LogicPOS.UI.Components.Pages
 
             SearchBox.TxtSearch.EntryValidation.Changed += delegate
             {
-                _page.GridViewSettings.Filter.Refilter();
-                Update();
+               _page.Search(SearchBox.TxtSearch.EntryValidation.Text);
             };
         }
+
+       
 
         private void InitializeExtraButtonSpace()
         {

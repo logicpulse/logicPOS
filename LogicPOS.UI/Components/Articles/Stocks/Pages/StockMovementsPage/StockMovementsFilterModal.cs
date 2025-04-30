@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
@@ -193,7 +194,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
-            var selectArticleModal = new EntitySelectionModal<Article>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
 
@@ -207,12 +208,12 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_start"),
-                                           isRequired: false,
-                                           isValidatable: true,
-                                           regex: RegularExpressions.Date,
-                                           includeSelectButton: true,
-                                           includeKeyBoardButton: true);
+                                       GeneralUtils.GetResourceByName("global_date_start"),
+                                       isRequired: false,
+                                       isValidatable: true,
+                                       regex: RegularExpressions.Date,
+                                       includeSelectButton: true,
+                                       includeKeyBoardButton: true);
 
             var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             TxtStartDate.Text = firstDayOfMonth.ToString("yyyy-MM-dd");

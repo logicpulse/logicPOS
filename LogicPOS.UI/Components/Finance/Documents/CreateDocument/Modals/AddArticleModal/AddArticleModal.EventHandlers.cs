@@ -1,5 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
@@ -76,15 +78,16 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Article>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
+                var article = page.GetSelectedArticle();
                 TxtArticle.Text = page.SelectedEntity.Designation;
-                TxtArticle.SelectedEntity = page.SelectedEntity;
-                ShowArticleData(page.SelectedEntity);
+                TxtArticle.SelectedEntity = article;
+                ShowArticleData(article);
                 UpdateTotals();
                 UpdateValidatableFields();
             }

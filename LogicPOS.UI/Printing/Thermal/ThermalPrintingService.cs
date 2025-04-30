@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Printing
             }
             if (printer == null)
             {
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(ticket.Items[0].Article.Subfamily.FamilyId);
+                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(ticket.Items[0].Article.FamilyId);
             }
 
             if (printer == null && !TerminalService.HasThermalPrinter)
