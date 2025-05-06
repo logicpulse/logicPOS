@@ -81,10 +81,13 @@ namespace LogicPOS.UI.Components.Pages
             AddFiscalNumberSorting();
         }
 
-        protected override void AddEntitiesToModel()
+        protected override void AddEntitiesToModel(IEnumerable<Receipt> receipts)
         {
             var model = (ListStore)GridViewSettings.Model;
-            _entities.ForEach(entity => model.AppendValues(entity, false));
+            foreach (Receipt receipt in receipts)
+            {
+                model.AppendValues(receipt,false);
+            }
         }
 
         protected override DeleteCommand GetDeleteCommand()

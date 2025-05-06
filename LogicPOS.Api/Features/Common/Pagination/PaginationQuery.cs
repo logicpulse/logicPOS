@@ -1,6 +1,4 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.GetDocuments;
 using MediatR;
 using System;
 using System.Text;
@@ -9,14 +7,24 @@ namespace LogicPOS.Api.Features.Common.Pagination
 {
     public abstract class PaginationQuery<TEntity> : IRequest<ErrorOr<PaginatedResult<TEntity>>> where TEntity : class
     {
-        public int? Page { get; set; }
-        public int? PageSize { get; set; }
+        public int? Page { get; set; } = 1;
+        public int? PageSize { get; set; } = 10;
         public string Search { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public abstract void BuildQuery(StringBuilder urlQueryBuilder);
-      
+        public void GoToNextPage()
+        {
+            Page = (Page ?? 0) + 1;
+        }
+
+        public void GoToPreviousPage()
+        {
+            Page = Math.Max(0, (Page ?? 0) - 1);
+        }
+
+        protected abstract void BuildQuery(StringBuilder urlQueryBuilder);
+
         public string GetUrlQuery()
         {
             var queryBuilder = new StringBuilder("?");
@@ -50,5 +58,6 @@ namespace LogicPOS.Api.Features.Common.Pagination
 
             return queryBuilder.ToString();
         }
+
     }
 }

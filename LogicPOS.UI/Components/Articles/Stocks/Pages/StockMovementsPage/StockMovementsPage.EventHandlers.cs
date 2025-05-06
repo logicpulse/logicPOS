@@ -9,6 +9,12 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class StockMovementsPage
     {
+        private void AddEventHandlers()
+        {
+            Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
+        }
+
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)
         {
             if (SelectedEntity == null)
@@ -63,26 +69,16 @@ namespace LogicPOS.UI.Components.Pages
             {
                 return;
             }
-     
-            var nextPageQuery = CurrentQuery.GetNextPageQuery();
-            var result = _mediator.Send(nextPageQuery).Result;
 
-            if (result.IsError)
+            var paginatedResult = ShowMore(CurrentQuery);
+
+            if(paginatedResult == null)
             {
-                HandleErrorResult(result);
                 return;
             }
 
-            var movements = result.Value;
-            _entities.AddRange(movements.Items);
-            CurrentQuery.Page = nextPageQuery.Page;
-
-            var model = (ListStore)GridViewSettings.Model;
-
-            foreach (var entity in movements.Items)
-            {
-                model.AppendValues(entity);
-            }
+            Movements = paginatedResult.Value;
+            AddEntitiesToModel(Movements.Items);
         }
     }
 }

@@ -10,20 +10,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements
         public Guid? ArticleId { get; set; }
         public Guid? CustomerId { get; set; }
 
-        public GetStockMovementsQuery GetNextPageQuery()
-        {
-            return new GetStockMovementsQuery
-            {
-                Page = (Page ?? 0) + 1,
-                PageSize = PageSize,
-                StartDate = StartDate,
-                EndDate = EndDate,
-                ArticleId = ArticleId,
-                CustomerId = CustomerId
-            };
-        }
-
-        public override void BuildQuery(StringBuilder urlQueryBuilder)
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
             if (ArticleId.HasValue)
             {

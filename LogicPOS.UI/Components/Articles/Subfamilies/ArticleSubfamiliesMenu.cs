@@ -33,7 +33,8 @@ namespace LogicPOS.UI.Components.Menus
         {
             FamiliesMenu = familiesMenu;
             AddEventHandlers();
-            PresentEntities();
+            LoadEntities();
+            ListEntities(Entities);
         }
 
         private void AddEventHandlers()
@@ -44,11 +45,6 @@ namespace LogicPOS.UI.Components.Menus
         private void FamiliesMenu_FamilySelected(ArticleFamily family)
         {
             Refresh();
-        }
-
-        protected override IEnumerable<ArticleSubfamily> GetFilteredEntities()
-        {
-            return Entities.Where(s => s.FamilyId == FamiliesMenu.SelectedEntity.Id);
         }
 
         protected override string GetButtonLabel(ArticleSubfamily subfamily)
@@ -78,6 +74,11 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             Entities.AddRange(subfamilies.Value);
+        }
+
+        protected override IEnumerable<ArticleSubfamily> FilterEntities(IEnumerable<ArticleSubfamily> entities)
+        {
+            return entities.Where(s => s.FamilyId == FamiliesMenu.SelectedEntity.Id);
         }
     }
 }

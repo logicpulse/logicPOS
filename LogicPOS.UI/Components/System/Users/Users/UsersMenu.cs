@@ -3,10 +3,8 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.GetAllUsers;
 using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Users;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -72,6 +70,9 @@ namespace LogicPOS.UI.Components.Menus
             return button;
         }
 
-
+        protected override IEnumerable<User> FilterEntities(IEnumerable<User> entities)
+        {
+            return entities;
+        }
     }
 }

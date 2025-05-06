@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -26,7 +27,8 @@ namespace LogicPOS.UI.Components.Menus
                                                               btnNext,
                                                               sourceWindow)
         {
-            PresentEntities();
+            LoadEntities();
+            ListEntities(Entities);
         }
 
 
@@ -124,6 +126,11 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             Entities.AddRange(paymentMethods.Value);
+        }
+
+        protected override IEnumerable<PaymentMethod> FilterEntities(IEnumerable<PaymentMethod> entities)
+        {
+            return entities;
         }
     }
 }

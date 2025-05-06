@@ -1,9 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
@@ -42,8 +39,6 @@ namespace LogicPOS.UI.Components.Windows
             {
                 MenuFamilies.SelectedEntity = null;
                 MenuFamilies.Refresh();
-                MenuSubfamilies.Refresh();
-                MenuArticles.Refresh();
             }
         }
 

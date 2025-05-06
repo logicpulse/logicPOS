@@ -11,7 +11,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
         public Guid? SubFamilyId { get; set; }
         public bool? Favorite { get; set; }
 
-        public override void BuildQuery(StringBuilder urlQueryBuilder)
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
             if (FamilyId.HasValue)
             {
@@ -23,12 +23,11 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
                 urlQueryBuilder.Append($"&subfamilyId={SubFamilyId}");
             }
 
-            if (!Favorite.HasValue)
+            if (Favorite.HasValue)
             {
                 urlQueryBuilder.Append($"&favorite={Favorite}");
             }
         }
     }
-
 
 }

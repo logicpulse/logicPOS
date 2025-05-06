@@ -5,6 +5,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -23,7 +24,8 @@ namespace LogicPOS.UI.Components.Menus
                                                                btnNext,
                                                                sourceWindow)
         {
-            PresentEntities();
+            LoadEntities();
+            ListEntities(Entities);
         }
 
         protected override string GetButtonLabel(ArticleFamily family)
@@ -53,6 +55,11 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             Entities.AddRange(families.Value);
+        }
+
+        protected override IEnumerable<ArticleFamily> FilterEntities(IEnumerable<ArticleFamily> entities)
+        {
+            return entities;
         }
     }
 }

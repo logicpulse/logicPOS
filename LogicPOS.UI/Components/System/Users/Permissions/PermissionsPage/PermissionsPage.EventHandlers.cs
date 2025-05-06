@@ -1,10 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -37,13 +33,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             base.GridViewRow_Changed(sender, e);
             ShowUserProfilePermissions(SelectedEntity);
-        }
-        public override void Refresh()
-        {
-            LoadEntities();
-            var model = (ListStore)GridViewSettings.Model;
-            model.Clear();
-            base.AddEntitiesToModel();
         }
 
     }

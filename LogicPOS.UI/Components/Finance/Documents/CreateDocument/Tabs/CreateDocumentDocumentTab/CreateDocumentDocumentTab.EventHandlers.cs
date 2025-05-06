@@ -36,6 +36,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             modal.Destroy();
         }
+       
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
         {
             var modal = new DocumentsModal(SourceWindow, selectionMode: true);
@@ -50,6 +51,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             modal.Destroy();
         }
+       
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
@@ -88,6 +90,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtPaymentCondition.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
         {
             var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);

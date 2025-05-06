@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
         public override async Task<ErrorOr<PaginatedResult<ArticleViewModel>>> Handle(GetArticlesQuery request,
                                                                                       CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<PaginatedResult<ArticleViewModel>>("articles", cancellationToken);
+            return await HandleGetEntityQueryAsync<PaginatedResult<ArticleViewModel>>($"articles{request.GetUrlQuery()}", cancellationToken);
         }
     }
 }

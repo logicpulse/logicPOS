@@ -13,7 +13,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
         public Guid? PaymentConditionId { get; set; }
         public DocumentPaymentStatusFilter? PaymentStatus { get; set; }
 
-        public override void BuildQuery(StringBuilder urlQueryBuilder)
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
             if (Types != null && Types.Length > 0)
             {

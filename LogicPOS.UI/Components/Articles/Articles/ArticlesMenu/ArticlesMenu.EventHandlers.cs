@@ -1,0 +1,82 @@
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
+using System;
+using System.Drawing;
+
+namespace LogicPOS.UI.Components.Menus
+{
+    public partial class ArticlesMenu
+    {
+        private void AddEventHandlers()
+        {
+            MenuSubfamilies.OnEntitySelected += OnSubfamilySelected;
+            OnEntitySelected += BtnArticle_Clicked;
+        }
+
+        private void OnSubfamilySelected(ArticleSubfamily subfamily)
+        {
+            Refresh();
+        }
+
+        private void BtnArticle_Clicked(ArticleViewModel article)
+        {
+            var totalStock = ArticleTotalStockService.GetArticleTotalStock(article.Id);
+
+            if (totalStock - SelectedEntity.DefaultQuantity <= SelectedEntity.MinimumStock)
+            {
+                var message = $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedEntity.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedEntity.MinimumStock.ToString()}";
+
+                var stockWarningResponse = new CustomAlert(SourceWindow)
+                                        .WithMessage(message)
+                                        .WithSize(new Size(500, 350))
+                                        .WithMessageType(MessageType.Question)
+                                        .WithButtonsType(ButtonsType.YesNo)
+                                        .WithTitleResource("global_stock_movements")
+                                        .ShowAlert();
+
+                if (stockWarningResponse == ResponseType.No)
+                {
+                    return;
+                }
+            }
+
+            var item = new SaleItem(SelectedEntity);
+
+
+            if (item.UnitPrice <= 0)
+            {
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), item.UnitPrice);
+
+                if (result.Response == ResponseType.Cancel)
+                {
+                    return;
+                }
+
+                item.UnitPrice = result.Value;
+            }
+
+
+            SaleContext.ItemsPage.AddItem(item);
+            POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();
+        }
+
+        protected override void BtnPrevious_Clicked(object obj, EventArgs args)
+        {
+            CurrentQuery.GoToPreviousPage();
+            Refresh();
+        }
+
+        protected override void BtnNext_Clicked(object obj, EventArgs args)
+        {
+            CurrentQuery.GoToNextPage();
+            Refresh();
+        }
+    }
+}

@@ -14,8 +14,6 @@ namespace LogicPOS.UI.Components.Pages
     public class PageSearchBox : Box
     {
         private Window SourceWindow { get; set; }
-        public bool ShowMoreButton { get; set; }
-        public bool ShowFilterButton { get; set; }
         internal EntryBoxValidation TxtSearch { get; set; }
         public string SearchText => TxtSearch.EntryValidation.Text;
         public HBox Bar { get; set; } = new HBox(false, 0);
@@ -27,10 +25,10 @@ namespace LogicPOS.UI.Components.Pages
         public PageSearchBox(Window parentWindow)
         {
             SourceWindow = parentWindow;
-            Design();
+            Intitialize();
         }
 
-        private void Design()
+        private void Intitialize()
         {
             TxtSearch = new EntryBoxValidation(SourceWindow,
                                                GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),

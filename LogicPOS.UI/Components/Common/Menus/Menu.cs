@@ -4,6 +4,7 @@ using LogicPOS.UI.Buttons;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.Menus
             UpdateNavigationButtons();
         }
 
-        private void UpdateNavigationButtons()
+        protected virtual void UpdateNavigationButtons()
         {
             if (CurrentPage == 1)
             {
@@ -138,13 +139,13 @@ namespace LogicPOS.UI.Components.Menus
             }
         }
 
-        private void BtnPrevious_Clicked(object obj, EventArgs args)
+        protected virtual void BtnPrevious_Clicked(object obj, EventArgs args)
         {
             CurrentPage -= 1;
             UpdateUI();
         }
 
-        private void BtnNext_Clicked(object obj, EventArgs args)
+        protected virtual void BtnNext_Clicked(object obj, EventArgs args)
         {
             CurrentPage += 1;
             UpdateUI();
@@ -154,26 +155,19 @@ namespace LogicPOS.UI.Components.Menus
 
         protected abstract string GetButtonImage(TEntity entity);
 
-        protected virtual IEnumerable<TEntity> GetFilteredEntities()
+        public virtual void ListEntities(IEnumerable<TEntity> entities)
         {
-            return Entities;
-        }
-
-        public virtual void PresentEntities()
-        {
-            CurrentPage = 1;
-            Buttons.Clear();
-
-            if (Entities == null || Entities.Count == 0)
+            if (entities == null || entities.Any() == false)
             {
-                LoadEntities();
+                return;
             }
 
-            var filteredEntities = GetFilteredEntities();
+
+            Buttons.Clear();
 
             SelectedEntity = default;
 
-            foreach (var entity in filteredEntities)
+            foreach (var entity in entities)
             {
                 ButtonLabel = GetButtonLabel(entity);
                 ButtonImage = GetButtonImage(entity);
@@ -195,11 +189,17 @@ namespace LogicPOS.UI.Components.Menus
                 }
             }
 
+            SetPagination();
+
+            UpdateUI();
+        }
+
+        protected virtual void SetPagination()
+        {
+            CurrentPage = 1;
             TotalItems = Buttons.Count;
             ItemsPerPage = Convert.ToInt16(_rows * _columns);
             TotalPages = (int)Math.Ceiling(TotalItems / (float)ItemsPerPage);
-
-            UpdateUI();
         }
 
         protected abstract void LoadEntities();
@@ -224,10 +224,14 @@ namespace LogicPOS.UI.Components.Menus
             OnEntitySelected?.Invoke(SelectedEntity);
         }
 
+        protected abstract IEnumerable<TEntity> FilterEntities(IEnumerable<TEntity> entities);
+
         public virtual void Refresh()
         {
             Buttons.Clear();
-            PresentEntities();
+            LoadEntities();
+            var filteredEntities = FilterEntities(Entities);
+            ListEntities(filteredEntities);
 
             if (SelectedEntity != null)
             {

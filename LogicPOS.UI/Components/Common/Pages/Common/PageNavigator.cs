@@ -71,8 +71,6 @@ namespace LogicPOS.UI.Components.Pages
             };
         }
 
-       
-
         private void InitializeExtraButtonSpace()
         {
             ExtraButtonSpace = new HBox(false, 0);

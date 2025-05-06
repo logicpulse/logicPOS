@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
+using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +23,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            AddEventHandlers();
         }
 
         protected override void LoadEntities()
@@ -82,6 +84,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             return new DeleteArticleCommand(SelectedEntity.Id);
         }
+
 
         #region Singleton
         private static ArticlesPage _instance;

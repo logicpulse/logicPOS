@@ -31,12 +31,6 @@ namespace LogicPOS.UI.Components.Pages
         public StockMovementsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
-        
-        private void AddEventHandlers()
-        {
-            Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
-            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
-        }
 
         private void AddOpenDocumentButton()
         {

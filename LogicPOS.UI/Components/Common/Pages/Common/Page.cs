@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.Pages
 
             Design();
 
-            AddEntitiesToModel();
+            AddEntitiesToModel(_entities);
 
             ShowAll();
 
@@ -55,9 +56,14 @@ namespace LogicPOS.UI.Components.Pages
         public virtual void Refresh()
         {
             LoadEntities();
+            ClearGridViewModel();
+            AddEntitiesToModel(_entities);
+        }
+
+        protected void ClearGridViewModel()
+        {
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
-            AddEntitiesToModel();
         }
 
         protected abstract DeleteCommand GetDeleteCommand();
@@ -125,10 +131,14 @@ namespace LogicPOS.UI.Components.Pages
             InitializeSort();
         }
 
-        protected virtual void AddEntitiesToModel()
+        protected virtual void AddEntitiesToModel(IEnumerable<TEntity> entities)
         {
             var model = (ListStore)GridViewSettings.Model;
-            _entities.ForEach(entity => model.AppendValues(entity));
+
+            foreach (var entity in entities)
+            {
+                model.AppendValues(entity);
+            }
         }
 
         protected virtual void InitializeFilter()
@@ -256,7 +266,8 @@ namespace LogicPOS.UI.Components.Pages
                 Navigator.CurrentRecord = Convert.ToInt16(GridViewSettings.Path.ToString());
                 SelectedEntity = (TEntity)model.GetValue(GridViewSettings.Iterator, 0);
                 EntitySelected?.Invoke(SelectedEntity);
-            };
+            }
+            ;
 
             Navigator.Update();
         }
@@ -282,6 +293,25 @@ namespace LogicPOS.UI.Components.Pages
             {
                 Refresh();
             }
+        }
+        
+        protected PaginatedResult<TEntity>? ShowMore(
+            PaginationQuery<TEntity> query)
+        {
+
+            query.GoToNextPage();
+
+            var result = _mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                query.GoToPreviousPage();
+                ErrorHandlingService.HandleApiError(result,
+                                                    source: SourceWindow);
+                return null;
+            }
+
+            return result.Value;
         }
     }
 }

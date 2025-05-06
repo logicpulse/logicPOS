@@ -145,9 +145,9 @@ namespace LogicPOS.UI.Components.Pages
             InitializePermissionItemsGrid();
         }
 
-        protected override void AddEntitiesToModel()
+        protected override void AddEntitiesToModel(IEnumerable<UserProfile> profiles)
         {
-            base.AddEntitiesToModel();
+            base.AddEntitiesToModel(profiles);
             AddPermissionItemsToModel();
         }
 

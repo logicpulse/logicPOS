@@ -25,17 +25,13 @@ namespace LogicPOS.UI.Components.Menus
                                                       btnNext,
                                                       sourceWindow)
         {
-            PresentEntities();
+            LoadEntities();
+            ListEntities(Entities);
         }
 
-        protected override IEnumerable<Place> GetFilteredEntities()
+        protected override IEnumerable<Place> FilterEntities(IEnumerable<Place> entities)
         {
-            if (TerminalService.Terminal.PlaceId != null)
-            {
-                return Entities.Where(t => t.Id == TerminalService.Terminal.PlaceId);
-            }
-
-            return Entities;
+            return entities.Where(t => t.Id == TerminalService.Terminal.PlaceId);
         }
 
         protected override string GetButtonImage(Place entity)

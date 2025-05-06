@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Pages
             _entities.RemoveAll(e => !predicate(e));
             var model = (ListStore)GridViewSettings.Model;
             model.Clear();
-            AddEntitiesToModel();
+            AddEntitiesToModel(_entities);
         }
     }
 }

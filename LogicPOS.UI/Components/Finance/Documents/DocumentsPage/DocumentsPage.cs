@@ -113,10 +113,13 @@ namespace LogicPOS.UI.Components.Pages
             AddTotalFinalSorting();
         }
 
-        protected override void AddEntitiesToModel()
+        protected override void AddEntitiesToModel(IEnumerable<Document> documents)
         {
             var model = (ListStore)GridViewSettings.Model;
-            _entities.ForEach(entity => model.AppendValues(entity, false));
+            foreach (var document in documents)
+            {
+                model.AppendValues(document, false);
+            }
         }
 
         public IEnumerable<(Document, DocumentTotals)> GetSelectedDocumentsWithTotals()
