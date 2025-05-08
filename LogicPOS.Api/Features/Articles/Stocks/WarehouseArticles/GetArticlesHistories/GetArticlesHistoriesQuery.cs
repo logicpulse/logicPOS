@@ -1,11 +1,13 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Features.Common.Pagination;
-using MediatR;
+﻿using LogicPOS.Api.Features.Common.Pagination;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories
 {
-    public class GetArticlesHistoriesQuery : IRequest<ErrorOr<PaginatedResult<ArticleHistory>>>
+    public class GetArticlesHistoriesQuery : PaginationQuery<ArticleHistory>
     {
-        public string Search { get; set; }
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
+        {
+
+        }
     }
 }

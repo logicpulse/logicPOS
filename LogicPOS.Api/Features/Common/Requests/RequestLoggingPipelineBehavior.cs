@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using ErrorOr;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,14 +17,31 @@ namespace LogicPOS.Api.Features.Common
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
-
-            _logger.LogInformation("Handling request {Request}", request);
-
             var response = await next();
 
-            _logger.LogInformation("Handled request {Request} with response {Response}", request, response);
+            if (response is IErrorOr)
+            {
+                HandleErrorOrResponse(request, response);
+            }
 
             return response;
+        }
+
+        private void HandleErrorOrResponse(TRequest request, TResponse response)
+        {
+            var requestTypeName = request.GetType().Name;
+            var result = (IErrorOr)response;
+
+            if (result.IsError)
+            {
+                _logger.LogError("Request {Request} failed with errors {Errors}", requestTypeName, result.Errors);
+                return;
+            }
+
+            PropertyInfo valueProperty = typeof(TResponse).GetProperty("Value");
+            var valueType = valueProperty.GetValue(response)?.GetType();
+
+            _logger.LogInformation("Request {Request} succeeded with response {Response}", requestTypeName, valueType);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using Gtk;
+using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
@@ -26,17 +27,14 @@ namespace LogicPOS.UI.Components.Pages
                                                                                                   @"Icons/Dialogs/icon_pos_dialog_action_print.png");
         private IconButtonWithText BtnOpenExternalDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
         private IconButtonWithText BtnOpenSaleDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
-
-        public ArticleHistoryPage(Window parent) : base(parent)
+       
+        public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             RemoveForbiddenButtons();
             AddPrintSerialNumberButton();
             AddOpenExternalDocumentButton();
             AddOpenSaleDocumentButton();
-        }
-       
-        public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
-        {
+            AddEventHandlers();
         }
 
         private void AddOpenSaleDocumentButton()
@@ -44,12 +42,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnOpenSaleDocument.ButtonLabel.Text = "Doc.Venda";
             BtnOpenSaleDocument.Clicked += BtnOpenSaleDocument_Clicked;
             Navigator.RightButtons.PackStart(BtnOpenSaleDocument, false, false, 0);
-        }
-
-        private void BtnOpenSaleDocument_Clicked(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        } 
 
         private void AddOpenExternalDocumentButton()
         {
@@ -58,52 +51,10 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.RightButtons.PackStart(BtnOpenExternalDocument, false, false, 0);
         }
 
-        private void BtnOpenExternalDocument_Clicked(object sender, EventArgs e)
-        {
-            if (SelectedEntity == null)
-            {
-                return;
-            }
-
-            if (SelectedEntity.HasExternalDocument)
-            {
-                var filePath = System.IO.Path.GetTempFileName();
-                var result = _mediator.Send(new GetStockMovementByIdQuery(SelectedEntity.InMovementId)).Result;
-
-                if (result.IsError)
-                {
-                    ErrorHandlingService.HandleApiError(result, source: SourceWindow);
-                    return;
-                }
-
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
-                LogicPOSPDFViewer.ShowPDF(filePath);
-                return;
-            }
-        }
-
         private void AddPrintSerialNumberButton()
         {
             BtnPrintSerialNumber.Clicked += BtnPrintSerialNumber_Clicked;
             Navigator.RightButtons.Add(BtnPrintSerialNumber);
-        }
-
-        private void BtnPrintSerialNumber_Clicked(object sender, EventArgs e)
-        {
-            if (SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.SerialNumber))
-            {
-                return;
-            }
-
-            var result = _mediator.Send(new GetArticleSerialNumberPdfQuery(SelectedEntity.Id)).Result;
-
-            if (result.IsError)
-            {
-                HandleErrorResult(result);
-                return;
-            }
-
-            LogicPOSPDFViewer.ShowPDF(result.Value);
         }
 
         private void RemoveForbiddenButtons()
@@ -131,6 +82,12 @@ namespace LogicPOS.UI.Components.Pages
             {
                 _entities.AddRange(Histories.Items);
             }
+        }
+
+        public override void Search(string searchText)
+        {
+            CurrentQuery = new GetArticlesHistoriesQuery { Search = searchText };
+            Refresh();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

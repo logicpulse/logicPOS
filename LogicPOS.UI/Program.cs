@@ -19,7 +19,7 @@ using System.Threading;
 namespace LogicPOS.UI
 {
 
-    internal class Program
+    internal partial class Program
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
@@ -97,7 +97,6 @@ namespace LogicPOS.UI
         {
             PluginSettings.InitializeContainer();
             InitializeSoftwareVendorPlugin();
-            InitializeStockModule();
             InitializeLicenseManagerPlugin();
         }
 
@@ -110,11 +109,6 @@ namespace LogicPOS.UI
         private static void InitializeLicenseManagerPlugin()
         {
             PluginSettings.LicenceManager = PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>();
-        }
-
-        private static void InitializeStockModule()
-        {
-            //ModulesSettings.StockManagementModule = PluginSettings.PluginContainer.GetFirstPluginOfType<IStockManagementModule>();
         }
 
         private static void InitializeSoftwareVendorPlugin()

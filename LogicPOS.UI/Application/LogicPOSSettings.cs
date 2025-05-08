@@ -82,43 +82,10 @@ namespace LogicPOS.UI.Application
         private static readonly string FileFormatThemeFile = "theme_{0}_{1}.xml";
         public static string FileTheme { get { return GetThemeFileLocation(); } }
 
-        //Database Script Files
-        public static string FileDatabaseSchema = @"Resources\Database\{0}\databaseschema.sql";
-
-        public static string FileDatabaseUpdate = @"Resources\Database\{0}\databaseschemaupdate.sql";
-
-        /* IN009035 */
-        public static string FileDatabaseDataPath = @"Resources\Database\Data\{0}\{1}\databasedata.sql"; // "Resources\Database\Data\Default\en\databasedata.sql"
-
-        /* IN008024 */
-        public static string FileDatabaseDataDemoPath = @"Resources\Database\Demos\{0}\{1}\{2}"; // "Resources\Database\Demos\Backery\en\databasedatademo_backery.sql"
-
-        public static string FileDatabaseViews = @"Resources\Database\databaseviews.sql";
-        // public static string FileDatabaseOtherDatabaseType = @"Resources\Database\{0}\Other\";/* IN009045: Not in use */
-        public static string FileDatabaseOtherCommon = @"Resources\Database\Other\";
-        /* IN009035: data being included by databasedata.sql accordingly to its specific theme/language */
-        // public static string FileDatabaseOtherCommonAppMode = @"Resources\Database\Other\AppMode";
-        //Encrypted Scripts
-        /* IN009035 */
-        public static string FileDatabaseOtherCommonPluginsSoftwareVendorPath = @"Resources\Database\Other\Plugins\SoftwareVendor\Data\{0}\{1}"; // "Resources\Database\Other\Plugins\SoftwareVendor\Data\Default\en"
-    
-        //Country Scripts
-        public static string FileDatabaseOtherCommonCountry = @"Resources\Database\Other\Country";
-        //Country Encrypted Scripts
-        public static string FileDatabaseOtherCommonPluginsSoftwareVendorOtherCommonCountry = @"Resources\Database\Other\Plugins\SoftwareVendor\Other\Country";
-
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         //User Config Oids - Values in Config, Proxy here to always use SettingsApp.VAR in Code
 
-        //Database Oids/Guids
-
-        //Payment Defaults
-        public static Guid XpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition { get; set; } = new Guid(AppSettings.Instance.xpoOidConfigurationPaymentConditionDefaultInvoicePaymentCondition);
-        public static Guid XpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod = new Guid(AppSettings.Instance.xpoOidConfigurationPaymentMethodDefaultInvoicePaymentMethod);
-
-        //ConfigurationPlaceTable
-        public static Guid XpoOidConfigurationPlaceTableDefaultOpenTable = new Guid(AppSettings.Instance.xpoOidConfigurationPlaceTableDefaultOpenTable);
-
+       
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         // Other
 
@@ -142,15 +109,6 @@ namespace LogicPOS.UI.Application
         //First time boot POS flag
         public static bool FirstBoot;
         //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Pagination Related
-        /// <summary>
-        /// Define Rows per Page for pagination load
-        /// </summary>
-        public static int PaginationRowsPerPage = 30;
-
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Helper Methods
-
 
         private static string GetThemeFileLocation()
         {
