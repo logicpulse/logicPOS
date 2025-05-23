@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
 using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
+using LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf;
 using LogicPOS.Api.Features.Reports.GetCompanyBillingReportPdf;
 using LogicPOS.Api.Features.Reports.GetCustomerReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf;
@@ -101,6 +102,11 @@ namespace LogicPOS.UI.Services
         public static void ShowSalesByCurrencyReport(DateTime startDate, DateTime endDate)
         {
             ShowReport(new GetSalesByCurrencyReportPdfQuery(startDate, endDate));
+        }
+
+        public static void ShowArticleTotalSoldReport(DateTime startDate, DateTime endDate)
+        {
+            ShowReport(new GetArticleTotalSoldReportPdfQuery(startDate, endDate));
         }
 
         public static void ShowSalesByCountryReport(DateTime startDate, DateTime endDate)

@@ -35,6 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         private VBox PanelDetailedFinancialReports = new VBox(false, 2);
         private XAccordionChildButton BtnCustomerBalanceDetailsReport = new XAccordionChildButton(LocalizedString.Instance["report_customer_balance_details"]);
         private XAccordionChildButton BtnCurrentAccountReport = new XAccordionChildButton(LocalizedString.Instance["report_list_current_account"]);
+        private XAccordionChildButton BtnArticleTotalSoldReport = new XAccordionChildButton(LocalizedString.Instance["Total Vendido por Artigo"]);
         private XAccordionChildButton BtnDetailedSalesByDocumentReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por tipo de documento fiscal (Detalhado)"]);
         private XAccordionChildButton BtnDetailedSalesByDateReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por dia (Detalhado)"]);
         private XAccordionChildButton BtnDetailedSalesByUserReport = new XAccordionChildButton(LocalizedString.Instance["Vendas por funcionário (Detalhado)"]);

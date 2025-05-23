@@ -34,6 +34,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 PanelDetailedFinancialReports.PackStart(BtnCustomerBalanceDetailsReport.Button, false, false, 0);
                 PanelDetailedFinancialReports.PackStart(BtnCurrentAccountReport.Button, false, false, 0);
+                PanelDetailedFinancialReports.PackStart(BtnArticleTotalSoldReport.Button, false, false, 0);
                 PanelDetailedFinancialReports.PackStart(BtnDetailedSalesByDocumentReport.Button, false, false, 0);
                 PanelDetailedFinancialReports.PackStart(BtnDetailedSalesByDateReport.Button, false, false, 0);
                 PanelDetailedFinancialReports.PackStart(BtnDetailedSalesByUserReport.Button, false, false, 0);

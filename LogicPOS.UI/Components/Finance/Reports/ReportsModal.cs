@@ -66,6 +66,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnStockByArticleReport.Button.Clicked += BtnStockByArticleReport_Clicked;
             BtnStockBySupplierReport.Button.Clicked += BtnStockBySupplierReport_Clicked;
             BtnStockByArticleGainReport.Button.Clicked += BtnStockByArticleGainReport_Clicked;
+            BtnArticleTotalSoldReport.Button.Clicked += BtnArticleTotalSoldReport_Clicked;
         }
 
         public static void ShowModal(Window parent)

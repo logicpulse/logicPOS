@@ -80,6 +80,17 @@ namespace LogicPOS.UI.Components.Modals
             modal.Destroy();
         }
 
+        private void BtnArticleTotalSoldReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowArticleTotalSoldReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
         private void BtnSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
         {
             var modal = new ReportsFilterModal(this);
