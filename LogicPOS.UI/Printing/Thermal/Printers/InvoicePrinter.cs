@@ -238,9 +238,19 @@ namespace LogicPOS.UI.Printing
             }
             _printer.Separator(' ');
             _printer.SetLineHeight(100);
-            _printer.QrCode(_document.Number, QrCodeSize.Size2);
-            _printer.NormalLineHeight();
-            _printer.NewLine();
+
+            if(_companyInformations.CountryCode2.ToUpper()=="PT" && !string.IsNullOrEmpty(_document.ATQRCode))
+            {
+                _printer.QrCode(_document.ATQRCode, QrCodeSize.Size2);
+                _printer.NormalLineHeight();
+                _printer.NewLine();
+            }
+            else
+            {
+                _printer.QrCode(_document.Number, QrCodeSize.Size2);
+                _printer.NormalLineHeight();
+                _printer.NewLine();
+            }
 
             PrintFooter();
             _printer.FullPaperCut();

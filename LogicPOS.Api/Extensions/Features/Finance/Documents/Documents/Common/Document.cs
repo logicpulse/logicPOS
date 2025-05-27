@@ -42,6 +42,7 @@ namespace LogicPOS.Api.Entities
         public DocumentCustomer Customer { get; set; }
         public IList<DocumentDetail> Details { get; set; }
         public bool IsDraft { get; set; }
+        public string ATQRCode { get; set; }
         public bool IsCancelled => Status == "A";
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
 
