@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -38,8 +39,8 @@ namespace LogicPOS.UI.Components
         private void TxtSerialNumber_SelectEntityClicked(object sender, EventArgs e)
         {
             var page = new WarehouseArticlesPage(null, PageOptions.SelectionPageOptions);
-            page.ApplyFilter( x => x.ArticleId == _article.Id);
-            var selectArticleModal = new EntitySelectionModal<WarehouseArticle>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            page.FilterByArticleId(_article.Id);
+            var selectArticleModal = new EntitySelectionModal<WarehouseArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
 

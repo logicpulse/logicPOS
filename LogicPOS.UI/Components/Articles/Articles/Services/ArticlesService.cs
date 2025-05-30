@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
 using MediatR;
@@ -31,6 +32,19 @@ namespace LogicPOS.UI.Components.Articles
         public static Article GetArticlebById(Guid id)
         {
             var result = _mediator.Send(new GetArticleByIdQuery(id)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+        public static WarehouseArticle GetWarehouseArticleById(Guid id)
+        {
+            var result = _mediator.Send(new GetWarehouseArticleByIdQuery(id)).Result;
 
             if (result.IsError)
             {

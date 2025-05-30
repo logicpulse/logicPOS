@@ -6,10 +6,8 @@ using LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class DiscountGroupModal:EntityEditionModal<DiscountGroup>
+    public partial class DiscountGroupModal : EntityEditionModal<DiscountGroup>
     {
-        private EntityEditionModalMode mode;
-
         public DiscountGroupModal(EntityEditionModalMode modalMode, DiscountGroup entity = null) : base(modalMode, entity)
         {
         }

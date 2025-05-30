@@ -28,7 +28,6 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class PaymentsModal : Modal
     {
-        private IEnumerable<PaymentMethod> _paymentMethods;
         private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private PaymentCondition _selectedPaymentCondition;
         private PaymentMode _paymentMode = PaymentMode.Full;

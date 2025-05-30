@@ -3,14 +3,12 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.DeleteArticle;
 using LogicPOS.Api.Features.Articles.GetArticles;
-using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
-using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -70,7 +68,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void Search(string searchText)
         {
-            CurrentQuery = new GetArticlesQuery { Search =  searchText };
+            CurrentQuery = new GetArticlesQuery { Search = searchText };
             Refresh();
         }
 

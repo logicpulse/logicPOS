@@ -1,6 +1,7 @@
 ﻿
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void BeforeDesign()
         {
-            _locationField = new WarehouseSelectionField(_entity);
+            var warehouseArticle = ArticlesService.GetWarehouseArticleById(_entity.Id);
+            _locationField = new WarehouseSelectionField(warehouseArticle);
 
             _txtArticle.Component.Sensitive = false;
             _txtSerialNumber.Component.Sensitive = false;

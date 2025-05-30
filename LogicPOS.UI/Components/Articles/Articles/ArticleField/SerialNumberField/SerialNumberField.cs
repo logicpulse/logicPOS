@@ -1,12 +1,9 @@
-﻿using Gtk;
-using LogicPOS.Api.Features.Articles.GetArticleChildren;
+﻿using LogicPOS.Api.Features.Articles.GetArticleChildren;
 using LogicPOS.Api.Features.Articles.StockManagement.GetUniqueArticleChildren;
 using LogicPOS.Globalization;
-using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Errors;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components
@@ -73,8 +70,9 @@ namespace LogicPOS.UI.Components
         {
             var result = TxtSerialNumber.IsValid();
 
-            if (Children.Any()) {
-                result = result &&  Children.All(f => f.IsValid());
+            if (Children.Any())
+            {
+                result = result && Children.All(f => f.IsValid());
             }
 
             return result;

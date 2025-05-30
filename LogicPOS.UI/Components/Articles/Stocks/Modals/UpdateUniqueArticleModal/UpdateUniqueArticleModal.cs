@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Articles.StockManagement.ExchangeUniqueArticle;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.StockManagement.UpdateUniqueArticle;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents;
@@ -35,8 +36,8 @@ namespace LogicPOS.UI.Components.Modals
         private void TxtExchangeArticle_SelectEntityClicked(object sender, EventArgs e)
         {
             var page = new WarehouseArticlesPage(null, PageOptions.SelectionPageOptions);
-            page.ApplyFilter(x => x.Id != _entity.ArticleId && x.SerialNumber != null);
-            var selectArticleModal = new EntitySelectionModal<WarehouseArticle>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            page.FilterByArticleId(_entity.ArticleId);
+            var selectArticleModal = new EntitySelectionModal<WarehouseArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
 

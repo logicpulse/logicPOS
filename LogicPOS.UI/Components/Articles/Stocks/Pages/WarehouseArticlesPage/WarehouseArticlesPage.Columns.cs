@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
 
@@ -7,13 +8,23 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class WarehouseArticlesPage
     {
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(CreateWarehouseColumn());
+            GridView.AppendColumn(CreateLocationColumn());
+            GridView.AppendColumn(CreateDesignationColumn());
+            GridView.AppendColumn(CreateSerialNumberColumn());
+            GridView.AppendColumn(CreateQuantityColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(6));
+        }
+
         #region Creators
         private TreeViewColumn CreateWarehouseColumn()
         {
             void RenderWarehouse(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (WarehouseArticle)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = article.WarehouseLocation.Warehouse.Designation;
+                var article = (WarehouseArticleViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = article.Warehouse;
             }
 
             var title = LocalizedString.Instance["global_warehouse"];
@@ -24,8 +35,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderLocation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (WarehouseArticle)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = article.WarehouseLocation.Designation;
+                var article = (WarehouseArticleViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = article.Location;
             }
             var title = LocalizedString.Instance["global_ConfigurationDevice_PlaceTerminal"];
             return Columns.CreateColumn(title, 2, RenderLocation);
@@ -35,8 +46,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDesignation(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (WarehouseArticle)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = article.Article.Designation;
+                var article = (WarehouseArticleViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = article.Article;
             }
             var title = LocalizedString.Instance["global_designation"];
             return Columns.CreateColumn(title, 3, RenderDesignation);
@@ -46,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderSerialNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (WarehouseArticle)model.GetValue(iter, 0);
+                var article = (WarehouseArticleViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = article.SerialNumber;
             }
             var title = LocalizedString.Instance["global_serial_number"];
@@ -57,7 +68,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var article = (WarehouseArticle)model.GetValue(iter, 0);
+                var article = (WarehouseArticleViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = article.Quantity.ToString();
             }
             var title = LocalizedString.Instance["global_quantity"];
@@ -66,20 +77,32 @@ namespace LogicPOS.UI.Components.Pages
 
         #endregion
 
+
         #region Sorting
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddWarehouseSorting();
+            AddLocationSorting();
+            AddDesignationSorting();
+            AddSerialNumberSorting();
+            AddQuantitySorting();
+        }
+
         private void AddWarehouseSorting()
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var a = (WarehouseArticle)model.GetValue(left, 0);
-                var b = (WarehouseArticle)model.GetValue(right, 0);
+                var a = (WarehouseArticleViewModel)model.GetValue(left, 0);
+                var b = (WarehouseArticleViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
                     return 0;
                 }
 
-                return a.WarehouseLocation.Warehouse.Designation.CompareTo(b.WarehouseLocation.Warehouse.Designation);
+                return a.Warehouse.CompareTo(b.Warehouse);
             });
         }
 
@@ -87,13 +110,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var a = (WarehouseArticle)model.GetValue(left, 0);
-                var b = (WarehouseArticle)model.GetValue(right, 0);
+                var a = (WarehouseArticleViewModel)model.GetValue(left, 0);
+                var b = (WarehouseArticleViewModel)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
                 }
-                return a.WarehouseLocation.Designation.CompareTo(b.WarehouseLocation.Designation);
+                return a.Location.CompareTo(b.Location);
             });
         }
 
@@ -101,13 +124,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var a = (WarehouseArticle)model.GetValue(left, 0);
-                var b = (WarehouseArticle)model.GetValue(right, 0);
+                var a = (WarehouseArticleViewModel)model.GetValue(left, 0);
+                var b = (WarehouseArticleViewModel)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
                 }
-                return a.Article.Designation.CompareTo(b.Article.Designation);
+                return a.Article.CompareTo(b.Article);
             });
         }
 
@@ -115,8 +138,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var a = (WarehouseArticle)model.GetValue(left, 0);
-                var b = (WarehouseArticle)model.GetValue(right, 0);
+                var a = (WarehouseArticleViewModel)model.GetValue(left, 0);
+                var b = (WarehouseArticleViewModel)model.GetValue(right, 0);
                 if (a == null || b == null || a.SerialNumber == null || b.SerialNumber == null)
                 {
                     return 0;
@@ -129,8 +152,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var a = (WarehouseArticle)model.GetValue(left, 0);
-                var b = (WarehouseArticle)model.GetValue(right, 0);
+                var a = (WarehouseArticleViewModel)model.GetValue(left, 0);
+                var b = (WarehouseArticleViewModel)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
@@ -139,30 +162,6 @@ namespace LogicPOS.UI.Components.Pages
             });
         }
 
-        #endregion
-
-        #region Filter
-        protected override void InitializeFilter()
-        {
-            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
-            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
-            {
-                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
-                if (string.IsNullOrWhiteSpace(search))
-                {
-                    return true;
-                }
-
-                var entity = model.GetValue(iterator, 0) as WarehouseArticle;
-
-                if (entity != null && entity.Article.Designation.ToLower().Contains(search))
-                {
-                    return true;
-                }
-
-                return false;
-            };
-        }
         #endregion
     }
 }

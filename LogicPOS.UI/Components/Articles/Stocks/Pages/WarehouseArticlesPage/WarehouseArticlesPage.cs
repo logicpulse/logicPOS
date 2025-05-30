@@ -1,22 +1,47 @@
-﻿using ErrorOr;
-using Gtk;
+﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.GetAllWarehouseArticles;
+using LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
-using MediatR;
+using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class WarehouseArticlesPage : Page<WarehouseArticle>
+    public partial class WarehouseArticlesPage : Page<WarehouseArticleViewModel>
     {
-        protected override IRequest<ErrorOr<IEnumerable<WarehouseArticle>>> GetAllQuery => new GetAllWarehouseArticlesQuery();
+        public GetWarehouseArticlesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
+        public PaginatedResult<WarehouseArticleViewModel> Articles { get; private set; }
+
         public WarehouseArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             RemoveForbiddenButtons();
+            AddEventHandlers();
+        }
+
+        protected override void LoadEntities()
+        {
+            var getArticles = _mediator.Send(CurrentQuery).Result;
+
+            if (getArticles.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getArticles,
+                                                    source: SourceWindow);
+                return;
+            }
+
+            Articles = getArticles.Value;
+
+            _entities.Clear();
+
+            if (Articles.Items.Any())
+            {
+                _entities.AddRange(Articles.Items);
+            }
         }
 
         private void RemoveForbiddenButtons()
@@ -34,35 +59,30 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(CreateWarehouseColumn());
-            GridView.AppendColumn(CreateLocationColumn());
-            GridView.AppendColumn(CreateDesignationColumn());
-            GridView.AppendColumn(CreateSerialNumberColumn());
-            GridView.AppendColumn(CreateQuantityColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(6));
-        }
-
         protected override DeleteCommand GetDeleteCommand() => null;
 
-        protected override void InitializeSort()
+        public void FilterByArticleId(Guid articleId)
         {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-            AddWarehouseSorting();
-            AddLocationSorting();
-            AddDesignationSorting();
-            AddSerialNumberSorting();
-            AddQuantitySorting();
+            CurrentQuery = new GetWarehouseArticlesQuery { ArticleId = articleId };
+            Refresh();
         }
 
-        public void ApplyFilter(Predicate<WarehouseArticle> predicate)
+        public override void Search(string searchText)
         {
-            LoadEntities();
-            _entities.RemoveAll(e => !predicate(e));
-            var model = (ListStore)GridViewSettings.Model;
-            model.Clear();
-            AddEntitiesToModel(_entities);
+            CurrentQuery = new GetWarehouseArticlesQuery { Search = searchText };
+            Refresh();
+        }
+
+        protected override void InitializeFilter()
+        {
+            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
+            GridViewSettings.Filter.VisibleFunc = (model, iterator) => true;
+           
+        }
+        private static GetWarehouseArticlesQuery GetDefaultQuery()
+        {
+            return new GetWarehouseArticlesQuery();
+
         }
     }
 }

@@ -113,7 +113,6 @@ namespace LogicPOS.UI.Components.Pages
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
-     
         protected override DeleteCommand GetDeleteCommand() => null;
 
         private static GetStockMovementsQuery GetDefaultQuery()

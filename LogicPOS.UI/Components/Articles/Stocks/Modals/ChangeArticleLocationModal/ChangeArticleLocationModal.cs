@@ -1,11 +1,11 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation;
+﻿using LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class ChangeArticleLocationModal : EntityEditionModal<WarehouseArticle>
+    public partial class ChangeArticleLocationModal : EntityEditionModal<WarehouseArticleViewModel>
     {
-        public ChangeArticleLocationModal(WarehouseArticle entity) : base(EntityEditionModalMode.Update, entity)
+        public ChangeArticleLocationModal(WarehouseArticleViewModel entity) : base(EntityEditionModalMode.Update, entity)
         {
         }
 
@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override void ShowEntityData()
         {
             _txtArticle.SelectedEntity = _entity.Article;
-            _txtArticle.Text = _entity.Article.Designation;
+            _txtArticle.Text = _entity.Article;
             _txtSerialNumber.Text = _entity.SerialNumber;
             _txtQuantity.Text = _entity.Quantity.ToString();
         }
