@@ -1,23 +1,18 @@
 ﻿using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Api.Features.Company.GetAngolaSaft;
 using LogicPOS.Api.Features.Database;
+using LogicPOS.Api.Features.Finance.Saft.GetSaft;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -184,7 +179,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            var getSaft = DependencyInjection.Mediator.Send(new GetAngolaSaftQuery(startDate, endDate)).Result;
+            var getSaft = DependencyInjection.Mediator.Send(new GetSaftQuery(startDate, endDate)).Result;
 
             if (getSaft.IsError)
             {
