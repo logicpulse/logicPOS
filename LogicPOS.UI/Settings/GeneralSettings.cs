@@ -30,18 +30,7 @@ namespace LogicPOS.Settings
         }
         public static string POSSessionJsonFileName => $"appsession_{LicenseSettings.LicenseHardwareId}.json";
         public static System.Drawing.Size ScreenSize { get; set; }
-        public static int GetRequiredCustomerDetailsAboveValue(Guid countryId)
-        {
-            if (CultureSettings.CountryIdIsPortugal(countryId))
-            {
-                return PluginSettings.HasSoftwareVendorPlugin
-                    ? PluginSettings.SoftwareVendor.GetFinanceRuleRequiredCustomerDetailsAboveValue()
-                    : 1000;
 
-            }
-
-            return 999999999;
-        }
         public static Dictionary<string, bool> LoggedUserPermissions { get; set; }
         public static bool AppUseParkingTicketModule { get; set; } = false;
         public static bool CheckStocks { get; set; } = true;

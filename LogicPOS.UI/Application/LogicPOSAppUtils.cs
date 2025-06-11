@@ -133,27 +133,6 @@ namespace LogicPOS.UI.Application
 
             }
 
-            if (PluginSettings.HasSoftwareVendorPlugin == false ||
-                PluginSettings.SoftwareVendor.IsValidSecretKey(PluginSettings.SecretKey) == false)
-            {
-                LogicPOSAppContext.DialogThreadNotify?.WakeupMain();
-
-                Log.Debug(string.Format("void Init() :: Wrong key detected [{0}]. Use a valid LogicposFinantialLibrary with same key as SoftwareVendorPlugin", PluginSettings.SecretKey));
-
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                        .WithMessageResource("dialog_message_error_plugin_softwarevendor_not_registered")
-                        .WithSize(new Size(650, 380))
-                        .WithMessageType(MessageType.Error)
-                        .WithButtonsType(ButtonsType.Ok)
-                        .WithTitleResource("global_error")
-                        .ShowAlert();
-            }
-
-#if DEBUG
-            LicenseSettings.LicenseModuleStocks = true;
-            PluginSettings.AppCompanyName = LicenseSettings.LicenseCompany = LicenseSettings.LicenseReseller = "Logicpulse";
-#endif
-
         }
 
         private void InitBackupTimerProcess()
@@ -172,19 +151,6 @@ namespace LogicPOS.UI.Application
                                         .ShowAlert();
 
                 if (response == ResponseType.No) _quitAfterBootStrap = true;
-            }
-
-            if (PluginSettings.HasSoftwareVendorPlugin && backupsFolderExists && xpoCreateDatabaseAndSchema == false)
-            {
-                _autoBackupFlowIsEnabled = PreferenceParametersService.DatabaseBackupAutomaticEnabled;
-
-                if (_autoBackupFlowIsEnabled)
-                {
-                    _backupDatabaseTimeSpan = PreferenceParametersService.DatabaseBackupTimeSpan;
-                    _databaseBackupTimeSpanRangeStart = PreferenceParametersService.DatabaseBackupTimeSpanRangeStart;
-                    _databaseBackupTimeSpanRangeEnd = PreferenceParametersService.DatabaseBackupTimeSpanRangeEnd;
-                    StartBackupTimer();
-                }
             }
         }
 

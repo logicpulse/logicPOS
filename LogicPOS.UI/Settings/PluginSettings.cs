@@ -1,7 +1,5 @@
 ﻿using LogicPOS.Plugin.Abstractions;
 using LogicPOS.Plugin.Utils;
-using System;
-using System.Reflection;
 
 namespace LogicPOS.Settings
 {
@@ -9,70 +7,16 @@ namespace LogicPOS.Settings
     {
         public static string SecretKey = ")p[r#HW'gOg|KNI1L3k]H&~D!DKy`Y[fx2/t&s7{:!S<xDl,l#5)[YHcVf'3UUc";
 
-        public static string AppSoftwareName { get; set; }
-        public static string AppCompanyName { get; set; }
-        public static string AppCompanyPhone { get; set; }
-        public static string AppCompanyEmail { get; set; }
-        public static string AppCompanyWeb { get; set; }
-        public static string AppSoftwareVersionFormat { get; set; }
+        public static string AppSoftwareName = "LogicPos";
+        public static string AppCompanyName = "LogicPulse Technologies";
+        public static string AppCompanyPhone = "+351 233 042 347 / +351 910 287 029 / +351 800 180 500";
+        public static string AppCompanyEmail = "comercial@logicpulse.com";
+        public static string AppCompanyWeb = "http://www.logicpulse.com";
+        public static string AppSoftwareVersionFormat = string.Format("Powered by {0}© Vers. {{0}}", AppCompanyName);
 
-        public static PluginContainer PluginContainer { get; set; } 
+        public static PluginContainer PluginContainer { get; set; }
 
-        public static ISoftwareVendor SoftwareVendor { get; set; }
         public static ILicenseManager LicenceManager { get; set; }
-
-        public static string GetSoftwareVendorValueAsString(string property)
-        {
-            return Convert.ToString(GetPluginSoftwareVendorValue(property));
-        }
-
-        public static int GetSoftwareVendorValueAsInt(string property)
-        {
-            return Convert.ToInt16(GetPluginSoftwareVendorValue(property));
-        }
-
-        public static bool GetSoftwareVendorValueAsBool(string property)
-        {
-            return Convert.ToBoolean(GetPluginSoftwareVendorValue(property));
-        }
-
-        public static object GetPluginSoftwareVendorValue(string property)
-        {
-            if (SoftwareVendor != null)
-            {
-                Type pluginType = SoftwareVendor.GetType();
-                string pluginMethodName = $"Get{property}";
-                MethodInfo methodInfo = pluginType.GetMethod(pluginMethodName);
-                return methodInfo?.Invoke(SoftwareVendor,null);
-            }
-
-            return null;
-        }
-
-        public static bool HasSoftwareVendorPlugin => SoftwareVendor != null;
-
-        public static void InitializeSoftwareVendorPluginSettings()
-        {
-            AppSoftwareName = GetSoftwareVendorValueAsString(nameof(AppSoftwareName));
-            AppCompanyName = GetSoftwareVendorValueAsString(nameof(AppCompanyName));
-            AppCompanyPhone = GetSoftwareVendorValueAsString(nameof(AppCompanyPhone));
-            AppCompanyEmail = GetSoftwareVendorValueAsString(nameof(AppCompanyEmail));
-            AppCompanyWeb = GetSoftwareVendorValueAsString(nameof(AppCompanyWeb));
-            AppSoftwareVersionFormat = GetSoftwareVendorValueAsString(nameof(AppSoftwareVersionFormat));
-
-            CultureSettings.FileFormatDateTime = GetSoftwareVendorValueAsString(nameof(CultureSettings.FileFormatDateTime));
-            CultureSettings.FileFormatSaftPT = GetSoftwareVendorValueAsString(nameof(CultureSettings.FileFormatSaftPT));
-            CultureSettings.FileFormatSaftAO = GetSoftwareVendorValueAsString(nameof(CultureSettings.FileFormatSaftAO));
-
-            CultureSettings.DateTimeFormatDocumentDate = GetSoftwareVendorValueAsString(nameof(CultureSettings.DateTimeFormatDocumentDate));
-            CultureSettings.DateTimeFormatCombinedDateTime = GetSoftwareVendorValueAsString(nameof(CultureSettings.DateTimeFormatCombinedDateTime));
-            CultureSettings.DecimalFormatSAFTPT = GetSoftwareVendorValueAsString(nameof(CultureSettings.DecimalFormatSAFTPT));
-            CultureSettings.DecimalFormatSAFTAO = GetSoftwareVendorValueAsString(nameof(CultureSettings.DecimalFormatSAFTAO));
-            CultureSettings.DecimalFormatGrossTotalSAFTPT = GetSoftwareVendorValueAsString(nameof(CultureSettings.DecimalFormatGrossTotalSAFTPT));
-            CultureSettings.DecimalRoundTo = GetSoftwareVendorValueAsInt(nameof(CultureSettings.DecimalRoundTo));
-            CultureSettings.SaftCurrencyCode = GetSoftwareVendorValueAsString(nameof(CultureSettings.SaftCurrencyCode));
-            CultureSettings.SaftCurrencyCodeAO = GetSoftwareVendorValueAsString(nameof(CultureSettings.SaftCurrencyCodeAO));
-        }
 
         public static string PluginsFolderLocation => PathsSettings.Paths["plugins"].ToString();
 

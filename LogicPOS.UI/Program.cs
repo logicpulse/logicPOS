@@ -96,7 +96,6 @@ namespace LogicPOS.UI
         private static void InitializePlugins()
         {
             PluginSettings.InitializeContainer();
-            InitializeSoftwareVendorPlugin();
             InitializeLicenseManagerPlugin();
         }
 
@@ -109,16 +108,6 @@ namespace LogicPOS.UI
         private static void InitializeLicenseManagerPlugin()
         {
             PluginSettings.LicenceManager = PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>();
-        }
-
-        private static void InitializeSoftwareVendorPlugin()
-        {
-            PluginSettings.SoftwareVendor = PluginSettings.PluginContainer.GetFirstPluginOfType<ISoftwareVendor>();
-
-            if (PluginSettings.HasSoftwareVendorPlugin)
-            {
-                PluginSettings.InitializeSoftwareVendorPluginSettings();
-            }
         }
 
         private static void StartApp()
