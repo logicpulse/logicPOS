@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -167,7 +168,6 @@ namespace LogicPOS.UI.Components.Licensing
                             .WithTitleResource("global_error")
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"))
                             .ShowAlert();
-
                 Run();
             }
         }

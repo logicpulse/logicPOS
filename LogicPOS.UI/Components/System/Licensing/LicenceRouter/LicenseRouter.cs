@@ -10,7 +10,7 @@ using System.IO;
 
 namespace LogicPOS.UI.Components.Licensing
 {
-    public class LicenseRouter
+    public partial class LicenseRouter
     {
         public static string HardwareId = string.Empty;
         public bool LoadApp { get; set; } = true;
@@ -127,37 +127,6 @@ namespace LogicPOS.UI.Components.Licensing
             }
         }
 
-        private static void StartPOSFrontOffice()
-        {
-            if (GeneralSettings.AppUseBackOfficeMode == false)
-            {
-                LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp();
-            }
-            else
-            {
-                LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp();
-            }
-        }
-
-        public static void GetLicenceInfo()
-        {
-            if (Program.DebugMode)
-            {
-                LicenseSettings.ApplyDemoData();
-                return;
-            }
-
-            LicenseSettings.ApplyDataFromPlugin(PluginSettings.LicenceManager);
-        }
-
-        public static void WriteByteArrayToFile(byte[] buff, string filePath)
-        {
-            FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite);
-            BinaryWriter bw = new BinaryWriter(fs);
-            bw.Write(buff);
-            bw.Close();
-        }
+      
     }
 }

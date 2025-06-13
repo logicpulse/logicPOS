@@ -42,11 +42,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             var pricetypes = GetPriceTypes().OrderBy(price => price.EnumValue).Take(5).ToArray();
 
-            _price1 = new ArticlePriceField(pricetypes[0],_entity?.Price1);
-            _price2 = new ArticlePriceField(pricetypes[1],_entity?.Price2);
-            _price3 = new ArticlePriceField(pricetypes[2],_entity?.Price3);
-            _price4 = new ArticlePriceField(pricetypes[3], _entity?.Price4);
-            _price5 = new ArticlePriceField(pricetypes[4], _entity?.Price5);
+               _price1 = new ArticlePriceField(pricetypes[0],_entity?.Price1);
+               _price2 = new ArticlePriceField(pricetypes[1],_entity?.Price2);
+               _price3 = new ArticlePriceField(pricetypes[2],_entity?.Price3);
+               _price4 = new ArticlePriceField(pricetypes[3], _entity?.Price4);
+               _price5 = new ArticlePriceField(pricetypes[4], _entity?.Price5);
         }
 
         private void InitializeCommissionGroupsComboBox()
@@ -56,8 +56,8 @@ namespace LogicPOS.UI.Components.Modals
             var currentCommissionGroup = _entity != null ? _entity.CommissionGroup : null;
 
             _comboCommissionGroups = new EntityComboBox<CommissionGroup>(labelText,
-                                                             groups,
-                                                             currentCommissionGroup);
+                                                                         groups,
+                                                                         currentCommissionGroup);
         }
 
         private void InitializeFamiliesComboBox()
@@ -67,9 +67,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentFamily = _entity != null ? _entity.Subfamily.Family : null;
 
             _comboFamilies = new EntityComboBox<ArticleFamily>(labelText,
-                                                             families,
-                                                             currentFamily,
-                                                             true);
+                                                               families,
+                                                               currentFamily,
+                                                               true);
 
             _comboFamilies.ComboBox.Changed += (sender, e) =>
             {
@@ -90,9 +90,9 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             _comboSubfamilies = new EntityComboBox<ArticleSubfamily>(labelText,
-                                                             subfamilies,
-                                                             currentSubfamily,
-                                                             true);
+                                                                     subfamilies,
+                                                                     currentSubfamily,
+                                                                     true);
         }
 
         private void InitializeDiscountGroupsComboBox()
@@ -102,8 +102,8 @@ namespace LogicPOS.UI.Components.Modals
             var currentDiscountGroup = _entity != null ? _entity.DiscountGroup : null;
 
             _comboDiscountGroups = new EntityComboBox<DiscountGroup>(labelText,
-                                                             groups,
-                                                             currentDiscountGroup);
+                                                                     groups,
+                                                                     currentDiscountGroup);
         }
 
         private void InitializeVatDirectSellingComboBox()
@@ -113,9 +113,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentVatRate = _entity != null ? _entity.VatDirectSelling : null;
 
             _comboVatDirectSelling = new EntityComboBox<VatRate>(labelText,
-                                                             vatRates,
-                                                             currentVatRate,
-                                                             true);
+                                                                 vatRates,
+                                                                 currentVatRate,
+                                                                 true);
 
             _comboVatDirectSelling.ComboBox.Changed += ComboBox_Changed;
         }
@@ -127,9 +127,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentReason = _entity != null ? _entity.VatExemptionReason : null;
 
             _comboVatExemptionReasons = new EntityComboBox<VatExemptionReason>(labelText,
-                                                             reasons,
-                                                             currentReason,
-                                                             false);
+                                                                               reasons,
+                                                                               currentReason,
+                                                                               false);
         }
 
         private void InitializeArticleTypesComboBox()
@@ -139,9 +139,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentType = _entity != null ? _entity.Type : null;
 
             _comboTypes = new EntityComboBox<ArticleType>(labelText,
-                                                             types,
-                                                             currentType,
-                                                             true);
+                                                           types,
+                                                           currentType,
+                                                           true);
         }
 
         private void InitializeArticleClassesComboBox()
@@ -163,9 +163,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentUnit = _entity != null ? _entity.MeasurementUnit : null;
 
             _comboMeasurementUnits = new EntityComboBox<MeasurementUnit>(labelText,
-                                                             units,
-                                                             currentUnit,
-                                                             true);
+                                                                          units,
+                                                                          currentUnit,
+                                                                          true);
         }
 
         private void InitializeSizeUnitsComboBox()
@@ -175,9 +175,9 @@ namespace LogicPOS.UI.Components.Modals
             var currentUnit = _entity != null ? _entity.SizeUnit : null;
 
             _comboSizeUnits = new EntityComboBox<SizeUnit>(labelText,
-                                                             units,
-                                                             currentUnit,
-                                                             true);
+                                                           units,
+                                                           currentUnit,
+                                                           true);
         }
 
         private void InitializePrinterComboBox()
