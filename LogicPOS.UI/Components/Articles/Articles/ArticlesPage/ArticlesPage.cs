@@ -83,7 +83,16 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteArticleCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_VIEW");
 
+        }
+        
         #region Singleton
         private static ArticlesPage _instance;
 

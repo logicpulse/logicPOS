@@ -48,6 +48,15 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteCountryCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCOUNTRY_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCOUNTRY_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCOUNTRY_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCOUNTRY_VIEW");
+
+        }
+
         #region Singleton
         private static CountriesPage _instance;
         public static CountriesPage Instance

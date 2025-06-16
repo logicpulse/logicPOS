@@ -56,8 +56,15 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(3);
         }
 
-
         protected override DeleteCommand GetDeleteCommand() => null;
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_VIEW");
+        }
 
         #region Singleton
         private static DocumentTypesPage _instance;

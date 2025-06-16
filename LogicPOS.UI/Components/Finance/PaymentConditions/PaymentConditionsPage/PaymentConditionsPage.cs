@@ -7,7 +7,6 @@ using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.Utility;
 using MediatR;
 using System.Collections.Generic;
 
@@ -34,7 +33,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateAcronymColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
-       
+
         protected override void InitializeSort()
         {
 
@@ -45,10 +44,18 @@ namespace LogicPOS.UI.Components.Pages
             AddAcronymSorting();
             AddUpdatedAtSorting(3);
         }
-      
+
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeletePaymentConditionCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTCONDITION_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTCONDITION_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTCONDITION_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTCONDITION_VIEW");
         }
 
         #region Singleton

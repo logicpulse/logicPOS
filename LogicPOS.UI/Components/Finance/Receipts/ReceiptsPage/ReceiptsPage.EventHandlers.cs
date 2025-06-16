@@ -40,5 +40,10 @@ namespace LogicPOS.UI.Components.Pages
                 PageChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public override void UpdateButtonPrevileges()
+        {
+            //these buttons are not used in this page, so we do nothing here
+        }
     }
 }

@@ -44,10 +44,17 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(3);
         }
 
-
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteArticleFamilyCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEFAMILY_VIEW");
         }
 
         #region Singleton

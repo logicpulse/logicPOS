@@ -77,12 +77,21 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
             GridViewSettings.Filter.VisibleFunc = (model, iterator) => true;
-           
+
         }
         private static GetWarehouseArticlesQuery GetDefaultQuery()
         {
             return new GetWarehouseArticlesQuery();
 
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_VIEW");
+            
         }
     }
 }

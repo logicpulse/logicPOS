@@ -53,6 +53,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeletePrinterTypeCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_VIEW");
+        }
+
         #region Signleton
         private static PrinterTypesPage _instance;
         public static PrinterTypesPage Instance

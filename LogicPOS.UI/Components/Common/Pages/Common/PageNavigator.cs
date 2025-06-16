@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
@@ -157,7 +158,7 @@ namespace LogicPOS.UI.Components.Pages
             }
         }   
 
-        public void UpdateButtonsSensitivity()
+        public virtual void UpdateButtonsSensitivity()
         {
             UpdateBtnPrevious();
             UpdateBtnNext();
@@ -217,6 +218,9 @@ namespace LogicPOS.UI.Components.Pages
             }
 ;
             UpdateButtonsSensitivity();
+            _page.UpdateButtonPrevileges();
+
         }
+
     }
 }

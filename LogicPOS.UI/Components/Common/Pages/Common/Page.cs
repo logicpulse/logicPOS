@@ -102,7 +102,7 @@ namespace LogicPOS.UI.Components.Pages
                 HandleErrorResult(getEntitiesResult);
                 return;
             }
-
+            
             _entities.Clear();
             _entities.AddRange(getEntitiesResult.Value);
         }
@@ -225,6 +225,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Filter.Refilter();
             this.Navigator.Update();
+            
         }
 
         protected abstract void AddColumns();
@@ -313,5 +314,7 @@ namespace LogicPOS.UI.Components.Pages
 
             return result.Value;
         }
+
+        public abstract void UpdateButtonPrevileges();
     }
 }

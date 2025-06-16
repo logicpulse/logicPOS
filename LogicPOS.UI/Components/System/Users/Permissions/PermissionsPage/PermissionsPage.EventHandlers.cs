@@ -35,5 +35,13 @@ namespace LogicPOS.UI.Components.Pages
             ShowUserProfilePermissions(SelectedEntity);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_CREATE");
+            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_EDIT");
+            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_DELETE");
+            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_VIEW");
+        }
+
     }
 }

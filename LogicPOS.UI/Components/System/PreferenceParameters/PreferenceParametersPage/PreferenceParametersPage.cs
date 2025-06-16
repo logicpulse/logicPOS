@@ -119,6 +119,12 @@ namespace LogicPOS.UI.Components.Pages
             return null;
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_EDIT");
+        }
+
         #region Singleton
         private static PreferenceParametersPage _companyParametersInstance;
         private static PreferenceParametersPage _systemParametersInstance;

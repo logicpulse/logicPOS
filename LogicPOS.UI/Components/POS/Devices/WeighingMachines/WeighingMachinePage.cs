@@ -49,6 +49,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteWeighingMachineCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_VIEW");
+        }
+
         #region Singleton
         private static WeighingMachinesPage _instance;
         public static WeighingMachinesPage Instance

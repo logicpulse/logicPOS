@@ -48,6 +48,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteDiscountGroupCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMERDISCOUNTGROUP_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMERDISCOUNTGROUP_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMERDISCOUNTGROUP_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMERDISCOUNTGROUP_VIEW");
+        }
+
         #region Singleton
         private static DiscountGroupsPage _instance;
         public static DiscountGroupsPage Instance

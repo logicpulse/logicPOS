@@ -82,6 +82,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteMeasurementUnitCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONUNITMEASURE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONUNITMEASURE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONUNITMEASURE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONUNITMEASURE_VIEW");
+        }
+
         #region Singleton
         private static MeasurementUnitsPage _instance;
         public static MeasurementUnitsPage Instance

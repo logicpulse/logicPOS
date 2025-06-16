@@ -48,6 +48,10 @@ namespace LogicPOS.UI.Components.Pages
             return new DeletePriceTypeCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRICETYPE_EDIT");
+        }
         #region Singleton
         private static PriceTypesPage _instance;
         public static PriceTypesPage Instance

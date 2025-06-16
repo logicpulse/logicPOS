@@ -76,5 +76,12 @@ namespace LogicPOS.UI.Components.Pages
 
             LogicPOSPDFViewer.ShowPDF(result.Value);
         }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_EDIT");
+        }
+
     }
 }

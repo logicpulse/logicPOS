@@ -128,5 +128,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override DeleteCommand GetDeleteCommand() => null;
+
     }
 }

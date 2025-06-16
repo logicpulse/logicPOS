@@ -8,7 +8,6 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -87,6 +86,14 @@ namespace LogicPOS.UI.Components.Pages
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteHolidayCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONHOLIDAYS_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONHOLIDAYS_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONHOLIDAYS_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONHOLIDAYS_VIEW");
         }
 
         #region Singleton

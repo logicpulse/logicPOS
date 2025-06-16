@@ -50,6 +50,11 @@ namespace LogicPOS.UI.Components.Pages
             return null;
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_DELETE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_EDIT");
+        }
         #region Singleton
         private static TerminalsPage _instance;
 

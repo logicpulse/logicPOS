@@ -59,6 +59,12 @@ namespace LogicPOS.UI.Components.Pages
             return null;
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW"); 
+        }
+
         #region Singleton
         private static DocumentSeriesPage _instance;
         public static DocumentSeriesPage Instance

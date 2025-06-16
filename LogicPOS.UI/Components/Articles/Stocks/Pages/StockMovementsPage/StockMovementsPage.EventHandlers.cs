@@ -80,5 +80,10 @@ namespace LogicPOS.UI.Components.Pages
             Movements = paginatedResult.Value;
             AddEntitiesToModel(Movements.Items);
         }
+
+        public override void UpdateButtonPrevileges()
+        {
+            //these buttons are always enabled in this page
+        }
     }
 }

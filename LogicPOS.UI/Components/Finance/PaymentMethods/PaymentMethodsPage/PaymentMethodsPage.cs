@@ -54,6 +54,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeletePaymentMethodCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_CREATE");
+            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_EDIT");
+            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_DELETE");
+            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_VIEW");
+        }
+
         #region Singleton
         private static PaymentMethodsPage _instance;
         public static PaymentMethodsPage Instance

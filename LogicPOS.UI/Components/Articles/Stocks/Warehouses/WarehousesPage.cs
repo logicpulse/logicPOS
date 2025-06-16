@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         protected override IRequest<ErrorOr<IEnumerable<Warehouse>>> GetAllQuery => new GetAllWarehousesQuery();
 
-        public WarehousesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
+        public WarehousesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
@@ -46,6 +46,13 @@ namespace LogicPOS.UI.Components.Pages
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteWarehouseCommand(SelectedEntity.Id);
+        }
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_WAREHOUSE_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_WAREHOUSE_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_WAREHOUSE_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_WAREHOUSE_VIEW");
         }
 
         #region Singleton

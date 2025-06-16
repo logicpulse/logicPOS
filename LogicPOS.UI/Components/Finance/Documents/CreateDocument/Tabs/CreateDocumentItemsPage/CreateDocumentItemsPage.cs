@@ -142,5 +142,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             AddTotalWithTaxSorting();
         }
         protected override DeleteCommand GetDeleteCommand() => null;
+
+        public override void UpdateButtonPrevileges()
+        {
+            //these buttons are not used in this page
+
+        }
     }
 }

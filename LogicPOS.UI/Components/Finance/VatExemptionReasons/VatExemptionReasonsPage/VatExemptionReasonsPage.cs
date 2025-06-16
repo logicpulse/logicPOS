@@ -48,6 +48,14 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteVatExemptionReasonCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONVATEXEMPTIONREASON_CREATE");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONVATEXEMPTIONREASON_EDIT");
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONVATEXEMPTIONREASON_DELETE");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONVATEXEMPTIONREASON_VIEW");
+        }
+
         #region Singleton
         private static VatExemptionReasonsPage _instance;
         public static VatExemptionReasonsPage Instance

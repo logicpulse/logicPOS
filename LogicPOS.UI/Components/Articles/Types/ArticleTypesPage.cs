@@ -84,6 +84,11 @@ namespace LogicPOS.UI.Components.Pages
             return new DeleteArticleTypeCommand(SelectedEntity.Id);
         }
 
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLETYPE_EDIT");
+        }
+
         #region Singleton
         private static ArticleTypesPage _instance;
         public static ArticleTypesPage Instance

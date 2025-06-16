@@ -70,5 +70,11 @@ namespace LogicPOS.UI.Components.Pages
 
             _relations.AddRange(result.Value);
         }
+
+        public override void UpdateButtonPrevileges()
+        {
+            //no implementation needed for this page, this page has no same buttons.  
+
+        }
     }
 }
