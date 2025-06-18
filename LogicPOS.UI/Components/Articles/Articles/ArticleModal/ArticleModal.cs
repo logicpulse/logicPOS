@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
@@ -36,85 +37,143 @@ namespace LogicPOS.UI.Components.Modals
 
         private AddArticleCommand CreateAddCommand()
         {
-            return new AddArticleCommand
+            var addArticleCommand = new AddArticleCommand();
+            
+                addArticleCommand.CodeDealer = _txtCodeDealer.Text;
+                addArticleCommand.Designation = _txtDesignation.Text;
+                addArticleCommand.Button = GetButton();
+                addArticleCommand.PriceWithVat = _checkPriceWithVat.Active;
+                addArticleCommand.Discount = decimal.Parse(_txtDiscount.Text);
+                addArticleCommand.DefaultQuantity = uint.Parse(_txtDefaultQuantity.Text);
+                addArticleCommand.MinimumStock = uint.Parse(_txtMinimumStock.Text);
+                addArticleCommand.Tare = decimal.Parse(_txtTare.Text);
+                addArticleCommand.Weight = float.Parse(_txtWeight.Text);
+                addArticleCommand.Barcode = _txtBarcode.Text;
+                addArticleCommand.PVPVariable = _checkPVPVariable.Active;
+                addArticleCommand.Favorite = _checkFavorite.Active;
+                addArticleCommand.UseWeighingBalance = _checkUseWeighingBalance.Active;
+                addArticleCommand.SubfamilyId = _comboSubfamilies.SelectedEntity.Id;
+                addArticleCommand.TypeId = _comboTypes.SelectedEntity.Id;
+                addArticleCommand.ClassId = _comboClasses.SelectedEntity.Id;
+                addArticleCommand.MeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
+                addArticleCommand.SizeUnitId = _comboSizeUnits.SelectedEntity.Id;
+                addArticleCommand.CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id;
+                addArticleCommand.DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id;
+                addArticleCommand.VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
+                addArticleCommand.VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id;
+                addArticleCommand.IsComposed = _checkIsComposed.Active;
+                addArticleCommand.UniqueArticles = _checkUniqueArticles.Active;
+                addArticleCommand.Notes = _txtNotes.Value.Text;
+
+
+            switch (_prices.Count())
             {
-                CodeDealer = _txtCodeDealer.Text,
-                Designation = _txtDesignation.Text,
-                Button = GetButton(),
-                Price1 = _price1.Price,
-                Price2 = _price2.Price,
-                Price3 = _price3.Price,
-                Price4 = _price4.Price,
-                Price5 = _price5.Price,
-                PriceWithVat = _checkPriceWithVat.Active,
-                Discount = decimal.Parse(_txtDiscount.Text),
-                DefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                MinimumStock = uint.Parse(_txtMinimumStock.Text),
-                Tare = decimal.Parse(_txtTare.Text),
-                Weight = float.Parse(_txtWeight.Text),
-                Barcode = _txtBarcode.Text,
-                PVPVariable = _checkPVPVariable.Active,
-                Favorite = _checkFavorite.Active,
-                UseWeighingBalance = _checkUseWeighingBalance.Active,
-                SubfamilyId = _comboSubfamilies.SelectedEntity.Id,
-                TypeId = _comboTypes.SelectedEntity.Id,
-                ClassId = _comboClasses.SelectedEntity.Id,
-                MeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id,
-                SizeUnitId = _comboSizeUnits.SelectedEntity.Id,
-                CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
-                DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id,
-                VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id,
-                VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id,
-                IsComposed = _checkIsComposed.Active,
-                UniqueArticles = _checkUniqueArticles.Active,
-                Notes = _txtNotes.Value.Text
-            };
+                case 1:
+                    addArticleCommand.Price1 = _prices[0].Price;
+
+                    break;
+                case 2:
+                    addArticleCommand.Price1 = _prices[0].Price;
+                    addArticleCommand.Price2 = _prices[1].Price;
+
+                    break;
+                case 3:
+                    addArticleCommand.Price1 = _prices[0].Price;
+                    addArticleCommand.Price2 = _prices[1].Price;
+                    addArticleCommand.Price3 = _prices[2].Price;
+                    break;
+                case 4:
+                    addArticleCommand.Price1 = _prices[0].Price;
+                    addArticleCommand.Price2 = _prices[1].Price;
+                    addArticleCommand.Price3 = _prices[2].Price;
+                    addArticleCommand.Price4 = _prices[3].Price;
+
+                    break;
+                case 5:
+                    addArticleCommand.Price1 = _prices[0].Price;
+                    addArticleCommand.Price2 = _prices[1].Price;
+                    addArticleCommand.Price3 = _prices[2].Price;
+                    addArticleCommand.Price4 = _prices[3].Price;
+                    addArticleCommand.Price5 = _prices[4].Price;
+                    break;
+            }
+
+            return addArticleCommand;
         }
 
         private UpdateArticleCommand CreateUpdateCommand()
         {
-          if (_comboPrinters.SelectedEntity != null)
+            if (_comboPrinters.SelectedEntity != null)
             {
                 PrinterAssociationService.CreateOrRemoveAssociation(_comboPrinters.SelectedEntity.Id, _entity.Id);
             }
 
-            return new UpdateArticleCommand
+            var updateCommand = new UpdateArticleCommand();
+
+            updateCommand.Id = _entity.Id;
+            updateCommand.NewOrder = uint.Parse(_txtOrder.Text);
+            updateCommand.NewCode = _txtCode.Text;
+            updateCommand.NewCodeDealer = _txtCodeDealer.Text;
+            updateCommand.NewDesignation = _txtDesignation.Text;
+            updateCommand.NewButton = GetButton();
+            updateCommand.NewPriceWithVat = _checkPriceWithVat.Active;
+            updateCommand.NewDiscount = decimal.Parse(_txtDiscount.Text);
+            updateCommand.NewDefaultQuantity = uint.Parse(_txtDefaultQuantity.Text);
+            updateCommand.NewMinimumStock = uint.Parse(_txtMinimumStock.Text);
+            updateCommand.NewTare = decimal.Parse(_txtTare.Text);
+            updateCommand.NewWeight = float.Parse(_txtWeight.Text);
+            updateCommand.NewBarcode = _txtBarcode.Text;
+            updateCommand.NewPVPVariable = _checkPVPVariable.Active;
+            updateCommand.Favorite = _checkFavorite.Active;
+            updateCommand.UseWeighingBalance = _checkUseWeighingBalance.Active;
+            updateCommand.NewSubfamilyId = _comboSubfamilies.SelectedEntity.Id;
+            updateCommand.NewTypeId = _comboTypes.SelectedEntity.Id;
+            updateCommand.NewClassId = _comboClasses.SelectedEntity.Id;
+            updateCommand.NewMeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
+            updateCommand.NewSizeUnitId = _comboSizeUnits.SelectedEntity.Id;
+            updateCommand.NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
+            updateCommand.NewVatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.IsComposed = _checkIsComposed.Active;
+            updateCommand.UniqueArticles = _checkUniqueArticles.Active;
+            updateCommand.NewNotes = _txtNotes.Value.Text;
+            updateCommand.IsDeleted = _checkDisabled.Active;
+
+
+            switch (_prices.Count())
             {
-                Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewCodeDealer = _txtCodeDealer.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewButton = GetButton(),
-                NewPrice1 = _price1.Price,
-                NewPrice2 = _price2.Price,
-                NewPrice3 = _price3.Price,
-                NewPrice4 = _price4.Price,
-                NewPrice5 = _price5.Price,
-                NewPriceWithVat = _checkPriceWithVat.Active,
-                NewDiscount = decimal.Parse(_txtDiscount.Text),
-                NewDefaultQuantity = uint.Parse(_txtDefaultQuantity.Text),
-                NewMinimumStock = uint.Parse(_txtMinimumStock.Text),
-                NewTare = decimal.Parse(_txtTare.Text),
-                NewWeight = float.Parse(_txtWeight.Text),
-                NewBarcode = _txtBarcode.Text,
-                NewPVPVariable = _checkPVPVariable.Active,
-                Favorite = _checkFavorite.Active,
-                UseWeighingBalance = _checkUseWeighingBalance.Active,
-                NewSubfamilyId = _comboSubfamilies.SelectedEntity.Id,
-                NewTypeId = _comboTypes.SelectedEntity.Id,
-                NewClassId = _comboClasses.SelectedEntity.Id,
-                NewMeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id,
-                NewSizeUnitId = _comboSizeUnits.SelectedEntity.Id,
-                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
-                NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty,
-                NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id,
-                NewVatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty,
-                IsComposed = _checkIsComposed.Active,
-                UniqueArticles = _checkUniqueArticles.Active,
-                NewNotes = _txtNotes.Value.Text,
-                IsDeleted = _checkDisabled.Active
-            };
+                case 1:
+                    updateCommand.NewPrice1 = _prices[0].Price;
+
+                    break;
+                case 2:
+                    updateCommand.NewPrice1 = _prices[0].Price;
+                    updateCommand.NewPrice2 = _prices[1].Price;
+
+                    break;
+                case 3:
+                    updateCommand.NewPrice1 = _prices[0].Price;
+                    updateCommand.NewPrice2 = _prices[1].Price;
+                    updateCommand.NewPrice3 = _prices[2].Price;
+                    break;
+                case 4:
+                    updateCommand.NewPrice1 = _prices[0].Price;
+                    updateCommand.NewPrice2 = _prices[1].Price;
+                    updateCommand.NewPrice3 = _prices[2].Price;
+                    updateCommand.NewPrice4 = _prices[3].Price;
+
+                    break;
+                case 5:
+                    updateCommand.NewPrice1 = _prices[0].Price;
+                    updateCommand.NewPrice2 = _prices[1].Price;
+                    updateCommand.NewPrice3 = _prices[2].Price;
+                    updateCommand.NewPrice4 = _prices[3].Price;
+                    updateCommand.NewPrice5 = _prices[4].Price;
+                    break;
+            }
+
+            return updateCommand;
         }
 
         protected override void AddEntity()
@@ -193,7 +252,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void UpdateEntity()
         {
-           var result =  ExecuteUpdateCommand(CreateUpdateCommand());
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
 
             if (result.IsError || _checkIsComposed.Active == false)
             {

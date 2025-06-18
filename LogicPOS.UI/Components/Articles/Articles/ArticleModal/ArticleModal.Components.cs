@@ -43,11 +43,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtTare = TextBox.Simple("global_tare", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);
-        private ArticlePriceField _price1;
-        private ArticlePriceField _price2;
-        private ArticlePriceField _price3;
-        private ArticlePriceField _price4;
-        private ArticlePriceField _price5;
+        private List<ArticlePriceField> _prices;
         private ArticleFieldsContainer _addArticlesBox = new ArticleFieldsContainer();
         private VBox _compositionTab;
         #endregion
@@ -159,11 +155,10 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(header, false, false, 0);
 
             //Prices
-            vbox.PackStart(_price1.Component, false, false, 0);
-            vbox.PackStart(_price2.Component, false, false, 0);
-            vbox.PackStart(_price3.Component, false, false, 0);
-            vbox.PackStart(_price4.Component, false, false, 0);
-            vbox.PackStart(_price5.Component, false, false, 0);
+            foreach(var price in _prices)
+            {
+                vbox.PackStart(price.Component, false, false, 0);
+            }
 
             return vbox;
         }

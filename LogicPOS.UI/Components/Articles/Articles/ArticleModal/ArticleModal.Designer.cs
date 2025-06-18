@@ -2,6 +2,7 @@
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -40,13 +41,43 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeArticlePriceFields()
         {
-            var pricetypes = GetPriceTypes().OrderBy(price => price.EnumValue).Take(5).ToArray();
+            _prices = new List<ArticlePriceField>();
+            var pricetypes = GetPriceTypes().OrderByDescending(price => price.EnumValue).Take(5).OrderBy(x=>x.CreatedAt).ToArray();
 
-               _price1 = new ArticlePriceField(pricetypes[0],_entity?.Price1);
-               _price2 = new ArticlePriceField(pricetypes[1],_entity?.Price2);
-               _price3 = new ArticlePriceField(pricetypes[2],_entity?.Price3);
-               _price4 = new ArticlePriceField(pricetypes[3], _entity?.Price4);
-               _price5 = new ArticlePriceField(pricetypes[4], _entity?.Price5);
+
+            
+            switch (pricetypes.Length)
+            {
+                case 1:
+                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
+                       
+                    break;
+                case 2:
+                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
+                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
+                    
+                    break;
+                case 3:
+                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
+                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
+                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
+                    
+                    break;
+                case 4:
+                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
+                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
+                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
+                        _prices.Add(new ArticlePriceField(pricetypes[3], _entity?.Price4));
+                    
+                    break;
+                case 5:
+                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
+                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
+                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
+                        _prices.Add(new ArticlePriceField(pricetypes[3], _entity?.Price4));
+                        _prices.Add(new ArticlePriceField(pricetypes[4], _entity?.Price5));
+                    break;
+            }
         }
 
         private void InitializeCommissionGroupsComboBox()
@@ -233,11 +264,11 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtTare.Entry);
             SensitiveFields.Add(_txtWeight.Entry);
             SensitiveFields.Add(_txtBarcode.Entry);
-            SensitiveFields.Add(_price1.Component);
-            SensitiveFields.Add(_price2.Component);
-            SensitiveFields.Add(_price3.Component);
-            SensitiveFields.Add(_price4.Component);
-            SensitiveFields.Add(_price5.Component);
+            foreach (var priceField in _prices)
+            {
+                SensitiveFields.Add(priceField.Component);
+            }
+
             SensitiveFields.Add(_txtCodeDealer.Entry);
         }
 
@@ -256,11 +287,10 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(_txtTare);
             ValidatableFields.Add(_txtWeight);
             ValidatableFields.Add(_txtBarcode);
-            ValidatableFields.Add(_price1);
-            ValidatableFields.Add(_price2);
-            ValidatableFields.Add(_price3);
-            ValidatableFields.Add(_price4);
-            ValidatableFields.Add(_price5);        
+            foreach (var priceField in _prices)
+            {
+                ValidatableFields.Add(priceField);
+            }
         }
 
         private void UpdateCompositionTabVisibility()

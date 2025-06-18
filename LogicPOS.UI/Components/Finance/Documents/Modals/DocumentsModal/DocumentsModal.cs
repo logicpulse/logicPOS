@@ -62,8 +62,11 @@ namespace LogicPOS.UI.Components.Modals
         private void UpdateUI()
         {
             var hasFiscalYear = FiscalYearService.HasFiscalYear();
-            BtnNewDocument.Sensitive = hasFiscalYear;
-            BtnPayInvoice.Sensitive = hasFiscalYear;
+
+            BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
+            BtnPayInvoice.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear;
+            BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
+            BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU");
         }
 
         private void AddButtonsEventHandlers()
