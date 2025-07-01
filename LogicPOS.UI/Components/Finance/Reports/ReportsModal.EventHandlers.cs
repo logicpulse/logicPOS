@@ -616,49 +616,13 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         private void BtnArticlesReport_Clicked(object sender, EventArgs e)
-        {
-            var modal = new ReportsFilterModal(this);
-
-            modal.TxtStartDate.Component.Sensitive = false;
-            modal.TxtEndDate.Component.Sensitive = false;
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
-
-            var response = (ResponseType)modal.Run();
-            if (response == ResponseType.Ok)
-            {
-
+        {           
                 ReportsService.ShowArticlesReport();
-
-            }
-            modal.Destroy();
         }
 
         private void BtnCustomersReport_Clicked(object sender, EventArgs e)
-        {
-            var modal = new ReportsFilterModal(this);
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
-
-            var response = (ResponseType)modal.Run();
-            if (response == ResponseType.Ok)
-            {
-
+        {           
                 ReportsService.ShowCustomersReport();
-
-            }
-            modal.Destroy();
         }
 
         private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
