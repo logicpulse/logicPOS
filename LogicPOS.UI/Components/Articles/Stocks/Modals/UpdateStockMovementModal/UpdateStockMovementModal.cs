@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
                 SupplierId = GetSupplierId(),
                 Date = TxtDate.Text.FromISO8601DateOnly(),
                 DocumentNumber = TxtDocumnetNumber.Text,
-                Quantity = Convert.ToInt32(TxtQuantity.Text),
+                Quantity = Convert.ToInt32(Convert.ToDecimal(TxtQuantity.Text)),
                 Price = Convert.ToDecimal(TxtPrice.Text),
                 ExternalDocument = TxtDocumnetNumber.SelectedEntity as string
             };
