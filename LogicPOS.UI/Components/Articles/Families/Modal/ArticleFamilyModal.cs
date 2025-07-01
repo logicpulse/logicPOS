@@ -23,6 +23,7 @@ namespace LogicPOS.UI.Components.Modals
                 Button = GetButton(),
                 CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
                 Notes = _txtNotes.Value.Text
+
             };
         }
 
@@ -58,6 +59,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtButtonName.Text = _entity.Button?.Label;
             _imagePicker.SetBase64Image(_entity.Button?.Image, _entity.Button?.ImageExtension);
+            _comboPrinters.SelectedEntity = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }

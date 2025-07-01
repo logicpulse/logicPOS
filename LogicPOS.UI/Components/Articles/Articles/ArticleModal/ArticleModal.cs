@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (_comboPrinters.SelectedEntity != null)
             {
-                PrinterAssociationService.CreateOrRemoveAssociation(_comboPrinters.SelectedEntity.Id, _entity.Id);
+                PrinterAssociationService.CreateOrRemoveAssociation(_entity.Id, _comboPrinters.SelectedEntity.Id);
             }
 
             var updateCommand = new UpdateArticleCommand();

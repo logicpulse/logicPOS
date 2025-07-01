@@ -18,11 +18,11 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
         {
             if (printerId.HasValue)
             {
-                PrinterAssociationService.CreatePrinterAssociation((Guid)printerId, entityId);
+                CreatePrinterAssociation((Guid)printerId, entityId);
             }
             else
             {
-                PrinterAssociationService.RemovePrinterAssociation(entityId);
+                RemovePrinterAssociation(entityId);
             }
         }
         private static void CreatePrinterAssociation(Guid printerId, Guid entityId)

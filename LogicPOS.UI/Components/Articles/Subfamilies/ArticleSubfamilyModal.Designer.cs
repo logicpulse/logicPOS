@@ -44,12 +44,22 @@ namespace LogicPOS.UI.Components.Modals
         {
             var printers = GetPrinters();
             var labelText = GeneralUtils.GetResourceByName("global_printers");
-            var currentPrinter = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
+            if (_entity != null)
+            {
+                var currentPrinter = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
 
-            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
+                _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
+                                                                         printers,
+                                                                         currentPrinter,
+                                                                         false);
+            }
+            else
+            {
+                _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
                                                          printers,
-                                                         currentPrinter,
+                                                         null,
                                                          false);
+            }
         }
 
         private void InitializeCommissionGroupsComboBox()
