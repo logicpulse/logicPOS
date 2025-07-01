@@ -11,7 +11,6 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using Serilog;
 using System;
-using System.Configuration;
 using System.Globalization;
 using System.Threading;
 
@@ -23,11 +22,6 @@ namespace LogicPOS.UI
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
-
-        public static void InitializeSettings()
-        {
-            GeneralSettings.Settings = ConfigurationManager.AppSettings;
-        }
 
         public static void InitializeGtk()
         {

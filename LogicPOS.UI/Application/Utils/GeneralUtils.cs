@@ -3,10 +3,6 @@ using LogicPOS.Globalization;
 using LogicPOS.Settings;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.Utility
@@ -35,7 +31,8 @@ namespace LogicPOS.Utility
             if (pType != null && !CanConvert(pValidate, pType))
             {
                 return false;
-            };
+            }
+            ;
 
             if (pValidate != string.Empty && pRegExRule != string.Empty)
             {
@@ -123,9 +120,9 @@ namespace LogicPOS.Utility
                     //Cut Text
                     result.Text = pValue.Substring(0, pMaxLength);
                 }
-                lengthLabelText = string.Format("{0}: {1}/{2}", LocalizedString.Instance[ "global_characters"], result.Length, pMaxLength);
+                lengthLabelText = string.Format("{0}: {1}/{2}", LocalizedString.Instance["global_characters"], result.Length, pMaxLength);
             }
-            var minWordLengthConsidered = Convert.ToInt16(GeneralSettings.Settings["MinWordLengthConsidered"]);
+            var minWordLengthConsidered = 1;
 
             result.Words = GetNumWords(
                 result.Text,
@@ -138,7 +135,7 @@ namespace LogicPOS.Utility
                     result.Words = pMaxWords;
                     result.Text = GetWords(result.Text, pMaxWords);
                 }
-                maxWordsLabelText = string.Format("{0}: {1}/{2}", LocalizedString.Instance[ "global_words"], result.Words, pMaxWords);
+                maxWordsLabelText = string.Format("{0}: {1}/{2}", LocalizedString.Instance["global_words"], result.Words, pMaxWords);
             }
 
             if (result.Length > 0)

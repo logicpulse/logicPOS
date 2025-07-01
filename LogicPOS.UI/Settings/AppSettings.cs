@@ -22,6 +22,11 @@ namespace LogicPOS.Settings
 
         private static void Initialize()
         {
+            if (!File.Exists("appsettings.json"))
+            {
+                throw new FileNotFoundException("The appsettings.json file is missing.");
+            }
+
             var json = File.ReadAllText("appsettings.json");
             _instance = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json, new ColorConverter());
         }

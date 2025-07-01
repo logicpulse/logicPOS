@@ -5,6 +5,7 @@ using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 
@@ -80,7 +81,7 @@ namespace LogicPOS.UI.Components.Pages
                                                        GeneralUtils.GetResourceByName("global_user_apply_privileges"),
                                                        @"Icons/icon_pos_nav_refresh.png");
 
-            BtnApply.Sensitive = GeneralSettings.LoggedUserHasPermissionTo("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+            BtnApply.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
 
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);
         }
