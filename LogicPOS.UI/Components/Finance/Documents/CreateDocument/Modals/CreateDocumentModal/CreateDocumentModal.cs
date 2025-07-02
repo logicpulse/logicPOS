@@ -36,6 +36,7 @@ namespace LogicPOS.UI.Components.Modals
         private void AddEventHandlers()
         {
             BtnOk.Clicked += BtnOk_Clicked;
+            BtnPreview.Clicked += BtnPreview_Clicked;
         }
 
         private void AddTabsEventHandlers()

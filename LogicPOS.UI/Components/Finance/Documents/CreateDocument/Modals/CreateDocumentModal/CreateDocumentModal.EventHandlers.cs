@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Errors;
 using System;
 
@@ -29,6 +30,10 @@ namespace LogicPOS.UI.Components.Modals
             DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
         }
 
+        private void BtnPreview_Clicked(object sender, EventArgs e)
+        {
+            DocumentPreviewModal.ShowModal(this);
+        }
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
             ShowTabsForDocumentType(documentType);
