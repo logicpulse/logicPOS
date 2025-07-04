@@ -1,7 +1,10 @@
-﻿using LogicPOS.Api.Entities;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
+using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using System;
 
 namespace LogicPOS.UI.Components.Modals
@@ -32,7 +35,16 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnPreview_Clicked(object sender, EventArgs e)
         {
-            DocumentPreviewModal.ShowModal(this);
+            var itens=ArticlesTab.ItemsPage.Items;
+            var customerDiscount = string.IsNullOrEmpty(CustomerTab.TxtDiscount.Text)?0:Decimal.Parse(CustomerTab.TxtDiscount.Text);
+            var preview=new DocumentPreviewModal(this, itens, customerDiscount);
+
+            var response = (ResponseType)preview.Run();
+            if (response == ResponseType.Ok)
+            {
+                return;    
+            }
+            
         }
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
