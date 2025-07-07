@@ -79,6 +79,8 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
             columnTaxTotal.Widget = labelTaxTotal;
 
             treeView.AppendColumn(columnTaxTotal);
+            treeView.CanFocus = false;
+            treeView.Selection.Mode = SelectionMode.None;
             return treeView;
         }
 

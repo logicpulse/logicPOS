@@ -35,6 +35,20 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnClear_Clicked(object sender, EventArgs e)
         {
+            CustomerTab.CustomerId = null;
+            CustomerTab.TxtFiscalNumber.Clear();
+            CustomerTab.TxtCustomer.Clear();
+            CustomerTab.TxtCardNumber.Clear();
+            CustomerTab.TxtDiscount.Clear();
+            CustomerTab.TxtAddress.Clear();
+            CustomerTab.TxtLocality.Clear();
+            CustomerTab.TxtZipCode.Clear();
+            CustomerTab.TxtCity.Clear();
+            CustomerTab.TxtCountry.Clear();
+            CustomerTab.TxtPhone.Clear();
+            CustomerTab.TxtEmail.Clear();
+            CustomerTab.TxtNotes.Clear();
+
             Run();
         }
 
