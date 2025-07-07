@@ -33,19 +33,21 @@ namespace LogicPOS.UI.Components.Modals
             DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
         }
 
+        private void BtnClear_Clicked(object sender, EventArgs e)
+        {
+            Run();
+        }
+
         private void BtnPreview_Clicked(object sender, EventArgs e)
         {
             var itens=ArticlesTab.ItemsPage.Items;
             var customerDiscount = string.IsNullOrEmpty(CustomerTab.TxtDiscount.Text)?0:Decimal.Parse(CustomerTab.TxtDiscount.Text);
-            var preview=new DocumentPreviewModal(this, itens, customerDiscount);
-
-            var response = (ResponseType)preview.Run();
-            if (response == ResponseType.Ok)
-            {
-                return;    
-            }
-            
+            var preview = new DocumentPreviewModal(this, itens, customerDiscount);
+            preview.Run();
+            preview.Destroy();
+            Run();
         }
+       
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
             ShowTabsForDocumentType(documentType);

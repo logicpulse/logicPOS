@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
-                new ActionAreaButton(BtnClearCustomer,  ResponseType.None),
+                new ActionAreaButton(BtnClear,  ResponseType.None),
                 new ActionAreaButton(BtnPreview, ResponseType.None),
                 new ActionAreaButton(BtnOk, ResponseType.Ok),
                 new ActionAreaButton(BtnCancel, ResponseType.Cancel)

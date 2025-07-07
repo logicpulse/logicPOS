@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
         #region Buttons
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-        private IconButtonWithText BtnClearCustomer { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
+        private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
                                                                                                                 GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"),
                                                                                                                 PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png");
         private IconButtonWithText BtnPreview { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea",
