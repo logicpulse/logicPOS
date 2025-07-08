@@ -96,8 +96,6 @@ namespace LogicPOS.UI.Components.InputFields
 
         }
 
-
-
         public bool IsValid()
         {
             var result = (Article != null) && QuantityIsValid();

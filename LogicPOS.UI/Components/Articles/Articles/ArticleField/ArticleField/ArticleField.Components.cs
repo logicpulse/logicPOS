@@ -25,7 +25,5 @@ namespace LogicPOS.UI.Components.InputFields
         private readonly List<SerialNumberField> _serialNumberFields = new List<SerialNumberField>();
         private VBox _serialNumberFieldsContainer { get; set; } = new VBox(false, 2);
         private WarehouseSelectionField _locationField { get; set; } 
-
-        
     }
 }
