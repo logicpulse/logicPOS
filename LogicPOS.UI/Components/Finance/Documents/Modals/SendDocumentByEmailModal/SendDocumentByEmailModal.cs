@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Documents.SendDocumentsByEmail;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
                                         Window parent) : base(parent,
                                                               LocalizedString.Instance["window_title_send_email"],
                                                               new Size(800, 640),
-                                                              PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_send_email.png")
+                                                              AppSettings.Paths.Images + @"Icons\Windows\icon_window_send_email.png")
         {
             _documentsIds = documentsIds;
             _sendReceipts = sendReceipts;

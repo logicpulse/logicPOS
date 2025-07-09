@@ -2,7 +2,6 @@
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Components.Users;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Windows

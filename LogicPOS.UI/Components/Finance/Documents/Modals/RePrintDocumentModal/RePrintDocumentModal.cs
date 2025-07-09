@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
                                     string documentNumber) : base(parent,
                                                                   GeneralUtils.GetResourceByName("window_title_dialog_document_finance_print"),
                                                                   new Size(500, 400),
-                                                                  PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png")
+                                                                  AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
             _documentNumber = documentNumber;
             SetTitle();

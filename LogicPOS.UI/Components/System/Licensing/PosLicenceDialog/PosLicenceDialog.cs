@@ -1,10 +1,9 @@
 ﻿using Gtk;
-using logicpos;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -27,12 +26,12 @@ namespace LogicPOS.UI.Components.Licensing
             //Init Local Vars
             string windowTitle = LocalizedString.Instance["window_title_license"];
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_license.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_license.png";
 
             //If detected empty Hardware Id from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(hardWareId))
             {
-                _hardwareId = PluginSettings.LicenceManager.GetHardwareID();
+                _hardwareId = AppSettings.Plugins.LicenceManager.GetHardwareID();
             }
             else
             {
@@ -41,8 +40,8 @@ namespace LogicPOS.UI.Components.Licensing
 
 
             //Files
-            string fileActionRegister = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
-            string fileActionContinue = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string fileActionRegister = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
+            string fileActionContinue = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
             //ActionArea Buttons
             _buttonRegister = new IconButtonWithText(
@@ -112,12 +111,12 @@ namespace LogicPOS.UI.Components.Licensing
 
         private void ActionRegister()
         {
-            if (PluginSettings.LicenceManager == null)
+            if (AppSettings.Plugins.LicenceManager == null)
             {
                 return;
             }
 
-            if (PluginSettings.LicenceManager.ConnectToWS() == false)
+            if (AppSettings.Plugins.LicenceManager.ConnectToWS() == false)
             {
 
                 CustomAlerts.Error(this)
@@ -134,7 +133,7 @@ namespace LogicPOS.UI.Components.Licensing
             try
             {
                 //Returns ByteWrite File
-                registeredLicence = PluginSettings.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
+                registeredLicence = AppSettings.Plugins.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
                                                                                  EntryBoxCompany.EntryValidation.Text,
                                                                                  EntryBoxFiscalNumber.EntryValidation.Text,
                                                                                  EntryBoxAddress.EntryValidation.Text,
@@ -145,7 +144,7 @@ namespace LogicPOS.UI.Components.Licensing
                                                                                  Countries.IndexOf(ComboBoxCountry.Value)+1,
                                                                                  _entryBoxSoftwareKey.EntryValidation.Text);
 
-                string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
+                string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();
 
                 LicenseRouter.WriteByteArrayToFile(registeredLicence, licenseFilePath);
 

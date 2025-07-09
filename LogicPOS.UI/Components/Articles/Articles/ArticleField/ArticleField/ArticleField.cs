@@ -1,20 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
-using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
-using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Errors;
-using LogicPOS.UI.Extensions;
-using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 

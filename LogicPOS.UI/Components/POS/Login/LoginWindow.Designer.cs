@@ -2,12 +2,12 @@
 using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System;
 using Image = Gtk.Image;
 
@@ -64,11 +64,11 @@ namespace LogicPOS.UI.Components.Windows
                 Fixed fix = new Fixed();
 
 
-                if (AppSettings.Instance.appShowMinimize)
+                if (AppSettings.Instance.AppShowMinimize)
                 {
                     EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                     eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                    fix.Put(eventBoxMinimize, LogicPOSAppContext.ScreenSize.Width - 27 - 10, 10);
+                    fix.Put(eventBoxMinimize, AppSettings.Instance.AppScreenSize.Width - 27 - 10, 10);
                 }
 
                 //NumberPadPin
@@ -143,18 +143,18 @@ namespace LogicPOS.UI.Components.Windows
 
                 //Label Version
                 string appVersion = "";
-                if (LicenseSettings.LicenseReseller != null &&
-                    LicenseSettings.LicenseReseller.ToString().ToLower() != "Logicpulse" &&
-                    LicenseSettings.LicenseReseller.ToString().ToLower() != "")
+                if (AppSettings.License.LicenseReseller != null &&
+                    AppSettings.License.LicenseReseller.ToString().ToLower() != "Logicpulse" &&
+                    AppSettings.License.LicenseReseller.ToString().ToLower() != "")
                 {
                     //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                    appVersion = string.Format("Powered by {0}© Vers. {1}", LicenseSettings.LicenseReseller, GeneralSettings.ProductVersion);
+                    appVersion = string.Format("Powered by {0}© Vers. {1}", AppSettings.License.LicenseReseller, AppSettings.ProductVersion);
                 }
                 else
                 {
-                    if (PluginSettings.AppSoftwareVersionFormat != null)
+                    if (AppSettings.Plugins.AppSoftwareVersionFormat != null)
                     {
-                        appVersion = string.Format(PluginSettings.AppSoftwareVersionFormat, GeneralSettings.ProductVersion);
+                        appVersion = string.Format(AppSettings.Plugins.AppSoftwareVersionFormat, AppSettings.ProductVersion);
                     }
                 }
 
@@ -171,19 +171,19 @@ namespace LogicPOS.UI.Components.Windows
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
                 //LOGO
-                if (PluginSettings.LicenceManager != null)
+                if (AppSettings.Plugins.LicenceManager != null)
                 {
-                    string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_loggericpulse_login.png");
+                    string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_loggericpulse_login.png");
 
-                    if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
+                    if (!string.IsNullOrEmpty(AppSettings.License.LicenseReseller) && AppSettings.License.LicenseReseller == "NewTech")
                     {
-                        fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_login.png", "NT");
+                        fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_login.png", "NT");
                     }
                 }
                 else
                 {
-                    Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo));
-                    fix.Put(imageLogo, LogicPOSAppContext.ScreenSize.Width - 430, 80);
+                    Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
+                    fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
                 }
 
                 ScreenArea.Add(fix);

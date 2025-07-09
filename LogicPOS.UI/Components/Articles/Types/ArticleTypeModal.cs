@@ -1,9 +1,6 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Types.AddArticleType;
 using LogicPOS.Api.Features.Articles.Types.UpdateArticleType;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {

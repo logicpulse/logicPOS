@@ -3,21 +3,16 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.AddDocument;
-using LogicPOS.Api.Features.Orders.CreateOrder;
-using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
-using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -41,7 +36,7 @@ namespace LogicPOS.UI.Components.POS
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
                                                    new Size(640, 700),
-                                                   PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_payments.png")
+                                                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
       
             UpdateLabels();

@@ -1,5 +1,5 @@
-﻿using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
+﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Pages
         private void InitializeButtons()
         {
             string font = "8";
-            string terminalsIcon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_terminals.png";
+            string terminalsIcon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_terminals.png";
             Size iconSize = new Size(35, 35);
 
             BtnTerminals = new IconButtonWithText(
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_application_setup"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_configurations.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_configurations.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_documentfinance_years_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_fiscal_year.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_fiscal_year.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_printers"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_printer.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_printer.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_articles"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_articles.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_articles.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -88,7 +88,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_customers"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_costumers.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_costumers.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -101,7 +101,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_users"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_employees.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_employees.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -114,7 +114,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_other_tables"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_other_tables.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_other_tables.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -128,7 +128,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_documents_new.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_new.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -141,7 +141,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_documents.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -154,7 +154,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_documents_new.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_new.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -167,7 +167,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_documents_merch.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_merch.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -181,7 +181,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("global_reports"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_reports.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -194,7 +194,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("report_company_billing_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_reports_sales_report.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_report.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -207,7 +207,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("report_customer_balance_details_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_reports_sales_client.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_client.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });
@@ -220,7 +220,7 @@ namespace LogicPOS.UI.Components.Pages
                     Text = GeneralUtils.GetResourceByName("report_sales_per_date"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_reports_sales_day.png",
+                    Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_day.png",
                     IconSize = iconSize,
                     ButtonSize = new Size(105, 70)
                 });

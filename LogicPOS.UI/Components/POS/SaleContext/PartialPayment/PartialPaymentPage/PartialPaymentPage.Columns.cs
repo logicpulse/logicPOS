@@ -2,11 +2,6 @@
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Pages
 {

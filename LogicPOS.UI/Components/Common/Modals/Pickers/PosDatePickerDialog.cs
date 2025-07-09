@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -40,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             //Init Local Vars
             string windowTitle = pDialogTitle;
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png";
             WindowSettings.Size = new Size(600, 373);
 
             //Init Content
@@ -67,7 +67,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private void InitUI()
         {
             //Init Font Description
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue);
             //Init Calendar
             Calendar = new Calendar();
             Calendar.Date = _dateTime;

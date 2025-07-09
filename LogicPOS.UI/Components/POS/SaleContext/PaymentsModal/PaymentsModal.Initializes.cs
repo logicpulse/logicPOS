@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -132,18 +132,18 @@ namespace LogicPOS.UI.Components.POS
               new ButtonSettings
               {
                   BackgroundColor = Color.White,
-                  Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
+                  Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
-                  ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                  ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
               });
 
             BtnNext = new IconButton(
                new ButtonSettings
                {
                    BackgroundColor = Color.White,
-                   Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
+                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),
-                   ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                   ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
                });
 
             BtnPrevious.Relief = ReliefStyle.None;

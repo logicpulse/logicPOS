@@ -1,15 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
-using LogicPOS.Settings;
-using LogicPOS.UI.Components.InputFields;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 
@@ -20,7 +15,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         
         public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
-                                                               icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
+                                                               icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
         {
             Initialize();
             Design();

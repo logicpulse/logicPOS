@@ -1,10 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.Utility;
 using Medsphere.Widgets;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
 {

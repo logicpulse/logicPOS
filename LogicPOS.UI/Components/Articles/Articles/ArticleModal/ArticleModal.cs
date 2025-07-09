@@ -1,5 +1,4 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;

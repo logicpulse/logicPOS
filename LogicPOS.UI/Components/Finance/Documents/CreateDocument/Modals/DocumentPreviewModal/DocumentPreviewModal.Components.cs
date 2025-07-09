@@ -1,15 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
-using Microsoft.FSharp.Collections;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using Color = System.Drawing.Color;
 using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal

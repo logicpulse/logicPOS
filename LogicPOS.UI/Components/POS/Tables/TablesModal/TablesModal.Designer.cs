@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -17,27 +17,27 @@ namespace LogicPOS.UI.Components.POS
         {
             BtnReservation = CreateButton("touchButtonTableReservation_DialogActionArea",
                                           GeneralUtils.GetResourceByName("pos_button_label_table_reservation"),
-                                          PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_reservation.png",
-                                          AppSettings.Instance.colorBaseDialogActionAreaButtonBackground);
+                                          AppSettings.Paths.Images + @"Icons\icon_pos_table_reservation.png",
+                                          AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground);
 
             BtnFilterAll = CreateButton("touchButton_Green",
                                         GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_all"),
-                                        PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_all.png");
+                                        AppSettings.Paths.Images + @"Icons\icon_pos_table_filter_all.png");
 
             BtnFilterFree = CreateButton("touchButton_Green", GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_free"),
-                                         PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_free.png");
+                                         AppSettings.Paths.Images + @"Icons\icon_pos_table_filter_free.png");
 
             BtnFilterOpen = CreateButton("touchButton_Green", GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_open"),
-                                         PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_open.png");
+                                         AppSettings.Paths.Images + @"Icons\icon_pos_table_filter_open.png");
 
             BtnFilterReserved = CreateButton("touchButton_Green", GeneralUtils.GetResourceByName("dialog_orders_button_label_tables_reserved"),
-                                             PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_filter_reserved.png");
+                                             AppSettings.Paths.Images + @"Icons\icon_pos_table_filter_reserved.png");
 
             BtnViewOrders = CreateButton("touchButton_Red", GeneralUtils.GetResourceByName("dialog_orders_button_label_view_orders"),
-                                         PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_retail_view_order.png");
+                                         AppSettings.Paths.Images + @"Icons\icon_pos_retail_view_order.png");
 
             BtnViewTables = CreateButton("touchButton_Green", GeneralUtils.GetResourceByName("dialog_orders_button_label_view_tables"),
-                                         PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_table_view_tables.png");
+                                         AppSettings.Paths.Images + @"Icons\icon_pos_table_view_tables.png");
 
             InitializeScrollerButtons();
             AddEventHandlers();
@@ -48,10 +48,10 @@ namespace LogicPOS.UI.Components.POS
                                                string icon,
                                                Color? bgColor = null)
         {
-            var font = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            var fontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-            var iconSize = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
-            var buttonSize = AppSettings.Instance.sizeBaseDialogActionAreaButton;
+            var font = AppSettings.Instance.FontBaseDialogActionAreaButton;
+            var fontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont;
+            var iconSize = AppSettings.Instance.SizeBaseDialogActionAreaButtonIcon;
+            var buttonSize = AppSettings.Instance.SizeBaseDialogActionAreaButton;
 
             return new IconButtonWithText(
                 new ButtonSettings
@@ -72,18 +72,18 @@ namespace LogicPOS.UI.Components.POS
               new ButtonSettings
               {
                   BackgroundColor = Color.White,
-                  Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
+                  Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
-                  ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                  ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
               });
 
             BtnScrollTablesNext = new IconButton(
                new ButtonSettings
                {
                    BackgroundColor = Color.White,
-                   Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
+                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),
-                   ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                   ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
                });
 
             BtnScrollTablesPrevious.Relief = ReliefStyle.None;
@@ -114,18 +114,18 @@ namespace LogicPOS.UI.Components.POS
               new ButtonSettings
               {
                   BackgroundColor = Color.White,
-                  Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
+                  Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
-                  ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                  ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
               });
 
             BtnScrollPlacesNext = new IconButton(
                new ButtonSettings
                {
                    BackgroundColor = Color.White,
-                   Icon = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
+                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),
-                   ButtonSize = AppSettings.Instance.sizePosSmallButtonScroller
+                   ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
                });
 
             BtnScrollPlacesPrevious.Relief = ReliefStyle.None;

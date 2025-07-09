@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace LogicPOS.UI.Components.InputFields
                 GLib.Value row = new GLib.Value();
                 ComboBox.Model.GetValue(iterator, 0, ref row);
 
-                if (Cultures.ElementAt(index).Value == Settings.CultureSettings.CurrentCultureName)
+                if (Cultures.ElementAt(index).Value == AppSettings.Culture.CurrentCultureName)
                 {
                     ComboBox.SetActiveIter(iterator);
                     break;

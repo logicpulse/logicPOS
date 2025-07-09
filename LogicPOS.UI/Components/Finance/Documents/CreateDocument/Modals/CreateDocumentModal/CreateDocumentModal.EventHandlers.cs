@@ -1,10 +1,7 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
-using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.Services;
 using System;
 
 namespace LogicPOS.UI.Components.Modals

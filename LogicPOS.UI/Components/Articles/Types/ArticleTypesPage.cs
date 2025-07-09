@@ -9,7 +9,6 @@ using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages

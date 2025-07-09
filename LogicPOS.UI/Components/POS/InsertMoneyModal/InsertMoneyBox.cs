@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -12,16 +12,16 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
     internal class InsertMoneyBox : Box
     {
         //Settings
-        private readonly decimal _decimalMoneyButtonL1Value = AppSettings.Instance.decimalMoneyButtonL1Value;
-        private readonly decimal _decimalMoneyButtonL2Value = AppSettings.Instance.decimalMoneyButtonL2Value;
-        private readonly decimal _decimalMoneyButtonL3Value = AppSettings.Instance.decimalMoneyButtonL3Value;
-        private readonly decimal _decimalMoneyButtonL4Value = AppSettings.Instance.decimalMoneyButtonL4Value;
-        private readonly decimal _decimalMoneyButtonL5Value = AppSettings.Instance.decimalMoneyButtonL5Value;
-        private readonly decimal _decimalMoneyButtonR1Value = AppSettings.Instance.decimalMoneyButtonR1Value;
-        private readonly decimal _decimalMoneyButtonR2Value = AppSettings.Instance.decimalMoneyButtonR2Value;
-        private readonly decimal _decimalMoneyButtonR3Value = AppSettings.Instance.decimalMoneyButtonR3Value;
-        private readonly decimal _decimalMoneyButtonR4Value = AppSettings.Instance.decimalMoneyButtonR4Value;
-        private readonly decimal _decimalMoneyButtonR5Value = AppSettings.Instance.decimalMoneyButtonR5Value;
+        private readonly decimal _decimalMoneyButtonL1Value = AppSettings.Instance.DecimalMoneyButtonL1Value;
+        private readonly decimal _decimalMoneyButtonL2Value = AppSettings.Instance.DecimalMoneyButtonL2Value;
+        private readonly decimal _decimalMoneyButtonL3Value = AppSettings.Instance.DecimalMoneyButtonL3Value;
+        private readonly decimal _decimalMoneyButtonL4Value = AppSettings.Instance.DecimalMoneyButtonL4Value;
+        private readonly decimal _decimalMoneyButtonL5Value = AppSettings.Instance.DecimalMoneyButtonL5Value;
+        private readonly decimal _decimalMoneyButtonR1Value = AppSettings.Instance.DecimalMoneyButtonR1Value;
+        private readonly decimal _decimalMoneyButtonR2Value = AppSettings.Instance.DecimalMoneyButtonR2Value;
+        private readonly decimal _decimalMoneyButtonR3Value = AppSettings.Instance.DecimalMoneyButtonR3Value;
+        private readonly decimal _decimalMoneyButtonR4Value = AppSettings.Instance.DecimalMoneyButtonR4Value;
+        private readonly decimal _decimalMoneyButtonR5Value = AppSettings.Instance.DecimalMoneyButtonR5Value;
         //UI
         private readonly NumberPad _numberPad;
         private readonly ValidatableTextBox _entryDeliveryValue;
@@ -49,8 +49,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
 
             //Settings
-            string fontMoneyPadButtonKeys = AppSettings.Instance.fontMoneyPadButtonKeys;
-            string fontMoneyPadTextEntry = AppSettings.Instance.fontMoneyPadTextEntry;
+            string fontMoneyPadButtonKeys = AppSettings.Instance.FontMoneyPadButtonKeys;
+            string fontMoneyPadTextEntry = AppSettings.Instance.FontMoneyPadTextEntry;
             //ButtonLabels
             string moneyButtonL1Label = _decimalMoneyButtonL1Value.ToString("C");
             string moneyButtonL2Label = _decimalMoneyButtonL2Value.ToString("C");

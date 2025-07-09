@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Pango;
 using System;
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Licensing
         private void InitUI()
         {
             //Files
-            string fileAppBanner = PathsSettings.ImagesFolderLocation + @"Licence\licence.png";
+            string fileAppBanner = AppSettings.Paths.Images + @"Licence\licence.png";
             //Init
             int padding = 2;
             //Init Fonts
@@ -147,13 +147,13 @@ namespace LogicPOS.UI.Components.Licensing
             labelWithoutInternetContactCompanyNameLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyNameValue = new Label(PluginSettings.AppCompanyName);
+            Label labelWithoutInternetContactCompanyNameValue = new Label(AppSettings.Plugins.AppCompanyName);
             labelWithoutInternetContactCompanyNameValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameValue, false, false, 0);
 
             //Phone
-            string[] primaryPhones = PluginSettings.AppCompanyPhone?.Split(new string[] { " / " }, StringSplitOptions.None);
+            string[] primaryPhones = AppSettings.Plugins.AppCompanyPhone?.Split(new string[] { " / " }, StringSplitOptions.None);
             Label labelWithoutInternetContactCompanyPhoneLabel = new Label(GeneralUtils.GetResourceByName("global_phone"));
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
@@ -168,7 +168,7 @@ namespace LogicPOS.UI.Components.Licensing
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyWebValue = new Label(PluginSettings.AppCompanyWeb);
+            Label labelWithoutInternetContactCompanyWebValue = new Label(AppSettings.Plugins.AppCompanyWeb);
             labelWithoutInternetContactCompanyWebValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebValue, false, false, 0);

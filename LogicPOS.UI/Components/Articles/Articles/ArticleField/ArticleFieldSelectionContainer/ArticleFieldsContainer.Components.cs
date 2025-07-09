@@ -1,11 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.UI.Components.Enums;
 using LogicPOS.UI.Components.InputFields;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Articles
 {

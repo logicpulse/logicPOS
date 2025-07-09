@@ -1,5 +1,5 @@
-﻿using LogicPOS.Settings;
-using LogicPOS.UI.Application;
+﻿using LogicPOS.UI.Application;
+using LogicPOS.UI.Settings;
 using System.IO;
 
 namespace LogicPOS.UI.Components.Licensing
@@ -9,15 +9,15 @@ namespace LogicPOS.UI.Components.Licensing
         
         private static void StartPOSFrontOffice()
         {
-            if (GeneralSettings.AppUseBackOfficeMode == false)
+            if (AppSettings.Instance.UseBackOfficeMode == false)
             {
-                LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp();
+                LogicPOSApp logicPos = new LogicPOSApp();
+                logicPos.Start();
             }
             else
             {
-                LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-                logicPos.StartApp();
+                LogicPOSApp logicPos = new LogicPOSApp();
+                logicPos.Start();
             }
         }
 
@@ -25,11 +25,11 @@ namespace LogicPOS.UI.Components.Licensing
         {
             if (Program.DebugMode)
             {
-                LicenseSettings.ApplyDemoData();
+                AppSettings.License.ApplyDemoData();
                 return;
             }
 
-            LicenseSettings.ApplyDataFromPlugin(PluginSettings.LicenceManager);
+            AppSettings.License.ApplyDataFromPlugin(AppSettings.Plugins.LicenceManager);
         }
 
         public static void WriteByteArrayToFile(byte[] buff, string filePath)

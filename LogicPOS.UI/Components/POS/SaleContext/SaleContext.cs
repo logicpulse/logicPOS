@@ -1,14 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Tables.GetAllTables;
-using LogicPOS.Globalization;
-using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.POS

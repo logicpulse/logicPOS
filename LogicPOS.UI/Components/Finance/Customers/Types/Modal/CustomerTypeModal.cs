@@ -1,9 +1,6 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.Types.AddCustomerType;
 using LogicPOS.Api.Features.Customers.Types.UpdateCustomerType;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {

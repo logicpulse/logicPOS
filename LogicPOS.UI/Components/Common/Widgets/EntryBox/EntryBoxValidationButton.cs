@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -24,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             : base(parentWindow, pLabelText, pBOSource)
         {
             //Settings
-            string iconSelectRecord = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icons/Windows/icon_window_select_record.png");
+            string iconSelectRecord = string.Format("{0}{1}", AppSettings.Paths.Images, @"Icons/Windows/icon_window_select_record.png");
             string iconFile = (pIconFile != string.Empty) ? pIconFile : iconSelectRecord;
 
             //Init Button

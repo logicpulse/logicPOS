@@ -7,11 +7,9 @@ using LogicPOS.Api.Features.Articles.StockManagement.UpdateUniqueArticle;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Globalization;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pages;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals

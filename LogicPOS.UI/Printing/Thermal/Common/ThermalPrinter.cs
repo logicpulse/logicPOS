@@ -3,7 +3,6 @@ using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Services;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;

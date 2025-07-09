@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.IO;
 
 namespace LogicPOS.UI.Buttons
@@ -42,11 +42,11 @@ namespace LogicPOS.UI.Buttons
                 return verticalBox;
             }
 
-            string fontPosBackOfficeParent = LogicPOS.Settings.AppSettings.Instance.fontPosBackOfficeParent;
-            string fontPosBackOfficeParentLowRes = LogicPOS.Settings.AppSettings.Instance.fontPosBackOfficeParentLowRes;
+            string fontPosBackOfficeParent = AppSettings.Instance.FontPosBackOfficeParent;
+            string fontPosBackOfficeParentLowRes = AppSettings.Instance.FontPosBackOfficeParentLowRes;
             Pango.FontDescription fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParent);
 
-            if (LogicPOSAppContext.ScreenSize.Height == 800)
+            if (AppSettings.Instance.AppScreenSize.Height == 800)
             {
                 fontDescription = Pango.FontDescription.FromString(fontPosBackOfficeParentLowRes);
             }
@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Buttons
                 buttonIcon = Utils.ResizeAndCrop(buttonIcon, settings.IconSize);
                 Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(buttonIcon);
                 Image gtkimageButton = new Image(pixBuf);
-                if (LogicPOSAppContext.ScreenSize.Height == 800)
+                if (AppSettings.Instance.AppScreenSize.Height == 800)
                 {
                     hbox.PackStart(gtkimageButton, false, false, 4);
                 }
@@ -91,11 +91,11 @@ namespace LogicPOS.UI.Buttons
                 {
                     Name = name,
                     Text = label,
-                    Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
-                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + icon,
-                    IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                    ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                    Font = AppSettings.Instance.FontBaseDialogActionAreaButton,
+                    FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
+                    Icon = AppSettings.Paths.Images + icon,
+                    IconSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                    ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton
                 });
         }
     }

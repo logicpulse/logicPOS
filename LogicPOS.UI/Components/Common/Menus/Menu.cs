@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,8 +10,8 @@ namespace LogicPOS.UI.Components.Menus
 {
     public abstract class Menu<TEntity> : Gtk.Table
     {
-        private int ButtonFontSize { get; } = Convert.ToInt16(AppSettings.Instance.fontPosBaseButtonSize);
-        public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.posBaseButtonMaxCharsPerLabel;
+        private int ButtonFontSize { get; } = Convert.ToInt16(AppSettings.Instance.FontPosBaseButtonSize);
+        public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.PosBaseButtonMaxCharsPerLabel;
         private readonly string _buttonOverlay;
         public List<(TEntity Entity, CustomButton Button)> Buttons { get; set; } = new List<(TEntity, CustomButton)>();
         public string ButtonImage { get; set; }
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Menus
             _rows = rows;
             _columns = columns;
 
-            _buttonOverlay = (AppSettings.Instance.useImageOverlay) ? PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png" : null;
+            _buttonOverlay = (AppSettings.Instance.UseImageOverlay) ? AppSettings.Paths.Images + @"Buttons\Pos\button_overlay.png" : null;
 
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;

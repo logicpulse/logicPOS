@@ -2,7 +2,7 @@
 using LogicPOS.Api.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Services;
-using System;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Buttons
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Buttons
             {
                 Name = "buttonTableId",
                 Text = table.Designation,
-                ButtonSize = LogicPOS.Settings.AppSettings.Instance.sizePosTableButton,
+                ButtonSize = AppSettings.Instance.SizePosTableButton,
             }, false)
         {
             Table = table;
@@ -30,8 +30,8 @@ namespace LogicPOS.UI.Buttons
 
         public Widget CreateComponent()
         {
-            _colorPosTablePadTableTableStatusOpenButtonBackground = LogicPOS.Settings.AppSettings.Instance.colorPosTablePadTableTableStatusOpenButtonBackground;
-            _colorPosTablePadTableTableStatusReservedButtonBackground = LogicPOS.Settings.AppSettings.Instance.colorPosTablePadTableTableStatusReservedButtonBackground;
+            _colorPosTablePadTableTableStatusOpenButtonBackground = AppSettings.Instance.ColorPosTablePadTableTableStatusOpenButtonBackground;
+            _colorPosTablePadTableTableStatusReservedButtonBackground =   AppSettings.Instance.ColorPosTablePadTableTableStatusReservedButtonBackground;
 
             VBox vbox = new VBox(true, 5) { BorderWidth = 5 };
 

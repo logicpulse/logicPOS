@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.PriceTypes.AddPriceType;
 using LogicPOS.Api.Features.Articles.PriceTypes.UpdatePriceType;
-using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.Modals
 {

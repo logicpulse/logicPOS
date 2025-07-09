@@ -1,9 +1,8 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Buttons
@@ -64,10 +63,10 @@ namespace LogicPOS.UI.Buttons
             Color colInsensitive = colNormal.Darken();
             Color colSelected = Color.FromArgb(125, 0, 0);
 
-            string _fontPosBackOfficeParent = AppSettings.Instance.fontPosBackOfficeParent;
-            string _fontPosBackOfficeChild = AppSettings.Instance.fontPosBackOfficeChild;
-            string _fontPosBackOfficeParentLowRes = AppSettings.Instance.fontPosBackOfficeParentLowRes;
-            string _fontPosBackOfficeChildLowRes = AppSettings.Instance.fontPosBackOfficeChildLowRes;
+            string _fontPosBackOfficeParent = AppSettings.Instance.FontPosBackOfficeParent;
+            string _fontPosBackOfficeChild = AppSettings.Instance.FontPosBackOfficeChild;
+            string _fontPosBackOfficeParentLowRes = AppSettings.Instance.FontPosBackOfficeParentLowRes;
+            string _fontPosBackOfficeChildLowRes = AppSettings.Instance.FontPosBackOfficeChildLowRes;
 
             Pango.FontDescription fontPosBackOfficeparentLowRes = Pango.FontDescription.FromString(_fontPosBackOfficeParentLowRes);
             Pango.FontDescription fontPosBackOfficeParent = Pango.FontDescription.FromString(_fontPosBackOfficeParent);

@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.InputFields.Validation
@@ -62,10 +63,10 @@ namespace LogicPOS.UI.Components.InputFields.Validation
 
         public readonly static ValidationColors Default = new ValidationColors
         {
-            ValidFontColor = Settings.AppSettings.Instance.colorEntryValidationValidFont,
-            ValidBackgroundColor = Settings.AppSettings.Instance.colorEntryValidationValidBackground,
-            InvalidFontColor = Settings.AppSettings.Instance.colorEntryValidationInvalidFont,
-            InvalidBackgroundColor = Settings.AppSettings.Instance.colorEntryValidationInvalidBackground
+            ValidFontColor = AppSettings.Instance.ColorEntryValidationValidFont,
+            ValidBackgroundColor = AppSettings.Instance.ColorEntryValidationValidBackground,
+            InvalidFontColor = AppSettings.Instance.ColorEntryValidationInvalidFont,
+            InvalidBackgroundColor = AppSettings.Instance.ColorEntryValidationInvalidBackground
         };
 
 

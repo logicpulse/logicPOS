@@ -1,13 +1,13 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -237,21 +237,21 @@ namespace LogicPOS.UI.Components.POS
         private void UpdateButtonsColors()
         {
             _movementTypeButtons.ForEach(btn => btn.ModifyBg(StateType.Normal,
-                                                 AppSettings.Instance.colorBaseDialogDefaultButtonBackground.ToGdkColor()));
+                                                 AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.ToGdkColor()));
 
             switch (MovementType)
             {
                 case WorkSessionMovementType.CashDrawerOpen:
-                    BtnOpening.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
+                    BtnOpening.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                     break;
                 case WorkSessionMovementType.CashDrawerClose:
-                    BtnClosing.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
+                    BtnClosing.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                     break;
                 case WorkSessionMovementType.CashDrawerIn:
-                    BtnIn.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
+                    BtnIn.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                     break;
                 case WorkSessionMovementType.CashDrawerOut:
-                    BtnOut.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
+                    BtnOut.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                     break;
             }
         }

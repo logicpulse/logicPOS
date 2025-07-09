@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Settings;
 using System.Diagnostics;
 using System.Drawing;
 
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public static void RunModal()
         {
-            if (LicenseSettings.LicenseModuleStocks)
+            if (AppSettings.License.LicenseModuleStocks)
             {
                 var parentWindow = BackOfficeWindow.Instance;
                 var stockManagementModal = new StockManagementModal(parentWindow);

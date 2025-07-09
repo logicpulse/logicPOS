@@ -1,9 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Extensions;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,12 +2,12 @@
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -140,7 +140,7 @@ namespace LogicPOS.UI.Printing
         public bool PrintWorkSessionMovement(WorkSessionData workSessionDocumentsData,
                                              WorkSessionData workSessionReceiptsData)
         {
-            string dateCloseDisplay = workSessionDocumentsData.WorkSession.StartDate.ToString(CultureSettings.DateTimeFormat);
+            string dateCloseDisplay = workSessionDocumentsData.WorkSession.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
 
 
             //Print Header Summary
@@ -155,12 +155,12 @@ namespace LogicPOS.UI.Printing
             //Open DateTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_datetime"));
-            dataRow[1] = workSessionDocumentsData.WorkSession.StartDate.ToString(CultureSettings.DateTimeFormat);
+            dataRow[1] = workSessionDocumentsData.WorkSession.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Close DataTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_datetime"));
-            dataRow[1] = workSessionDocumentsData.WorkSession.EndDate?.ToString(CultureSettings.DateTimeFormat);
+            dataRow[1] = workSessionDocumentsData.WorkSession.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();

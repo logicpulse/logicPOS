@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.POS
                    string.Format(LocalizedString.Instance["window_title_dialog_cashdrawer"],
                                  WorkSessionService.GetTotalCashInCashDrawer().ToString("C")),
                    new Size(462, 310),
-                   PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_cash_drawer.png")
+                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_cash_drawer.png")
         {
 
         }
@@ -83,25 +83,25 @@ namespace LogicPOS.UI.Components.POS
         private IconButtonWithText CreateOpeningButton()
         {
             return CreateMovementTypeButton(LocalizedString.Instance["pos_button_label_cashdrawer_open"],
-                                            PathsSettings.ImagesFolderLocation + "Icons\\icon_pos_cashdrawer_open.png");
+                                            AppSettings.Paths.Images + "Icons\\icon_pos_cashdrawer_open.png");
         }
 
         private IconButtonWithText CreateClosingButton()
         {
             return CreateMovementTypeButton(LocalizedString.Instance["pos_button_label_cashdrawer_close"],
-                                            PathsSettings.ImagesFolderLocation + "Icons\\icon_pos_cashdrawer_close.png");
+                                            AppSettings.Paths.Images + "Icons\\icon_pos_cashdrawer_close.png");
         }
 
         private IconButtonWithText CreateInButton()
         {
             return CreateMovementTypeButton(LocalizedString.Instance["pos_button_label_cashdrawer_in"],
-                                            PathsSettings.ImagesFolderLocation + "Icons\\icon_pos_cashdrawer_in.png");
+                                            AppSettings.Paths.Images + "Icons\\icon_pos_cashdrawer_in.png");
         }
 
         private IconButtonWithText CreateOutButton()
         {
             return CreateMovementTypeButton(LocalizedString.Instance["pos_button_label_cashdrawer_out"],
-                                            PathsSettings.ImagesFolderLocation + "Icons\\icon_pos_cashdrawer_out.png");
+                                            AppSettings.Paths.Images + "Icons\\icon_pos_cashdrawer_out.png");
         }
 
         private IconButtonWithText CreateMovementTypeButton(string text, string icon)
@@ -111,11 +111,11 @@ namespace LogicPOS.UI.Components.POS
                 {
                     Name = "touchButton_Green",
                     Text = text,
-                    Font = AppSettings.Instance.fontBaseDialogButton,
-                    FontColor = AppSettings.Instance.colorBaseDialogDefaultButtonFont,
+                    Font = AppSettings.Instance.FontBaseDialogButton,
+                    FontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont,
                     Icon = icon,
-                    IconSize = AppSettings.Instance.sizeBaseDialogDefaultButtonIcon,
-                    ButtonSize = AppSettings.Instance.sizeBaseDialogDefaultButton
+                    IconSize = AppSettings.Instance.SizeBaseDialogDefaultButtonIcon,
+                    ButtonSize = AppSettings.Instance.SizeBaseDialogDefaultButton
                 });
 
         }

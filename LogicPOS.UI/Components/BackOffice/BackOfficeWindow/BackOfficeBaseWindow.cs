@@ -1,11 +1,12 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Pango;
 using System;
@@ -52,15 +53,15 @@ namespace LogicPOS.UI.Components.Windows
         private void DesignUI()
         {
 
-            BackOfficeWindow.ScreenSize = Utils.GetScreenSize();
+            BackOfficeWindow.ScreenSize = ScreenSizeUtil.GetScreenSize();
             uint borderWidth = 5;
             System.Drawing.Size sizeIconDashboard = new System.Drawing.Size(30, 30);
             System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeIconQuit = new System.Drawing.Size(20, 20);
             System.Drawing.Size sizeButton = new System.Drawing.Size(20, 20);
 
-            string fontPosBackOfficeParent = AppSettings.Instance.fontPosBackOfficeParent;
-            string fontDescriptionParentLowRes = AppSettings.Instance.fontPosBackOfficeParentLowRes;
+            string fontPosBackOfficeParent = AppSettings.Instance.FontPosBackOfficeParent;
+            string fontDescriptionParentLowRes = AppSettings.Instance.FontPosBackOfficeParentLowRes;
             string fontDescription = fontPosBackOfficeParent;
 
             if (BackOfficeWindow.ScreenSize.Height <= 800)
@@ -75,16 +76,16 @@ namespace LogicPOS.UI.Components.Windows
 
             DateTimeFormat = GeneralUtils.GetResourceByName("backoffice_datetime_format_status_bar");
 
-            string fontBackOfficeStatusBar = AppSettings.Instance.fontPosStatusBar;
-            string fileImageBackOfficeLogoLong = PathsSettings.Paths["themes"] + @"Default\Images\logo_backoffice_long.png";
-            string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo);
+            string fontBackOfficeStatusBar = AppSettings.Instance.FontPosStatusBar;
+            string fileImageBackOfficeLogoLong = AppSettings.Paths.Themes + @"Default\Images\logo_backoffice_long.png";
+            string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo);
 
             //Colors
-            System.Drawing.Color colorBackOfficeContentBackground = AppSettings.Instance.colorBackOfficeContentBackground;
-            System.Drawing.Color colorBackOfficeStatusBarBackground = AppSettings.Instance.colorBackOfficeStatusBarBackground;
-            System.Drawing.Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.colorBackOfficeAccordionFixBackground;
-            System.Drawing.Color colorBackOfficeStatusBarFont = AppSettings.Instance.colorBackOfficeStatusBarFont;
-            System.Drawing.Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.colorBackOfficeStatusBarBottomBackground;
+            System.Drawing.Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
+            System.Drawing.Color colorBackOfficeStatusBarBackground = AppSettings.Instance.ColorBackOfficeStatusBarBackground;
+            System.Drawing.Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.ColorBackOfficeAccordionFixBackground;
+            System.Drawing.Color colorBackOfficeStatusBarFont = AppSettings.Instance.ColorBackOfficeStatusBarFont;
+            System.Drawing.Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.ColorBackOfficeStatusBarBottomBackground;
             System.Drawing.Color colorLabelReseller = System.Drawing.Color.White;
             ModifyBg(StateType.Normal, colorBackOfficeContentBackground.ToGdkColor());
 
@@ -96,16 +97,16 @@ namespace LogicPOS.UI.Components.Windows
 
             //Reseller
             Reseller = new Label();
-            Reseller.Text = string.Format(" Powered by {0} ©", LicenseSettings.LicenseReseller);
+            Reseller.Text = string.Format(" Powered by {0} ©", AppSettings.License.LicenseReseller);
             Reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
             Reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             Reseller.Justify = Justification.Left;
 
             Logo = new Image(fileImageBackOfficeLogoLong);
 
-            if (LicenseSettings.LicenseReseller != null &&
-                LicenseSettings.LicenseReseller.ToString() != "Logicpulse" &&
-                LicenseSettings.LicenseReseller.ToString().ToLower() != "")
+            if (AppSettings.License.LicenseReseller != null &&
+                AppSettings.License.LicenseReseller.ToString() != "Logicpulse" &&
+                AppSettings.License.LicenseReseller.ToString().ToLower() != "")
             {
                 Logo = new Image(fileImageBackOfficeLogo);
             }
@@ -113,11 +114,11 @@ namespace LogicPOS.UI.Components.Windows
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
-            string _dashboardIcon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_dashboard.png";
-            string _updateIcon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_update.png";
-            string _exitIcon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_pos_close_backoffice.png";
-            string _backPOSIcon = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_pos_front_office.png";
-            string _iconDashBoard = PathsSettings.ImagesFolderLocation + @"Icons\BackOffice\icon_other_tables.png";
+            string _dashboardIcon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_dashboard.png";
+            string _updateIcon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_update.png";
+            string _exitIcon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_pos_close_backoffice.png";
+            string _backPOSIcon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_pos_front_office.png";
+            string _iconDashBoard = AppSettings.Paths.Images + @"Icons\BackOffice\icon_other_tables.png";
 
             //Active Content
             LabelActivePage = new Label() { WidthRequest = 300 };
@@ -140,7 +141,7 @@ namespace LogicPOS.UI.Components.Windows
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
-            if (LicenseSettings.LicenseReseller != null && LicenseSettings.LicenseReseller.ToString() != "Logicpulse" && LicenseSettings.LicenceRegistered) StatusBar.PackStart(Reseller, false, false, 0);
+            if (AppSettings.License.LicenseReseller != null && AppSettings.License.LicenseReseller.ToString() != "Logicpulse" && AppSettings.License.LicenceRegistered) StatusBar.PackStart(Reseller, false, false, 0);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
 
@@ -156,7 +157,7 @@ namespace LogicPOS.UI.Components.Windows
 
             }
 
-            if (GeneralSettings.AppUseBackOfficeMode)
+            if (AppSettings.Instance.UseBackOfficeMode)
             {
                 EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                 eventBoxMinimize.ButtonReleaseEvent += delegate
@@ -229,7 +230,7 @@ namespace LogicPOS.UI.Components.Windows
             PanelLeft.ModifyBg(StateType.Normal, colorBackOfficeAccordionFixBackground.ToGdkColor());
             PanelLeft.Put(BtnDashboard, 0, 0);
 
-            if (GeneralSettings.AppUseBackOfficeMode == false)
+            if (AppSettings.Instance.UseBackOfficeMode == false)
             {
                 if (BackOfficeWindow.ScreenSize.Height <= 800)
                 {
@@ -274,7 +275,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void CheckForUpdates(FontDescription fontDescriptionStatusBar)
         {
-            string appVersion = GeneralSettings.ProductVersion.Replace("v", "");
+            string appVersion = AppSettings.ProductVersion.Replace("v", "");
 
             bool needToUpdate = false;
 
@@ -354,7 +355,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void SetWindowIcon()
         {
-            string fileImageAppIcon = $"{PathsSettings.ImagesFolderLocation}{LogicPOSSettings.AppIcon}";
+            string fileImageAppIcon = $"{AppSettings.Paths.Images}{AppSettings.AppIcon}";
             if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
         }
 

@@ -41,7 +41,7 @@ namespace logicpos
 
             // ExpressionEvaluator, add reference to dynamic Object
             _expressionEvaluatorReference = parsedObject;
-            LogicPOSAppContext.ExpressionEvaluator.Variables.Add("themeRoot", _expressionEvaluatorReference);
+            LogicPOSApp.ExpressionEvaluator.Variables.Add("themeRoot", _expressionEvaluatorReference);
 
             XElement rootElement = rootElement = XElement.Parse(xml);
 
@@ -195,13 +195,13 @@ namespace logicpos
 
             try
             {
-                result = LogicPOSAppContext.ExpressionEvaluator.Evaluate(expression).ToString();
+                result = LogicPOSApp.ExpressionEvaluator.Evaluate(expression).ToString();
 
                 // Trigger Debugger with a BreakPoint, this is usefull to Eval Expressions
                 if (debug)
                 {
                     string hardCodeExpression = "globalScreenSizeHeight - ((posMainWindowTicketPadButtonSize.Height * 5) + (posMainWindowComponentsMargin * 2)) - posMainWindowEventBoxStatusBar1And2Height * 2";
-                    string hardCodeResult = LogicPOSAppContext.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString();
+                    string hardCodeResult = LogicPOSApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString();
                     //log.Debug(string.Format("result: [{0}]", GlobalApp.ExpressionEvaluator.Evaluate(hardCodeExpression).ToString()));
                 }
             }

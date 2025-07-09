@@ -1,12 +1,12 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public class EntitySelectionModalWindowSettings
     {
-        public string Icon { get; set; } = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_select_record.png";
+        public string Icon { get; set; } = AppSettings.Paths.Images + @"Icons\Windows\icon_window_select_record.png";
         public System.Drawing.Size Size { get; set; }
         public EventBox CloseWindow { get; set; }
         public EventBox MinimizeWindow { get; set; }
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        public bool UseMask = AppSettings.Instance.useBaseDialogWindowMask;
+        public bool UseMask = AppSettings.Instance.UseBaseDialogWindowMask;
         public Window Mask { get; set; }
 
         public Label Title { get; set; } = new Label();

@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
-using logicpos.Classes.Enums;
 using LogicPOS.Api.Errors;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -114,7 +114,7 @@ namespace LogicPOS.UI.Alerts
         public static void ShowThemeRenderingErrorAlert(string message, Window parent = null)
         {
             string errorMessage = string.Format(LocalizedString.Instance[ResourceNames.APP_ERROR_RENDERING_THEME],
-                                                LogicPOSSettings.FileTheme,
+                                                AppSettings.ThemeFile,
                                                 message);
 
             Error(parent).WithTitleResource("global_error")

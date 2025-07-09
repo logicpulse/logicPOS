@@ -1,14 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.Documents;
 using System;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.Utility;
 using LogicPOS.UI.Components.Terminals;
 using System.Linq;
 

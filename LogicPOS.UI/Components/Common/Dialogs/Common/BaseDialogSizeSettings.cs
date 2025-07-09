@@ -1,15 +1,15 @@
-﻿using LogicPOS.Settings;
+﻿using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Dialogs
 {
     public class BaseDialogSizeSettings
     {
-        public Size PaymentButton = AppSettings.Instance.sizeBaseDialogDefaultButton;
-        public Size PaymentButtonIcon = AppSettings.Instance.sizeBaseDialogDefaultButtonIcon;
-        public Size DefaultButton = AppSettings.Instance.sizeBaseDialogDefaultButton;
-        public Size DefaultButtonIcon = AppSettings.Instance.sizeBaseDialogDefaultButtonIcon;
-        public Size ActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
-        public Size ActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
+        public Size PaymentButton = AppSettings.Instance.SizeBaseDialogDefaultButton;
+        public Size PaymentButtonIcon = AppSettings.Instance.SizeBaseDialogDefaultButtonIcon;
+        public Size DefaultButton = AppSettings.Instance.SizeBaseDialogDefaultButton;
+        public Size DefaultButtonIcon = AppSettings.Instance.SizeBaseDialogDefaultButtonIcon;
+        public Size ActionAreaButton = AppSettings.Instance.SizeBaseDialogActionAreaButton;
+        public Size ActionAreaButtonIcon = AppSettings.Instance.SizeBaseDialogActionAreaButtonIcon;
     }
 }

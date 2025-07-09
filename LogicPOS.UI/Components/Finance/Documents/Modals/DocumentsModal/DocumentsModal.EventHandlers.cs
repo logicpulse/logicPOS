@@ -2,7 +2,6 @@
 using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;

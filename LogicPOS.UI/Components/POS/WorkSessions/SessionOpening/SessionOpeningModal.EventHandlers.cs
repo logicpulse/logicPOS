@@ -7,8 +7,6 @@ using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.Linq;

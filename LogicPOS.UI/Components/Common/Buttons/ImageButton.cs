@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using System;
 using System.IO;
 
@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Buttons
         private const int _BUTTON_TEXT_ALPHA_OVERLAY = 250;
         private readonly bool _useCachedImages = PreferenceParametersService.UseCachedImages;
         private readonly bool _useVatAutocompletee = PreferenceParametersService.UseEuropeanVatAutoComplete;
-        private readonly string _pathCache = Convert.ToString(PathsSettings.Paths["cache"]);
+        private readonly string _pathCache = Convert.ToString(AppSettings.Paths.Cache);
 
         public ImageButton(ButtonSettings settings)
             : base(settings)
@@ -80,7 +80,7 @@ namespace LogicPOS.UI.Buttons
             if (debug)
             {
                 stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                bitmap.Save(PathsSettings.TempFolderLocation + name + "_1_new_" + stringResolution + ".png");
+                bitmap.Save(AppSettings.Paths.Temp + name + "_1_new_" + stringResolution + ".png");
             };
 
             //Render Image Over bitmap
@@ -95,7 +95,7 @@ namespace LogicPOS.UI.Buttons
                     if (debug)
                     {
                         stringResolution = imageButton.HorizontalResolution + "x" + imageButton.VerticalResolution;
-                        imageButton.Save(PathsSettings.TempFolderLocation + name + "_2_image_" + stringResolution + ".png");
+                        imageButton.Save(AppSettings.Paths.Temp + name + "_2_image_" + stringResolution + ".png");
                     };
 
 
@@ -106,7 +106,7 @@ namespace LogicPOS.UI.Buttons
                     if (debug)
                     {
                         stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                        bitmap.Save(PathsSettings.TempFolderLocation + name + "_3_image_resized_" + stringResolution + ".png");
+                        bitmap.Save(AppSettings.Paths.Temp + name + "_3_image_resized_" + stringResolution + ".png");
                     };
 
                 }
@@ -124,7 +124,7 @@ namespace LogicPOS.UI.Buttons
                     if (debug)
                     {
                         stringResolution = imageOverlay.HorizontalResolution + "x" + imageOverlay.VerticalResolution;
-                        imageOverlay.Save(PathsSettings.TempFolderLocation + name + "_4_overlay_" + stringResolution + ".png");
+                        imageOverlay.Save(AppSettings.Paths.Temp + name + "_4_overlay_" + stringResolution + ".png");
                     };
 
                     imageOverlay = Utils.ResizeAndCrop(imageOverlay, targetImageSize);
@@ -133,7 +133,7 @@ namespace LogicPOS.UI.Buttons
                     if (debug)
                     {
                         stringResolution = bitmap.HorizontalResolution + "x" + bitmap.VerticalResolution;
-                        bitmap.Save(PathsSettings.TempFolderLocation + name + "_5_resized_" + stringResolution + ".png");
+                        bitmap.Save(AppSettings.Paths.Temp + name + "_5_resized_" + stringResolution + ".png");
                     };
 
                 }
@@ -150,7 +150,7 @@ namespace LogicPOS.UI.Buttons
                 Utils.ImageTextOverlay(bitmap, labelText, transpRectangle, System.Drawing.Color.Black, "Arial", fontSize, _BUTTON_TEXT_ALPHA_OVERLAY);
 
 
-                if (debug) bitmap.Save(PathsSettings.TempFolderLocation + @"touchbuttonImage6_" + stringResolution + "_textoverlay.png");
+                if (debug) bitmap.Save(AppSettings.Paths.Temp + @"touchbuttonImage6_" + stringResolution + "_textoverlay.png");
 
             }
 

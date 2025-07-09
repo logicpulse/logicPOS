@@ -1,13 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Errors;
-using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields
 {

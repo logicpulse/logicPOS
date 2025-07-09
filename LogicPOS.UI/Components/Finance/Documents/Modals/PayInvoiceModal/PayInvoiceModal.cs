@@ -2,18 +2,12 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Documents.PayDocuments;
-using LogicPOS.Settings;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -28,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
                                IEnumerable<(Document, DocumentTotals)> invoices) : base(parent,
                                                      GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
                                                      new Size(500, 500),
-                                                     PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_pay_invoice.png")
+                                                     AppSettings.Paths.Images + @"Icons\Windows\icon_window_pay_invoice.png")
         {
             TitleBase = WindowSettings.Title.Text;
             Invoices.AddRange(invoices);

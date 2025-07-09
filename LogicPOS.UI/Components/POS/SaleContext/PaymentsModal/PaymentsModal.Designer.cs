@@ -1,5 +1,4 @@
-﻿using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
+﻿using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
@@ -9,6 +8,7 @@ using Gtk;
 using LogicPOS.UI.Extensions;
 using System.Drawing;
 using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Settings;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.POS
             HBox hbox = new HBox(false, 0);
             PaymentMethodsMenu = new PaymentMethodsMenu(BtnPrevious, BtnNext,this);
             PaymentMethodsMenu.OnEntitySelected += PaymentMethodSelected;
-            hbox.HeightRequest = AppSettings.Instance.sizeBaseDialogDefaultButton.Height + 10;
+            hbox.HeightRequest = AppSettings.Instance.SizeBaseDialogDefaultButton.Height + 10;
             hbox.PackStart(BtnPrevious, false, false, 0);
             hbox.PackStart(PaymentMethodsMenu, true, true, 0);
             hbox.PackEnd(BtnNext, false, false, 0);
@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.POS
 
             EventBox eventBox = new EventBox();
             eventBox.BorderWidth = 2;
-            eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.colorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
+            eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.ColorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
             eventBox.Add(table);
 
             return eventBox;

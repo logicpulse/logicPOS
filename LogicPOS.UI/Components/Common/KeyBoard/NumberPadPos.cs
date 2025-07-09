@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -13,10 +13,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         {
             //Init Local Vars
             Size sizeIcon = new Size(28, 28);
-            string icon1 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_1_splitaccount.png";
-            string icon2 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_2_messages.png";
-            string icon3 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_3_gifts.png";
-            string icon4 = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_numberpad_4_weight.png";
+            string icon1 = AppSettings.Paths.Images + @"Icons\icon_pos_numberpad_1_splitaccount.png";
+            string icon2 = AppSettings.Paths.Images + @"Icons\icon_pos_numberpad_2_messages.png";
+            string icon3 = AppSettings.Paths.Images + @"Icons\icon_pos_numberpad_3_gifts.png";
+            string icon4 = AppSettings.Paths.Images + @"Icons\icon_pos_numberpad_4_weight.png";
 
             Color colorFont = Color.Black;
 

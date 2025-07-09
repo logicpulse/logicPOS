@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals
         private ReportsModal(Window parent) : base(parent,
                                                   LocalizedString.Instance["global_reports"],
                                                   new Size(500, 509),
-                                                  PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_reports.png")
+                                                  AppSettings.Paths.Images + @"Icons\Windows\icon_window_reports.png")
         {
             RegisterPanels();
             ShowPanel(PanelSummarizedFinancialReports);

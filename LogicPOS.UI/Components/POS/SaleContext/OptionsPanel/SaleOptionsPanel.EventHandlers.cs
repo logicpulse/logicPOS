@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Articles.Common;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -9,6 +8,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -186,7 +186,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_barcode.png";
+            string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_barcode.png";
             logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegularExpressions.AlfaNumericExtended, true);
 
             if (response.ResponseType != ResponseType.Ok)
@@ -208,7 +208,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
-            string fileWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
+            string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
             logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance,
                                                                                      DialogFlags.Modal,
                                                                                      fileWindowIcon,

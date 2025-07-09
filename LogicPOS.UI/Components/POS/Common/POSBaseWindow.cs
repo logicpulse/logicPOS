@@ -1,9 +1,9 @@
 using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Windows
         private dynamic GetTheme()
         {
             var predicate = (Predicate<dynamic>)((x) => x.ID == "PosBaseWindow");
-            var theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+            var theme = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
             return theme;
         }
 
@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private string GetAppIconFileLocation()
         {
-            return string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, @"Icos\application.ico");
+            return string.Format("{0}{1}", AppSettings.Paths.Images, @"Icos\application.ico");
         }
 
         private void SetAppIcon()
@@ -136,7 +136,7 @@ namespace LogicPOS.UI.Components.Windows
         protected void CheckMonitorGeometry(int width, int height)
         {
             Gdk.Screen screen = Screen;
-            Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
+            Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.AppScreen);
 
             if (monitorGeometry.Width < width || monitorGeometry.Height < height)
             {

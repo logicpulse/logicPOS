@@ -1,4 +1,4 @@
-﻿using LogicPOS.Settings;
+﻿using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -148,7 +148,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> tmpKeyboardRow;
             VirtualKey tmpKey;
 
-            TextWriter textWriter = new StreamWriter(PathsSettings.TempFolderLocation + file);
+            TextWriter textWriter = new StreamWriter(AppSettings.Paths.Temp + file);
             textWriter.WriteLine("type\tglyph\trow\tcol\tlevel\tibmid\tdeadkey\tdiacritical\tnotengraved\tcharactername\tunicodeid\tkeywidtht\tnumpad\thidel2\tbold\thalign");
 
             for (int i = 0; i < _internalKeyBoard.Count; i++)

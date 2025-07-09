@@ -2,7 +2,6 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
@@ -12,6 +11,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -56,12 +56,12 @@ namespace LogicPOS.UI.Components.Windows
 
             ScreenArea.Add(FixedWindow);
 
-            bool _showMinimize = AppSettings.Instance.appShowMinimize;
+            bool _showMinimize = AppSettings.Instance.AppShowMinimize;
             if (_showMinimize)
             {
                 EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                 eventBoxMinimize.ButtonReleaseEvent += delegate { Iconify(); };
-                FixedWindow.Put(eventBoxMinimize, LogicPOSAppContext.ScreenSize.Width - 27 - 10, 10);
+                FixedWindow.Put(eventBoxMinimize, AppSettings.Instance.AppScreenSize.Width - 27 - 10, 10);
             }
 
             ShowAll();
@@ -74,14 +74,14 @@ namespace LogicPOS.UI.Components.Windows
         {
             if (TerminalService.Terminal.BarcodeReader != null || TerminalService.Terminal.CardReader != null)
             {
-                LogicPOSAppContext.BarCodeReader.Captured += HWBarCodeReader_Captured;
+                LogicPOSApp.BarCodeReader.Captured += HWBarCodeReader_Captured;
             }
         }
 
         private bool InitializeTheme()
         {
             Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
-            Theme = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+            Theme = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             if (Theme == null)
             {
@@ -127,17 +127,17 @@ namespace LogicPOS.UI.Components.Windows
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.fileImageBackOfficeLogo));
-            if (PluginSettings.LicenceManager != null)
+            Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
+            if (AppSettings.Plugins.LicenceManager != null)
             {
-                string fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\logicPOS_logicpulse_login.png");
+                string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_logicpulse_login.png");
 
-                if (!string.IsNullOrEmpty(LicenseSettings.LicenseReseller) && LicenseSettings.LicenseReseller == "NewTech")
+                if (!string.IsNullOrEmpty(AppSettings.License.LicenseReseller) && AppSettings.License.LicenseReseller == "NewTech")
                 {
-                    fileImageBackOfficeLogo = string.Format(PathsSettings.Paths["themes"] + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png", "NT");
+                    fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png", "NT");
                 }
 
-                var bitmapImage = PluginSettings.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
+                var bitmapImage = AppSettings.Plugins.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
                 Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
                 imageLogo = new Image(pixbufImageLogo);
             }
@@ -302,7 +302,7 @@ namespace LogicPOS.UI.Components.Windows
 
             //UI
 
-            string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_overlay.png" : string.Empty;
+            string buttonFavoritesImageOverlay = (buttonFavoritesUseImageOverlay) ? AppSettings.Paths.Images + @"Buttons\Pos\button_overlay.png" : string.Empty;
 
             ImageButton buttonFavorites = new ImageButton(
                 new ButtonSettings
@@ -677,9 +677,9 @@ namespace LogicPOS.UI.Components.Windows
         public static string GetBackgroundImage()
         {
             Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
-            dynamic themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+            dynamic themeWindow = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, "default", LogicPOSAppContext.ScreenSize.Width, LogicPOSAppContext.ScreenSize.Height);
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, "default", AppSettings.Instance.AppScreenSize.Width, AppSettings.Instance.AppScreenSize.Height);
 
             return windowImageFileName;
         }

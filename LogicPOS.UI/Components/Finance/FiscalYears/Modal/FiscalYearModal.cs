@@ -5,7 +5,6 @@ using LogicPOS.Api.Features.FiscalYears.CreateDefaultSeries;
 using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
-using LogicPOS.Utility;
 using System;
 using System.Drawing;
 

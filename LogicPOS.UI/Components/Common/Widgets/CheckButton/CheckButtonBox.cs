@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -23,8 +24,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public CheckButtonBox(string pLabelText, bool pActive)
         {
             //Defaults
-            string fontEntry = LogicPOS.Settings.AppSettings.Instance.fontEntryBoxValue;
-            Color colorBaseDialogEntryBoxBackground = LogicPOS.Settings.AppSettings.Instance.colorBaseDialogEntryBoxBackground;
+            string fontEntry = AppSettings.Instance.FontEntryBoxValue;
+            Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.ColorBaseDialogEntryBoxBackground;
 
             int padding = 3;
             //This

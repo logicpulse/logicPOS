@@ -1,10 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using System.Globalization;
 using System.Reflection;
 
 namespace LogicPOS.UI.Components.InputFields
@@ -76,16 +77,16 @@ namespace LogicPOS.UI.Components.InputFields
                     var textField = Widget as Entry;
                     if (GetFieldValueFromEntity() != null)
                     {
-                        textField.Text = (string)Convert.ChangeType(GetFieldValueFromEntity(), typeof(string), Settings.CultureSettings.CurrentCultureNumberFormat);
+                        textField.Text = (string)Convert.ChangeType(GetFieldValueFromEntity(), typeof(string), CultureInfo.CurrentCulture);
 
-                        if (FieldType == typeof(decimal) && Settings.CultureSettings.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
+                        if (FieldType == typeof(decimal) && CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator == ",")
                         {
                             textField.Text = textField.Text.Replace('.', ',');
                         }
 
                         if (FieldType == typeof(DateTime))
                         {
-                            textField.Text = ((DateTime)FieldValue).ToString(Settings.CultureSettings.DateTimeFormat);
+                            textField.Text = ((DateTime)FieldValue).ToString(AppSettings.Culture.DateTimeFormat);
                         }
                     }
                     else
@@ -250,8 +251,8 @@ namespace LogicPOS.UI.Components.InputFields
 
         public void ValidateField(Func<bool> function)
         {
-            Color validFontColor = Settings.AppSettings.Instance.colorEntryValidationValidFont;
-            Color invalidFontColor = Settings.AppSettings.Instance.colorEntryValidationInvalidFont;
+            Color validFontColor = AppSettings.Instance.ColorEntryValidationValidFont;
+            Color invalidFontColor = AppSettings.Instance.ColorEntryValidationInvalidFont;
 
             ValidationFunctionResult = true;
 
@@ -391,10 +392,10 @@ namespace LogicPOS.UI.Components.InputFields
 
         public void UpdateWidget(dynamic pCurrentWidget, bool pIsValid)
         {
-            Color colorEntryValidationValidFont = Settings.AppSettings.Instance.colorEntryValidationValidFont;
-            Color colorEntryValidationInvalidFont = Settings.AppSettings.Instance.colorEntryValidationInvalidFont;
-            Color colorEntryValidationValidBackground = Settings.AppSettings.Instance.colorEntryValidationValidBackground;
-            Color colorEntryValidationInvalidBackground = Settings.AppSettings.Instance.colorEntryValidationInvalidBackground;
+            Color colorEntryValidationValidFont = AppSettings.Instance.ColorEntryValidationValidFont;
+            Color colorEntryValidationInvalidFont = AppSettings.Instance.ColorEntryValidationInvalidFont;
+            Color colorEntryValidationValidBackground = AppSettings.Instance.ColorEntryValidationValidBackground;
+            Color colorEntryValidationInvalidBackground = AppSettings.Instance.ColorEntryValidationInvalidBackground;
 
             //Override currentWidget reference, to access inner TextView
             if (pCurrentWidget.GetType() == typeof(MultilineTextBox))

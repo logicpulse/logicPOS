@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -61,12 +61,12 @@ namespace LogicPOS.UI.Components.POS
         }
         public void SetOrderModeBackGround()
         {
-            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeOrderMainBackground.ToGdkColor());
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.ColorPosTicketListModeOrderMainBackground.ToGdkColor());
         }
 
         public void SetTicketModeBackGround()
         {
-            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.colorPosTicketListModeTicketBackground.ToGdkColor());
+            GridView.ModifyBase(StateType.Normal, AppSettings.Instance.ColorPosTicketListModeTicketBackground.ToGdkColor());
         }
         private void AddColumns()
         {

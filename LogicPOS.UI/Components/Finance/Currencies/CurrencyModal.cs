@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Currencies.AddCurrency;
 using LogicPOS.Api.Features.Currencies.UpdateCurrency;
-using System;
 
 namespace LogicPOS.UI.Components.Modals
 {

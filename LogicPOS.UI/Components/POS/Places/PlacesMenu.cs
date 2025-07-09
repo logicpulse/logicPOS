@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Settings;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Menus
                           CustomButton btnNext,
                           Window sourceWindow) : base(5,
                                                       1,
-                                                      AppSettings.Instance.sizePosTableButton,
+                                                      AppSettings.Instance.SizePosTableButton,
                                                       "buttonFamilyId",
                                                       btnPrevious,
                                                       btnNext,

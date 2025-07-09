@@ -1,13 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields
 {

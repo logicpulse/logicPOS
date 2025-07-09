@@ -1,8 +1,9 @@
 ﻿using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.Utility
@@ -16,7 +17,7 @@ namespace LogicPOS.Utility
             System.ComponentModel.TypeConverter typeConverter = System.ComponentModel.TypeDescriptor.GetConverter(pType);
             if (typeConverter.CanConvertFrom(typeof(string)))
             {
-                typeConverter.ConvertFrom(null, CultureSettings.CurrentCultureNumberFormat, pValue);
+                typeConverter.ConvertFrom(null, CultureInfo.CurrentCulture, pValue);
                 return true;
             }
             return false;

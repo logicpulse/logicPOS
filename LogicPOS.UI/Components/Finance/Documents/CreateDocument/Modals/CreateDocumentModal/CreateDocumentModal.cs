@@ -2,10 +2,10 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         public CreateDocumentModal(Window parent) : base(parent: parent,
                                                          title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
                                                          size: new System.Drawing.Size(790, 546),
-                                                         icon: PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_document_new.png")
+                                                         icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
             Initialize();
             Navigator.UpdateUI();

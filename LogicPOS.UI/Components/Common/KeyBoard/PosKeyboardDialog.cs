@@ -1,12 +1,13 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using System.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -40,8 +41,8 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_virtual_keyboard");
             Size windowSize = new Size(916, 358);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_keyboard.png";
-            string fileKeyboardXML = System.IO.Path.Combine(PathsSettings.Paths["keyboards"].ToString(), @"163.xml");
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_keyboard.png";
+            string fileKeyboardXML = System.IO.Path.Combine(AppSettings.Paths.Keyboards, @"163.xml");
 
             //Init Content
             Fixed fixedContent = new Fixed();
@@ -74,7 +75,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         //Override Responses - Required to Keep Keyboard in Memory
         protected override void OnResponse(ResponseType pResponse)
         {
-            bool useBaseDialogWindowMask = Convert.ToBoolean(AppSettings.Instance.useBaseDialogWindowMask);
+            bool useBaseDialogWindowMask = Convert.ToBoolean(AppSettings.Instance.UseBaseDialogWindowMask);
 
             if (useBaseDialogWindowMask && this.WindowSettings.Mask.Visible) this.WindowSettings.Mask.Hide();
 
@@ -95,7 +96,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (response == (int)ResponseType.Ok)
             {
-                result = decimal.Parse(dialog.Text, CultureSettings.CurrentCultureNumberFormat);
+                result = decimal.Parse(dialog.Text, CultureInfo.CurrentCulture);
             }
             else
             {

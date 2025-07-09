@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.GetAllUsers;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
@@ -47,12 +47,12 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override string GetButtonImage(User user)
         {
-            return PathsSettings.ImagesFolderLocation + @"Icons\Users\icon_user_default.png";
+            return AppSettings.Paths.Images + @"Icons\Users\icon_user_default.png";
         }
 
         public static IconButton CreatePreviousButton()
         {
-            var buttonSize = AppSettings.Instance.sizeStartupWindowObjectsTablePadUserButton;
+            var buttonSize = AppSettings.Instance.SizeStartupWindowObjectsTablePadUserButton;
 
             IconButton button = new IconButton(
                    new ButtonSettings

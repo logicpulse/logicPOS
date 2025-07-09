@@ -1,5 +1,4 @@
-﻿using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
-using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
+﻿using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

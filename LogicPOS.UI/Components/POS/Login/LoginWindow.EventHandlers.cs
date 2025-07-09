@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -47,10 +47,9 @@ namespace LogicPOS.UI.Components.Windows
             AuthenticationService.LoginUser(MenuUsers.SelectedEntity, PinPanel.JwtToken);
             PinPanel.Mode = NumberPadPinMode.Password;
 
-            if (GeneralSettings.AppUseBackOfficeMode)
+            if (AppSettings.Instance.UseBackOfficeMode)
             {
                 BackOfficeWindow.ShowBackOffice();
-                return;
             }
             else
             {
@@ -70,7 +69,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPOSAppUtils.Quit(this);
+            LogicPOSApp.Quit(this);
         }
 
         private void OnUserSelected(User user)

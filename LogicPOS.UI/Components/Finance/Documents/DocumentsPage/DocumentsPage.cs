@@ -1,15 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Documents.GetDocuments;
-using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Errors;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;

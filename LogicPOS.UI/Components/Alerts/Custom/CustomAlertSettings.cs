@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -7,21 +7,21 @@ namespace LogicPOS.UI.Alerts
 {
     public class CustomAlertSettings
     {
-        public Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
-        public Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
-        public Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
-        public Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
-        public string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
+        public Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground;
+        public Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont;
+        public Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.SizeBaseDialogActionAreaButtonIcon;
+        public Size sizeBaseDialogActionAreaButton = AppSettings.Instance.SizeBaseDialogActionAreaButton;
+        public string fontBaseDialogActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
 
 
-        public string fileImageDialogBaseMessageTypeImage = AppSettings.Instance.fileImageDialogBaseMessageTypeImage;
-        public string fileImageDialogBaseMessageTypeIcon = AppSettings.Instance.fileImageDialogBaseMessageTypeIcon;
+        public string fileImageDialogBaseMessageTypeImage = AppSettings.Instance.FileImageDialogBaseMessageTypeImage;
+        public string fileImageDialogBaseMessageTypeIcon = AppSettings.Instance.FileImageDialogBaseMessageTypeIcon;
 
-        public string fileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-        public string fileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-        public string fileActionYes = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
-        public string fileActionNo = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
-        public string fileActionClose = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
+        public string fileActionOK = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        public string fileActionCancel = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        public string fileActionYes = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_yes.png";
+        public string fileActionNo = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_no.png";
+        public string fileActionClose = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_close.png";
 
         public string GetDialogImage(MessageType messageType)
         {

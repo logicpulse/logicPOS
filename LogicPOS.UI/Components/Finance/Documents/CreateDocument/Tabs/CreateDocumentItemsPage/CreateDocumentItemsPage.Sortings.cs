@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LogicPOS.UI.Components.Documents.CreateDocument
+﻿namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class CreateDocumentItemsPage
     {

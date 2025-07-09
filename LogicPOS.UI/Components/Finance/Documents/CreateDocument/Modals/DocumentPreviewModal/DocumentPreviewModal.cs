@@ -1,15 +1,11 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using Microsoft.FSharp.Collections;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Color = System.Drawing.Color;
 using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal
@@ -19,7 +15,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
         public DocumentPreviewModal(Window parent, List<Item> items, decimal customerDiscount):base(parent: parent,
                                                  title: GeneralUtils.GetResourceByName("window_title_dialog_documentfinance_preview_totals_mode_preview"),
                                                  size: new Size(700, 360),
-                                                 icon: PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_preview.png")
+                                                 icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
         {
             _items = items;
             _customerDiscount = customerDiscount;

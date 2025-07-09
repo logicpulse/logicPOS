@@ -1,11 +1,10 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -18,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         public DateTimePicker(Window parent) : base(parent,
                                                     GeneralUtils.GetResourceByName("window_title_dialog_datepicker"),
                                                     new Size(600, 373),
-                                                    PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
+                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
 
@@ -33,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            Pango.FontDescription font = Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue);
+            Pango.FontDescription font = Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue);
             Calendar.Date = DateTime.Now;
             Calendar.ModifyFont(font);
             var box = new VBox(false, 0);

@@ -1,21 +1,16 @@
-﻿using ErrorOr;
-using Gtk;
+﻿using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Authentication.Login;
 using LogicPOS.Api.Features.Users.ResetPassword;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -78,7 +73,7 @@ namespace LogicPOS.UI.Components
             TxtPin.ModifyFont(Pango.FontDescription.FromString(Font));
             TxtPin.Alignment = 0.5F;
 
-            string resetPasswordImage = PathsSettings.ImagesFolderLocation + @"Icons\Other\pinpad_password_reset.png";
+            string resetPasswordImage = AppSettings.Paths.Images + @"Icons\Other\pinpad_password_reset.png";
 
             BtnResetPassword = new IconButton(
                 new ButtonSettings

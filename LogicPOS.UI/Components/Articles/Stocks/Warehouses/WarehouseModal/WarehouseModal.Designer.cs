@@ -2,11 +2,11 @@
 using System.Drawing;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
@@ -119,7 +119,7 @@ namespace LogicPOS.UI.Components.Modals
                 new ButtonSettings 
                 {
                     Name = "touchButtonIcon",
-                    Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_nav_new.png"}",
+                    Icon = $"{AppSettings.Paths.Images}{@"Icons/icon_pos_nav_new.png"}",
                     IconSize = new Size(15, 15),
                     ButtonSize = new Size(20, 15)
                 });

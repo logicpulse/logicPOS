@@ -1,11 +1,10 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
-using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -64,9 +63,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Parameters
             _sourceWindow = parentWindow;
             //Defaults
-            Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
-            string fontLabel = AppSettings.Instance.fontEntryBoxLabel;
-            string fontEntry = AppSettings.Instance.fontEntryBoxValue;
+            Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.ColorBaseDialogEntryBoxBackground;
+            string fontLabel = AppSettings.Instance.FontEntryBoxLabel;
+            string fontEntry = AppSettings.Instance.FontEntryBoxValue;
             int padding = 2;
             //This
             this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -97,9 +96,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 //Parameters
                 _sourceWindow = parentWindow;
                 //Defaults
-                Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.colorBaseDialogEntryBoxBackground;
-                string fontLabel = AppSettings.Instance.fontEntryBoxLabel;
-                string fontEntry = AppSettings.Instance.fontEntryBoxValue;
+                Color colorBaseDialogEntryBoxBackground = AppSettings.Instance.ColorBaseDialogEntryBoxBackground;
+                string fontLabel = AppSettings.Instance.FontEntryBoxLabel;
+                string fontEntry = AppSettings.Instance.FontEntryBoxValue;
                 int padding = 2;
                 //This
                 this.ModifyBg(StateType.Normal, colorBaseDialogEntryBoxBackground.ToGdkColor());
@@ -128,7 +127,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = parentWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = AppSettings.Instance.colorEntryValidationValidFont;
+                Color validLabel = AppSettings.Instance.ColorEntryValidationValidFont;
 
                 string fontLabel = "10";
                 string fontEntry = "9";
@@ -160,7 +159,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _sourceWindow = parentWindow;
                 //Defaults
                 Color colorBaseDialogEntryBoxBackground = "240, 240, 240".StringToColor();
-                Color validLabel = AppSettings.Instance.colorEntryValidationValidFont;
+                Color validLabel = AppSettings.Instance.ColorEntryValidationValidFont;
 
                 string fontLabel = "10";
                 string fontEntry = "9";
@@ -224,7 +223,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
         public IconButton AddButton(string pObjectName, string pFileNameIcon)
         {
-            string icon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, pFileNameIcon);
+            string icon = string.Format("{0}{1}", AppSettings.Paths.Images, pFileNameIcon);
             IconButton result = GetButton(pObjectName, icon);
             _hbox.PackStart(result, false, false, 0);
             return result;
@@ -249,7 +248,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Prepare KeyBoard
             if (keyboardMode != KeyboardMode.None)
             {
-                string iconKeyboard = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_keyboard.png"}";
+                string iconKeyboard = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_keyboard.png"}";
                 _buttonKeyBoard = GetButton(iconKeyboard);
                 _hbox.PackStart(_buttonKeyBoard, false, false, 0);
                 _buttonKeyBoard.Clicked += delegate

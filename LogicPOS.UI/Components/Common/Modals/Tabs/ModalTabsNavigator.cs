@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -12,12 +12,12 @@ namespace LogicPOS.UI.Components.Modals.Common
 {
     public class ModalTabsNavigator : VBox
     {
-        public Color HotButtonBackgroundColor = AppSettings.Instance.colorPagePadHotButtonBackground;
-        public Size BtnNavigatorSize => AppSettings.Instance.sizePagesPadNavigatorButton;
-        public Size BtnNavigatorIconSize => AppSettings.Instance.sizePagesPadNavigatorButtonIcon;
-        public string BtnPreviousIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_prev.png"}";
-        public string BtnNextIcon => $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_pagepad_next.png"}";
-        public string BtnNavigatorFont => AppSettings.Instance.fontPagePadNavigatorButton;
+        public Color HotButtonBackgroundColor = AppSettings.Instance.ColorPagePadHotButtonBackground;
+        public Size BtnNavigatorSize => AppSettings.Instance.SizePagesPadNavigatorButton;
+        public Size BtnNavigatorIconSize => AppSettings.Instance.SizePagesPadNavigatorButtonIcon;
+        public string BtnPreviousIcon => $"{AppSettings.Paths.Images}{@"Icons/icon_pos_pagepad_prev.png"}";
+        public string BtnNextIcon => $"{AppSettings.Paths.Images}{@"Icons/icon_pos_pagepad_next.png"}";
+        public string BtnNavigatorFont => AppSettings.Instance.FontPagePadNavigatorButton;
 
         public HBox Component { get; set; }
         public IconButtonWithText BtnPrevious { get; private set; }

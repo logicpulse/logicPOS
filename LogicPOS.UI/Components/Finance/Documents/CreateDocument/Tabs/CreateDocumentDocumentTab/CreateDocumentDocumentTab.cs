@@ -2,9 +2,9 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company.GetCompanyCurreny;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public CreateDocumentDocumentTab(Window parent) : base(parent: parent,
                                                   name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
-                                                  icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png")
+                                                  icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png")
         {
             Initialize();
             Design();

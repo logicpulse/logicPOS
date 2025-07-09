@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -17,8 +17,8 @@ namespace LogicPOS.UI.Components.Modals
 
         public PartialPaymentModal(Window parent) : base(parent,
                                                          LocalizedString.Instance["window_title_dialog_partial_payment"],
-                                                         LogicPOSAppContext.MaxWindowSize,
-                                                         $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
+                                                         AppSettings.MaxWindowSize,
+                                                         $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}")
         {
 
         }

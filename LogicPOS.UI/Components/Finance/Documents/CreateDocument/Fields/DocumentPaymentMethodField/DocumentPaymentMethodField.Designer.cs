@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -12,8 +12,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
     {
         private void InitializeButtons()
         {
-            string iconClearRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}";
-            string iconAddRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_nav_new.png"}";
+            string iconClearRecord = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_delete_record.png"}";
+            string iconAddRecord = $"{AppSettings.Paths.Images}{@"Icons/icon_pos_nav_new.png"}";
 
             BtnRemove = new IconButton(
                 new ButtonSettings

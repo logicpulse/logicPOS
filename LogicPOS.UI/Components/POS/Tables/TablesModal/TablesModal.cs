@@ -1,12 +1,9 @@
 ﻿using Gtk;
-using LogicPOS.Api.Enums;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.POS
@@ -16,7 +13,7 @@ namespace LogicPOS.UI.Components.POS
         public TablesModal(Window parent) : base(parent,
                                                  GeneralUtils.GetResourceByName("window_title_dialog_orders"),
                                                  new Size(720, 580),
-                                                 PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_tables_retail.png")
+                                                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png")
         {
             BtnViewTables.Visible = false;
         }
@@ -52,8 +49,8 @@ namespace LogicPOS.UI.Components.POS
             MenuTables.OnEntitySelected += MenuTables_TableSelected;
             body.Put(MenuTables, 143, 0);
 
-            body.Put(CreatePlaceScrollersBox(), 0, 493 - AppSettings.Instance.sizePosTableButton.Height);
-            body.Put(CreateTablesScrollersBox(), 690 - 130, 493 - AppSettings.Instance.sizePosTableButton.Height);
+            body.Put(CreatePlaceScrollersBox(), 0, 493 - AppSettings.Instance.SizePosTableButton.Height);
+            body.Put(CreateTablesScrollersBox(), 690 - 130, 493 - AppSettings.Instance.SizePosTableButton.Height);
             return body;
         }
         private void AddEventHandlers()

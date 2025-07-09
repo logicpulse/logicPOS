@@ -1,7 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Extensions;
-using System.Collections.Generic;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -37,7 +36,7 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var combobox = new ComboBox() { HeightRequest = 30 };
             combobox.Model = _listStore;
-            combobox.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue));
+            combobox.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue));
             CellRendererText cellRenderer = new CellRendererText();
             combobox.PackStart(cellRenderer, true);
             combobox.AddAttribute(cellRenderer, "text", 1);
@@ -58,7 +57,7 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var label = new Label(labelText);
             label.SetAlignment(0.0F, 0.0F);
-            label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxLabel));
+            label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
             return label;
         }
 
@@ -79,7 +78,7 @@ namespace LogicPOS.UI.Components.InputFields
         private EventBox CreateGrayLine(Widget content)
         {
             var eventBox = new EventBox();
-            eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogEntryBoxBackground.ToGdkColor());
+            eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogEntryBoxBackground.ToGdkColor());
             eventBox.BorderWidth = 2;
             eventBox.Add(content);
             return eventBox;

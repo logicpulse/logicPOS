@@ -1,5 +1,4 @@
-﻿using Gtk;
-using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
+﻿using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;

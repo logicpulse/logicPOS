@@ -4,7 +4,6 @@ using LogicPOS.Api.Features.Users.AddUser;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
 using LogicPOS.Api.Features.Users.UpdateUser;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {

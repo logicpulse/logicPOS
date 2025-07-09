@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 using System.IO;
 
@@ -54,7 +54,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
             if (!File.Exists(pWindowIcon))
             {
-                pWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_system.png";
+                pWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_system.png";
             }
 
             //Always assign  pInitialValue to Dialog.Value

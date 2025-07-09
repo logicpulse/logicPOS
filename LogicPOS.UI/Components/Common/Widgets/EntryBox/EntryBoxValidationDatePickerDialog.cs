@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.UI;
+using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 
@@ -44,7 +45,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         }
 
         public EntryBoxValidationDatePickerDialog(Window parentWindow, string pLabelText, string pWindowTitle, DateTime pDateTime, string pRule, bool pRequired)
-            : this(parentWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, LogicPOS.Settings.CultureSettings.DateFormat)
+            : this(parentWindow, pLabelText, string.Empty, pDateTime, pRule, pRequired, AppSettings.Culture.DateFormat)
         {
         }
         /* IN005974 -  KeyboardMode.AlfaNumeric makes date fields accept text */

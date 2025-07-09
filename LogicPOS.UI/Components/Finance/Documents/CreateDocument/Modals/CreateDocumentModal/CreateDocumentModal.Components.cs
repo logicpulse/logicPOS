@@ -1,9 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
@@ -15,10 +14,10 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
                                                                                                                 GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"),
-                                                                                                                PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png");
+                                                                                                                AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
         private IconButtonWithText BtnPreview { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea",
                                                                                                           GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_preview"),
-                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_preview.png");
+                                                                                                          AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_preview.png");
 
         #endregion
 

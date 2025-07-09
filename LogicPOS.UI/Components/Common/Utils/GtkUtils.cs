@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
-using LogicPOS.Settings;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI
 {
@@ -10,7 +10,7 @@ namespace LogicPOS.UI
         
         public static EventBox CreateMinimizeButton()
         {
-            string minimizeWindowIconLocation = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_window_minimize.png";
+            string minimizeWindowIconLocation = AppSettings.Paths.Images + @"Icons\Windows\icon_window_window_minimize.png";
 
             Gdk.Pixbuf pixBuffer = new Gdk.Pixbuf(minimizeWindowIconLocation);
             Gtk.Image buttonImage = new Gtk.Image(pixBuffer);
@@ -30,10 +30,10 @@ namespace LogicPOS.UI
                 ? (widget as EntryBoxValidationMultiLine).EntryMultiline.TextView
                 : widget;
 
-            var validColor = ColorSettings.ValidTextBoxColor.ToGdkColor();
-            var invalidColor = ColorSettings.InvalidTextBoxColor.ToGdkColor();
-            var validBackgroundColor = ColorSettings.ValidTextBoxBackgroundColor.ToGdkColor();
-            var invalidBackgroundColor = ColorSettings.InvalidTextBoxBackgroundColor.ToGdkColor();
+            var validColor = AppSettings.Colors.ValidTextBoxColor.ToGdkColor();
+            var invalidColor = AppSettings.Colors.InvalidTextBoxColor.ToGdkColor();
+            var validBackgroundColor = AppSettings.Colors.ValidTextBoxBackgroundColor.ToGdkColor();
+            var invalidBackgroundColor = AppSettings.Colors.InvalidTextBoxBackgroundColor.ToGdkColor();
 
             if (validated)
             {

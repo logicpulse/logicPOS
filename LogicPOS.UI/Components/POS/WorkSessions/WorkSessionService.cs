@@ -14,7 +14,6 @@ using LogicPOS.Api.Features.WorkSessions.Periods.TerminalIsOpen;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Services

@@ -1,19 +1,10 @@
-﻿using ErrorOr;
-using Gtk;
-using LogicPOS.Api.Features.Articles.GetArticles;
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
+﻿using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
-using LogicPOS.Api.Features.Articles.Stocks.Common;
-using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.PDFViewer;
-using MediatR;
-using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages

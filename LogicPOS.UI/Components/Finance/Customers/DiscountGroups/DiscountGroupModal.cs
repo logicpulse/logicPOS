@@ -1,5 +1,4 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.DiscountGroups.AddDiscountGroup;
 using LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup;
 

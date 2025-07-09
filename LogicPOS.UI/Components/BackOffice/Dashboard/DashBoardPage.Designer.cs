@@ -1,9 +1,9 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using Medsphere.Widgets;
 using System;
 using System.Collections;
@@ -38,19 +38,19 @@ namespace LogicPOS.UI.Components.Pages
         protected Color _colorBaseDialogDefaultButtonFont = ("76, 72, 70").StringToColor();
         protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
-        protected Color _colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
-        //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.AppSettings.Instance.fontBaseDialogButton"]);
-        protected string _fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
-        protected string _fileActionDefault = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_default.png";
-        protected string _fileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-        protected string _fileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+        protected Color _colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground;
+        //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.AppSettings.Instance.FontBaseDialogButton"]);
+        protected string _fontBaseDialogActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
+        protected string _fileActionDefault = AppSettings.Paths.Images + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
 
         //Colors
-        private readonly Color colorBackOfficeContentBackground = AppSettings.Instance.colorBackOfficeContentBackground;
-        private readonly Color colorBackOfficeStatusBarBackground = AppSettings.Instance.colorBackOfficeStatusBarBackground;
-        private readonly Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.colorBackOfficeAccordionFixBackground;
-        private readonly Color colorBackOfficeStatusBarFont = AppSettings.Instance.colorBackOfficeStatusBarFont;
-        private readonly Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.colorBackOfficeStatusBarBottomBackground;
+        private readonly Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
+        private readonly Color colorBackOfficeStatusBarBackground = AppSettings.Instance.ColorBackOfficeStatusBarBackground;
+        private readonly Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.ColorBackOfficeAccordionFixBackground;
+        private readonly Color colorBackOfficeStatusBarFont = AppSettings.Instance.ColorBackOfficeStatusBarFont;
+        private readonly Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.ColorBackOfficeStatusBarBottomBackground;
         public Color slateBlue = Color.FromName("White");
         //private Frame frame;
 
@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Pages
             try
             {
                 //Imagem carregada aqui para o dashboard
-                string fileImageBack = $"{PathsSettings.Paths["themes"]}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{CultureSettings.CurrentCultureName}.png";
+                string fileImageBack = $"{AppSettings.Paths.Themes}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{AppSettings.Culture.CurrentCultureName}.png";
                 System.Drawing.Image pImage = System.Drawing.Image.FromFile(fileImageBack);
                 Gdk.Pixbuf pixbuf = logicpos.Utils.ImageToPixbuf(pImage);
                 _eventBox.Style = logicpos.Utils.GetImageBackgroundDashboard(pixbuf);

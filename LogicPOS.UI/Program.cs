@@ -3,12 +3,12 @@ using logicpos;
 using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
 using LogicPOS.Plugin.Abstractions;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Globalization;
@@ -52,10 +52,7 @@ namespace LogicPOS.UI
 
             using (var singleProgramInstance = new SingleProgramInstance())
             {
-                PathsSettings.InitializePaths();
-
                 InitializeGtk();
-
 
                 if (InitializeCulture() == false)
                 {
@@ -69,7 +66,7 @@ namespace LogicPOS.UI
 
                 ShowLoadingScreen();
 
-                InitializePlugins();
+                AppSettings.Plugins.InitializePlugins();
 
                 CloseLoadingScreen();
 
@@ -87,21 +84,10 @@ namespace LogicPOS.UI
             Log.CloseAndFlush();
         }
 
-        private static void InitializePlugins()
-        {
-            PluginSettings.InitializeContainer();
-            InitializeLicenseManagerPlugin();
-        }
-
         private static void CloseLoadingScreen()
         {
             _loadingThread.Abort();
             SplashScreen.Destroy();
-        }
-
-        private static void InitializeLicenseManagerPlugin()
-        {
-            PluginSettings.LicenceManager = PluginSettings.PluginContainer.GetFirstPluginOfType<ILicenseManager>();
         }
 
         private static void StartApp()
@@ -114,38 +100,16 @@ namespace LogicPOS.UI
                 return;
             }
 
-            PosLicenceDialog.GetLicenseDetails("Vision");
+            ShowLicenseDialog();
 
-            StartFrontOffice();
+            LogicPOSApp app = new LogicPOSApp();
+            app.Start();
         }
 
-        private static void OldStartApp()
+        private static void ShowLicenseDialog()
         {
-            if (PluginSettings.LicenceManager != null)
-            {
-                LicenseRouter licenseRouter = new LicenseRouter();
-            }
-            else
-            {
-                Thread thread = new Thread(new ThreadStart(StartFrontOffice));
-                LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
-                thread.Start();
-
-                LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen();
-                LogicPOSAppContext.LoadingDialog.Run();
-            }
-        }
-
-        public static void StartFrontOffice()
-        {
-            LogicPOSAppUtils appUtils = new LogicPOSAppUtils();
-            appUtils.StartApp();
-        }
-
-        public static void StartBackOffice()
-        {
-            LogicPOSAppUtils logicPos = new LogicPOSAppUtils();
-            logicPos.StartApp();
+            string hardWareId = TerminalService.Terminal.HardwareId;
+            PosLicenceDialog.GetLicenseDetails(hardWareId);
         }
 
         public static bool InitializeCulture()

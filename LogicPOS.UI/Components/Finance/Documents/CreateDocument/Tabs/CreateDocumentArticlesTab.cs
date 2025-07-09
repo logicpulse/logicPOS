@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public CreateDocumentArticlesTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"),
-                                                               icon: PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png")
+                                                               icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png")
         {
             Initialize();
             Design();

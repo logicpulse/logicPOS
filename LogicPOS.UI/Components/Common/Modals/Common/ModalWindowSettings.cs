@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.IO;
 
 namespace LogicPOS.UI.Components.Modals.Common
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             }
         }
 
-        public bool UseMask = AppSettings.Instance.useBaseDialogWindowMask;
+        public bool UseMask = AppSettings.Instance.UseBaseDialogWindowMask;
         public Window Mask { get; set; }
 
         public Label Title { get; set; } = new Label();

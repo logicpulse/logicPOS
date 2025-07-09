@@ -1,10 +1,10 @@
 ﻿
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -54,20 +54,20 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_datepicket_startend");
             Size windowSize = new Size(300, 255);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png";
 
             //Init Content
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
             _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_start"), DateStart, RegularExpressions.Date, true);
-            _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(CultureSettings.DateFormat);
+            _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(AppSettings.Culture.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
             _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_end"), DateEnd, RegularExpressions.Date, true);
-            _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(CultureSettings.DateFormat);
+            _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(AppSettings.Culture.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;
             _entryBoxDateEnd.EntryValidation.Changed += entryBoxDateEndEntryValidation_Changed;

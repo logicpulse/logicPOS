@@ -2,7 +2,7 @@
 using System;
 using System.Drawing;
 
-namespace LogicPOS.Settings
+namespace LogicPOS.UI.Settings
 {
     public partial class AppSettings
     {

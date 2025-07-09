@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -30,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _user = user;
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
             Size windowSize = new Size(332, DialogHeight);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_users.png";
             ActionAreaButtons actionAreaButtons;
 
             Fixed fixedContent = new Fixed();

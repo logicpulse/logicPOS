@@ -1,20 +1,16 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.App;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Documents;
-using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
-using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Serilog;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -22,7 +18,6 @@ using System.Globalization;
 using System.IO;
 using System.IO.Ports;
 using System.Net;
-using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace logicpos
@@ -362,133 +357,20 @@ namespace logicpos
         public static string GetWindowTitle(string pTitle)
         {
             //return string.Format("{0} {1} : {2}", SettingsApp.AppName, FrameworkUtils.ProductVersion, pTitle);
-            return string.Format("{0} : {1}", LogicPOSSettings.AppName, pTitle);
+            return string.Format("{0} : {1}", AppSettings.AppName, pTitle);
         }
 
-        public static Size GetScreenSize()
-        {
-            Size result = new Size();
-
-            // Moke Window only to extract its Resolution
-            Window window = new Window("");
-            Gdk.Screen screen = window.Screen;
-            Gdk.Rectangle monitorGeometry = screen.GetMonitorGeometry(AppSettings.Instance.appScreen);
-            result = new Size(monitorGeometry.Width, monitorGeometry.Height);
-            // CleanUp
-            window.Dispose();
-            screen.Dispose();
-
-            return result;
-        }
+      
 
         // Used to get the final Resolution for Render template, it uses some stuff from config and detected ScreenSize to get guest best resolution for themes
 
-        public static Size GetThemeScreenSize()
-        {
-            return GetThemeScreenSize(GetScreenSize());
-        }
+       
 
-        public static Size GetThemeScreenSize(Size screenSize)
-        {
-            Size result = screenSize;
-
-            /* IN008023: apply "1024x768" settings as default. */
-            ScreenSize screenSizeEnum = GetSupportedScreenResolution(screenSize);
-            /* Implemented resolution settings: 800,600 | 1024,768 | 1280,768 | 1366,768 | 1280,1024 | 1680,1050 | 1920,1080 | 1920,1280*/
-
-            switch (screenSizeEnum)
-            {
-                // Implemented
-                case ScreenSize.res800x600:
-                case ScreenSize.res1024x768:
-                case ScreenSize.res1280x768:
-                case ScreenSize.res1280x1024:
-                case ScreenSize.res1366x768:
-                case ScreenSize.res1680x1050:
-                case ScreenSize.res1920x1080:
-                    // Use Detected Value
-                    break;
-                case ScreenSize.res1024x600:
-                case ScreenSize.res1280x720:
-                    // Override Default
-                    result = new Size(800, 600);
-                    break;
-                case ScreenSize.res1152x864:
-                    // Override Default
-                    //result = new Size(1280, 1024);
-                    result = new Size(1024, 768);
-                    break;
-                case ScreenSize.res1280x800:
-                case ScreenSize.res1360x768:
-                    // Override Default
-                    result = new Size(1280, 768);
-                    break;
-                //// Override Default
-                //result = new Size(1366, 768);
-                //break;
-                case ScreenSize.res1440x900:
-                case ScreenSize.res1536x864:
-                case ScreenSize.res1600x900:
-                    // Override Default
-                    //result = new Size(1680, 1050);
-                    result = new Size(1366, 768);
-                    break;
-                case ScreenSize.res1920x1200:
-                case ScreenSize.res1920x1280:
-                /* IN009047 */
-                case ScreenSize.res2160x1440:
-                case ScreenSize.res2560x1080:
-                case ScreenSize.res2560x1440:
-                case ScreenSize.res3440x1440:
-                case ScreenSize.res3840x2160:
-                    // Override Default
-                    result = new Size(1920, 1080);
-                    break;
-                default:
-                    /* IN008023: apply "1024x768" settings as default. */
-                    //Default 1024*768
-                    result = new Size(1024, 768);
-                    break;
-            }
-            return result;
-        }
-
-
-        /// <summary>
-        /// Method responsible for screen resolution validation and if necessary, sets the default resolution settings.
-        /// <para>See also "IN008023: apply "800x600" settings as default"</para>
-        /// </summary>
-        /// <param name="screenSize"></param>
-        /// <returns></returns>
-        private static ScreenSize GetSupportedScreenResolution(Size screenSize)
-        {
-            ScreenSize supportedScreenSizeEnum;
-            string screenSizeForEnum = string.Format("res{0}x{1}", screenSize.Width, screenSize.Height);
-
-            try
-            {
-                supportedScreenSizeEnum = (ScreenSize)Enum.Parse(typeof(ScreenSize), screenSizeForEnum, true);
-            }
-            catch (Exception ex)
-            {
-                Log.Error("ScreenSize GetSupportedScreenResolution(Size screenSize) :: " + ex.Message, ex);
-
-                LogicPOSAppContext.DialogThreadNotify.WakeupMain();
-
-                var messageDialog = new CustomAlert(LoginWindow.Instance)
-                    .WithMessage($"ShowUnsupportedResolutionErrorAlert{screenSize.Width}, {screenSize.Height}")
-                    .WithSize(new Size())
-                    .ShowAlert();
-
-                //ShowUnsupportedResolutionErrorAlert(LoginWindow.Instance, screenSize.Width, screenSize.Height);
-                supportedScreenSizeEnum = ScreenSize.resDefault;
-            }
-            return supportedScreenSizeEnum;
-        }
+       
 
         public static Dialog CreateSplashScreen(string backupProcess = "")
         {
-            string loadingImage = PathsSettings.ImagesFolderLocation + @"Other\working.gif";
+            string loadingImage = AppSettings.Paths.Images + @"Other\working.gif";
 
             Dialog dialog = new Dialog("Working",
                                        null,
@@ -521,18 +403,16 @@ namespace logicpos
 
         public static void NotifyLoadingIsDone()
         {
-            if (LogicPOSAppContext.LoadingDialog != null)
+            if (LogicPOSApp.LoadingDialog != null)
             {
-                LogicPOSAppContext.LoadingDialog.Destroy();
+                LogicPOSApp.LoadingDialog.Destroy();
             }
         }
 
 
         public static string GetThemeFileLocation(string pFile)
         {
-            string pathThemes = PathsSettings.Paths["themes"].ToString();
-            /* IN008024 */
-            return string.Format(@"{0}{1}\{2}", pathThemes, GeneralSettings.AppTheme, pFile);
+            return string.Format(@"{0}{1}\{2}", AppSettings.Paths.Themes, AppSettings.AppTheme, pFile);
         }
 
         public static Gtk.Style GetThemeStyleBackground(string pFile)
@@ -557,7 +437,7 @@ namespace logicpos
             }
             else
             {
-                Log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", GeneralSettings.AppTheme, fileImageBackground));
+                Log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", AppSettings.AppTheme, fileImageBackground));
                 return null;
             }
         }
@@ -603,7 +483,7 @@ namespace logicpos
 
         public static string GetVirtualKeyBoardInput(Window parentWindow, KeyboardMode pMode, string pInitialValue, string pRegExRule)
         {
-            bool useBaseDialogWindowMask = AppSettings.Instance.useBaseDialogWindowMask;
+            bool useBaseDialogWindowMask = AppSettings.Instance.UseBaseDialogWindowMask;
 
             //if (GlobalApp.DialogPosKeyboard == null)
             //{
@@ -613,11 +493,11 @@ namespace logicpos
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
                     //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    LogicPOSAppContext.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
@@ -625,40 +505,40 @@ namespace logicpos
             //else
             //{
             //pInitialValue, pRegExRule
-            LogicPOSAppContext.DialogPosKeyboard.Text = pInitialValue;
-            LogicPOSAppContext.DialogPosKeyboard.Rule = pRegExRule;
+            LogicPOSApp.DialogPosKeyboard.Text = pInitialValue;
+            LogicPOSApp.DialogPosKeyboard.Rule = pRegExRule;
 
             //Fix TransientFor, ALT+TABS
             if (useBaseDialogWindowMask)
             {
-                LogicPOSAppContext.DialogPosKeyboard.TransientFor = LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask;
-                LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
-                LogicPOSAppContext.DialogPosKeyboard.WindowSettings.Mask.Show();
+                LogicPOSApp.DialogPosKeyboard.TransientFor = LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask;
+                LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
+                LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask.Show();
             }
             else
             {
                 //Now we can change its TransientFor
-                LogicPOSAppContext.DialogPosKeyboard.TransientFor = parentWindow;
+                LogicPOSApp.DialogPosKeyboard.TransientFor = parentWindow;
             }
             //}
 
             //Always Start Validated, else Only Construct start Validated
-            LogicPOSAppContext.DialogPosKeyboard.TextEntry.Validate();
+            LogicPOSApp.DialogPosKeyboard.TextEntry.Validate();
             //Put Cursor in End
-            LogicPOSAppContext.DialogPosKeyboard.TextEntry.Position = LogicPOSAppContext.DialogPosKeyboard.TextEntry.Text.Length;
-            LogicPOSAppContext.DialogPosKeyboard.TextEntry.GrabFocus();
-            int response = LogicPOSAppContext.DialogPosKeyboard.Run();
+            LogicPOSApp.DialogPosKeyboard.TextEntry.Position = LogicPOSApp.DialogPosKeyboard.TextEntry.Text.Length;
+            LogicPOSApp.DialogPosKeyboard.TextEntry.GrabFocus();
+            int response = LogicPOSApp.DialogPosKeyboard.Run();
             string result;
             if (response == (int)ResponseType.Ok)
             {
-                result = LogicPOSAppContext.DialogPosKeyboard.Text;
+                result = LogicPOSApp.DialogPosKeyboard.Text;
             }
             else
             {
                 result = null;
             }
 
-            LogicPOSAppContext.DialogPosKeyboard.TransientFor = POSWindow.Instance;
+            LogicPOSApp.DialogPosKeyboard.TransientFor = POSWindow.Instance;
 
             return result;
         }
@@ -675,23 +555,23 @@ namespace logicpos
                     IniFileParser iNIFile = new IniFileParser(pFileName);
 
                     //Load
-                    LicenseSettings.LicenseHardwareId =CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    LicenseSettings.LicenseCompany = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    LicenseSettings.LicenseNif = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    LicenseSettings.LicenseAddress = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    LicenseSettings.LicenseEmail = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    LicenseSettings.LicenseTelephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    LicenseSettings.LicenseReseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
+                    AppSettings.License.LicenseHardwareId =CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
+                    AppSettings.License.LicenseCompany = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
+                    AppSettings.License.LicenseNif = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
+                    AppSettings.License.LicenseAddress = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
+                    AppSettings.License.LicenseEmail = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
+                    AppSettings.License.LicenseTelephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
+                    AppSettings.License.LicenseReseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
                     //Test
                     if (pDebug)
                     {
-                        Log.Debug(string.Format("{0}:{1}", "HardwareId", LicenseSettings.LicenseHardwareId));
-                        Log.Debug(string.Format("{0}:{1}", "Company", LicenseSettings.LicenseCompany));
-                        Log.Debug(string.Format("{0}:{1}", "Nif", LicenseSettings.LicenseNif));
-                        Log.Debug(string.Format("{0}:{1}", "Address", LicenseSettings.LicenseAddress));
-                        Log.Debug(string.Format("{0}:{1}", "Email", LicenseSettings.LicenseEmail));
-                        Log.Debug(string.Format("{0}:{1}", "Telephone", LicenseSettings.LicenseTelephone));
-                        Log.Debug(string.Format("{0}:{1}", "Reseller", LicenseSettings.LicenseReseller));
+                        Log.Debug(string.Format("{0}:{1}", "HardwareId", AppSettings.License.LicenseHardwareId));
+                        Log.Debug(string.Format("{0}:{1}", "Company", AppSettings.License.LicenseCompany));
+                        Log.Debug(string.Format("{0}:{1}", "Nif", AppSettings.License.LicenseNif));
+                        Log.Debug(string.Format("{0}:{1}", "Address", AppSettings.License.LicenseAddress));
+                        Log.Debug(string.Format("{0}:{1}", "Email", AppSettings.License.LicenseEmail));
+                        Log.Debug(string.Format("{0}:{1}", "Telephone", AppSettings.License.LicenseTelephone));
+                        Log.Debug(string.Format("{0}:{1}", "Reseller", AppSettings.License.LicenseReseller));
                     }
                     iNIFile.Flush();
 

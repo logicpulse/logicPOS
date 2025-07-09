@@ -1,7 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Modals
@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Summarized Financial Reports
         private XAccordionParentButton BtnSummarizedFinancialReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type1"],
-                                                                                                  PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_financial.png");
+                                                                                                  AppSettings.Paths.Images + @"Icons\Reports\report_financial.png");
         private VBox PanelSummarizedFinancialReports = new VBox(false, 2);
         private XAccordionChildButton BtnCompanyBillingReport = new XAccordionChildButton(LocalizedString.Instance["report_company_billing"]);
         private XAccordionChildButton BtnCustomerBalanceSummaryReport = new XAccordionChildButton(LocalizedString.Instance["report_customer_balance_summary"]);
@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Detailed Financial Reports
         private XAccordionParentButton BtnDetailedFinancialReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type2"],
-                                                                                               PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_financial_detailed.png");
+                                                                                               AppSettings.Paths.Images + @"Icons\Reports\report_financial_detailed.png");
         private VBox PanelDetailedFinancialReports = new VBox(false, 2);
         private XAccordionChildButton BtnCustomerBalanceDetailsReport = new XAccordionChildButton(LocalizedString.Instance["report_customer_balance_details"]);
         private XAccordionChildButton BtnCurrentAccountReport = new XAccordionChildButton(LocalizedString.Instance["report_list_current_account"]);
@@ -54,13 +54,13 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Grouped Detailed Financial Reports
         private XAccordionParentButton BtnGroupedDetailedFinancialReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type3"],
-                                                                                       PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_financial_detailed_grouped.png");
+                                                                                       AppSettings.Paths.Images + @"Icons\Reports\report_financial_detailed_grouped.png");
 
         #endregion
 
         #region Auxiliary Tables Reports
         private XAccordionParentButton BtnAuxiliaryTablesReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type4"],
-                                                                                              PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_auxiliary_tables.png");
+                                                                                              AppSettings.Paths.Images + @"Icons\Reports\report_auxiliary_tables.png");
         private VBox PanelAuxiliaryTablesReports = new VBox(false, 2);
         private XAccordionChildButton BtnArticlesReports = new XAccordionChildButton(LocalizedString.Instance["report_list_family_subfamily_articles"]);
         private XAccordionChildButton BtnCustomersReports = new XAccordionChildButton(LocalizedString.Instance["report_list_customers"]);
@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Other Tables Reports
         private XAccordionParentButton BtnOtherTablesReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type5"],
-                                                                                                    PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_other_reports.png");
+                                                                                                    AppSettings.Paths.Images + @"Icons\Reports\report_other_reports.png");
         private VBox PanelOtherReports = new VBox(false, 2);
         private XAccordionChildButton BtnAuditReport = new XAccordionChildButton(LocalizedString.Instance["report_list_audit_table"]);
         private XAccordionChildButton BtnComissionsReport = new XAccordionChildButton(LocalizedString.Instance["report_list_user_commission"]);
@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Stock Reports
         private XAccordionParentButton BtnStockReports = new XAccordionParentButton(LocalizedString.Instance["reporttype_label_type6"],
-                                                                                             PathsSettings.ImagesFolderLocation + @"Icons\Reports\report_other_reports.png");
+                                                                                             AppSettings.Paths.Images + @"Icons\Reports\report_other_reports.png");
         private VBox PanelStockReports = new VBox(false, 2);
         private XAccordionChildButton BtnStockMovementsReport = new XAccordionChildButton(LocalizedString.Instance["report_list_stock_movements"]);
         private XAccordionChildButton BtnStockByWarehouseReport = new XAccordionChildButton(LocalizedString.Instance["report_list_stock_warehouse"]);

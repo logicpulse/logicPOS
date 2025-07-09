@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.POS
             : base(parentWindow,
                    LocalizedString.Instance["window_title_dialog_cash"],
                    new Size(428, 205),
-                   PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_cash_drawer.png")
+                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_cash_drawer.png")
         {
 
             
@@ -40,9 +40,9 @@ namespace LogicPOS.UI.Components.POS
                 {
                     Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_worksession_open_day"),
-                    Font = AppSettings.Instance.fontBaseDialogButton,
-                    FontColor = AppSettings.Instance.colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png",
+                    Font = AppSettings.Instance.FontBaseDialogButton,
+                    FontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont,
+                    Icon = AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png",
                     IconSize = new Size(50, 50),
                     ButtonSize = new Size(162, 88)
                 }
@@ -53,9 +53,9 @@ namespace LogicPOS.UI.Components.POS
                 {
                     Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("pos_button_label_cashdrawer"),
-                    Font = AppSettings.Instance.fontBaseDialogButton,
-                    FontColor = AppSettings.Instance.colorBaseDialogDefaultButtonFont,
-                    Icon = PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_cashdrawer.png",
+                    Font = AppSettings.Instance.FontBaseDialogButton,
+                    FontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont,
+                    Icon = AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_cashdrawer.png",
                     IconSize = new Size(50, 50),
                     ButtonSize = new Size(162, 88)
                 }

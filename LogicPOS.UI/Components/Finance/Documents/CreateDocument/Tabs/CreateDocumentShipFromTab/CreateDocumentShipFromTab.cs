@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public CreateDocumentShipFromTab(Window parent) : base(parent,
                                                                GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"),
-                                                               PathsSettings.ImagesFolderLocation + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
+                                                               AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
                                                                false)
         {
             Initialize();

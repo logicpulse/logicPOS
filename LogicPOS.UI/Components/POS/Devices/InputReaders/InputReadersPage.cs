@@ -7,7 +7,6 @@ using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using MediatR;
-using System;
 using System.Collections.Generic;
 
 

@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         {
             var label = new Label(labelText);
             label.SetAlignment(0.0F, 0.0F);
-            label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxLabel));
+            label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
             return label;
         }
     }

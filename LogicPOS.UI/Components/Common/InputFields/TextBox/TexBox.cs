@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -61,8 +61,8 @@ namespace LogicPOS.UI.Components.InputFields
             switch (_style)
             {
                 case TextBoxStyle.Bold:
-                    Entry.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue));
-                    Label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxLabel));
+                    Entry.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue));
+                    Label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
                     break;
                 default:
                     break;
@@ -158,7 +158,7 @@ namespace LogicPOS.UI.Components.InputFields
 
             if (_style == TextBoxStyle.Bold)
             {
-                eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogEntryBoxBackground.ToGdkColor());
+                eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogEntryBoxBackground.ToGdkColor());
             } 
 
             return eventBox;
@@ -171,7 +171,7 @@ namespace LogicPOS.UI.Components.InputFields
                new ButtonSettings
                {
                    Name = "buttonUserId",
-                   Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_keyboard.png"}",
+                   Icon = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_keyboard.png"}",
                    IconSize = new Size(20, 20),
                    ButtonSize = new Size(30, 30)
                });
@@ -187,7 +187,7 @@ namespace LogicPOS.UI.Components.InputFields
                 new ButtonSettings
                 {
                     Name = "buttonUserId",
-                    Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}",
+                    Icon = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_delete_record.png"}",
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(30, 30)
                 });
@@ -203,7 +203,7 @@ namespace LogicPOS.UI.Components.InputFields
                 new ButtonSettings
                 {
                     Name = "buttonUserId",
-                    Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
+                    Icon = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
                     IconSize = new Size(20, 20),
                     ButtonSize = new Size(30, 30)
                 });

@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -17,8 +17,8 @@ namespace LogicPOS.UI.Components.Modals
         public EntitySelectionModal(Page<TEntity> page,
                                     string title) : base(page.SourceWindow,
                                                          title,
-                                                         LogicPOSAppContext.MaxWindowSize,
-                                                         $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}",
+                                                         AppSettings.MaxWindowSize,
+                                                         $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
                                                          render: false)
         {
             Page = page;

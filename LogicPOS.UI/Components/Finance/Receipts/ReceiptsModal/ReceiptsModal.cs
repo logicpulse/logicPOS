@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,8 +19,8 @@ namespace LogicPOS.UI.Components.Modals
 
         public ReceiptsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment"),
-                                                   LogicPOSAppContext.MaxWindowSize,
-                                                   $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}")
+                                                   AppSettings.MaxWindowSize,
+                                                   $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}")
         {
 
         }
@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,
-                                                             PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_input_text_default.png",
+                                                             AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_default.png",
                                                              string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), receipt.RefNo),
                                                              string.Empty,
                                                              RegularExpressions.AlfaNumericExtendedForMotive,

@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
                                Item item = null) : base(parent,
                                                      GeneralUtils.GetResourceByName("global_insert_articles"),
                                                      new Size(900, 360),
-                                                     PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_finance_article.png")
+                                                     AppSettings.Paths.Images + @"Icons\Windows\icon_window_finance_article.png")
         {
             _mode = mode;
             Item = item;

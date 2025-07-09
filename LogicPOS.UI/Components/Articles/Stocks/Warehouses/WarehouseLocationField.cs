@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Warehouses
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Warehouses
         private readonly IconButton BtnRemove = new IconButton(new ButtonSettings
         {
             Name = "touchButtonIcon",
-            Icon = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}",
+            Icon = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_delete_record.png"}",
             BackgroundColor = Color.LightGray,
             IconSize = new Size(15, 15),
             ButtonSize = new Size(30, 15)

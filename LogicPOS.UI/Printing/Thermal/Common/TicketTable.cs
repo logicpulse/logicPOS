@@ -1,7 +1,6 @@
 ﻿
 using ESC_POS_USB_NET.Printer;
 using LogicPOS.UI.Printing.Enums;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;

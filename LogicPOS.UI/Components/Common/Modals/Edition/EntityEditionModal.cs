@@ -2,13 +2,13 @@
 using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using System;
@@ -146,7 +146,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetWindowIcon()
         {
-            string fileImageAppIcon = string.Format("{0}{1}", PathsSettings.ImagesFolderLocation, LogicPOSSettings.AppIcon);
+            string fileImageAppIcon = string.Format("{0}{1}", AppSettings.Paths.Images, AppSettings.AppIcon);
             if (File.Exists(fileImageAppIcon))
             {
                 Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
@@ -155,15 +155,15 @@ namespace LogicPOS.UI.Components.Modals
 
         protected void AddActionButtons()
         {
-            string fontBaseDialogActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
-            string tmpFileActionOK = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
-            string tmpFileActionCancel = PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
-            Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.sizeBaseDialogActionAreaButtonIcon;
-            Size sizeBaseDialogActionAreaButton = AppSettings.Instance.sizeBaseDialogActionAreaButton;
-            Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.colorBaseDialogActionAreaButtonBackground;
-            Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.colorBaseDialogActionAreaButtonFont;
+            string fontBaseDialogActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
+            string tmpFileActionOK = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+            string tmpFileActionCancel = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
+            Size sizeBaseDialogActionAreaButtonIcon = AppSettings.Instance.SizeBaseDialogActionAreaButtonIcon;
+            Size sizeBaseDialogActionAreaButton = AppSettings.Instance.SizeBaseDialogActionAreaButton;
+            Color colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground;
+            Color colorBaseDialogActionAreaButtonFont = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont;
 
-            if (LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
+            if (AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600)
             {
                 sizeBaseDialogActionAreaButton.Height -= 10;
                 sizeBaseDialogActionAreaButtonIcon.Width -= 10;

@@ -1,7 +1,7 @@
-﻿using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
+﻿using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnSendDocumentEmail { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.SendEmailDocument, "touchButton_Green");
         private IconButtonWithText BtnCancelDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                           GeneralUtils.GetResourceByName("global_button_label_cancel_document"),
-                                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
+                                                                                                                          AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png");
         private IconButtonWithText BtnPrevious { get; set; }
         private IconButtonWithText BtnNext { get; set; }
         private TextBox TxtSearch { get; set; }

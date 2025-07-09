@@ -1,11 +1,11 @@
 ﻿using Gtk;
 using System.Drawing;
 using System.IO;
-using LogicPOS.Settings;
 using LogicPOS.Utility;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Components.Pickers
 {
@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Pickers
             //Init Local Vars
             string windowTitle = string.Format("{0} {1}", GeneralUtils.GetResourceByName("window_title_dialog_filepicker"),title);
             WindowSettings.Size = new Size(700, 473);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_select_record.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_select_record.png";
 
             Body = new Fixed();
 
@@ -52,17 +52,12 @@ namespace LogicPOS.UI.Components.Pickers
 
         private void InitUI()
         {
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue);
+            Pango.FontDescription fontDescription = Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue);
 
             FileChooser = new FileChooserWidget(PickerAction, "none");
             if (Filter != null) FileChooser.Filter = Filter;
-
-            if (Directory.Exists(LogicPOSAppContext.OpenFileDialogStartPath)) FileChooser.SetCurrentFolder(LogicPOSAppContext.OpenFileDialogStartPath);
-
             FileChooser.SetSizeRequest(WindowSettings.Size.Width - 13, WindowSettings.Size.Height - 120);
             Body.Put(FileChooser, 0, 0);
-      
-            FileChooser.CurrentFolderChanged += delegate { LogicPOSAppContext.OpenFileDialogStartPath = FileChooser.CurrentFolder; };
         }
 
         public static FileFilter GetFileFilterImages()
@@ -89,22 +84,8 @@ namespace LogicPOS.UI.Components.Pickers
             return filter;
         }
 
-
-        public static FileFilter GetFileFilterBackups()
-        {
-            string databaseType = AppSettings.Instance.databaseType;
-            FileFilter filter = new FileFilter();
-
-            filter.Name = "Database Backups";
-            filter.AddMimeType("application/octet-stream");
-            filter.AddPattern("*.bak");
-
-            return filter;
-        }
-
         public static FileFilter GetFileFilterAll()
         {
-            string databaseType = AppSettings.Instance.databaseType;
             FileFilter filter = new FileFilter();
 
             filter.Name = "All";

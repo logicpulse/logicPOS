@@ -2,11 +2,11 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Modals
         public AddStockMovementModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_article_stock"),
                                                    new Size(500, 660),
-                                                   PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_stocks.png")
+                                                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_stocks.png")
         {
         }
 

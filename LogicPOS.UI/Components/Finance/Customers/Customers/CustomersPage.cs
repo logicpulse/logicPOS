@@ -7,7 +7,6 @@ using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.Utility;
 using MediatR;
 using System.Collections.Generic;
 

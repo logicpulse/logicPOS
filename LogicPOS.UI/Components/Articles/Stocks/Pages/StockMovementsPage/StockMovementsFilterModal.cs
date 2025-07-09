@@ -3,13 +3,13 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
             base(parent,
                 LocalizedString.Instance["window_title_dialog_filter"],
                 new Size(540, 568),
-                PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
+                AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
 

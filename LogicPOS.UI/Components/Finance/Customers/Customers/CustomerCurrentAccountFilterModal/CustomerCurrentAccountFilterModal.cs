@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
-using LogicPOS.Settings;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         private CustomerCurrentAccountFilterModal(Window parent) : base(parent,
                                                                        GeneralUtils.GetResourceByName("report_customer_balance_summary"),
                                                                        new Size(500, 509),
-                                                                       PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
+                                                                       AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
 

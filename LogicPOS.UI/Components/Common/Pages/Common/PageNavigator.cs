@@ -1,12 +1,9 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Pages

@@ -1,7 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Settings;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
@@ -13,9 +12,9 @@ namespace LogicPOS.UI.Components.Pages
         public DashBoardPage(Window parentWindow)
         {
             _parentWindow = parentWindow;
-            int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.fontGenericTreeViewColumn);
+            int fontGenericTreeViewColumn = Convert.ToInt16(AppSettings.Instance.FontGenericTreeViewColumn);
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
-            var themeWindow = LogicPOSAppContext.Theme.Theme.Frontoffice.Window.Find(predicate);
+            var themeWindow = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             InitializeButtons();
             AddEventHandlers();

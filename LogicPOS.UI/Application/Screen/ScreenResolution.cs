@@ -1,6 +1,6 @@
-﻿namespace logicpos.Classes.Enums.App
+﻿namespace LogicPOS.UI.Application.Screen
 {
-    public enum ScreenSize
+    public enum ScreenResolution
     {
         resDefault,
         res800x600,

@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
@@ -11,10 +12,10 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         //Private Members
         private readonly string _l1LabelText;
         private readonly string _l2LabelText;
-        private readonly Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyDefaultFont;
-        private readonly Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeySecondaryFont;
-        private readonly Color _colorKeyboardPadKeyBackground = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyBackground;
-        private readonly Color _colorKeyboardPadKeyBackgroundActive = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyBackgroundActive;
+        private readonly Color _colorKeyboardPadKeyDefaultFont = AppSettings.Instance.ColorKeyboardPadKeyDefaultFont;
+        private readonly Color _colorKeyboardPadKeySecondaryFont = AppSettings.Instance.ColorKeyboardPadKeySecondaryFont;
+        private readonly Color _colorKeyboardPadKeyBackground = AppSettings.Instance.ColorKeyboardPadKeyBackground;
+        private readonly Color _colorKeyboardPadKeyBackgroundActive = AppSettings.Instance.ColorKeyboardPadKeyBackgroundActive;
 
         public Label LabelL1 { get; set; }
         public Label LabelL2 { get; set; }
@@ -51,9 +52,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             if (virtualKey.L2 != null) { _l2LabelText = virtualKey.L2.Glyph; } else { _l2LabelText = ""; };
 
             //Init Local Vars
-            Size sizeKeyboardPadDefaultKey = LogicPOS.Settings.AppSettings.Instance.sizeKeyboardPadDefaultKey;
-            string fontKeyboardPadPrimaryKey = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadPrimaryKey;
-            string fontKeyboardPadSecondaryKey = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadSecondaryKey;
+            Size sizeKeyboardPadDefaultKey = AppSettings.Instance.SizeKeyboardPadDefaultKey;
+            string fontKeyboardPadPrimaryKey = AppSettings.Instance.FontKeyboardPadPrimaryKey;
+            string fontKeyboardPadSecondaryKey = AppSettings.Instance.FontKeyboardPadSecondaryKey;
 
             //ByPass Defaults
             if (virtualKey.L1.KeyWidth > 0)

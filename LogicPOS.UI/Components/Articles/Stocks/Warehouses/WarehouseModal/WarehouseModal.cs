@@ -8,7 +8,6 @@ using LogicPOS.Api.Features.Warehouses.UpdateWarehouse;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Errors;
-using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals

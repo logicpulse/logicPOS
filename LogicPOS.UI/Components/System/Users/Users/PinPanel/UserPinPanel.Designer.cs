@@ -1,14 +1,14 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components
 {
     public partial class UserPinPanel
     {
-        private string Font { get; } = AppSettings.Instance.fontNumberPadPinButtonKeysTextAndLabel;
+        private string Font { get; } = AppSettings.Instance.FontNumberPadPinButtonKeysTextAndLabel;
         private  string StatusLabelFont { get; } = "bold 12";
         private Color ButtonFontColor { get; } = Color.White;
         private Size _btnSize;

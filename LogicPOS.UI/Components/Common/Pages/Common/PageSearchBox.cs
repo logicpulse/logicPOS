@@ -2,10 +2,10 @@
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -19,8 +19,8 @@ namespace LogicPOS.UI.Components.Pages
         public HBox Bar { get; set; } = new HBox(false, 0);
         public IconButtonWithText BtnMore { get; set; }
         public IconButtonWithText BtnFilter { get; set; }
-        public string BtnMoreIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_more.png";
-        public string BtnFilterIcon => PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_filter.png";
+        public string BtnMoreIcon => AppSettings.Paths.Images + @"Icons\icon_pos_more.png";
+        public string BtnFilterIcon => AppSettings.Paths.Images + @"Icons\icon_pos_filter.png";
 
         public PageSearchBox(Window parentWindow)
         {
@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
                                                RegularExpressions.AlfaNumericExtended,
                                                false);
 
-            TxtSearch.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
+            TxtSearch.WidthRequest = AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600 ? 150 : 250;
 
             Bar.PackStart(TxtSearch, true, true, 0);
 
@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Pages
                     BackgroundColor = Color.Transparent,
                     Text = text,
                     Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
-                    FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
+                    FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
                     Icon = icon,
                     IconSize = buttonIconSize,
                     ButtonSize = buttonSize

@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.Drawing;
 using System.Linq;
 
@@ -11,11 +11,11 @@ namespace LogicPOS.UI.Components.InputFields
     {
         public void SetStockMovementStyle()
         {
-            Component.ModifyBg(StateType.Normal, AppSettings.Instance.colorBaseDialogEntryBoxBackground.ToGdkColor());
-            TxtDesignation.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue));
-            TxtQuantity.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue));
-            TxtCode.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxValue));
-            Label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxLabel));
+            Component.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogEntryBoxBackground.ToGdkColor());
+            TxtDesignation.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue));
+            TxtQuantity.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue));
+            TxtCode.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxValue));
+            Label.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
         }
 
         public void SetStockManagementStyle()
@@ -66,9 +66,9 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void InitializeButtons()
         {
-            string iconSelectRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_select_record.png"}";
-            string iconClearRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/Windows/icon_window_delete_record.png"}";
-            string iconAddRecord = $"{PathsSettings.ImagesFolderLocation}{@"Icons/icon_pos_nav_new.png"}";
+            string iconSelectRecord = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}";
+            string iconClearRecord = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_delete_record.png"}";
+            string iconAddRecord = $"{AppSettings.Paths.Images}{@"Icons/icon_pos_nav_new.png"}";
 
             BtnSelect = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconSelectRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             BtnRemove = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconClearRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });

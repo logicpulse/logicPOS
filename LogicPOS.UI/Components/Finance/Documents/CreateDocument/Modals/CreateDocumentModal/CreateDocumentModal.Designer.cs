@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +73,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override Widget CreateLeftContent()
         {
             var hbox = new HBox(true, 0);
-            CheckIsDraft.Child.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.fontEntryBoxLabel));
+            CheckIsDraft.Child.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
             hbox.PackStart(CheckIsDraft, false, false, 0);
             return hbox;
         }

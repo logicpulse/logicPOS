@@ -4,7 +4,6 @@ using LogicPOS.Api.Features.MovementTypes.GetAllMovementTypes;
 using LogicPOS.Api.Features.Places.AddPlace;
 using LogicPOS.Api.Features.Places.UpdatePlace;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {

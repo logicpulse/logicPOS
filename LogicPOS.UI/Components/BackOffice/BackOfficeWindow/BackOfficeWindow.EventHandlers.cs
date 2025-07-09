@@ -3,7 +3,6 @@ using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Database;
 using LogicPOS.Api.Features.Finance.Saft.GetSaft;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
@@ -11,6 +10,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -213,7 +213,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnExit_Clicked(object sender, EventArgs args)
         {
-            LogicPOSAppUtils.Quit(this);
+            LogicPOSApp.Quit(this);
         }
 
         private void BtnDashBoard_Clicked(object sender, EventArgs args)
@@ -236,13 +236,13 @@ namespace LogicPOS.UI.Components.Windows
                                     .WithSize(new Size(600, 400))
                                     .WithMessageType(MessageType.Question)
                                     .WithButtonsType(ButtonsType.YesNo)
-                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), GeneralSettings.ServerVersion))
+                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), AppSettings.ServerVersion))
                                     .ShowAlert();
 
                 if (responseType == ResponseType.Yes)
                 {
                     System.Diagnostics.Process.Start(lPathToUpdater);
-                    LogicPOSAppUtils.QuitWithoutConfirmation();
+                    LogicPOSApp.QuitWithoutConfirmation();
                 }
             }
         }

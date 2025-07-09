@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.IO;
@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             if (Program.DebugMode)
             {
-                LicenseSettings.ApplyDemoData();
+                AppSettings.License.ApplyDemoData();
             }
             else
             {
@@ -31,30 +31,30 @@ namespace LogicPOS.UI.Components.Licensing
 
                 byte[] registredLicence = new byte[0];
 
-                HardwareId = LicenseSettings.LicenseHardwareId;
+                HardwareId = AppSettings.License.LicenseHardwareId;
                 bool hasLicense = false;
 
-                if (LicenseSettings.LicenseInformations.Count > 0)
+                if (AppSettings.License.LicenseInformations.Count > 0)
                 {
-                    version = LicenseSettings.LicenseVersion;
+                    version = AppSettings.License.LicenseVersion;
                     hasLicense = true;
                 }
 
-                string licenseFilePath = PluginSettings.LicenceManager.GetLicenseFilename();
+                string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();
                 var licenseFileBytes = File.ReadAllBytes(licenseFilePath);
 
-                registredLicence = PluginSettings.LicenceManager.GetLicence(
+                registredLicence = AppSettings.Plugins.LicenceManager.GetLicence(
                     HardwareId,
                     version,
                     hasLicense,
                     licenseFileBytes,
-                    LicenseSettings.LicenseKeys);
+                    AppSettings.License.LicenseKeys);
 
 
                 int result = 0;
                 try
                 {
-                    result = PluginSettings.LicenceManager.updateCurrentVersion(
+                    result = AppSettings.Plugins.LicenceManager.updateCurrentVersion(
                         HardwareId,
                         version,
                         System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
@@ -109,7 +109,7 @@ namespace LogicPOS.UI.Components.Licensing
                         case "LOGICPOS_PROFESSIONAL":
                         case "LOGICPOS_ENTERPRISE":
                         case "LOGICPOS_CORPORATE":
-                            LicenseSettings.LicenceRegistered = true;
+                            AppSettings.License.LicenceRegistered = true;
                             break;
                     }
 
@@ -117,12 +117,12 @@ namespace LogicPOS.UI.Components.Licensing
                 if (LoadApp)
                 {
                     System.Threading.Thread thread = new System.Threading.Thread(new System.Threading.ThreadStart(StartPOSFrontOffice));
-                    LogicPOSAppContext.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
+                    LogicPOSApp.DialogThreadNotify = new ThreadNotify(new ReadyEvent(Utils.NotifyLoadingIsDone));
                     thread.Start();
 
-                    LogicPOSAppContext.LoadingDialog = Utils.CreateSplashScreen();
+                    LogicPOSApp.LoadingDialog = Utils.CreateSplashScreen();
 
-                    LogicPOSAppContext.LoadingDialog.Run();
+                    LogicPOSApp.LoadingDialog.Run();
                 }
             }
         }

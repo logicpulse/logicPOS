@@ -1,11 +1,11 @@
-﻿using LogicPOS.Settings;
-using LogicPOS.UI.Buttons;
+﻿using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using Gtk;
 using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Settings;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -17,19 +17,19 @@ namespace LogicPOS.UI.Components.POS
         private IconButtonWithText BtnCancel { get; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClearCustomer { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
                                                                                                            GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"),
-                                                                                                           PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_nav_delete.png");
+                                                                                                           AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
         private IconButtonWithText BtnNewCustomer { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
                                                                                                           GeneralUtils.GetResourceByName("dialog_button_label_new_client"),
-                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_clients.png");
+                                                                                                          AppSettings.Paths.Images + @"Icons\icon_pos_clients.png");
         private IconButtonWithText BtnFullPayment { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonFullPayment_DialogActionArea",
                                                                                                           GeneralUtils.GetResourceByName("global_button_label_payment_dialog_full_payment"),
-                                                                                                          PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_full.png");
+                                                                                                          AppSettings.Paths.Images + @"Icons\icon_pos_payment_full.png");
         private IconButtonWithText BtnPartialPayment { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
                                                                                                             GeneralUtils.GetResourceByName("global_button_label_payment_dialog_partial_payment"),
-                                                                                                            PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_payment_partial.png");
+                                                                                                            AppSettings.Paths.Images + @"Icons\icon_pos_payment_partial.png");
         private IconButtonWithText BtnInvoice { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
                                                                                                                    GeneralUtils.GetResourceByName("global_documentfinance_type_title_ft"),
-                                                                                                                 PathsSettings.ImagesFolderLocation + @"Icons\icon_pos_toolbar_finance_document.png");
+                                                                                                                 AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_finance_document.png");
 
         private IconButton BtnPrevious { get; set; }
         private IconButton BtnNext { get; set; }

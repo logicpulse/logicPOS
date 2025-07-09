@@ -3,7 +3,6 @@ using LogicPOS.Api.Features.Printers.AddPrinter;
 using LogicPOS.Api.Features.Printers.UpdatePrinter;
 using LogicPOS.Api.Features.PrinterTypes.GetAllPrinterTypes;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {

@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Api.Features.Common;
@@ -7,7 +6,6 @@ using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles.Stocks.Movements;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;

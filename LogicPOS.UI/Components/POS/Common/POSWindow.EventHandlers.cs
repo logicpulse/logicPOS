@@ -44,15 +44,15 @@ namespace LogicPOS.UI.Components.Windows
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
-            if (LogicPOSAppContext.BarCodeReader != null)
+            if (LogicPOSApp.BarCodeReader != null)
             {
-                LogicPOSAppContext.BarCodeReader.KeyReleaseEvent(this, o, args);
+                LogicPOSApp.BarCodeReader.KeyReleaseEvent(this, o, args);
             }
         }
 
         private void BtnQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPOSAppUtils.Quit(this);
+            LogicPOSApp.Quit(this);
         }
 
         private void BtnBackOffice_Clicked(object sender, EventArgs e)
@@ -124,7 +124,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            switch (LogicPOSAppContext.BarCodeReader.Device)
+            switch (LogicPOSApp.BarCodeReader.Device)
             {
                 case InputReaderDevice.None:
                     break;

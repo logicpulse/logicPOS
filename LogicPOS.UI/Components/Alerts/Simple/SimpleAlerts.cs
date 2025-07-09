@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using Gtk;
-using logicpos;
 using LogicPOS.Api.Errors;
 using System.Text;
 

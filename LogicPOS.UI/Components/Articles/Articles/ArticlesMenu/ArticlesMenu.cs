@@ -1,15 +1,9 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Common.Pagination;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
-using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.POS;
-using LogicPOS.UI.Components.Windows;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -1,15 +1,13 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Enums;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using Table = LogicPOS.Api.Entities.Table;
 
@@ -26,7 +24,7 @@ namespace LogicPOS.UI.Components.Menus
                           PlacesMenu palcesMenu,
                           Window sourceWindow) : base(5,
                                                       4,
-                                                      AppSettings.Instance.sizePosTableButton,
+                                                      AppSettings.Instance.SizePosTableButton,
                                                       "",
                                                       btnPrevious,
                                                       btnNext,

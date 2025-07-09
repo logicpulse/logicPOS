@@ -39,7 +39,6 @@ using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
 using System;
-using System.IO;
 
 namespace LogicPOS.UI.Services
 {

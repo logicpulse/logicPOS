@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using logicpos;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using System.IO;
 
 namespace LogicPOS.UI.Alerts
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Alerts
         private Window _parentWindow = null;
         private ActionAreaButtons _buttons;
         private System.Drawing.Size _size = new System.Drawing.Size(600, 400);
-        private string _icon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_default.png";
+        private string _icon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_default.png";
         private string _image = string.Empty;
 
         public CustomAlert(Window parentWindow)
@@ -77,8 +77,8 @@ namespace LogicPOS.UI.Alerts
             var alertSettings = new CustomAlertSettings();
             var alertButtons = new CustomAlertButtons(alertSettings);
             _buttons = alertButtons.GetActionAreaButtons(_buttonsType);
-            _image = PathsSettings.ImagesFolderLocation + alertSettings.GetDialogImage(_messageType);
-            _icon = PathsSettings.ImagesFolderLocation + alertSettings.GetDialogIcon(_messageType);
+            _image = AppSettings.Paths.Images + alertSettings.GetDialogImage(_messageType);
+            _icon = AppSettings.Paths.Images + alertSettings.GetDialogIcon(_messageType);
 
             InitObject();
 

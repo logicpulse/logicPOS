@@ -1,10 +1,10 @@
-﻿using LogicPOS.Settings;
+﻿using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Dialogs
 {
     public class BaseDialogFontSettings
     {
-        public string Button = AppSettings.Instance.fontBaseDialogButton;
-        public string ActionAreaButton = AppSettings.Instance.fontBaseDialogActionAreaButton;
+        public string Button = AppSettings.Instance.FontBaseDialogButton;
+        public string ActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
     }
 }

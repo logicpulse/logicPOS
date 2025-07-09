@@ -1,9 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
           base(parent,
               LocalizedString.Instance["window_title_dialog_report_filter"],
               new Size(540, 678),
-              PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_date_picker.png")
+              AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
 

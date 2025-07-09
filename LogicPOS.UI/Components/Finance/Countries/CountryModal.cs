@@ -1,10 +1,6 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Api.Features.Countries.UpdateCountry;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Modals;
-using System;
 
 namespace LogicPOS.UI.Components.Modals
 {

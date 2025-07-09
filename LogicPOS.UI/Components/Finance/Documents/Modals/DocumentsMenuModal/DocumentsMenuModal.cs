@@ -1,8 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Settings;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -31,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
 
             Initialize(this,
                        flags,
-                       PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_documents.png",
+                       AppSettings.Paths.Images + @"Icons\Windows\icon_window_documents.png",
                        GeneralUtils.GetResourceByName("window_title_dialog_document_finance"),
                        new Size(581, 286),
                        table,

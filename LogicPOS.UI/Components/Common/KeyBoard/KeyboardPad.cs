@@ -5,6 +5,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Serilog;
 using System;
@@ -23,7 +24,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
         public ValidatableTextBox TextEntry { get; set; }
 
         //Private Members
-        private readonly string _fontKeyboardPadTextEntry = LogicPOS.Settings.AppSettings.Instance.fontKeyboardPadTextEntry;
+        private readonly string _fontKeyboardPadTextEntry = AppSettings.Instance.FontKeyboardPadTextEntry;
         private readonly VirtualKeyBoard _virtualKeyBoard;
         private readonly int _spacing = 10;
         private bool _isCapsEnabled = false;
@@ -150,8 +151,8 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             List<VirtualKey> currentKeyboardRow;
             VirtualKey currentKey;
             char charKey;
-            Color _colorKeyboardPadKeyDefaultFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeyDefaultFont;
-            Color _colorKeyboardPadKeySecondaryFont = LogicPOS.Settings.AppSettings.Instance.colorKeyboardPadKeySecondaryFont;
+            Color _colorKeyboardPadKeyDefaultFont = AppSettings.Instance.ColorKeyboardPadKeyDefaultFont;
+            Color _colorKeyboardPadKeySecondaryFont = AppSettings.Instance.ColorKeyboardPadKeySecondaryFont;
 
             //loop rows
             for (int i = 0; i < _virtualKeyBoard.KeyBoard.Count; i++)
@@ -281,7 +282,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Hide Numeric KeyPad if in 800x600
             //TODO:THEME
-            if (KeyboardMode.Equals(KeyboardMode.AlfaNumeric) && LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600)
+            if (KeyboardMode.Equals(KeyboardMode.AlfaNumeric) && AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600)
             {
                 if (ParentDialog != null) ParentDialog.WidthRequest -= _vboxNumPadRows.Allocation.Width + _spacing;
                 _vboxNumPadRows.HideAll();

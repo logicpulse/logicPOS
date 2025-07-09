@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
-using LogicPOS.Settings;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
@@ -52,7 +52,7 @@ namespace LogicPOS.UI.Components.Modals
                                         includeKeyBoardButton: true,
                                         includeSelectButton: false);
 
-            TxtSearch.Component.WidthRequest = LogicPOSAppContext.ScreenSize.Width == 800 && LogicPOSAppContext.ScreenSize.Height == 600 ? 150 : 250;
+            TxtSearch.Component.WidthRequest = AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600 ? 150 : 250;
 
             box.PackStart(TxtSearch.Component, false, false, 0);
             box.PackStart(BtnFilter, false, false, 0);
@@ -74,11 +74,11 @@ namespace LogicPOS.UI.Components.Modals
                     {
                         Name = name,
                         Text = label,
-                        Font = AppSettings.Instance.fontBaseDialogActionAreaButton,
-                        FontColor = AppSettings.Instance.colorBaseDialogActionAreaButtonFont,
-                        Icon = PathsSettings.ImagesFolderLocation + icon,
-                        IconSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                        ButtonSize = AppSettings.Instance.sizeBaseDialogActionAreaBackOfficeNavigatorButton
+                        Font = AppSettings.Instance.FontBaseDialogActionAreaButton,
+                        FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
+                        Icon = AppSettings.Paths.Images + icon,
+                        IconSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                        ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton
                     });
             }
 

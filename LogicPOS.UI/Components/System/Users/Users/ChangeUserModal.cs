@@ -1,12 +1,12 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
-using LogicPOS.Settings;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 
@@ -14,11 +14,11 @@ namespace LogicPOS.UI.Components.Modals
 {
     internal class ChangeUserModal : BaseDialog
     {
-        private Size _sizePosSmallButtonScroller = AppSettings.Instance.sizePosSmallButtonScroller;
-        private Size _sizePosUserButton = AppSettings.Instance.sizePosUserButton;
+        private Size _sizePosSmallButtonScroller = AppSettings.Instance.SizePosSmallButtonScroller;
+        private Size _sizePosUserButton = AppSettings.Instance.SizePosUserButton;
         private Size _sizeIconScrollLeftRight = new Size(62, 31);
-        private readonly string _fileScrollLeftImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
-        private readonly string _fileScrollRightImage = PathsSettings.ImagesFolderLocation + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
+        private readonly string _fileScrollLeftImage = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
         private readonly Fixed _fixedContent;
         private UsersMenu UsersMenu { get; set; }
         private readonly IconButtonWithText _buttonCancel;
@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
             //Init Local Vars
             string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_change_user");
             Size windowSize = new Size(559, 562);
-            string fileDefaultWindowIcon = PathsSettings.ImagesFolderLocation + @"Icons\Windows\icon_window_users.png";
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_users.png";
 
             _fixedContent = new Fixed();
 

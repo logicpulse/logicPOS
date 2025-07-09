@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Pages.GridViews;
