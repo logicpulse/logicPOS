@@ -17,6 +17,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
                 var docType = GetDocumentTypeFromDocument(modal.Page.SelectedEntity);
+                if (docType == null)
+                {
+                     new Alerts.SimpleAlert()
+                        .WithTitle("Erro ao copiar documento")
+                        .WithMessageType(MessageType.Error)
+                        .WithMessage(GeneralUtils.GetResourceByName("Não é permitida a cópia de documentos cujos tipos e acrónimos tenham sido alterados pela entidade reguladora (AGT/AT)."))
+                        .ShowAlert();
+
+                    modal.Destroy();
+                    return;
+                }
+                
                 TxtDocumentType.SelectedEntity = docType;
                 TxtDocumentType.Text = docType.Designation;
 

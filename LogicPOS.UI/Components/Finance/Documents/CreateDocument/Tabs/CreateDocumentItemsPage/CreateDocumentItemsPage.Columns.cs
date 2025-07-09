@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             void RenderTotalWithTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.TotalFinal.ToString();
+                (cell as CellRendererText).Text = item.TotalFinal.ToString("F2");
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_per_item_vat");
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             void RenderPrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.UnitPrice.ToString();
+                (cell as CellRendererText).Text = item.UnitPrice.ToString("F2");
             }
 
             var title = GeneralUtils.GetResourceByName("global_price");
@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             void RenderDiscount(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Discount.ToString();
+                (cell as CellRendererText).Text = item.Discount.ToString("F2");
             }
 
             var title = GeneralUtils.GetResourceByName("global_discount");
@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Quantity.ToString();
+                (cell as CellRendererText).Text = item.Quantity.ToString("F2");
             }
 
             var title = GeneralUtils.GetResourceByName("global_quantity_acronym");
@@ -71,7 +71,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             void RenderTotal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (Item)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.TotalNet.ToString();
+                (cell as CellRendererText).Text = item.TotalNet.ToString("F2");
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_article_tab");

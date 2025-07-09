@@ -61,9 +61,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtArticle.SelectedEntity = item.Article;
             TxtArticle.Text = item.Designation;
-            TxtPrice.Text = item.UnitPrice.ToString();
-            TxtQuantity.Text = item.Quantity.ToString();
-            TxtDiscount.Text = item.Discount.ToString();
+            TxtPrice.Text = item.UnitPrice.ToString("F2");
+            TxtQuantity.Text = item.Quantity.ToString("F2");
+            TxtDiscount.Text = item.Discount.ToString("F2");
             TxtVatExemptionReason.SelectedEntity = item.VatExemptionReason;
             TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
             TxtTax.SelectedEntity = item.VatRate;
