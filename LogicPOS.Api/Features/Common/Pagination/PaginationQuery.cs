@@ -8,7 +8,7 @@ namespace LogicPOS.Api.Features.Common.Pagination
     public abstract class PaginationQuery<TEntity> : IRequest<ErrorOr<PaginatedResult<TEntity>>> where TEntity : class
     {
         public int? Page { get; set; } = 1;
-        public int? PageSize { get; set; } = 10;
+        public int? PageSize { get; set; } = ApiSettings.Default.DefaultPageSize;
         public string Search { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
