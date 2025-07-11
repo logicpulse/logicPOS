@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Pages
 
 		protected override void InitializeSort()
 		{
-			GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+			GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Model);
 
 			AddCodeSorting(0);
 			AddDesignationSorting(1);
