@@ -93,7 +93,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void InitializeSort()
         {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Model);
 
             AddMovementTypeSorting();
             AddDateSorting();
@@ -192,28 +192,5 @@ namespace LogicPOS.UI.Components.Pages
 
         #endregion
 
-        #region Filter
-        protected override void InitializeFilter()
-        {
-            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
-            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
-            {
-                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
-                if (string.IsNullOrWhiteSpace(search))
-                {
-                    return true;
-                }
-
-                var entity = model.GetValue(iterator, 0) as StockMovement;
-
-                if (entity != null && entity.Customer.Name.ToLower().Contains(search))
-                {
-                    return true;
-                }
-
-                return false;
-            };
-        }
-        #endregion
     }
 }

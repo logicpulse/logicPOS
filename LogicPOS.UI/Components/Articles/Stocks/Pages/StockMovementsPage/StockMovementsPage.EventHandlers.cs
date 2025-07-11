@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnFilter_Clicked(object sender, EventArgs e)
         {
-            RunFilter();
+            RunFilterModal();
         }
 
         private void BtnMore_Clicked(object sender, EventArgs e)

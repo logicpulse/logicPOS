@@ -1,10 +1,12 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles.Stocks.Movements;
+using LogicPOS.UI.Components.Articles.Stocks.Pages.StockMovementsPage;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
@@ -28,6 +30,12 @@ namespace LogicPOS.UI.Components.Pages
 
         public StockMovementsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+        }
+
+        public override void Search(string searchText)
+        {
+            CurrentQuery = new GetStockMovementsQuery { Search = searchText };
+            Refresh();
         }
 
         private void AddOpenDocumentButton()
@@ -94,11 +102,11 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        public void RunFilter()
+        public void RunFilterModal()
         {
             var filterModal = new StockMovementsFilterModal(SourceWindow);
             var response = (ResponseType)filterModal.Run();
-            var query = filterModal.GetStockMovementsQuery();
+            StockMovementsFilterModalData? filterModalData = filterModal.GetFilterData();
             filterModal.Destroy();
 
             if (response != ResponseType.Ok)
@@ -106,7 +114,11 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            CurrentQuery = query;
+            CurrentQuery.StartDate = filterModalData?.StartDate ?? CurrentQuery.StartDate;
+            CurrentQuery.EndDate = filterModalData?.EndDate ?? CurrentQuery.EndDate;
+            CurrentQuery.ArticleId = filterModalData?.ArticleId ?? CurrentQuery.ArticleId;
+            CurrentQuery.CustomerId = filterModalData?.CustomerId ?? CurrentQuery.CustomerId;
+
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }

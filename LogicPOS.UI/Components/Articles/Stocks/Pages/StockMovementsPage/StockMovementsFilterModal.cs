@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles.Stocks.Pages.StockMovementsPage;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -70,38 +71,39 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
             BtnClear.Clicked += BtnClear_Clicked;
         }
 
-        public GetStockMovementsQuery GetStockMovementsQuery()
+        public StockMovementsFilterModalData? GetFilterData()
         {
             if(AllFieldsAreValid() == false)
             {
                 return null;
             }
 
-            var query = new GetStockMovementsQuery();
+            var data = new StockMovementsFilterModalData();
+           
 
-            if(string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
+            if (string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
             {
-                query.StartDate = DateTime.Parse(TxtStartDate.Text);
+                data.StartDate = DateTime.Parse(TxtStartDate.Text);
             }
 
             if (string.IsNullOrWhiteSpace(TxtEndDate.Text) == false)
             {
-                query.EndDate = DateTime.Parse(TxtEndDate.Text);
+                data.EndDate = DateTime.Parse(TxtEndDate.Text);
             }
 
             if (TxtArticle.SelectedEntity != null)
             {
                 var article = TxtArticle.SelectedEntity as Article;
-                query.ArticleId = article.Id;
+                data.ArticleId = article.Id;
             }
 
             if (TxtCustomer.SelectedEntity != null)
             {
                 var customer = TxtCustomer.SelectedEntity as Customer;
-                query.CustomerId = customer.Id;
+                data.CustomerId = customer.Id;
             }
 
-            return query;
+            return data;
         }
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
