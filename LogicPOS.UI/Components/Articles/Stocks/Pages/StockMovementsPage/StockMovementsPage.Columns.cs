@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var movement = (StockMovementViewModel)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = movement.Quantity.ToString();
+                (cell as CellRendererText).Text = movement.Quantity.ToString("F2");
             }
             var title = LocalizedString.Instance["global_quantity"];
             return Columns.CreateColumn(title, 6, RenderQuantity);

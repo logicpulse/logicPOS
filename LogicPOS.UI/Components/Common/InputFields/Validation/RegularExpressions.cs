@@ -28,7 +28,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         public static string DecimalGreaterEqualThanZeroFinancial => @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,2})?\s*$";
         public static string Ean12andEan4 => @"^[0-9A-Za-z]+";
         public static string Email => @"^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$";
-        public static string Date => @"^\d{4}-\d{2}-\d{2}$";
+        public static string Date => @"^(18|20)\d{2}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
         public static string DateTime => @"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$";
         public static string DateYear => @"^((19|20)\d\d)$";
         public static string DateYearHolidays => @"^((19|20)\d\d)|0$";

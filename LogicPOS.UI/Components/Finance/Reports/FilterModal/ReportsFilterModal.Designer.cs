@@ -92,6 +92,7 @@ namespace LogicPOS.UI.Components.Modals
             var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             TxtStartDate.Text = firstDayOfMonth.ToString("yyyy-MM-dd");
 
+            TxtStartDate.Entry.Changed += TxtStartDate_Entry_Changed;
             TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
         }
 
@@ -106,7 +107,7 @@ namespace LogicPOS.UI.Components.Modals
                                            includeKeyBoardButton: true);
 
             TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-
+            TxtEndDate.Entry.Changed += TxtEndDate_Entry_Changed;
             TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
         }
 

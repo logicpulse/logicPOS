@@ -3,6 +3,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtEndDate.Entry.IsEditable = false;
             TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-
+            TxtEndDate.Entry.Changed += TxtEndDate_Entry_Changed;
             TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
         }
 
@@ -56,8 +57,31 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtStartDate.Entry.IsEditable = false;
             TxtStartDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
-
+            TxtStartDate.Entry.Changed+=TxtStartDate_Entry_Changed;
             TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
+        }
+        private void TxtStartDate_Entry_Changed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtStartDate.Text) && TxtStartDate.Text.Length >= 10)
+            {
+                if (TxtStartDate.IsValid())
+                {
+                    TxtStartDate.Text = TxtStartDate.Text.ValidateDate();
+                }
+                return;
+            }
+        }
+
+        private void TxtEndDate_Entry_Changed(object sender, EventArgs e)
+        {
+            if ((!string.IsNullOrEmpty(TxtEndDate.Text)) && TxtEndDate.Text.Length >= 10)
+            {
+                if (TxtEndDate.IsValid())
+                {
+                    TxtEndDate.Text = TxtEndDate.Text.ValidateDate();
+                }
+                return;
+            }
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

@@ -4,7 +4,9 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 
@@ -87,6 +89,31 @@ namespace LogicPOS.UI.Components.Modals
             dateTimePicker.Destroy();
         }
 
+        private void TxtStartDate_Entry_Changed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtStartDate.Text) && TxtStartDate.Text.Length >= 10)
+            {
+                if (TxtStartDate.IsValid())
+                {
+                    TxtStartDate.Text = TxtStartDate.Text.ValidateDate();
+                }
+                return;
+            }
+        }
+
+        private void TxtEndDate_Entry_Changed(object sender, EventArgs e)
+        {
+            if ((!string.IsNullOrEmpty(TxtEndDate.Text)) && TxtEndDate.Text.Length >= 10)
+            {
+                if (TxtEndDate.IsValid())
+                {
+                    TxtEndDate.Text = TxtEndDate.Text.ValidateDate();
+                }
+                return;
+            }
+        }
+
+     
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);
@@ -144,6 +171,15 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectDocumentNumber_Clicked(object sender, System.EventArgs e)
         {
+            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentModal.Run();
+            selectDocumentModal.Destroy();
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtDocumentNumber.Text = page.SelectedEntity.Number;
+                TxtDocumentNumber.SelectedEntity = page.SelectedEntity;
+            }
         }
 
         protected override void OnResponse(ResponseType response)
