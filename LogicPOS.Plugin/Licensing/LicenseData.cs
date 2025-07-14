@@ -22,7 +22,7 @@ namespace LogicPOS.Plugin.Licensing
         public DataTable Keys { get; set; }
         public SortedList Informations { get; set; }
 
-        public static LicenseData GetDemoData()
+        public LicenseData GetDemoData()
         {
             var data = new LicenseData
             {

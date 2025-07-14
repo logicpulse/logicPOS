@@ -1,4 +1,5 @@
-﻿using LogicPOS.UI.Application;
+﻿using LogicPOS.Plugin.Licensing;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Settings;
 using System.IO;
 
@@ -23,13 +24,12 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static void GetLicenceInfo()
         {
-            if (Program.DebugMode)
-            {
-                AppSettings.License.ApplyDemoData();
-                return;
+            if (Program.DebugMode) 
+            { 
+                AppSettings.License.LicenseData.GetDemoData(); 
+            r
             }
 
-            AppSettings.License.ApplyDataFromPlugin(AppSettings.Plugins.LicenceManager);
         }
 
         public static void WriteByteArrayToFile(byte[] buff, string filePath)

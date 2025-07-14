@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public static void RunModal()
         {
-            if (AppSettings.License.LicenseModuleStocks)
+            if (AppSettings.License.LicenseData.ModuleStocks)
             {
                 var parentWindow = BackOfficeWindow.Instance;
                 var stockManagementModal = new StockManagementModal(parentWindow);

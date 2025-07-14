@@ -143,12 +143,12 @@ namespace LogicPOS.UI.Components.Windows
 
                 //Label Version
                 string appVersion = "";
-                if (AppSettings.License.LicenseReseller != null &&
-                    AppSettings.License.LicenseReseller.ToString().ToLower() != "Logicpulse" &&
-                    AppSettings.License.LicenseReseller.ToString().ToLower() != "")
+                if (AppSettings.License.LicenseData.Reseller != null &&
+                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "Logicpulse" &&
+                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "")
                 {
                     //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                    appVersion = string.Format("Powered by {0}© Vers. {1}", AppSettings.License.LicenseReseller, AppSettings.ProductVersion);
+                    appVersion = string.Format("Powered by {0}© Vers. {1}", AppSettings.License.LicenseData.Reseller, AppSettings.ProductVersion);
                 }
                 else
                 {
@@ -175,7 +175,7 @@ namespace LogicPOS.UI.Components.Windows
                 {
                     string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_loggericpulse_login.png");
 
-                    if (!string.IsNullOrEmpty(AppSettings.License.LicenseReseller) && AppSettings.License.LicenseReseller == "NewTech")
+                    if (!string.IsNullOrEmpty(AppSettings.License.LicenseData.Reseller) && AppSettings.License.LicenseData.Reseller == "NewTech")
                     {
                         fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_login.png", "NT");
                     }

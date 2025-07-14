@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             if (Program.DebugMode)
             {
-                AppSettings.License.ApplyDemoData();
+                AppSettings.License.LicenseData.GetDemoData();
             }
             else
             {
@@ -109,7 +109,7 @@ namespace LogicPOS.UI.Components.Licensing
                         case "LOGICPOS_PROFESSIONAL":
                         case "LOGICPOS_ENTERPRISE":
                         case "LOGICPOS_CORPORATE":
-                            AppSettings.License.LicenceRegistered = true;
+                            AppSettings.License.LicenseData.Registered= true;
                             break;
                     }
 

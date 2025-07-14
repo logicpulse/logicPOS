@@ -132,7 +132,7 @@ namespace LogicPOS.UI.Components.Windows
             {
                 string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_logicpulse_login.png");
 
-                if (!string.IsNullOrEmpty(AppSettings.License.LicenseReseller) && AppSettings.License.LicenseReseller == "NewTech")
+                if (!string.IsNullOrEmpty(AppSettings.License.LicenseData.Reseller) && AppSettings.License.LicenseData.Reseller == "NewTech")
                 {
                     fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png", "NT");
                 }
