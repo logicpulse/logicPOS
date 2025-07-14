@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using LogicPOS.Plugin.Licensing;
+using System.Collections;
 using System.Data;
 using System.Drawing;
 
@@ -8,46 +9,38 @@ namespace LogicPOS.Plugin.Abstractions
     {
         string GetHardwareID();
 
-        byte[] GetLicence(
-            string hardwareID,
-            string version,
-            bool haveLicence,
-            byte[] licence,
-            DataTable keysLicence);
+        byte[] GetLicense(string hardwareID,
+                          string version,
+                          bool hasLicense,
+                          byte[] license,
+                          DataTable licenseKeys);
 
         SortedList GetLicenseInformation();
-
         string GetLicenseFilename();
-
         bool IsLicensed();
 
-        bool ConnectToWS();
-
-        byte[] ActivateLicense(
-            string name,
-            string company,
-            string fiscalNumber,
-            string address,
-            string email,
-            string phone,
-            string hardwareId,
-            string assemblyVersion,
-            int idCountry,
-            string softwareKey);
+        byte[] ActivateLicense(string name,
+                               string company,
+                               string fiscalNumber,
+                               string address,
+                               string email,
+                               string phone,
+                               string hardwareId,
+                               string assemblyVersion,
+                               int idCountry,
+                               string softwareKey);
 
         string GetCurrentVersion();
 
-        DataTable GetCountries();
+        int UpdateCurrentVersion(string hardwareID,
+                                 string productID,
+                                 string versionApp);
 
-        int updateCurrentVersion(
-            string hardwareID,
-            string productID,
-            string versionApp);
+        Image DecodeImage(string filePath,
+                          int width,
+                          int height);
 
-        Image DecodeImage(
-            string filePath,
-            int width,
-            int height);
+        LicenseData GetLicenseData();
 
     }
 }

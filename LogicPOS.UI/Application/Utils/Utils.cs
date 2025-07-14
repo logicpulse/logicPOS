@@ -555,23 +555,23 @@ namespace logicpos
                     IniFileParser iNIFile = new IniFileParser(pFileName);
 
                     //Load
-                    AppSettings.License.LicenseHardwareId =CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    AppSettings.License.LicenseCompany = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    AppSettings.License.LicenseNif = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    AppSettings.License.LicenseAddress = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    AppSettings.License.LicenseEmail = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    AppSettings.License.LicenseTelephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    AppSettings.License.LicenseReseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
+                    AppSettings.License.LicenseData.HardwareId =CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
+                    AppSettings.License.LicenseData.Company = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
+                    AppSettings.License.LicenseData.FiscalNumber = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
+                    AppSettings.License.LicenseData.Address = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
+                    AppSettings.License.LicenseData.Email = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
+                    AppSettings.License.LicenseData.Telephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
+                    AppSettings.License.LicenseData.Reseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
                     //Test
                     if (pDebug)
                     {
-                        Log.Debug(string.Format("{0}:{1}", "HardwareId", AppSettings.License.LicenseHardwareId));
-                        Log.Debug(string.Format("{0}:{1}", "Company", AppSettings.License.LicenseCompany));
-                        Log.Debug(string.Format("{0}:{1}", "Nif", AppSettings.License.LicenseNif));
-                        Log.Debug(string.Format("{0}:{1}", "Address", AppSettings.License.LicenseAddress));
-                        Log.Debug(string.Format("{0}:{1}", "Email", AppSettings.License.LicenseEmail));
-                        Log.Debug(string.Format("{0}:{1}", "Telephone", AppSettings.License.LicenseTelephone));
-                        Log.Debug(string.Format("{0}:{1}", "Reseller", AppSettings.License.LicenseReseller));
+                        Log.Debug(string.Format("{0}:{1}", "HardwareId", AppSettings.License.LicenseData.HardwareId));
+                        Log.Debug(string.Format("{0}:{1}", "Company", AppSettings.License.LicenseData.Company));
+                        Log.Debug(string.Format("{0}:{1}", "Nif", AppSettings.License.LicenseData.FiscalNumber));
+                        Log.Debug(string.Format("{0}:{1}", "Address", AppSettings.License.LicenseData.Address));
+                        Log.Debug(string.Format("{0}:{1}", "Email", AppSettings.License.LicenseData.Email));
+                        Log.Debug(string.Format("{0}:{1}", "Telephone", AppSettings.License.LicenseData.Telephone));
+                        Log.Debug(string.Format("{0}:{1}", "Reseller", AppSettings.License.LicenseData.Reseller));
                     }
                     iNIFile.Flush();
 

@@ -116,17 +116,16 @@ namespace LogicPOS.UI.Components.Licensing
                 return;
             }
 
-            if (AppSettings.Plugins.LicenceManager.ConnectToWS() == false)
-            {
 
-                CustomAlerts.Error(this)
-                            .WithSize(new System.Drawing.Size(600, 300))
-                            .WithTitleResource("global_error")
-                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
-                            .ShowAlert();
 
-                return;
-            }
+            CustomAlerts.Error(this)
+                        .WithSize(new System.Drawing.Size(600, 300))
+                        .WithTitleResource("global_error")
+                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
+                        .ShowAlert();
+
+            return;
+
 
             byte[] registeredLicence = new byte[0];
 
@@ -141,7 +140,7 @@ namespace LogicPOS.UI.Components.Licensing
                                                                                  EntryBoxPhone.EntryValidation.Text,
                                                                                  _entryBoxHardwareId.EntryValidation.Text,
                                                                                  System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                                                                                 Countries.IndexOf(ComboBoxCountry.Value)+1,
+                                                                                 Countries.IndexOf(ComboBoxCountry.Value) + 1,
                                                                                  _entryBoxSoftwareKey.EntryValidation.Text);
 
                 string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();

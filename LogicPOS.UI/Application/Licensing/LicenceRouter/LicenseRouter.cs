@@ -31,30 +31,30 @@ namespace LogicPOS.UI.Components.Licensing
 
                 byte[] registredLicence = new byte[0];
 
-                HardwareId = AppSettings.License.LicenseHardwareId;
+                HardwareId = AppSettings.License.LicenseData.HardwareId;
                 bool hasLicense = false;
 
-                if (AppSettings.License.LicenseInformations.Count > 0)
+                if (AppSettings.License.LicenseData.Informations.Count > 0)
                 {
-                    version = AppSettings.License.LicenseVersion;
+                    version = AppSettings.License.LicenseData.Version;
                     hasLicense = true;
                 }
 
                 string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();
                 var licenseFileBytes = File.ReadAllBytes(licenseFilePath);
 
-                registredLicence = AppSettings.Plugins.LicenceManager.GetLicence(
+                registredLicence = AppSettings.Plugins.LicenceManager.GetLicense(
                     HardwareId,
                     version,
                     hasLicense,
                     licenseFileBytes,
-                    AppSettings.License.LicenseKeys);
+                    AppSettings.License.LicenseData.Keys);
 
 
                 int result = 0;
                 try
                 {
-                    result = AppSettings.Plugins.LicenceManager.updateCurrentVersion(
+                    result = AppSettings.Plugins.LicenceManager.UpdateCurrentVersion(
                         HardwareId,
                         version,
                         System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
