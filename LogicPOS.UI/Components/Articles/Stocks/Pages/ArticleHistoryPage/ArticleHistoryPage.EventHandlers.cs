@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
@@ -32,7 +33,21 @@ namespace LogicPOS.UI.Components.Pages
         }
         private void BtnOpenSaleDocument_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(SelectedEntity.SaleDocument))
+            {
+                return;
+            }
+            var filePath = System.IO.Path.GetTempFileName();
+            var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.SaleDocument)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                return;
+            }
+
+            //System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value));
+            LogicPOSPDFViewer.ShowPDF(result.Value);
+            return;
         }
 
         private void BtnOpenExternalDocument_Clicked(object sender, EventArgs e)
