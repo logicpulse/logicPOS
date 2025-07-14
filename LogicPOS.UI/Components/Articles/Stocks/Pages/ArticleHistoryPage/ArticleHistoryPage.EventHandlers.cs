@@ -45,7 +45,6 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            //System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value));
             LogicPOSPDFViewer.ShowPDF(result.Value);
             return;
         }
