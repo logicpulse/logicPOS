@@ -12,6 +12,7 @@ namespace LogicPOS.UI.Components.Modals
         public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        public TextBox TxtCode { get; set; }
         public TextBox TxtArticle { get; set; }
         public TextBox TxtQuantity { get; set; }
         public TextBox TxtPrice { get; set; }
@@ -21,6 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtTax { get; set; }
         public TextBox TxtVatExemptionReason { get; set; }
         public TextBox TxtNotes { get; set; }
+        
 
     }
 }

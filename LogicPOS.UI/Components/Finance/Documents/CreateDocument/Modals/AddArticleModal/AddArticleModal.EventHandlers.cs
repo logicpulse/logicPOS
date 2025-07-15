@@ -1,14 +1,21 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.GetArticleById;
+using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
+        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
@@ -42,7 +49,7 @@ namespace LogicPOS.UI.Components.Modals
             Clear();
             Run();
         }
-       
+
         private void BtnSelectVatExemptionReason_Clicked(object sender, EventArgs e)
         {
             var page = new VatExemptionReasonsPage(null, PageOptions.SelectionPageOptions);
@@ -72,6 +79,51 @@ namespace LogicPOS.UI.Components.Modals
                 UpdateTotals();
                 UpdateValidatableFields();
             }
+        }
+
+        private void TxtCode_TextChanged(object sender, EventArgs e)
+        {
+            
+            if (string.IsNullOrWhiteSpace(TxtCode.Text))
+            {
+                Clear();
+                return;
+            }
+            var articlesListResult = _mediator.Send(new GetArticlesQuery() { Search = TxtCode.Text }).Result;
+            if (articlesListResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(articlesListResult);
+                return;
+            }
+
+            if (articlesListResult.Value.ItemsCount == 0)
+            {
+                Clear();
+                return;
+            }
+            
+            var articleViewModel = articlesListResult.Value.Items.FirstOrDefault(x => x.Code.Contains(TxtCode.Text));
+
+            if (articleViewModel == null)
+            {
+                Clear();
+                return;
+            }
+
+            var article = _mediator.Send(new GetArticleByIdQuery(articleViewModel.Id)).Result;
+            if (article.IsError)
+            {
+                ErrorHandlingService.HandleApiError(article);
+                return;
+            }
+            TxtArticle.SelectedEntity = article.Value;
+            TxtArticle.Text = article.Value.Designation;
+            ShowArticleData(article.Value);
+            UpdateTotals();
+            UpdateValidatableFields();
+            return;
+
+
         }
 
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)

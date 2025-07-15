@@ -132,12 +132,24 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
-            TxtArticle.Entry.IsEditable = false;
+            TxtArticle.Entry.IsEditable = true;
 
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
-
             ValidatableFields.Add(TxtArticle);
         }
 
+        private void InitializeTxtCode()
+        {
+            TxtCode = new TextBox(WindowSettings.Source,
+                                          GeneralUtils.GetResourceByName("global_article_code"),
+                                          isRequired: false,
+                                          isValidatable: false,
+                                          includeSelectButton: false,
+                                          includeKeyBoardButton: false);
+
+            TxtCode.Entry.IsEditable = true;
+            TxtCode.Entry.Changed += TxtCode_TextChanged;
+        }
+        
     }
 }

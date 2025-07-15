@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Components.Licensing
             if (Program.DebugMode) 
             { 
                 AppSettings.License.LicenseData.GetDemoData(); 
-            r
+            
             }
 
         }

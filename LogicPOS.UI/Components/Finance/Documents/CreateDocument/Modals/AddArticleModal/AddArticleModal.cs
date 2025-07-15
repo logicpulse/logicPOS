@@ -48,6 +48,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void DisableFields()
         {
+            TxtCode.Component.Sensitive = false;
             TxtArticle.Component.Sensitive = false;
             TxtPrice.Component.Sensitive = false;
             TxtQuantity.Component.Sensitive = false;
@@ -59,6 +60,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowItemData(Item item)
         {
+            TxtCode.Text = item.Code;
             TxtArticle.SelectedEntity = item.Article;
             TxtArticle.Text = item.Designation;
             TxtPrice.Text = item.UnitPrice.ToString("F2");
@@ -76,6 +78,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void Initialize()
         {
+            InitializeTxtCode();
             InitializeTxtArticle();
             InitializeTxtQuantity();
             InitializeTxtPrice();
@@ -112,9 +115,13 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowArticleData(Article article)
         {
-            TxtPrice.Text = article.Price1.Value.ToString();
-            TxtQuantity.Text = article.DefaultQuantity.ToString();
-            TxtDiscount.Text = article.Discount.ToString();
+            if (string.IsNullOrEmpty(TxtCode.Text))
+            {
+                TxtCode.Text = article.Code;
+            }
+            TxtPrice.Text = article.Price1.Value.ToString("F2");
+            TxtQuantity.Text = article.DefaultQuantity.ToString("F2");
+            TxtDiscount.Text = article.Discount.ToString("F2");
             TxtVatExemptionReason.SelectedEntity = article.VatExemptionReason;
             TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;
             TxtTax.SelectedEntity = article.VatDirectSelling;
