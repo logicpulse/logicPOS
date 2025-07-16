@@ -181,7 +181,8 @@ namespace LogicPOS.UI.Components.Modals
                          isRequired: false,
                          isValidatable: false,
                          includeSelectButton: false,
-                         includeKeyBoardButton: false);
+                         includeKeyBoardButton: false,
+                         includeClearButton: false);
 
             TxtFamily.Entry.IsEditable = false;
             TxtFamily.Entry.Sensitive = false;
@@ -195,7 +196,8 @@ namespace LogicPOS.UI.Components.Modals
                          isRequired: false,
                          isValidatable: false,
                          includeSelectButton: false,
-                         includeKeyBoardButton: false);
+                         includeKeyBoardButton: false,
+                         includeClearButton: false);
 
             TxtSubFamily.Entry.IsEditable = false;
             TxtSubFamily.Entry.Sensitive = false;
