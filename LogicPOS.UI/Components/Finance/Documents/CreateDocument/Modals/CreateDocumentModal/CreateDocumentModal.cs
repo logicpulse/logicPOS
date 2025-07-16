@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         private static IEnumerable<Country> _countries;
 
         public CreateDocumentModal(Window parent) : base(parent: parent,

@@ -24,7 +24,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         }
 
 
-
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
@@ -39,7 +38,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         }
 
 
-
         private void BtnSelectCustomer_Clicked(object sender, System.EventArgs e)
         {
             var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
@@ -49,10 +47,23 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                TxtCustomer.Text = page.SelectedEntity.Name;
-                TxtCustomer.SelectedEntity = page.SelectedEntity;
-                CustomerId = page.SelectedEntity.Id;
-                ShowCustomerData(page.SelectedEntity);
+                SelectCustomer(page.SelectedEntity);
+            }
+        }
+
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCustomer.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void TxtFiscalNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                Clear();
             }
         }
     }

@@ -1,0 +1,166 @@
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Documents.CreateDocument
+{
+    public partial class CreateDocumentCustomerTab
+    {
+        private List<Customer> _customersForCompletion;
+        private List<Customer> CustomersForCompletion => _customersForCompletion ?? InitializeCustomersForCompletion();
+
+        private List<Customer> InitializeCustomersForCompletion()
+        {
+            _customersForCompletion = CustomersService.GetAllCustomers();
+            return _customersForCompletion;
+        }
+
+        private void InitializeTxtEmail()
+        {
+            TxtEmail = new TextBox(SourceWindow,
+                                       GeneralUtils.GetResourceByName("global_email"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtPhone()
+        {
+            TxtPhone = new TextBox(SourceWindow,
+                                       GeneralUtils.GetResourceByName("global_phone"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtCountry()
+        {
+            TxtCountry = new TextBox(SourceWindow,
+                                         GeneralUtils.GetResourceByName("global_country"),
+                                         isRequired: true,
+                                         isValidatable: false,
+                                         includeSelectButton: true,
+                                         includeKeyBoardButton: false);
+
+            TxtCountry.Entry.IsEditable = false;
+
+            TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
+        }
+
+        private void InitializeTxtCity()
+        {
+            TxtCity = new TextBox(SourceWindow,
+                                      GeneralUtils.GetResourceByName("global_city"),
+                                      isRequired: false,
+                                      isValidatable: false,
+                                      includeSelectButton: false,
+                                      includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtZipCode()
+        {
+            TxtZipCode = new TextBox(SourceWindow,
+                                         GeneralUtils.GetResourceByName("global_zipcode"),
+                                         isRequired: false,
+                                         isValidatable: false,
+                                         includeSelectButton: false,
+                                         includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtNotes()
+        {
+            TxtNotes = new TextBox(SourceWindow,
+                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: false,
+                                       includeKeyBoardButton: true);
+
+            TxtNotes.Entry.IsEditable = true;
+        }
+
+        private void InitializeTxtLocality()
+        {
+            TxtLocality = new TextBox(SourceWindow,
+                                          GeneralUtils.GetResourceByName("global_locality"),
+                                          isRequired: false,
+                                          isValidatable: false,
+                                          includeSelectButton: false,
+                                          includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtAddress()
+        {
+            TxtAddress = new TextBox(SourceWindow,
+                                         GeneralUtils.GetResourceByName("global_address"),
+                                         isRequired: false,
+                                         isValidatable: false,
+                                         includeSelectButton: false,
+                                         includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtDiscount()
+        {
+            TxtDiscount = new TextBox(SourceWindow,
+                                          GeneralUtils.GetResourceByName("global_discount"),
+                                          isRequired: true,
+                                          isValidatable: true,
+                                          includeSelectButton: false,
+                                          includeKeyBoardButton: true,
+                                          regex: RegularExpressions.DecimalNumber);
+
+            TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
+            TxtDiscount.WithText("0");
+        }
+
+        private void InitializeTxtCardNumber()
+        {
+            TxtCardNumber = new TextBox(SourceWindow,
+                                            GeneralUtils.GetResourceByName("global_card_number"),
+                                            isRequired: false,
+                                            isValidatable: false,
+                                            includeSelectButton: false,
+                                            includeKeyBoardButton: true);
+        }
+
+        private void InitializeTxtFiscalNumber()
+        {
+            TxtFiscalNumber = new TextBox(SourceWindow,
+                                              GeneralUtils.GetResourceByName("global_fiscal_number"),
+                                              isRequired: true,
+                                              isValidatable: true,
+                                              regex: RegularExpressions.FiscalNumber,
+                                              includeSelectButton: false,
+                                              includeKeyBoardButton: true);
+
+            var customers = CustomersForCompletion.Select(c => (c as object, c.FiscalNumber)).ToList();
+            TxtFiscalNumber.WithAutoCompletion(customers);
+            TxtFiscalNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtFiscalNumber.Entry.Changed += TxtFiscalNumber_Changed;
+        }
+
+        private void InitializeTxtCustomer()
+        {
+            TxtCustomer = new TextBox(SourceWindow,
+                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          isRequired: true,
+                                          isValidatable: false,
+                                          includeSelectButton: true,
+                                          includeKeyBoardButton: true);
+
+            TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
+            var customers = CustomersForCompletion.Select(c => (c as object, c.Name)).ToList();
+            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtCustomer.Entry.Changed += TxtCustomer_Changed;
+        }
+
+    }
+}

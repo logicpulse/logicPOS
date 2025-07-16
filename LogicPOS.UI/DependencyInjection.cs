@@ -9,8 +9,7 @@ namespace LogicPOS.UI
     public class DependencyInjection
     {
         public readonly static IServiceProvider Services;
-
-        public static ISender Mediator => Services.GetRequiredService<IMediator>();
+        public static ISender Mediator { get; private set; }
 
         static DependencyInjection()
         {
@@ -18,6 +17,7 @@ namespace LogicPOS.UI
             services.AddSerilog(Log.Logger);
             services.AddApi();
             Services = services.BuildServiceProvider();
+            Mediator = Services.GetRequiredService<ISender>();
         }
     }
 }

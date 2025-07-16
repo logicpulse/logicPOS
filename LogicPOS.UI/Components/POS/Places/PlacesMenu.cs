@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class PlacesMenu : Menu<Place>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         public PlacesMenu(CustomButton btnPrevious,
                           CustomButton btnNext,

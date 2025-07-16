@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
@@ -81,49 +82,20 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void TxtCode_TextChanged(object sender, EventArgs e)
-        {
-            
+        private void TxtCode_Changed(object sender, EventArgs e)
+        {   
             if (string.IsNullOrWhiteSpace(TxtCode.Text))
             {
                 Clear();
-                return;
             }
-            var articlesListResult = _mediator.Send(new GetArticlesQuery() { Search = TxtCode.Text }).Result;
-            if (articlesListResult.IsError)
-            {
-                ErrorHandlingService.HandleApiError(articlesListResult);
-                return;
-            }
+        }
 
-            if (articlesListResult.Value.ItemsCount == 0)
+        private void TxtArticle_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtArticle.Text))
             {
                 Clear();
-                return;
             }
-            
-            var articleViewModel = articlesListResult.Value.Items.FirstOrDefault(x => x.Code.Contains(TxtCode.Text));
-
-            if (articleViewModel == null)
-            {
-                Clear();
-                return;
-            }
-
-            var article = _mediator.Send(new GetArticleByIdQuery(articleViewModel.Id)).Result;
-            if (article.IsError)
-            {
-                ErrorHandlingService.HandleApiError(article);
-                return;
-            }
-            TxtArticle.SelectedEntity = article.Value;
-            TxtArticle.Text = article.Value.Designation;
-            ShowArticleData(article.Value);
-            UpdateTotals();
-            UpdateValidatableFields();
-            return;
-
-
         }
 
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
@@ -136,12 +108,15 @@ namespace LogicPOS.UI.Components.Modals
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 var article = page.GetSelectedArticle();
-                TxtArticle.Text = page.SelectedEntity.Designation;
-                TxtArticle.SelectedEntity = article;
-                ShowArticleData(article);
-                UpdateTotals();
-                UpdateValidatableFields();
+                SelectArticle(article);
             }
+        }
+
+        private void TxtCode_OnCompletionSelected(object obj)
+        {
+            ArticleViewModel articleViewModel = obj as ArticleViewModel;
+            var article = ArticlesService.GetArticlebById(articleViewModel.Id);
+            SelectArticle(article);
         }
 
     }

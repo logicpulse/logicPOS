@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class UsersMenu : Menu<User>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         public UsersMenu(uint rows,
                          uint columns,

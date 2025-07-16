@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CustomerCurrentAccountFilterModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         private CustomerCurrentAccountFilterModal(Window parent) : base(parent,
                                                                        GeneralUtils.GetResourceByName("report_customer_balance_summary"),

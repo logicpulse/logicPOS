@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class ArticleFamiliesMenu : Menu<ArticleFamily>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         public ArticleFamiliesMenu(CustomButton btnPrevious,
                                    CustomButton btnNext,

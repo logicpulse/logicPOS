@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components
 {
     public partial class UserPinPanel : Box
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         private Window SourceWindow { get; }
         private int _tempCursorPosition = 0;
         private bool _entryPinShowStatus = false;

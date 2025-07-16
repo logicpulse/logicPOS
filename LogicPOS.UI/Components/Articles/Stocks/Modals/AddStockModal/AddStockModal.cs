@@ -11,7 +11,6 @@ using LogicPOS.UI.Errors;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 using System.IO;
@@ -21,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         public AddStockModal(Window parent) : base(parent,
                                                    LocalizedString.Instance["window_title_dialog_article_stock"],
@@ -38,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-           
+
             if (AllFieldsAreValid() == false)
             {
                 Validate();

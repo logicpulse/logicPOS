@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockMovementModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
 
         public AddStockMovementModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_article_stock"),

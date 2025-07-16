@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class PaymentMethodsMenu : Menu<PaymentMethod>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         public uint Rows { get; set; } = 1;
         public uint Columns { get; set; } = 4;
         public Size ButtonSize { get; set; } = AppSettings.Instance.SizeBaseDialogDefaultButton;

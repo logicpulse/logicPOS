@@ -113,12 +113,11 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void ShowArticleData(Article article)
+        private void SelectArticle(Article article)
         {
-            if (string.IsNullOrEmpty(TxtCode.Text))
-            {
-                TxtCode.Text = article.Code;
-            }
+            TxtArticle.Text = article.Designation;
+            TxtArticle.SelectedEntity = article;
+            TxtCode.Text = article.Code;
             TxtPrice.Text = article.Price1.Value.ToString("F2");
             TxtQuantity.Text = article.DefaultQuantity.ToString("F2");
             TxtDiscount.Text = article.Discount.ToString("F2");
@@ -128,16 +127,20 @@ namespace LogicPOS.UI.Components.Modals
             TxtTax.Text = article.VatDirectSelling?.Designation;
             _vatRateValue = article.VatDirectSelling.Value;
             TxtNotes.Text = article.Notes;
+
+            UpdateTotals();
+            UpdateValidatableFields();
         }
 
         private void Clear()
         {
+            TxtCode.Clear();
             TxtArticle.Clear();
-            TxtPrice.Clear();
-            TxtQuantity.Clear();
-            TxtDiscount.Clear();
-            TxtTotal.Clear();
-            TxtTotalWithTax.Clear();
+            TxtPrice.Text = "0";
+            TxtQuantity.Text = "0";
+            TxtDiscount.Text = "0";
+            TxtTotal.Text = "0";
+            TxtTotalWithTax.Text = "0";
             TxtTax.Clear();
             TxtVatExemptionReason.Clear();
             TxtNotes.Clear();

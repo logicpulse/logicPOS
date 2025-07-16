@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class TablesMenu : Menu<Table>
     {
-        private readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private readonly ISender _mediator = DependencyInjection.Mediator;
         public PlacesMenu MenuPlaces { get; }
         public TableStatus? Filter { get; private set; } = null;
 

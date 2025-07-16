@@ -7,14 +7,32 @@ using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticl
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Articles
 {
     public static class ArticlesService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        private static readonly ISender _mediator = DependencyInjection.Mediator;
+
+        public static List<ArticleViewModel> GetAllArticles()
+        {
+            var query = new GetArticlesQuery
+            {
+                PageSize = 1000000 // High page size to retrieve all articles
+            };
+            var articles = _mediator.Send(query).Result;
+           
+            if (articles.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(articles);
+                return new List<ArticleViewModel>();
+            }
+
+            return articles.Value.Items.ToList();
+        }
 
         public static PaginatedResult<ArticleViewModel> GetArticles(GetArticlesQuery query)
         {

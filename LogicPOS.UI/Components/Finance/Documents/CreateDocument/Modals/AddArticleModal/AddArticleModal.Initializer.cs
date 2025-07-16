@@ -1,11 +1,24 @@
-﻿using LogicPOS.UI.Components.InputFields;
+﻿using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
+        private List<ArticleViewModel> _articlesForCompletion;
+        private List<ArticleViewModel> ArticlesForCompletion => _articlesForCompletion ?? InitializeArticlesForCompletion();
+
+        private List<ArticleViewModel> InitializeArticlesForCompletion()
+        {
+            _articlesForCompletion = ArticlesService.GetAllArticles();
+            return _articlesForCompletion;
+        }
+
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
@@ -132,24 +145,30 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
-            TxtArticle.Entry.IsEditable = true;
-
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
             ValidatableFields.Add(TxtArticle);
+
+            var articles = ArticlesForCompletion.Select(a => (a as object, a.Designation)).ToList();
+            TxtArticle.WithAutoCompletion(articles);
+            TxtArticle.OnCompletionSelected += TxtCode_OnCompletionSelected;
+            TxtArticle.Entry.Changed += TxtArticle_Changed;
         }
 
         private void InitializeTxtCode()
         {
             TxtCode = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_article_code"),
-                                          isRequired: false,
-                                          isValidatable: false,
-                                          includeSelectButton: false,
-                                          includeKeyBoardButton: false);
+                                  GeneralUtils.GetResourceByName("global_article_code"),
+                                  isRequired: true,
+                                  isValidatable: false,
+                                  includeSelectButton: false,
+                                  includeKeyBoardButton: false);
 
-            TxtCode.Entry.IsEditable = true;
-            TxtCode.Entry.Changed += TxtCode_TextChanged;
+            var articles = ArticlesForCompletion.Select(a => (a as object, a.Code)).ToList();
+            TxtCode.WithAutoCompletion(articles);
+            TxtCode.OnCompletionSelected += TxtCode_OnCompletionSelected;
+            TxtCode.Entry.Changed += TxtCode_Changed;
         }
-        
+
+    
     }
 }

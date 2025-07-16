@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.InputFields
@@ -23,6 +24,7 @@ namespace LogicPOS.UI.Components.InputFields
         public Widget Component { get; private set; }
         public string FieldName => Label.Text;
         public event EventHandler SelectEntityClicked;
+        public event Action<object> OnCompletionSelected;
         public object SelectedEntity { get; set; }
         public Predicate<string> IsValidFunction { get; set; }
         private readonly TextBoxStyle _style;
@@ -55,6 +57,7 @@ namespace LogicPOS.UI.Components.InputFields
             UpdateValidationColors();
             ApplyStyle();
         }
+
 
         private void ApplyStyle()
         {
@@ -147,7 +150,7 @@ namespace LogicPOS.UI.Components.InputFields
 
             verticalLayout.PackStart(hbox, false, false, 0);
 
-            if(_style == TextBoxStyle.Simple)
+            if (_style == TextBoxStyle.Simple)
             {
                 return verticalLayout;
             }
@@ -159,11 +162,10 @@ namespace LogicPOS.UI.Components.InputFields
             if (_style == TextBoxStyle.Bold)
             {
                 eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogEntryBoxBackground.ToGdkColor());
-            } 
+            }
 
             return eventBox;
         }
-
 
         private IconButton CreateKeyBoardButton()
         {
@@ -251,5 +253,39 @@ namespace LogicPOS.UI.Components.InputFields
             Text = text;
             return this;
         }
+
+        public TextBox WithAutoCompletion(List<(object Entity, string Text)> completionSource)
+        {
+            Entry.Completion = new EntryCompletion();
+            var listStore = new ListStore(typeof(object), typeof(string));
+            foreach (var item in completionSource)
+            {
+                listStore.AppendValues(item.Entity, item.Text);
+            }
+            Entry.Completion.Model = listStore;
+            Entry.Completion.TextColumn = 1;
+            Entry.Completion.PopupCompletion = true;
+            Entry.Completion.InlineCompletion = false;
+            Entry.Completion.PopupSingleMatch = true;
+            Entry.Completion.InlineSelection = false;
+
+            Entry.Completion.MatchFunc = (comp, key, iter) =>
+            {
+                string value = (string)comp.Model.GetValue(iter, 1);
+                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+            };
+
+            Entry.Completion.MatchSelected += Completion_MatchSelected;
+            return this;
+        }
+
+        [GLib.ConnectBefore]
+        private void Completion_MatchSelected(object o, MatchSelectedArgs args)
+        {
+            object entity = args.Model.GetValue(args.Iter, 0);
+            SelectedEntity = entity;
+            OnCompletionSelected?.Invoke(entity);
+        }
+
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.SearchModelObject;
 using LogicPOS.UI.Components.InputFields;
 
 
@@ -25,10 +24,10 @@ namespace LogicPOS.UI.Components.Modals
             var vbox = new VBox(false, 2);
             vbox.PackStart(TextBox.CreateHbox(TxtCode, TxtArticle), false, false, 0);
             vbox.PackStart(TextBox.CreateHbox(TxtPrice,
-                                                  TxtQuantity,
-                                                  TxtDiscount,
-                                                  TxtTotal,
-                                                  TxtTotalWithTax), false, false, 0);
+                                              TxtQuantity,
+                                              TxtDiscount,
+                                              TxtTotal,
+                                              TxtTotalWithTax), false, false, 0);
 
             vbox.PackStart(TextBox.CreateHbox(TxtTax, TxtVatExemptionReason), false, false, 0);
 

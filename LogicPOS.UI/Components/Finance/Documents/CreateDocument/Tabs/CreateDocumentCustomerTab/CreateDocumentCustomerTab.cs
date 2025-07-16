@@ -42,9 +42,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return CreateDocumentModal.GetCountries().FirstOrDefault(c => c.Id == countryId);
         }
 
-       
-       
-
         public void ShowCustomerData(Customer customer)
         {
             TxtFiscalNumber.Text = customer.FiscalNumber;
@@ -78,6 +75,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.Text = country?.Designation;
             TxtCountry.SelectedEntity = country;
         }
+       
         public Customer GetCustomer()
         {
             return TxtCustomer.SelectedEntity as Customer;
@@ -106,6 +104,31 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                    TxtFiscalNumber.IsValid() &&
                    TxtDiscount.IsValid() &&
                    TxtCountry.IsValid();
+        }
+
+        private void SelectCustomer(Customer customer)
+        {
+            TxtCustomer.Text = customer.Name;
+            TxtCustomer.SelectedEntity = customer;
+            CustomerId = customer.Id;
+            ShowCustomerData(customer);
+        }
+
+        public void Clear()
+        {
+            CustomerId = null;
+            TxtFiscalNumber.Clear();
+            TxtCustomer.Clear();
+            TxtCardNumber.Clear();
+            TxtDiscount.Text = "0";
+            TxtAddress.Clear();
+            TxtLocality.Clear();
+            TxtZipCode.Clear();
+            TxtCity.Clear();
+            TxtCountry.Clear();
+            TxtPhone.Clear();
+            TxtEmail.Clear();
+            TxtNotes.Clear();
         }
     }
 }
