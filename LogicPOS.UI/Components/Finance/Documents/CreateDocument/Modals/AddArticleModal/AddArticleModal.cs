@@ -88,6 +88,8 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtTax();
             InitializeTxtVatExemptionReason();
             InitializeTxtNotes();
+            InitializeTxtFamily();
+            InitializeTxtSubFamily();
             AddEventHandlers();
         }
 
@@ -127,7 +129,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtTax.Text = article.VatDirectSelling?.Designation;
             _vatRateValue = article.VatDirectSelling.Value;
             TxtNotes.Text = article.Notes;
-
+            TxtFamily.Text = article.Subfamily.Family.Designation;
+            TxtSubFamily.Text = article.Subfamily.Designation;
             UpdateTotals();
             UpdateValidatableFields();
         }
@@ -144,6 +147,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtTax.Clear();
             TxtVatExemptionReason.Clear();
             TxtNotes.Clear();
+            TxtSubFamily.Clear();
+            TxtFamily.Clear();
         }
 
         public Item GetItem()

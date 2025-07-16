@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Features.Articles.Common;
+﻿using Gtk;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -145,6 +146,8 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
+            TxtArticle.Entry.WidthRequest = 380;
+
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
             ValidatableFields.Add(TxtArticle);
 
@@ -163,12 +166,41 @@ namespace LogicPOS.UI.Components.Modals
                                   includeSelectButton: false,
                                   includeKeyBoardButton: false);
 
+            TxtCode.Entry.WidthRequest = 120;
+
             var articles = ArticlesForCompletion.Select(a => (a as object, a.Code)).ToList();
             TxtCode.WithAutoCompletion(articles);
             TxtCode.OnCompletionSelected += TxtCode_OnCompletionSelected;
             TxtCode.Entry.Changed += TxtCode_Changed;
         }
 
-    
+        private void InitializeTxtFamily()
+        {
+            TxtFamily = new TextBox(WindowSettings.Source,
+                         GeneralUtils.GetResourceByName("global_article_family"),
+                         isRequired: false,
+                         isValidatable: false,
+                         includeSelectButton: false,
+                         includeKeyBoardButton: false);
+
+            TxtFamily.Entry.IsEditable = false;
+            TxtFamily.Entry.Sensitive = false;
+            ValidatableFields.Add(TxtFamily);
+        }
+
+        private void InitializeTxtSubFamily()
+        {
+            TxtSubFamily = new TextBox(WindowSettings.Source,
+                         GeneralUtils.GetResourceByName("global_article_subfamily"),
+                         isRequired: false,
+                         isValidatable: false,
+                         includeSelectButton: false,
+                         includeKeyBoardButton: false);
+
+            TxtSubFamily.Entry.IsEditable = false;
+            TxtSubFamily.Entry.Sensitive = false;
+            ValidatableFields.Add(TxtSubFamily);
+        }
+
     }
 }

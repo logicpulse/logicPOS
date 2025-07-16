@@ -22,7 +22,13 @@ namespace LogicPOS.UI.Components.Modals
             Initialize();
 
             var vbox = new VBox(false, 2);
-            vbox.PackStart(TextBox.CreateHbox(TxtCode, TxtArticle), false, false, 0);
+
+            var hbox = new HBox(false,2);
+            hbox.PackStart(TxtCode.Component, false, true,0);
+            hbox.PackStart(TxtArticle.Component,false,true,0);
+            hbox.PackStart(TextBox.CreateHbox(TxtFamily, TxtSubFamily),true, true, 0);
+
+            vbox.PackStart(hbox, false, false, 0);
             vbox.PackStart(TextBox.CreateHbox(TxtPrice,
                                               TxtQuantity,
                                               TxtDiscount,

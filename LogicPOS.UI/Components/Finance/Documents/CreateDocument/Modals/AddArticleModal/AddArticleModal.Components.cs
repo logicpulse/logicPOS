@@ -22,5 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtTax { get; set; }
         public TextBox TxtVatExemptionReason { get; set; }
         public TextBox TxtNotes { get; set; }    
+        public TextBox TxtFamily { get; set; }
+        public TextBox TxtSubFamily { get; set; }
     }
 }
