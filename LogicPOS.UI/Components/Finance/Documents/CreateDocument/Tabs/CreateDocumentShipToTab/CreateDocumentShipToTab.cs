@@ -76,10 +76,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                   TxtZipCode.IsValid() &&
                   TxtCity.IsValid() &&
                   TxtCountry.IsValid() &&
-                  TxtDeliveryDate.IsValid() &&
-                  TxtDeliveryId.IsValid() &&
-                  TxtWarehouseId.IsValid() &&
-                  TxtLocationId.IsValid();
+                  TxtDeliveryDate.IsValid();
         }
     }
 }

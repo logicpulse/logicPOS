@@ -1,5 +1,8 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -33,7 +36,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtLocationId = new TextBox(SourceWindow,
                                             GeneralUtils.GetResourceByName("global_ship_to_location_id"),
-                                            isRequired: true,
+                                            isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
@@ -43,7 +46,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtWarehouseId = new TextBox(SourceWindow,
                                              GeneralUtils.GetResourceByName("global_ship_to_warehouse_id"),
-                                             isRequired: true,
+                                             isRequired: false,
                                              isValidatable: false,
                                              includeSelectButton: false,
                                              includeKeyBoardButton: true);
@@ -53,7 +56,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtDeliveryId = new TextBox(SourceWindow,
                                             GeneralUtils.GetResourceByName("global_ship_to_delivery_id"),
-                                            isRequired: true,
+                                            isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
@@ -68,7 +71,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtDeliveryDate.Entry.IsEditable = false;
+            TxtDeliveryDate.Entry.IsEditable = true;
 
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
@@ -93,6 +96,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                       isValidatable: false,
                                       includeSelectButton: false,
                                       includeKeyBoardButton: true);
+
+            TxtCity.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
         }
 
         private void InitializeTxtZipCode()
@@ -103,6 +108,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
+            TxtZipCode.Text = GeneralUtils.GetResourceByName("1000-000");
         }
 
         private void InitializeTxtRegion()
@@ -113,6 +119,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                         isValidatable: false,
                                         includeSelectButton: false,
                                         includeKeyBoardButton: true);
+
+            TxtRegion.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
         }
 
         private void InitializeTxtAddress()
@@ -123,6 +131,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
+
+            TxtAddress.Text=GeneralUtils.GetResourceByName("xml_value_unknown");
         }
     }
 }
