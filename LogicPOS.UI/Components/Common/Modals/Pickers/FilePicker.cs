@@ -14,7 +14,6 @@ namespace LogicPOS.UI.Components.Pickers
         private FileFilter Filter { get; set; }
         private FileChooserAction PickerAction { get; set; }
         private Fixed Body { get; set; }
-
         public FileChooserWidget FileChooser { get; set; }
 
 
@@ -118,7 +117,7 @@ namespace LogicPOS.UI.Components.Pickers
             return filter;
         }
 
-        public static string GetSaveFilePath(Window sourceWindow, string title)
+        public static string GetSaveFilePath(Window sourceWindow, string title, string defaultFileName)
         {
             FilePicker picker = new FilePicker(sourceWindow,
                                                DialogFlags.DestroyWithParent,
@@ -127,6 +126,7 @@ namespace LogicPOS.UI.Components.Pickers
                                                title);
 
             picker.FileChooser.SelectMultiple = false;
+            picker.FileChooser.CurrentName = defaultFileName;
 
             var result = (ResponseType)picker.Run();
 

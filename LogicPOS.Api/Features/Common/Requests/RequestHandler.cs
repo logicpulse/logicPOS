@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Authentication;
+using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -193,27 +194,29 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-        protected async Task<ErrorOr<byte[]>> HandleGetFileInBytesQueryAsync(string endpoint, CancellationToken cancellationToken = default)
+        protected async Task<ErrorOr<TempFile>> HandleGetFileQueryAsync(string endpoint, CancellationToken cancellationToken = default)
         {
             try
             {
-                var fileContent = await _httpClient.GetByteArrayAsync(endpoint);
-                return fileContent;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
+                HttpResponseMessage response = await _httpClient.GetAsync(endpoint, cancellationToken);
+                response.EnsureSuccessStatusCode();
 
-        protected async Task<ErrorOr<string>> HandleGetFileQueryAsync(string endpoint, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var fileContent = await _httpClient.GetByteArrayAsync(endpoint);
+                var contentDisposition = response.Content.Headers.ContentDisposition;
+                var fileName = contentDisposition?.FileName?.Trim('"') ?? null;
+
+                var fileContent = await response.Content.ReadAsByteArrayAsync();
                 var filePath = Path.GetTempFileName();
                 File.WriteAllBytes(filePath, fileContent);
-                return filePath;
+               
+                var tempFile = new TempFile
+                {
+                    Name = fileName,
+                    Path = filePath
+                };
+
+                response.Dispose();
+
+                return tempFile;
             }
             catch (HttpRequestException)
             {

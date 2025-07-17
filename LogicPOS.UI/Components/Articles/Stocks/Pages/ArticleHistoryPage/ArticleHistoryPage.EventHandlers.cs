@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
+using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 return;
             }
-            var filePath = System.IO.Path.GetTempFileName();
+
             var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.SaleDocument)).Result;
             if (result.IsError)
             {
@@ -45,7 +46,9 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            LogicPOSPDFViewer.ShowPDF(result.Value);
+            TempFile tempFile = result.Value;
+
+            LogicPOSPDFViewer.ShowPDF(tempFile.Path,tempFile.Name);
             return;
         }
 
@@ -68,7 +71,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
 
                 System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
-                LogicPOSPDFViewer.ShowPDF(filePath);
+                LogicPOSPDFViewer.ShowPDF(filePath, $"Document_Externo_{result.Value.DocumentNumber}");
                 return;
             }
         }
@@ -88,7 +91,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            LogicPOSPDFViewer.ShowPDF(result.Value);
+            LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
 
         public override void UpdateButtonPrevileges()

@@ -1,10 +1,11 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System;
 
 namespace LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf
 {
-    public class GetDocumentPdfQuery : IRequest<ErrorOr<string>>
+    public class GetDocumentPdfQuery : IRequest<ErrorOr<TempFile>>
     {
         public GetDocumentPdfQuery(Guid id , uint copyNumber = 1) {
             Id = id;

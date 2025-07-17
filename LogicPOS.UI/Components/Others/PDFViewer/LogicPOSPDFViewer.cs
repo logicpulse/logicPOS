@@ -7,11 +7,13 @@ namespace LogicPOS.UI.PDFViewer
     public partial class LogicPOSPDFViewer : Form
     {
         private readonly string _pdfLocation;
+        private readonly string _saveDefaultName;
 
-        private LogicPOSPDFViewer(string pdfLocation)
+        private LogicPOSPDFViewer(string pdfLocation, string saveDefaultName)
         {
             InitializeComponent();
             _pdfLocation = pdfLocation;
+            _saveDefaultName = saveDefaultName;
         }
 
         private void LogicPOSPDFViewer_Load(object sender, System.EventArgs e)
@@ -22,12 +24,12 @@ namespace LogicPOS.UI.PDFViewer
             var toolStrip = GetPdfViewerToolStrip();
             var originalSaveButton = GetSaveButton();
             var newSaveButton = CloneButton(originalSaveButton);
-            newSaveButton.Click += NewSaveButton_Click;
+            newSaveButton.Click += SaveButton_Click;
             toolStrip.Items.Remove(originalSaveButton);
             toolStrip.Items.Add(newSaveButton);
         }
 
-        private void NewSaveButton_Click(object sender, System.EventArgs e)
+        private void SaveButton_Click(object sender, System.EventArgs e)
         {
             using (SaveFileDialog saveFileDialog = new SaveFileDialog())
             {
@@ -35,8 +37,8 @@ namespace LogicPOS.UI.PDFViewer
                 saveFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
                 saveFileDialog.RestoreDirectory = true;
                 saveFileDialog.Title = "Salvar Documento";
-                saveFileDialog.FileName = "Nome do Documento";
-               
+                saveFileDialog.FileName = _saveDefaultName ?? "Documento";
+
                 if (saveFileDialog.ShowDialog(FindForm()) == DialogResult.OK)
                 {
                     try
@@ -80,9 +82,9 @@ namespace LogicPOS.UI.PDFViewer
             return clonedButton;
         }
 
-        public static void ShowPDF(string pdfLocation)
+        public static void ShowPDF(string pdfLocation, string saveDefaultName)
         {
-            var pdfViewer = new LogicPOSPDFViewer(pdfLocation);
+            var pdfViewer = new LogicPOSPDFViewer(pdfLocation, saveDefaultName);
             pdfViewer.ShowDialog();
         }
     }

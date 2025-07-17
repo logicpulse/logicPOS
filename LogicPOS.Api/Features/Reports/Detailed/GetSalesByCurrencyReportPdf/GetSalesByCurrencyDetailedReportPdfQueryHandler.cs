@@ -1,5 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Reports.GetSalesByCurrencyDetailedReportPdf
 {
     public class GetSalesByCurrencyDetailedReportPdfQueryHandler :
-        RequestHandler<GetSalesByCurrencyDetailedReportPdfQuery, ErrorOr<string>>
+        RequestHandler<GetSalesByCurrencyDetailedReportPdfQuery, ErrorOr<TempFile>>
     {
         public GetSalesByCurrencyDetailedReportPdfQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public async override Task<ErrorOr<string>> Handle(GetSalesByCurrencyDetailedReportPdfQuery query, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<TempFile>> Handle(GetSalesByCurrencyDetailedReportPdfQuery query, CancellationToken cancellationToken = default)
         {
             return await HandleGetFileQueryAsync($"reports/sales-by-currency/detailed/pdf{query.GetUrlQuery()}");
         }

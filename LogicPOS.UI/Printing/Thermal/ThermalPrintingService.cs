@@ -108,8 +108,8 @@ namespace LogicPOS.UI.Printing
 
                 if (printer != null && !printer.Type.ThermalPrinter)
                 {
-                    var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(documentId, 1);
-                    PdfPrinter.Print(pdfLocation, printer.Designation);
+                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(documentId, 1);
+                    PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
                 }
             
         }

@@ -29,14 +29,14 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
-            if (pdfLocation == null)
+            if (tempFile == null)
             {
                 return;
             }
 
-            PdfPrinter.PrintWithNativeDialog(pdfLocation);
+            PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path);
         }
 
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)
@@ -89,14 +89,14 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
-            if (pdfLocation == null)
+            if (tempFile == null)
             {
                 return;
             }
 
-            PdfPrinter.Print(pdfLocation, printer.Designation);
+            PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
         }
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)

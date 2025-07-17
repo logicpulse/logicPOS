@@ -172,9 +172,12 @@ namespace LogicPOS.UI.Components.Windows
 
         private void ExportSaftByPeriod(DateTime startDate, DateTime endDate)
         {
-            var filePath = FilePicker.GetSaveFilePath(this, "Export Angola SAFT");
+            string defaultSaftFileName = $"saft_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
+            string destinationFilePath = FilePicker.GetSaveFilePath(this,
+                                                                    "Export Angola SAFT",
+                                                                    defaultSaftFileName);
 
-            if (filePath == null)
+            if (destinationFilePath == null)
             {
                 return;
             }
@@ -187,9 +190,9 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            string saftFileDestination = filePath + ".xml";
+            string saftFileDestination = destinationFilePath + ".xml";
 
-            File.WriteAllBytes(saftFileDestination, getSaft.Value);
+            File.Copy(getSaft.Value.Path, saftFileDestination, true);
         }
 
         private void BtnExportYearlySaft_Clicked(object sender, EventArgs e)

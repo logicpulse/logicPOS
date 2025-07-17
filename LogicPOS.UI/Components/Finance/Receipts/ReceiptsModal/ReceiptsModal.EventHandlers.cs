@@ -29,14 +29,14 @@ namespace LogicPOS.UI.Components.Modals
 
             if (Page.SelectedEntity != null)
             {
-                var pdfLocation = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+                var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
-                if (pdfLocation == null)
+                if (tempFile == null)
                 {
                     return;
                 }
 
-                PdfPrinter.PrintWithNativeDialog(pdfLocation);
+                PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path);
             }
         }
 
@@ -75,14 +75,14 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var pdfLocation = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
 
-            if (pdfLocation == null)
+            if (tempFile == null)
             {
                 return;
             }
 
-            PdfPrinter.Print(pdfLocation, printer.Designation);
+            PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
         }
         protected override void OnResponse(ResponseType response)
         {

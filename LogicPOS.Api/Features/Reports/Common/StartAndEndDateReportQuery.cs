@@ -1,10 +1,11 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System;
 
 namespace LogicPOS.Api.Features.Reports.Common
 {
-    public abstract class StartAndEndDateReportQuery : IRequest<ErrorOr<string>>
+    public abstract class StartAndEndDateReportQuery : IRequest<ErrorOr<TempFile>>
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

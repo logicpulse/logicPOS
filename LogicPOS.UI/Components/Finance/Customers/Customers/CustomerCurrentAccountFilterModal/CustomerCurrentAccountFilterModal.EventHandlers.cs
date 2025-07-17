@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
             }
 
-            LogicPOSPDFViewer.ShowPDF(result.Value);
+            LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {

@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
 
                 System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
-                LogicPOSPDFViewer.ShowPDF(filePath);
+                LogicPOSPDFViewer.ShowPDF(filePath, $"Document_Externo_{result.Value.DocumentNumber}");
                 return;
             }
 
@@ -47,12 +47,7 @@ namespace LogicPOS.UI.Components.Pages
                     return;
                 }
 
-                if (result.Value == null)
-                {
-                    return;
-                }
-
-                LogicPOSPDFViewer.ShowPDF(result.Value);
+                LogicPOSPDFViewer.ShowPDF(result.Value.Path,result.Value.Name);
                 return;
             }
         }

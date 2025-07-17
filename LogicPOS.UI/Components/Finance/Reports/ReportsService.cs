@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
 using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf;
@@ -61,7 +62,7 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetSalesByDateReportPdfQuery(startDate, endDate));
         }
 
-        private static void ShowReport(IRequest<ErrorOr<string>> query)
+        private static void ShowReport(IRequest<ErrorOr<TempFile>> query)
         {
             var result = _mediator.Send(query).Result;
             if (result.IsError)
@@ -69,9 +70,8 @@ namespace LogicPOS.UI.Services
                 ErrorHandlingService.HandleApiError(result);
                 return;
             }
-            
-            LogicPOSPDFViewer.ShowPDF(result.Value);
 
+            LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
         public static void ShowSalesByUserReport(DateTime startDate, DateTime endDate)
         {
