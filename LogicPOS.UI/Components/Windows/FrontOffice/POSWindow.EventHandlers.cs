@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Enums.Hardware;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
@@ -52,7 +53,10 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPOSApp.Quit(this);
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Gtk.Application.Quit();
+            }
         }
 
         private void BtnBackOffice_Clicked(object sender, EventArgs e)

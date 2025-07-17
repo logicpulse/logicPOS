@@ -137,26 +137,5 @@ namespace LogicPOS.UI.Application
             };
         }
 
-        public static void QuitWithoutConfirmation()
-        {
-            Gtk.Application.Quit();
-        }
-
-        public static void Quit(Window parentWindow)
-        {
-            ResponseType responseType = new CustomAlert(parentWindow)
-                                            .WithMessageResource("global_quit_message")
-                                            .WithSize(new Size(400, 300))
-                                            .WithMessageType(MessageType.Question)
-                                            .WithButtonsType(ButtonsType.YesNo)
-                                            .WithTitleResource("global_quit_title")
-                                            .ShowAlert();
-
-            if (responseType == ResponseType.Yes)
-            {
-                QuitWithoutConfirmation();
-            }
-        }
-
     }
 }

@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Windows
         public Label LabelTotalTable { get; set; }
         #endregion
 
-        public POSWindow(string backgroundImage)
+        private POSWindow(string backgroundImage)
             : base(backgroundImage)
         {
             InitializeUI();
@@ -655,11 +655,12 @@ namespace LogicPOS.UI.Components.Windows
         #region Static
         private static POSWindow _instance;
         public static bool HasInstance => _instance != null;
+       
         public static POSWindow Instance
         {
             get
             {
-                if (_instance == null)
+                if (_instance == null /*&& AppSettings.Instance.UseBackOfficeMode == false*/)
                 {
                     _instance = new POSWindow(GetBackgroundImage());
                 }

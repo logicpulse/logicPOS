@@ -2,7 +2,6 @@
 using Gtk;
 using LogicPOS.Api.Errors;
 using LogicPOS.Globalization;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -319,6 +318,20 @@ namespace LogicPOS.UI.Alerts
                                 .WithTitle("Erro")
 
                                 .ShowAlert();
+        }
+
+
+        public static bool ShowQuitConfirmationAlert(Window parentWindow)
+        {
+            ResponseType responseType = new CustomAlert(parentWindow)
+                                            .WithMessageResource("global_quit_message")
+                                            .WithSize(new Size(400, 300))
+                                            .WithMessageType(MessageType.Question)
+                                            .WithButtonsType(ButtonsType.YesNo)
+                                            .WithTitleResource("global_quit_title")
+                                            .ShowAlert();
+
+            return responseType == ResponseType.Yes;
         }
     }
 }

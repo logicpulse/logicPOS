@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Buttons;
@@ -361,9 +362,12 @@ namespace LogicPOS.UI.Components.Windows
 
         private void OnCloseWindow(object o, DeleteEventArgs args)
         {
-            Hide();
-            POSWindow.Instance.ShowAll();
-            args.RetVal = true;
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Gtk.Application.Quit();
+            }
+
+            args.RetVal = true; 
         }
 
         public void ShowPage(Widget page, string pageTitle)

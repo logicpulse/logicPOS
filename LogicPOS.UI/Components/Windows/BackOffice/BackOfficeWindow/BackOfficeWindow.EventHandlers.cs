@@ -216,7 +216,10 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnExit_Clicked(object sender, EventArgs args)
         {
-            LogicPOSApp.Quit(this);
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Gtk.Application.Quit();
+            }
         }
 
         private void BtnDashBoard_Clicked(object sender, EventArgs args)
@@ -245,7 +248,7 @@ namespace LogicPOS.UI.Components.Windows
                 if (responseType == ResponseType.Yes)
                 {
                     System.Diagnostics.Process.Start(lPathToUpdater);
-                    LogicPOSApp.QuitWithoutConfirmation();
+                    Gtk.Application.Quit();
                 }
             }
         }

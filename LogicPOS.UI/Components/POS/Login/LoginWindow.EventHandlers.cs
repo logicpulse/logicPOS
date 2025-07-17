@@ -69,7 +69,10 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnQuit_Clicked(object sender, EventArgs e)
         {
-            LogicPOSApp.Quit(this);
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Gtk.Application.Quit();
+            }
         }
 
         private void OnUserSelected(User user)
