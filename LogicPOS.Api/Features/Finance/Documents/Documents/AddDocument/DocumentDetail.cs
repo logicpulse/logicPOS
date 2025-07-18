@@ -11,5 +11,6 @@ namespace LogicPOS.Api.Features.Documents.AddDocument
         public Guid? VatExemptionId { get; set; }
         public decimal? Discount { get; set; }
         public int? PriceType { get; set; }
+        public string Notes { get; set; }
     }
 }
