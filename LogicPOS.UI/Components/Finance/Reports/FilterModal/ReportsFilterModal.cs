@@ -71,7 +71,7 @@ namespace LogicPOS.UI.Components.Modals
             return vbox;
         }
 
-        public DateTime StartDate { get; set; } //=  DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
+        public DateTime StartDate =>  DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
         public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
     }
 }

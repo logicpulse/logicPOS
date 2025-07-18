@@ -128,7 +128,7 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetSalesByCustomerDetailedReportPdfQuery(startDate, endDate));
         }
 
-        public static void ShowCustomerBalanceDetailsReport(DateTime startDate, DateTime endDate, Guid customerId = new Guid())
+        public static void ShowCustomerBalanceDetailsReport(DateTime startDate, DateTime endDate, Guid customerId)
         {
             ShowReport(new GetCustomerCurrentAccountPdfQuery() { StartDate = startDate, EndDate = endDate, CustomerId = customerId });
         }

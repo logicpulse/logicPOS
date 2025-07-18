@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
+using LogicPOS.Api.Features.Articles.UpdateArticle;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
 using MediatR;
@@ -82,6 +83,23 @@ namespace LogicPOS.UI.Components.Articles
                 return null;
             }
             return result.Value;
+        }
+
+        public static void UpdateArticleNotes(Guid articleId, string Notes)
+        {
+            var updateCommand = new UpdateArticleCommand();
+
+            updateCommand.Id = articleId;
+            updateCommand.NewNotes = Notes;
+
+        
+            var result = _mediator.Send( updateCommand).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+            
+            }
+            
         }
     }
 }

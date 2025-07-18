@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Modals
     public partial class AddArticleModal
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
+        private bool NotesChanged = false;
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
@@ -24,6 +25,11 @@ namespace LogicPOS.UI.Components.Modals
             if (AllFieldsAreValid() == false)
             {
                 return;
+            }
+
+            if (NotesChanged)
+            {
+                    ArticlesService.UpdateArticleNotes((TxtArticle.SelectedEntity as Article).Id, TxtNotes.Text);
             }
 
             if (_mode == EntityEditionModalMode.Update)
@@ -117,6 +123,12 @@ namespace LogicPOS.UI.Components.Modals
             ArticleViewModel articleViewModel = obj as ArticleViewModel;
             var article = ArticlesService.GetArticlebById(articleViewModel.Id);
             SelectArticle(article);
+        }
+
+        private void TxtNotes_Changed(object sender, EventArgs e)
+        {
+                NotesChanged = true;
+            
         }
 
     }

@@ -302,6 +302,7 @@ namespace LogicPOS.UI.Components.Modals
             modal.TxtSerialNumber.Component.Sensitive = false;
             modal.TxtVatRate.Component.Sensitive = false;
             modal.TxtWarehouse.Component.Sensitive = false;
+            
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -315,7 +316,8 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
+            modal.TxtCustomer.IsRequired=true;
+            modal.TxtCustomer.Regex = @"^[0-9a-zA-Z\s]+$";
             modal.TxtArticle.Component.Sensitive = false;
             modal.TxtDocumentNumber.Component.Sensitive = false;
             modal.TxtDocumentType.Component.Sensitive = false;

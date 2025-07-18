@@ -28,7 +28,9 @@ namespace LogicPOS.UI.Components.Modals
                                        isValidatable: false,
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true);
+            TxtNotes.Entry.Changed += TxtNotes_Changed; 
         }
+
 
         private void InitializeTxtVatExemptionReason()
         {
