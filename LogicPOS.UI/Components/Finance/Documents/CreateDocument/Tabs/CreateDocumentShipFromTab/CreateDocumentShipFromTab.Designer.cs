@@ -1,5 +1,7 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -37,16 +39,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
+            TxtLocationId.Text=GeneralUtils.GetResourceByName("xml_value_unknown"); 
         }
 
         private void InitializeTxtWarehouseId()
         {
             TxtWarehouseId = new TextBox(SourceWindow,
                                              GeneralUtils.GetResourceByName("global_ship_from_warehouse_id"),
-                                             isRequired: true,
+                                             isRequired: false,
                                              isValidatable: false,
                                              includeSelectButton: false,
                                              includeKeyBoardButton: true);
+            TxtWarehouseId.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
         }
 
         private void InitializeTxtDeliveryId()
@@ -57,6 +61,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
+
         }
 
         private void InitializeTxtDeliveryDate()
@@ -94,16 +99,19 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                       isValidatable: false,
                                       includeSelectButton: false,
                                       includeKeyBoardButton: true);
+
+            TxtCity.Text = PreferenceParametersService.CompanyInformations.City;
         }
 
         private void InitializeTxtZipCode()
         {
             TxtZipCode = new TextBox(SourceWindow,
                                          GeneralUtils.GetResourceByName("global_zipcode"),
-                                         isRequired: true,
+                                         isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
+
         }
 
         private void InitializeTxtRegion()
@@ -114,6 +122,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                         isValidatable: false,
                                         includeSelectButton: false,
                                         includeKeyBoardButton: true);
+            TxtRegion.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
         }
 
         private void InitializeTxtAddress()
@@ -124,6 +133,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
+
+            TxtAddress.Text = PreferenceParametersService.CompanyInformations.Address;
         }
 
     }

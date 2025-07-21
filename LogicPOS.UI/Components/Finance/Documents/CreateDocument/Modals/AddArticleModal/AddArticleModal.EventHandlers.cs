@@ -27,11 +27,6 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            if (NotesChanged)
-            {
-                    ArticlesService.UpdateArticleNotes((TxtArticle.SelectedEntity as Article).Id, TxtNotes.Text);
-            }
-
             if (_mode == EntityEditionModalMode.Update)
             {
                 Item.Article = TxtArticle.SelectedEntity as Article;
@@ -123,12 +118,6 @@ namespace LogicPOS.UI.Components.Modals
             ArticleViewModel articleViewModel = obj as ArticleViewModel;
             var article = ArticlesService.GetArticlebById(articleViewModel.Id);
             SelectArticle(article);
-        }
-
-        private void TxtNotes_Changed(object sender, EventArgs e)
-        {
-                NotesChanged = true;
-            
         }
 
     }
