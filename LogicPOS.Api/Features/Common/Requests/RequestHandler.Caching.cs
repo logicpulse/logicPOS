@@ -1,0 +1,84 @@
+﻿using ErrorOr;
+using LogicPOS.Api.Errors;
+using MediatR;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Common.Requests
+{
+    public abstract partial class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    {
+        private bool UseCache(MemoryCacheEntryOptions options) => _cache != null && options != null;
+
+        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetListQueryAsync<TEntity>(string endpoint,
+                                                                                             CancellationToken cancellationToken = default,
+                                                                                             MemoryCacheEntryOptions cacheOptions = null)
+        {
+            bool useCache = UseCache(cacheOptions);
+
+            if (useCache && _cache.TryGetValue(endpoint, out List<TEntity> entities))
+            {
+                return entities;
+            }
+
+            try
+            {
+
+                entities = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint, cancellationToken);
+
+                if (useCache)
+                {
+                    _cache.Set(endpoint, entities, cacheOptions);
+                }
+
+                return entities;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
+            }
+        }
+
+        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(string endpoint,
+                                                                                  CancellationToken cancellationToken = default,
+                                                                                  MemoryCacheEntryOptions cacheOptions = null)
+        {
+            bool useCache = UseCache(cacheOptions);
+
+            if (useCache && _cache.TryGetValue(endpoint, out TEntity entity))
+            {
+                return entity;
+            }
+
+            try
+            {
+                var response = await _httpClient.GetAsync(endpoint, cancellationToken);
+
+                if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return default(TEntity);
+                }
+
+                entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);
+
+                if (useCache)
+                {
+                    _cache.Set(endpoint, entity, cacheOptions);
+                }
+
+                return entity;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
+            }
+
+        }
+
+    }
+}

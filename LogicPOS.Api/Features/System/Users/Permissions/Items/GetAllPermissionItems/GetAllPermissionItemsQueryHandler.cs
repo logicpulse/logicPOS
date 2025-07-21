@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissi
         public override async Task<ErrorOr<IEnumerable<PermissionItem>>> Handle(GetAllPermissionItemsQuery request,
                                                                        CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<PermissionItem>("users/permission-items", cancellationToken);
+            return await HandleGetListQueryAsync<PermissionItem>("users/permission-items", cancellationToken);
         }
 
 

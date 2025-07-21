@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.MovementTypes.GetAllMovementTypes
         public override async Task<ErrorOr<IEnumerable<MovementType>>> Handle(GetAllMovementTypesQuery request,
                                                                               CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<MovementType>("movementtypes", cancellationToken);
+            return await HandleGetListQueryAsync<MovementType>("movementtypes", cancellationToken);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Holidays.GetAllHolidays
         public override async Task<ErrorOr<IEnumerable<Holiday>>> Handle(GetAllHolidaysQuery request,
                                                                               CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<Holiday>("holidays", cancellationToken);
+            return await HandleGetListQueryAsync<Holiday>("holidays", cancellationToken);
         }
     }
 }

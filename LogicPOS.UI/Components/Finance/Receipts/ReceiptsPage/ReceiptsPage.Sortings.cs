@@ -9,8 +9,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
             {
-                var a = (Receipt)model.GetValue(left, 0);
-                var b = (Receipt)model.GetValue(right, 0);
+                var a = (ReceiptViewModel)model.GetValue(left, 0);
+                var b = (ReceiptViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -25,8 +25,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var a = (Receipt)model.GetValue(left, 0);
-                var b = (Receipt)model.GetValue(right, 0);
+                var a = (ReceiptViewModel)model.GetValue(left, 0);
+                var b = (ReceiptViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -41,8 +41,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var a = (Receipt)model.GetValue(left, 0);
-                var b = (Receipt)model.GetValue(right, 0);
+                var a = (ReceiptViewModel)model.GetValue(left, 0);
+                var b = (ReceiptViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -57,8 +57,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var a = (Receipt)model.GetValue(left, 0);
-                var b = (Receipt)model.GetValue(right, 0);
+                var a = (ReceiptViewModel)model.GetValue(left, 0);
+                var b = (ReceiptViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -73,8 +73,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var a = (Receipt)model.GetValue(left, 0);
-                var b = (Receipt)model.GetValue(right, 0);
+                var a = (ReceiptViewModel)model.GetValue(left, 0);
+                var b = (ReceiptViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {

@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Tables.GetAllTables
         {
             var endpoint = "tables" + (query.Status.HasValue ? $"?status={(int)query.Status}" : string.Empty);
 
-            return await HandleGetEntitiesQueryAsync<Table>(endpoint, cancellationToken);
+            return await HandleGetListQueryAsync<Table>(endpoint, cancellationToken);
         }
     }
 }

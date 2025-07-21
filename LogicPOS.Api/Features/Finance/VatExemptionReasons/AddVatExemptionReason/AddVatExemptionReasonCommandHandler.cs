@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System;
 using System.Net.Http;
 using System.Net.Http.Json;

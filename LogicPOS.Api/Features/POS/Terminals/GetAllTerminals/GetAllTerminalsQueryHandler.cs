@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Terminals.GetAllTerminals
 
         public override async Task<ErrorOr<IEnumerable<Terminal>>> Handle(GetAllTerminalsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<Terminal>("terminals",cancellationToken);
+            return await HandleGetListQueryAsync<Terminal>("terminals",cancellationToken);
         }
     }
 }

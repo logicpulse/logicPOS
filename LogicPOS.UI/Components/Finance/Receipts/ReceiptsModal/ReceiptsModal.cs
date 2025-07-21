@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnPrevious.Sensitive = Page.Receipts.Page > 1;
             BtnNext.Sensitive = Page.Receipts.Page < Page.Receipts.TotalPages;
         }
-        private void CancelReceipt(Receipt receipt)
+        private void CancelReceipt(ReceiptViewModel receipt)
         {
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,
@@ -91,7 +91,7 @@ namespace LogicPOS.UI.Components.Modals
             Page.Refresh();
         }
 
-        private static bool CanCancelReceipt(Receipt receipt)
+        private static bool CanCancelReceipt(ReceiptViewModel receipt)
         {
             bool canCancel = true;
 

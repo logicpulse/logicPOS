@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System.Net.Http;
 using System.Threading;

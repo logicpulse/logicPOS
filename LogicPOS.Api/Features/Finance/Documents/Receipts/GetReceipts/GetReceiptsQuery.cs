@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Receipts.GetReceipts
 {
-    public class GetReceiptsQuery : IRequest<ErrorOr<PaginatedResult<Receipt>>>
+    public class GetReceiptsQuery : IRequest<ErrorOr<PaginatedResult<ReceiptViewModel>>>
     {
         public int? Page { get; set; }
         public int? PageSize { get; set; }
@@ -46,7 +46,7 @@ namespace LogicPOS.Api.Features.Receipts.GetReceipts
                 query.Append($"&pageSize={PageSize}");
             }
 
-         
+
 
             if (CustomerId.HasValue)
             {

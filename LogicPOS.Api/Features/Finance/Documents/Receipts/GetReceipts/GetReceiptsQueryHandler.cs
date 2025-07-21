@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Receipts.GetReceipts
 {
     public class GetReceiptsQueryHandler :
-        RequestHandler<GetReceiptsQuery, ErrorOr<PaginatedResult<Receipt>>>
+        RequestHandler<GetReceiptsQuery, ErrorOr<PaginatedResult<ReceiptViewModel>>>
     {
         public GetReceiptsQueryHandler(IHttpClientFactory factory) : base(factory)
         { }
 
-        public async override Task<ErrorOr<PaginatedResult<Receipt>>> Handle(GetReceiptsQuery query, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<PaginatedResult<ReceiptViewModel>>> Handle(GetReceiptsQuery query, CancellationToken cancellationToken = default)
         {
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<Receipt>>($"receipts{urlQuery}", cancellationToken);
+            return await HandleGetEntityQueryAsync<PaginatedResult<ReceiptViewModel>>($"receipts{urlQuery}", cancellationToken);
         }
     }
 }

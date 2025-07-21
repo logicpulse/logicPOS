@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups
                                                                               CancellationToken cancellationToken = default)
         {
 
-            return await HandleGetEntitiesQueryAsync<DiscountGroup>("discountgroups", cancellationToken);
+            return await HandleGetListQueryAsync<DiscountGroup>("discountgroups", cancellationToken);
         }
     }
 }

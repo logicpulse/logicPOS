@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies
         public override async Task<ErrorOr<IEnumerable<ArticleSubfamily>>> Handle(GetAllArticleSubfamiliesQuery request,
                                                                             CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<ArticleSubfamily>("articles/subfamilies", cancellationToken);
+            return await HandleGetListQueryAsync<ArticleSubfamily>("articles/subfamilies", cancellationToken);
         }
     }
 }

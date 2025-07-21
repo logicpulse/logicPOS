@@ -1,12 +1,9 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
-using System;
+using LogicPOS.Api.Features.Common.Requests;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,14 +12,20 @@ namespace LogicPOS.Api.Features.Currencies.GetAllCurrencies
     public class GetAllCurrenciesQueryHandler :
         RequestHandler<GetAllCurrenciesQuery, ErrorOr<IEnumerable<Currency>>>
     {
-        public GetAllCurrenciesQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetAllCurrenciesQueryHandler(IHttpClientFactory httpClientFactory, IMemoryCache cache) : base(httpClientFactory, cache)
         {
         }
 
         public override async Task<ErrorOr<IEnumerable<Currency>>> Handle(GetAllCurrenciesQuery request,
                                                                     CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<Currency>("currencies",cancellationToken);
+            var cacheOptions = GetCacheOptions();
+            return await HandleGetListQueryAsync<Currency>("currencies", cancellationToken, cacheOptions);
+        }
+
+        private MemoryCacheEntryOptions GetCacheOptions()
+        {
+            return new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
         }
     }
 }

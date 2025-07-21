@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticleChildren
 
         public override async Task<ErrorOr<IEnumerable<ArticleChild>>> Handle(GetArticleChildrenQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<ArticleChild>($"articles/{query.Id}/children", cancellationToken);
+            return await HandleGetListQueryAsync<ArticleChild>($"articles/{query.Id}/children", cancellationToken);
         }
     }
 }

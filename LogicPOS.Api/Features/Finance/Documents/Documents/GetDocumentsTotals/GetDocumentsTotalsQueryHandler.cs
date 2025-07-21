@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentsTotals
                                                                                 CancellationToken cancellationToken = default)
         {
             var queryUrl = query.GetUrlQuery();
-            return await HandleGetEntitiesQueryAsync<DocumentTotals>($"documents/totals{queryUrl}", cancellationToken);
+            return await HandleGetListQueryAsync<DocumentTotals>($"documents/totals{queryUrl}", cancellationToken);
         }
     }
 }

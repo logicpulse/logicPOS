@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

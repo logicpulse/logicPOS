@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks
         public override async Task<ErrorOr<IEnumerable<TotalStock>>> Handle(GetArticlesTotalStocksQuery query,
                                                                         CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<TotalStock>($"articles/stocks/totals{query.GetUrlQuery()}", cancellationToken);
+            return await HandleGetListQueryAsync<TotalStock>($"articles/stocks/totals{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }

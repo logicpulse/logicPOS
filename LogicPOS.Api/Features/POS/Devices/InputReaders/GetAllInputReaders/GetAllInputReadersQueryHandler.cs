@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.InputReaders.GetAllInputReaders
 
         public override async Task<ErrorOr<IEnumerable<InputReader>>> Handle(GetAllInputReadersQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<InputReader>("inputreaders", cancellationToken);
+            return await HandleGetListQueryAsync<InputReader>("inputreaders", cancellationToken);
         }
     }
 }

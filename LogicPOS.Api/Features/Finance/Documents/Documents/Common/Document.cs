@@ -30,15 +30,10 @@ namespace LogicPOS.Api.Entities
         public ShipAddress ShipToAdress { get; set; }
         public ShipAddress ShipFromAdress { get; set; }
         public decimal TotalNet { get; set; }
-        public decimal TotalGross { get; set; }
-        public decimal TotalDiscount { get; set; }
         public decimal TotalTax { get; set; }
         public decimal TotalFinal { get; set; }
-        public decimal TotalDelivery { get; set; }
-        public decimal TotalChange { get; set; }
         public decimal Discount { get; set; }
         public bool Paid { get; set; }
-        public decimal ExchangeRate { get; set; }
         public DocumentCustomer Customer { get; set; }
         public IList<DocumentDetail> Details { get; set; }
         public bool IsDraft { get; set; }

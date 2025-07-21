@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
             {
-                var receipt = (Receipt)GridView.Model.GetValue(iterator, 0);
+                var receipt = (ReceiptViewModel)GridView.Model.GetValue(iterator, 0);
 
                 if (SelectedReceipts.Contains(receipt))
                 {

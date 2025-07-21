@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -10,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Requests;
 
 namespace LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles
 {
@@ -22,7 +22,7 @@ namespace LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfi
         public override async Task<ErrorOr<IEnumerable<PermissionProfile>>> Handle(GetAllPermissionProfilesQuery request,
                                                                        CancellationToken cancellationToken = default)
         {
-           return await HandleGetEntitiesQueryAsync<PermissionProfile>("users/permission-profiles", cancellationToken);
+           return await HandleGetListQueryAsync<PermissionProfile>("users/permission-profiles", cancellationToken);
         }
 
 

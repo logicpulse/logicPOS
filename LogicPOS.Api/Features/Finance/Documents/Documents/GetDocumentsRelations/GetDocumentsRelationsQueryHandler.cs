@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentsRelations
                                                                             CancellationToken cancellationToken = default)
         {
             var httpQuery = string.Join("&", query.DocumentIds.Select(id => $"documentIds={id}"));
-            return await HandleGetEntitiesQueryAsync<DocumentRelation>($"documents/relations?{httpQuery}", cancellationToken);
+            return await HandleGetListQueryAsync<DocumentRelation>($"documents/relations?{httpQuery}", cancellationToken);
         }
     }
 }

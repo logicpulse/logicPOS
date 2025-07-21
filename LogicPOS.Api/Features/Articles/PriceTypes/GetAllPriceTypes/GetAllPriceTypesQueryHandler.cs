@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes
         public override async Task<ErrorOr<IEnumerable<PriceType>>> Handle(GetAllPriceTypesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<PriceType>("articles/pricetypes", cancellationToken);
+            return await HandleGetListQueryAsync<PriceType>("articles/pricetypes", cancellationToken);
         }
     }
 }

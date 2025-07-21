@@ -11,11 +11,11 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class ReceiptsPage : Page<Receipt>
+    public partial class ReceiptsPage : Page<ReceiptViewModel>
     {
         public GetReceiptsQuery Query { get; private set; } = GetDefaultQuery();
-        public PaginatedResult<Receipt> Receipts { get; private set; }
-        public List<Receipt> SelectedReceipts { get; private set; } = new List<Receipt>();
+        public PaginatedResult<ReceiptViewModel> Receipts { get; private set; }
+        public List<ReceiptViewModel> SelectedReceipts { get; private set; } = new List<ReceiptViewModel>();
         public decimal SelectedReceiptsTotalAmount { get; private set; }
         public event EventHandler PageChanged;
 
@@ -81,10 +81,10 @@ namespace LogicPOS.UI.Components.Pages
             AddFiscalNumberSorting();
         }
 
-        protected override void AddEntitiesToModel(IEnumerable<Receipt> receipts)
+        protected override void AddEntitiesToModel(IEnumerable<ReceiptViewModel> receipts)
         {
             var model = (ListStore)GridViewSettings.Model;
-            foreach (Receipt receipt in receipts)
+            foreach (ReceiptViewModel receipt in receipts)
             {
                 model.AppendValues(receipt,false);
             }

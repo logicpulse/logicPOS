@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System.Net.Http;
 using System.Net.Http.Json;

@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderRelatedReceipts(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = ((Receipt)model.GetValue(iter, 0));
+                var receipt = ((ReceiptViewModel)model.GetValue(iter, 0));
                 (cell as CellRendererText).Text = receipt.Notes;
             }
 
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderAmountColumn(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = ((Receipt)model.GetValue(iter, 0));
+                var receipt = ((ReceiptViewModel)model.GetValue(iter, 0));
                 (cell as CellRendererText).Text = receipt.Amount.ToString("0.00");
             }
 
@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderFiscalNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = receipt.CustomerFiscalNumber;
             }
 
@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderEntity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = receipt.Customer;
             }
 
@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = receipt.Status;
             }
 
@@ -71,7 +71,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = receipt.CreatedAt.ToString();
             }
 
@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = receipt.RefNo;
             }
 
@@ -102,7 +102,7 @@ namespace LogicPOS.UI.Components.Pages
 
             void RenderSelect(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var receipt = (Receipt)model.GetValue(iter, 0);
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererToggle).Active = SelectedReceipts.Contains(receipt);
             }
 

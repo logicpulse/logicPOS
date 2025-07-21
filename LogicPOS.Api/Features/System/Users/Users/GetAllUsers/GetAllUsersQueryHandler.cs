@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Users.GetAllUsers
 
         public override async Task<ErrorOr<IEnumerable<User>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<User>("users",cancellationToken);
+            return await HandleGetListQueryAsync<User>("users",cancellationToken);
         }
     }
 }

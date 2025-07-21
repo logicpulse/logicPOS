@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.WorkSessions.GetAllWorkSessionPeriods
         {
             int status = (int)request.Status;
             int type = (int)request.Type;
-            return await HandleGetEntitiesQueryAsync<WorkSessionPeriod>($"worksessions/periods?status={status}&type={type}", cancellationToken);
+            return await HandleGetListQueryAsync<WorkSessionPeriod>($"worksessions/periods?status={status}&type={type}", cancellationToken);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -11,13 +12,19 @@ namespace LogicPOS.Api.Features.Customers.GetAllCustomers
     public class GetAllCustomersQueryHandler :
         RequestHandler<GetAllCustomersQuery, ErrorOr<IEnumerable<Customer>>>
     {
-        public GetAllCustomersQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetAllCustomersQueryHandler(IHttpClientFactory factory, IMemoryCache cache) : base(factory, cache)
         {
         }
 
         public override async Task<ErrorOr<IEnumerable<Customer>>> Handle(GetAllCustomersQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<Customer>("customers", cancellationToken);
+            var cacheOptions = GetCacheOptions();
+            return await HandleGetListQueryAsync<Customer>("customers", cancellationToken, cacheOptions);
+        }
+
+        private MemoryCacheEntryOptions GetCacheOptions()
+        {
+            return new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
         }
     }
 }

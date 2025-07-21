@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies
 
         public override async Task<ErrorOr<IEnumerable<ArticleFamily>>> Handle(GetAllArticleFamiliesQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<ArticleFamily>("articles/families", cancellationToken);
+            return await HandleGetListQueryAsync<ArticleFamily>("articles/families", cancellationToken);
         }
     }
 }

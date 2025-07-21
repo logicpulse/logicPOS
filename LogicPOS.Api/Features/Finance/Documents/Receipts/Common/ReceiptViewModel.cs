@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class Receipt : ApiEntity
+    public class ReceiptViewModel : ApiEntity
     {
         public string RefNo { get; set; }
         public string Status { get; set; }

@@ -26,6 +26,8 @@ namespace LogicPOS.Api
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestLoggingPipelineBehavior<,>));
 
+            services.AddMemoryCache();
+
             return services;
         }
 

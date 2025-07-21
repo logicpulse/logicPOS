@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines
 
         public override async Task<ErrorOr<IEnumerable<WeighingMachine>>> Handle(GetAllWeighingMachinesQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<WeighingMachine>("weighingmachines", cancellationToken);
+            return await HandleGetListQueryAsync<WeighingMachine>("weighingmachines", cancellationToken);
         }
     }
 }

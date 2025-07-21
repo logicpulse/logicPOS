@@ -1,10 +1,9 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
+using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,14 +12,20 @@ namespace LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods
     public class GetAllPaymentMethodsQueryHandler :
         RequestHandler<GetAllPaymentMethodsQuery, ErrorOr<IEnumerable<PaymentMethod>>>
     {
-        public GetAllPaymentMethodsQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetAllPaymentMethodsQueryHandler(IHttpClientFactory factory, IMemoryCache cache) : base(factory, cache)
         {
         }
 
         public override async Task<ErrorOr<IEnumerable<PaymentMethod>>> Handle(GetAllPaymentMethodsQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<PaymentMethod>("payment/methods", cancellationToken);
+            var cacheOptions = GetCacheOptions();
+            return await HandleGetListQueryAsync<PaymentMethod>("payment/methods", cancellationToken, cacheOptions);
+        }
+
+        private MemoryCacheEntryOptions GetCacheOptions()
+        {
+            return new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
         }
     }
 }

@@ -7,7 +7,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         protected override void InitializeGridView()
         {
-            GridViewSettings.Model = new ListStore(typeof(Receipt), typeof(bool));
+            GridViewSettings.Model = new ListStore(typeof(ReceiptViewModel), typeof(bool));
 
             InitializeGridViewModel();
 
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
                     return true;
                 }
 
-                var receipt = model.GetValue(iterator, 0) as Receipt;
+                var receipt = model.GetValue(iterator, 0) as ReceiptViewModel;
 
                 if (receipt != null && receipt.RefNo.ToLower().Contains(search))
                 {

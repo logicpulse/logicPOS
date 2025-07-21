@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Warehouses.GetAllWarehouses
         public override async Task<ErrorOr<IEnumerable<Warehouse>>> Handle(GetAllWarehousesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<Warehouse>("articles/stocks/warehouses", cancellationToken);
+            return await HandleGetListQueryAsync<Warehouse>("articles/stocks/warehouses", cancellationToken);
         }
     }
 }

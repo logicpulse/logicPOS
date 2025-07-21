@@ -1,8 +1,9 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Authentication;
-using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,57 +13,28 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Common
+namespace LogicPOS.Api.Features.Common.Requests
 {
-    public abstract class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    public abstract partial class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
         protected readonly HttpClient _httpClient;
-        public RequestHandler(IHttpClientFactory factory)
+        protected  IMemoryCache _cache;
+
+        public RequestHandler(IHttpClientFactory httpFactory)
         {
-            _httpClient = factory.CreateClient("Default");
+            _httpClient = httpFactory.CreateClient("Default");
             if (AuthenticationData.Token != null)
             {
                 _httpClient.DefaultRequestHeaders.Authorization = new global::System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationData.Token);
             }
         }
 
+        public RequestHandler(IHttpClientFactory httpFactory, IMemoryCache cache) : this(httpFactory) 
+        { 
+            _cache = cache;
+        }
+
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
-
-        protected async Task<ErrorOr<IEnumerable<TEntity>>> HandleGetEntitiesQueryAsync<TEntity>(string endpoint,
-                                                                                            CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var items = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint, cancellationToken);
-                return items;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
-        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(string endpoint,
-                                                                                  CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync(endpoint, cancellationToken);
-
-                if (response.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return default(TEntity);
-                }
-
-                var entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);
-
-                return entity;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
 
         protected async Task<ErrorOr<Unit>> HandleGetCommandAsync(string endpoint,
                                                                   CancellationToken cancellationToken = default)
@@ -85,143 +57,6 @@ namespace LogicPOS.Api.Features.Common
             }
         }
 
-
-        protected async Task<ErrorOr<Guid>> HandleAddCommandAsync(string endpoint,
-                                                                  TRequest command,
-                                                                  CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleAddEntityHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
-        protected async Task<ErrorOr<Unit>> HandlePostCommandAsync(string endpoint,
-                                                                   TRequest command,
-                                                                   CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
-        protected async Task<ErrorOr<Unit>> HandleUpdateCommandAsync(string endpoint,
-                                                                     TRequest command,
-                                                                     CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.PutAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
-        protected async Task<ErrorOr<bool>> HandleDeleteCommandAsync(string endpoint, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.DeleteAsync(endpoint, cancellationToken);
-                return  HandleDeleteEntityHttpResponse(response);
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
-        protected async Task<ErrorOr<Guid>> HandleAddEntityHttpResponseAsync(HttpResponseMessage httpResponse)
-        {
-            switch (httpResponse.StatusCode)
-            {
-                case HttpStatusCode.Created:
-                    var response = await httpResponse.Content.ReadFromJsonAsync<AddEntityResponse>();
-                    return response.Id;
-                case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
-                default:
-                    return ApiErrors.UnknownAPIResponse;
-            }
-        }
-
-        private async Task<Error> GetProblemDetailsFromResponseAsync(HttpResponseMessage httpResponse)
-        {
-            var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
-            return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
-        }
-
-        private async Task<ErrorOr<Unit>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
-        {
-            switch (httpResponse.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                case HttpStatusCode.Created:
-                case HttpStatusCode.NoContent:
-                    return Unit.Value;
-                case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
-                default:
-                    return ApiErrors.UnknownAPIResponse;
-            }
-        }
-
-        protected ErrorOr<bool> HandleDeleteEntityHttpResponse(HttpResponseMessage httpResponse)
-        {
-            switch (httpResponse.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                    return true;
-                case HttpStatusCode.BadRequest:
-                    return false;
-                case HttpStatusCode.NotFound:
-                    return false;
-                default:
-                    return ApiErrors.UnknownAPIResponse;
-            }
-        }
-
-        protected async Task<ErrorOr<TempFile>> HandleGetFileQueryAsync(string endpoint, CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                HttpResponseMessage response = await _httpClient.GetAsync(endpoint, cancellationToken);
-                response.EnsureSuccessStatusCode();
-
-                var contentDisposition = response.Content.Headers.ContentDisposition;
-                var fileName = contentDisposition?.FileName?.Trim('"') ?? null;
-
-                var fileContent = await response.Content.ReadAsByteArrayAsync();
-                var filePath = Path.GetTempFileName();
-                File.WriteAllBytes(filePath, fileContent);
-               
-                var tempFile = new TempFile
-                {
-                    Name = fileName,
-                    Path = filePath
-                };
-
-                response.Dispose();
-
-                return tempFile;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
+       
     }
 }

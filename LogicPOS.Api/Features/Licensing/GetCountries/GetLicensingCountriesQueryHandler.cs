@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Licensing.GetCountries
         public override async Task<ErrorOr<IEnumerable<string>>> Handle(GetLicensingCountriesQuery query,
                                                                   CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntitiesQueryAsync<string>("licensing/countries", cancellationToken);
+            return await HandleGetListQueryAsync<string>("licensing/countries", cancellationToken);
         }
     }
 }
