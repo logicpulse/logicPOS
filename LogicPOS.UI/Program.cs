@@ -99,8 +99,11 @@ namespace LogicPOS.UI
                 ErrorHandlingService.HandleApiError(intializeTerminalResult, true);
                 return;
             }
-
-            ShowLicenseDialog();
+            if (AppSettings.Plugins.LicenceManager!= null && string.IsNullOrEmpty(TerminalService.Terminal.HardwareId))
+            {
+                ShowLicenseDialog();
+            }
+            
 
             LogicPOSApp app = new LogicPOSApp();
             app.Start();

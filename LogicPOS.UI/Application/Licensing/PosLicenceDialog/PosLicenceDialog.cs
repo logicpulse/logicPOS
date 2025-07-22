@@ -7,6 +7,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Licensing
@@ -113,18 +114,16 @@ namespace LogicPOS.UI.Components.Licensing
         {
             if (AppSettings.Plugins.LicenceManager == null)
             {
+                
+
+                CustomAlerts.Error(this)
+                            .WithSize(new System.Drawing.Size(600, 300))
+                            .WithTitleResource("global_error")
+                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
+                            .ShowAlert();
                 return;
             }
-
-
-
-            CustomAlerts.Error(this)
-                        .WithSize(new System.Drawing.Size(600, 300))
-                        .WithTitleResource("global_error")
-                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
-                        .ShowAlert();
-
-            return;
+            
 
 
             byte[] registeredLicence = new byte[0];
@@ -145,7 +144,7 @@ namespace LogicPOS.UI.Components.Licensing
 
                 string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();
 
-                LicenseRouter.WriteByteArrayToFile(registeredLicence, licenseFilePath);
+                File.WriteAllBytes(licenseFilePath, registeredLicence);
 
                 CustomAlerts.Information(this)
                             .WithSize(new System.Drawing.Size(600, 300))
