@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.UI.Buttons;
@@ -16,9 +17,11 @@ namespace LogicPOS.UI.Components.Menus
 
         public ArticleFamiliesMenu(CustomButton btnPrevious,
                                    CustomButton btnNext,
-                                   Window sourceWindow) : base(rows: 6,
-                                                               columns: 1,
-                                                               new Size(176, 120),
+                                   Window sourceWindow, 
+                                   Size buttonsSize,
+                                   TableConfig tableConfig) : base(tableConfig.Rows,
+                                                               tableConfig.Columns,
+                                                               buttonsSize,
                                                                buttonName: "buttonFamilyId",
                                                                btnPrevious,
                                                                btnNext,

@@ -400,7 +400,9 @@ namespace LogicPOS.UI.Components.Windows
 
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
                                                    btnFamiliesNext,
-                                                   this);
+                                                   this, 
+                                                   tablePadSubFamilyButtonSize,
+                                                   tablePadSubFamilyTableConfig);
 
             if (showFamiliesMenu)
             {
@@ -431,7 +433,9 @@ namespace LogicPOS.UI.Components.Windows
             MenuSubfamilies = new ArticleSubfamiliesMenu(MenuFamilies,
                                                          btnSubfamiliesPrevious,
                                                          btnSubfamiliesNext,
-                                                         this);
+                                                         this,
+                                                         tablePadSubFamilyButtonSize,
+                                                         tablePadSubFamilyTableConfig);
 
             if (showSubfamiliesMenu)
             {
@@ -454,7 +458,9 @@ namespace LogicPOS.UI.Components.Windows
             MenuArticles = new ArticlesMenu(btnMenuArticlesPrevious,
                                             btnMenuArticlesNext,
                                             this,
-                                            MenuSubfamilies);
+                                            MenuSubfamilies,
+                                            tablePadArticleButtonSize,
+                                            tablePadArticleTableConfig);
 
             if (showArticlesMenu)
             {

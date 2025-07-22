@@ -1,10 +1,10 @@
 ﻿using Gtk;
+using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,17 +15,16 @@ namespace LogicPOS.UI.Components.Menus
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
 
-        public uint Rows { get; set; } = 1;
-        public uint Columns { get; set; } = 7;
-        public Size ButtonSize { get; set; } = new Size(176, 120);
         private ArticleFamiliesMenu FamiliesMenu { get; }
 
         public ArticleSubfamiliesMenu(ArticleFamiliesMenu familiesMenu,
                                       CustomButton btnPrevious,
                                       CustomButton btnNext,
-                                      Window sourceWindow) : base(1,
-                                                                  7,
-                                                                  new Size(176, 120),
+                                      Window sourceWindow,
+                                      Size buttonsSize,
+                                      TableConfig tableConfig) : base(tableConfig.Rows,
+                                                                  tableConfig.Columns,
+                                                                  buttonsSize,
                                                                   "buttonSubFamilyId",
                                                                   btnPrevious,
                                                                   btnNext,

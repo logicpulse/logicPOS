@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Common.Pagination;
@@ -23,14 +24,16 @@ namespace LogicPOS.UI.Components.Menus
         public ArticlesMenu(CustomButton btnPrevious,
                             CustomButton btnNext,
                             Window sourceWindow,
-                            ArticleSubfamiliesMenu subfamiliesMenu) : base(rows: 6,
-                                                                           columns: 7,
-                                                                           buttonSize: new Size(176, 120),
-                                                                           buttonName: "buttonArticleId",
-                                                                           btnPrevious,
-                                                                           btnNext,
-                                                                           sourceWindow,
-                                                                           toggleMode: false)
+                            ArticleSubfamiliesMenu subfamiliesMenu,
+                            Size buttonsSize,
+                            TableConfig tableConfig) : base(tableConfig.Rows,
+                                                            tableConfig.Columns,
+                                                            buttonsSize,
+                                                            buttonName: "buttonArticleId",
+                                                            btnPrevious,
+                                                            btnNext,
+                                                            sourceWindow,
+                                                            toggleMode: false)
         {
             MenuSubfamilies = subfamiliesMenu;
             AddEventHandlers();
