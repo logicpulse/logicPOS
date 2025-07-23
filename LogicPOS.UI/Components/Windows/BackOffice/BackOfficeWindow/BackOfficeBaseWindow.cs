@@ -53,6 +53,8 @@ namespace LogicPOS.UI.Components.Windows
 
         private void DesignUI()
         {
+            Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
+            dynamic Theme = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
             BackOfficeWindow.ScreenSize = ScreenSizeUtil.GetScreenSize();
             uint borderWidth = 5;

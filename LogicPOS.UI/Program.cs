@@ -12,6 +12,7 @@ using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 
@@ -22,7 +23,6 @@ namespace LogicPOS.UI
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
-
         public static void InitializeGtk()
         {
             Gtk.Application.Init();

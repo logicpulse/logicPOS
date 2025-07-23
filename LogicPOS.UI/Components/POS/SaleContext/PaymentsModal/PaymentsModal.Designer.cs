@@ -67,15 +67,15 @@ namespace LogicPOS.UI.Components.POS
             Gtk.Table table = new Gtk.Table(3, 2, false);
             table.HeightRequest = 100;
 
-            //Row 1
+            //Columns 1
             table.Attach(LabelTotal, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(LabelTotalValue, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 
-            //Row 2
+            //Columns 2
             table.Attach(LabelDelivery, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(LabelDeliveryValue, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 
-            //Row 3
+            //Columns 3
             table.Attach(LabelChange, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(LabelChangeValue, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 

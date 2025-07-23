@@ -121,7 +121,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtArticle.SelectedEntity = article;
             TxtCode.Text = article.Code;
             TxtPrice.Text = article.Price1.Value.ToString("F2");
-            TxtQuantity.Text = article.DefaultQuantity.ToString("F2");
+            TxtQuantity.Text = article.DefaultQuantity>0? article.DefaultQuantity.ToString("F2"): 1.ToString("F2");
             TxtDiscount.Text = article.Discount.ToString("F2");
             TxtVatExemptionReason.SelectedEntity = article.VatExemptionReason;
             TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;

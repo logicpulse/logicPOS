@@ -126,8 +126,8 @@ namespace LogicPOS.UI.Components.Windows
                 tablePadUserButtonNext.BorderWidth = 0;
                 tablePadUserButtonNext.CanFocus = false;
 
-                MenuUsers = new UsersMenu(5,
-                                          1,
+                MenuUsers = new UsersMenu(tablePadUserTableConfig.Rows,
+                                          tablePadUserTableConfig.Columns,
                                           tablePadUserButtonPrev,
                                           tablePadUserButtonNext,
                                           this);
@@ -144,7 +144,7 @@ namespace LogicPOS.UI.Components.Windows
                 //Label Version
                 string appVersion = "";
                 if (AppSettings.License.LicenseData.Reseller != null &&
-                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "Logicpulse" &&
+                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "logicpulse" &&
                     AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "")
                 {
                     //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
