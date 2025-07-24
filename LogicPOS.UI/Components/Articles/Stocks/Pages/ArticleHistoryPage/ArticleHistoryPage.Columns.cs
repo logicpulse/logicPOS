@@ -1,8 +1,10 @@
 ﻿using Gtk;
+using logicpos;
 using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Extensions;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -58,7 +60,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderPurchaseDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.SaleDate?.Date.ToString();
+                (cell as CellRendererText).Text = history.PurchaseDate?.Date.ToShortDateString();
             }
             var title = "Data de Compra";
             return Columns.CreateColumn(title, 5, RenderPurchaseDate);
@@ -80,7 +82,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderPurchasePrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.PurchaseDate.ToString();
+                (cell as CellRendererText).Text = history.PurchasePrice.ToMoneyString();
             }
             var title = LocalizedString.Instance["global_purchase_price"];
             return Columns.CreateColumn(title, 7, RenderPurchasePrice);

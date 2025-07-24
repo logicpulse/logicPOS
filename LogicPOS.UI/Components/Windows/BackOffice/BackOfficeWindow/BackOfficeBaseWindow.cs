@@ -237,7 +237,7 @@ namespace LogicPOS.UI.Components.Windows
             {
                 if (BackOfficeWindow.ScreenSize.Height <= 800)
                 {
-                    PanelLeft.Put(BtnPOS, 0, BackOfficeWindow.ScreenSize.Height - 112);
+                    PanelLeft.Put(BtnPOS, 0, BackOfficeWindow.ScreenSize.Height - 140);
 
                 }
                 else
@@ -248,8 +248,8 @@ namespace LogicPOS.UI.Components.Windows
 
             if (BackOfficeWindow.ScreenSize.Height <= 800)
             {
-                PanelLeft.Put(BtnExit, 0, BackOfficeWindow.ScreenSize.Height - 85);
-                PanelLeft.Put(PanelButtons, 0, 28);
+                PanelLeft.Put(BtnExit, 0, BackOfficeWindow.ScreenSize.Height - 100);
+                PanelLeft.Put(PanelButtons, 0, 40);
             }
             else
             {

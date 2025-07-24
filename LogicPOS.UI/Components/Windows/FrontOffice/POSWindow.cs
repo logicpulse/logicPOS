@@ -397,12 +397,19 @@ namespace LogicPOS.UI.Components.Windows
             btnFamiliesNext.BorderWidth = 0;
             btnFamiliesNext.CanFocus = false;
 
-
+            if(AppSettings.Instance.AppScreenSize== new Size(800, 600))
+            {
+                tablePadSubFamilyTableConfig= new TableConfig
+                {
+                    Columns = 1,
+                    Rows = 5
+                };
+            }
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
                                                    btnFamiliesNext,
                                                    this, 
-                                                   tablePadSubFamilyButtonSize,
-                                                   tablePadSubFamilyTableConfig);
+                                                   tablePadFamilyButtonSize,
+                                                   tablePadFamilyTableConfig);
 
             if (showFamiliesMenu)
             {
