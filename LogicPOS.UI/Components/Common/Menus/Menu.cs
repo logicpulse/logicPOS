@@ -106,7 +106,6 @@ namespace LogicPOS.UI.Components.Menus
             {
                 return;
             }
-
             uint currentRow = 0, currentColumn = 0;
             int startItem = (CurrentPage * ItemsPerPage) - ItemsPerPage;
             int endItem = startItem + ItemsPerPage - 1;

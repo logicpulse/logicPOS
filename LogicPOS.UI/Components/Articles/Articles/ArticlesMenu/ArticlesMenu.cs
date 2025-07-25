@@ -76,6 +76,12 @@ namespace LogicPOS.UI.Components.Menus
         {
             CurrentQuery.Favorite = PresentFavorites ? true : (bool?)null;
             CurrentQuery.PageSize = DefaultPageSize;
+            if (MenuSubfamilies.SelectedEntity == null)
+            {
+                Entities.Clear();
+               ListEntities(Entities);
+                return;
+            }
             CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;
 
             if (PresentFavorites)

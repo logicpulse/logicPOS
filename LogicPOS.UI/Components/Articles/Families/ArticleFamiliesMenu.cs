@@ -5,7 +5,6 @@ using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -62,6 +61,7 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override IEnumerable<ArticleFamily> FilterEntities(IEnumerable<ArticleFamily> entities)
         {
+            
             return entities;
         }
     }

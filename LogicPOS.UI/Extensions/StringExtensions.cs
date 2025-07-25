@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Drawing;
+using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace LogicPOS.UI.Extensions
 {

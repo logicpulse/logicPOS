@@ -64,7 +64,6 @@ namespace LogicPOS.UI.Components.Menus
         protected override void LoadEntities()
         {
             Entities.Clear();
-
             var subfamilies = _mediator.Send(new GetAllArticleSubfamiliesQuery()).Result;
 
             if (subfamilies.IsError != false)
