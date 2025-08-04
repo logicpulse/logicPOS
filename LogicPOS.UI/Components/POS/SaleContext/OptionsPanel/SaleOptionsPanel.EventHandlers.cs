@@ -220,7 +220,10 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            var modal=new SalesOrderModal(POSWindow.Instance);
+            modal.Run();
+            modal.Destroy();
+            
         }
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)

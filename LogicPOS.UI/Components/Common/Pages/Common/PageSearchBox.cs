@@ -37,6 +37,7 @@ namespace LogicPOS.UI.Components.Pages
                                                false);
 
             TxtSearch.WidthRequest = AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600 ? 150 : 250;
+            TxtSearch.WidthRequest = AppSettings.Instance.AppScreenSize.Width <= 1024? 150 : 250;
 
             Bar.PackStart(TxtSearch, true, true, 0);
 

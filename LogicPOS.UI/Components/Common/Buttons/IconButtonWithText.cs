@@ -3,6 +3,7 @@ using logicpos;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
+using System;
 using System.IO;
 
 namespace LogicPOS.UI.Buttons
@@ -20,6 +21,8 @@ namespace LogicPOS.UI.Buttons
 
         private Widget CreateWidget(ButtonSettings settings)
         {
+            
+
             System.Drawing.Image buttonIcon;
 
             if (settings.LeftImage == false)
@@ -86,6 +89,8 @@ namespace LogicPOS.UI.Buttons
                                                       string label,
                                                       string icon)
         {
+          
+
             return new IconButtonWithText(
                 new ButtonSettings
                 {
@@ -94,8 +99,12 @@ namespace LogicPOS.UI.Buttons
                     Font = AppSettings.Instance.FontBaseDialogActionAreaButton,
                     FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
                     Icon = AppSettings.Paths.Images + icon,
-                    IconSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                    ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton
+                    IconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault,
+                    ButtonSize = new System.Drawing.Size(
+                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Width,
+                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Height)
+                    /*AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
+                    ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton*/
                 });
         }
     }

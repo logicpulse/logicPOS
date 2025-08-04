@@ -1,3 +1,4 @@
+using ErrorOr;
 using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.System.GetSystemInformations;
@@ -118,21 +119,34 @@ namespace LogicPOS.UI
         public static bool InitializeCulture()
         {
             var meditator = DependencyInjection.Mediator;
-            var getSystemInformationsResult = meditator.Send(new GetSystemInformationsQuery()).Result;
 
-            if (getSystemInformationsResult.IsError)
+            try
             {
-                SimpleAlerts.ShowApiErrorAlert(getSystemInformationsResult.FirstError);
 
+                var getSystemInformationsResult = meditator.Send(new GetSystemInformationsQuery()).Result;
+
+                if (getSystemInformationsResult.IsError)
+                {
+                    SimpleAlerts.ShowApiErrorAlert(getSystemInformationsResult.FirstError);
+
+                    return false;
+                }
+                var culture = getSystemInformationsResult.Value.Culture;
+                LocalizedString.Instance = new LocalizedString(culture);
+                CultureInfo.CurrentCulture = new CultureInfo(culture);
+                CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
+
+                return true;
+            }
+            catch 
+            {
+                SimpleAlerts.Error()
+                            .WithTitle("Erro ao obter informações do sistema")
+                            .WithMessage("Erro ao obter informações do sistema")
+                            .ShowAlert();
                 return false;
             }
 
-            var culture = getSystemInformationsResult.Value.Culture;
-            LocalizedString.Instance = new LocalizedString(culture);
-            CultureInfo.CurrentCulture = new CultureInfo(culture);
-            CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
-
-            return true;
         }
 
         public static void ConfigureLogging()

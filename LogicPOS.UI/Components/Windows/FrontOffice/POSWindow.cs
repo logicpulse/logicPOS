@@ -15,6 +15,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using System.Linq;
 using Image = Gtk.Image;
 
 namespace LogicPOS.UI.Components.Windows
@@ -260,6 +261,11 @@ namespace LogicPOS.UI.Components.Windows
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
+            if(AppSettings.Instance.AppScreenSize==new Size(800, 600))
+            {
+                labelTotalTableAlignmentX -= 20;
+                labelTotalTableLabelAlignmentX -= 20;
+            }
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
             Label labelTotalTableLabel = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay"));
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
@@ -277,9 +283,9 @@ namespace LogicPOS.UI.Components.Windows
             vboxTotalTable.PackStart(LabelTotalTable);
 
             //Pack HBox StatusBar
-            HBox hboxStatusBar2 = new HBox(false, 0) { BorderWidth = 5 };
+            HBox hboxStatusBar2 = new HBox(false, 0) { BorderWidth = 0 };
             hboxStatusBar2.PackStart(vboxCurrentTable, true, true, 0);
-            hboxStatusBar2.PackStart(vboxTotalTable, false, false, 0);
+            hboxStatusBar2.PackStart(vboxTotalTable, true, true, 0);
             eventBoxStatusBar2.Add(hboxStatusBar2);
 
             if (eventBoxStatusBar2Visible) FixedWindow.Put(eventBoxStatusBar2, eventBoxStatusBar2Position.X, eventBoxStatusBar2Position.Y);
@@ -312,7 +318,7 @@ namespace LogicPOS.UI.Components.Windows
                     FontSize = buttonFavoritesFontSize,
                     Image = buttonFavoritesImageFileName,
                     Overlay = buttonFavoritesImageOverlay,
-                    ButtonSize = new Size(buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height)
+                    ButtonSize = (AppSettings.Instance.AppScreenSize==new Size(800,600))? new Size(99,77) : new Size(buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height)
                 });
 
 
@@ -371,6 +377,12 @@ namespace LogicPOS.UI.Components.Windows
 
             //UI
 
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
+            {
+                TablePadFamilyButtonNextSize = new Size(99, 40);
+                TablePadFamilyButtonPrevSize = new Size(99, 40);
+            }
+
             IconButton btnFamiliesPrevious = new IconButton(
                 new ButtonSettings
                 {
@@ -404,15 +416,36 @@ namespace LogicPOS.UI.Components.Windows
                     Columns = 1,
                     Rows = 5
                 };
+                tablePadFamilyButtonSize = new Size(99, 77);
+                tablePadSubFamilyButtonSize = new Size(99, 77);
+                tablePadArticleButtonSize = new Size(99, 77);
+                tablePadSubFamilyTableConfig = new TableConfig(1, 4);
+                menuFamiliesPosition.X += 1;
+                menuSubfamiliesPosition.X -= 5;
+                tablePadArticlePosition.X -= 5;
+                btnMenuFamiliesNextPosition.Y -= 5;
+                
+
             }
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
                                                    btnFamiliesNext,
                                                    this, 
                                                    tablePadFamilyButtonSize,
                                                    tablePadFamilyTableConfig);
-
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600)) 
+            { 
+                MenuFamilies.RowSpacing = 2;
+                btnMenuSubfamiliesNextPosition.X -= 40;
+                btnMenuSubfamiliesPreviousPosition.X -= 40;
+                btnMenuArticlesNextPosition.X -= 40;
+                btnMenuArticlesPreviousPosition.X -= 40; 
+                btnMenuArticlesNextPosition.Y -= 10;
+                btnMenuArticlesPreviousPosition.Y -= 10;
+            }
+            
             if (showFamiliesMenu)
             {
+                
                 FixedWindow.Put(btnFamiliesPrevious, btnMenuFamiliesPreviousPosition.X, btnMenuFamiliesPreviousPosition.Y);
                 FixedWindow.Put(btnFamiliesNext, btnMenuFamiliesNextPosition.X, btnMenuFamiliesNextPosition.Y);
                 FixedWindow.Put(MenuFamilies, menuFamiliesPosition.X, menuFamiliesPosition.Y);
@@ -443,13 +476,14 @@ namespace LogicPOS.UI.Components.Windows
                                                          this,
                                                          tablePadSubFamilyButtonSize,
                                                          tablePadSubFamilyTableConfig);
-
+            if(AppSettings.Instance.AppScreenSize.Width==800 && AppSettings.Instance.AppScreenSize.Height==600)MenuSubfamilies.ColumnSpacing = 2;
             if (showSubfamiliesMenu)
             {
                 FixedWindow.Put(btnSubfamiliesPrevious, btnMenuSubfamiliesPreviousPosition.X, btnMenuSubfamiliesPreviousPosition.Y);
                 FixedWindow.Put(btnSubfamiliesNext, btnMenuSubfamiliesNextPosition.X, btnMenuSubfamiliesNextPosition.Y);
                 FixedWindow.Put(MenuSubfamilies, menuSubfamiliesPosition.X, menuSubfamiliesPosition.Y);
             }
+
 
             IconButton btnMenuArticlesPrevious = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
             btnMenuArticlesPrevious.Relief = ReliefStyle.None;
@@ -468,7 +502,11 @@ namespace LogicPOS.UI.Components.Windows
                                             MenuSubfamilies,
                                             tablePadArticleButtonSize,
                                             tablePadArticleTableConfig);
-
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
+            {
+                MenuArticles.RowSpacing = 2;
+                MenuArticles.ColumnSpacing = 2;
+            }
             if (showArticlesMenu)
             {
                 FixedWindow.Put(btnMenuArticlesPrevious, btnMenuArticlesPreviousPosition.X, btnMenuArticlesPreviousPosition.Y);
