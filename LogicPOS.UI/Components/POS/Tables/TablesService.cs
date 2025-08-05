@@ -18,20 +18,25 @@ namespace LogicPOS.UI.Services
     {
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
 
+        public static IEnumerable<Table> GetTablesByPlace(Guid PlaceId)
+        {
+            return GetAllTables()?.Where(t => t.PlaceId == PlaceId);
+        }
+
         public static IEnumerable<Table> GetAllTables()
         {
             var query = new GetAllTablesQuery();
-            var getResult = _mediator.Send(query).Result;
+            var requestResult = _mediator.Send(query).Result;
 
-            if (getResult.IsError)
+            if (requestResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult, true);
+                ErrorHandlingService.HandleApiError(requestResult, true);
                 return null;
             }
 
-            var tables = getResult.Value;
+            var tables = requestResult.Value;
 
-            return FilterTerminalTables(getResult.Value);
+            return FilterTerminalTables(requestResult.Value);
         }
 
         private static IEnumerable<Table> FilterTerminalTables(IEnumerable<Table> tables)
@@ -47,15 +52,15 @@ namespace LogicPOS.UI.Services
         public static IEnumerable<Table> GetTablesByStatus(TableStatus status)
         {
             var query = new GetAllTablesQuery(status);
-            var getResult = _mediator.Send(query).Result;
+            var requestResult = _mediator.Send(query).Result;
 
-            if (getResult.IsError)
+            if (requestResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult, true);
+                ErrorHandlingService.HandleApiError(requestResult, true);
                 return null;
             }
 
-            return FilterTerminalTables(getResult.Value);
+            return FilterTerminalTables(requestResult.Value);
         }
 
         public static IEnumerable<Table> GetOpenTables() => GetTablesByStatus(TableStatus.Open);

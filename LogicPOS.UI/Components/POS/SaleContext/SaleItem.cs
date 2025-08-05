@@ -1,5 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Articles;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
@@ -20,7 +22,7 @@ namespace LogicPOS.UI.Components.POS
 
         public SaleItem(OrderDetail detail)
         {
-            Article = ArticleViewModel.FromEntity(detail.Article);
+            Article = ArticlesService.GetArticleViewModelById(detail.Article.Id);
             UnitPrice = detail.Price;
             Quantity = detail.Quantity;
             Vat = detail.Vat;

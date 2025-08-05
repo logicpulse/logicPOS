@@ -7,7 +7,6 @@ namespace LogicPOS.Api.Features.Articles.Common
     public class ArticleViewModel : ApiEntity, IWithCode, IWithDesignation
     {
         public string Code { get; set; } 
-        public decimal TotalStock { get; set; }
         public bool IsComposed { get; set; }
         public string Family { get; set; } 
         public string Subfamily { get; set; } 
@@ -23,27 +22,6 @@ namespace LogicPOS.Api.Features.Articles.Common
         public Guid SubfamilyId { get; set; }
         public Guid FamilyId { get; set; }
 
-        public static ArticleViewModel FromEntity(Article article)
-        {
-            return new ArticleViewModel
-            {
-                Id = article.Id,
-                Code = article.Code,
-                Designation = article.Designation,
-                Family = article.Subfamily?.Family?.Designation,
-                Subfamily = article.Subfamily?.Designation,
-                Type = article.Type.Designation,
-                ButtonLabel = article.Button.Label,
-                DefaultQuantity = article.DefaultQuantity,
-                MinimumStock = article.MinimumStock,
-                Price = article.Price1.Value,
-                VatDirectSelling = article.VatDirectSelling?.Value,
-                Discount = article.Discount,
-                IsComposed = article.IsComposed,
-                Unit = article.MeasurementUnit?.Acronym,
-                SubfamilyId = article.SubfamilyId,
-                FamilyId = article.Subfamily?.FamilyId ?? Guid.Empty,
-            };
-        }
+        
     }
 }

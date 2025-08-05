@@ -74,7 +74,13 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
-        public static Article GetArticleByCode(string code)
+        public static ArticleViewModel GetArticleViewModelById(Guid id)
+        {
+            var article = GetArticlebById(id);
+            return ArticleToViewModel(article);
+        }
+
+        public static ArticleViewModel GetArticleByCode(string code)
         {
             var result = _mediator.Send(new GetArticleByCodeQuery(code)).Result;
             if (result.IsError)
@@ -82,7 +88,30 @@ namespace LogicPOS.UI.Components.Articles
                 ErrorHandlingService.HandleApiError(result);
                 return null;
             }
-            return result.Value;
+            return ArticleToViewModel(result.Value);
+        }
+
+        private static ArticleViewModel ArticleToViewModel(Article article)
+        {
+            return new ArticleViewModel
+            {
+                Id = article.Id,
+                Code = article.Code,
+                Designation = article.Designation,
+                Family = article.Subfamily?.Family?.Designation,
+                Subfamily = article.Subfamily?.Designation,
+                Type = article.Type.Designation,
+                ButtonLabel = article.Button.Label,
+                DefaultQuantity = article.DefaultQuantity,
+                MinimumStock = article.MinimumStock,
+                Price = article.Price1.Value,
+                VatDirectSelling = article.VatDirectSelling?.Value,
+                Discount = article.Discount,
+                IsComposed = article.IsComposed,
+                Unit = article.MeasurementUnit?.Acronym,
+                SubfamilyId = article.SubfamilyId,
+                FamilyId = article.Subfamily?.FamilyId ?? Guid.Empty,
+            };
         }
 
         public static void UpdateArticleNotes(Guid articleId, string Notes)

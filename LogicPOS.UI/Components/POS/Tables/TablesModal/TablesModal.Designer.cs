@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -13,6 +14,27 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class TablesModal
     {
+
+        protected override Widget CreateBody()
+        {
+            var body = new Fixed();
+
+            MenuPlaces = new PlacesMenu(BtnScrollPlacesPrevious, BtnScrollPlacesNext, this);
+            body.Put(MenuPlaces, 0, 0);
+
+            MenuTables = new TablesMenu(BtnScrollTablesPrevious,
+                                        BtnScrollTablesNext,
+                                        MenuPlaces,
+                                        this);
+
+            MenuTables.OnEntitySelected += MenuTables_TableSelected;
+            body.Put(MenuTables, 143, 0);
+
+            body.Put(CreatePlaceScrollersBox(), 0, 493 - AppSettings.Instance.SizePosTableButton.Height);
+            body.Put(CreateTablesScrollersBox(), 690 - 130, 493 - AppSettings.Instance.SizePosTableButton.Height);
+            return body;
+        }
+
         private void InitializeButtons()
         {
             BtnReservation = CreateButton("touchButtonTableReservation_DialogActionArea",
@@ -66,6 +88,7 @@ namespace LogicPOS.UI.Components.POS
                     ButtonSize = buttonSize
                 });
         }
+
         private void InitializeTablesScrollersButtons()
         {
             BtnScrollTablesPrevious = new IconButton(
@@ -94,6 +117,7 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollTablesNext.BorderWidth = 0;
             BtnScrollTablesNext.CanFocus = false;
         }
+       
         private HBox CreatePlaceScrollersBox()
         {
             HBox box = new HBox(true, 0);
@@ -101,6 +125,7 @@ namespace LogicPOS.UI.Components.POS
             box.PackStart(BtnScrollPlacesNext);
             return box;
         }
+        
         private HBox CreateTablesScrollersBox()
         {
             HBox box = new HBox(true, 0);
@@ -108,6 +133,7 @@ namespace LogicPOS.UI.Components.POS
             box.PackStart(BtnScrollTablesNext);
             return box;
         }
+        
         private void InitializePlacesScrollersButtons()
         {
             BtnScrollPlacesPrevious = new IconButton(
@@ -135,6 +161,22 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollPlacesNext.Relief = ReliefStyle.None;
             BtnScrollPlacesNext.BorderWidth = 0;
             BtnScrollPlacesNext.CanFocus = false;
+        }
+
+        protected override ActionAreaButtons CreateActionAreaButtons()
+        {
+            InitializeButtons();
+            var actionAreaButtons = new ActionAreaButtons();
+            actionAreaButtons.Add(new ActionAreaButton(BtnFilterAll, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnFilterFree, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnFilterOpen, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnFilterReserved, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnViewOrders, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnViewTables, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnReservation, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancel, ResponseType.Cancel));
+            return actionAreaButtons;
         }
     }
 }

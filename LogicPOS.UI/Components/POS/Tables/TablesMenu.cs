@@ -5,8 +5,6 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Linq;
 using Table = LogicPOS.Api.Entities.Table;
@@ -15,7 +13,6 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class TablesMenu : Menu<Table>
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
         public PlacesMenu MenuPlaces { get; }
         public TableStatus? Filter { get; private set; } = null;
 
@@ -78,7 +75,8 @@ namespace LogicPOS.UI.Components.Menus
             Buttons.Clear();
             Filter = tableStatus;
             LoadEntities();
-            ListEntities(Entities);
+            var filteredTables = FilterEntities(Entities);
+            ListEntities(filteredTables);
             SelectCurrentTable();
         }
 
@@ -110,7 +108,7 @@ namespace LogicPOS.UI.Components.Menus
             {
                 entities = entities.Where(x => x.Status == Filter);
             }
-            
+
             return entities;
         }
     }

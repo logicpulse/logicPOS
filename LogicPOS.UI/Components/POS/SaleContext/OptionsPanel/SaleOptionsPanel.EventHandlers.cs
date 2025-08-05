@@ -203,7 +203,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            SaleContext.ItemsPage.AddItem(new SaleItem(ArticleViewModel.FromEntity(article)));
+            SaleContext.ItemsPage.AddItem(new SaleItem(article));
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)
