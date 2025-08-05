@@ -1,9 +1,7 @@
-using ErrorOr;
 using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
-using LogicPOS.Plugin.Abstractions;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Licensing;
@@ -13,7 +11,6 @@ using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Globalization;
-using System.Runtime.InteropServices;
 using System.Threading;
 
 
@@ -24,6 +21,7 @@ namespace LogicPOS.UI
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
+
         public static void InitializeGtk()
         {
             Gtk.Application.Init();
@@ -53,15 +51,23 @@ namespace LogicPOS.UI
 
             using (var singleProgramInstance = new SingleProgramInstance())
             {
+                if (singleProgramInstance.IsSingleInstance == false)
+                {
+                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
+                    return;
+                }
+
                 InitializeGtk();
+
+                if (DependencyInjection.Initialize() == false)
+                {
+                    Quit();
+                    return;
+                }
 
                 if (InitializeCulture() == false)
                 {
-                    SimpleAlerts.Error()
-                                .WithTitle("Erro")
-                                .WithMessage("Não foi possível initalizar o idioma do sistema.")
-                                .ShowAlert();
-
+                    Quit();
                     return;
                 }
 
@@ -71,18 +77,18 @@ namespace LogicPOS.UI
 
                 CloseLoadingScreen();
 
-                KeepUIResponsive();
-
-                if (singleProgramInstance.IsSingleInstance == false)
-                {
-                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
-                    return;
-                }
+                KeepUIResponsive();          
 
                 StartApp();
             }
 
             Log.CloseAndFlush();
+        }
+
+        private static void Quit()
+        {
+            Gtk.Application.Quit();
+            Environment.Exit(0);
         }
 
         private static void CloseLoadingScreen()
@@ -100,11 +106,11 @@ namespace LogicPOS.UI
                 ErrorHandlingService.HandleApiError(intializeTerminalResult, true);
                 return;
             }
-            if (AppSettings.Plugins.LicenceManager!= null && string.IsNullOrEmpty(TerminalService.Terminal.HardwareId))
+            if (AppSettings.Plugins.LicenceManager != null && string.IsNullOrEmpty(TerminalService.Terminal.HardwareId))
             {
                 ShowLicenseDialog();
             }
-            
+
 
             LogicPOSApp app = new LogicPOSApp();
             app.Start();
@@ -118,12 +124,9 @@ namespace LogicPOS.UI
 
         public static bool InitializeCulture()
         {
-            var meditator = DependencyInjection.Mediator;
-
             try
             {
-
-                var getSystemInformationsResult = meditator.Send(new GetSystemInformationsQuery()).Result;
+                var getSystemInformationsResult = DependencyInjection.Mediator.Send(new GetSystemInformationsQuery()).Result;
 
                 if (getSystemInformationsResult.IsError)
                 {
@@ -131,6 +134,7 @@ namespace LogicPOS.UI
 
                     return false;
                 }
+
                 var culture = getSystemInformationsResult.Value.Culture;
                 LocalizedString.Instance = new LocalizedString(culture);
                 CultureInfo.CurrentCulture = new CultureInfo(culture);
@@ -138,7 +142,7 @@ namespace LogicPOS.UI
 
                 return true;
             }
-            catch 
+            catch
             {
                 SimpleAlerts.Error()
                             .WithTitle("Erro ao obter informações do sistema")
