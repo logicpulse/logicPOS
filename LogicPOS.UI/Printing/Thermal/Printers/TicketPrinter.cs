@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -32,10 +33,10 @@ namespace LogicPOS.UI.Printing
                 , GeneralUtils.GetResourceByName("global_order_request")
                 , _ticket.Number.ToString()
             );
-
+            var mode = AppSettings.Instance.UseBackOfficeMode?"retail":"default";
             //Table|Order #2|Name/Zone
             _ticketSubTitle = string.Format("{0}: #{1}/{2}"
-                , GeneralUtils.GetResourceByName(string.Format("global_table_appmode_{0}", "retail").ToLower()) /* IN008024 */
+                , GeneralUtils.GetResourceByName(string.Format($"global_table_appmode_{mode}").ToLower()) /* IN008024 */
                 , _table.Designation
                 , _table.Place.Designation
             );

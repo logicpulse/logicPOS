@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Printing
             _printer.Append(GeneralUtils.GetResourceByName("global_total_cashdrawer"));
             _printer.Separator(' ');
             _printer.DoubleWidth2();
-            _printer.BoldMode(DecimalToMoneyString(_totalAmountInCashDrawer));
+            _printer.BoldMode(_totalAmountInCashDrawer.ToMoneyString());
             _printer.NormalWidth();
             _printer.Separator(' ');
 
@@ -84,7 +85,7 @@ namespace LogicPOS.UI.Printing
                 _printer.Append(GeneralUtils.GetResourceByName("global_movement_amount"));
                 _printer.Separator(' ');
                 _printer.DoubleWidth2();
-                _printer.BoldMode(DecimalToMoneyString(_movementAmount));
+                _printer.BoldMode(_movementAmount.ToMoneyString());
                 _printer.Separator(' ');
                 _printer.NormalWidth();
             }

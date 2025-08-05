@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.Utility;
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Printing
             columns.Add(new TicketColumn("VatRate", GeneralUtils.GetResourceByName("global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
             columns.Add(new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             columns.Add(new TicketColumn("UnitMeasure", GeneralUtils.GetResourceByName("global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right));
-            if (_document.Customer.Country.ToUpper() == "PORTUGAL")
+            if (_document.Customer.Country.ToUpper() == "PT")
             {
                 columns.Add(new TicketColumn("UnitPrice", GeneralUtils.GetResourceByName("global_short_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             }
@@ -107,8 +108,8 @@ namespace LogicPOS.UI.Printing
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Designation;
                 dataRow[1] = $"{item.Rate.ToString("F2")}%";
-                dataRow[2] = $"{DecimalToMoneyString(item.Base)}";
-                dataRow[3] = $"{DecimalToMoneyString(item.Total)}";
+                dataRow[2] = $"{item.Base.ToMoneyString()}";
+                dataRow[3] = $"{item.Total.ToMoneyString()}";
                 ticketTable.Rows.Add(dataRow);
             }
             ticketTable.Print(_printer);
@@ -188,7 +189,8 @@ namespace LogicPOS.UI.Printing
         {
             var typeAnalyzer = _document.TypeAnalyzer;
             var documentType = "global_documentfinance_type_title_fr";
-            documentType = documentType.Substring(0, documentType.Length - 2) + _document.Number.Substring(0, 2).ToLower();
+            var documentTypeSuffix = _document.Number.Substring(0, 2).ToLower()=="cm"?"dc": _document.Number.Substring(0, 2).ToLower();
+            documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
             _printer.AlignCenter();
             PrintHeader();
             _printer.SetLineHeight(80);
@@ -212,11 +214,11 @@ namespace LogicPOS.UI.Printing
             PrintDocumentDetails();
 
             _printer.AlignLeft();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {DecimalToMoneyString(_document.TotalNet)}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {_document.TotalNet.ToMoneyString()}");
             _printer.NewLine(); 
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totaltax")}: {DecimalToMoneyString(_document.TotalTax)}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totaltax")}: {_document.TotalTax.ToMoneyString()}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totalfinal")}: {DecimalToMoneyString(_document.TotalFinal)}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totalfinal")}: {_document.TotalFinal.ToMoneyString()}");
             _printer.Separator(' ');
             _printer.NewLine();
             PrintTotalTax();

@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleOptionsPanel
     {
+        public PosTicket LastTicket { get; private set; }
         private void BtnPrevious_Clicked(object sender, EventArgs e)
         {
             SaleContext.ItemsPage.Previous();
@@ -151,6 +152,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
+            LastTicket= SaleContext.ItemsPage.Ticket;
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
@@ -220,10 +222,11 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
-            var modal=new SalesOrderModal(POSWindow.Instance);
+            var modal=new SaleOrderModal(POSWindow.Instance, LastTicket);
             modal.Run();
             modal.Destroy();
-            
+            UpdateButtonsSensitivity();
+
         }
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)

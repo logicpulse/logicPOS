@@ -120,12 +120,14 @@ namespace LogicPOS.UI.Components.POS
             BtnQuantity.Sensitive = hasTicketItems;
             BtnWeight.Sensitive = hasTicketItems;
             BtnFinishOrder.Sensitive = hasTicketItems;
-            
+
             var hasOrder = SaleContext.CurrentOrder != null;
             //BtnDelete.Sensitive = hasOrder;
 
             var hasFinshedOrder = hasOrder && SaleContext.CurrentOrder.Id != null;
             BtnPayments.Sensitive = hasFinshedOrder;
+            
+            BtnListOrder.Sensitive = hasOrder &&!BtnFinishOrder.Sensitive;
 
             UpdatePrivileges();
         }

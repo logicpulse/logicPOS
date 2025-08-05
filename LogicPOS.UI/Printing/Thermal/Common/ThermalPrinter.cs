@@ -45,18 +45,6 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public string DecimalToMoneyString(decimal valor)
-        {
-            string texto = valor.ToString("F2", CultureInfo.InvariantCulture);
-            string[] partes = texto.Split('.');
-
-            string parteInteira = partes[0];
-            string parteDecimal = partes.Length > 1 ? partes[1] : "00";
-            string parteInteiraFormatada = Regex.Replace(parteInteira, @"(\d)(?=(\d{3})+(?!\d))", "$1.");
-
-            return $"{parteInteiraFormatada},{parteDecimal}";
-        }
-
         public bool IsBase64String(string base64)
         {
 
