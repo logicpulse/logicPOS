@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Company.GetCompanyInformations
 
         public async override Task<ErrorOr<CompanyInformations>> Handle(GetCompanyInformationsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<CompanyInformations>("companyinformations", cancellationToken);
+            return await HandleGetEntityQueryAsync<CompanyInformations>("company/info", cancellationToken);
         }
     }
 }
