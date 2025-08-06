@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -194,7 +195,10 @@ namespace LogicPOS.UI.Printing
                 summaryTotal += item.Total;
 
                 var documentType = "global_documentfinance_type_title_fr";
-                documentType = documentType.Substring(0, documentType.Length - 2) + item.Designation.ToLower();
+                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Designation.ToLower() == "cm") ? "dc" : item.Designation.ToLower();
+                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Designation.ToLower() == "pp") ? "fp" : documentTypeSuffix;
+
+                documentType = documentType.Substring(0, documentType.Length - 2) +documentTypeSuffix;
 
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = GeneralUtils.GetResourceByName(documentType);

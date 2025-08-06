@@ -190,7 +190,7 @@ namespace LogicPOS.UI.Components.POS
         {
             string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_barcode.png";
             logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegularExpressions.AlfaNumericExtended, true);
-
+            
             if (response.ResponseType != ResponseType.Ok)
             {
                 return;

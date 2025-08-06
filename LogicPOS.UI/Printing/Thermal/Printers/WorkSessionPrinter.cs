@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -165,22 +166,22 @@ namespace LogicPOS.UI.Printing
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_total_cashdrawer"));
-            dataRow[1] = (workSessionDocumentsData.OpenTotal).ToString() + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionService.OpenTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_total_cashdrawer"));
-            dataRow[1] = (workSessionDocumentsData.Total).ToString() + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (workSessionDocumentsData.FamilyReportItems.Sum(t=>t.Total)).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money In
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_in"));
-            dataRow[1] = (workSessionDocumentsData.TotalIn).ToString() + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionService.CashDrawerInTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_out"));
-            dataRow[1] = (workSessionDocumentsData.TotalOut).ToString() + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionService.CashDrawerOutTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
 
 
@@ -250,7 +251,7 @@ namespace LogicPOS.UI.Printing
 
             //Add Final Summary Row
             summaryTotal = workSessionDocumentsData.Total;
-            summaryTotalQuantity = workSessionDocumentsData.UserReportItems.Sum(x => x.Quantity);
+            summaryTotalQuantity = workSessionDocumentsData.FamilyReportItems.Sum(x => x.Quantity);
             dataRow = ticketTable.NewRow();
             dataRow[0] = GeneralUtils.GetResourceByName("global_total");
             dataRow[1] = summaryTotalQuantity;

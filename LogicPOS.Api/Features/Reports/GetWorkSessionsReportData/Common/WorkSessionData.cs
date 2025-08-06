@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.Api.Features.Reports.WorkSession.Common
 {
@@ -16,6 +17,7 @@ namespace LogicPOS.Api.Features.Reports.WorkSession.Common
             DocumentTypeReportItems = new List<DocumentTypeReportItem>();
             HoursReportItems = new List<HoursReportItem>();
             UserReportItems = new List<UserReportItem>();
+
         }
         public WorkSessionPeriod WorkSession {  get; set; }
         public decimal OpenTotal { get; set; }

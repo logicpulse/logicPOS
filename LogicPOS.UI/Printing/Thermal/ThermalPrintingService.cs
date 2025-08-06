@@ -138,8 +138,10 @@ namespace LogicPOS.UI.Printing
             {
                 return;
             }
-
+            if (Printer != null)
+            {
             new WorkSessionPrinter(Printer, workSessionId).Print();
+            }
         }
 
         public static void PrintWorkSessionDayOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
@@ -148,12 +150,14 @@ namespace LogicPOS.UI.Printing
             {
                 return;
             }
-
-            new CashDrawerMovementPrinter(Printer,
-                                          totalAmountInCashDrawer,
-                                          movementAmount,
-                                          WorkSessionMovementType.CashDrawerOpen,
-                                          movementDescription).Print();
+            if (Printer != null)
+            {
+                new CashDrawerMovementPrinter(Printer,
+                                              totalAmountInCashDrawer,
+                                              movementAmount,
+                                              WorkSessionMovementType.CashDrawerOpen,
+                                              movementDescription).Print();
+            }
         }
 
         public static void PrintCashDrawerOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
@@ -163,11 +167,14 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawerMovementPrinter(Printer,
-                                          totalAmountInCashDrawer,
-                                          movementAmount,
-                                          WorkSessionMovementType.CashDrawerOpen,
-                                          movementDescription).Print();
+            if (Printer != null)
+            {
+                new CashDrawerMovementPrinter(Printer,
+                                             totalAmountInCashDrawer,
+                                             movementAmount,
+                                             WorkSessionMovementType.CashDrawerOpen,
+                                             movementDescription).Print();
+            }
         }
 
         public static void PrintCashDrawerInMovement(decimal totalAmountInCashDrawer, decimal movementAmount, string movementDescription = "")
@@ -190,12 +197,14 @@ namespace LogicPOS.UI.Printing
             {
                 return;
             }
-
-            new CashDrawerMovementPrinter(Printer,
+            if (Printer != null)
+            {
+                new CashDrawerMovementPrinter(Printer,
                                           totalAmountInCashDrawer,
                                           movementAmount,
                                           WorkSessionMovementType.CashDrawerOut,
                                           movementDescription).Print();
+            }
         }
     }
 }

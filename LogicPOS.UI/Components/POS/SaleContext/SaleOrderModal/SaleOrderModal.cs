@@ -110,7 +110,7 @@ namespace LogicPOS.UI.Components.Modals
                 SimpleAlerts.ShowApiErrorAlert(tableConsultResult.FirstError);
                 return;
             }
-
+            
             ThermalPrintingService.PrintInvoice(tableConsultResult.Value);
 
         }

@@ -89,11 +89,11 @@ namespace LogicPOS.UI.Services
 
         public static bool CloseAllTerminalSessions()
         {
-            var openDayResult = _mediator.Send(new CloseAllWorkSessionsCommand()).Result;
+            var closeAllTerminalSessionsResult = _mediator.Send(new CloseAllWorkSessionsCommand()).Result;
 
-            if (openDayResult.IsError)
+            if (closeAllTerminalSessionsResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(openDayResult);
+                ErrorHandlingService.HandleApiError(closeAllTerminalSessionsResult);
                 return false;
             }
 
@@ -123,7 +123,7 @@ namespace LogicPOS.UI.Services
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
-
+            OpenTotal= amount;
             return true;
         }
 
@@ -137,7 +137,7 @@ namespace LogicPOS.UI.Services
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
-
+            CloseTotal = amount;
             return true;
         }
 
@@ -150,7 +150,7 @@ namespace LogicPOS.UI.Services
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
-
+            CashDrawerInTotal += amount;
             return true;
         }
 
@@ -163,8 +163,13 @@ namespace LogicPOS.UI.Services
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
-
+            CashDrawerOutTotal += amount;
             return true;
         }
+
+        public static decimal OpenTotal { get; set; }
+        public static decimal CloseTotal { get; set; }
+        public static decimal CashDrawerInTotal { get; set; }
+        public static decimal CashDrawerOutTotal { get; set; }
     }
 }
