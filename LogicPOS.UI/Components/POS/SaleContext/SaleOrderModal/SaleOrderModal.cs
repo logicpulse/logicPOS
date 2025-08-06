@@ -87,32 +87,41 @@ namespace LogicPOS.UI.Components.Modals
 
             var command = new AddDocumentCommand();
             var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
-            var country = CountryService.countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
-
-            command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
             
-            command.CustomerId =CustomersService.GetAllCustomers().FirstOrDefault(n=>n.FiscalNumber== "999999999").Id;
-            if (command.CustomerId == null)
+            if (details == null || details.Count == 0)
             {
-                command.Customer = new DocumentCustomer
-                {
-                    Name = GeneralUtils.GetResourceByName("global_final_consumer"),
-                    FiscalNumber="999999999",
-                    Country = country.Code2,
-                    CountryId = country.Id
-                };
-            }
-            command.Details = details;
-
-            var tableConsultResult = _mediator.Send(command).Result;
-            if (tableConsultResult.IsError)
-            {
-                SimpleAlerts.ShowApiErrorAlert(tableConsultResult.FirstError);
+                SimpleAlerts.Information()
+                            .WithTitle("Mesa vazia")
+                            .WithMessage("Não existem pedidos associados a esta mesa")
+                            .ShowAlert();
                 return;
             }
-            
-            ThermalPrintingService.PrintInvoice(tableConsultResult.Value);
+            var country = CountryService.countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
 
+                command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
+
+                command.CustomerId = CustomersService.GetAllCustomers().FirstOrDefault(n => n.FiscalNumber == "999999999").Id;
+                if (command.CustomerId == null)
+                {
+                    command.Customer = new DocumentCustomer
+                    {
+                        Name = GeneralUtils.GetResourceByName("global_final_consumer"),
+                        FiscalNumber = "999999999",
+                        Country = country.Code2,
+                        CountryId = country.Id
+                    };
+                }
+                command.Details = details;
+
+                var tableConsultResult = _mediator.Send(command).Result;
+                if (tableConsultResult.IsError)
+                {
+                    SimpleAlerts.ShowApiErrorAlert(tableConsultResult.FirstError);
+                    return;
+                }
+
+                ThermalPrintingService.PrintInvoice(tableConsultResult.Value);
+            
         }
     }
 }

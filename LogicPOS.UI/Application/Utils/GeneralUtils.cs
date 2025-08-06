@@ -1,5 +1,6 @@
 ﻿using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,14 @@ namespace LogicPOS.Utility
                 return true;
             }
             return false;
+        }
+
+        public static void ShowNotImplementedMessage()
+        {
+            SimpleAlerts.Information()
+                        .WithTitleResource("Desenvolvimento")
+                        .WithMessage("Esta funcionalidade está em Desenvolvimento")
+                        .ShowAlert();
         }
 
         public static bool ValidateString(string pValidate, string pRegExRule, Type pType = null)

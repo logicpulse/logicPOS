@@ -39,6 +39,7 @@ namespace LogicPOS.UI.Components.POS
             BtnPayments.Clicked += BtnPayments_Clicked; ;
             BtnNext.Clicked += BtnNext_Clicked;
             BtnPrevious.Clicked += BtnPrevious_Clicked;
+            BtnSplitAccount.Clicked += BtnSplitAccount_Clicked;
             SaleContext.ItemsPage.TicketOpened += ItemsPage_TicketOpened;
         }
 

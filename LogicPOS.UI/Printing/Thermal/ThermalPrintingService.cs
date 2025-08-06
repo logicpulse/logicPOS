@@ -52,6 +52,10 @@ namespace LogicPOS.UI.Printing
 
         private static void GetPrinterFromAssociatedTicketItem( PosTicket ticket, ref Api.Entities.Printer printer)
         {
+            if (ticket == null)
+            {
+                return;
+            }
             if (ticket != null && ticket.Items.Count != 1)
             {
                 return;

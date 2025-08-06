@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -231,22 +230,22 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            GeneralUtils.ShowNotImplementedMessage();
         }
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            GeneralUtils.ShowNotImplementedMessage();
         }
 
         private void BtnGifts_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            GeneralUtils.ShowNotImplementedMessage();
         }
 
         private void BtnWeight_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            GeneralUtils.ShowNotImplementedMessage();
         }
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)
@@ -259,6 +258,11 @@ namespace LogicPOS.UI.Components.POS
         private void ItemsPage_TicketOpened(object sender, EventArgs e)
         {
             UpdateButtonsSensitivity();
+        }
+
+        private void BtnSplitAccount_Clicked(object sender, System.EventArgs e)
+        {
+            GeneralUtils.ShowNotImplementedMessage();
         }
     }
 }
