@@ -96,7 +96,7 @@ namespace LogicPOS.UI.Components.POS
                     TotalChange = 0;
                 }
             }
-
+            paymentMethodDesignation = paymentMethod.Designation;
             UncheckInvoiceMode();
             UpdateTotals();
         }

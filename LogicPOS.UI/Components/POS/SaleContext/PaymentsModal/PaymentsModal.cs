@@ -32,7 +32,8 @@ namespace LogicPOS.UI.Components.POS
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
-
+        private int SplittersNumber;
+        public string paymentMethodDesignation{get;set;}
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
                                                    new Size(640, 700),
@@ -41,8 +42,32 @@ namespace LogicPOS.UI.Components.POS
       
             UpdateLabels();
         }
+        public PaymentsModal(Window parent, Customer customer,int splittersNumber=2) : base(parent,
+                                           GeneralUtils.GetResourceByName("window_title_dialog_payments"),
+                                           new Size(640, 700),
+                                           AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
+        {
+            SplitModeInitilizer(customer, splittersNumber);
+            ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
+            UpdateLabels();
+        }
 
- 
+        private void SplitModeInitilizer(Customer customer, int splittersNumber)
+        {
+            SplittersNumber = splittersNumber;
+            _paymentMode = PaymentMode.Splited;
+            TxtCustomer.Component.Sensitive = false;
+            TxtCardNumber.Entry.Sensitive = false;
+            TxtAddress.Entry.Sensitive = false;
+            TxtCity.Entry.Sensitive = false;
+            TxtCountry.Entry.Sensitive = false;
+            TxtFiscalNumber.Entry.Sensitive = false;
+            TxtLocality.Entry.Sensitive = false;
+            TxtZipCode.Entry.Sensitive = false;
+            TxtCustomer.SelectedEntity = customer;
+            TxtCustomer.Text = customer.Name;
+        }
+
         private void UpdateLabels()
         {
             LabelTotalValue.Text = TotalFinal.ToString("C");
@@ -99,6 +124,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 _selectedPaymentCondition = selectedPaymentCondition;
                 return true;
+                
             }
 
             return false;
@@ -130,6 +156,9 @@ namespace LogicPOS.UI.Components.POS
                     break;
                 case PaymentMode.Partial:
                     TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
+                    break;
+                case PaymentMode.Splited:
+                    TotalFinal = OrderTotalFinal / SplittersNumber;
                     break;
             }
 
@@ -255,6 +284,18 @@ namespace LogicPOS.UI.Components.POS
                 command.Customer = GetDocumentCustomer();
             }
             command.Discount = decimal.Parse(TxtDiscount.Text);
+
+            if (_paymentMode == PaymentMode.Splited)
+            {
+                var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
+                foreach (var item in details)
+                {
+                    item.Quantity = item.Quantity / SplittersNumber;
+                }
+                
+                command.Details = details;
+                return command;
+            }
             command.Details = GetDocumentDetails().ToList();
 
             return command;

@@ -3,6 +3,7 @@
     public enum PaymentMode
     {
         Full,
-        Partial
+        Partial,
+        Splited
     }
 }
