@@ -69,22 +69,23 @@ namespace LogicPOS.UI.Buttons
 
         private void SplitAccountCustomerButton_Clicked(object sender, EventArgs e)
         {
-            var customer = CustomersService.GetAllCustomers().FirstOrDefault(x=>x.FiscalNumber=="999999999");
+            var customer =  CustomersService.GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == "consumidor final"); 
             if(customer==null)
             {
-            customer = CustomersService.GetAllCustomers().FirstOrDefault(x => x.FiscalNumber == "9999999990");
+            customer = CustomersService.GetAllCustomers().FirstOrDefault(x => x.FiscalNumber == "99999999990");
             }
 
             if (customer == null)
             {
-                customer = CustomersService.GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == "consumidor final");
+                CustomersService.GetAllCustomers().FirstOrDefault(x => x.FiscalNumber == "9999999999");
             }
             if (customer == null)
             {
                 return;
             }
             Customer = customer.Name;
-            var modal = new PaymentsModal(_window, customer, splittersNumber);
+            var modal = new PaymentsModal(_window);
+            modal.SplitAccount(customer, splittersNumber);
             ResponseType response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
@@ -92,9 +93,11 @@ namespace LogicPOS.UI.Buttons
                 Total = SaleContext.CurrentOrder.TotalFinal/splittersNumber;
                 PaymentMethod = modal.paymentMethodDesignation;
                 updatePaymentDetails();
+                SaleContext.CurrentOrder.SplitTickets(splittersNumber);
                 Sensitive = false;
             }
             modal.Destroy();
+            SaleContext.ReloadCurrentOrder();
         }
     }
 }

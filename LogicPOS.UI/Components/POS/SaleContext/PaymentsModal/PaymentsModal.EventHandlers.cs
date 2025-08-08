@@ -1,5 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
@@ -195,6 +197,22 @@ namespace LogicPOS.UI.Components.POS
         {
             BtnPartialPayment.Sensitive = _paymentMode == PaymentMode.Full;
             BtnFullPayment.Sensitive = _paymentMode == PaymentMode.Partial;
+        }
+
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCustomer.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void TxtFiscalNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                Clear();
+            }
         }
     }
 }

@@ -313,7 +313,7 @@ namespace LogicPOS.UI.Components
                                       BtnListOrderImageFileName);
 
             button.Visible = BtnListOrderVisible;
-
+            button.Sensitive = false;
             return button;
         }
 

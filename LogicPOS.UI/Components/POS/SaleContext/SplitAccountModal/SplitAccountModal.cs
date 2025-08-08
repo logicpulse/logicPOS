@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Button = Gtk.Button;
 
@@ -18,8 +19,8 @@ namespace LogicPOS.UI.Components.Modals
         VBox vBox = new VBox(false, 0);
         private IconButtonWithText BtnOk;
         private IconButtonWithText BtnCancel;
-        private IconButtonWithText BtnRemoveCustomer;
-        private IconButtonWithText BtnAddCustomer;
+        private IconButtonWithText BtnRemoveSplitter;
+        private IconButtonWithText BtnAddSplitter;
         private static string Title="";
         private readonly PosOrder _order;
         private static int TitleNumber = 2;
@@ -51,34 +52,35 @@ namespace LogicPOS.UI.Components.Modals
             
             foreach (var splitter in Splitters)
             {
+                splitter.Clicked += Splitter_Clicked;
                 splitter.splittersNumber = Splitters.Count;
                 vBox.PackStart(splitter, false, true, 5);
             }
             UpdateTitle(_order);
+
         }
 
         private void InitializeButtons()
         {
-            BtnAddCustomer = DesignButton(BtnAddCustomer, "touchButtonTableIncrementSplit_DialogActionArea",
+            BtnAddSplitter = DesignButton(BtnAddSplitter, "touchButtonTableIncrementSplit_DialogActionArea",
                                           GeneralUtils.GetResourceByName("global_add"),
                                           AppSettings.Paths.Images + @"Icons\icon_pos_nav_new.png",
                                           AppSettings.Instance.SizeBaseDialogActionAreaButton);
-            BtnAddCustomer.Clicked += BtnAddCustomer_Clicked;
+            BtnAddSplitter.Clicked += BtnAddSplitter_Clicked;
 
 
-            BtnRemoveCustomer = DesignButton(BtnRemoveCustomer, "touchButtonTableDecrementSplit_DialogActionArea",
+            BtnRemoveSplitter = DesignButton(BtnRemoveSplitter, "touchButtonTableDecrementSplit_DialogActionArea",
                                              GeneralUtils.GetResourceByName("global_remove"),
                                              AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png",
                                              AppSettings.Instance.SizeBaseDialogActionAreaButton);
-            BtnRemoveCustomer.Clicked += BtnRemoveCustomer_Clicked;
+            BtnRemoveSplitter.Clicked += BtnRemoveSplitter_Clicked;
 
             BtnOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok, "touchButtonOk_DialogActionArea");
-            BtnCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel, "touchButtonOk_DialogActionArea");
+            BtnCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel, "touchButtonCancel_DialogActionArea");
         }
 
-        private void BtnRemoveCustomer_Clicked(object sender, EventArgs e)
+        private void BtnRemoveSplitter_Clicked(object sender, EventArgs e)
         {
-
             if (Splitters.Count > 2)
             {
                 if (!Splitters[Splitters.Count - 1].Paid)
@@ -90,8 +92,15 @@ namespace LogicPOS.UI.Components.Modals
             }
             UpdateSplitters();
         }
-
-        private void BtnAddCustomer_Clicked(object sender, EventArgs e)
+        private void Splitter_Clicked(object sender, EventArgs e)
+        {
+            if (Splitters.Any(x => x.Paid))
+            {
+                BtnAddSplitter.Sensitive = false;
+                BtnRemoveSplitter.Sensitive = false;
+            }
+        }
+        private void BtnAddSplitter_Clicked(object sender, EventArgs e)
         {
             if (Splitters.Count < 4)
             {
@@ -124,8 +133,8 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     new ActionAreaButton(BtnOk, ResponseType.Ok),
                     new ActionAreaButton(BtnCancel, ResponseType.Cancel),
-                    new ActionAreaButton(BtnRemoveCustomer, ResponseType.None),
-                    new ActionAreaButton(BtnAddCustomer, ResponseType.None)
+                    new ActionAreaButton(BtnRemoveSplitter, ResponseType.None),
+                    new ActionAreaButton(BtnAddSplitter, ResponseType.None)
                  };
         }
 
@@ -139,6 +148,8 @@ namespace LogicPOS.UI.Components.Modals
             if (response != ResponseType.Ok && response != ResponseType.Cancel)
             {
                 Run();
+                SaleContext.ItemsPage.Clear();
+                SaleContext.ItemsPage.PresentOrderItems();
                 return;
             }
 

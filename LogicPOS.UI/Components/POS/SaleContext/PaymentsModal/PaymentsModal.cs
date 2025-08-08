@@ -39,13 +39,9 @@ namespace LogicPOS.UI.Components.POS
                                                    new Size(640, 700),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
-      
             UpdateLabels();
         }
-        public PaymentsModal(Window parent, Customer customer,int splittersNumber=2) : base(parent,
-                                           GeneralUtils.GetResourceByName("window_title_dialog_payments"),
-                                           new Size(640, 700),
-                                           AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
+        public void SplitAccount(Customer customer,int splittersNumber=2)
         {
             SplitModeInitilizer(customer, splittersNumber);
             ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
@@ -305,6 +301,13 @@ namespace LogicPOS.UI.Components.POS
         {
             _selectedPaymentCondition = null;
             BtnInvoice.Sensitive = true;
+        }
+
+        private void SelectCustomer(Customer customer)
+        {
+            TxtCustomer.Text = customer.Name;
+            TxtCustomer.SelectedEntity = customer;
+            ShowCustomerData(customer);
         }
     }
 }

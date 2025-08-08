@@ -1,5 +1,6 @@
 ﻿using ESC_POS_USB_NET.Enums;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
@@ -29,6 +30,13 @@ namespace LogicPOS.UI.Printing
         private void PrintTitle()
         {
             //Order Request #1/3
+            if (_ticket==null)
+            {
+                new SimpleAlert().WithMessageType(Gtk.MessageType.Info)
+                                 .WithMessage("Sem pedido recente")
+                                 .ShowAlert();
+                return;
+            }
             _ticketTitle = string.Format("{0}: #{1}"
                 , GeneralUtils.GetResourceByName("global_order_request")
                 , _ticket.Number.ToString()

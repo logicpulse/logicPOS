@@ -30,6 +30,20 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
+        public void SplitTickets(int splitNumber)
+        {
+            if (Tickets.Any())
+            {
+
+                foreach (var ticket in Tickets)
+                {
+                    foreach (var item in ticket.Items)
+                    {
+                        item.Quantity -= (item.Quantity / splitNumber);
+                    }
+                }
+            }
+        }
         public List<SaleItem> GetOrderItems()
         {
             var orderItems = new List<SaleItem>();
@@ -60,7 +74,7 @@ namespace LogicPOS.UI.Components.POS
 
         public IEnumerable<DocumentDetailDto> GetDocumentDetails()
         {
-           return SaleItem.GetOrderDetailsFromSaleItems(GetOrderItems());
+            return SaleItem.GetOrderDetailsFromSaleItems(GetOrderItems());
         }
 
         public bool ReduceItems(IEnumerable<SaleItem> items)
@@ -70,7 +84,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void Close()
         {
-            if(Id != null)
+            if (Id != null)
             {
                 OrdersService.CloseOrder(Id.Value);
             }
