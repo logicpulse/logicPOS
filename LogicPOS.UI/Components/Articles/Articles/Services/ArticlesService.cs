@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
@@ -120,21 +121,18 @@ namespace LogicPOS.UI.Components.Articles
             };
         }
 
-        public static void UpdateArticleNotes(Guid articleId, string Notes)
+        public static string GetArticleImage(Guid id)
         {
-            var updateCommand = new UpdateArticleCommand();
-
-            updateCommand.Id = articleId;
-            updateCommand.NewNotes = Notes;
-
-        
-            var result = _mediator.Send( updateCommand).Result;
+            var result = _mediator.Send(new GetArticleImageQuery(id)).Result;
+           
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-            
+                return null;
             }
-            
+
+            return result.Value;
         }
+
     }
 }

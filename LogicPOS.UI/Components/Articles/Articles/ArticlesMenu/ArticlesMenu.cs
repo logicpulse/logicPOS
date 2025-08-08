@@ -58,7 +58,18 @@ namespace LogicPOS.UI.Components.Menus
         {
             if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
             {
-                return ButtonImageRepository.GetImage(article.Id) ?? ButtonImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
+                string imagePath = ButtonImageRepository.GetImagePath(article.Id);
+
+                if (imagePath != null)
+                {
+                    return imagePath;
+                }
+
+                string base64Image = ArticlesService.GetArticleImage(article.Id);
+
+                imagePath = ButtonImageRepository.AddBase64Image(article.Id, base64Image, article.Button.ImageExtension);
+
+                return imagePath;
             }
 
             return null;
@@ -79,7 +90,7 @@ namespace LogicPOS.UI.Components.Menus
             if (MenuSubfamilies.SelectedEntity == null)
             {
                 Entities.Clear();
-               ListEntities(Entities);
+                ListEntities(Entities);
                 return;
             }
             CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;

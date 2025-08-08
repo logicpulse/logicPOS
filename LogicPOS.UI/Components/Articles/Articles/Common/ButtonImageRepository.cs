@@ -32,11 +32,11 @@ namespace LogicPOS.UI.Components.Articles
             return tempFile;
         }
 
-        public static string GetImage(Guid articleId)
+        public static string GetImagePath(Guid entityId)
         {
-            if (_images.ContainsKey(articleId))
+            if (_images.ContainsKey(entityId))
             {
-                return _images[articleId];
+                return _images[entityId];
             }
 
             return null;
