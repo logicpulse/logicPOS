@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Articles
 {
-    public static class ArticleImageRepository
+    public static class ButtonImageRepository
     {
         private static Dictionary<Guid, string> _images = new Dictionary<Guid, string>();
 
