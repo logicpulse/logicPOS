@@ -12,6 +12,7 @@ namespace LogicPOS.Api.Features.Common.Pagination
         public string Search { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
+        public bool? IncludeDeleted { get; set; }
 
         public void GoToNextPage()
         {
@@ -52,6 +53,11 @@ namespace LogicPOS.Api.Features.Common.Pagination
             if (PageSize.HasValue)
             {
                 queryBuilder.Append($"&pageSize={PageSize}");
+            }
+
+            if (IncludeDeleted.HasValue)
+            {
+                queryBuilder.Append($"&includeDeleted={IncludeDeleted}");
             }
 
             BuildQuery(queryBuilder);

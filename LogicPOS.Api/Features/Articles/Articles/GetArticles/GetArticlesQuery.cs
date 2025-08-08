@@ -10,6 +10,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
         public Guid? FamilyId { get; set; }
         public Guid? SubFamilyId { get; set; }
         public bool? Favorite { get; set; }
+        
 
         protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
