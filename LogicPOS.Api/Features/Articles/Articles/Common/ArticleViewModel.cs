@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.ValueObjects;
 using System;
 
 namespace LogicPOS.Api.Features.Articles.Common
@@ -21,7 +22,8 @@ namespace LogicPOS.Api.Features.Articles.Common
         public string Unit { get; set; }
         public Guid SubfamilyId { get; set; }
         public Guid FamilyId { get; set; }
+        public Button Button { get; set; }
 
-        
+
     }
 }

@@ -56,10 +56,10 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override string GetButtonImage(ArticleViewModel article)
         {
-            //if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
-            //{
-            //    return ArticleImageRepository.GetImage(article.Id) ?? ArticleImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
-            //}
+            if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
+            {
+                return ArticleImageRepository.GetImage(article.Id) ?? ArticleImageRepository.AddBase64Image(article.Id, article.Button.Image, article.Button.ImageExtension);
+            }
 
             return null;
         }
