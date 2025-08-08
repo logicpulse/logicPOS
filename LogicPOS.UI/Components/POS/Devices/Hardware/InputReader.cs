@@ -1,12 +1,11 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Hardware;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;
 using Serilog;
 using System;
 using System.Collections.Generic;
 
-namespace logicpos.Classes.Logic.Hardware
+namespace LogicPOS.UI.Components.POS.Devices.Hardware
 {
     public class InputReader
     {
@@ -14,12 +13,12 @@ namespace logicpos.Classes.Logic.Hardware
         private bool _timerEnabled = false;
         private static List<int> _barCodeReaderList;
         private static List<int> _cardReaderList;
-        private static Dictionary<int, InputReaderDevice> _readers;
+        private static Dictionary<int, InputReaderType> _readers;
 
         public string Buffer { get; set; } = string.Empty;
 
         public Window Window { get; set; }
-        public InputReaderDevice Device { get; set; }
+        public InputReaderType Device { get; set; }
 
         //Public Event
         public event EventHandler Captured;
@@ -33,9 +32,9 @@ namespace logicpos.Classes.Logic.Hardware
             _readers = InitReaders();
         }
 
-        private Dictionary<int, InputReaderDevice> InitReaders()
+        private Dictionary<int, InputReaderType> InitReaders()
         {
-            Dictionary<int, InputReaderDevice> result = new Dictionary<int, InputReaderDevice>();
+            Dictionary<int, InputReaderType> result = new Dictionary<int, InputReaderType>();
 
             try
             {
@@ -45,7 +44,7 @@ namespace logicpos.Classes.Logic.Hardware
 
                     for (int i = 0; i < _barCodeReaderList.Count; i++)
                     {
-                        result.Add(Convert.ToInt16(_barCodeReaderList[i]), InputReaderDevice.BarCodeReader);
+                        result.Add(Convert.ToInt16(_barCodeReaderList[i]), InputReaderType.BarCodeReader);
                     }
                 }
 
@@ -58,7 +57,7 @@ namespace logicpos.Classes.Logic.Hardware
                         //Check if BarCodeReader is Using same Value Size, if So Skip
                         if (!result.ContainsKey(Convert.ToInt16(_cardReaderList[i])))
                         {
-                            result.Add(Convert.ToInt16(_cardReaderList[i]), InputReaderDevice.CardReader);
+                            result.Add(Convert.ToInt16(_cardReaderList[i]), InputReaderType.CardReader);
                         }
                     }
                 }
@@ -90,7 +89,7 @@ namespace logicpos.Classes.Logic.Hardware
             _timerEnabled = false;
 
             //Reset to Default
-            Device = InputReaderDevice.None;
+            Device = InputReaderType.None;
 
             //Search For Valid InputReaderDevice
             foreach (var item in _readers)
@@ -103,7 +102,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
 
             //Trigger Event
-            if (Device != InputReaderDevice.None)
+            if (Device != InputReaderType.None)
             {
                 OnCapture();
             }

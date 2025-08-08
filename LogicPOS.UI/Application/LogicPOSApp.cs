@@ -4,6 +4,7 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Screen;
+using LogicPOS.UI.Components.POS.Devices.Hardware;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Settings;

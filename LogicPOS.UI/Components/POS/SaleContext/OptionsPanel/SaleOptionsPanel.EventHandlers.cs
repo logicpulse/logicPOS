@@ -201,6 +201,9 @@ namespace LogicPOS.UI.Components.POS
 
             if (article == null)
             {
+                CustomAlerts.Warning(POSWindow.Instance)
+                            .WithMessage("Artigo não encontrado")
+                            .ShowAlert();
                 return;
             }
 

@@ -1,10 +1,10 @@
 ﻿using Gtk;
-using logicpos.Classes.Enums.Hardware;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.POS.Devices.Hardware;
 using LogicPOS.UI.Components.Users;
 using System;
 
@@ -130,10 +130,10 @@ namespace LogicPOS.UI.Components.Windows
         {
             switch (LogicPOSApp.BarCodeReader.Device)
             {
-                case InputReaderDevice.None:
+                case InputReaderType.None:
                     break;
-                case InputReaderDevice.BarCodeReader:
-                case InputReaderDevice.CardReader:
+                case InputReaderType.BarCodeReader:
+                case InputReaderType.CardReader:
                     throw new NotImplementedException();
                 default:
                     break;

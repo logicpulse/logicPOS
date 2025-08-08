@@ -88,6 +88,12 @@ namespace LogicPOS.UI.Components.Articles
                 ErrorHandlingService.HandleApiError(result);
                 return null;
             }
+
+            if(result.Value == null)
+            {
+                return null;
+            }
+
             return ArticleToViewModel(result.Value);
         }
 
