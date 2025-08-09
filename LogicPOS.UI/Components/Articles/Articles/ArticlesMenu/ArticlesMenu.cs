@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
             {
-                string imagePath = ButtonImageRepository.GetImagePath(article.Id);
+                string imagePath = ButtonImageCache.GetImagePath(article.Id,article.Button.ImageExtension);
 
                 if (imagePath != null)
                 {
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.Menus
 
                 string base64Image = ArticlesService.GetArticleImage(article.Id);
 
-                imagePath = ButtonImageRepository.AddBase64Image(article.Id, base64Image, article.Button.ImageExtension);
+                imagePath = ButtonImageCache.AddBase64Image(article.Id, base64Image, article.Button.ImageExtension);
 
                 return imagePath;
             }

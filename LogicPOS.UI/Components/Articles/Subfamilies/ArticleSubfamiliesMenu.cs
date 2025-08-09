@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             if (string.IsNullOrEmpty(subfamily.Button.ImageExtension) == false)
             {
-                return ButtonImageRepository.GetImagePath(subfamily.Id) ?? ButtonImageRepository.AddBase64Image(subfamily.Id, subfamily.Button.Image, subfamily.Button.ImageExtension);
+                return ButtonImageCache.GetImagePath(subfamily.Id, subfamily.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(subfamily.Id, subfamily.Button.Image, subfamily.Button.ImageExtension);
             }
 
             return null;
