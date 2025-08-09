@@ -79,6 +79,7 @@ namespace LogicPOS.UI.Components.Modals
         }
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
+
             ThermalPrintingService.PrintTicket(_ticket, SaleContext.CurrentTable);
         }
 
@@ -97,16 +98,16 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
             var country = CountryService.countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
-
+            var customer = CustomersService.GetAllCustomers().FirstOrDefault(n => n.Name == GeneralUtils.GetResourceByName("global_final_consumer"));
                 command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 
-                command.CustomerId = CustomersService.GetAllCustomers().FirstOrDefault(n => n.FiscalNumber == "999999999").Id;
+                command.CustomerId =customer.Id ;
                 if (command.CustomerId == null)
                 {
                     command.Customer = new DocumentCustomer
                     {
                         Name = GeneralUtils.GetResourceByName("global_final_consumer"),
-                        FiscalNumber = "999999999",
+                        FiscalNumber = customer.FiscalNumber,
                         Country = country.Code2,
                         CountryId = country.Id
                     };
