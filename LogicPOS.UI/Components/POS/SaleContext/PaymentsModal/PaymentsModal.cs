@@ -102,7 +102,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void EnableAllPaymentMethodButtons(bool enable = true)
         {
-            foreach (var button in PaymentMethodsMenu.Buttons)
+            foreach (var button in PaymentMethodsMenu.ButtonsCache)
             {
                 button.Button.Sensitive = enable;
             }

@@ -13,7 +13,6 @@ namespace LogicPOS.Api.Features.Articles.Common
         public string Subfamily { get; set; } 
         public string Designation { get; set; } 
         public string Type { get; set; } 
-        public string ButtonLabel { get; set; }
         public decimal DefaultQuantity { get; set; }
         public decimal MinimumStock { get; set; }
         public decimal Price { get; set; }

@@ -4,7 +4,6 @@ using LogicPOS.Api.Enums;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
 using System.Collections.Generic;
 using System.Linq;
 using Table = LogicPOS.Api.Entities.Table;
@@ -14,6 +13,7 @@ namespace LogicPOS.UI.Components.Menus
     public class TablesMenu : Menu<Table>
     {
         public PlacesMenu MenuPlaces { get; }
+        public TableStatus? LastFilter { get; set; }
         public TableStatus? Filter { get; private set; } = null;
 
         public TablesMenu(CustomButton btnPrevious,
@@ -21,8 +21,6 @@ namespace LogicPOS.UI.Components.Menus
                           PlacesMenu palcesMenu,
                           Window sourceWindow) : base(5,
                                                       4,
-                                                      AppSettings.Instance.SizePosTableButton,
-                                                      "",
                                                       btnPrevious,
                                                       btnNext,
                                                       sourceWindow)
@@ -30,8 +28,7 @@ namespace LogicPOS.UI.Components.Menus
 
             MenuPlaces = palcesMenu;
             AddEventHandlers();
-            LoadEntities();
-            ListEntities(Entities);
+            Refresh();
         }
 
         private void AddEventHandlers()
@@ -44,40 +41,35 @@ namespace LogicPOS.UI.Components.Menus
             Refresh();
         }
 
-        protected override CustomButton CreateMenuButton(Table entity)
+        protected override CustomButton CreateButtonForEntity(Table entity)
         {
             return new TableButton(entity);
-        }
-
-        protected override string GetButtonLabel(Table entity)
-        {
-            return entity.Designation;
-        }
-
-        protected override string GetButtonImage(Table entity)
-        {
-            return null;
         }
 
         protected override void LoadEntities()
         {
             Entities.Clear();
-            Entities.AddRange(TablesService.GetAllTables());
+            var filteredEntities = FilterEntities(TablesService.GetAllTables());
+            Entities.AddRange(filteredEntities);
         }
 
         public override void Refresh()
         {
-            Refresh(null);
+            base.Refresh();
+            SelectCurrentTable();
         }
 
-        public void Refresh(TableStatus? tableStatus = null)
+        public void ApplyFilter(TableStatus filter)
         {
-            Buttons.Clear();
-            Filter = tableStatus;
-            LoadEntities();
-            var filteredTables = FilterEntities(Entities);
-            ListEntities(filteredTables);
-            SelectCurrentTable();
+            Filter = filter;
+            var selectedPlace = MenuPlaces.SelectedEntity;
+            MenuPlaces.SelectedEntity = null;
+
+            Refresh();
+
+            LastFilter = filter;
+            Filter = null;
+            MenuPlaces.SelectedEntity = selectedPlace;
         }
 
         private void SelectCurrentTable()
@@ -89,7 +81,7 @@ namespace LogicPOS.UI.Components.Menus
 
             SelectedEntity = SaleContext.CurrentTable;
             SelectedButton.Sensitive = true;
-            SelectedButton = Buttons.FirstOrDefault(x => x.Item1.Id == SaleContext.CurrentTable.Id).Button;
+            SelectedButton = ButtonsCache.Where(mb => mb.Entity.Id == SaleContext.CurrentTable.Id).Select(mb => mb.Button).FirstOrDefault();
 
             if (SelectedButton != null)
             {
@@ -97,7 +89,7 @@ namespace LogicPOS.UI.Components.Menus
             }
         }
 
-        protected override IEnumerable<Table> FilterEntities(IEnumerable<Table> entities)
+        private IEnumerable<Table> FilterEntities(IEnumerable<Table> entities)
         {
             if (MenuPlaces.SelectedEntity != null)
             {

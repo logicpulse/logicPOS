@@ -2,10 +2,9 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.GetAllUsers;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Settings;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -13,6 +12,8 @@ namespace LogicPOS.UI.Components.Menus
     public class UsersMenu : Menu<User>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
+        private Size ButtonSize { get; } = new Size(120, 102);
+        private string ButtonName => "buttonUserId";
 
         public UsersMenu(uint rows,
                          uint columns,
@@ -20,13 +21,11 @@ namespace LogicPOS.UI.Components.Menus
                          CustomButton btnNext,
                          Window sourceWindow) : base(rows,
                                                      columns,
-                                                     buttonSize: new Size(120, 102),
-                                                     buttonName: "buttonUserId",
                                                      btnPrevious: btnPrevious,
                                                      btnNext: btnNext,
                                                      sourceWindow: sourceWindow)
         {
-
+            Refresh();
         }
 
         protected override void LoadEntities()
@@ -38,16 +37,6 @@ namespace LogicPOS.UI.Components.Menus
             {
                 Entities.AddRange(getUsersResult.Value);
             }
-        }
-
-        protected override string GetButtonLabel(User user)
-        {
-            return user.Name;
-        }
-
-        protected override string GetButtonImage(User user)
-        {
-            return AppSettings.Paths.Images + @"Icons\Users\icon_user_default.png";
         }
 
         public static IconButton CreatePreviousButton()
@@ -70,9 +59,9 @@ namespace LogicPOS.UI.Components.Menus
             return button;
         }
 
-        protected override IEnumerable<User> FilterEntities(IEnumerable<User> entities)
+        protected override CustomButton CreateButtonForEntity(User entity)
         {
-            return entities;
+            return MenuButton<User>.CreateButton(ButtonName, entity.Name, AppSettings.Paths.Images + @"Icons\Users\icon_user_default.png", ButtonSize);
         }
     }
 }

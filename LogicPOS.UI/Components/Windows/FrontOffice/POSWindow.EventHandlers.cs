@@ -36,11 +36,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void Window_StateEvent(object o, WindowStateEventArgs args)
         {
-            if (args.Event.NewWindowState == Gdk.WindowState.Fullscreen)
-            {
-                MenuFamilies.SelectedEntity = null;
-                MenuFamilies.Refresh();
-            }
+           
         }
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)

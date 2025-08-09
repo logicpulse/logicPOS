@@ -2,10 +2,12 @@
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Common.Menus;
 using MediatR;
-using System.Collections.Generic;
+using System;
 using System.Drawing;
 using System.Linq;
 
@@ -14,6 +16,8 @@ namespace LogicPOS.UI.Components.Menus
     public class ArticleSubfamiliesMenu : Menu<ArticleSubfamily>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
+        private string ButtonName => "buttonSubFamilyId";
+        private Size ButtonSize { get; }
 
         private ArticleFamiliesMenu FamiliesMenu { get; }
 
@@ -24,16 +28,14 @@ namespace LogicPOS.UI.Components.Menus
                                       Size buttonsSize,
                                       TableConfig tableConfig) : base(tableConfig.Rows,
                                                                   tableConfig.Columns,
-                                                                  buttonsSize,
-                                                                  "buttonSubFamilyId",
                                                                   btnPrevious,
                                                                   btnNext,
                                                                   sourceWindow)
         {
+            SelectFirstOnReload = true;
+            ButtonSize = buttonsSize;
             FamiliesMenu = familiesMenu;
             AddEventHandlers();
-            LoadEntities();
-            ListEntities(Entities);
         }
 
         private void AddEventHandlers()
@@ -46,12 +48,15 @@ namespace LogicPOS.UI.Components.Menus
             Refresh();
         }
 
-        protected override string GetButtonLabel(ArticleSubfamily subfamily)
+        protected override CustomButton CreateButtonForEntity(ArticleSubfamily entity)
         {
-            return subfamily.Button.Label ?? subfamily.Designation;
+            string label = entity.Button.Label ?? entity.Designation;
+            string image = GetButtonImage(entity);
+
+            return MenuButton<ArticleSubfamily>.CreateButton(ButtonName, label, image, ButtonSize);
         }
 
-        protected override string GetButtonImage(ArticleSubfamily subfamily)
+        private string GetButtonImage(ArticleSubfamily subfamily)
         {
             if (string.IsNullOrEmpty(subfamily.Button.ImageExtension) == false)
             {
@@ -64,7 +69,13 @@ namespace LogicPOS.UI.Components.Menus
         protected override void LoadEntities()
         {
             Entities.Clear();
-            var subfamilies = _mediator.Send(new GetAllArticleSubfamiliesQuery()).Result;
+
+            if (FamiliesMenu.SelectedEntity == null)
+            {
+                return;
+            }
+
+            var subfamilies = _mediator.Send(new GetAllArticleSubfamiliesQuery { FamilyId = FamiliesMenu.SelectedEntity.Id }).Result;
 
             if (subfamilies.IsError != false)
             {
@@ -74,9 +85,5 @@ namespace LogicPOS.UI.Components.Menus
             Entities.AddRange(subfamilies.Value);
         }
 
-        protected override IEnumerable<ArticleSubfamily> FilterEntities(IEnumerable<ArticleSubfamily> entities)
-        {
-            return entities.Where(s => s.FamilyId == FamiliesMenu.SelectedEntity.Id);
-        }
     }
 }

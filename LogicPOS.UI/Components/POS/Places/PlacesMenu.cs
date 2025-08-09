@@ -1,12 +1,15 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Settings;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
@@ -14,41 +17,31 @@ namespace LogicPOS.UI.Components.Menus
     public class PlacesMenu : Menu<Place>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
+        private string ButtonName => "buttonFamilyId";
+        private Size ButtonSize => AppSettings.Instance.SizePosTableButton;
 
         public PlacesMenu(CustomButton btnPrevious,
                           CustomButton btnNext,
                           Window sourceWindow) : base(5,
                                                       1,
-                                                      AppSettings.Instance.SizePosTableButton,
-                                                      "buttonFamilyId",
                                                       btnPrevious,
                                                       btnNext,
                                                       sourceWindow)
         {
-            LoadEntities();
-            ListEntities(Entities);
+            Refresh();
         }
 
-        protected override IEnumerable<Place> FilterEntities(IEnumerable<Place> entities)
+        protected override CustomButton CreateButtonForEntity(Place entity)
         {
-            return entities.Where(t => t.Id == TerminalService.Terminal.PlaceId);
-        }
-
-        protected override string GetButtonImage(Place entity)
-        {
-            return null;
-        }
-
-        protected override string GetButtonLabel(Place entity)
-        {
-            return entity.Designation;
+            string label = entity.Designation;
+            return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, null, ButtonSize);
         }
 
         protected override void LoadEntities()
         {
             Entities.Clear();
-
-            var places = _mediator.Send(new GetAllPlacesQuery()).Result;
+            Guid? terminalPlaceId = TerminalService.Terminal.PlaceId;
+            var places = _mediator.Send(new GetAllPlacesQuery(terminalPlaceId)).Result;
 
             if (places.IsError != false)
             {

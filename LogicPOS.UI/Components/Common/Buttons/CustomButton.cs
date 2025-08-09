@@ -18,7 +18,6 @@ namespace LogicPOS.UI.Buttons
             _settings = settings;
         }
 
-
         public void Initialize()
         {
             WidthRequest = _settings.ButtonSize.Width;

@@ -1,33 +1,29 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public abstract class Menu<TEntity> : Gtk.Table
+    public abstract class Menu<TEntity> : Gtk.Table where TEntity : ApiEntity
     {
-        private int ButtonFontSize { get; } = Convert.ToInt16(AppSettings.Instance.FontPosBaseButtonSize);
-        public int MaxCharsPerButtonLabel { get; set; } = AppSettings.Instance.PosBaseButtonMaxCharsPerLabel;
-        private readonly string _buttonOverlay;
-        public List<(TEntity Entity, CustomButton Button)> Buttons { get; set; } = new List<(TEntity, CustomButton)>();
-        public string ButtonImage { get; set; }
-        public string ButtonLabel { get; set; }
+        public List<MenuButton<TEntity>> ButtonsCache { get; } = new List<MenuButton<TEntity>>();
         private readonly bool _toggleMode;
-        public int TotalItems { get; set; }
-        public int ItemsPerPage { get; set; }
-        public int CurrentPage { get; set; }
-        public int TotalPages { get; set; }
+        private int TotalItems => Entities.Count;
+        public int PageSize => (int)(_rows * _columns);
+        public int CurrentPage { get; set; } = 1;
+        public int TotalPages => (int)Math.Ceiling((float)TotalItems / PageSize);
         public CustomButton BtnPrevious { get; set; }
         public CustomButton BtnNext { get; set; }
-
         protected readonly uint _rows;
         protected readonly uint _columns;
-        protected readonly Size _buttonSize;
-        private readonly string _buttonName;
+        public bool SelectFirstOnReload { get; set; }
         public Window SourceWindow { get; }
         public TEntity SelectedEntity { get; set; }
         public CustomButton SelectedButton { get; set; }
@@ -36,45 +32,31 @@ namespace LogicPOS.UI.Components.Menus
 
         public Menu(uint rows,
                     uint columns,
-                    Size buttonSize,
-                    string buttonName,
                     CustomButton btnPrevious,
                     CustomButton btnNext,
                     Window sourceWindow,
-                    bool toggleMode = true) : base(rows, columns, true)
+                    bool toggleMode = true) : base(rows, columns, toggleMode)
         {
-            _buttonName = buttonName;
             _toggleMode = toggleMode;
             SourceWindow = sourceWindow;
-            _buttonSize = buttonSize;
             _rows = rows;
             _columns = columns;
-
-            _buttonOverlay = (AppSettings.Instance.UseImageOverlay) ? AppSettings.Paths.Images + @"Buttons\Pos\button_overlay.png" : null;
-
             BtnPrevious = btnPrevious;
             BtnNext = btnNext;
+            AddNavigationEventHandlers();
+        }
+
+        private void AddNavigationEventHandlers()
+        {
             BtnPrevious.Clicked += BtnPrevious_Clicked;
             BtnNext.Clicked += BtnNext_Clicked;
         }
 
-        protected virtual CustomButton CreateMenuButton(TEntity entity)
-        {
-            return new ImageButton(
-                new ButtonSettings
-                {
-                    Name = _buttonName,
-                    Text = ButtonLabel,
-                    FontSize = ButtonFontSize,
-                    Image = ButtonImage,
-                    Overlay = _buttonOverlay,
-                    ButtonSize = _buttonSize,
-                });
-        }
+        protected abstract CustomButton CreateButtonForEntity(TEntity entity);
 
         public void UpdateUI()
         {
-            RemoveOldPage();
+            Clear();
             PresentCurrentPage();
             UpdateNavigationButtons();
         }
@@ -96,40 +78,74 @@ namespace LogicPOS.UI.Components.Menus
             }
             else
             {
-                if (TotalPages > 1) BtnNext.Sensitive = true;
+                if (TotalPages > 1)
+                {
+                    BtnNext.Sensitive = true;
+                }
             }
+        }
+
+        protected virtual IEnumerable<TEntity> GetPage(int page)
+        {
+            return Entities.Skip((page - 1) * PageSize).Take(PageSize);
+        }
+
+        private MenuButton<TEntity> GetOrCreateMenuButtonForEntity(TEntity entity)
+        {
+            MenuButton<TEntity> menuButton = ButtonsCache.Where(mb => mb.Entity.Id == entity.Id).FirstOrDefault();
+
+            if (menuButton != null)
+            {
+                return menuButton;
+            }
+
+            CustomButton button = CreateButtonForEntity(entity);
+            button.Clicked += MenuButton_Clicked;
+            menuButton = new MenuButton<TEntity>(entity, button);
+            ButtonsCache.Add(menuButton);
+
+            return menuButton;
         }
 
         private void PresentCurrentPage()
         {
-            if (Buttons.Count <= 0)
+            var entities = GetPage(CurrentPage);
+
+            uint row = 0, column = 0;
+  
+            foreach (var entity in entities)
             {
-                return;
-            }
-            uint currentRow = 0, currentColumn = 0;
-            int startItem = (CurrentPage * ItemsPerPage) - ItemsPerPage;
-            int endItem = startItem + ItemsPerPage - 1;
-            for (int i = startItem; i <= endItem; i++)
-            {
-                if (i < TotalItems)
+                var menuButton = GetOrCreateMenuButtonForEntity(entity);
+
+                if (column == 0 && row == 0 && SelectFirstOnReload && _toggleMode)
                 {
-                    this.Attach(Buttons[i].Button, currentColumn, currentColumn + 1, currentRow, currentRow + 1, AttachOptions.Fill, AttachOptions.Fill, 0, 0);
+                    MenuButton_Clicked(menuButton.Button, EventArgs.Empty);
                 }
 
-                if (currentColumn == this.NColumns - 1)
+                this.Attach(menuButton.Button,
+                            column,
+                            column + 1,
+                            row,
+                            row + 1,
+                            AttachOptions.Fill,
+                            AttachOptions.Fill,
+                            0,
+                            0);
+
+                if (column == this.NColumns - 1)
                 {
-                    ++currentRow;
-                    currentColumn = 0;
+                    ++row;
+                    column = 0;
                 }
                 else
                 {
-                    ++currentColumn;
+                    ++column;
                 }
-            }
 
+            }
         }
 
-        private void RemoveOldPage()
+        private void Clear()
         {
             int childrenLength = this.Children.Length;
             for (int i = 0; i < childrenLength; i++)
@@ -140,65 +156,18 @@ namespace LogicPOS.UI.Components.Menus
 
         protected virtual void BtnPrevious_Clicked(object obj, EventArgs args)
         {
+            if (CurrentPage <= 1) return;
+
             CurrentPage -= 1;
             UpdateUI();
         }
 
         protected virtual void BtnNext_Clicked(object obj, EventArgs args)
         {
+            if (CurrentPage >= TotalPages) return;
+
             CurrentPage += 1;
             UpdateUI();
-        }
-
-        protected abstract string GetButtonLabel(TEntity entity);
-
-        protected abstract string GetButtonImage(TEntity entity);
-
-        public virtual void ListEntities(IEnumerable<TEntity> entities)
-        {
-            if (entities == null || entities.Any() == false)
-            {
-                return;
-            }
-
-
-            Buttons.Clear();
-
-            SelectedEntity = default;
-
-            foreach (var entity in entities)
-            {
-                ButtonLabel = GetButtonLabel(entity);
-                ButtonImage = GetButtonImage(entity);
-
-                if (ButtonLabel.Length > MaxCharsPerButtonLabel)
-                {
-                    ButtonLabel = ButtonLabel.Substring(0, MaxCharsPerButtonLabel) + ".";
-                }
-
-                var menuButton = CreateMenuButton(entity);
-                menuButton.Clicked += MenuButton_Clicked;
-                Buttons.Add((entity, menuButton));
-
-                if (_toggleMode && SelectedEntity == null)
-                {
-                    SelectedEntity = entity;
-                    SelectedButton = menuButton;
-                    SelectedButton.Sensitive = false;
-                }
-            }
-
-            SetPagination();
-
-            UpdateUI();
-        }
-
-        protected virtual void SetPagination()
-        {
-            CurrentPage = 1;
-            TotalItems = Buttons.Count;
-            ItemsPerPage = Convert.ToInt16(_rows * _columns);
-            TotalPages = (int)Math.Ceiling(TotalItems / (float)ItemsPerPage);
         }
 
         protected abstract void LoadEntities();
@@ -219,23 +188,19 @@ namespace LogicPOS.UI.Components.Menus
                 SelectedButton.Sensitive = false;
             }
 
-            SelectedEntity = Buttons.Find(x => x.Button == SelectedButton).Entity;
-            OnEntitySelected?.Invoke(SelectedEntity);
-        }
-
-        protected abstract IEnumerable<TEntity> FilterEntities(IEnumerable<TEntity> entities);
-
-        public virtual void Refresh()
-        {
-            Buttons.Clear();
-            LoadEntities();
-            var filteredEntities = FilterEntities(Entities);
-            ListEntities(filteredEntities);
+            SelectedEntity = ButtonsCache.Where(x => x.Button == SelectedButton).Select(x => x.Entity).FirstOrDefault();
 
             if (SelectedEntity != null)
             {
                 OnEntitySelected?.Invoke(SelectedEntity);
             }
+        }
+
+        public virtual void Refresh()
+        {
+            LoadEntities();
+
+            UpdateUI();
         }
     }
 }

@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
@@ -78,5 +79,7 @@ namespace LogicPOS.UI.Components.Menus
             CurrentQuery.GoToNextPage();
             Refresh();
         }
+
+      
     }
 }

@@ -62,6 +62,7 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
+  
         public static WarehouseArticle GetWarehouseArticleById(Guid id)
         {
             var result = _mediator.Send(new GetWarehouseArticleByIdQuery(id)).Result;
@@ -108,7 +109,6 @@ namespace LogicPOS.UI.Components.Articles
                 Family = article.Subfamily?.Family?.Designation,
                 Subfamily = article.Subfamily?.Designation,
                 Type = article.Type.Designation,
-                ButtonLabel = article.Button.Label,
                 DefaultQuantity = article.DefaultQuantity,
                 MinimumStock = article.MinimumStock,
                 Price = article.Price1.Value,

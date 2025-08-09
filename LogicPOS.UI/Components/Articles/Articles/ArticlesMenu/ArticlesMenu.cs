@@ -5,8 +5,7 @@ using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
-using System;
-using System.Collections.Generic;
+using LogicPOS.UI.Components.Common.Menus;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -16,6 +15,8 @@ namespace LogicPOS.UI.Components.Menus
         public ArticleSubfamiliesMenu MenuSubfamilies { get; }
         private PaginatedResult<ArticleViewModel> Articles { get; set; }
         private GetArticlesQuery CurrentQuery { get; set; } = GetFavoriteQuery();
+        private string ButtonName => "buttonArticleId";
+        private Size ButtonSize { get; }
 
         private const int DefaultPageSize = 42;
 
@@ -25,18 +26,25 @@ namespace LogicPOS.UI.Components.Menus
                             CustomButton btnNext,
                             Window sourceWindow,
                             ArticleSubfamiliesMenu subfamiliesMenu,
-                            Size buttonsSize,
+                            Size menuButtonSize,
                             TableConfig tableConfig) : base(tableConfig.Rows,
                                                             tableConfig.Columns,
-                                                            buttonsSize,
-                                                            buttonName: "buttonArticleId",
                                                             btnPrevious,
                                                             btnNext,
                                                             sourceWindow,
                                                             toggleMode: false)
         {
+            ButtonSize = menuButtonSize;
             MenuSubfamilies = subfamiliesMenu;
             AddEventHandlers();
+        }
+
+        protected override CustomButton CreateButtonForEntity(ArticleViewModel entity)
+        {
+            string label = entity.Button.Label ?? entity.Designation;
+            string image = GetButtonImage(entity);
+
+            return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, image, ButtonSize);
         }
 
         private static GetArticlesQuery GetFavoriteQuery()
@@ -48,17 +56,11 @@ namespace LogicPOS.UI.Components.Menus
             };
         }
 
-
-        protected override string GetButtonLabel(ArticleViewModel entity)
-        {
-            return entity.ButtonLabel ?? entity.Designation;
-        }
-
-        protected override string GetButtonImage(ArticleViewModel article)
+        private string GetButtonImage(ArticleViewModel article)
         {
             if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
             {
-                string imagePath = ButtonImageCache.GetImagePath(article.Id,article.Button.ImageExtension);
+                string imagePath = ButtonImageCache.GetImagePath(article.Id, article.Button.ImageExtension);
 
                 if (imagePath != null)
                 {
@@ -90,7 +92,6 @@ namespace LogicPOS.UI.Components.Menus
             if (MenuSubfamilies.SelectedEntity == null)
             {
                 Entities.Clear();
-                ListEntities(Entities);
                 return;
             }
             CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;
@@ -105,23 +106,10 @@ namespace LogicPOS.UI.Components.Menus
             CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;
         }
 
-        protected override IEnumerable<ArticleViewModel> FilterEntities(IEnumerable<ArticleViewModel> entities)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void Refresh()
-        {
-            Buttons.Clear();
-            LoadEntities();
-            ListEntities(Entities);
-        }
-
         protected override void UpdateNavigationButtons()
         {
             BtnPrevious.Sensitive = Articles.Page > 1;
             BtnNext.Sensitive = Articles.Page < Articles.TotalPages;
-
         }
     }
 }

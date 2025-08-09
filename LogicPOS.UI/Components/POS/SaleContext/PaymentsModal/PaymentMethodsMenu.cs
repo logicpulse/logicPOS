@@ -4,8 +4,6 @@ using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Settings;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -15,20 +13,18 @@ namespace LogicPOS.UI.Components.Menus
         private readonly ISender _mediator = DependencyInjection.Mediator;
         public uint Rows { get; set; } = 1;
         public uint Columns { get; set; } = 4;
-        public Size ButtonSize { get; set; } = AppSettings.Instance.SizeBaseDialogDefaultButton;
+        public Size ButtonSize => AppSettings.Instance.SizeBaseDialogDefaultButton;
+        public string ButtonName => "touchButton_Green";
 
         public PaymentMethodsMenu(CustomButton btnPrevious,
                                   CustomButton btnNext,
                                   Window sourceWindow) : base(rows: 1,
                                                               columns: 4,
-                                                              AppSettings.Instance.SizeBaseDialogDefaultButton,
-                                                              "touchButton_Green",
                                                               btnPrevious,
                                                               btnNext,
                                                               sourceWindow)
         {
-            LoadEntities();
-            ListEntities(Entities);
+            Refresh();
         }
 
 
@@ -52,9 +48,9 @@ namespace LogicPOS.UI.Components.Menus
                 });
         }
 
-        protected override CustomButton CreateMenuButton(PaymentMethod entity)
+        protected override CustomButton CreateButtonForEntity(PaymentMethod entity)
         {
-            return CreatePaymentMethodButton(ButtonLabel, GetIconByAcronym(entity.Acronym));
+            return CreatePaymentMethodButton(entity.Designation, GetIconByAcronym(entity.Acronym));
         }
 
         private string GetIconByAcronym(string acronym)
@@ -104,15 +100,6 @@ namespace LogicPOS.UI.Components.Menus
 
         }
 
-        protected override string GetButtonLabel(PaymentMethod entity)
-        {
-            return entity.Designation;
-        }
-
-        protected override string GetButtonImage(PaymentMethod entity)
-        {
-            return null;
-        }
 
         protected override void LoadEntities()
         {
@@ -128,9 +115,6 @@ namespace LogicPOS.UI.Components.Menus
             Entities.AddRange(paymentMethods.Value);
         }
 
-        protected override IEnumerable<PaymentMethod> FilterEntities(IEnumerable<PaymentMethod> entities)
-        {
-            return entities;
-        }
+
     }
 }

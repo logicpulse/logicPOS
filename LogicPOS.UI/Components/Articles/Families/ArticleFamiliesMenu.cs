@@ -4,8 +4,8 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Common.Menus;
 using MediatR;
-using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -13,33 +13,37 @@ namespace LogicPOS.UI.Components.Menus
     public class ArticleFamiliesMenu : Menu<ArticleFamily>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
+        private string ButtonName => "buttonFamilyId";
+        private Size ButtonSize { get; }
 
         public ArticleFamiliesMenu(CustomButton btnPrevious,
                                    CustomButton btnNext,
-                                   Window sourceWindow, 
+                                   Window sourceWindow,
                                    Size buttonsSize,
                                    TableConfig tableConfig) : base(tableConfig.Rows,
                                                                tableConfig.Columns,
-                                                               buttonsSize,
-                                                               buttonName: "buttonFamilyId",
                                                                btnPrevious,
                                                                btnNext,
                                                                sourceWindow)
         {
-            LoadEntities();
-            ListEntities(Entities);
+            SelectFirstOnReload = true;
+            ButtonSize = buttonsSize;
+            Refresh();
         }
 
-        protected override string GetButtonLabel(ArticleFamily family)
+        protected override CustomButton CreateButtonForEntity(ArticleFamily entity)
         {
-            return family.Button.Label ?? family.Designation;
+            string label = entity.Button.Label ?? entity.Designation;
+            string image = GetButtonImage(entity);
+
+            return MenuButton<ArticleFamily>.CreateButton(ButtonName, label, image, ButtonSize);
         }
 
-        protected override string GetButtonImage(ArticleFamily family)
+        private string GetButtonImage(ArticleFamily family)
         {
             if (string.IsNullOrEmpty(family.Button.ImageExtension) == false)
             {
-                return ButtonImageCache.GetImagePath(family.Id,family.Button.ImageExtension) ?? 
+                return ButtonImageCache.GetImagePath(family.Id, family.Button.ImageExtension) ??
                     ButtonImageCache.AddBase64Image(family.Id, family.Button.Image, family.Button.ImageExtension);
             }
 
@@ -60,10 +64,5 @@ namespace LogicPOS.UI.Components.Menus
             Entities.AddRange(families.Value);
         }
 
-        protected override IEnumerable<ArticleFamily> FilterEntities(IEnumerable<ArticleFamily> entities)
-        {
-            
-            return entities;
-        }
     }
 }

@@ -1,6 +1,8 @@
-﻿using LogicPOS.Api.Enums;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Enums;
 using LogicPOS.UI.Services;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -14,20 +16,18 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnFilterReserved_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedEntity = null;
-            MenuTables.Refresh(TableStatus.Reserved);
+            MenuTables.ApplyFilter(TableStatus.Reserved);
         }
 
         private void BtnFilterOpen_Clicked(object sender, EventArgs e)
         {
-            MenuPlaces.SelectedEntity = null;
-            MenuTables.Refresh(TableStatus.Open);
+            MenuTables.ApplyFilter(TableStatus.Open);
         }
 
         private void BtnFilterFree_Clicked(object sender, EventArgs e)
         {
             MenuPlaces.SelectedEntity = null;
-            MenuTables.Refresh(TableStatus.Free);
+            MenuTables.ApplyFilter(TableStatus.Free);
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)
@@ -60,7 +60,21 @@ namespace LogicPOS.UI.Components.POS
                 TablesService.FreeTable(MenuTables.SelectedEntity);
             }
 
-            MenuTables.Refresh(MenuTables.Filter);
+            RemoveReservedTableButtonFromCache(MenuTables.SelectedEntity);
+
+            if (MenuTables.LastFilter.HasValue)
+            {
+                MenuTables.ApplyFilter(MenuTables.LastFilter.Value);
+            } else
+            {
+                MenuTables.Refresh();
+            }
+           
+        }
+
+        private void RemoveReservedTableButtonFromCache(Table selectedEntity)
+        {
+           MenuTables.ButtonsCache.RemoveAll(mb => mb.Entity.Id  == selectedEntity.Id);
         }
     }
 }

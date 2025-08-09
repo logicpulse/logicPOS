@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Places.GetAllPlaces
 
         public override async Task<ErrorOr<IEnumerable<Place>>> Handle(GetAllPlacesQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetListQueryAsync<Place>("places", cancellationToken);
+            return await HandleGetListQueryAsync<Place>($"places{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }
