@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.AddDocument;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -40,15 +41,23 @@ namespace LogicPOS.UI.Components.POS
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
             UpdateLabels();
+            SetDefaultCustomer();
         }
-        public void SplitAccount(Customer customer,int splittersNumber=2)
+
+        private void SetDefaultCustomer()
         {
-            SplitModeInitilizer(customer, splittersNumber);
+            TxtCustomer.SelectedEntity = CustomersService.DefaultCustomer;
+            TxtCustomer.Text = CustomersService.DefaultCustomer.Name;
             ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
+        }
+
+        public void SplitAccount(int splittersNumber=2)
+        {
+            SplitModeInitilizer(splittersNumber);
             UpdateLabels();
         }
 
-        private void SplitModeInitilizer(Customer customer, int splittersNumber)
+        private void SplitModeInitilizer(int splittersNumber)
         {
             SplittersNumber = splittersNumber;
             _paymentMode = PaymentMode.Splited;
@@ -60,8 +69,7 @@ namespace LogicPOS.UI.Components.POS
             TxtFiscalNumber.Entry.Sensitive = false;
             TxtLocality.Entry.Sensitive = false;
             TxtZipCode.Entry.Sensitive = false;
-            TxtCustomer.SelectedEntity = customer;
-            TxtCustomer.Text = customer.Name;
+
         }
 
         private void UpdateLabels()

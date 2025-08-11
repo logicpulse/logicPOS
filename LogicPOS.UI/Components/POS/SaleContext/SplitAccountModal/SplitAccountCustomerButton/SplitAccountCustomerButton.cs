@@ -2,6 +2,7 @@
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
 using Pango;
 using System;
 using System.Drawing;
@@ -69,23 +70,10 @@ namespace LogicPOS.UI.Buttons
 
         private void SplitAccountCustomerButton_Clicked(object sender, EventArgs e)
         {
-            var customer =  CustomersService.GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == "consumidor final"); 
-            if(customer==null)
-            {
-            customer = CustomersService.GetAllCustomers().FirstOrDefault(x => x.FiscalNumber == "99999999990");
-            }
+            Customer =  CustomersService.DefaultCustomer.Name; 
 
-            if (customer == null)
-            {
-                CustomersService.GetAllCustomers().FirstOrDefault(x => x.FiscalNumber == "9999999999");
-            }
-            if (customer == null)
-            {
-                return;
-            }
-            Customer = customer.Name;
             var modal = new PaymentsModal(_window);
-            modal.SplitAccount(customer, splittersNumber);
+            modal.SplitAccount(splittersNumber);
             ResponseType response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
@@ -97,7 +85,6 @@ namespace LogicPOS.UI.Buttons
                 Sensitive = false;
             }
             modal.Destroy();
-            SaleContext.ReloadCurrentOrder();
         }
     }
 }
