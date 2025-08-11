@@ -1,4 +1,6 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Articles.Articles;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System.Net.Http;
@@ -10,13 +12,22 @@ namespace LogicPOS.Api.Features.Articles.UpdateArticle
     public class UpdateArticleCommandHandler :
         RequestHandler<UpdateArticleCommand, ErrorOr<Unit>>
     {
-        public UpdateArticleCommandHandler(IHttpClientFactory factory) : base(factory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+        public UpdateArticleCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache = cache;
         }
 
         public override async Task<ErrorOr<Unit>> Handle(UpdateArticleCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleUpdateCommandAsync($"articles/{command.Id}", command, cancellationToken);
+            var result = await HandleUpdateCommandAsync($"articles/{command.Id}", command, cancellationToken);
+
+            if (result.IsError == false)
+            {
+                ArticleCache.Clear(_keyedMemoryCache);
+            }
+
+            return result;
         }
     }
 }

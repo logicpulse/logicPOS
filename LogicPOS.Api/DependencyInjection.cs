@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Caching;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +28,7 @@ namespace LogicPOS.Api
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestLoggingPipelineBehavior<,>));
 
             services.AddMemoryCache();
+            services.AddSingleton<IKeyedMemoryCache, KeyedMemoryCache>();
 
             return services;
         }
