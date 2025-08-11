@@ -427,11 +427,13 @@ namespace LogicPOS.UI.Components.Windows
                 
 
             }
+
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
                                                    btnFamiliesNext,
                                                    this, 
                                                    tablePadFamilyButtonSize,
                                                    tablePadFamilyTableConfig);
+
             if (AppSettings.Instance.AppScreenSize == new Size(800, 600)) 
             { 
                 MenuFamilies.RowSpacing = 2;
@@ -476,6 +478,7 @@ namespace LogicPOS.UI.Components.Windows
                                                          this,
                                                          tablePadSubFamilyButtonSize,
                                                          tablePadSubFamilyTableConfig);
+
             if(AppSettings.Instance.AppScreenSize.Width==800 && AppSettings.Instance.AppScreenSize.Height==600)MenuSubfamilies.ColumnSpacing = 2;
             if (showSubfamiliesMenu)
             {
@@ -513,6 +516,8 @@ namespace LogicPOS.UI.Components.Windows
                 FixedWindow.Put(btnMenuArticlesNext, btnMenuArticlesNextPosition.X, btnMenuArticlesNextPosition.Y);
                 FixedWindow.Put(MenuArticles, tablePadArticlePosition.X, tablePadArticlePosition.Y);
             }
+
+            MenuFamilies.Refresh();
         }
 
         private void InitUiEventboxToolbar(dynamic pThemeWindow)

@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override CustomButton CreateButtonForEntity(ArticleSubfamily entity)
         {
-            string label = entity.Button.Label ?? entity.Designation;
+            string label = string.IsNullOrWhiteSpace(entity.Button.Label) ? entity.Designation : entity.Button.Label;
             string image = GetButtonImage(entity);
 
             return MenuButton<ArticleSubfamily>.CreateButton(ButtonName, label, image, ButtonSize);
