@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Components.Pages
         public TreeView GridView { get; set; }
         public TEntity SelectedEntity { get; set; }
         public event Action<TEntity> EntitySelected;
+        public event Action<TEntity> SelectedEntityConfirmed;
 
         public bool CanViewEntity { get; set; } = true;
         public bool CanUpdateEntity { get; set; } = true;

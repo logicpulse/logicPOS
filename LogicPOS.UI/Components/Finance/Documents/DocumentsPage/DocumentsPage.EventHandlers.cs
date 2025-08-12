@@ -10,6 +10,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage
     {
+        public event EventHandler PageChanged;
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
         {

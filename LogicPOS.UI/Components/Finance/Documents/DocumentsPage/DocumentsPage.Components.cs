@@ -10,12 +10,9 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage
     {
-        public GetDocumentsQuery Query { get; private set; } = GetDefaultQuery();
-        public PaginatedResult<Document> Documents { get; private set; }
         private List<DocumentTotals> _totals = new List<DocumentTotals>();
         private List<DocumentRelation> _relations = new List<DocumentRelation>();
         public List<Document> SelectedDocuments { get; private set; } = new List<Document>();
         public decimal SelectedDocumentsTotalFinal { get; private set; }
-        public event EventHandler PageChanged;
     }
 }
