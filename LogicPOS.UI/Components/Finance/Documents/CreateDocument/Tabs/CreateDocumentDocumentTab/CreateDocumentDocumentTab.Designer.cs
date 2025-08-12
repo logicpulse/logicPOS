@@ -80,8 +80,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                                    includeSelectButton: true,
                                                    includeKeyBoardButton: false);
 
-            TxtPaymentCondition.Entry.IsEditable = false;
-
+            TxtPaymentCondition.Entry.IsEditable = true;
+            var paymentConditions = PaymentConditionForCompletion.Select(d => (d as object, d.Designation)).ToList();
+            TxtPaymentCondition.WithAutoCompletion(paymentConditions);
+            TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
         }
 
@@ -96,9 +98,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtDocumentType.SelectedEntity = GetDefaultDocumentType();
             TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType).Designation;
-
-            TxtDocumentType.Entry.IsEditable = false;
-
+            TxtDocumentType.Entry.IsEditable = true;
+            var documentTypes = DocumentTypeForCompletion.Select(d => (d as object, d.Designation)).ToList();
+            TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }
         private void InitializeTxtOriginDocument()

@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
             {
                 foreach (var group in _items.GroupBy(vat => vat.VatDesignation))
                 {
-                    listModel.AppendValues(group.Key, group.Last().Vat.ToString("F2"), group.Sum(x => x.UnitPrice).ToString("F2"), group.Sum(x => x.VatPrice).ToString("F2"));
+                    listModel.AppendValues(group.Key, group.Last().Vat.ToMoneyString(), group.Sum(x => x.UnitPrice).ToString("F2"), group.Sum(x => x.VatPrice).ToString("F2"));
                 }
             }
 

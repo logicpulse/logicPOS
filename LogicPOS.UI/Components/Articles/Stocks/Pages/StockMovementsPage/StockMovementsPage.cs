@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles.Stocks.Movements;
 using LogicPOS.UI.Components.Articles.Stocks.Pages.StockMovementsPage;
@@ -11,6 +12,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -69,6 +71,13 @@ namespace LogicPOS.UI.Components.Pages
             {
                 _entities.AddRange(Movements.Items);
             }
+            if (_entities.Any() == false)
+            {
+                CustomAlerts.Warning(SourceWindow)
+                  .WithMessage("Nenhum dado retornado.")
+                  .ShowAlert();
+                return;
+            }
         }
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -102,38 +111,7 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        public void RunFilterModal()
-        {
-            var filterModal = new StockMovementsFilterModal(SourceWindow);
-            var response = (ResponseType)filterModal.Run();
-            StockMovementsFilterModalData? filterModalData = filterModal.GetFilterData();
-            filterModal.Destroy();
-
-            if (response != ResponseType.Ok)
-            {
-                return;
-            }
-
-            CurrentQuery.StartDate = filterModalData?.StartDate ?? CurrentQuery.StartDate;
-            CurrentQuery.EndDate = filterModalData?.EndDate ?? CurrentQuery.EndDate;
-            CurrentQuery.ArticleId = filterModalData?.ArticleId ?? CurrentQuery.ArticleId;
-            CurrentQuery.CustomerId = filterModalData?.CustomerId ?? CurrentQuery.CustomerId;
-
-            Refresh();
-            PageChanged?.Invoke(this, EventArgs.Empty);
-        }
-
         protected override DeleteCommand GetDeleteCommand() => null;
 
-        private static GetStockMovementsQuery GetDefaultQuery()
-        {
-            var query = new GetStockMovementsQuery
-            {
-                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
-                EndDate = DateTime.Now,
-            };
-
-            return query;
-        }
     }
 }

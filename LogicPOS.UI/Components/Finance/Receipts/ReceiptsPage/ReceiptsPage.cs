@@ -3,12 +3,14 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -40,25 +42,16 @@ namespace LogicPOS.UI.Components.Pages
 
             _entities.Clear();
             _entities.AddRange(Receipts.Items);
-        }
 
-        public void RunFilter()
-        {
-            var filterModal = new DocumentsFilterModal(SourceWindow);
-            var response = (ResponseType)filterModal.Run();
-            var query = filterModal.GetReceiptsQuery();
-            filterModal.Destroy();
-
-            if (response != ResponseType.Ok)
+            if (_entities.Any() == false)
             {
+                CustomAlerts.Warning(SourceWindow)
+                    .WithMessage("Nenhum dado retornado.")
+                    .ShowAlert();
                 return;
             }
-
-            Query = query;
-            Refresh();
-            PageChanged?.Invoke(this, EventArgs.Empty);
         }
-        
+
         public override int RunModal(EntityEditionModalMode mode)
         {
             if (SelectedEntity != null)
@@ -106,15 +99,6 @@ namespace LogicPOS.UI.Components.Pages
             return null;
         }
 
-        private static GetReceiptsQuery GetDefaultQuery()
-        {
-            var query = new GetReceiptsQuery
-            {
-                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
-                EndDate = DateTime.Now,
-            };
 
-            return query;
-        }
     }
 }

@@ -1,13 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company.GetCompanyCurreny;
-using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -24,7 +23,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void Initialize()
         {
-            DocumentTypes = GetDocumentTypes();
+            DocumentTypes = DocumentTypesService.GetAllDocumentTypes();
             InitializeTxtDocumentType();
             InitializeTxtPaymnentCondition();
             CompanyCurrency = GetCompanyCurreny();
@@ -36,20 +35,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             UpdateValidatableFields();
         }
 
-        private List<DocumentType> GetDocumentTypes()
-        {
-            var mediator = DependencyInjection.Mediator;
-            var documentTypes = mediator.Send(new GetAllDocumentTypesQuery()).Result;
-
-            if (documentTypes.IsError)
-            {
-                CustomAlerts.ShowApiErrorAlert(this.SourceWindow, documentTypes.FirstError);
-                return Enumerable.Empty<DocumentType>().ToList();
-            }
-
-            return documentTypes.Value.ToList();
-        }
-       
         private DocumentType GetDefaultDocumentType()
         {
             return DocumentTypes.FirstOrDefault(type => type.Acronym == "FT");

@@ -23,26 +23,6 @@ namespace LogicPOS.UI.Components.Pages
             AddGridViewEventHandlers();
         }
 
-        protected override void InitializeFilter()
-        {
-            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
-            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
-            {
-                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
-                if (string.IsNullOrWhiteSpace(search))
-                {
-                    return true;
-                }
-
-                var receipt = model.GetValue(iterator, 0) as ReceiptViewModel;
-
-                if (receipt != null && receipt.RefNo.ToLower().Contains(search))
-                {
-                    return true;
-                }
-
-                return false;
-            };
-        }
+        
     }
 }

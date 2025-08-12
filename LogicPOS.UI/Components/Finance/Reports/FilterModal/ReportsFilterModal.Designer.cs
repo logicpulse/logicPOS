@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
-            TxtCustomer.Entry.IsEditable = false;
+            TxtCustomer.Entry.IsEditable = true;
 
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
