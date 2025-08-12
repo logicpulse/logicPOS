@@ -13,7 +13,6 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -34,7 +33,7 @@ namespace LogicPOS.UI.Components.POS
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
         private int SplittersNumber;
-        public string paymentMethodDesignation{get;set;}
+        public string paymentMethodDesignation { get; set; }
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
                                                    new Size(640, 700),
@@ -46,12 +45,15 @@ namespace LogicPOS.UI.Components.POS
 
         private void SetDefaultCustomer()
         {
-            TxtCustomer.SelectedEntity = CustomersService.DefaultCustomer;
-            TxtCustomer.Text = CustomersService.DefaultCustomer.Name;
-            ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
+            if (CustomersService.DefaultCustomer != null)
+            {
+                TxtCustomer.SelectedEntity = CustomersService.DefaultCustomer;
+                TxtCustomer.Text = CustomersService.DefaultCustomer.Name;
+                ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
+            }
         }
 
-        public void SplitAccount(int splittersNumber=2)
+        public void SplitAccount(int splittersNumber = 2)
         {
             SplitModeInitilizer(splittersNumber);
             UpdateLabels();
@@ -128,7 +130,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 _selectedPaymentCondition = selectedPaymentCondition;
                 return true;
-                
+
             }
 
             return false;
@@ -247,8 +249,8 @@ namespace LogicPOS.UI.Components.POS
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()
-        {   
-            if(_paymentMode == PaymentMode.Full)
+        {
+            if (_paymentMode == PaymentMode.Full)
             {
                 return SaleContext.CurrentOrder.GetDocumentDetails();
             }
@@ -296,7 +298,7 @@ namespace LogicPOS.UI.Components.POS
                 {
                     item.Quantity = item.Quantity / SplittersNumber;
                 }
-                
+
                 command.Details = details;
                 return command;
             }

@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
@@ -285,6 +286,16 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (IsSelectionPage())
             {
+                if( (SelectedEntity as Document) != null)
+                {
+                   DocumentPdfUtils.ViewDocumentPdf(SourceWindow, (SelectedEntity as Document).Id);
+                }
+
+                if ((SelectedEntity as ReceiptViewModel) != null)
+                {
+                    DocumentPdfUtils.ViewReceiptPdf(SourceWindow, (SelectedEntity as ReceiptViewModel).Id);
+                }
+
                 return;
             }
 
