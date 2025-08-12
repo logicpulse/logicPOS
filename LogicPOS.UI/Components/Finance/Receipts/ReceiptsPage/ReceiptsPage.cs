@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
@@ -57,7 +58,16 @@ namespace LogicPOS.UI.Components.Pages
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
-        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
+        
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            if (SelectedEntity != null)
+            {
+                DocumentPdfUtils.ViewReceiptPdf(this.SourceWindow, SelectedEntity.Id);
+            }
+
+            return (int)ResponseType.None;
+        }
 
         protected override void AddColumns()
         {
@@ -70,6 +80,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateTotalColumn());
             GridView.AppendColumn(CreateRelatedReceiptsColumn());
         }
+        
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);

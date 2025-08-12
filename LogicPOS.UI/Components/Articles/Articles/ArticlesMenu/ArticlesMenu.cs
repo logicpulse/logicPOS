@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Menus
 
         protected override CustomButton CreateButtonForEntity(ArticleViewModel entity)
         {
-            string label = string.IsNullOrWhiteSpace(entity.Button.Label) ? entity.Designation : entity.Button.Label;
+            string label = string.IsNullOrWhiteSpace(entity.Button?.Label) ? entity.Designation : entity.Button.Label;
             string image = GetButtonImage(entity);
 
             return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, image, ButtonSize);
@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Menus
 
         private string GetButtonImage(ArticleViewModel article)
         {
-            if (string.IsNullOrEmpty(article.Button.ImageExtension) == false)
+            if (string.IsNullOrWhiteSpace(article.Button?.ImageExtension) == false)
             {
                 string imagePath = ButtonImageCache.GetImagePath(article.Id, article.Button.ImageExtension);
 

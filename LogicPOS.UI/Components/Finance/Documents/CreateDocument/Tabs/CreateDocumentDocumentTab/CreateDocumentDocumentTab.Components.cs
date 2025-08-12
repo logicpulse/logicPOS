@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     public partial class CreateDocumentDocumentTab
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
-        public IEnumerable<DocumentType> DocumentTypes { get; private set; }
+        public List<DocumentType> DocumentTypes { get; private set; }
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtPaymentCondition { get; set; }
         public TextBox TxtCurrency { get; set; }

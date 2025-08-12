@@ -1,5 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
@@ -16,19 +18,26 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
-                var docType = GetDocumentTypeFromDocument(modal.Page.SelectedEntity);
+                var selectedDocument = modal.Page.SelectedEntity;
+                var docType = GetDocumentTypeFromDocument(selectedDocument);
+
                 if (docType == null)
                 {
-                     new Alerts.SimpleAlert()
-                        .WithTitle("Erro ao copiar documento")
-                        .WithMessageType(MessageType.Error)
-                        .WithMessage(GeneralUtils.GetResourceByName("Não é permitida a cópia de documentos cujos tipos e acrónimos tenham sido alterados pela entidade reguladora (AGT/AT)."))
-                        .ShowAlert();
+                    CustomAlerts.Warning(this.SourceWindow)
+                     .WithTitle("Tipo de documento não encontrado")
 
-                    modal.Destroy();
-                    return;
+                     .WithMessage($"O tipo de documento ({selectedDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearService.CurrentFiscalYear.Acronym}).")
+                     .ShowAlert();
+
+                    docType = SelectDocumentType();
+
+                    if (docType == null)
+                    {
+                        modal.Destroy();
+                        return;
+                    }
                 }
-                
+
                 TxtDocumentType.SelectedEntity = docType;
                 TxtDocumentType.Text = docType.Designation;
 
@@ -48,7 +57,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             modal.Destroy();
         }
-       
+
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
         {
             var modal = new DocumentsModal(SourceWindow, selectionMode: true);
@@ -63,7 +72,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             modal.Destroy();
         }
-       
+
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
@@ -102,21 +111,35 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtPaymentCondition.SelectedEntity = page.SelectedEntity;
             }
         }
-       
+
         private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
         {
-            var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);
+            var docType = SelectDocumentType();
+
+            if (docType == null)
+            {
+                return;
+            }
+
+            TxtDocumentType.Text = docType.Designation;
+            TxtDocumentType.SelectedEntity = docType;
+            UpdateValidatableFields();
+            DocumentTypeSelected?.Invoke(docType);
+        }
+
+        private DocumentType SelectDocumentType()
+        {
+            var page = new DocumentTypesPage(this.SourceWindow, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                TxtDocumentType.Text = page.SelectedEntity.Designation;
-                TxtDocumentType.SelectedEntity = page.SelectedEntity;
-                UpdateValidatableFields();
-                DocumentTypeSelected?.Invoke(page.SelectedEntity);
+                return page.SelectedEntity;
             }
+
+            return null;
         }
     }
 }

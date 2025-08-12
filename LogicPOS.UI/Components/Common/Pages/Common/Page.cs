@@ -286,16 +286,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (IsSelectionPage())
             {
-                if( (SelectedEntity as Document) != null)
-                {
-                   DocumentPdfUtils.ViewDocumentPdf(SourceWindow, (SelectedEntity as Document).Id);
-                }
-
-                if ((SelectedEntity as ReceiptViewModel) != null)
-                {
-                    DocumentPdfUtils.ViewReceiptPdf(SourceWindow, (SelectedEntity as ReceiptViewModel).Id);
-                }
-
+                RunModal(EntityEditionModalMode.View);
                 return;
             }
 

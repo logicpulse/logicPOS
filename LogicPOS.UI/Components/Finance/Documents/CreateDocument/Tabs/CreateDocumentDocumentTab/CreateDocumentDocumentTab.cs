@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             UpdateValidatableFields();
         }
 
-        private IEnumerable<DocumentType> GetDocumentTypes()
+        private List<DocumentType> GetDocumentTypes()
         {
             var mediator = DependencyInjection.Mediator;
             var documentTypes = mediator.Send(new GetAllDocumentTypesQuery()).Result;
@@ -44,11 +44,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (documentTypes.IsError)
             {
                 CustomAlerts.ShowApiErrorAlert(this.SourceWindow, documentTypes.FirstError);
-                return Enumerable.Empty<DocumentType>();
+                return Enumerable.Empty<DocumentType>().ToList();
             }
 
-            return documentTypes.Value;
+            return documentTypes.Value.ToList();
         }
+       
         private DocumentType GetDefaultDocumentType()
         {
             return DocumentTypes.FirstOrDefault(type => type.Acronym == "FT");
@@ -146,6 +147,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtNotes.Require(true);
             }
         }
+        
         public decimal GetExchangeRate()
         {
             var selectedCurrency = TxtCurrency.SelectedEntity as Currency;

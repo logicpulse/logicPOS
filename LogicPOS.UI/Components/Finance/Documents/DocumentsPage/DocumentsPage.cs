@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.UI.Components.Documents;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
@@ -81,7 +82,15 @@ namespace LogicPOS.UI.Components.Pages
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            if(SelectedEntity != null)
+            {
+                DocumentPdfUtils.ViewDocumentPdf(this.SourceWindow,SelectedEntity.Id);
+            }
+         
+            return (int)ResponseType.None;
+        }
 
         protected override void AddColumns()
         {
