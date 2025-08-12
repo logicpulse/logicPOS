@@ -30,7 +30,6 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: true);
         }
 
-
         private void InitializeTxtVatExemptionReason()
         {
             TxtVatExemptionReason = new TextBox(WindowSettings.Source,

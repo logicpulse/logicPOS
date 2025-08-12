@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public DocumentsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            AddEventHandlers();
         }
 
         public void MoveToNextPage()
@@ -64,16 +65,8 @@ namespace LogicPOS.UI.Components.Pages
             LoadDocumentsRelations();
         }
 
-        public override int RunModal(EntityEditionModalMode mode)
-        {
-            if(SelectedEntity != null)
-            {
-                DocumentPdfUtils.ViewDocumentPdf(this.SourceWindow,SelectedEntity.Id);
-            }
-         
-            return (int)ResponseType.None;
-        }
-
+        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
+       
         protected override void AddColumns()
         {
             GridView.AppendColumn(CreateSelectColumn());

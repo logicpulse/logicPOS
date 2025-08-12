@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Errors;
 using System;
 using System.Linq;
@@ -11,6 +12,17 @@ namespace LogicPOS.UI.Components.Pages
     public partial class DocumentsPage
     {
         public event EventHandler PageChanged;
+
+
+        private void AddEventHandlers()
+        {
+            SelectedEntityConfirmed += DocumentsPage_SelectedEntityConfirmed;
+        }
+
+        private void DocumentsPage_SelectedEntityConfirmed(Document document)
+        {
+            DocumentPdfUtils.ViewDocumentPdf(SourceWindow, document.Id);
+        }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)
         {

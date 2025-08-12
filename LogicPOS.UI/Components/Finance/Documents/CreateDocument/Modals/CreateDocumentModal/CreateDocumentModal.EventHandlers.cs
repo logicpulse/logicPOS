@@ -38,11 +38,15 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnPreview_Clicked(object sender, EventArgs e)
         {
-            var itens=ArticlesTab.ItemsPage.Items;
-            var customerDiscount = string.IsNullOrEmpty(CustomerTab.TxtDiscount.Text)?0:Decimal.Parse(CustomerTab.TxtDiscount.Text);
-            var preview = new DocumentPreviewModal(this, itens, customerDiscount);
-            preview.Run();
-            preview.Destroy();
+            if (!TabsForPreviewAreValid())
+            {
+                ShowValidationErrors();
+            } else
+            {
+                var query = CreateDocumentPreviewQuery();
+                DocumentPdfUtils.PreviewDocument(this, query);
+            }
+
             Run();
         }
        

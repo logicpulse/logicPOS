@@ -20,9 +20,9 @@ namespace LogicPOS.Api.Features.Articles.UpdateArticle
         public ArticlePrice NewPrice5 { get; set; } 
         public bool NewPriceWithVat { get; set; }
         public decimal NewDiscount { get; set; }
-        public uint NewDefaultQuantity { get; set; }
+        public decimal NewDefaultQuantity { get; set; }
         public decimal NewTotalStock { get; set; }
-        public uint NewMinimumStock { get; set; }
+        public decimal NewMinimumStock { get; set; }
         public decimal NewTare { get; set; }
         public float NewWeight { get; set; }
         public string NewBarcode { get; set; }

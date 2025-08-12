@@ -43,8 +43,8 @@ namespace LogicPOS.UI.Components.Modals
                 addArticleCommand.Button = GetButton();
                 addArticleCommand.PriceWithVat = _checkPriceWithVat.Active;
                 addArticleCommand.Discount = decimal.Parse(_txtDiscount.Text);
-                addArticleCommand.DefaultQuantity = uint.Parse(_txtDefaultQuantity.Text);
-                addArticleCommand.MinimumStock = uint.Parse(_txtMinimumStock.Text);
+                addArticleCommand.DefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
+                addArticleCommand.MinimumStock = decimal.Parse(_txtMinimumStock.Text);
                 addArticleCommand.Tare = decimal.Parse(_txtTare.Text);
                 addArticleCommand.Weight = float.Parse(_txtWeight.Text);
                 addArticleCommand.Barcode = _txtBarcode.Text;
@@ -117,8 +117,8 @@ namespace LogicPOS.UI.Components.Modals
             updateCommand.NewButton = GetButton();
             updateCommand.NewPriceWithVat = _checkPriceWithVat.Active;
             updateCommand.NewDiscount = decimal.Parse(_txtDiscount.Text);
-            updateCommand.NewDefaultQuantity = uint.Parse(_txtDefaultQuantity.Text);
-            updateCommand.NewMinimumStock = uint.Parse(_txtMinimumStock.Text);
+            updateCommand.NewDefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
+            updateCommand.NewMinimumStock = decimal.Parse(_txtMinimumStock.Text);
             updateCommand.NewTare = decimal.Parse(_txtTare.Text);
             updateCommand.NewWeight = float.Parse(_txtWeight.Text);
             updateCommand.NewBarcode = _txtBarcode.Text;

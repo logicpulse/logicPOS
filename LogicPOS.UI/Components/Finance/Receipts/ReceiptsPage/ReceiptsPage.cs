@@ -25,6 +25,7 @@ namespace LogicPOS.UI.Components.Pages
         public ReceiptsPage(Window parent,
                             Dictionary<string, string> options = null) : base(parent, options)
         {
+            AddEventHandlers();
         }
 
         protected override void LoadEntities()
@@ -52,16 +53,8 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        public override int RunModal(EntityEditionModalMode mode)
-        {
-            if (SelectedEntity != null)
-            {
-                DocumentPdfUtils.ViewReceiptPdf(this.SourceWindow, SelectedEntity.Id);
-            }
-
-            return (int)ResponseType.None;
-        }
-
+        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
+  
         protected override void AddColumns()
         {
             GridView.AppendColumn(CreateSelectColumn());

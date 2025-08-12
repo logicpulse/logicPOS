@@ -1,10 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Settings;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -23,7 +23,18 @@ namespace LogicPOS.UI.Components.Modals
         {
             Page = page;
             Page.SetSizeRequest(SelectionPageSize.Width, SelectionPageSize.Height);
+            AddEventHandlers();
             Render();
+        }
+
+        private void AddEventHandlers()
+        {
+            Page.SelectedEntityConfirmed += Page_SelectedEntityConfirmed;
+        }
+
+        private void Page_SelectedEntityConfirmed(TEntity entity)
+        {
+             Respond(ResponseType.Ok);
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

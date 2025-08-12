@@ -17,9 +17,9 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public ArticlePrice Price5 { get; set; }
         public bool PriceWithVat { get; set; }
         public decimal Discount { get; set; }
-        public uint DefaultQuantity { get; set; }
+        public decimal DefaultQuantity { get; set; }
         public decimal TotalStock { get; set; }
-        public uint MinimumStock { get; set; }
+        public decimal MinimumStock { get; set; }
         public decimal Tare { get; set; }
         public float Weight { get; set; }
         public string Barcode { get; set; }

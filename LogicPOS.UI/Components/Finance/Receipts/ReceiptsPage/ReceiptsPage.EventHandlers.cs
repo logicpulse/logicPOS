@@ -1,11 +1,22 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Documents.Utilities;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class ReceiptsPage
     {
+        private void AddEventHandlers()
+        {
+            SelectedEntityConfirmed += OnSelectedEntityConfirmed;
+        }
+
+        private void OnSelectedEntityConfirmed(ReceiptViewModel receipt)
+        {
+            DocumentPdfUtils.ViewReceiptPdf(SourceWindow, receipt.Id);
+        }
+
         public void MoveToNextPage()
         {
             Query.Page = Receipts.Page + 1;

@@ -1,23 +1,17 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
-using LogicPOS.Api.Features.Articles.GetArticleById;
-using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
-        private bool NotesChanged = false;
+
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
@@ -84,7 +78,7 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         private void TxtCode_Changed(object sender, EventArgs e)
-        {   
+        {
             if (string.IsNullOrWhiteSpace(TxtCode.Text))
             {
                 Clear();

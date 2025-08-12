@@ -285,9 +285,9 @@ namespace LogicPOS.UI.Components.Pages
 
         private void GridView_RowActivated(object o, RowActivatedArgs args)
         {
-            if (IsSelectionPage())
+            if (IsSelectionPage() && SelectedEntity != null)
             {
-                RunModal(EntityEditionModalMode.View);
+                SelectedEntityConfirmed?.Invoke(SelectedEntity);
                 return;
             }
 

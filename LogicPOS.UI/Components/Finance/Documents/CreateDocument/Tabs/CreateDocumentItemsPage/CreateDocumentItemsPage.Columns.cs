@@ -1,11 +1,27 @@
 ﻿using Gtk;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using System.Data.Common;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class CreateDocumentItemsPage
     {
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            var designationColumn = Columns.CreateDesignationColumn(1);
+            designationColumn.MaxWidth = 250;
+            GridView.AppendColumn(designationColumn);
+            GridView.AppendColumn(CreateQuantityColumn());
+            GridView.AppendColumn(CreatePriceColumn());
+            GridView.AppendColumn(CreateDiscountColumn());
+            GridView.AppendColumn(CreateTaxColumn());
+            GridView.AppendColumn(CreateTotalColumn());
+            GridView.AppendColumn(CreateTotalWithTaxColumn());
+        }
+
         private TreeViewColumn CreateTotalWithTaxColumn()
         {
             void RenderTotalWithTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)

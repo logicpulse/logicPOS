@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -90,7 +91,25 @@ namespace LogicPOS.UI.Components.Modals
             return command;
         }
 
+        private GetDocumentPreviewPdfQuery CreateDocumentPreviewQuery()
+        {
+            var query = new GetDocumentPreviewPdfQuery();
+
+            query.CurrencyId = DocumentTab.GetCurrency().Id;
+            query.Notes = DocumentTab.TxtNotes.Text;
+            query.ExchangeRate = DocumentTab.GetExchangeRate();
+            query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
+            query.Details = ArticlesTab.GetDocumentDetails(null);
+
+            return query;
+        }
+
         public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());
+
+        public bool TabsForPreviewAreValid()
+        {
+            return ArticlesTab.IsValid();
+        }
 
         public IEnumerable<IValidatableField> GetValidatableTabs()
         {

@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public List<Item> Items => _entities;
         public event Action<decimal> OnTotalChanged;
-        public decimal TotalFinal => Math.Round(_entities.Sum(x => x.TotalFinal),2);
+        public decimal TotalFinal => Math.Round(_entities.Sum(x => x.TotalFinal), 2);
 
         public CreateDocumentItemsPage(Window parent) : base(parent)
         {
@@ -80,20 +80,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (response == ResponseType.Ok)
             {
                 var newItem = modal.GetItem();
-                if (ItemExists(newItem.ArticleId))
-                {
-                    UpdateItemData(newItem.ArticleId, newItem);
-                }
-                else
-                {
-                    _entities.Add(newItem);
-                }
+
+                _entities.Add(newItem);
             }
 
             modal.Destroy();
             OnTotalChanged?.Invoke(TotalFinal);
             return (int)response;
         }
+        
         private void UpdateItemData(Guid articleId, Item newData)
         {
             var existingItem = _entities.Find(x => x.ArticleId == articleId);
@@ -106,28 +101,19 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             existingItem.Quantity = newData.Quantity;
             existingItem.UnitPrice = newData.UnitPrice;
             existingItem.Discount = newData.Discount;
-            existingItem.Vat  = newData.Vat;
+            existingItem.Vat = newData.Vat;
             existingItem.VatRate = newData.VatRate;
             existingItem.VatRateId = newData.VatRateId;
             existingItem.VatDesignation = newData.VatDesignation;
             existingItem.ExemptionReason = newData.ExemptionReason;
             existingItem.VatExemptionReason = newData.VatExemptionReason;
         }
+        
         private bool ItemExists(Guid articleId)
         {
             return _entities.Exists(x => x.ArticleId == articleId);
         }
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(CreateQuantityColumn());
-            GridView.AppendColumn(CreatePriceColumn());
-            GridView.AppendColumn(CreateDiscountColumn());
-            GridView.AppendColumn(CreateTaxColumn());
-            GridView.AppendColumn(CreateTotalColumn());
-            GridView.AppendColumn(CreateTotalWithTaxColumn());
-        }
+
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
