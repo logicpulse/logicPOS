@@ -1,4 +1,6 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Articles.Articles;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using System;
 using System.Net.Http;
@@ -10,13 +12,23 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
     public class AddArticleCommandHandler :
         RequestHandler<AddArticleCommand, ErrorOr<Guid>>
     {
-        public AddArticleCommandHandler(IHttpClientFactory factory) : base(factory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+
+        public AddArticleCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache = cache;
         }
 
         public override async Task<ErrorOr<Guid>> Handle(AddArticleCommand request, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("articles", request, cancellationToken);
+            var result = await HandleAddCommandAsync("articles", request, cancellationToken);
+
+            if(result.IsError == false)
+            {
+                ArticleCache.Clear(_keyedMemoryCache);
+            }
+
+            return result;
         }
     }
 }
