@@ -79,6 +79,14 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
+        private void TxtSupplier_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtSupplier.Text))
+            {
+                TxtSupplier.Clear();
+            }
+        }
+
         private void BtnSelectDocumentNumber_Clicked(object sender, EventArgs e)
         {
             var path = FilePicker.GetOpenFilePath(this, "Selecionar Documento", FilePicker.GetFileFilterPDF());

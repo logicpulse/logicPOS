@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Pages
     public partial class DocumentsPage
     {
         private DocumentsFilterModal _filterModal = null;
-        public GetDocumentsQuery Query { get; private set; } = GetDefaultQuery();
+        public GetDocumentsQuery CurrentQuery { get; private set; } = GetDefaultQuery();
         public PaginatedResult<Document> Documents { get; private set; }
 
         private static GetDocumentsQuery GetDefaultQuery()
@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            Query = query;
+            CurrentQuery = query;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }

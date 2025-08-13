@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents;
@@ -27,6 +28,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             AddEventHandlers();
         }
+
+
 
         protected override void LoadEntities()
         {
@@ -76,6 +79,12 @@ namespace LogicPOS.UI.Components.Pages
             AddStatusSorting();
             AddEntitySorting();
             AddFiscalNumberSorting();
+        }
+
+        public override void Search(string searchText)
+        {
+            Query = new GetReceiptsQuery { Search = searchText };
+            Refresh();
         }
 
         protected override void AddEntitiesToModel(IEnumerable<ReceiptViewModel> receipts)

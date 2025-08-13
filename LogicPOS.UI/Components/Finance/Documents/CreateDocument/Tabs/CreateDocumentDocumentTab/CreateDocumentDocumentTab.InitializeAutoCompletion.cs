@@ -1,12 +1,9 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
+using Spire.Pdf.General.Paper.Uof;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -36,6 +33,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
         }
 
+        private void SelectDocumentType(DocumentType documentType)
+        {
+            TxtDocumentType.SelectedEntity = documentType;
+            UpdateValidatableFields();
+            DocumentTypeSelected?.Invoke(documentType);
+        }
+
+        private void SelectPaymentCondition(PaymentCondition paymentCondition)
+        {
+            TxtPaymentCondition.Text=paymentCondition.Designation;
+            TxtPaymentCondition.SelectedEntity = paymentCondition;
+        }
         private void TxtPaymentCondition_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtPaymentCondition.Text))

@@ -83,6 +83,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPaymentCondition.Entry.IsEditable = true;
             var paymentConditions = PaymentConditionForCompletion.Select(d => (d as object, d.Designation)).ToList();
             TxtPaymentCondition.WithAutoCompletion(paymentConditions);
+            TxtPaymentCondition.OnCompletionSelected += p => SelectPaymentCondition(p as PaymentCondition);
             TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
         }
@@ -101,6 +102,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtDocumentType.Entry.IsEditable = true;
             var documentTypes = DocumentTypeForCompletion.Select(d => (d as object, d.Designation)).ToList();
             TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.OnCompletionSelected += d => SelectDocumentType(d as DocumentType);
             TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }

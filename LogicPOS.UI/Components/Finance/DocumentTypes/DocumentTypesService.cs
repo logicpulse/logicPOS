@@ -1,13 +1,9 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.UI.Errors;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Finance.DocumentTypes
 {
