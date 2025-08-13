@@ -138,6 +138,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnFilter.Clicked += delegate { Page.RunFilter(); };
             BtnPrevious.Clicked += delegate { Page.MoveToPreviousPage(); };
             BtnNext.Clicked += delegate { Page.MoveToNextPage(); };
+            
         }
 
         private void UpdateModalTitle()

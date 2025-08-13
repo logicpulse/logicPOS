@@ -4,7 +4,6 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
@@ -16,21 +15,20 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage : Page<Document>
     {
-
         public DocumentsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
         public void MoveToNextPage()
         {
-            Query.Page = Documents.Page + 1;
+            CurrentQuery.Page = Documents.Page + 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
         public void MoveToPreviousPage()
         {
-            Query.Page = Documents.Page - 1;
+            CurrentQuery.Page = Documents.Page - 1;
             Refresh();
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -38,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void LoadEntities()
         {
-            var getDocumentsResult = _mediator.Send(Query).Result;
+            var getDocumentsResult = _mediator.Send(CurrentQuery).Result;
 
             if (getDocumentsResult.IsError)
             {
@@ -62,6 +60,12 @@ namespace LogicPOS.UI.Components.Pages
 
             LoadDocumentsTotals();
             LoadDocumentsRelations();
+        }
+
+        public override void Search(string searchText)
+        {
+            CurrentQuery = new GetDocumentsQuery { Search = searchText };
+            Refresh();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

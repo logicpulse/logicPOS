@@ -1,16 +1,21 @@
-﻿using LogicPOS.UI.Buttons;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;
-using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
-using System.Collections.Generic;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockModal
     {
+        private List<Customer> _supplierForCompletion;
+        private List<Customer> SupplierForCompletion => _supplierForCompletion ?? InitializeSuppliersForCompletion();
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private TextBox TxtSupplier { get; set; }
@@ -20,6 +25,11 @@ namespace LogicPOS.UI.Components.Modals
         private ArticleFieldsContainer ArticlesContainer { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockManagement);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
 
+        private List<Customer> InitializeSuppliersForCompletion()
+        {
+            _supplierForCompletion = CustomersService.GetAllCustomers();
+            return _supplierForCompletion;
+        }
         private void InitializeComponents()
         {
             InitializeTxtSupplier();
@@ -40,13 +50,21 @@ namespace LogicPOS.UI.Components.Modals
                                           includeKeyBoardButton: false,
                                           style: TextBoxStyle.Lite);
 
-            TxtSupplier.Entry.IsEditable = false;
-
+            TxtSupplier.Entry.IsEditable = true;
+            var suppliers=SupplierForCompletion.Select (p => (p as object, p.Name)).ToList();
+            TxtSupplier.WithAutoCompletion(suppliers);
+            TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
             TxtSupplier.SelectEntityClicked += BtnSelectSupplier_Clicked;
-
+            TxtSupplier.Entry.Changed += TxtSupplier_Changed;
             ValidatableFields.Add(TxtSupplier);
         }
 
+        private void SelectSupplier(Customer supplier)
+        {
+            TxtSupplier.SelectedEntity = supplier;
+            TxtSupplier.Text = supplier.Name;
+            
+        }
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
@@ -81,7 +99,7 @@ namespace LogicPOS.UI.Components.Modals
                                       includeKeyBoardButton: false,
                                       style: TextBoxStyle.Lite);
 
-            TxtDate.Entry.IsEditable = false;
+            TxtDate.Entry.IsEditable = true;
             TxtDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtDate.SelectEntityClicked += TxtDate_SelectEntityClicked;
