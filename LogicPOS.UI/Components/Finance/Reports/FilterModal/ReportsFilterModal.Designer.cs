@@ -1,4 +1,7 @@
-﻿using LogicPOS.UI.Components.InputFields;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
@@ -33,7 +36,9 @@ namespace LogicPOS.UI.Components.Modals
                                           includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-
+            var customers=CustomersForCompletion.Select(c=>(c as object, c.Name)).ToList();
+            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
 
@@ -46,8 +51,10 @@ namespace LogicPOS.UI.Components.Modals
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtDocumentType.Entry.IsEditable = false;
-
+            TxtDocumentType.Entry.IsEditable = true;
+            var documentTypes = DocumentTypesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.OnCompletionSelected += c => SelectDocumentType(c as DocumentType);
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }
 
@@ -60,8 +67,10 @@ namespace LogicPOS.UI.Components.Modals
                                          includeSelectButton: true,
                                          includeKeyBoardButton: false);
 
-            TxtVatRate.Entry.IsEditable = false;
-
+            TxtVatRate.Entry.IsEditable = true;
+            var vatRates = VatRatesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            TxtVatRate.WithAutoCompletion(vatRates);
+            TxtVatRate.OnCompletionSelected += c => SelectVatRate(c as VatRate);
             TxtVatRate.SelectEntityClicked += BtnSelectVatRate_Clicked;
         }
 
@@ -74,8 +83,10 @@ namespace LogicPOS.UI.Components.Modals
                                            includeSelectButton: true,
                                            includeKeyBoardButton: false);
 
-            TxtWarehouse.Entry.IsEditable = false;
-
+            TxtWarehouse.Entry.IsEditable = true;
+            var warehouses = WarehousesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            TxtWarehouse.WithAutoCompletion(warehouses);
+            TxtWarehouse.OnCompletionSelected += c => SelectWarehouse(c as DocumentType);
             TxtWarehouse.SelectEntityClicked += BtnSelectWarehouse_Clicked;
         }
 
@@ -120,8 +131,10 @@ namespace LogicPOS.UI.Components.Modals
                                     includeSelectButton: true,
                                     includeKeyBoardButton: false);
 
-            TxtArticle.Entry.IsEditable = false;
-
+            TxtArticle.Entry.IsEditable = true;
+            var articles = ArticlesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            TxtArticle.WithAutoCompletion(articles);
+            TxtArticle.OnCompletionSelected += c => SelectArticle(c as ArticleViewModel);
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
         }
 
@@ -134,8 +147,10 @@ namespace LogicPOS.UI.Components.Modals
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtSerialNumber.Entry.IsEditable = false;
-
+            TxtSerialNumber.Entry.IsEditable = true;
+            var serialNumbers = ArticleHistoriesForCompletion.Select(c => (c as object, c.SerialNumber)).ToList();
+            TxtSerialNumber.WithAutoCompletion(serialNumbers);
+            TxtSerialNumber.OnCompletionSelected += c => SelectArticleHistory(c as ArticleHistory);
             TxtSerialNumber.SelectEntityClicked += BtnSelectSerialNumber_Clicked;
         }
 
@@ -148,8 +163,10 @@ namespace LogicPOS.UI.Components.Modals
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtDocumentNumber.Entry.IsEditable = false;
-
+            TxtDocumentNumber.Entry.IsEditable = true;
+            var documentNumbers = DocumentsForCompletion.Select(c => (c as object, c.Number)).ToList();
+            TxtDocumentNumber.WithAutoCompletion(documentNumbers);
+            TxtDocumentNumber.OnCompletionSelected += c => SelectDocument(c as Document);
             TxtDocumentNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }
     }

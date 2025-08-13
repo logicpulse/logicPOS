@@ -1,4 +1,5 @@
-﻿using LogicPOS.UI.Buttons;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using System.Collections.Generic;
@@ -13,5 +14,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox TxtStartDate { get; set; }
         private TextBox TxtEndDate { get; set; }
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        private List<Customer> _customersForCompletion;
+        private List<Customer> CustomersForCompletion => _customersForCompletion ?? InitializeCustomersForCompletion();
     }
 }

@@ -28,6 +28,38 @@ namespace LogicPOS.UI.Components.Documents
             TxtPaymentMethod.Clear();
             TxtPaymentCondition.Clear();
         }
+
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtCustomer.Text))
+            {
+                TxtCustomer.Clear();
+            }
+        }
+
+        private void TxtDocumentType_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtDocumentType.Text))
+            {
+                TxtDocumentType.Clear();
+            }
+        }
+
+        private void TxtPaymentMethod_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtPaymentMethod.Text))
+            {
+                TxtPaymentMethod.Clear();
+            }
+        }
+
+        private void TxtPaymentCondition_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtPaymentCondition.Text))
+            {
+                TxtPaymentCondition.Clear();
+            }
+        }
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, PageOptions.SelectionPageOptions);

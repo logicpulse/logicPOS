@@ -4,6 +4,10 @@ using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
+using LogicPOS.UI.Components.Finance.PaymentConditions;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -17,12 +21,36 @@ namespace LogicPOS.UI.Components.Documents
 {
     public partial class DocumentsFilterModal : Modal
     {
-       public DocumentsFilterModal(Window parent) :
+        public DocumentsFilterModal(Window parent) :
             base(parent,
                 LocalizedString.Instance["window_title_dialog_filter"],
                 new Size(540, 568),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
+        }
+
+        private List<Customer> InitializeCustomersForCompletion()
+        {
+            _customersForCompletion = CustomersService.GetAllCustomers();
+            return _customersForCompletion;
+        }
+
+        private List<PaymentCondition> InitializePaymentConditionsForCompletion()
+        {
+            _paymentConditionsForCompletion = PaymentConditionsService.GetAllPaymentConditions();
+            return _paymentConditionsForCompletion;
+        }
+
+        private List<PaymentMethod> InitializePaymentMethodsForCompletion()
+        {
+            _paymentMethodsForCompletion = PaymentMethodsService.GetAllPaymentMethods();
+            return _paymentMethodsForCompletion;
+        }
+
+        private List<DocumentType> InitializeDocumentTypesForCompletion()
+        {
+            _documentTypesForCompletion = DocumentTypesService.GetAllDocumentTypes();
+            return _documentTypesForCompletion;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -163,6 +191,30 @@ namespace LogicPOS.UI.Components.Documents
             verticalLayout.PackStart(ComboPaymentStatus.Component, false, false, 0);
 
             return verticalLayout;
+        }
+
+        private void SelectCustomer(Customer customer)
+        {
+            TxtCustomer.SelectedEntity = customer;
+            TxtCustomer.Text = customer.Name;
+        }
+
+        private void SelectDocumentType(DocumentType documentType)
+        {
+            TxtDocumentType.SelectedEntity = documentType;
+            TxtDocumentType.Text = documentType.Designation;
+        }
+
+        private void SelectPaymentMethod(PaymentMethod paymentMethod)
+        {
+            TxtPaymentMethod.SelectedEntity = paymentMethod;
+            TxtPaymentMethod.Text = paymentMethod.Designation;
+        }
+
+        private void SelectPaymentCondition(PaymentCondition paymentCondition)
+        {
+            TxtPaymentCondition.SelectedEntity = paymentCondition;
+            TxtPaymentCondition.Text = paymentCondition.Designation;
         }
     }
 }

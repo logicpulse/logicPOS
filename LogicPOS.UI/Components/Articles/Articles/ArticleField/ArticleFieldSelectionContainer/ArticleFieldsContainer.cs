@@ -12,7 +12,8 @@ namespace LogicPOS.UI.Components.Articles
 {
     public partial class ArticleFieldsContainer : IValidatableField
     {
-
+        private List<ArticleViewModel> _articlesForCompletion;
+        private List<ArticleViewModel> ArticlesForCompletion => _articlesForCompletion ?? InitializeArticlesForCompletion();
         public string FieldName => GeneralUtils.GetResourceByName("global_article");
 
         public ArticleFieldsContainer(ArticlesBoxMode mode = ArticlesBoxMode.Article)
@@ -21,7 +22,11 @@ namespace LogicPOS.UI.Components.Articles
             Component = CreateScrolledWindow();
             AddArticle();
         }
-
+        private List<ArticleViewModel> InitializeArticlesForCompletion()
+        {
+            _articlesForCompletion = ArticlesService.GetAllArticles();
+            return _articlesForCompletion;
+        }
         private void BtnRemoveArticle_Clicked(ArticleField field, Article article)
         {
             if (Fields.Count < 2)
@@ -44,6 +49,10 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             var field = new ArticleField(article, quantity, isUniqueArticle: _mode == ArticlesBoxMode.StockManagement);
+            var articleDesignations = ArticlesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            var articleCodes = ArticlesForCompletion.Select(c => (c as object, c.Code)).ToList();
+            field.WithDesignationAutoCompletion(articleDesignations);
+            field.WithCodeAutoCompletion(articleCodes);
             field.OnRemove += BtnRemoveArticle_Clicked;
             field.OnAdd += () => AddArticle();
 

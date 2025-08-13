@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;
@@ -8,6 +9,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -18,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private TextBox TxtSupplier { get; set; }
         private TextBox TxtDate { get; set; }
-        private TextBox TxtDocumnetNumber { get; set; }
+        private TextBox TxtDocumentNumber { get; set; }
         private TextBox TxtNotes { get; set; }
         private ArticleFieldsContainer AddArticlesBox { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockMovement);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
@@ -28,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             InitializeTxtSupplier();
             InitializeTxtDate();
-            InitializeTxtDocumnetNumber();
+            InitializeTxtDocumentNumber();
             InitializeTxtNotes();
             ValidatableFields.Add(AddArticlesBox);
             AddEventHandlers();
@@ -43,8 +45,11 @@ namespace LogicPOS.UI.Components.Modals
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
-            TxtSupplier.Entry.IsEditable = false;
-
+            TxtSupplier.Entry.IsEditable = true;
+            var suppliers = SuppliersForCompletion.Select(s => (s as object, s.Name)).ToList();
+            TxtSupplier.WithAutoCompletion(suppliers);
+            TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
+            TxtSupplier.Entry.Changed += TxtSupplier_Changed;
             TxtSupplier.SelectEntityClicked += BtnSelectSupplier_Clicked;
 
             ValidatableFields.Add(TxtSupplier);
@@ -60,14 +65,20 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: true);
         }
 
-        private void InitializeTxtDocumnetNumber()
+        private void InitializeTxtDocumentNumber()
         {
-            TxtDocumnetNumber = new TextBox(WindowSettings.Source,
+            TxtDocumentNumber = new TextBox(WindowSettings.Source,
                                             GeneralUtils.GetResourceByName("global_document_number"),
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
+
+            var documentNumbers = DocumentsForCompletion.Select(n => (n as object, n.Number)).ToList();
+            TxtDocumentNumber.WithAutoCompletion(documentNumbers);
+            TxtDocumentNumber.OnCompletionSelected += s => SelectDocument(s as Document);
+            TxtDocumentNumber.Entry.Changed += TxtDocumentNumber_Changed;
+            
         }
 
         private void InitializeTxtDate()
@@ -101,7 +112,7 @@ namespace LogicPOS.UI.Components.Modals
             var vbox = new VBox(false, 2);
             vbox.PackStart(TxtSupplier.Component, false, false, 0);
             vbox.PackStart(TxtDate.Component, false, false, 0);
-            vbox.PackStart(TxtDocumnetNumber.Component, false, false, 0);
+            vbox.PackStart(TxtDocumentNumber.Component, false, false, 0);
             vbox.PackStart(TxtNotes.Component, false, false, 0);
             vbox.PackStart(AddArticlesBox.Component, true, true, 0);
             return vbox;

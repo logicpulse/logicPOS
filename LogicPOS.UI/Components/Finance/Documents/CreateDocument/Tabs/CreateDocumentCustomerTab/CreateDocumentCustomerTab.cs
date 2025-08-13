@@ -37,6 +37,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtNotes();
         }
 
+
         private Country GetCountryById(Guid countryId)
         {
             return CreateDocumentModal.GetCountries().FirstOrDefault(c => c.Id == countryId);

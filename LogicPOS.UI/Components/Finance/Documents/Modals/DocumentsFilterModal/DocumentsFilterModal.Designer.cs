@@ -1,4 +1,5 @@
-﻿using LogicPOS.UI.Components.InputFields;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -38,8 +39,11 @@ namespace LogicPOS.UI.Components.Documents
                                           includeSelectButton: true,
                                           includeKeyBoardButton: false);
 
-            TxtCustomer.Entry.IsEditable = false;
-
+            TxtCustomer.Entry.IsEditable = true;
+            var customers = CustomersForCompletion.Select(c=>(c as object, c.Name)).ToList();
+            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtCustomer.Entry.Changed += TxtCustomer_Changed;
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
         private void InitializeTxtDocumentType()
@@ -51,8 +55,11 @@ namespace LogicPOS.UI.Components.Documents
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtDocumentType.Entry.IsEditable = false;
-
+            TxtDocumentType.Entry.IsEditable = true;
+            var documentTypes = DocumentTypesForCompletion.Select(d => (d as object, d.Designation)).ToList();
+            TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.OnCompletionSelected += d => SelectDocumentType(d as DocumentType);
+            TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }
         private void InitializeTxtPaymentCondition()
@@ -64,8 +71,11 @@ namespace LogicPOS.UI.Components.Documents
                                                    includeSelectButton: true,
                                                    includeKeyBoardButton: false);
 
-            TxtPaymentCondition.Entry.IsEditable = false;
-
+            TxtPaymentCondition.Entry.IsEditable = true;
+            var paymentConditions = PaymentConditionsForCompletion.Select(p => (p as object, p.Designation)).ToList();
+            TxtPaymentCondition.WithAutoCompletion(paymentConditions);
+            TxtPaymentCondition.OnCompletionSelected += p => SelectPaymentCondition(p as PaymentCondition);
+            TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
         }
         private void InitializeTxtPaymentMethod()
@@ -77,8 +87,11 @@ namespace LogicPOS.UI.Components.Documents
                                                includeSelectButton: true,
                                                includeKeyBoardButton: false);
 
-            TxtPaymentMethod.Entry.IsEditable = false;
-
+            TxtPaymentMethod.Entry.IsEditable = true;
+            var paymentMethods = PaymentMethodsForCompletion.Select(p => (p as object, p.Designation)).ToList();
+            TxtPaymentMethod.WithAutoCompletion(paymentMethods);
+            TxtPaymentMethod.OnCompletionSelected += p => SelectPaymentMethod(p as PaymentMethod);
+            TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;
         }
         private void InitializeTxtStartDate()

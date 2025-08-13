@@ -1,6 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,7 @@ namespace LogicPOS.UI.Components.InputFields
         public event Action<ArticleField, Article> OnRemove;
         public event System.Action OnAdd;
         private readonly bool _isUniqueArticle;
+        public object SelectedEntity { get; set; }
         public ArticleField(Article article = null,
                             decimal quantity = 0,
                             bool isUniqueArticle = false)
@@ -47,7 +50,7 @@ namespace LogicPOS.UI.Components.InputFields
             TxtCode.Text = Article.Code;
             TxtDesignation.Text = Article.Designation;
             TxtQuantity.Text = "1";
-
+            
             if (_isUniqueArticle)
             {
                 UpdateSerialNumbersComponents();
@@ -127,6 +130,69 @@ namespace LogicPOS.UI.Components.InputFields
                 yield return item;
             }
         }
+
+        public ArticleField WithDesignationAutoCompletion(List<(object Entity, string Text)> completionSource)
+        {
+            TxtDesignation.Completion = new EntryCompletion();
+            var listStore = new ListStore(typeof(object), typeof(string));
+            foreach (var item in completionSource)
+            {
+                listStore.AppendValues(item.Entity, item.Text);
+            }
+            TxtDesignation.Completion.Model = listStore;
+            TxtDesignation.Completion.TextColumn = 1;
+            TxtDesignation.Completion.PopupCompletion = true;
+            TxtDesignation.Completion.InlineCompletion = false;
+            TxtDesignation.Completion.PopupSingleMatch = true;
+            TxtDesignation.Completion.InlineSelection = false;
+
+            TxtDesignation.Completion.MatchFunc = (comp, key, iter) =>
+            {
+                string value = (string)comp.Model.GetValue(iter, 1);
+                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+            };
+
+            TxtDesignation.Completion.MatchSelected += Completion_MatchSelected;
+            return this;
+        }
+
+        public ArticleField WithCodeAutoCompletion(List<(object Entity, string Text)> completionSource)
+        {
+            TxtCode.Completion = new EntryCompletion();
+            var listStore = new ListStore(typeof(object), typeof(string));
+            foreach (var item in completionSource)
+            {
+                listStore.AppendValues(item.Entity, item.Text);
+            }
+            TxtCode.Completion.Model = listStore;
+            TxtCode.Completion.TextColumn = 1;
+            TxtCode.Completion.PopupCompletion = true;
+            TxtCode.Completion.InlineCompletion = false;
+            TxtCode.Completion.PopupSingleMatch = true;
+            TxtCode.Completion.InlineSelection = false;
+
+            TxtCode.Completion.MatchFunc = (comp, key, iter) =>
+            {
+                string value = (string)comp.Model.GetValue(iter, 1);
+                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+            };
+
+            TxtCode.Completion.MatchSelected += Completion_MatchSelected;
+            return this;
+        }
+
+        [GLib.ConnectBefore]
+        private void Completion_MatchSelected(object o, MatchSelectedArgs args)
+        {
+            object entity = args.Model.GetValue(args.Iter, 0);
+            SelectedEntity = entity;
+            Article=ArticlesService.GetArticlebById((entity as ArticleViewModel).Id);
+            ShowEntity();
+            UpdateValidationColors();
+            OnCompletionSelected?.Invoke(entity);
+        }
+
+  
 
         private decimal Price => string.IsNullOrEmpty(TxtPrice.Text) ? 0 : decimal.Parse(TxtPrice.Text);
 

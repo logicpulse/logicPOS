@@ -1,12 +1,14 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 
@@ -30,7 +32,18 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtEndDate();
             AddEventsHandlers();
         }
-
+        private List<Customer> InitializeCustomersForCompletion()
+        {
+            _customersForCompletion = CustomersService.GetAllCustomers();
+            return _customersForCompletion;
+        }
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtCustomer.Text))
+            {
+                TxtCustomer.Clear();
+            }
+        }
         private void AddEventsHandlers()
         {
             BtnOk.Clicked += BtnOk_Clicked;
@@ -44,6 +57,11 @@ namespace LogicPOS.UI.Components.Modals
                 StartDate = DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",CultureInfo.InvariantCulture),
                 EndDate = DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
             };
+        }
+        private void SelectCustomer(Customer customer)
+        {
+            TxtCustomer.SelectedEntity = customer;
+            TxtCustomer.Text = customer.Name;
         }
     }
 }

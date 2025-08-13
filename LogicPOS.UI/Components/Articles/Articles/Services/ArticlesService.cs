@@ -4,8 +4,10 @@ using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
+using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
-using LogicPOS.Api.Features.Articles.UpdateArticle;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
 using MediatR;
@@ -134,5 +136,16 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
+        public static List<ArticleHistory> GetAllArticleHistories()
+        {
+            var result = _mediator.Send(new GetArticlesHistoriesQuery() { PageSize = 100000 }).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            var ArticleHistories= result.Value;
+            return ArticleHistories.Items.ToList();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -32,15 +33,18 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeTxtCustomer()
         {
-            TxtCustomer = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_customer"),
-                                          isRequired: true,
-                                          isValidatable: false,
-                                          includeSelectButton: true,
-                                          includeKeyBoardButton: false);
+            TxtCustomer = new TextBox(this,
+                                       GeneralUtils.GetResourceByName("global_customer"),
+                                       isRequired: false,
+                                       isValidatable: false,
+                                       includeSelectButton: true,
+                                       includeKeyBoardButton: false);
 
-            TxtCustomer.Entry.IsEditable = false;
-
+            TxtCustomer.Entry.IsEditable = true;
+            var customers = CustomersForCompletion.Select(c => (c as object, c.Name)).ToList();
+            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtCustomer.Entry.Changed += TxtCustomer_Changed;
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
 
             ValidatableFields.Add(TxtCustomer);
