@@ -68,8 +68,9 @@ namespace LogicPOS.UI.Components.Modals
             box.PackStart(BtnPrevious, false, false, 0);
             box.PackStart(BtnNext, false, false, 0);
 
-            return box;
+            TxtSearch.Entry.Changed += delegate { Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = TxtSearch.Text; };
 
+            return box;
         }
 
         protected override Widget CreateBody()

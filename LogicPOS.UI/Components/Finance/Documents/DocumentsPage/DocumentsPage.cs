@@ -3,7 +3,6 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
@@ -34,6 +33,11 @@ namespace LogicPOS.UI.Components.Pages
             PageChanged?.Invoke(this, EventArgs.Empty);
         }
 
+        public override void Search(string searchText)
+        {
+            CurrentQuery = new GetDocumentsQuery { Search = searchText };
+            Refresh();
+        }
 
         protected override void LoadEntities()
         {
@@ -51,11 +55,8 @@ namespace LogicPOS.UI.Components.Pages
             _entities.Clear();
             _entities.AddRange(Documents.Items);
 
-            if(_entities.Any() == false)
+            if (_entities.Any() == false)
             {
-                CustomAlerts.Warning(SourceWindow)
-                    .WithMessage("Nenhum dado retornado.")
-                    .ShowAlert();
                 return;
             }
 
@@ -63,21 +64,7 @@ namespace LogicPOS.UI.Components.Pages
             LoadDocumentsRelations();
         }
 
-        public override void Search(string searchText)
-        {
-            CurrentQuery = new GetDocumentsQuery { Search = searchText };
-            Refresh();
-        }
-
-        public override int RunModal(EntityEditionModalMode mode)
-        {
-            if(SelectedEntity != null)
-            {
-                DocumentPdfUtils.ViewDocumentPdf(this.SourceWindow,SelectedEntity.Id);
-            }
-         
-            return (int)ResponseType.None;
-        }
+        public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
 
         protected override void AddColumns()
         {

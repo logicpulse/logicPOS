@@ -46,14 +46,6 @@ namespace LogicPOS.UI.Components.Pages
 
             _entities.Clear();
             _entities.AddRange(Receipts.Items);
-
-            if (_entities.Any() == false)
-            {
-                CustomAlerts.Warning(SourceWindow)
-                    .WithMessage("Nenhum dado retornado.")
-                    .ShowAlert();
-                return;
-            }
         }
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;

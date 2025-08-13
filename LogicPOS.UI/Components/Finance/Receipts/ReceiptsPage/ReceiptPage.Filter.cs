@@ -10,6 +10,7 @@ namespace LogicPOS.UI.Components.Pages
     public partial class ReceiptsPage
     {
         DocumentsFilterModal _filterModal = null;
+       
         private static GetReceiptsQuery GetDefaultQuery()
         {
             var query = new GetReceiptsQuery
@@ -42,7 +43,7 @@ namespace LogicPOS.UI.Components.Pages
                 return false;
             };
         }
-
+        
         public void RunFilter()
         {
             if (_filterModal == null)
