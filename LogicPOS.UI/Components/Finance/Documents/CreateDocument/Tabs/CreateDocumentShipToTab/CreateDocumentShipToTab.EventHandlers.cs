@@ -43,5 +43,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
         }
 
+        private void TxtCoutry_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtCountry.Text))
+            {
+                TxtCountry.Clear();
+            }
+        }
+
     }
 }

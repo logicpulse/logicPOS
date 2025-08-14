@@ -3,9 +3,11 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -33,7 +35,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtWarehouseId();
             InitializeTxtLocationId();
         }
+        private List<Country> InitializeCountriesForCompletion()
+        {
+            _countriesForCompletion = CountryService.GetCountries();
+            return _countriesForCompletion;
+        }
 
+        private void SelectCountry(Country country)
+        {
+            TxtCountry.Text = country.Designation;
+            TxtCountry.SelectedEntity = country;
+        }
         public void ImportDataFromDocument(Document document)
         {
             var shipAddress = document.ShipToAdress;

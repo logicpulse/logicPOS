@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeKeyBoardButton: false);
 
             TxtDeliveryDate.Entry.IsEditable = true;
-
+            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
         private void InitializeTxtCountry()
@@ -84,8 +84,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          includeSelectButton: true,
                                          includeKeyBoardButton: false);
 
-            TxtCountry.Entry.IsEditable = false;
-
+            TxtCountry.Entry.IsEditable = true;
+            var country = CountryService.DefaultCountry;
+            var countries = CountriesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            if (country != null)
+            {
+                TxtCountry.Text = country.Designation;
+                TxtCountry.SelectedEntity = country;
+            }
+            TxtCountry.WithAutoCompletion(countries);
+            TxtCountry.OnCompletionSelected += c => SelectCountry(c as Country);
+            TxtCountry.Entry.Changed += TxtCoutry_Changed;
             TxtCountry.SelectEntityClicked += TxtCountry_SelectEntityClicked;
         }
         private void InitializeTxtCity()

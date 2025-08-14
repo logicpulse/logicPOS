@@ -33,5 +33,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtCountry.SelectedEntity = page.SelectedEntity;
             }
         }
+
+        private void TxtCoutry_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtCountry.Text))
+            {
+                TxtCountry.Clear();
+            }
+        }
     }
 }

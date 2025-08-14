@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Services;
@@ -57,7 +58,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtDeliveryId = new TextBox(SourceWindow,
                                             GeneralUtils.GetResourceByName("global_ship_from_delivery_id"),
-                                            isRequired: true,
+                                            isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
@@ -73,7 +74,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
-            TxtDeliveryDate.Entry.IsEditable = false;
+            TxtDeliveryDate.Entry.IsEditable = true;
+            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
@@ -87,8 +89,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          includeSelectButton: true,
                                          includeKeyBoardButton: false);
 
-            TxtCountry.Entry.IsEditable = false;
+            TxtCountry.Entry.IsEditable = true;
+            var country = CountryService.DefaultCountry;
+            var countries = CountriesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            if (country != null) 
+            { 
+                TxtCountry.Text = country.Designation;
+                TxtCountry.SelectedEntity = country;
+             }
 
+            TxtCountry.WithAutoCompletion(countries);
+            TxtCountry.OnCompletionSelected += c => SelectCountry(c as Country);
+            TxtCountry.Entry.Changed += TxtCoutry_Changed;
             TxtCountry.SelectEntityClicked += TxtCountry_SelectEntityClicked;
         }
         private void InitializeTxtCity()

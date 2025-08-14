@@ -1,4 +1,6 @@
-﻿using LogicPOS.UI.Components.InputFields;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.InputFields;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -13,5 +15,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private TextBox TxtDeliveryId { get; set; }
         private TextBox TxtWarehouseId { get; set; }
         private TextBox TxtLocationId { get; set; }
+        private List<Country> _countriesForCompletion;
+        private List<Country> CountriesForCompletion=> _countriesForCompletion?? InitializeCountriesForCompletion();
     }
 }
