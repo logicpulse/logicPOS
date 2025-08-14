@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Components.Documents
                 new Size(540, 568),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
+            WindowSettings.Close.Hide();
         }
 
         private List<Customer> InitializeCustomersForCompletion()

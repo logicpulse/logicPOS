@@ -171,7 +171,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectDocumentNumber_Clicked(object sender, System.EventArgs e)
         {
-            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+            var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
             var selectDocumentModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectDocumentModal.Run();
             selectDocumentModal.Destroy();

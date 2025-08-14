@@ -16,10 +16,10 @@ namespace LogicPOS.UI.Components.Pages
 
         private void AddEventHandlers()
         {
-            SelectedEntityConfirmed += DocumentsPage_SelectedEntityConfirmed;
+            SelectedEntityConfirmed += OnSelectedEntityConfirmed;
         }
 
-        private void DocumentsPage_SelectedEntityConfirmed(Document document)
+        private void OnSelectedEntityConfirmed(Document document)
         {
             DocumentPdfUtils.ViewDocumentPdf(SourceWindow, document.Id);
         }
