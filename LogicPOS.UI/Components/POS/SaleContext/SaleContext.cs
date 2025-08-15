@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using System.Linq;
@@ -55,14 +56,15 @@ namespace LogicPOS.UI.Components.POS
 
         private static Table GetDefaultTable()
         {
-            var freeTable = TablesService.GetFreeTables().FirstOrDefault();
+            
+            var defaultTable = TablesService.GetOpenTables().FirstOrDefault(x=>x.UpdatedWhere==TerminalService.Terminal.Id);
 
-            if (freeTable != null)
+            if (defaultTable != null)
             {
-                return freeTable;
+                return defaultTable;
             }
 
-            return TablesService.GetOpenTables().FirstOrDefault();  
+            return TablesService.GetFreeTables().FirstOrDefault();  
         }
     }
 }
