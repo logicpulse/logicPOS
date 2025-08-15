@@ -98,6 +98,11 @@ namespace LogicPOS.UI.Components.Modals
             {
                 BtnAddSplitter.Sensitive = false;
                 BtnRemoveSplitter.Sensitive = false;
+
+                foreach (var splitter in Splitters)
+                {
+                    splitter.splittersNumber --;
+                }
             }
         }
         private void BtnAddSplitter_Clicked(object sender, EventArgs e)

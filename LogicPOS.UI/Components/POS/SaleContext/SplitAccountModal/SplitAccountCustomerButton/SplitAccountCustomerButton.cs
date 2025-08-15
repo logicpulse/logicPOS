@@ -35,7 +35,11 @@ namespace LogicPOS.UI.Buttons
         {
             _settings.BackgroundColor = color;
             _window = window;
+            if (splittersNumber == 0)
+            {
             this.splittersNumber = splittersNumber;
+
+            }
             initializeObject();
             Initialize();
         }
@@ -78,10 +82,9 @@ namespace LogicPOS.UI.Buttons
             if (response == ResponseType.Ok)
             {
                 Paid = true;
-                Total = SaleContext.CurrentOrder.TotalFinal/splittersNumber;
+                Total = SaleContext.CurrentOrder.TotalFinal;
                 PaymentMethod = modal.paymentMethodDesignation;
                 updatePaymentDetails();
-                SaleContext.CurrentOrder.SplitTickets(splittersNumber);
                 Sensitive = false;
             }
             modal.Destroy();

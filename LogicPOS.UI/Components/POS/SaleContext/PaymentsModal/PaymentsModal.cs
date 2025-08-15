@@ -57,6 +57,7 @@ namespace LogicPOS.UI.Components.POS
         {
             SplitModeInitilizer(splittersNumber);
             UpdateLabels();
+            UpdateTotals();
         }
 
         private void SplitModeInitilizer(int splittersNumber)
@@ -164,7 +165,7 @@ namespace LogicPOS.UI.Components.POS
                     TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
                     break;
                 case PaymentMode.Splited:
-                    TotalFinal = OrderTotalFinal / SplittersNumber;
+                    TotalFinal = OrderTotalFinal/SplittersNumber;
                     break;
             }
 

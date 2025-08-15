@@ -10,7 +10,9 @@ using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -59,10 +61,42 @@ namespace LogicPOS.UI.Components.POS
                 ProcessFullPayment();
                 return;
             }
+            if(_paymentMode== PaymentMode.Splited)
+            {
+                SaleContext.CurrentOrder.ReduceItems(SplitTickets(SplittersNumber));
+                var ticket = SaleContext.CurrentOrder.Tickets.FirstOrDefault();
+                SaleContext.ItemsPage.Clear(true);
+                SaleContext.ReloadCurrentOrder();
+
+                if (SplittersNumber == 1) 
+                {
+                    SaleContext.CurrentOrder.Close();
+                    SaleContext.ItemsPage.Clear(true);
+                }
+                SaleContext.ReloadCurrentOrder();
+                return;
+            }
 
             ProcessPartialPayment();
         }
+        private List<SaleItem> SplitTickets(int splitNumber)
+        {
+            List<SaleItem> itemsToUpdate = null;
+            if (SaleContext.CurrentOrder.Tickets.Any())
+            {
 
+                foreach (var ticket in SaleContext.CurrentOrder.Tickets)
+                {
+                    foreach (var item in ticket.Items)
+                    {
+                        item.Quantity = (item.Quantity / splitNumber);
+
+                    }
+                    itemsToUpdate = ticket.Items;
+                }
+            }
+            return itemsToUpdate;
+        }
         private void ProcessPartialPayment()
         {
             SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);

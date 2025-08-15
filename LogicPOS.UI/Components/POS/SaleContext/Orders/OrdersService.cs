@@ -122,11 +122,11 @@ namespace LogicPOS.UI.Services
             command.Items = items.Select(i => new ReduceOrderItemDto
             {
                 ArticleId = i.Article.Id,
-                Quantity = (int)i.Quantity,
+                Quantity = i.Quantity,
                 UnitPrice = i.UnitPrice
             }).ToList();
 
-            var reduceResult = _mediator.Send(command).Result;
+                    var reduceResult = _mediator.Send(command).Result;
 
             if (reduceResult.IsError)
             {
