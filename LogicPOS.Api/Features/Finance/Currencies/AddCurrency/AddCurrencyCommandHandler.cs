@@ -1,6 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Currencies;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -20,7 +21,12 @@ namespace LogicPOS.Api.Features.Currencies.AddCurrency
         public override async Task<ErrorOr<Guid>> Handle(AddCurrencyCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("currencies", command, cancellationToken);
+            var result = await HandleAddCommandAsync("currencies", command, cancellationToken);
+            if(result.IsError == false)
+            {
+                CurrenciesCache.Clear(_keyedMemoryCache);
+            }
+            return result;
         }
     }
 }

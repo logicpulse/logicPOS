@@ -126,10 +126,29 @@ namespace LogicPOS.UI.Components.Pages
             BtnPrevious.Clicked += delegate { Previous(); };
             BtnNext.Clicked += delegate { Next(); };
             BtnInsert.Clicked += delegate { RunPageEntityModal(EntityEditionModalMode.Insert); };
-            BtnView.Clicked += delegate { _page.RunModal(EntityEditionModalMode.View); };
-            BtnUpdate.Clicked += delegate { RunPageEntityModal(EntityEditionModalMode.Update); };
+            BtnView.Clicked += BtnView_Clicked;
+            BtnUpdate.Clicked += BtnUpdate_Clicked;
             BtnDelete.Clicked += BtnDelete_Clicked;
             BtnRefresh.Clicked += delegate { _page.Refresh(); };
+        }
+
+        private void BtnUpdate_Clicked(object sender, System.EventArgs e)
+        {
+            if(_page.SelectedEntity == null)
+            {
+                return;
+            }
+            RunPageEntityModal(EntityEditionModalMode.Update);
+        }
+
+        private void BtnView_Clicked(object sender, System.EventArgs e)
+        {
+            if (_page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            _page.RunModal(EntityEditionModalMode.View);
         }
 
         private void BtnDelete_Clicked(object sender, System.EventArgs e)
