@@ -265,10 +265,10 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnSplitAccount_Clicked(object sender, System.EventArgs e)
         {
-            //GeneralUtils.ShowNotImplementedMessage();
-            var modal = new SplitAccountModal(SourceWindow, SaleContext.CurrentOrder);
+            GeneralUtils.ShowNotImplementedMessage();
+            /*var modal = new SplitAccountModal(SourceWindow, SaleContext.CurrentOrder);
             ResponseType response = (ResponseType)modal.Run();
-            modal.Destroy();
+            modal.Destroy();*/
             
                 
         }

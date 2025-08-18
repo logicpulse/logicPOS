@@ -1,5 +1,7 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.PaymentConditions;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -9,13 +11,20 @@ namespace LogicPOS.Api.Features.PaymentConditions.AddPaymentCondition
 {
     public class AddPaymentConditionCommandHandler : RequestHandler<AddPaymentConditionCommand, ErrorOr<Guid>>
     {
-        public AddPaymentConditionCommandHandler(IHttpClientFactory factory) : base(factory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+        public AddPaymentConditionCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache = cache;
         }
 
         public override async Task<ErrorOr<Guid>> Handle(AddPaymentConditionCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("payment/conditions", command, cancellationToken);
+            var result= await HandleAddCommandAsync("payment/conditions", command, cancellationToken);
+            if (result.IsError == false)
+            {
+                PaymentConditionsCache.Clear(_keyedMemoryCache);
+            }
+            return result;
         }
     }
 }

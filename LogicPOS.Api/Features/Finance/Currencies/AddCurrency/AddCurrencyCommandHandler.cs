@@ -1,4 +1,5 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using System;
 using System.Net.Http;
@@ -10,8 +11,10 @@ namespace LogicPOS.Api.Features.Currencies.AddCurrency
     public class AddCurrencyCommandHandler :
         RequestHandler<AddCurrencyCommand, ErrorOr<Guid>>
     {
-        public AddCurrencyCommandHandler(IHttpClientFactory factory) : base(factory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+        public AddCurrencyCommandHandler(IHttpClientFactory factory,  IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache= cache;
         }
 
         public override async Task<ErrorOr<Guid>> Handle(AddCurrencyCommand command,

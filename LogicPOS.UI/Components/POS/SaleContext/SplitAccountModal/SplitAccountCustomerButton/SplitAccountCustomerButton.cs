@@ -85,6 +85,12 @@ namespace LogicPOS.UI.Buttons
                 Total = SaleContext.CurrentOrder.TotalFinal;
                 PaymentMethod = modal.paymentMethodDesignation;
                 updatePaymentDetails();
+                if (splittersNumber == 1)
+                {  
+                    SaleContext.ItemsPage.Clear(true);
+                    SaleContext.CurrentOrder.Close();
+                    SaleContext.ReloadCurrentOrder();
+                }
                 Sensitive = false;
             }
             modal.Destroy();

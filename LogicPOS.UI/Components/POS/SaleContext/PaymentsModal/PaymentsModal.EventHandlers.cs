@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -65,12 +66,13 @@ namespace LogicPOS.UI.Components.POS
             {
                 SaleContext.CurrentOrder.ReduceItems(SplitTickets(SplittersNumber));
                 var ticket = SaleContext.CurrentOrder.Tickets.FirstOrDefault();
+                var saveTicketResult = OrdersService.SavePosTicket(SaleContext.CurrentOrder, ticket);
                 SaleContext.ItemsPage.Clear(true);
                 SaleContext.ReloadCurrentOrder();
 
                 if (SplittersNumber == 1) 
                 {
-                    SaleContext.CurrentOrder.Close();
+                    
                     SaleContext.ItemsPage.Clear(true);
                 }
                 SaleContext.ReloadCurrentOrder();

@@ -1,6 +1,8 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.DocumentTypes;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -12,15 +14,19 @@ namespace LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes
     public class GetAllDocumentTypesQueryHandler :
         RequestHandler<GetAllDocumentTypesQuery, ErrorOr<IEnumerable<DocumentType>>>
     {
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
         public GetAllDocumentTypesQueryHandler(IHttpClientFactory httpClientFactory, IMemoryCache cache) : base(httpClientFactory, cache)
         {
+            
         }
 
         public override async Task<ErrorOr<IEnumerable<DocumentType>>> Handle(GetAllDocumentTypesQuery query,
                                                                         CancellationToken cancellationToken = default)
         {
             var cacheOptions = GetCacheOptions();
-            return await HandleGetListQueryAsync<DocumentType>("documents/types", cancellationToken, cacheOptions);
+            var result= await HandleGetListQueryAsync<DocumentType>("documents/types", cancellationToken, cacheOptions);
+
+            return result;
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()
