@@ -1,9 +1,13 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
+using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -63,7 +67,15 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPrint_Clicked(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+
+            var command = new GetLastClosedDayQuery();
+            var _mediator = DependencyInjection.Mediator;
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+            }
+            ThermalPrintingService.PrintWorkSessionReport(result.Value.Id);
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)

@@ -286,6 +286,7 @@ namespace LogicPOS.UI.Components.POS
             command.PaymentMethods = GetPaymentMethodsDtos();
             command.PaymentConditionId = _selectedPaymentCondition?.Id;
             command.CustomerId = (TxtCustomer.SelectedEntity as Customer)?.Id;
+            command.OrderId = SaleContext.CurrentOrder.Id;
             if (command.CustomerId == null)
             {
                 command.Customer = GetDocumentCustomer();
