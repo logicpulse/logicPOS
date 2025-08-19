@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Printing
         }
         private void DefineTicketSubtitle()
         {
-            var ticketSubTitleExtra = GeneralUtils.GetResourceByName("global_current_account");
+            var ticketSubTitleExtra = "";// GeneralUtils.GetResourceByName("global_current_account");
 
             if (!string.IsNullOrEmpty(_SubTitle) && !string.IsNullOrEmpty(ticketSubTitleExtra))
             {

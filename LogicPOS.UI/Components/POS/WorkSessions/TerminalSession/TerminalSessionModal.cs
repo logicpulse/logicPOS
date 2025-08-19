@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.POS
                    new Size(462, 310),
                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_cash_drawer.png")
         {
-
+            UpdateBtnPrint();
         }
 
         private void InitializeTextBoxes()

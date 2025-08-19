@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Licensing
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_license.png";
 
-            //If detected empty Hardware Id from Parameters, get it from IntelliLock
+            //If detected empty Hardware TerminalId from Parameters, get it from IntelliLock
             if (string.IsNullOrEmpty(hardWareId))
             {
                 _hardwareId = AppSettings.Plugins.LicenceManager.GetHardwareID();

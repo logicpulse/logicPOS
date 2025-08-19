@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.WorkSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodSession;
@@ -165,6 +166,19 @@ namespace LogicPOS.UI.Services
             }
             CashDrawerOutTotal += amount;
             return true;
+        }
+
+        public static WorkSessionPeriod GetLastWorkSessionByTerminal()
+        {
+            var command = new GetLastWorkSessionByTerminalIdQuery(TerminalService.Terminal.Id);
+            
+            var result = _mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value;
         }
 
         public static decimal OpenTotal { get; set; }

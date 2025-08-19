@@ -1,13 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities.Enums;
-using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
-using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -42,42 +38,51 @@ namespace LogicPOS.UI.Components.POS
             BtnIn.Clicked += BtnIn_Clicked;
             BtnOut.Clicked += BtnOut_Clicked;
             _movementTypeButtons.ForEach(btn => btn.Clicked += MovementTypeButton_Clicked);
+            UpdateBtnPrint();
         }
 
         private void BtnOut_Clicked(object sender, EventArgs e)
         {
             MovementType = WorkSessionMovementType.CashDrawerOut;
+            UpdateBtnPrint();
         }
 
         private void BtnIn_Clicked(object sender, EventArgs e)
         {
             MovementType = WorkSessionMovementType.CashDrawerIn;
+            UpdateBtnPrint();
         }
 
         private void BtnClosing_Clicked(object sender, EventArgs e)
         {
             MovementType = WorkSessionMovementType.CashDrawerClose;
+            UpdateBtnPrint();
         }
 
         private void BtnOpening_Clicked(object sender, EventArgs e)
         {
             MovementType = WorkSessionMovementType.CashDrawerOpen;
-
+            UpdateBtnPrint();
         }
 
         private void BtnPrint_Clicked(object sender, EventArgs e)
         {
-
-            var command = new GetLastClosedDayQuery();
-            var _mediator = DependencyInjection.Mediator;
-            var result = _mediator.Send(command).Result;
-            if (result.IsError)
+            var result = WorkSessionService.GetLastWorkSessionByTerminal();
+            if (result == null)
             {
-                ErrorHandlingService.HandleApiError(result);
+                CustomAlerts.Information()
+                            .WithMessage("Sem resgistro de sessões no presente terminal")
+                            .ShowAlert();
+                return;
             }
-            ThermalPrintingService.PrintWorkSessionReport(result.Value.Id);
-        }
+            ThermalPrintingService.PrintWorkSessionReport(result.Id);
 
+
+        }
+        private void UpdateBtnPrint()
+        {
+            BtnPrint.Sensitive = WorkSessionService.DayIsOpen() || WorkSessionService.TerminalIsOpen();
+        }
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             if (!AllFieldsAreValid())
@@ -124,7 +129,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 CustomAlerts.ShowOperationSucceededAlert(this);
 
-                var response= CustomAlerts.Question(this)
+                var response = CustomAlerts.Question(this)
                                             .WithSize(new Size(620, 300))
                                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
                                             .ShowAlert();
@@ -203,9 +208,9 @@ namespace LogicPOS.UI.Components.POS
                 {
                     ThermalPrintingService.PrintCashDrawerInMovement(newTotalInCashDrawer, amount - totalInCashDrawer, description);
                 }
-                if (newTotalInCashDrawer<totalInCashDrawer)
+                if (newTotalInCashDrawer < totalInCashDrawer)
                 {
-                    ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer-newTotalInCashDrawer , description);
+                    ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer - newTotalInCashDrawer, description);
                 }
             }
 
