@@ -8,5 +8,6 @@ namespace LogicPOS.Api.Entities
         public Warehouse Warehouse { get; set; }
         public Guid WarehouseId { get; set; }
         public string Designation { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

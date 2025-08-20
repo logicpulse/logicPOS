@@ -147,8 +147,7 @@ namespace LogicPOS.UI.Components.Modals
             if (warehouseLocation != null)
             {
 
-                ResponseType responseType = SimpleAlerts.Question()
-                                          .WithParent(this)
+                ResponseType responseType = CustomAlerts.Question(this)
                                           .WithTitleResource("global_warning")
                                           .WithMessageResource("dialog_message_delete_record")
                                           .ShowAlert();
