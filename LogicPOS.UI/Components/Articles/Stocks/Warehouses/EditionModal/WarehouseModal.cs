@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation;
 using LogicPOS.Api.Features.Warehouses.Locations.UpdateWarehouseLocation;
 using LogicPOS.Api.Features.Warehouses.UpdateWarehouse;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Articles.Stocks.Warehouses.Service;
 using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Errors;
 using System.Linq;
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 Designation = _txtDesignation.Text,
                 IsDefault = _checkDefaultWarehouse.Active,
-                Locations = _locations.Select(x => x.TxtLocation.Text)
+                Locations = _locationFields.Select(x => x.TxtLocation.Text)
             };
 
             return command;
@@ -59,12 +60,12 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            if(_locations.Any(x => x.Location == null))
+            if(_locationFields.Any(x => x.Location == null))
             {
                 AddNewLocations();
             }
 
-            if(_locations.Any(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text))
+            if(_locationFields.Any(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text))
             {
                 UpdateLocations();
             }
@@ -72,7 +73,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateLocations()
         {
-            var locationsToUpdate = _locations.Where(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text).ToList();
+            var locationsToUpdate = _locationFields.Where(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text).ToList();
 
             foreach (var location in locationsToUpdate)
             {
@@ -109,7 +110,7 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateWarehouseLocationCommand
             {
                 Id = field.Location.Id,
-                NewDesignation = field.TxtLocation.Text
+                Designation = field.TxtLocation.Text
             };
         }
 
@@ -118,7 +119,7 @@ namespace LogicPOS.UI.Components.Modals
             return new AddWarehouseLocationsCommand()
             {
                 Id = _entity.Id,
-                Locations = _locations.Where(x => x.Location == null).Select(x => x.TxtLocation.Text).ToList()
+                Locations = _locationFields.Where(x => x.Location == null).Select(x => x.TxtLocation.Text).ToList()
             };
         }
 
@@ -137,47 +138,5 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        private void Button_AddLocation_Clicked(object sender, System.EventArgs e)
-        {
-            AddLocationField();
-        }
-
-        private void Button_RemoveLocation_Clicked(WarehouseLocationField field, WarehouseLocation warehouseLocation)
-        {
-            if (warehouseLocation != null)
-            {
-
-                ResponseType responseType = CustomAlerts.Question(this)
-                                          .WithTitleResource("global_warning")
-                                          .WithMessageResource("dialog_message_delete_record")
-                                          .ShowAlert();
-
-                if (responseType != ResponseType.Yes)
-                {
-                    return;
-                }
-
-                DeleteLocation(warehouseLocation);
-            }
-
-            _boxLocations.Remove(field.Component);
-            _locations.Remove(field);
-            ValidatableFields.Remove(field.TxtLocation);
-        }
-
-        private void DeleteLocation(WarehouseLocation warehouseLocation)
-        {
-            var command = new DeleteWarehouseLocationCommand(warehouseLocation.Id);
-
-            var result = _mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return;
-            }
-
-            _entity.Locations.Remove(warehouseLocation);
-        }
     }
 }

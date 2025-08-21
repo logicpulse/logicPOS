@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private CheckButton _checkDefaultWarehouse = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
-        private List<WarehouseLocationField> _locations = new List<WarehouseLocationField>();
+        private List<WarehouseLocationField> _locationFields = new List<WarehouseLocationField>();
         private VBox _boxLocations;
         #endregion
 
@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_boxLocations);
 
-            foreach (var location in _locations)
+            foreach (var location in _locationFields)
             {
                 SensitiveFields.Add(location.TxtLocation.Entry);
             }
@@ -118,10 +118,10 @@ namespace LogicPOS.UI.Components.Modals
             var button =  new IconButton(
                 new ButtonSettings 
                 {
-                    Name = "touchButtonIcon",
+                    Name = "AccordionChildButton",
                     Icon = $"{AppSettings.Paths.Images}{@"Icons/icon_pos_nav_new.png"}",
                     IconSize = new Size(15, 15),
-                    ButtonSize = new Size(20, 15)
+                    ButtonSize = new Size(20, 30)
                 });
 
             button.Clicked += Button_AddLocation_Clicked;
@@ -132,11 +132,14 @@ namespace LogicPOS.UI.Components.Modals
         private void AddLocationField(WarehouseLocation location = null)
         {
             var locationField = new WarehouseLocationField(location);
-            locationField.OnRemove += Button_RemoveLocation_Clicked;
+            locationField.BtnRemoveClicked += On_BtnRemoveLocation_Clicked;
+            locationField.BtnSetDefaultClicked += On_BtnSetDefaultClicked;
             _boxLocations.PackStart(locationField.Component, false, true, 0);
             ValidatableFields.Add(locationField.TxtLocation);
             locationField.Component.ShowAll();
-            _locations.Add(locationField);
+            _locationFields.Add(locationField);
         }
+
+    
     }
 }

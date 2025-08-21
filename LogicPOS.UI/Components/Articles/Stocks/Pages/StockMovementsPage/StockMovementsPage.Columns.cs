@@ -108,8 +108,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -124,8 +124,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;
@@ -138,13 +138,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
                 if (a == null || b == null || a.Customer == null || b.Customer == null)
                 {
                     return 0;
                 }
-                return a.Customer.Name.CompareTo(b.Customer.Name);
+                return a.Customer.CompareTo(b.Customer);
             });
         }
 
@@ -152,8 +152,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
                 if (a == null || b == null || a.DocumentNumber == null || b.DocumentNumber == null)
                 {
                     return 0;
@@ -166,13 +166,13 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
                 if (a == null || b == null || a.Article == null || b.Article == null)
                 {
                     return 0;
                 }
-                return a.Article.Designation.CompareTo(b.Article.Designation);
+                return a.Article.CompareTo(b.Article);
             });
         }
 
@@ -180,8 +180,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
             {
-                var a = (StockMovement)model.GetValue(left, 0);
-                var b = (StockMovement)model.GetValue(right, 0);
+                var a = (StockMovementViewModel)model.GetValue(left, 0);
+                var b = (StockMovementViewModel)model.GetValue(right, 0);
                 if (a == null || b == null)
                 {
                     return 0;

@@ -67,17 +67,12 @@ namespace LogicPOS.UI.Components.Pages
             Movements = getMovements.Value;
 
             _entities.Clear();
+
             if (Movements.Items != null)
             {
                 _entities.AddRange(Movements.Items);
             }
-            if (_entities.Any() == false)
-            {
-                CustomAlerts.Warning(SourceWindow)
-                  .WithMessage("Nenhum dado retornado.")
-                  .ShowAlert();
-                return;
-            }
+           
         }
 
         public override int RunModal(EntityEditionModalMode mode)

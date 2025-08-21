@@ -47,6 +47,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             return new DeleteWarehouseCommand(SelectedEntity.Id);
         }
+
         public override void UpdateButtonPrevileges()
         {
             this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_WAREHOUSE_CREATE");
