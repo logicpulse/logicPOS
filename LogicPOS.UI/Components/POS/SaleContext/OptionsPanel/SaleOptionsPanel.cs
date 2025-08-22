@@ -135,7 +135,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateUI()
         {
-            Sensitive = WorkSessionService.TerminalIsOpen();
+            Sensitive = WorkSessionsService.TerminalIsOpen();
             UpdateButtonsSensitivity();
         }
 

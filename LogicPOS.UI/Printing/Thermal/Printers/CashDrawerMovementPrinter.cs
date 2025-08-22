@@ -37,42 +37,41 @@ namespace LogicPOS.UI.Printing
             _printer.PrintDocument();
             _printer.Clear();
         }
-        
+
         private void PrintDocumentDetails()
         {
             _printer.AlignCenter();
-            if (_movementType == WorkSessionMovementType.CashDrawerOut)
+            switch (_movementType)
             {
-                _printer.DoubleWidth2();
-                _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_money_out"));
-                _printer.NormalWidth();
-                _printer.Separator(' ');
+                case WorkSessionMovementType.CashDrawerOut:
+                    _printer.DoubleWidth2();
+                    _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_money_out"));
+                    _printer.NormalWidth();
+                    _printer.Separator(' ');
+                    break;
 
-            }
-            else
-            if (_movementType== WorkSessionMovementType.CashDrawerIn)
-            {
-                _printer.DoubleWidth2();
-                _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_money_in"));
-                _printer.NormalWidth();
-                _printer.Separator(' ');
+                case WorkSessionMovementType.CashDrawerIn:
+                    _printer.DoubleWidth2();
+                    _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_money_in"));
+                    _printer.NormalWidth();
+                    _printer.Separator(' ');
+                    break;
 
+                case WorkSessionMovementType.CashDrawerClose:
+                    _printer.DoubleWidth2();
+                    _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_close"));
+                    _printer.NormalWidth();
+                    _printer.Separator(' ');
+                    break;
+
+                case WorkSessionMovementType.CashDrawerOpen:
+                    _printer.DoubleWidth2();
+                    _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_open"));
+                    _printer.NormalWidth();
+                    _printer.Separator(' ');
+                    break;
             }
-            else
-            if(_movementType==WorkSessionMovementType.CashDrawerClose)
-            {
-                _printer.DoubleWidth2();
-                _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_close"));
-                _printer.NormalWidth();
-                _printer.Separator(' ');
-            }
-            else
-            {
-                _printer.DoubleWidth2();
-                _printer.BoldMode(GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_open"));
-                _printer.NormalWidth();
-                _printer.Separator(' ');
-            }
+
             _printer.Append(GeneralUtils.GetResourceByName("global_total_cashdrawer"));
             _printer.Separator(' ');
             _printer.DoubleWidth2();
@@ -80,7 +79,7 @@ namespace LogicPOS.UI.Printing
             _printer.NormalWidth();
             _printer.Separator(' ');
 
-            if (_movementType==WorkSessionMovementType.CashDrawerIn || _movementType==WorkSessionMovementType.CashDrawerOut)
+            if (_movementType == WorkSessionMovementType.CashDrawerIn || _movementType == WorkSessionMovementType.CashDrawerOut)
             {
                 _printer.Append(GeneralUtils.GetResourceByName("global_movement_amount"));
                 _printer.Separator(' ');
@@ -112,9 +111,9 @@ namespace LogicPOS.UI.Printing
                 , Environment.NewLine
                 , GeneralUtils.GetResourceByName("global_printed_on_date")
                 , DateTime.Now.ToLocalTime()
-                , "LogicPulse"//_customVars["APP_COMPANY"]
-                , "LogicPOS"//_customVars["APP_NAME"]
-                , "vs1.010.1"//_customVars["APP_VERSION"]
+                , "LogicPulse"
+                , "LogicPOS"
+                , "vs1.010.1"
                 ));
         }
 

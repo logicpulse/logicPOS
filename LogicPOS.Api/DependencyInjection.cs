@@ -15,6 +15,7 @@ namespace LogicPOS.Api
 
             services.AddHttpClient("Default", config =>
             {
+                config.Timeout = TimeSpan.FromDays(1);
                 config.DefaultRequestHeaders.Add("Accept", "application/json");
                 config.BaseAddress = new Uri(ApiSettings.Default.BaseAddress);
             });

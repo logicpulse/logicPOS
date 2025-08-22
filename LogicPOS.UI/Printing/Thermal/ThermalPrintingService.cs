@@ -30,7 +30,8 @@ namespace LogicPOS.UI.Printing
                 return _printer;
             }
         }
-        public static void GetEntityAssociatedPrinter(Guid? documentId=null,PosTicket ticket=null, bool isDocument=false)
+        
+        public static void GetEntityAssociatedPrinter(Guid? documentId = null, PosTicket ticket = null, bool isDocument = false)
         {
             Document document = null;
             Api.Entities.Printer printer = null;
@@ -40,9 +41,9 @@ namespace LogicPOS.UI.Printing
             {
                 GetPrintFromAssociatedDocumentDetail((Guid)documentId, ref document, ref printer);
             }
-            else 
+            else
             {
-                GetPrinterFromAssociatedTicketItem( ticket, ref printer);
+                GetPrinterFromAssociatedTicketItem(ticket, ref printer);
             }
             if (printer != null && printer.Type.ThermalPrinter)
             {
@@ -50,7 +51,7 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        private static void GetPrinterFromAssociatedTicketItem( PosTicket ticket, ref Api.Entities.Printer printer)
+        private static void GetPrinterFromAssociatedTicketItem(PosTicket ticket, ref Api.Entities.Printer printer)
         {
             if (ticket == null)
             {
@@ -79,48 +80,48 @@ namespace LogicPOS.UI.Printing
 
         private static void GetPrintFromAssociatedDocumentDetail(Guid documentId, ref Document document, ref Api.Entities.Printer printer)
         {
-                var result = _mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
-                if (result.IsError)
-                {
-                    CustomAlerts.Error()
-                                .WithMessage(result.FirstError.Description)
-                                .ShowAlert();
-                }
+            var result = _mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
+            if (result.IsError)
+            {
+                CustomAlerts.Error()
+                            .WithMessage(result.FirstError.Description)
+                            .ShowAlert();
+            }
 
-                document = result.Value;
+            document = result.Value;
 
-                if (document != null && document.Details.Count != 1)
-                {
-                    return;
-                }
+            if (document != null && document.Details.Count != 1)
+            {
+                return;
+            }
 
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].ArticleId);
-                if (printer == null)
-                {
-                    printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.SubfamilyId);
-                }
-                if (printer == null)
-                {
-                    printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.Subfamily.FamilyId);
-                }
+            printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].ArticleId);
+            if (printer == null)
+            {
+                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.SubfamilyId);
+            }
+            if (printer == null)
+            {
+                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.Subfamily.FamilyId);
+            }
 
-                if (printer == null && !TerminalService.HasThermalPrinter)
-                {
-                    return;
+            if (printer == null && !TerminalService.HasThermalPrinter)
+            {
+                return;
 
-                }
+            }
 
-                if (printer != null && !printer.Type.ThermalPrinter)
-                {
-                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(documentId, 1);
-                    PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
-                }
-            
+            if (printer != null && !printer.Type.ThermalPrinter)
+            {
+                var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(documentId, 1);
+                PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+            }
+
         }
 
         public static void PrintTicket(PosTicket ticket, Table table)
         {
-            GetEntityAssociatedPrinter(null,ticket);
+            GetEntityAssociatedPrinter(null, ticket);
             if (Printer != null)
             {
                 new PosTicketPrinter(Printer, ticket, table).Print();
@@ -129,7 +130,7 @@ namespace LogicPOS.UI.Printing
 
         public static void PrintInvoice(Guid documentId)
         {
-            GetEntityAssociatedPrinter(documentId,null, true);
+            GetEntityAssociatedPrinter(documentId, null, true);
             if (Printer != null)
             {
                 new InvoicePrinter(Printer, documentId).Print();
@@ -138,32 +139,12 @@ namespace LogicPOS.UI.Printing
 
         public static void PrintWorkSessionReport(Guid workSessionId)
         {
-            if (!TerminalService.HasThermalPrinter)
-            {
-                return;
-            }
             if (Printer != null)
             {
-            new WorkSessionPrinter(Printer, workSessionId).Print();
+                new WorkSessionPrinter(Printer, workSessionId).Print();
             }
         }
-
-        public static void PrintWorkSessionDayOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
-        {
-            if (!TerminalService.HasThermalPrinter)
-            {
-                return;
-            }
-            if (Printer != null)
-            {
-                new CashDrawerMovementPrinter(Printer,
-                                              totalAmountInCashDrawer,
-                                              movementAmount,
-                                              WorkSessionMovementType.CashDrawerOpen,
-                                              movementDescription).Print();
-            }
-        }
-
+ 
         public static void PrintCashDrawerOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -177,6 +158,23 @@ namespace LogicPOS.UI.Printing
                                              totalAmountInCashDrawer,
                                              movementAmount,
                                              WorkSessionMovementType.CashDrawerOpen,
+                                             movementDescription).Print();
+            }
+        }
+
+        public static void PrintCashDrawerClose(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
+        {
+            if (!TerminalService.HasThermalPrinter)
+            {
+                return;
+            }
+
+            if (Printer != null)
+            {
+                new CashDrawerMovementPrinter(Printer,
+                                             totalAmountInCashDrawer,
+                                             movementAmount,
+                                             WorkSessionMovementType.CashDrawerClose,
                                              movementDescription).Print();
             }
         }

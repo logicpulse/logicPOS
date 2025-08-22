@@ -21,7 +21,6 @@ namespace LogicPOS.UI.Components.InputFields
         private VBox _serialNumberFieldsContainer { get; set; } = new VBox(false, 2);
         private WarehouseSelectionField _locationField { get; set; }
 
-        public event EventHandler SelectEntityClicked;
         public event Action<object> OnCompletionSelected;
         public Entry TxtDesignation { get; set; } = new Entry() { IsEditable = true };
     }

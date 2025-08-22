@@ -675,7 +675,7 @@ namespace LogicPOS.UI.Components.Windows
         public void UpdateUI()
         {
             LabelTerminalInfo.Text = $"{TerminalService.Terminal.Designation} : {AuthenticationService.User.Name}";
-            MenuArticles.Sensitive = WorkSessionService.TerminalIsOpen();
+            MenuArticles.Sensitive = WorkSessionsService.TerminalIsOpen();
 
             if (SaleContext.CurrentTable != null)
             {

@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.POS
     {
         private void BtnDayOpening_Clicked(object sender, EventArgs e)
         {
-            if (WorkSessionService.DayIsOpen())
+            if (WorkSessionsService.DayIsOpen())
             {
                 CloseDay();
                 return;
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.POS
 
         private bool CheckOpenTerminals()
         {
-            var openTerminalSessions = WorkSessionService.GetOpenTerminalSessions();
+            var openTerminalSessions = WorkSessionsService.GetOpenTerminalSessions();
 
             if (openTerminalSessions.Any())
             {
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.POS
                     return false;
                 }
 
-                WorkSessionService.CloseAllTerminalSessions();
+                WorkSessionsService.CloseAllTerminalSessions();
             }
 
             return true;
@@ -98,7 +98,7 @@ namespace LogicPOS.UI.Components.POS
 
             HandleBackup();
 
-            if (!WorkSessionService.CloseDay())
+            if (!WorkSessionsService.CloseDay())
             {
                 return;
             }
@@ -139,7 +139,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void OpenDay()
         {
-            if (WorkSessionService.OpenDay() == false)
+            if (WorkSessionsService.OpenDay() == false)
             {
                 CustomAlerts.Error(this)
                             .WithSize(new Size(620, 300))
@@ -161,7 +161,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateUI()
         {
-            if (WorkSessionService.DayIsOpen())
+            if (WorkSessionsService.DayIsOpen())
             {
                 BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
                 BtnSessionOpening.Sensitive = true;

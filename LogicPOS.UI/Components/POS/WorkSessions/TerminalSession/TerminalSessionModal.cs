@@ -25,16 +25,16 @@ namespace LogicPOS.UI.Components.POS
         private List<IconButtonWithText> _movementTypeButtons { get; set; } = new List<IconButtonWithText>();
         private TextBox TxtAmount { get; set; }
         private TextBox TxtDescription { get; set; }
-        private readonly decimal _totalCashInrawer = WorkSessionService.GetTotalCashInCashDrawer();
+        private readonly decimal _totalCashInrawer = WorkSessionsService.GetTotalCashInCashDrawer();
         #endregion
 
-        private bool _cashDrawerIsOpen = WorkSessionService.TerminalIsOpen();
+        private bool _cashDrawerIsOpen = WorkSessionsService.TerminalIsOpen();
         public WorkSessionMovementType MovementType { get; private set; } = WorkSessionMovementType.CashDrawerOpen;
 
         public TerminalSessionModal(Window parentWindow)
             : base(parentWindow,
                    string.Format(LocalizedString.Instance["window_title_dialog_cashdrawer"],
-                                 WorkSessionService.GetTotalCashInCashDrawer().ToString("C")),
+                                 WorkSessionsService.GetTotalCashInCashDrawer().ToString("C")),
                    new Size(462, 310),
                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_cash_drawer.png")
         {

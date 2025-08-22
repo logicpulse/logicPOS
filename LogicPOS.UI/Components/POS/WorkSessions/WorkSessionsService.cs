@@ -16,10 +16,11 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using MediatR;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Services
 {
-    public static class WorkSessionService
+    public static class WorkSessionsService
     {
         private static readonly ISender _mediator = DependencyInjection.Mediator;
 
@@ -49,17 +50,18 @@ namespace LogicPOS.UI.Services
             return getResult.Value;
         }
 
-        public static IEnumerable<WorkSessionPeriod> GetOpenTerminalSessions()
+        public static List<WorkSessionPeriod> GetOpenTerminalSessions()
         {
-            var query = new GetAllWorkSessionPeriodsQuery(WorkSessionPeriodType.Terminal, WorkSessionPeriodStatus.Open);
+            var query = new GetOpenTerminalSessionsQuery();
             var getResult = _mediator.Send(query).Result;
 
             if (getResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(getResult, true);
+                ErrorHandlingService.HandleApiError(getResult);
+                return null;
             }
 
-            return getResult.Value;
+            return getResult.Value.ToList();
         }
 
         public static bool OpenDay()
@@ -168,7 +170,7 @@ namespace LogicPOS.UI.Services
             return true;
         }
 
-        public static WorkSessionPeriod GetLastWorkSessionByTerminal()
+        public static WorkSessionPeriod GetTerminalLastWorkSession()
         {
             var command = new GetLastWorkSessionByTerminalIdQuery(TerminalService.Terminal.Id);
             

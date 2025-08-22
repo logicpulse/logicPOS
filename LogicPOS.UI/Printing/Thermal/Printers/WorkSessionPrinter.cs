@@ -166,7 +166,7 @@ namespace LogicPOS.UI.Printing
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_total_cashdrawer"));
-            dataRow[1] = (WorkSessionService.OpenTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionsService.OpenTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = ticketTable.NewRow();
@@ -176,12 +176,12 @@ namespace LogicPOS.UI.Printing
             //Total Money In
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_in"));
-            dataRow[1] = (WorkSessionService.CashDrawerInTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionsService.CashDrawerInTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_out"));
-            dataRow[1] = (WorkSessionService.CashDrawerOutTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (WorkSessionsService.CashDrawerOutTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
             ticketTable.Rows.Add(dataRow);
 
 
