@@ -1,11 +1,13 @@
 ﻿
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
+using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Printing
 {
@@ -26,15 +28,15 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.SubfamilyReportItems)
+            foreach (var item in workSessionData.SubfamilyReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Designation;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[0] = item.Key;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -68,15 +70,15 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.ArticleReportItems)
+            foreach (var item in workSessionData.ArticleReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Designation;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[0] = item.Key;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -110,15 +112,15 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.TaxReportItems)
+            foreach (var item in workSessionData.TaxReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Designation;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[0] = item.Key;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -149,15 +151,15 @@ namespace LogicPOS.UI.Printing
             var ticketTable = new TicketTable(columns);
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
-            foreach (var item in workSessionData.PaymentReportItems)
+            foreach (var item in workSessionData.PaymentReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Designation;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[0] = item.Key;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -189,21 +191,21 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.DocumentTypeReportItems)
+            foreach (var item in workSessionData.DocumentTypeReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var documentType = "global_documentfinance_type_title_fr";
-                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Designation.ToLower() == "cm") ? "dc" : item.Designation.ToLower();
-                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Designation.ToLower() == "pp") ? "fp" : documentTypeSuffix;
+                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Key.ToLower() == "cm") ? "dc" : item.Key.ToLower();
+                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.Key.ToLower() == "pp") ? "fp" : documentTypeSuffix;
 
                 documentType = documentType.Substring(0, documentType.Length - 2) +documentTypeSuffix;
 
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = GeneralUtils.GetResourceByName(documentType);
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -236,17 +238,17 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.HoursReportItems)
+            foreach (var item in workSessionData.HoursReportItems.GroupBy(x => x.Hour))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity +=item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
-                var hour = item.Date.Hour.ToString();
+                var hour = item.Key.ToString();
 
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = hour;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();
@@ -279,15 +281,15 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.UserReportItems)
+            foreach (var item in workSessionData.UserReportItems.GroupBy(x => x.Designation))
             {
-                summaryTotalQuantity += Convert.ToDecimal(item.Quantity);
-                summaryTotal += item.Total;
+                summaryTotalQuantity += item.Sum(x => x.Quantity);
+                summaryTotal += item.Sum(x => x.Total);
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Designation;
-                dataRow[1] = item.Quantity;
-                dataRow[2] = item.Total;
+                dataRow[0] = item.Key;
+                dataRow[1] = item.Sum(x => x.Quantity);
+                dataRow[2] = item.Sum(x => x.Total);
                 ticketTable.Rows.Add(dataRow);
             }
             var tableCustomPrint = ticketTable.GetTable();

@@ -224,16 +224,16 @@ namespace LogicPOS.UI.Printing
             //If Has data
             if (workSessionDocumentsData.FamilyReportItems.Count > 0)
             {
-                foreach (var item in workSessionDocumentsData.FamilyReportItems)
+                foreach (var item in workSessionDocumentsData.FamilyReportItems.GroupBy(x => x.Designation))
                 {
 
                     unitMeasure = "Un";
                     //Create Row
                     dataRow = ticketTable.NewRow();
-                    dataRow[0] = item.Designation;
-                    dataRow[1] = Convert.ToDecimal(item.Quantity);
+                    dataRow[0] = item.Key;
+                    dataRow[1] = Convert.ToDecimal(item.Sum(x => x.Quantity));
                     //dataRow[2] = unitMeasure;
-                    dataRow[2] = Convert.ToDecimal(item.Total);
+                    dataRow[2] = Convert.ToDecimal(item.Sum(x => x.Total));
                     ticketTable.Rows.Add(dataRow);
                 }
             }
