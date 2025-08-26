@@ -193,6 +193,12 @@ namespace LogicPOS.UI.Printing
             documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
             _printer.AlignCenter();
             PrintHeader();
+            _printer.NewLines(2);
+            if (string.IsNullOrEmpty(_companyInformations.Address) == false) _printer.Append($"{_companyInformations.Address} ");
+            if (string.IsNullOrEmpty(_companyInformations.Phone)==false)_printer.Append($"{GeneralUtils.GetResourceByName("global_phone")}: {_companyInformations.Phone } ({GeneralUtils.GetResourceByName("report_phonenumber_label")})");
+            if (string.IsNullOrEmpty(_companyInformations.MobilePhone) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_mobile_phone")}: {_companyInformations.MobilePhone} ({GeneralUtils.GetResourceByName("report_mobilephonenumber_label")})");
+            if (string.IsNullOrEmpty(_companyInformations.Email) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_user_email")}: {_companyInformations.Email} ");
+            _printer.Append($"{GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber")}: {_companyInformations.FiscalNumber} ");
             _printer.SetLineHeight(80);
             _printer.Separator(' ');
             _printer.AlignCenter();

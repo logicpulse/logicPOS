@@ -212,7 +212,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            var reportData = WorkSessionsService.GetLastClosedDayReport();
+            var reportData = WorkSessionsService.GetLastClosedDayReportData();
 
             if (reportData == null)
             {

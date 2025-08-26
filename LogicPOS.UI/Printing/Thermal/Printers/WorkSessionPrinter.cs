@@ -1,5 +1,7 @@
 ﻿using ESC_POS_USB_NET.Printer;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
 using LogicPOS.UI.Alerts;
@@ -19,11 +21,11 @@ namespace LogicPOS.UI.Printing
 {
     public partial class WorkSessionPrinter : ThermalPrinter
     {
-        private readonly WorkSessionData _reportData;
+        private readonly DayReportData _reportData;
         protected string _SubTitle;
         protected string _Title;
 
-        public WorkSessionPrinter(Printer printer, WorkSessionData data) : base(printer)
+        public WorkSessionPrinter(ESC_POS_USB_NET.Printer.Printer printer, DayReportData data) : base(printer)
         {
             _reportData = data;
             DefineTicketTitle();
@@ -46,9 +48,9 @@ namespace LogicPOS.UI.Printing
 
         private void DefineTicketTitle()
         {
-            if (_reportData.WorkSession.Type == WorkSessionPeriodType.Day)
+            if (_reportData.Day.Type == WorkSessionPeriodType.Day)
             {
-                if (_reportData.WorkSession.Status == WorkSessionPeriodStatus.Open)
+                if (_reportData.Day.Status == WorkSessionPeriodStatus.Open)
                 {
                     _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_day_resume");
                 }
@@ -59,7 +61,7 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            if (_reportData.WorkSession.Status == WorkSessionPeriodStatus.Open)
+            if (_reportData.Day.Status == WorkSessionPeriodStatus.Open)
             {
                 _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_resume");
             }
@@ -67,7 +69,7 @@ namespace LogicPOS.UI.Printing
             {
                 _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_close");
             }
-            _SubTitle = _reportData.WorkSession.Type == WorkSessionPeriodType.Terminal ? TerminalService.Terminal.Designation : string.Empty;
+            _SubTitle = _reportData.Day.Type == WorkSessionPeriodType.Terminal ? TerminalService.Terminal.Designation : string.Empty;
         }
 
         public void PrintFooter()
@@ -111,9 +113,9 @@ namespace LogicPOS.UI.Printing
 
         }
 
-        public bool PrintWorkSessionMovement(WorkSessionData workSessionDocumentsData)
+        public bool PrintWorkSessionMovement(DayReportData dayReportData)
         {
-            string dateCloseDisplay = workSessionDocumentsData.WorkSession.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
+            string dateCloseDisplay = dayReportData.Day.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
 
 
             //Print Header Summary
@@ -128,32 +130,32 @@ namespace LogicPOS.UI.Printing
             //Open DateTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_datetime"));
-            dataRow[1] = workSessionDocumentsData.WorkSession.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
+            dataRow[1] = dayReportData.Day.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Close DataTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_datetime"));
-            dataRow[1] = workSessionDocumentsData.WorkSession.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
+            dataRow[1] = dayReportData.Day.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_total_cashdrawer"));
-            dataRow[1] = (WorkSessionsService.OpenTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (dayReportData.OpeningCashTotal).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_total_cashdrawer"));
-            dataRow[1] = (workSessionDocumentsData.FamilyReportItems.Sum(t=>t.Total)).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (dayReportData.GetTotalPerFamily().Sum(t=>t.Total)).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money In
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_in"));
-            dataRow[1] = (WorkSessionsService.CashDrawerInTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (dayReportData.CashDrawerIn).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_out"));
-            dataRow[1] = (WorkSessionsService.CashDrawerOutTotal).ToString("F2") + $" {workSessionDocumentsData.Currency}";
+            dataRow[1] = (dayReportData.CashDrawerOut).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
 
 
@@ -167,7 +169,7 @@ namespace LogicPOS.UI.Printing
             List<string> tableCustomPrint = new List<string>();
 
             int groupPosition = -1;
-            int groupPositionTitlePayments = (workSessionDocumentsData.WorkSession.Type == WorkSessionPeriodType.Day) ? 9 : 8;
+            int groupPositionTitlePayments = (dayReportData.Day.Type == WorkSessionPeriodType.Day) ? 9 : 8;
 
             groupPosition++;
 
@@ -194,18 +196,18 @@ namespace LogicPOS.UI.Printing
             ticketTable = new TicketTable(columns);
 
             //If Has data
-            if (workSessionDocumentsData.FamilyReportItems.Count > 0)
+            if (dayReportData.GetTotalPerFamily().Count > 0)
             {
-                foreach (var item in workSessionDocumentsData.FamilyReportItems.GroupBy(x => x.Designation))
+                foreach (var item in dayReportData.GetTotalPerFamily().GroupBy(x => x.Family))
                 {
 
                     unitMeasure = "Un";
                     //Create Row
                     dataRow = ticketTable.NewRow();
                     dataRow[0] = item.Key;
-                    dataRow[1] = Convert.ToDecimal(item.Sum(x => x.Quantity));
+                    dataRow[1] = item.Sum(x => x.Quantity);
                     //dataRow[2] = unitMeasure;
-                    dataRow[2] = Convert.ToDecimal(item.Sum(x => x.Total));
+                    dataRow[2] = item.Sum(x => x.Total);
                     ticketTable.Rows.Add(dataRow);
                 }
             }
@@ -222,8 +224,8 @@ namespace LogicPOS.UI.Printing
             }
 
             //Add Final Summary Row
-            summaryTotal = workSessionDocumentsData.Total;
-            summaryTotalQuantity = workSessionDocumentsData.FamilyReportItems.Sum(x => x.Quantity);
+            summaryTotal = dayReportData.GetTotalPerFamily().Sum(x => x.Total);
+            summaryTotalQuantity = dayReportData.GetTotalPerFamily().Sum(x => x.Quantity);
             dataRow = ticketTable.NewRow();
             dataRow[0] = GeneralUtils.GetResourceByName("global_total");
             dataRow[1] = summaryTotalQuantity;
@@ -252,33 +254,33 @@ namespace LogicPOS.UI.Printing
 
             _printer.NewLine();
 
-            if (workSessionDocumentsData.SubfamilyReportItems.Count > 0)
+            if (dayReportData.GetTotalPerSubfamily().Count > 0)
             {
-                PrintSubfamilyTotal(workSessionDocumentsData);
+                PrintSubfamilyTotal(dayReportData);
             }
-            if (workSessionDocumentsData.SubfamilyReportItems.Count > 0)
+            if (dayReportData.GetTotalPerArticle().Count > 0)
             {
-                PrintArticleTotal(workSessionDocumentsData);
+                PrintArticleTotal(dayReportData);
             }
-            if (workSessionDocumentsData.TaxReportItems.Count > 0)
+            if (dayReportData.GetTotalPerTax().Count > 0)
             {
-                PrintTaxTotal(workSessionDocumentsData);
+                PrintTaxTotal(dayReportData);
             }
-            if (workSessionDocumentsData.PaymentReportItems.Count > 0)
+            if (dayReportData.GetTotalPerPaymentMethod().Count > 0)
             {
-                PrintPaymentMethodsTotal(workSessionDocumentsData);
+                PrintPaymentMethodsTotal(dayReportData);
             }
-            if (workSessionDocumentsData.DocumentTypeReportItems.Count > 0)
+            if (dayReportData.GetTotalPerDocumentType().Count > 0)
             {
-                PrintDocumentTypeTotal(workSessionDocumentsData);
+                PrintDocumentTypeTotal(dayReportData);
             }
-            if (workSessionDocumentsData.HoursReportItems.Count > 0)
+            if (dayReportData.GetTotalPerHour().Count > 0)
             {
-                PrintHoursTotal(workSessionDocumentsData);
+                PrintHoursTotal(dayReportData);
             }
-            if (workSessionDocumentsData.UserReportItems.Count > 0)
+            if (dayReportData.GetTotalPerUser().Count > 0)
             {
-                PrintUsersTotal(workSessionDocumentsData);
+                PrintUsersTotal(dayReportData);
             }
 
             //Line Feed

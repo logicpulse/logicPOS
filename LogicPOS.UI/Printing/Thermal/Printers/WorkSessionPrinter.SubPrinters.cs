@@ -1,4 +1,5 @@
 ﻿
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Printing.Enums;
@@ -14,7 +15,7 @@ namespace LogicPOS.UI.Printing
     public partial class WorkSessionPrinter
     {
 
-        void PrintSubfamilyTotal(WorkSessionData workSessionData)
+        void PrintSubfamilyTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.SubfamilyReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerSubfamily().GroupBy(x => x.Subfamily))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintArticleTotal(WorkSessionData workSessionData)
+        void PrintArticleTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.ArticleReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerArticle().GroupBy(x => x.Article))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
@@ -98,7 +99,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintTaxTotal(WorkSessionData workSessionData)
+        void PrintTaxTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -112,7 +113,7 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.TaxReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerTax().GroupBy(x => x.Tax))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
@@ -139,7 +140,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintPaymentMethodsTotal(WorkSessionData workSessionData)
+        void PrintPaymentMethodsTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -151,7 +152,7 @@ namespace LogicPOS.UI.Printing
             var ticketTable = new TicketTable(columns);
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
-            foreach (var item in workSessionData.PaymentReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerPaymentMethod().GroupBy(x => x.Method))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
@@ -178,7 +179,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintDocumentTypeTotal(WorkSessionData workSessionData)
+        void PrintDocumentTypeTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -191,7 +192,7 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.DocumentTypeReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerDocumentType().GroupBy(x => x.DocumentType))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
@@ -224,7 +225,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintHoursTotal(WorkSessionData workSessionData)
+        void PrintHoursTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -238,12 +239,12 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.HoursReportItems.GroupBy(x => x.Hour))
+            foreach (var item in workSessionData.GetTotalPerHour().GroupBy(x => x.Hour).OrderBy(x => x.Key))
             {
                 summaryTotalQuantity +=item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);
 
-                var hour = item.Key.ToString();
+                var hour = item.Key;
 
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = hour;
@@ -267,7 +268,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
         }
 
-        void PrintUsersTotal(WorkSessionData workSessionData)
+        void PrintUsersTotal(DayReportData workSessionData)
         {
             var columns = new List<TicketColumn>
                             {
@@ -281,7 +282,7 @@ namespace LogicPOS.UI.Printing
             decimal summaryTotalQuantity = 0, summaryTotal = 0;
 
 
-            foreach (var item in workSessionData.UserReportItems.GroupBy(x => x.Designation))
+            foreach (var item in workSessionData.GetTotalPerUser().GroupBy(x => x.User))
             {
                 summaryTotalQuantity += item.Sum(x => x.Quantity);
                 summaryTotal += item.Sum(x => x.Total);

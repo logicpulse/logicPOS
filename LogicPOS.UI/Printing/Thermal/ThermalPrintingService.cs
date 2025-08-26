@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
@@ -160,7 +161,7 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public static void PrintWorkSessionReport(WorkSessionData reportData)
+        public static void PrintWorkSessionReport(DayReportData reportData)
         {
             if (Printer == null || reportData == null)
             {
