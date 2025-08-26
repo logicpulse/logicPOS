@@ -15,40 +15,62 @@ namespace LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData
         public decimal CashDrawerIn { get; set; }
         public decimal CashDrawerOut { get; set; }
 
-        public List<ValueTuple<string, decimal>> GetTotalPerPaymentMethod()
+        public List<(string Method, decimal Quantity , decimal Total)> GetTotalPerPaymentMethod()
         {
             return Movements.Where(m => m.PaymentMethod != null)
                 .GroupBy(m => m.PaymentMethod)
-                .Select(g => new ValueTuple<string,decimal>(g.Key,g.Sum(x => x.MovementAmount))).ToList();
+                .Select(g => new ValueTuple<string,decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity),g.Sum(x => x.MovementAmount))).ToList();
         }
 
-        public List<ValueTuple<string, decimal>> GetTotalPerFamily()
+        public List<(string Family, decimal Quantity, decimal Total)> GetTotalPerFamily()
         {
             return Movements.Where(m => m.ArticleFamily != null)
                 .GroupBy(m => m.ArticleFamily)
-                .Select(g => new ValueTuple<string, decimal>(g.Key, g.Sum(x => x.MovementAmount))).ToList();
+                .Select(g => new ValueTuple<string, decimal,decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
         }
 
-        public List<ValueTuple<string, decimal>> GetTotalPerSubfamily()
+        public List<(string Subfamily, decimal Quantity, decimal Total)> GetTotalPerSubfamily()
         {
             return Movements.Where(m => m.ArticleSubfamily != null)
                 .GroupBy(m => m.ArticleSubfamily)
-                .Select(g => new ValueTuple<string, decimal>(g.Key, g.Sum(x => x.MovementAmount))).ToList();
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
         }
 
 
-        public List<ValueTuple<string, decimal>> GetTotalPerTax()
+        public List<(string Tax, decimal Quantity, decimal Total)> GetTotalPerTax()
         {
             return Movements.Where(m => m.Tax != null)
                 .GroupBy(m => m.Tax)
-                .Select(g => new ValueTuple<string, decimal>(g.Key, g.Sum(x => x.MovementAmount))).ToList();
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
         }
 
-        public List<ValueTuple<string, decimal>> GetTotalPerArticle()
+        public List<(string Article, decimal Quantity, decimal Total)> GetTotalPerArticle()
         {
             return Movements.Where(m => m.Article != null)
                 .GroupBy(m => m.Article)
-                .Select(g => new ValueTuple<string, decimal>(g.Key, g.Sum(x => x.MovementAmount))).ToList();
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
+        }
+
+        public List<(string User, decimal Quantity, decimal Total)> GetTotalPerUser()
+        {
+            return Movements.Where(m => m.User != null)
+                .GroupBy(m => m.User)
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
+        }
+
+
+        public List<(string DocumentType, decimal Quantity, decimal Total)> GetTotalPerDocumentType()
+        {
+            return Movements.Where(m => m.DocumentType != null)
+                .GroupBy(m => m.DocumentType)
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
+        }
+
+        public List<(string Hour, decimal Quantity, decimal Total)> GetTotalPerHour()
+        {
+            return Movements.Where(m => m.DocumentType != null)
+                .GroupBy(m => m.Date.Hour.ToString())
+                .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
         }
 
         public decimal DocumentsTotal => Movements.Where(m => m.Type == WorkSessionMovementType.Document).Sum(m => m.MovementAmount);

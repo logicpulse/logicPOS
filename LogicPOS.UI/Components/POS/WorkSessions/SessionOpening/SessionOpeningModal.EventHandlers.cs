@@ -130,38 +130,62 @@ namespace LogicPOS.UI.Components.POS
                 message.AppendLine($"Saída de Numerário: {reportData.CashDrawerOut}\n");
                 
                 message.AppendLine();
-                message.AppendLine($"# Total por método de pagamento ");
+                message.AppendLine($"# Total por método de pagamento (Qnt.)");
                 foreach (var payment in reportData.GetTotalPerPaymentMethod())
                 {
-                    message.AppendLine($"{payment.Item1}: {payment.Item2}");
+                    message.AppendLine($"{payment.Method}: ({payment.Quantity:F2}) {payment.Total}");
                 }
 
                 message.AppendLine();
-                message.AppendLine($"# Total por família de artigos ");
+                message.AppendLine($"# Total por família (Qnt.)");
                 foreach (var family in reportData.GetTotalPerFamily())
                 {
-                    message.AppendLine($"{family.Item1}: {family.Item2}");
+                    message.AppendLine($"{family.Family}: ({family.Quantity:F2}) {family.Total}");
                 }
 
+
                 message.AppendLine();
-                message.AppendLine($"# Total por subfamília de artigos ");
+                message.AppendLine($"# Total por subfamília (Qnt.)");
                 foreach (var subfamily in reportData.GetTotalPerSubfamily())
                 {
-                    message.AppendLine($"{subfamily.Item1}: {subfamily.Item2}");
+                    message.AppendLine($"{subfamily.Subfamily}: ({subfamily.Quantity:F2}) {subfamily.Total}");
                 }
 
+
                 message.AppendLine();
-                message.AppendLine($"# Total por artigo ");
+                message.AppendLine($"# Total por artigo (Qnt.) ");
                 foreach (var article in reportData.GetTotalPerArticle())
                 {
-                    message.AppendLine($"{article.Item1}: {article.Item2}");
+                    message.AppendLine($"{article.Article}: ({article.Quantity:F2}) {article.Total}");
+                }
+
+
+                message.AppendLine();
+                message.AppendLine($"# Total por taxa (Qnt.)");
+                foreach (var tax in reportData.GetTotalPerTax())
+                {
+                    message.AppendLine($"{tax.Tax}: ({tax.Quantity:F2}) {tax.Total}");
                 }
 
                 message.AppendLine();
-                message.AppendLine($"# Total por taxa ");
-                foreach (var tax in reportData.GetTotalPerTax())
+                message.AppendLine($"# Total por utilizador (Qnt.)");
+                foreach (var user in reportData.GetTotalPerUser())
                 {
-                    message.AppendLine($"{tax.Item1}: {tax.Item2}");
+                    message.AppendLine($"{user.User}: ({user.Quantity:F2}) {user.Total}");
+                }
+
+                message.AppendLine();
+                message.AppendLine("# Total por documento (Qnt.)");
+                foreach (var document in reportData.GetTotalPerDocumentType())
+                {
+                    message.AppendLine($"{document.DocumentType}: ({document.Quantity:F2}) {document.Total}");
+                }
+
+                message.AppendLine();
+                message.AppendLine("# Total por hora (Qnt.)");
+                foreach (var hour in reportData.GetTotalPerHour())
+                {
+                    message.AppendLine($"{hour.Hour}: ({hour.Quantity:F2}) {hour.Total}");
                 }
 
                 message.AppendLine();
