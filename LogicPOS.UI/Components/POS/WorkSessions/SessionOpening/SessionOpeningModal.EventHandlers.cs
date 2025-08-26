@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
@@ -10,6 +11,7 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -103,10 +105,74 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
+            ShowDayEndInformation();
+
             HandleDayReportPrinting();
 
             UpdateUI();
             POSWindow.Instance.UpdateUI();
+        }
+
+        private void ShowDayEndInformation()
+        {
+            DayReportData reportData = WorkSessionsService.GetLastClosedDayReportData();
+
+            var message = new StringBuilder($"Dia de trabalho  fechado com sucesso!\n\n");
+
+
+            if (reportData != null)
+            {
+                message.AppendLine($"Abertura: {reportData.Day.StartDate}");
+                message.AppendLine($"Fecho: {reportData.Day.EndDate}");
+                message.AppendLine($"Total abertura: {reportData.OpeningCashTotal}");
+                message.AppendLine($"Total em Caixa: {reportData.EndOfDayCashTotal}");
+                message.AppendLine($"Entrada de Numerário: {reportData.CashDrawerIn}");
+                message.AppendLine($"Saída de Numerário: {reportData.CashDrawerOut}\n");
+                
+                message.AppendLine();
+                message.AppendLine($"# Total por método de pagamento ");
+                foreach (var payment in reportData.GetTotalPerPaymentMethod())
+                {
+                    message.AppendLine($"{payment.Item1}: {payment.Item2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por família de artigos ");
+                foreach (var family in reportData.GetTotalPerFamily())
+                {
+                    message.AppendLine($"{family.Item1}: {family.Item2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por subfamília de artigos ");
+                foreach (var subfamily in reportData.GetTotalPerSubfamily())
+                {
+                    message.AppendLine($"{subfamily.Item1}: {subfamily.Item2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por artigo ");
+                foreach (var article in reportData.GetTotalPerArticle())
+                {
+                    message.AppendLine($"{article.Item1}: {article.Item2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por taxa ");
+                foreach (var tax in reportData.GetTotalPerTax())
+                {
+                    message.AppendLine($"{tax.Item1}: {tax.Item2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"## Total Ilí.: {reportData.DocumentsTotal}");
+            }
+
+
+            CustomAlerts.Information(this)
+                        .WithMessage(message.ToString())
+                        .ShowAlert();
+
         }
 
         private void HandleDayReportPrinting()
@@ -122,9 +188,9 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            var reportData = WorkSessionsService.GetLastClosedDayReportData();
+            var reportData = WorkSessionsService.GetLastClosedDayReport();
 
-            if(reportData == null)
+            if (reportData == null)
             {
                 CustomAlerts.Error(this)
                             .WithSize(new Size(620, 300))

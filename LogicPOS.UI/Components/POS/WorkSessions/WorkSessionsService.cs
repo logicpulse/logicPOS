@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
 using LogicPOS.Api.Features.WorkSessions;
@@ -183,7 +184,7 @@ namespace LogicPOS.UI.Services
             return result.Value;
         }
 
-        public static WorkSessionData GetLastClosedDayReportData()
+        public static WorkSessionData GetLastClosedDayReport()
         {
             var lastClosedDay = GetLastClosedDay();
 
@@ -216,7 +217,25 @@ namespace LogicPOS.UI.Services
             return result.Value;
         }
 
-        
+        public static DayReportData GetLastClosedDayReportData()
+        {
+            var lastClosedDay = GetLastClosedDay();
+
+            if (lastClosedDay == null)
+            {
+                return null;
+            }
+
+            var result = DependencyInjection.Mediator.Send(new GetDayReportDataQuery(lastClosedDay.Id)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
         public static decimal OpenTotal { get; set; }
         public static decimal CloseTotal { get; set; }
         public static decimal CashDrawerInTotal { get; set; }

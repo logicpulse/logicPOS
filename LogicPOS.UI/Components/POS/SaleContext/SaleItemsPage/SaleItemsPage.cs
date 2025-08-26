@@ -235,8 +235,14 @@ namespace LogicPOS.UI.Components.POS
         private void SelectItem(SaleItem item)
         {
             var model = (ListStore)GridViewSettings.Model;
-            var index = Ticket.Items.IndexOf(item);
-            var path = new TreePath(new int[] { index });
+            var index = Ticket?.Items?.IndexOf(item);
+           
+            if(index == null)
+            {
+                return;
+            }
+
+            var path = new TreePath(new int[] { index.Value });
             GridView.SetCursor(path, null, false);
             SelectedItem = item;
         }

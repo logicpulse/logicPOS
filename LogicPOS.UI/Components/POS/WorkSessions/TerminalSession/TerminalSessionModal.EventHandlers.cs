@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPrint_Clicked(object sender, EventArgs e)
         {
-            var reportData = WorkSessionsService.GetLastClosedDayReportData();
+            var reportData = WorkSessionsService.GetLastClosedDayReport();
 
             if (reportData == null)
             {
