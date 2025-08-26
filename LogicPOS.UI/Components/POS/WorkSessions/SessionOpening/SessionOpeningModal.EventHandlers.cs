@@ -103,32 +103,37 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            //tchial0: ShowClosePeriodMessage(this, XPOSettings.WorkSessionPeriodDay);
-
             HandleDayReportPrinting();
+
             UpdateUI();
             POSWindow.Instance.UpdateUI();
         }
 
         private void HandleDayReportPrinting()
         {
-            var printWorkSessionDayReportResponse = CustomAlerts.Question(this)
+            var printDialogResponse = CustomAlerts.Question(this)
                                                                 .WithSize(new Size(500, 350))
                                                                 .WithTitleResource("global_button_label_print")
                                                                 .WithMessageResource("dialog_message_request_print_document_confirmation")
                                                                 .ShowAlert();
 
-            if (printWorkSessionDayReportResponse == ResponseType.Yes)
+            if (printDialogResponse != ResponseType.Yes)
             {
-                var command = new GetLastClosedDayQuery();
-                var _mediator =DependencyInjection.Mediator;
-                var result= _mediator.Send(command).Result;
-                if (result.IsError)
-                {
-                    ErrorHandlingService.HandleApiError(result);
-                }
-                ThermalPrintingService.PrintWorkSessionReport(result.Value.Id);
+                return;
             }
+
+            var reportData = WorkSessionsService.GetLastClosedDayReportData();
+
+            if(reportData == null)
+            {
+                CustomAlerts.Error(this)
+                            .WithSize(new Size(620, 300))
+                            .WithMessage("Não foi possível obter os dados do relatório do dia.")
+                            .ShowAlert();
+                return;
+            }
+
+            ThermalPrintingService.PrintWorkSessionReport(reportData);
         }
 
         private void AddEventHandlers()

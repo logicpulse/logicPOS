@@ -19,44 +19,17 @@ namespace LogicPOS.UI.Printing
 {
     public partial class WorkSessionPrinter : ThermalPrinter
     {
-        private readonly WorkSessionData _workSessionReceiptsData;
-        private readonly WorkSessionData _workSessionDocumentsData;
+        private readonly WorkSessionData _reportData;
         protected string _SubTitle;
         protected string _Title;
 
-        public WorkSessionPrinter(Printer printer, Guid workSessionId) : base(printer)
+        public WorkSessionPrinter(Printer printer, WorkSessionData data) : base(printer)
         {
-            _workSessionDocumentsData = GetWorkSessionDocumentsData(workSessionId);
-            _workSessionReceiptsData = GetWorkSessionReceiptsData(workSessionId);
+            _reportData = data;
             DefineTicketTitle();
             DefineTicketSubtitle();
         }
-
-        WorkSessionData GetWorkSessionDocumentsData(Guid workSessionId)
-        {
-            var result = _mediator.Send(new GetWorkSessionDocumentsDataQuery(workSessionId)).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.Error()
-                            .WithMessage(result.FirstError.Description)
-                            .ShowAlert();
-            }
-
-            return result.Value;
-        }
-
-        WorkSessionData GetWorkSessionReceiptsData(Guid workSessionId)
-        {
-            var result = _mediator.Send(new GetWorkSessionReceiptsDataQuery(workSessionId)).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.Error()
-                            .WithMessage(result.FirstError.Description)
-                            .ShowAlert();
-            }
-
-            return result.Value;
-        }
+   
         private void DefineTicketSubtitle()
         {
             var ticketSubTitleExtra = "";// GeneralUtils.GetResourceByName("global_current_account");
@@ -73,9 +46,9 @@ namespace LogicPOS.UI.Printing
 
         private void DefineTicketTitle()
         {
-            if (_workSessionReceiptsData.WorkSession.Type == WorkSessionPeriodType.Day)
+            if (_reportData.WorkSession.Type == WorkSessionPeriodType.Day)
             {
-                if (_workSessionReceiptsData.WorkSession.Status == WorkSessionPeriodStatus.Open)
+                if (_reportData.WorkSession.Status == WorkSessionPeriodStatus.Open)
                 {
                     _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_day_resume");
                 }
@@ -86,7 +59,7 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            if (_workSessionReceiptsData.WorkSession.Status == WorkSessionPeriodStatus.Open)
+            if (_reportData.WorkSession.Status == WorkSessionPeriodStatus.Open)
             {
                 _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_resume");
             }
@@ -94,7 +67,7 @@ namespace LogicPOS.UI.Printing
             {
                 _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_close");
             }
-            _SubTitle = _workSessionReceiptsData.WorkSession.Type == WorkSessionPeriodType.Terminal ? TerminalService.Terminal.Designation : string.Empty;
+            _SubTitle = _reportData.WorkSession.Type == WorkSessionPeriodType.Terminal ? TerminalService.Terminal.Designation : string.Empty;
         }
 
         public void PrintFooter()
@@ -130,7 +103,7 @@ namespace LogicPOS.UI.Printing
             _printer.NewLine();
             _printer.NormalWidth();
 
-            PrintWorkSessionMovement(_workSessionDocumentsData, _workSessionReceiptsData);
+            PrintWorkSessionMovement(_reportData);
             PrintFooter();
             _printer.FullPaperCut();
             _printer.PrintDocument();
@@ -138,8 +111,7 @@ namespace LogicPOS.UI.Printing
 
         }
 
-        public bool PrintWorkSessionMovement(WorkSessionData workSessionDocumentsData,
-                                             WorkSessionData workSessionReceiptsData)
+        public bool PrintWorkSessionMovement(WorkSessionData workSessionDocumentsData)
         {
             string dateCloseDisplay = workSessionDocumentsData.WorkSession.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
 
@@ -321,28 +293,29 @@ namespace LogicPOS.UI.Printing
             _printer.BoldMode(GeneralUtils.GetResourceByName("global_worksession_resume_paymens_documents"));
             _printer.NormalWidth();
             _printer.Separator(' ');
-            summaryTotal = workSessionReceiptsData.Total;
-            summaryTotalQuantity = workSessionReceiptsData.UserReportItems.Sum(x => x.Quantity);
-            if (workSessionReceiptsData.PaymentReportItems.Count > 0)
-            {
-                PrintPaymentMethodsTotal(workSessionReceiptsData);
-            }
 
-            if (workSessionReceiptsData.HoursReportItems.Count > 0)
-            {
-                PrintHoursTotal(workSessionReceiptsData);
-            }
-            if (workSessionReceiptsData.UserReportItems.Count > 0)
-            {
-                PrintUsersTotal(workSessionReceiptsData);
-            }
-            ticketTable = new TicketTable(columns);
-            dataRow = ticketTable.NewRow();
-            dataRow[0] = GeneralUtils.GetResourceByName("global_total");
-            dataRow[1] = summaryTotalQuantity;
-            //dataRow[2] = string.Empty;
-            dataRow[2] = summaryTotal;
-            ticketTable.Rows.Add(dataRow);
+            //summaryTotal = workSessionReceiptsData.Total;
+            //summaryTotalQuantity = workSessionReceiptsData.UserReportItems.Sum(x => x.Quantity);
+            //if (workSessionReceiptsData.PaymentReportItems.Count > 0)
+            //{
+            //    PrintPaymentMethodsTotal(workSessionReceiptsData);
+            //}
+
+            //if (workSessionReceiptsData.HoursReportItems.Count > 0)
+            //{
+            //    PrintHoursTotal(workSessionReceiptsData);
+            //}
+            //if (workSessionReceiptsData.UserReportItems.Count > 0)
+            //{
+            //    PrintUsersTotal(workSessionReceiptsData);
+            //}
+            //ticketTable = new TicketTable(columns);
+            //dataRow = ticketTable.NewRow();
+            //dataRow[0] = GeneralUtils.GetResourceByName("global_total");
+            //dataRow[1] = summaryTotalQuantity;
+            ////dataRow[2] = string.Empty;
+            //dataRow[2] = summaryTotal;
+            //ticketTable.Rows.Add(dataRow);
 
             //Custom Print Loop, to Print all Table Rows, and Detect Rows to Print in DoubleHeight (Title and Total)
             tableCustomPrint = ticketTable.GetTable();

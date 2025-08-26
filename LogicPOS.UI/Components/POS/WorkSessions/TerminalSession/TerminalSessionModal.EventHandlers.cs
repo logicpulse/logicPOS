@@ -67,22 +67,25 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPrint_Clicked(object sender, EventArgs e)
         {
-            var session = WorkSessionsService.GetTerminalLastWorkSession();
-            
-            if (session == null)
+            var reportData = WorkSessionsService.GetLastClosedDayReportData();
+
+            if (reportData == null)
             {
-                CustomAlerts.Information()
-                            .WithMessage("Sem resgistro de sessões no presente terminal")
+                CustomAlerts.Error(this)
+                            .WithSize(new Size(620, 300))
+                            .WithMessage("Não foi possível obter os dados do relatório do último dia fechado.")
                             .ShowAlert();
                 return;
             }
 
-            ThermalPrintingService.PrintWorkSessionReport(session.Id);
+            ThermalPrintingService.PrintWorkSessionReport(reportData);
         }
+        
         private void UpdateBtnPrint()
         {
             BtnPrint.Sensitive = WorkSessionsService.DayIsOpen() || WorkSessionsService.TerminalIsOpen();
         }
+        
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             if (!AllFieldsAreValid())

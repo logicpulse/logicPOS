@@ -117,6 +117,7 @@ namespace LogicPOS.UI.Printing
                 , "vs1.010.1"//_customVars["APP_VERSION"]
                 ));
         }
+
         public override void Print()
         {
             PrintHeader();

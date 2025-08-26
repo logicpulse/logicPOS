@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
+using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
@@ -9,6 +10,7 @@ using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.Terminals;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
@@ -16,7 +18,6 @@ namespace LogicPOS.UI.Printing
 {
     public static class ThermalPrintingService
     {
-        private static ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         private static Printer _printer;
         public static Printer Printer
         {
@@ -80,7 +81,7 @@ namespace LogicPOS.UI.Printing
 
         private static void GetPrintFromAssociatedDocumentDetail(Guid documentId, ref Document document, ref Api.Entities.Printer printer)
         {
-            var result = _mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
             if (result.IsError)
             {
                 CustomAlerts.Error()
@@ -121,27 +122,62 @@ namespace LogicPOS.UI.Printing
 
         public static void PrintTicket(PosTicket ticket, Table table)
         {
-            GetEntityAssociatedPrinter(null, ticket);
-            if (Printer != null)
+            try
             {
-                new PosTicketPrinter(Printer, ticket, table).Print();
+                GetEntityAssociatedPrinter(null, ticket);
+                if (Printer != null)
+                {
+                    new PosTicketPrinter(Printer, ticket, table).Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
 
         public static void PrintInvoice(Guid documentId)
         {
-            GetEntityAssociatedPrinter(documentId, null, true);
-            if (Printer != null)
+            try
             {
-                new InvoicePrinter(Printer, documentId).Print();
+                GetEntityAssociatedPrinter(documentId, null, true);
+                if (Printer != null)
+                {
+                    new InvoicePrinter(Printer, documentId).Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
 
-        public static void PrintWorkSessionReport(Guid workSessionId)
+        public static void PrintWorkSessionReport(WorkSessionData reportData)
         {
-            if (Printer != null)
+            if (Printer == null || reportData == null)
             {
-                new WorkSessionPrinter(Printer, workSessionId).Print();
+                return;
+            }
+
+            try
+            {
+                new WorkSessionPrinter(Printer, reportData).Print();
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
  
@@ -152,13 +188,24 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            if (Printer != null)
+            try
             {
-                new CashDrawerMovementPrinter(Printer,
-                                             totalAmountInCashDrawer,
-                                             movementAmount,
-                                             WorkSessionMovementType.CashDrawerOpen,
-                                             movementDescription).Print();
+                if (Printer != null)
+                {
+                    new CashDrawerMovementPrinter(Printer,
+                                                 totalAmountInCashDrawer,
+                                                 movementAmount,
+                                                 WorkSessionMovementType.CashDrawerOpen,
+                                                 movementDescription).Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
 
@@ -169,13 +216,24 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            if (Printer != null)
+            try
             {
-                new CashDrawerMovementPrinter(Printer,
-                                             totalAmountInCashDrawer,
-                                             movementAmount,
-                                             WorkSessionMovementType.CashDrawerClose,
-                                             movementDescription).Print();
+                if (Printer != null)
+                {
+                    new CashDrawerMovementPrinter(Printer,
+                                                 totalAmountInCashDrawer,
+                                                 movementAmount,
+                                                 WorkSessionMovementType.CashDrawerClose,
+                                                 movementDescription).Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
 
@@ -186,11 +244,22 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            new CashDrawerMovementPrinter(Printer,
-                                          totalAmountInCashDrawer,
-                                          movementAmount,
-                                          WorkSessionMovementType.CashDrawerIn,
-                                          movementDescription).Print();
+            try
+            {
+                new CashDrawerMovementPrinter(Printer,
+                                              totalAmountInCashDrawer,
+                                              movementAmount,
+                                              WorkSessionMovementType.CashDrawerIn,
+                                              movementDescription).Print();
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
+            }
         }
 
         public static void PrintCashDrawerOutMovement(decimal totalAmountInCashDrawer, decimal movementAmount, string movementDescription = "")
@@ -199,13 +268,25 @@ namespace LogicPOS.UI.Printing
             {
                 return;
             }
-            if (Printer != null)
+
+            try
             {
-                new CashDrawerMovementPrinter(Printer,
-                                          totalAmountInCashDrawer,
-                                          movementAmount,
-                                          WorkSessionMovementType.CashDrawerOut,
-                                          movementDescription).Print();
+                if (Printer != null)
+                {
+                    new CashDrawerMovementPrinter(Printer,
+                                              totalAmountInCashDrawer,
+                                              movementAmount,
+                                              WorkSessionMovementType.CashDrawerOut,
+                                              movementDescription).Print();
+                }
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error()
+                            .WithMessage($"Erro ao imprimir. \n")
+                            .ShowAlert();
+
+                Log.Error(ex, "Error printing ticket");
             }
         }
     }

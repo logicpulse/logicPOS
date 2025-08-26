@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Printing
                 }
                 _printer.Append(companyInformations.BusinessName);
 
-            }
+            }   
             _printer.NormalWidth();
         }
     }

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData
         public override async Task<ErrorOr<WorkSessionData>> Handle(GetWorkSessionDocumentsDataQuery request,
                                                                     CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<WorkSessionData>($"reports/worksession/documents/{request.Id}", cancellationToken);
+            return await HandleGetEntityQueryAsync<WorkSessionData>($"reports/worksession/documents/{request.DayId}", cancellationToken);
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.Reports.WorkSession.Common;
+using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
 using LogicPOS.Api.Features.WorkSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodSession;
 using LogicPOS.Api.Features.WorkSessions.GetAllWorkSessionPeriods;
+using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerInMovement;
 using LogicPOS.Api.Features.WorkSessions.Movements.AddCashDrawerOutMovement;
 using LogicPOS.Api.Features.WorkSessions.Movements.GetTotalCashInDrawer;
@@ -14,7 +16,7 @@ using LogicPOS.Api.Features.WorkSessions.Periods.OpenTerminalSession;
 using LogicPOS.Api.Features.WorkSessions.Periods.TerminalIsOpen;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
-using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,11 +24,9 @@ namespace LogicPOS.UI.Services
 {
     public static class WorkSessionsService
     {
-        private static readonly ISender _mediator = DependencyInjection.Mediator;
-
         public static bool DayIsOpen()
         {
-            var getResult = _mediator.Send(new DayIsOpenQuery()).Result;
+            var getResult = DependencyInjection.Mediator.Send(new DayIsOpenQuery()).Result;
 
             if (getResult.IsError)
             {
@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Services
 
         public static bool TerminalIsOpen()
         {
-            var getResult = _mediator.Send(new TerminalIsOpenQuery(TerminalService.Terminal.Id)).Result;
+            var getResult = DependencyInjection.Mediator.Send(new TerminalIsOpenQuery(TerminalService.Terminal.Id)).Result;
 
             if (getResult.IsError)
             {
@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Services
         public static List<WorkSessionPeriod> GetOpenTerminalSessions()
         {
             var query = new GetOpenTerminalSessionsQuery();
-            var getResult = _mediator.Send(query).Result;
+            var getResult = DependencyInjection.Mediator.Send(query).Result;
 
             if (getResult.IsError)
             {
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Services
 
         public static bool OpenDay()
         {
-            var openDayResult = _mediator.Send(new OpenWorkSessionPeriodDayCommand()).Result;
+            var openDayResult = DependencyInjection.Mediator.Send(new OpenWorkSessionPeriodDayCommand()).Result;
 
             if (openDayResult.IsError)
             {
@@ -79,7 +79,7 @@ namespace LogicPOS.UI.Services
 
         public static bool CloseDay()
         {
-            var openDayResult = _mediator.Send(new CloseWorkSessionPeriodDayCommand()).Result;
+            var openDayResult = DependencyInjection.Mediator.Send(new CloseWorkSessionPeriodDayCommand()).Result;
 
             if (openDayResult.IsError)
             {
@@ -92,7 +92,7 @@ namespace LogicPOS.UI.Services
 
         public static bool CloseAllTerminalSessions()
         {
-            var closeAllTerminalSessionsResult = _mediator.Send(new CloseAllWorkSessionsCommand()).Result;
+            var closeAllTerminalSessionsResult = DependencyInjection.Mediator.Send(new CloseAllWorkSessionsCommand()).Result;
 
             if (closeAllTerminalSessionsResult.IsError)
             {
@@ -106,7 +106,7 @@ namespace LogicPOS.UI.Services
         public static decimal GetTotalCashInCashDrawer()
         {
             var terminalId = TerminalService.Terminal.Id;
-            var result = _mediator.Send(new GetTotalCashInDrawerQuery(terminalId)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetTotalCashInDrawerQuery(terminalId)).Result;
 
             if (result.IsError)
             {
@@ -120,20 +120,20 @@ namespace LogicPOS.UI.Services
         public static bool OpenTerminalSession(decimal amount, string notes)
         {
             var command = new OpenTerminalSessionCommand(amount, notes);
-            var result = _mediator.Send(command).Result;
+            var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
-            OpenTotal= amount;
+            OpenTotal = amount;
             return true;
         }
 
         public static bool CloseTerminalSession(decimal amount, string notes)
         {
             var command = new CloseTerminalSessionCommand(amount, notes);
-            var result = _mediator.Send(command).Result;
+            var result = DependencyInjection.Mediator.Send(command).Result;
 
             if (result.IsError)
             {
@@ -147,7 +147,7 @@ namespace LogicPOS.UI.Services
         public static bool AddCashDrawerInMovement(decimal amount, string notes)
         {
             var command = new AddCashDrawerInMovementCommand(amount, notes);
-            var result = _mediator.Send(command).Result;
+            var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -160,7 +160,7 @@ namespace LogicPOS.UI.Services
         public static bool AddCashDrawerOutMovement(decimal amount, string notes)
         {
             var command = new AddCashDrawerOutMovementCommand(amount, notes);
-            var result = _mediator.Send(command).Result;
+            var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -173,8 +173,8 @@ namespace LogicPOS.UI.Services
         public static WorkSessionPeriod GetTerminalLastWorkSession()
         {
             var command = new GetLastWorkSessionByTerminalIdQuery(TerminalService.Terminal.Id);
-            
-            var result = _mediator.Send(command).Result;
+
+            var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -183,6 +183,40 @@ namespace LogicPOS.UI.Services
             return result.Value;
         }
 
+        public static WorkSessionData GetLastClosedDayReportData()
+        {
+            var lastClosedDay = GetLastClosedDay();
+
+            if (lastClosedDay == null)
+            {
+                return null;
+            }
+
+            var result = DependencyInjection.Mediator.Send(new GetWorkSessionDocumentsDataQuery(lastClosedDay.Id)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+        public static WorkSessionPeriod GetLastClosedDay()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetLastClosedDayQuery()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+        
         public static decimal OpenTotal { get; set; }
         public static decimal CloseTotal { get; set; }
         public static decimal CashDrawerInTotal { get; set; }
