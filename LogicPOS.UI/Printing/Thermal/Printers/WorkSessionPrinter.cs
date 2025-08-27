@@ -1,10 +1,5 @@
-﻿using ESC_POS_USB_NET.Printer;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Entities.Enums;
+﻿using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.Api.Features.Reports.WorkSession.Common;
-using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;

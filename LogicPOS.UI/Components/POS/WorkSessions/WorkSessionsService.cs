@@ -1,7 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.Api.Features.Reports.WorkSession.Common;
-using LogicPOS.Api.Features.Reports.WorkSession.GetWorkSessionData;
 using LogicPOS.Api.Features.WorkSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
@@ -183,27 +181,6 @@ namespace LogicPOS.UI.Services
             }
             return result.Value;
         }
-
-        public static WorkSessionData GetLastClosedDayReport()
-        {
-            var lastClosedDay = GetLastClosedDay();
-
-            if (lastClosedDay == null)
-            {
-                return null;
-            }
-
-            var result = DependencyInjection.Mediator.Send(new GetWorkSessionDocumentsDataQuery(lastClosedDay.Id)).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return null;
-            }
-
-            return result.Value;
-        }
-
         public static WorkSessionPeriod GetLastClosedDay()
         {
             var result = DependencyInjection.Mediator.Send(new GetLastClosedDayQuery()).Result;

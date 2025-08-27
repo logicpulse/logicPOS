@@ -1,12 +1,9 @@
 ﻿
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.Api.Features.Reports.WorkSession.Common;
-using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

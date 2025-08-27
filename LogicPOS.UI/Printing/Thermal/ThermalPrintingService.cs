@@ -2,15 +2,12 @@
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.Api.Features.Reports.WorkSession.Common;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.Terminals;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
