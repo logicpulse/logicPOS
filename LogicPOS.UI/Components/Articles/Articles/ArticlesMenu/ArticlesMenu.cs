@@ -6,6 +6,8 @@ using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Menus;
+using LogicPOS.UI.Settings;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
@@ -18,8 +20,7 @@ namespace LogicPOS.UI.Components.Menus
         private string ButtonName => "buttonArticleId";
         private Size ButtonSize { get; }
 
-        private const int DefaultPageSize = 42;
-
+        private static int DefaultPageSize =42;
         public bool PresentFavorites { get; set; }
 
         public ArticlesMenu(CustomButton btnPrevious,
@@ -36,6 +37,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             ButtonSize = menuButtonSize;
             MenuSubfamilies = subfamiliesMenu;
+            DefaultPageSize = (Int32)(tableConfig.Columns * tableConfig.Rows);
             AddEventHandlers();
         }
 
