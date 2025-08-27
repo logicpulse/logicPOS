@@ -61,15 +61,14 @@ namespace LogicPOS.UI.Printing
         {
             var companyInformations = GetCompanyInformations();
             var logo = GetCompanyLogo();
-            
             _printer.AlignCenter();
-            _printer.DoubleWidth2();
             if (logo != null)
             {
                 _printer.Image(logo);
             }
             else
             {
+            _printer.DoubleWidth2();
                 if (string.IsNullOrEmpty(companyInformations.BusinessName))
                 {
                     companyInformations.BusinessName = companyInformations.Name;
