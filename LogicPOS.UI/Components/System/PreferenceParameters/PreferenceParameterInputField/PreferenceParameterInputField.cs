@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.InputFields
@@ -95,6 +96,12 @@ namespace LogicPOS.UI.Components.InputFields
             filter.AddMimeType("image/bmp");
             filter.AddPattern("*.bmp");
             return filter;
+        }
+
+        private void RemoveFileButton_Clicked(object sender, EventArgs e)
+        {
+            TextBox.Text = " ";
+            FileChooserButton.SetFilename(" ");
         }
 
     }

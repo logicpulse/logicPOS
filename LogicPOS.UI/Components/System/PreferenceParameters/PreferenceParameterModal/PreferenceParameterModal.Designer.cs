@@ -41,7 +41,6 @@ namespace LogicPOS.UI.Components.Modals
         private VBox CreateDetailsTab()
         {
             var details = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
             details.PackStart(_txtOrder.Component, false, false, 0);
             details.PackStart(_txtCode.Component, false, false, 0);
             details.PackStart(_txtToken.Component, false, false, 0);

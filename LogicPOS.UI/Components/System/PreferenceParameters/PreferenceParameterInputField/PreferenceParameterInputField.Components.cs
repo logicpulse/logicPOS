@@ -13,5 +13,6 @@ namespace LogicPOS.UI.Components.InputFields
         public ComboBox ComboBox { get; private set; }
         public Widget FieldComponent { get; set; } = new VBox(false, 2);
         public Label Label { get; private set; }
+        public Button RemoveFileButton { get; private set; }
     }
 }

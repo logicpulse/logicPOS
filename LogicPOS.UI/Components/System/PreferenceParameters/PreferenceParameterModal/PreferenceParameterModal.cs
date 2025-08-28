@@ -41,9 +41,13 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (string.IsNullOrWhiteSpace(_field.TextBox.Text))
                 {
-                    return null;
+                    return _field.TextBox.Text;
                 }
 
+                if(File.Exists(_field.TextBox.Text) == false)
+                {
+                   return _field.TextBox.Text;
+                }
                 var result = Convert.ToBase64String(File.ReadAllBytes(_field.TextBox.Text));
                 return result;
             }
@@ -52,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private UpdatePreferenceParameterCommand CreateUpdateCommand()
         {
-            ;
+            
             return new UpdatePreferenceParameterCommand
             {
                 Id = _entity.Id,

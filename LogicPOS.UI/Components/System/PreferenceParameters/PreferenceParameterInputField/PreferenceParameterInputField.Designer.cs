@@ -1,8 +1,10 @@
 ﻿using Gtk;
+using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,19 +31,42 @@ namespace LogicPOS.UI.Components.InputFields
 
             FileChooserButton.FileSet += (sender, e) =>
             {
-                TextBox.Text = FileChooserButton.Filename;
+                SelectFile();
             };
 
             InitializeFileChooserButtonComponent();
         }
 
-        private void InitializeFileChooserButtonComponent()
+        private void SelectFile()
         {
-            var box = FieldComponent as VBox;
-            box.PackStart(Label, false, false, 0);
-            box.PackStart(FileChooserButton, false, false, 0);
+
+            if (FileChooserButton.Filename!=null) 
+            {
+                TextBox.Text = FileChooserButton.Filename;
+                FileChooserButton.SetFilename(FileChooserButton.Filename);
+            }
+            else
+            {
+                TextBox.Text = FileChooserButton.Filename;
+            };
         }
 
+        private void InitializeFileChooserButtonComponent()
+        {
+            var hBox = new HBox();
+            InitializeRemoveFileButton();
+            hBox.PackStart(FileChooserButton, true, true, 0);
+            hBox.PackStart(RemoveFileButton, false, false, 0);
+            var box = FieldComponent as VBox;
+            box.PackStart(Label, false, false, 0);
+            box.PackStart(hBox, false, false, 0);
+        }
+        private void InitializeRemoveFileButton()
+        {
+            RemoveFileButton = new Button("Remover");
+            RemoveFileButton.SetSizeRequest(70, 10);
+            RemoveFileButton.Clicked += RemoveFileButton_Clicked;
+        }
         private void InitializeComboBox()
         {
             TreeIter iterator;
