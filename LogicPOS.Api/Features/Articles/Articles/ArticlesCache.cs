@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Articles.Articles
 {
-    public static class ArticleCache
+    public static class ArticlesCache
     {
         public static void Clear(IKeyedMemoryCache keyedMemoryCache)
         {

@@ -34,10 +34,6 @@ namespace LogicPOS.UI.Components.Modals
             AddEventHandlers();
         }
 
-        private void AddEventHandlers()
-        {
-            _checkIsComposed.Toggled += (sender, e) => UpdateCompositionTabVisibility();
-        }
 
         private void InitializeArticlePriceFields()
         {
@@ -148,7 +144,7 @@ namespace LogicPOS.UI.Components.Modals
                                                                  currentVatRate,
                                                                  true);
 
-            _comboVatDirectSelling.ComboBox.Changed += ComboBox_Changed;
+            _comboVatDirectSelling.ComboBox.Changed += ComboBox_VatDirectSelling_Changed;
         }
 
         private void InitializeVatExemptionReasonsComboBox()
@@ -179,7 +175,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var classes = GetClasses();
             var labelText = GeneralUtils.GetResourceByName("global_article_class");
-            var currentClass = _entity != null ? _entity.Class : null;
+            var currentClass = _entity != null ? classes.FirstOrDefault(c => c.Id == _entity.ClassId) : null;
 
             _comboClasses = new EntityComboBox<ArticleClass>(labelText,
                                                              classes,

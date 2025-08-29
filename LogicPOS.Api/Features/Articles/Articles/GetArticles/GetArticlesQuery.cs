@@ -10,7 +10,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
         public Guid? FamilyId { get; set; }
         public Guid? SubFamilyId { get; set; }
         public bool? Favorite { get; set; }
-        
+        public bool? Image { get; set; }
 
         protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
@@ -27,6 +27,11 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
             if (Favorite.HasValue)
             {
                 urlQueryBuilder.Append($"&favorite={Favorite}");
+            }
+
+            if (Image.HasValue)
+            {
+                urlQueryBuilder.Append($"&image={Image}");
             }
         }
     }

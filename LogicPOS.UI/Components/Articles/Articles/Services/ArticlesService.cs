@@ -1,12 +1,10 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
+using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles;
-using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
@@ -28,7 +26,7 @@ namespace LogicPOS.UI.Components.Articles
                 PageSize = 1000000 // High page size to retrieve all articles
             };
             var articles = _mediator.Send(query).Result;
-           
+
             if (articles.IsError != false)
             {
                 ErrorHandlingService.HandleApiError(articles);
@@ -64,7 +62,6 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
-  
         public static WarehouseArticle GetWarehouseArticleById(Guid id)
         {
             var result = _mediator.Send(new GetWarehouseArticleByIdQuery(id)).Result;
@@ -78,10 +75,22 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
-        public static ArticleViewModel GetArticleViewModelById(Guid id)
+        public static ArticleViewModel GetArticleViewModel(Guid id)
         {
-            var article = GetArticlebById(id);
-            return ArticleToViewModel(article);
+            var result = _mediator.Send(new GetArticleViewModelQuery(id)).Result;
+           
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            if (result.Value == null)
+            {
+                return null;
+            }
+
+            return result.Value;
         }
 
         public static ArticleViewModel GetArticleByCode(string code)
@@ -93,43 +102,8 @@ namespace LogicPOS.UI.Components.Articles
                 return null;
             }
 
-            if(result.Value == null)
+            if (result.Value == null)
             {
-                return null;
-            }
-
-            return ArticleToViewModel(result.Value);
-        }
-
-        private static ArticleViewModel ArticleToViewModel(Article article)
-        {
-            return new ArticleViewModel
-            {
-                Id = article.Id,
-                Code = article.Code,
-                Designation = article.Designation,
-                Family = article.Subfamily?.Family?.Designation,
-                Subfamily = article.Subfamily?.Designation,
-                Type = article.Type.Designation,
-                DefaultQuantity = article.DefaultQuantity,
-                MinimumStock = article.MinimumStock,
-                Price = article.Price1.Value,
-                VatDirectSelling = article.VatDirectSelling?.Value,
-                Discount = article.Discount,
-                IsComposed = article.IsComposed,
-                Unit = article.MeasurementUnit?.Acronym,
-                SubfamilyId = article.SubfamilyId,
-                FamilyId = article.Subfamily?.FamilyId ?? Guid.Empty,
-            };
-        }
-
-        public static string GetArticleImage(Guid id)
-        {
-            var result = _mediator.Send(new GetArticleImageQuery(id)).Result;
-           
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
                 return null;
             }
 
@@ -144,7 +118,7 @@ namespace LogicPOS.UI.Components.Articles
                 ErrorHandlingService.HandleApiError(result);
                 return null;
             }
-            var ArticleHistories= result.Value;
+            var ArticleHistories = result.Value;
             return ArticleHistories.Items.ToList();
         }
     }

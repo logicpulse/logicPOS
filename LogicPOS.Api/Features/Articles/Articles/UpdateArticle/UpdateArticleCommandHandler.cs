@@ -24,7 +24,7 @@ namespace LogicPOS.Api.Features.Articles.UpdateArticle
 
             if (result.IsError == false)
             {
-                ArticleCache.Clear(_keyedMemoryCache);
+                ArticlesCache.Clear(_keyedMemoryCache);
             }
 
             return result;

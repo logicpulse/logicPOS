@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Components.Modals
             foreach (var splitter in Splitters)
             {
                 splitter.Clicked += Splitter_Clicked;
-                splitter.splittersNumber = Splitters.Count;
+                splitter.SplittersNumber = Splitters.Count;
                 vBox.PackStart(splitter, false, true, 5);
             }
             UpdateTitle(_order);
@@ -101,7 +101,7 @@ namespace LogicPOS.UI.Components.Modals
 
                 foreach (var splitter in Splitters)
                 {
-                    splitter.splittersNumber --;
+                    splitter.SplittersNumber --;
                 }
             }
         }

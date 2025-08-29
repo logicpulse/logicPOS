@@ -234,7 +234,6 @@ namespace LogicPOS.UI.Components.POS
 
         private void SelectItem(SaleItem item)
         {
-            var model = (ListStore)GridViewSettings.Model;
             var index = Ticket?.Items?.IndexOf(item);
            
             if(index == null)
@@ -257,7 +256,7 @@ namespace LogicPOS.UI.Components.POS
 
         public void ChangeItemPrice(SaleItem item, decimal price)
         {
-            item.UnitPrice = price;
+            item.SetUnitPrice(price);
             Refresh();
             SelectItem(item);
         }

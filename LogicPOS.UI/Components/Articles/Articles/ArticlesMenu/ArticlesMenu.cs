@@ -6,7 +6,6 @@ using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Menus;
-using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -20,7 +19,7 @@ namespace LogicPOS.UI.Components.Menus
         private string ButtonName => "buttonArticleId";
         private Size ButtonSize { get; }
 
-        private static int DefaultPageSize =42;
+        private static int DefaultPageSize = 42;
         public bool PresentFavorites { get; set; }
 
         public ArticlesMenu(CustomButton btnPrevious,
@@ -54,7 +53,8 @@ namespace LogicPOS.UI.Components.Menus
             return new GetArticlesQuery
             {
                 PageSize = DefaultPageSize,
-                Favorite = true
+                Favorite = true,
+                Image = true
             };
         }
 
@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Menus
                     return imagePath;
                 }
 
-                string base64Image = ArticlesService.GetArticleImage(article.Id);
+                string base64Image = article.Button.Image;
 
                 imagePath = ButtonImageCache.AddBase64Image(article.Id, base64Image, article.Button.ImageExtension);
 

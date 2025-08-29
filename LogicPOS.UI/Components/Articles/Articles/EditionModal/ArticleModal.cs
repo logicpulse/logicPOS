@@ -222,11 +222,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void ComboBox_Changed(object sender, EventArgs e)
-        {
-            UpdateValidatableFields();
-        }
-
+     
         private void UpdateValidatableFields()
         {
             if (_comboVatDirectSelling.SelectedEntity == null)

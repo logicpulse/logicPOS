@@ -28,9 +28,10 @@ namespace LogicPOS.UI.Components.Menus
 
         private void BtnArticle_Clicked(ArticleViewModel article)
         {
+            article = ArticlesService.GetArticleViewModel(article.Id);
             var totalStock = ArticleTotalStockService.GetArticleTotalStock(article.Id);
 
-            if (totalStock - SelectedEntity.DefaultQuantity <= SelectedEntity.MinimumStock)
+            if (totalStock - article.DefaultQuantity <= article.MinimumStock)
             {
                 var message = $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedEntity.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedEntity.MinimumStock.ToString()}";
 
@@ -48,23 +49,21 @@ namespace LogicPOS.UI.Components.Menus
                 }
             }
 
-            var item = new SaleItem(SelectedEntity);
-
-
-            if (item.UnitPrice <= 0)
+            if (article.Price <= 0)
             {
-                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), item.UnitPrice);
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), article.Price);
 
                 if (result.Response == ResponseType.Cancel)
                 {
                     return;
                 }
 
-                item.UnitPrice = result.Value;
+                article.Price = result.Value;
             }
 
+            var saleItem = new SaleItem(article);
 
-            SaleContext.ItemsPage.AddItem(item);
+            SaleContext.ItemsPage.AddItem(saleItem);
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();
         }
 

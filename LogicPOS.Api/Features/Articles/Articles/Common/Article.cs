@@ -12,40 +12,21 @@ namespace LogicPOS.Api.Entities
         public string Designation { get; set; }
 
         #region  Dependencies
-        public ArticleClass Class { get; set; }
         public Guid ClassId { get; set; }
-
         public ArticleSubfamily Subfamily { get; set; }
         public Guid SubfamilyId { get; set; }
-
         public ArticleType Type { get; set; }
-        public Guid TypeId { get; set; }
-
         public MeasurementUnit MeasurementUnit { get; set; }
-        public Guid MeasurementUnitId { get; set; }
-
         public SizeUnit SizeUnit { get; set; }
-        public Guid SizeUnitId { get; set; }
-
         public CommissionGroup CommissionGroup { get; set; }
-        public Guid? CommissionGroupId { get; set; }
-
         public DiscountGroup DiscountGroup { get; set; }
-        public Guid? DiscountGroupId { get; set; }
-
-        public VatRate VatOnTable { get; set; }
-        public Guid? VatOnTableId { get; set; }
-
         public VatRate VatDirectSelling { get; set; }
-        public Guid VatDirectSellingId { get; set; }
-
         public VatExemptionReason VatExemptionReason { get; set; }
-        public Guid? VatExemptionReasonId { get; set; }
-
+ 
         #endregion
 
         #region Properties
-        public string CodeDealer { get; set; }
+
         public Button Button { get; set; }
         public ArticlePrice Price1 { get; set; }
         public ArticlePrice Price2 { get; set; }

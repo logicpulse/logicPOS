@@ -22,7 +22,6 @@ namespace LogicPOS.Api.Features.Articles.Common
         public Guid SubfamilyId { get; set; }
         public Guid FamilyId { get; set; }
         public Button Button { get; set; }
-
-
+        public bool PriceWithVat { get; set; }
     }
 }

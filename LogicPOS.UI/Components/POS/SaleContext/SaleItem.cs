@@ -14,35 +14,60 @@ namespace LogicPOS.UI.Components.POS
         public SaleItem(ArticleViewModel article)
         {
             Article = article;
-            UnitPrice = article.Price;
-            Quantity = article.DefaultQuantity > 0 ? article.DefaultQuantity : 1;
             Vat = article.VatDirectSelling ?? 0;
+            Quantity = article.DefaultQuantity > 0 ? article.DefaultQuantity : 1;
             Discount = article.Discount;
+            SetUnitPrice(article.Price);
+        }
+
+        private SaleItem()
+        {
         }
 
         public SaleItem(OrderDetail detail)
         {
-            Article = ArticlesService.GetArticleViewModelById(detail.Article.Id);
-            UnitPrice = detail.Price;
-            Quantity = detail.Quantity;
-            Vat = detail.Vat;
-            Discount = detail.Discount;
-        }
+            Article = ArticlesService.GetArticleViewModel(detail.Article.Id);
 
-        public SaleItem()
-        {
+            Vat = detail.Vat;
+            UnitPrice =   detail.Price;
+            Quantity = detail.Quantity;
+            Discount = detail.Discount;
         }
 
         public ArticleViewModel Article { get; set; }
         public decimal Discount { get; set; }
-        public decimal UnitPrice { get; set; }
+        public decimal UnitPrice { get; private set; }
         public decimal Quantity { get; set; }
         public decimal Vat { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
-        public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
-        public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100;
-        public decimal VatPrice => TotalNet * Vat / 100;
+        public decimal TotalNet => Math.Round(Quantity * UnitPrice - DiscountPrice, 2, MidpointRounding.AwayFromZero);
+        public decimal DiscountPrice => Math.Round(Quantity * UnitPrice * Discount,2, MidpointRounding.AwayFromZero);
+        public decimal VatPrice => Math.Round(TotalNet * Vat / 100,2,MidpointRounding.AwayFromZero);
         public string Code => Article.Code;
+
+        public void SetUnitPrice(decimal price)
+        {
+            UnitPrice = (Article.PriceWithVat && Vat > 0) ? ExtractPriceWithoutVat(price, Vat) : price;
+        }
+
+
+        public SaleItem SingleClone()
+        {
+            return new SaleItem
+            {
+                Article = this.Article,
+                Discount = this.Discount,
+                UnitPrice = this.UnitPrice,
+                Quantity = 1,
+                Vat = this.Vat
+            };
+        }
+
+        public static decimal ExtractPriceWithoutVat(decimal priceWithVat, decimal vat)
+        {
+            var priceWithoutVat = priceWithVat / (1 + vat / 100);
+            return Math.Round(priceWithoutVat,2, MidpointRounding.AwayFromZero);
+        }
 
         public static IEnumerable<SaleItem> Uncompact(IEnumerable<SaleItem> items)
         {
@@ -52,14 +77,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 for (int i = 0; i < item.Quantity; i++)
                 {
-                    singleItems.Add(new SaleItem
-                    {
-                        Article = item.Article,
-                        Quantity = 1,
-                        UnitPrice = item.UnitPrice,
-                        Discount = item.Discount,
-                        Vat = item.Vat
-                    });
+                    singleItems.Add(item.SingleClone());
                 }
             }
 

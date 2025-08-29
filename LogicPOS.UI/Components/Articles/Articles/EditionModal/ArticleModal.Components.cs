@@ -12,13 +12,13 @@ namespace LogicPOS.UI.Components.Modals
     public partial class ArticleModal
     {
         #region Components
-        private TextBox _txtOrder = TextBox.CreateOrderField();
-        private TextBox _txtCode = TextBox.CreateCodeField();
-        private TextBox _txtCodeDealer = TextBox.Simple("global_record_code_dealer");
-        private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private TextBox _txtButtonName = TextBox.Simple("global_button_name");
-        private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
+        private readonly TextBox _txtOrder = TextBox.CreateOrderField();
+        private readonly TextBox _txtCode = TextBox.CreateCodeField();
+        private readonly TextBox _txtCodeDealer = TextBox.Simple("global_record_code_dealer");
+        private readonly TextBox _txtDesignation = TextBox.CreateDesignationField();
+        private readonly TextBox _txtButtonName = TextBox.Simple("global_button_name");
+        private readonly ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
+        private readonly CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private EntityComboBox<ArticleFamily> _comboFamilies;
         private EntityComboBox<ArticleSubfamily> _comboSubfamilies;
@@ -31,20 +31,20 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<Printer> _comboPrinters;
         private EntityComboBox<SizeUnit> _comboSizeUnits;
         private EntityComboBox<VatExemptionReason> _comboVatExemptionReasons;
-        private CheckButton _checkIsComposed = new CheckButton(GeneralUtils.GetResourceByName("global_composite_article"));
-        private CheckButton _checkUniqueArticles = new CheckButton(GeneralUtils.GetResourceByName("global_unique_articles"));
-        private CheckButton _checkFavorite = new CheckButton(GeneralUtils.GetResourceByName("global_favorite"));
-        private CheckButton _checkUseWeighingBalance = new CheckButton(GeneralUtils.GetResourceByName("global_use_weighing_balance"));
-        private CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
-        private CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
-        private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.Money);
-        private TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber);
-        private TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber);
-        private TextBox _txtTare = TextBox.Simple("global_tare", true, true, RegularExpressions.DecimalNumber).WithText("0");
-        private TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
-        private TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);
+        private readonly CheckButton _checkIsComposed = new CheckButton(GeneralUtils.GetResourceByName("global_composite_article"));
+        private readonly CheckButton _checkUniqueArticles = new CheckButton(GeneralUtils.GetResourceByName("global_unique_articles"));
+        private readonly CheckButton _checkFavorite = new CheckButton(GeneralUtils.GetResourceByName("global_favorite"));
+        private readonly CheckButton _checkUseWeighingBalance = new CheckButton(GeneralUtils.GetResourceByName("global_use_weighing_balance"));
+        private readonly CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
+        private readonly CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
+        private readonly TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.Money);
+        private readonly TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber);
+        private readonly TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber);
+        private readonly TextBox _txtTare = TextBox.Simple("global_tare", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private readonly TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private readonly TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);
         private List<ArticlePriceField> _prices;
-        private ArticleFieldsContainer _addArticlesBox = new ArticleFieldsContainer();
+        private readonly ArticleFieldsContainer _addArticlesBox = new ArticleFieldsContainer();
         private VBox _compositionTab;
         #endregion
 

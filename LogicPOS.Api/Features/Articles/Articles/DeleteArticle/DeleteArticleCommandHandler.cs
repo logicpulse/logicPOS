@@ -23,7 +23,7 @@ namespace LogicPOS.Api.Features.Articles.DeleteArticle
 
             if (result.IsError == false)
             {
-                ArticleCache.Clear(_keyedMemoryCache);
+                ArticlesCache.Clear(_keyedMemoryCache);
             }
 
             return result;

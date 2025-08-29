@@ -151,7 +151,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
-            LastTicket= SaleContext.ItemsPage.Ticket;
+            LastTicket = SaleContext.ItemsPage.Ticket;
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
@@ -189,7 +189,7 @@ namespace LogicPOS.UI.Components.POS
         {
             string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_barcode.png";
             logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegularExpressions.AlfaNumericExtended, true);
-            
+
             if (response.ResponseType != ResponseType.Ok)
             {
                 return;
@@ -213,18 +213,18 @@ namespace LogicPOS.UI.Components.POS
         private void BtnCardCode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_pos_ticketpad_card_entry.png";
-            logicpos.Utils.ResponseText dialogResponse = logicpos.Utils.GetInputText(POSWindow.Instance,
-                                                                                     DialogFlags.Modal,
-                                                                                     fileWindowIcon,
-                                                                                     GeneralUtils.GetResourceByName("global_cardcode_small"),
-                                                                                     string.Empty,
-                                                                                     RegularExpressions.AlfaNumericExtended,
-                                                                                     true);
+            logicpos.Utils.GetInputText(POSWindow.Instance,
+                                        DialogFlags.Modal,
+                                        fileWindowIcon,
+                                        GeneralUtils.GetResourceByName("global_cardcode_small"),
+                                        string.Empty,
+                                        RegularExpressions.AlfaNumericExtended,
+                                        true);
         }
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
-            var modal=new SaleOrderModal(POSWindow.Instance, LastTicket);
+            var modal = new SaleOrderModal(POSWindow.Instance, LastTicket);
             modal.Run();
             modal.Destroy();
             UpdateButtonsSensitivity();
@@ -269,8 +269,8 @@ namespace LogicPOS.UI.Components.POS
             /*var modal = new SplitAccountModal(SourceWindow, SaleContext.CurrentOrder);
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();*/
-            
-                
+
+
         }
     }
 }
