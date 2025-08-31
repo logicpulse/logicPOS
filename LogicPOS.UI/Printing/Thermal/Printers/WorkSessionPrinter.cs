@@ -193,16 +193,16 @@ namespace LogicPOS.UI.Printing
             //If Has data
             if (dayReportData.GetTotalPerFamily().Count > 0)
             {
-                foreach (var item in dayReportData.GetTotalPerFamily().GroupBy(x => x.Family))
+                foreach (var item in dayReportData.GetTotalPerFamily())
                 {
 
                     unitMeasure = "Un";
                     //Create Row
                     dataRow = ticketTable.NewRow();
-                    dataRow[0] = item.Key;
-                    dataRow[1] = item.Sum(x => x.Quantity);
+                    dataRow[0] = item.Family;
+                    dataRow[1] = item.Quantity;
                     //dataRow[2] = unitMeasure;
-                    dataRow[2] = item.Sum(x => x.Total);
+                    dataRow[2] = item.Total;
                     ticketTable.Rows.Add(dataRow);
                 }
             }

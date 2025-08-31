@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Printing
             _printer.CondensedMode(PrinterModeState.On);
             _printer.DoubleWidth3();
             _printer.BoldMode(_ticketTitle);
-            _printer.BoldMode(_ticketSubTitle);
+            _printer.Append(_ticketSubTitle);
             _printer.NormalWidth();
             _printer.CondensedMode(PrinterModeState.Off);
             _printer.ExpandedMode(PrinterModeState.Off);

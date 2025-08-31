@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Printing
         {
             var base64Logo = GetCompanyInformations().LogoBmp;
 
-            if (string.IsNullOrEmpty(base64Logo))
+            if (string.IsNullOrEmpty(base64Logo) || string.IsNullOrWhiteSpace(base64Logo))
             {
                 return null;
             }
@@ -74,6 +74,7 @@ namespace LogicPOS.UI.Printing
                     companyInformations.BusinessName = companyInformations.Name;
                 }
                 _printer.Append(companyInformations.BusinessName);
+                _printer.NewLines(3);
 
             }   
             _printer.NormalWidth();
