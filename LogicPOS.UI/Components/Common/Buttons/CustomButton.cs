@@ -6,8 +6,8 @@ namespace LogicPOS.UI.Buttons
 {
     public class CustomButton : Button
     {
-        public EventBox BackgroundColorEventBox { get; set; }
-        protected ButtonSettings _settings;
+        public EventBox BgEventBox { get; set; }
+        public ButtonSettings ButtonSettings { get; private set; }
 
         public CustomButton(ButtonSettings settings)
         {
@@ -15,26 +15,40 @@ namespace LogicPOS.UI.Buttons
             BorderWidth = 1;
             Relief = ReliefStyle.Half;
             CanFocus = false;
-            _settings = settings;
+            ButtonSettings = settings;
         }
 
         public void Initialize()
         {
-            WidthRequest = _settings.ButtonSize.Width;
-            HeightRequest = _settings.ButtonSize.Height;
+            WidthRequest = ButtonSettings.ButtonSize.Width;
+            HeightRequest = ButtonSettings.ButtonSize.Height;
 
-            BackgroundColorEventBox = new EventBox();
-            SetBackgroundColor(_settings.BackgroundColor, BackgroundColorEventBox);
+            BgEventBox = new EventBox();
+            SetBackgroundColor(ButtonSettings.BackgroundColor, BgEventBox);
 
-            if (_settings.Widget != null) BackgroundColorEventBox.Add(_settings.Widget);
-            Add(BackgroundColorEventBox);
+            if (ButtonSettings.Widget != null)
+            {
+                BgEventBox.Add(ButtonSettings.Widget);
+            }
+
+            Add(BgEventBox);
+            ShowAll();
+        }
+
+        public void UpdateWidget(Widget widget)
+        {
+            if (ButtonSettings.Widget != null)
+            {
+                BgEventBox.Remove(ButtonSettings.Widget);
+                BgEventBox.Add(widget);
+            }
             ShowAll();
         }
 
         public void SetBackgroundColor(Color color,
                                        EventBox eventBox = null)
         {
-            eventBox = eventBox ?? BackgroundColorEventBox;
+            eventBox = eventBox ?? BgEventBox;
 
             if (color == Color.Transparent)
             {

@@ -31,11 +31,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _active = value;
                 if (_active)
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, BackgroundColorEventBox);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackgroundActive, BgEventBox);
                 }
                 else
                 {
-                    SetBackgroundColor(_colorKeyboardPadKeyBackground, BackgroundColorEventBox);
+                    SetBackgroundColor(_colorKeyboardPadKeyBackground, BgEventBox);
                 }
             }
         }
@@ -106,9 +106,9 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             //Changed for theme
             this.BorderWidth = 1;
 
-            _settings.BackgroundColor = Color.Transparent;
-            _settings.ButtonSize = new Size(sizeKeyboardPadDefaultKey.Width, sizeKeyboardPadDefaultKey.Height);
-            _settings.Widget = vbox;
+            ButtonSettings.BackgroundColor = Color.Transparent;
+            ButtonSettings.ButtonSize = new Size(sizeKeyboardPadDefaultKey.Width, sizeKeyboardPadDefaultKey.Height);
+            ButtonSettings.Widget = vbox;
 
             Initialize();
         }

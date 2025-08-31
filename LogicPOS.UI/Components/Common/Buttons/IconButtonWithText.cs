@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Buttons
         public IconButtonWithText(ButtonSettings settings)
             : base(settings,false)
         {
-            _settings.Widget = CreateWidget(settings);
+            ButtonSettings.Widget = CreateWidget(settings);
             Initialize();
         }
 

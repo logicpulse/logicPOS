@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Common.Menus
         public CustomButton Button { get; set; }
         public static int MaxCharsPerButtonLabel => AppSettings.Instance.PosBaseButtonMaxCharsPerLabel;
         private static int ButtonFontSize { get; } = Convert.ToInt16(AppSettings.Instance.FontPosBaseButtonSize);
-        private static string _buttonOverlay = (AppSettings.Instance.UseImageOverlay) ? AppSettings.Paths.Images + @"Buttons\Pos\button_overlay.png" : null;
+        private static readonly string _buttonOverlay = (AppSettings.Instance.UseImageOverlay) ? AppSettings.Paths.Images + @"Buttons\Pos\button_overlay.png" : null;
 
         public MenuButton(TEntity entity, CustomButton button)
         {

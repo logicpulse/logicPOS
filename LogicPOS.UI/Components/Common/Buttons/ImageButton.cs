@@ -1,8 +1,5 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
-using System;
 using System.IO;
 
 namespace LogicPOS.UI.Buttons
@@ -16,41 +13,46 @@ namespace LogicPOS.UI.Buttons
         public ImageButton(ButtonSettings settings)
             : base(settings)
         {
-            _settings.Widget = CreateWidget();
+            ButtonSettings.Widget = CreateWidget(settings);
             Initialize();
         }
 
-        public Widget CreateWidget()
+        public static Widget CreateWidget(ButtonSettings settings)
         {
             System.Drawing.Bitmap bitmap;
 
-            bitmap = CreateThumbnail(_settings.Name,
-                                     _settings.BackgroundColor,
-                                     _settings.Text,
-                                     _settings.FontSize,
-                                     _settings.Image,
-                                     _settings.Overlay,
-                                     _settings.ButtonSize.Width,
-                                     _settings.ButtonSize.Height);
+            bitmap = CreateThumbnail(settings.BackgroundColor,
+                                     settings.Text,
+                                     settings.FontSize,
+                                     settings.Image,
+                                     settings.Overlay,
+                                     settings.ButtonSize.Width,
+                                     settings.ButtonSize.Height);
 
 
             Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(bitmap);
             Image gtkImage = new Image(pixBuf);
-
+           
             bitmap.Dispose();
             pixBuf.Dispose();
 
             return gtkImage;
         }
 
-        private System.Drawing.Bitmap CreateThumbnail(string name,
-                                                      System.Drawing.Color color,
-                                                      string labelText,
-                                                      int fontSize,
-                                                      string image,
-                                                      string overlay,
-                                                      int width,
-                                                      int height)
+        public void  UpdateImage(string imagePath)
+        {
+            ButtonSettings.Image = imagePath;
+            UpdateWidget(ImageButton.CreateWidget(ButtonSettings));
+            ShowAll();
+        }
+
+        private static System.Drawing.Bitmap CreateThumbnail(System.Drawing.Color color,
+                                                             string labelText,
+                                                             int fontSize,
+                                                             string image,
+                                                             string overlay,
+                                                             int width,
+                                                             int height)
         {
             System.Drawing.Size targetImageSize = new System.Drawing.Size(width - _BUTTON_INNER_BORDER * 2, height - _BUTTON_INNER_BORDER * 2);
 

@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.Articles
         public static ArticleViewModel GetArticleViewModel(Guid id)
         {
             var result = _mediator.Send(new GetArticleViewModelQuery(id)).Result;
-           
+
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -120,6 +121,24 @@ namespace LogicPOS.UI.Components.Articles
             }
             var ArticleHistories = result.Value;
             return ArticleHistories.Items.ToList();
+        }
+       
+        public static string GetArticleImage(Guid id)
+        {
+            var result = _mediator.Send(new GetArticleImageQuery(id)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            if (result.Value == null)
+            {
+                return null;
+            }
+
+            return result.Value;
         }
     }
 }

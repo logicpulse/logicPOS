@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Buttons
             }, false)
         {
             Table = table;
-            _settings.Widget = CreateComponent();
+            ButtonSettings.Widget = CreateComponent();
             Initialize();
         }
 
@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Buttons
 
             VBox vbox = new VBox(true, 5) { BorderWidth = 5 };
 
-            SetFont($"Bold {_settings.Font}");
+            SetFont($"Bold {ButtonSettings.Font}");
 
 
             Label labelDateTableOpenOrClosed = new Label(string.Empty);

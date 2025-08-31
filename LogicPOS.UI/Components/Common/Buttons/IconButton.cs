@@ -9,14 +9,14 @@ namespace LogicPOS.UI.Buttons
         public IconButton(ButtonSettings settings)
             : base(settings)
         {
-            _settings.Widget = CreateWidget();
+            ButtonSettings.Widget = CreateWidget();
             Initialize();
         }
 
         private Widget CreateWidget()
         {
-            var image = System.Drawing.Image.FromFile(_settings.Icon);
-            image = Utils.ResizeAndCrop(image, _settings.IconSize);
+            var image = System.Drawing.Image.FromFile(ButtonSettings.Icon);
+            image = Utils.ResizeAndCrop(image, ButtonSettings.IconSize);
             Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(image);
             Image button = new Image(pixBuf);
 

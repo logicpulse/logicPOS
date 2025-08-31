@@ -6,6 +6,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
+using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;

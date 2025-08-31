@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Buttons
 
             })
         {
-            _settings.BackgroundColor = color;
+            ButtonSettings.BackgroundColor = color;
             _window = window;
             if (splittersNumber == 0)
             {
@@ -47,15 +47,15 @@ namespace LogicPOS.UI.Buttons
 
             Label CustomerLabel = new Label();
             CustomerLabel.ModifyFont(FontDescription.FromString("Bold 12"));
-            CustomerLabel.Text = _settings.Text;
+            CustomerLabel.Text = ButtonSettings.Text;
 
             UpdatePaymentDetails();
 
             LabelPaymentDetails.Text = PaymentDetailsString;
             vbox.PackStart(CustomerLabel, false, true, 5);
             vbox.PackStart(LabelPaymentDetails, false, true, 5);
-            _settings.Widget = vbox;
-            _settings.Widget.ShowAll();
+            ButtonSettings.Widget = vbox;
+            ButtonSettings.Widget.ShowAll();
             Clicked += SplitAccountCustomerButton_Clicked;
         }
 

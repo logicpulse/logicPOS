@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Buttons
         {
             ButtonLabel = new Gtk.Label(settings.Text);
             ChangeFont(settings.Font, settings.FontColor);
-            _settings.Widget = ButtonLabel;
+            ButtonSettings.Widget = ButtonLabel;
 
             if(initialize)
             {

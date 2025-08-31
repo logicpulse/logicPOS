@@ -36,7 +36,6 @@ namespace LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData
                 .Select(g => new ValueTuple<string, decimal, decimal>(g.Key, g.Sum(x => x.ArticleQuantity), g.Sum(x => x.MovementAmount))).ToList();
         }
 
-
         public List<(string Tax, decimal Quantity, decimal Total)> GetTotalPerTax()
         {
             return Movements.Where(m => m.Tax != null)

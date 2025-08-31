@@ -23,6 +23,7 @@ namespace LogicPOS.UI.Components.Menus
 
         private void OnSubfamilySelected(ArticleSubfamily subfamily)
         {
+            CurrentQuery.Page = 1;
             Refresh();
         }
 

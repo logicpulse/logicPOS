@@ -8,22 +8,22 @@ namespace LogicPOS.UI.Buttons
         public UserButton(ButtonSettings settings)
             : base(settings)
         {
-            if (_settings.Logged)
+            if (ButtonSettings.Logged)
             {
-                ChangeFont(_settings.Font, Color.Green);
+                ChangeFont(ButtonSettings.Font, Color.Green);
 
-                if (_settings.BackgroundColor != Color.Transparent)
+                if (ButtonSettings.BackgroundColor != Color.Transparent)
                 {
-                    _settings.BackgroundColor = settings.BackgroundColor.Lighten(0.50F);
+                    ButtonSettings.BackgroundColor = settings.BackgroundColor.Lighten(0.50F);
                 }
             }
             else
             {
-                ChangeFont(_settings.Font, Color.Black);
+                ChangeFont(ButtonSettings.Font, Color.Black);
 
-                if (_settings.BackgroundColor != Color.Transparent)
+                if (ButtonSettings.BackgroundColor != Color.Transparent)
                 {
-                    _settings.BackgroundColor = settings.BackgroundColor.Darken(0.50F);
+                    ButtonSettings.BackgroundColor = settings.BackgroundColor.Darken(0.50F);
                 }
             }
         }
