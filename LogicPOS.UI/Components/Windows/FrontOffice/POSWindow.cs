@@ -661,7 +661,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (SaleContext.CurrentOrder != null)
             {
-                Instance.LabelTotalTable.Text = $"{SaleContext.CurrentOrder.TotalFinal} : #{SaleContext.CurrentOrder.Tickets.Count}";
+                Instance.LabelTotalTable.Text = $"{SaleContext.CurrentOrder.TotalFinal:0.00} : #{SaleContext.CurrentOrder.Tickets.Count}";
             }
             UpdatePrivileges();
             SaleOptionsPanel.UpdateUI();

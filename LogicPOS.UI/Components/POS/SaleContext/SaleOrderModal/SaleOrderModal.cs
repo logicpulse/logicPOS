@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Printing;
@@ -19,7 +20,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public class SaleOrderModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
         private IconButtonWithText BtnPrintOrder { get; set; }
         private IconButtonWithText BtnTableConsult { get; set; }
         private readonly PosTicket _ticket;
@@ -68,8 +68,7 @@ namespace LogicPOS.UI.Components.Modals
                     new ActionAreaButton(BtnTableConsult, ResponseType.None)
                  };
         }
-
-
+        
         protected override Widget CreateBody()
         {
             HBox hbox = new HBox(false, 0);
@@ -77,6 +76,7 @@ namespace LogicPOS.UI.Components.Modals
             hbox.PackStart(BtnTableConsult, true, true, 0);
             return hbox;
         }
+       
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
 
@@ -88,7 +88,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var command = new AddDocumentCommand();
             var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
-            
+
             if (details == null || details.Count == 0)
             {
                 SimpleAlerts.Information()
@@ -97,32 +97,33 @@ namespace LogicPOS.UI.Components.Modals
                             .ShowAlert();
                 return;
             }
+
             var country = CountryService.countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
             var customer = CustomersService.GetAllCustomers().FirstOrDefault(n => n.Name == GeneralUtils.GetResourceByName("global_final_consumer"));
-                command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
+            command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 
-                command.CustomerId =customer.Id ;
-                if (command.CustomerId == null)
+            command.CustomerId = customer.Id;
+            if (command.CustomerId == null)
+            {
+                command.Customer = new DocumentCustomer
                 {
-                    command.Customer = new DocumentCustomer
-                    {
-                        Name = GeneralUtils.GetResourceByName("global_final_consumer"),
-                        FiscalNumber = customer.FiscalNumber,
-                        Country = country.Code2,
-                        CountryId = country.Id
-                    };
-                }
-                command.Details = details;
+                    Name = GeneralUtils.GetResourceByName("global_final_consumer"),
+                    FiscalNumber = customer.FiscalNumber,
+                    Country = country.Code2,
+                    CountryId = country.Id
+                };
+            }
+            command.Details = details;
 
-                var tableConsultResult = _mediator.Send(command).Result;
-                if (tableConsultResult.IsError)
-                {
-                    SimpleAlerts.ShowApiErrorAlert(tableConsultResult.FirstError);
-                    return;
-                }
+            var printingData = DocumentsService.IssueDocumentForPrinting(command);
+           
+            if (printingData == null)
+            {
+                return;
+            }  
 
-                ThermalPrintingService.PrintInvoice(tableConsultResult.Value);
-            
+            ThermalPrintingService.PrintInvoice(printingData.Value);
+
         }
     }
 }

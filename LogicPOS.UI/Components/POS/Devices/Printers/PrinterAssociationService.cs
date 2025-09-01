@@ -4,30 +4,27 @@ using LogicPOS.Api.Features.Printers.PrinterAssociations.GetEntityAssociatedPrin
 using LogicPOS.Api.Features.Printers.PrinterAssociations.RemoveEntityAssociatedPrinter;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 {
     public static class PrinterAssociationService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
 
-        public static void CreateOrRemoveAssociation(Guid entityId, Guid? printerId=null)
+        public static void Set(Guid entityId, Guid? printerId = null)
         {
             if (printerId.HasValue)
             {
                 CreatePrinterAssociation((Guid)printerId, entityId);
+                return;
             }
-            else
-            {
-                RemovePrinterAssociation(entityId);
-            }
+
+            RemovePrinterAssociation(entityId);
         }
+
         private static void CreatePrinterAssociation(Guid printerId, Guid entityId)
         {
-            var createAssociationResult = _mediator.Send(new AddPrinterAssociationCommand(printerId, entityId)).Result;
+            var createAssociationResult = DependencyInjection.Mediator.Send(new AddPrinterAssociationCommand(printerId, entityId)).Result;
             if (createAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
@@ -39,7 +36,7 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 
         private static void RemovePrinterAssociation(Guid entityId)
         {
-            var removeAssociationResult = _mediator.Send(new RemoveEntityAssociatedPrinterCommand(entityId)).Result;
+            var removeAssociationResult = DependencyInjection.Mediator.Send(new RemoveEntityAssociatedPrinterCommand(entityId)).Result;
             if (removeAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
@@ -50,9 +47,9 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 
         }
 
-        public static Printer GetEntityAssociatedPrinterById(Guid entityId)
+        public static Printer GetPrinter(Guid entityId)
         {
-            var entityAssociatedResult = _mediator.Send(new GetEntityAssociatedPrinterByIdQuery(entityId)).Result;
+            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetEntityAssociatedPrinterByIdQuery(entityId)).Result;
             if (entityAssociatedResult.IsError)
             {
                 return null;

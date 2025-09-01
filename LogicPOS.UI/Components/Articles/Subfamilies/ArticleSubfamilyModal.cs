@@ -37,11 +37,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (_comboPrinters.SelectedEntity != null)
             {
-                PrinterAssociationService.CreateOrRemoveAssociation(_entity.Id, _comboPrinters.SelectedEntity.Id);
+                PrinterAssociationService.Set(_entity.Id, _comboPrinters.SelectedEntity.Id);
             }
             else
             {
-                PrinterAssociationService.CreateOrRemoveAssociation(_entity.Id);
+                PrinterAssociationService.Set(_entity.Id);
             }
             return new UpdateArticleSubfamilyCommand
             {
@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtButtonName.Text = _entity.Button?.Label;
             _imagePicker.SetBase64Image(_entity.Button?.Image, _entity.Button?.ImageExtension);
-            _comboPrinters.SelectedEntity = PrinterAssociationService.GetEntityAssociatedPrinterById(_entity.Id);
+            _comboPrinters.SelectedEntity = PrinterAssociationService.GetPrinter(_entity.Id);
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
 

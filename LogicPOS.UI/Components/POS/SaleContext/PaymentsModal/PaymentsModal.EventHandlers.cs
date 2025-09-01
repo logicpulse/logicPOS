@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
@@ -40,19 +41,17 @@ namespace LogicPOS.UI.Components.POS
             }
 
             var addDocumentCommand = CreateAddDocumentCommand();
-            var addDocumentResult = _mediator.Send(addDocumentCommand).Result;
+            var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand);
 
-            if (addDocumentResult.IsError)
+            if (printingData == null)
             {
-                ErrorHandlingService.HandleApiError(addDocumentResult, source: this);
                 Run();
                 return;
             }
 
-            ThermalPrintingService.PrintInvoice(addDocumentResult.Value);
+
+            ThermalPrintingService.PrintInvoice(printingData.Value);
             ProcesPayment();
-            
-           
         }
 
         private void ProcesPayment()
@@ -62,7 +61,8 @@ namespace LogicPOS.UI.Components.POS
                 ProcessFullPayment();
                 return;
             }
-            if(_paymentMode== PaymentMode.Splited)
+
+            if (_paymentMode == PaymentMode.Splited)
             {
                 SaleContext.CurrentOrder.ReduceItems(SplitTickets(SplittersNumber));
                 var ticket = SaleContext.CurrentOrder.Tickets.FirstOrDefault();
@@ -70,9 +70,9 @@ namespace LogicPOS.UI.Components.POS
                 SaleContext.ItemsPage.Clear(true);
                 SaleContext.ReloadCurrentOrder();
 
-                if (SplittersNumber == 1) 
+                if (SplittersNumber == 1)
                 {
-                    
+
                     SaleContext.ItemsPage.Clear(true);
                 }
                 SaleContext.ReloadCurrentOrder();
@@ -81,6 +81,7 @@ namespace LogicPOS.UI.Components.POS
 
             ProcessPartialPayment();
         }
+
         private List<SaleItem> SplitTickets(int splitNumber)
         {
             List<SaleItem> itemsToUpdate = null;

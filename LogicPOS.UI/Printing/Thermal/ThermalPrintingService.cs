@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Printing.Services;
@@ -30,99 +31,12 @@ namespace LogicPOS.UI.Printing
             }
         }
         
-        public static void GetEntityAssociatedPrinter(Guid? documentId = null, PosTicket ticket = null, bool isDocument = false)
-        {
-            Document document = null;
-            Api.Entities.Printer printer = null;
-
-
-            if (isDocument && documentId.HasValue)
-            {
-                GetPrintFromAssociatedDocumentDetail((Guid)documentId, ref document, ref printer);
-            }
-            else
-            {
-                GetPrinterFromAssociatedTicketItem(ticket, ref printer);
-            }
-            if (printer != null && printer.Type.ThermalPrinter)
-            {
-                _printer = new Printer(printer.Designation);
-            }
-        }
-
-        private static void GetPrinterFromAssociatedTicketItem(PosTicket ticket, ref Api.Entities.Printer printer)
-        {
-            if (ticket == null)
-            {
-                return;
-            }
-            if (ticket != null && ticket.Items.Count != 1)
-            {
-                return;
-            }
-
-            printer = PrinterAssociationService.GetEntityAssociatedPrinterById(ticket.Items[0].Article.Id);
-            if (printer == null)
-            {
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(ticket.Items[0].Article.SubfamilyId);
-            }
-            if (printer == null)
-            {
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(ticket.Items[0].Article.FamilyId);
-            }
-
-            if (printer == null && !TerminalService.HasThermalPrinter)
-            {
-                return;
-            }
-        }
-
-        private static void GetPrintFromAssociatedDocumentDetail(Guid documentId, ref Document document, ref Api.Entities.Printer printer)
-        {
-            var result = DependencyInjection.Mediator.Send(new GetDocumentByIdQuery(documentId)).Result;
-            if (result.IsError)
-            {
-                CustomAlerts.Error()
-                            .WithMessage(result.FirstError.Description)
-                            .ShowAlert();
-            }
-
-            document = result.Value;
-
-            if (document != null && document.Details.Count != 1)
-            {
-                return;
-            }
-
-            printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].ArticleId);
-            if (printer == null)
-            {
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.SubfamilyId);
-            }
-            if (printer == null)
-            {
-                printer = PrinterAssociationService.GetEntityAssociatedPrinterById(document.Details[0].Article.Subfamily.FamilyId);
-            }
-
-            if (printer == null && !TerminalService.HasThermalPrinter)
-            {
-                return;
-
-            }
-
-            if (printer != null && !printer.Type.ThermalPrinter)
-            {
-                var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(documentId, 1);
-                PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
-            }
-
-        }
+      
 
         public static void PrintTicket(PosTicket ticket, Table table)
         {
             try
             {
-                GetEntityAssociatedPrinter(null, ticket);
                 if (Printer != null)
                 {
                     new PosTicketPrinter(Printer, ticket, table).Print();
@@ -138,14 +52,13 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public static void PrintInvoice(Guid documentId)
+        public static void PrintInvoice(InvoicePrintingData data)
         {
             try
             {
-                GetEntityAssociatedPrinter(documentId, null, true);
                 if (Printer != null)
                 {
-                    new InvoicePrinter(Printer, documentId).Print();
+                    new InvoicePrinter(Printer, data).Print();
                 }
             }
             catch (Exception ex)
