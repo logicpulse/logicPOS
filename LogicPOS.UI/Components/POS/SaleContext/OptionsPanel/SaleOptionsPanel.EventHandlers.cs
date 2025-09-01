@@ -101,21 +101,25 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnPrice_Clicked(object sender, EventArgs e)
         {
-            if (SaleContext.ItemsPage.SelectedItem == null)
+            var item = SaleContext.ItemsPage.SelectedItem;
+
+            if (item == null)
             {
                 return;
             }
 
-            InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
+            decimal currentPrice = item.Article.PriceWithVat ? item.UnitPriceWithVat : item.UnitPrice;
+
+            InsertMoneyModalResponse price = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
                                                                                    GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
-                                                                                   SaleContext.ItemsPage.SelectedItem.UnitPrice);
+                                                                                   Math.Round(currentPrice,2,MidpointRounding.AwayFromZero));
 
-            if (result.Response != ResponseType.Ok)
+            if (price.Response != ResponseType.Ok)
             {
                 return;
             }
 
-            SaleContext.ItemsPage.ChangeItemPrice(SaleContext.ItemsPage.SelectedItem, result.Value);
+            SaleContext.ItemsPage.ChangeItemPrice(item, price.Value);
         }
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)

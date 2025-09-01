@@ -42,8 +42,9 @@ namespace LogicPOS.UI.Components.POS
         public decimal TotalFinal => TotalNet + VatPrice;
         public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
         public decimal DiscountPrice => Quantity * UnitPrice * Discount;
-        public decimal VatPrice => TotalNet * Vat / 100;
+        public decimal VatPrice => TotalNet * Vat / 100M;
         public string Code => Article.Code;
+        public decimal UnitPriceWithVat => UnitPrice + (UnitPrice * (Vat / 100M));
 
         public void SetUnitPrice(decimal price)
         {
