@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public List<Item> Items => _entities;
         public event Action<decimal> OnTotalChanged;
-        public decimal TotalFinal => Math.Round(_entities.Sum(x => x.TotalFinal), 2);
+        public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
 
         public CreateDocumentItemsPage(Window parent) : base(parent)
         {

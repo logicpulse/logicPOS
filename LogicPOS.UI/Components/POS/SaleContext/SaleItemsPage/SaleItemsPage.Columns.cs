@@ -15,7 +15,9 @@ namespace LogicPOS.UI.Components.POS
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_designation");
-            return Columns.CreateColumn(title, 1, RenderDesignation, resizable: false, clickable: false);
+            var col = Columns.CreateColumn(title, 1, RenderDesignation, resizable: true, clickable: false);
+            col.MinWidth = 30;
+            return col;
         }
 
         private TreeViewColumn CreatePriceColumn()
@@ -35,7 +37,7 @@ namespace LogicPOS.UI.Components.POS
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Quantity.ToString();
+                (cell as CellRendererText).Text = item.Quantity.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_quantity");
@@ -47,7 +49,7 @@ namespace LogicPOS.UI.Components.POS
             void RenderDiscount(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Discount.ToString();
+                (cell as CellRendererText).Text = item.Discount.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_discount");
@@ -59,7 +61,7 @@ namespace LogicPOS.UI.Components.POS
             void RenderVat(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.Vat.ToString();
+                (cell as CellRendererText).Text = item.Vat.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_vat");
@@ -71,7 +73,7 @@ namespace LogicPOS.UI.Components.POS
             void RenderTotal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.TotalFinal.ToString();
+                (cell as CellRendererText).Text = item.TotalFinal.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_total");

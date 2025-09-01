@@ -40,9 +40,9 @@ namespace LogicPOS.UI.Components.POS
         public decimal Quantity { get; set; }
         public decimal Vat { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
-        public decimal TotalNet => Math.Round(Quantity * UnitPrice - DiscountPrice, 2, MidpointRounding.AwayFromZero);
-        public decimal DiscountPrice => Math.Round(Quantity * UnitPrice * Discount,2, MidpointRounding.AwayFromZero);
-        public decimal VatPrice => Math.Round(TotalNet * Vat / 100,2,MidpointRounding.AwayFromZero);
+        public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
+        public decimal DiscountPrice => Quantity * UnitPrice * Discount;
+        public decimal VatPrice => TotalNet * Vat / 100;
         public string Code => Article.Code;
 
         public void SetUnitPrice(decimal price)
@@ -50,6 +50,10 @@ namespace LogicPOS.UI.Components.POS
             UnitPrice = (Article.PriceWithVat && Vat > 0) ? ExtractPriceWithoutVat(price, Vat) : price;
         }
 
+        public static decimal ExtractPriceWithoutVat(decimal priceWithVat, decimal vat)
+        {
+            return priceWithVat / (1 + vat / 100);
+        }
 
         public SaleItem SingleClone()
         {
@@ -63,11 +67,6 @@ namespace LogicPOS.UI.Components.POS
             };
         }
 
-        public static decimal ExtractPriceWithoutVat(decimal priceWithVat, decimal vat)
-        {
-            var priceWithoutVat = priceWithVat / (1 + vat / 100);
-            return Math.Round(priceWithoutVat,2, MidpointRounding.AwayFromZero);
-        }
 
         public static IEnumerable<SaleItem> Uncompact(IEnumerable<SaleItem> items)
         {
