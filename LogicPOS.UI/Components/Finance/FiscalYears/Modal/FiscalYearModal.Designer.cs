@@ -59,7 +59,6 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtYear.Component, false, false, 0);
             detailsTab.PackStart(_txtAcronym.Component, false, false, 0);
-            detailsTab.PackStart(_checkSeriesForEachTerminal, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {

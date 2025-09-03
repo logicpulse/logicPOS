@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtYear = TextBox.Simple("global_fiscal_year", true, true, @"^\d+$");
         private TextBox _txtAcronym = TextBox.Simple("global_acronym", true, true, @"^[a-zA-Z0-9]+$");
-        private CheckButton _checkSeriesForEachTerminal = new CheckButton(GeneralUtils.GetResourceByName("global_seriesforeachterminal"));
+        //private CheckButton _checkSeriesForEachTerminal = new CheckButton(GeneralUtils.GetResourceByName("global_seriesforeachterminal"));
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
 
     }

@@ -46,10 +46,10 @@ namespace LogicPOS.UI.Printing
             catch (Exception ex)
             {
                 CustomAlerts.Error()
-                            .WithMessage($"Erro ao imprimir. \n")
+                            .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
-                Log.Error(ex, "Error printing ticket");
+                Log.Error(ex, "Error printing...");
             }
         }
 
@@ -65,10 +65,10 @@ namespace LogicPOS.UI.Printing
             catch (Exception ex)
             {
                 CustomAlerts.Error()
-                            .WithMessage($"Erro ao imprimir. \n")
+                            .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
-                Log.Error(ex, "Error printing ticket");
+                Log.Error(ex, "Error printing...");
             }
         }
 
@@ -86,10 +86,10 @@ namespace LogicPOS.UI.Printing
             catch (Exception ex)
             {
                 CustomAlerts.Error()
-                            .WithMessage($"Erro ao imprimir. \n")
+                            .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
-                Log.Error(ex, "Error printing ticket");
+                Log.Error(ex, "Error printing...");
             }
         }
  

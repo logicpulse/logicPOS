@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.POS
                                         false,
                                         true);
 
-            TxtAmount.Text = _totalCashInrawer.ToString();
+            TxtAmount.Text = _totalCashInrawer.ToString("0.00");
 
             TxtDescription = new TextBox(sourceWindow: this,
                                              labelText: LocalizedString.Instance["global_description"],

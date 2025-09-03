@@ -1,12 +1,8 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
-using LogicPOS.Api.Features.FiscalYears.CreateDefaultSeries;
 using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
 using System;
-using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -26,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
                 Designation = _txtDesignation.Text,
                 Year = DateTime.Now.Year,
                 Acronym = _txtAcronym.Text,
-                SeriesForEachTerminal = _checkSeriesForEachTerminal.Active,
+                SeriesForEachTerminal = false,
                 Notes = _txtNotes.Value.Text
             };
         }
@@ -40,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewCode = _txtCode.Text,
                 NewDesignation = _txtDesignation.Text,
                 NewAcronym = _txtAcronym.Text,
-                NewSeriesForEachTerminal = _checkSeriesForEachTerminal.Active,
+                NewSeriesForEachTerminal = false,
                 NewNotes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
@@ -53,7 +49,6 @@ namespace LogicPOS.UI.Components.Modals
             _txtDesignation.Text = _entity.Designation;
             _txtYear.Text = _entity.Year.ToString();
             _txtAcronym.Text = _entity.Acronym;
-            _checkSeriesForEachTerminal.Active = _entity.SeriesForEachTerminal;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
@@ -67,23 +62,6 @@ namespace LogicPOS.UI.Components.Modals
                 ErrorHandlingService.HandleApiError(result);
                 return;
             }
-
-            var fiscalYearId = result.Value;
-
-            ResponseType response = CustomAlerts.Question(this)
-                                                .WithSize(new Size(600, 400))
-                                                .WithTitleResource("window_title_series_create_series")
-                                                .WithMessageResource("dialog_message_series_create_document_type_series")
-                                                .ShowAlert();
-
-            if (response != ResponseType.Yes)
-            {
-                return;
-            }
-
-            var command = new CreateDefaultSeriesCommand(fiscalYearId);
-
-            ExecuteCommand(command);
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

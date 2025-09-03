@@ -265,7 +265,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (MovementType == WorkSessionMovementType.CashDrawerOpen || MovementType == WorkSessionMovementType.CashDrawerClose)
             {
-                TxtAmount.Text = _totalCashInrawer.ToString();
+                TxtAmount.Text = _totalCashInrawer.ToString("0.00");
             }
             else
             {
