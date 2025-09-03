@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.POS
     public static class SaleContext
     {
         public static SaleItemsPage ItemsPage { get; set; }
-        public static Table CurrentTable { get; private set; }
+        public static TableViewModel CurrentTable { get; private set; }
         public static PosOrder CurrentOrder { get; private set; }
 
         public static void ReloadCurrentOrder()
@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.POS
             POSWindow.Instance.UpdateUI();
         }
 
-        public static void SetCurrentTable(Table table)
+        public static void SetCurrentTable(TableViewModel table)
         {
             CurrentTable = table;
             CurrentOrder = OrdersService.GetOpenPosOrders(table.Id)

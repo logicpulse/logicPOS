@@ -112,7 +112,7 @@ namespace LogicPOS.UI.Components.POS
 
             InsertMoneyModalResponse price = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
                                                                                    GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
-                                                                                   Math.Round(currentPrice,2,MidpointRounding.AwayFromZero));
+                                                                                   Math.Round(currentPrice, 2, MidpointRounding.AwayFromZero));
 
             if (price.Response != ResponseType.Ok)
             {
@@ -153,8 +153,20 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
+        
+            ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
+            {
+                Number = SaleContext.ItemsPage.Ticket.Number,
+                Place = SaleContext.CurrentTable.Place,
+                Table = SaleContext.CurrentTable.Designation,
+                Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                {
+                    Article = i.Article.Designation,
+                    Quantity = i.Quantity,
+                    Unit = i.Article.Unit
+                }).ToList()
+            });
 
-            ThermalPrintingService.PrintTicket(SaleContext.ItemsPage.Ticket, SaleContext.CurrentTable);
             LastTicket = SaleContext.ItemsPage.Ticket;
             SaleContext.ItemsPage.FinishTicket();
 

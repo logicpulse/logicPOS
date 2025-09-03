@@ -1,8 +1,8 @@
-﻿using LogicPOS.Api.Enums;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using System;
 
-namespace LogicPOS.Api.Entities
+namespace LogicPOS.Api.Features.POS.Tables.Common
 {
     public class Table : ApiEntity, IWithCode, IWithDesignation
     {

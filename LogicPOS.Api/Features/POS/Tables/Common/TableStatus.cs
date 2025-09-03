@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.Api.Enums
+﻿namespace LogicPOS.Api.Features.POS.Tables.Common
 {
     public enum TableStatus
     {

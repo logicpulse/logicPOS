@@ -79,8 +79,18 @@ namespace LogicPOS.UI.Components.Modals
        
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
-
-            ThermalPrintingService.PrintTicket(_ticket, SaleContext.CurrentTable);
+            ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
+            {
+                Number = SaleContext.ItemsPage.Ticket.Number,
+                Place = SaleContext.CurrentTable.Place,
+                Table = SaleContext.CurrentTable.Designation,
+                Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                {
+                    Article = i.Article.Designation,
+                    Quantity = i.Quantity,
+                    Unit = i.Article.Unit
+                }).ToList()
+            });
         }
 
         private void BtnTableConsult_Clicked(object sender, EventArgs e)

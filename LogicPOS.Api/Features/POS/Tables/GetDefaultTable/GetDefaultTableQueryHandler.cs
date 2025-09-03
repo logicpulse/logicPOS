@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Tables.GetDefaultTable
 {
     public class GetDefaultTableQueryHandler :
-        RequestHandler<GetDefaultTableQuery, ErrorOr<Table>>
+        RequestHandler<GetDefaultTableQuery, ErrorOr<TableViewModel>>
     {
         public GetDefaultTableQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Table>> Handle(GetDefaultTableQuery query, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<TableViewModel>> Handle(GetDefaultTableQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<Table>($"tables/default{query.GetUrlQuery()}", cancellationToken);
+            return await HandleGetEntityQueryAsync<TableViewModel>($"tables/default{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }

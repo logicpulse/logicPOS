@@ -1,5 +1,5 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+﻿using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
@@ -12,19 +12,16 @@ namespace LogicPOS.UI.Components.POS
     public class PosOrder
     {
         public Guid? Id { get; set; } = null;
-        public Table Table { get; }
+        public TableViewModel Table { get; }
 
         public List<PosTicket> Tickets { get; } = new List<PosTicket>();
 
-        public PosOrder(Table table)
-        {
-            Table = table;
-        }
+        public PosOrder(TableViewModel table) => Table = table;
 
         public PosOrder(Order order)
         {
             Id = order.Id;
-            Table = TablesService.GetTable(order.TableId);
+            Table = order.Table;
             AddTickets(order);
         }
 

@@ -1,32 +1,35 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Api.Features.Tables.DeleteTable;
 using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using MediatR;
 using System.Collections.Generic;
-using Table = LogicPOS.Api.Entities.Table;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class TablesPage : Page<Table>
+    public partial class TablesPage : Page<TableViewModel>
     {
         public TablesPage(Window parent) : base(parent)
         {
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetTablesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<TableViewModel>>> GetAllQuery => new GetTablesQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var modal = new TableModal(mode, SelectedEntity);
+            var table = TablesService.GetTable(SelectedEntity.Id);
+            var modal = new TableModal(mode, table);
             var response = modal.Run();
             modal.Destroy();
             return response;
         }
+
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));

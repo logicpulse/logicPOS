@@ -1,10 +1,8 @@
 ﻿using ESC_POS_USB_NET.Enums;
-using LogicPOS.Api.Entities;
-using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
+using LogicPOS.UI.Printing.Thermal.Printers;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -17,36 +15,27 @@ namespace LogicPOS.UI.Printing
 {
     public class PosTicketPrinter : ThermalPrinter
     {
-        private readonly PosTicket _ticket;
-        private readonly Table _table;
+        private readonly TicketPrintingData _ticket;
         private string _ticketTitle = string.Empty;
         private string _ticketSubTitle = string.Empty;
-        public PosTicketPrinter(Printer printer, PosTicket ticket, Table table) : base(printer)
+        public PosTicketPrinter(Printer printer, TicketPrintingData ticket) : base(printer)
         {
             _ticket = ticket;
-            _table = table;
         }
 
         private void PrintTitle()
         {
-            //Order Request #1/3
-            if (_ticket==null)
-            {
-                new SimpleAlert().WithMessageType(Gtk.MessageType.Info)
-                                 .WithMessage("Sem pedido recente")
-                                 .ShowAlert();
-                return;
-            }
+
             _ticketTitle = string.Format("{0}: #{1}"
                 , GeneralUtils.GetResourceByName("global_order_request")
                 , _ticket.Number.ToString()
             );
-            var mode = AppSettings.Instance.UseBackOfficeMode?"retail":"default";
+            var mode = AppSettings.Instance.UseBackOfficeMode ? "retail" : "default";
             //Table|Order #2|Name/Zone
             _ticketSubTitle = string.Format("{0}: #{1}/{2}"
                 , GeneralUtils.GetResourceByName(string.Format($"global_table_appmode_{mode}").ToLower()) /* IN008024 */
-                , _table.Designation
-                , _table.Place.Designation
+                , _ticket.Table
+                , _ticket.Place
             );
             _printer.AlignCenter();
             _printer.SetLineHeight(50);
@@ -75,23 +64,16 @@ namespace LogicPOS.UI.Printing
             DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
             TicketTable ticketTable = new TicketTable(columns);
 
-            //Print Items
             DataRow dataRow;
             foreach (var item in _ticket.Items)
             {
-                //Add All Rows if Normal Mode without explicit ArticlePrinter defined, or print Printer Articles for explicit defined ArticlePrinter 
-
-                //Add Rows to main Ticket
                 dataRow = ticketTable.NewRow();
-                dataRow[0] = item.Article.Designation;
+                dataRow[0] = item.Article;
                 dataRow[1] = item.Quantity;
-                dataRow[2] = item.Article.Unit;
-                //Add DataRow to Table, Ready for Print
+                dataRow[2] = item.Unit;
                 ticketTable.Rows.Add(dataRow);
-
             }
 
-            //Print Table
             ticketTable.Print(_printer);
         }
 

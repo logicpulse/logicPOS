@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Enums;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Tables.GetAllTables
 {
-    public class GetTablesQuery : IRequest<ErrorOr<IEnumerable<Table>>>
+    public class GetTablesQuery : IRequest<ErrorOr<IEnumerable<TableViewModel>>>
     {
         public TableStatus? Status { get; set; }
         public Guid? PlaceId { get; set; }

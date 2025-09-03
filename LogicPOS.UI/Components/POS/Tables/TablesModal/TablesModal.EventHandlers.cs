@@ -1,8 +1,6 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Enums;
+﻿using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Services;
 using System;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -38,7 +36,7 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        private void MenuTables_TableSelected(Api.Entities.Table table)
+        private void MenuTables_TableSelected(TableViewModel table)
         {
             BtnReservation.Sensitive = (table.Status == TableStatus.Free || table.Status == TableStatus.Reserved) && table.Id != SaleContext.CurrentTable.Id;
             BtnOk.Sensitive = table.Status != TableStatus.Reserved;
@@ -65,16 +63,17 @@ namespace LogicPOS.UI.Components.POS
             if (MenuTables.LastFilter.HasValue)
             {
                 MenuTables.ApplyFilter(MenuTables.LastFilter.Value);
-            } else
+            }
+            else
             {
                 MenuTables.Refresh();
             }
-           
+
         }
 
-        private void RemoveReservedTableButtonFromCache(Table selectedEntity)
+        private void RemoveReservedTableButtonFromCache(TableViewModel selectedEntity)
         {
-           MenuTables.ButtonsCache.RemoveAll(mb => mb.Entity.Id  == selectedEntity.Id);
+            MenuTables.ButtonsCache.RemoveAll(mb => mb.Entity.Id == selectedEntity.Id);
         }
     }
 }

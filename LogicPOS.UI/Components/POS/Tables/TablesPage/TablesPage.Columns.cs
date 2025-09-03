@@ -1,8 +1,8 @@
 ﻿
 using Gtk;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
-using Table = LogicPOS.Api.Entities.Table;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -12,8 +12,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderPlace(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var table = (Table)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = table.Place.Designation;
+                var table = (TableViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = table.Place;
             }
 
             var title = GeneralUtils.GetResourceByName("global_places");

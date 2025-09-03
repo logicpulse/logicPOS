@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Api.Enums;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -13,9 +13,9 @@ namespace LogicPOS.UI.Buttons
         private Color _colorPosTablePadTableTableStatusReservedButtonBackground;
         private Label _labelTotalOrStatus;
         private EventBox _eventBoxTotalOrStatus;
-        public readonly Api.Entities.Table Table;
+        public readonly TableViewModel Table;
 
-        public TableButton(Api.Entities.Table table)
+        public TableButton(TableViewModel table)
             : base(new ButtonSettings
             {
                 Name = "buttonTableId",

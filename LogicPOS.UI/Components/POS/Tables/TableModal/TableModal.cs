@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Api.Features.Tables.AddTable;
 using LogicPOS.Api.Features.Tables.UpdateTable;
 using System.Collections.Generic;

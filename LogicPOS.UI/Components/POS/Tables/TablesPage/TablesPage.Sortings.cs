@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.GridViews;
 
 namespace LogicPOS.UI.Components.Pages
@@ -9,15 +9,15 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var leftTable = (Table)model.GetValue(left, 0);
-                var rightTable = (Table)model.GetValue(right, 0);
+                var leftTable = (TableViewModel)model.GetValue(left, 0);
+                var rightTable = (TableViewModel)model.GetValue(right, 0);
 
                 if (leftTable == null || rightTable == null)
                 {
                     return 0;
                 }
 
-                return leftTable.Place.Designation.CompareTo(rightTable.Place.Designation);
+                return leftTable.Place.CompareTo(rightTable.Place);
             });
         }
     }

@@ -1,10 +1,10 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Enums;
+﻿using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Api.Features.Tables.FreeTable;
 using LogicPOS.Api.Features.Tables.GetAllTables;
 using LogicPOS.Api.Features.Tables.GetDefaultTable;
 using LogicPOS.Api.Features.Tables.GetTableById;
 using LogicPOS.Api.Features.Tables.GetTableTotal;
+using LogicPOS.Api.Features.Tables.GetTableViewModel;
 using LogicPOS.Api.Features.Tables.ReserveTable;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
@@ -28,7 +28,20 @@ namespace LogicPOS.UI.Services
             return requestResult.Value;
         }
 
-        public static IEnumerable<Table> GetAllTables()
+        public static TableViewModel GetTableViewModel(Guid id)
+        {
+            var requestResult = DependencyInjection.Mediator.Send(new GetTableViewModelQuery(id)).Result;
+
+            if (requestResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(requestResult, true);
+                return null;
+            }
+
+            return requestResult.Value;
+        }
+
+        public static IEnumerable<TableViewModel> GetAllTables()
         {
             var query = new GetTablesQuery();
 
@@ -48,7 +61,7 @@ namespace LogicPOS.UI.Services
             return requestResult.Value;
         }
 
-        public static IEnumerable<Table> GetTablesByStatus(TableStatus status)
+        public static IEnumerable<TableViewModel> GetTablesByStatus(TableStatus status)
         {
             var query = new GetTablesQuery(status);
 
@@ -68,13 +81,13 @@ namespace LogicPOS.UI.Services
             return requestResult.Value;
         }
 
-        public static IEnumerable<Table> GetOpenTables() => GetTablesByStatus(TableStatus.Open);
+        public static IEnumerable<TableViewModel> GetOpenTables() => GetTablesByStatus(TableStatus.Open);
 
-        public static IEnumerable<Table> GetFreeTables() => GetTablesByStatus(TableStatus.Free);
+        public static IEnumerable<TableViewModel> GetFreeTables() => GetTablesByStatus(TableStatus.Free);
 
-        public static IEnumerable<Table> GetReservedTables() => GetTablesByStatus(TableStatus.Reserved);
+        public static IEnumerable<TableViewModel> GetReservedTables() => GetTablesByStatus(TableStatus.Reserved);
 
-        public static void ReserveTable(Table table)
+        public static void ReserveTable(TableViewModel table)
         {
             if (table.Status != TableStatus.Free)
             {
@@ -89,7 +102,7 @@ namespace LogicPOS.UI.Services
             }
         }
 
-        public static void FreeTable(Table table)
+        public static void FreeTable(TableViewModel table)
         {
             if (table.Status != TableStatus.Reserved)
             {
@@ -118,7 +131,7 @@ namespace LogicPOS.UI.Services
             return getResult.Value;
         }
 
-        public static Table GetDefaultTable()
+        public static TableViewModel GetDefaultTable()
         {
             var query = new GetDefaultTableQuery(TerminalService.Terminal.Id);
 

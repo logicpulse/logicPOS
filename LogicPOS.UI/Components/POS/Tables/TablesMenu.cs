@@ -1,16 +1,16 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Enums;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
-using Table = LogicPOS.Api.Entities.Table;
+using Table = LogicPOS.Api.Features.POS.Tables.Common.Table;
 
 namespace LogicPOS.UI.Components.Menus
 {
-    public class TablesMenu : Menu<Table>
+    public class TablesMenu : Menu<TableViewModel>
     {
         public PlacesMenu MenuPlaces { get; }
         public TableStatus? LastFilter { get; set; }
@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Menus
             Refresh();
         }
 
-        protected override CustomButton CreateButtonForEntity(Table entity)
+        protected override CustomButton CreateButtonForEntity(TableViewModel entity)
         {
             return new TableButton(entity);
         }
@@ -89,7 +89,7 @@ namespace LogicPOS.UI.Components.Menus
             }
         }
 
-        private IEnumerable<Table> FilterEntities(IEnumerable<Table> entities)
+        private IEnumerable<TableViewModel> FilterEntities(IEnumerable<TableViewModel> entities)
         {
             if (MenuPlaces.SelectedEntity != null)
             {

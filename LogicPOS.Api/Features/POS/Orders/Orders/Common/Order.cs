@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using System;
 using System.Collections.Generic;
 
@@ -7,7 +8,7 @@ namespace LogicPOS.Api.Features.POS.Orders.Orders.Common
 {
     public class Order : ApiEntity
     {
-        public Guid TableId { get; set; }
+        public TableViewModel Table { get; set; }
         public List<Ticket> Tickets { get; set; }
     }
 

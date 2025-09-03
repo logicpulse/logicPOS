@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;

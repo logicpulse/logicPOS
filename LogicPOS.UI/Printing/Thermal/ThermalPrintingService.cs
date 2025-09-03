@@ -9,6 +9,7 @@ using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Printing.Thermal.Printers;
 using Serilog;
 using System;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
@@ -33,13 +34,13 @@ namespace LogicPOS.UI.Printing
         
       
 
-        public static void PrintTicket(PosTicket ticket, Table table)
+        public static void PrintTicket(TicketPrintingData data)
         {
             try
             {
                 if (Printer != null)
                 {
-                    new PosTicketPrinter(Printer, ticket, table).Print();
+                    new PosTicketPrinter(Printer,data).Print();
                 }
             }
             catch (Exception ex)

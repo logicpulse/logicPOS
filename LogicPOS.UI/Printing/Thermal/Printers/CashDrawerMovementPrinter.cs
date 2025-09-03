@@ -11,9 +11,9 @@ namespace LogicPOS.UI.Printing
     public class CashDrawerMovementPrinter : ThermalPrinter
     {
 
-        private decimal _totalAmountInCashDrawer;
-        private decimal _movementAmount;
-        private string _movementDescription;
+        private readonly decimal _totalAmountInCashDrawer;
+        private readonly decimal _movementAmount;
+        private readonly string _movementDescription;
         private readonly WorkSessionMovementType _movementType;
 
         public CashDrawerMovementPrinter(Printer printer,
