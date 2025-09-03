@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Printing
             columns.Add(new TicketColumn("Designation", GeneralUtils.GetResourceByName("global_designation"), 0, TicketColumnsAlignment.Left));
             columns.Add(new TicketColumn("Tax", GeneralUtils.GetResourceByName("global_tax"), 8, TicketColumnsAlignment.Right));
             columns.Add(new TicketColumn("TotalBase", GeneralUtils.GetResourceByName("global_total_tax_base"), 12, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("Total", GeneralUtils.GetResourceByName("global_data.Documentfinance_totaltax_acronym"), 10, TicketColumnsAlignment.Right));
+            columns.Add(new TicketColumn("Total", GeneralUtils.GetResourceByName("global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlignment.Right));
 
             TicketTable ticketTable = new TicketTable(columns, 48);
 
@@ -174,7 +174,7 @@ namespace LogicPOS.UI.Printing
         public override void Print()
         {
             var typeAnalyzer = _data.Document.TypeAnalyzer;
-            var documentType = "global_data.Documentfinance_type_title_fr";
+            var documentType = "global_documentfinance_type_title_fr";
             var documentTypeSuffix = _data.Document.Number.Substring(0, 2).ToLower() == "cm" ? "dc" : _data.Document.Number.Substring(0, 2).ToLower();
             documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
             _printer.AlignCenter();
@@ -212,9 +212,9 @@ namespace LogicPOS.UI.Printing
             _printer.AlignLeft();
             _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {_data.Document.TotalNet:F2}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totaltax")}: {_data.Document.TotalTax:F2}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totaltax")}: {_data.Document.TotalTax:F2}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totalfinal")}: {_data.Document.TotalFinal:F2}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totalfinal")}: {_data.Document.TotalFinal:F2}");
             _printer.Separator(' ');
             _printer.NewLine();
             PrintTotalTax();
@@ -226,11 +226,11 @@ namespace LogicPOS.UI.Printing
 
             if (typeAnalyzer.IsInvoice() || typeAnalyzer.IsSimplifiedInvoice() || typeAnalyzer.IsInvoiceReceipt() || typeAnalyzer.IsConsignmentInvoice())
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_data.Documentfinance_type_report_invoice_footer_at"));
+                _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_invoice_footer_at"));
             }
             else
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_data.Documentfinance_type_report_non_invoice_footer_at"));
+                _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_non_invoice_footer_at"));
             }
             _printer.Separator(' ');
             _printer.SetLineHeight(100);

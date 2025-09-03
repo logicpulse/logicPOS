@@ -6,6 +6,14 @@ namespace LogicPOS.Plugin.Licensing
 {
     public class LicenseData
     {
+        public LicenseData()
+        {
+            Keys = new DataTable("keysLicence");
+            Keys.Columns.Add("name", typeof(string));
+            Keys.Columns.Add("value", typeof(string));
+            Keys.Rows.Clear();
+            Informations = new SortedList();
+        }
         public bool Registered { get; set; } = false;
         public string Version { get; set; }
         public string Date { get; set; }
