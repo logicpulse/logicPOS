@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
         {
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetAllTablesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<Table>>> GetAllQuery => new GetTablesQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
         {

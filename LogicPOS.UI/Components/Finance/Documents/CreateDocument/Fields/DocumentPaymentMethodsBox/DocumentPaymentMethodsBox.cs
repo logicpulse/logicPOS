@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 
         private void UpdateTotalLabel()
         {
-            LabelTotal.Text = $"Total: {GetTotal()}";
+            LabelTotal.Text = $"Total: {GetTotal():F2}";
         }
 
         private decimal GetTotal()
@@ -59,7 +59,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         {
             if (Fields.Count == 1)
             {
-                Fields.First().TxtAmount.Text = total.ToString();
+                Fields.First().TxtAmount.Text = total.ToString("0.00");
             }
 
             UpdateTotalLabel();

@@ -4,11 +4,13 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
+using Customer = LogicPOS.Api.Entities.Customer;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -172,7 +174,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectDocumentNumber_Clicked(object sender, System.EventArgs e)
         {
             var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
-            var selectDocumentModal = new EntitySelectionModal<Document>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectDocumentModal.Run();
             selectDocumentModal.Destroy();
             if (response == ResponseType.Ok && page.SelectedEntity != null)

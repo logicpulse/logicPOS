@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.POS
         {
             if (CurrentTable == null)
             {
-                var defaultTable = GetDefaultTable();
+                var defaultTable = TablesService.GetDefaultTable();
 
                 if (defaultTable != null)
                 {
@@ -54,17 +54,5 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        private static Table GetDefaultTable()
-        {
-            
-            var defaultTable = TablesService.GetOpenTables().FirstOrDefault(x=>x.UpdatedWhere==TerminalService.Terminal.Id);
-
-            if (defaultTable != null)
-            {
-                return defaultTable;
-            }
-
-            return TablesService.GetFreeTables().FirstOrDefault();  
-        }
     }
 }

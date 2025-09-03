@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -46,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
                                           includeKeyBoardButton: false);
 
             TxtSupplier.Entry.IsEditable = true;
-            var suppliers = SuppliersForCompletion.Select(s => (s as object, s.Name)).ToList();
+            var suppliers = CustomersService.Customers.Select(s => (s as object, s.Name)).ToList();
             TxtSupplier.WithAutoCompletion(suppliers);
             TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
             TxtSupplier.Entry.Changed += TxtSupplier_Changed;
@@ -74,9 +75,6 @@ namespace LogicPOS.UI.Components.Modals
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
 
-            var documentNumbers = DocumentsForCompletion.Select(n => (n as object, n.Number)).ToList();
-            TxtDocumentNumber.WithAutoCompletion(documentNumbers);
-            TxtDocumentNumber.OnCompletionSelected += s => SelectDocument(s as Document);
             TxtDocumentNumber.Entry.Changed += TxtDocumentNumber_Changed;
             
         }

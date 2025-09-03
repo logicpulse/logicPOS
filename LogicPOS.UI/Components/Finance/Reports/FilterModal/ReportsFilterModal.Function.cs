@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         }
         public void SelectVatRate(VatRate entity)
         {
-            TxtVatRate.Text=entity.Value.ToMoneyString();
+            TxtVatRate.Text=entity.Value.ToString("F2");
             TxtVatRate.SelectedEntity= entity;
         }
         public void SelectWarehouse(DocumentType entity)

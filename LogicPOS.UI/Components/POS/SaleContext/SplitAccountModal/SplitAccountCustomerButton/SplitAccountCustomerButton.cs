@@ -11,7 +11,6 @@ namespace LogicPOS.UI.Buttons
 {
     public class SplitAccountCustomerButton : CustomButton
     {
-        //Ui
         public static string Customer { get; set; }
         public static string PaymentMethod { get; set; }
         public static decimal Total { get; set; }
@@ -71,7 +70,7 @@ namespace LogicPOS.UI.Buttons
 
         private void SplitAccountCustomerButton_Clicked(object sender, EventArgs e)
         {
-            Customer = CustomersService.DefaultCustomer.Name;
+            Customer = CustomersService.Default.Name;
 
             var modal = new PaymentsModal(_window);
             modal.SplitAccount(SplittersNumber);

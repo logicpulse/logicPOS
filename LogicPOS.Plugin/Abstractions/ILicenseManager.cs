@@ -17,6 +17,7 @@ namespace LogicPOS.Plugin.Abstractions
 
         SortedList GetLicenseInformation();
         string GetLicenseFilename();
+       
         bool IsLicensed();
 
         byte[] ActivateLicense(string name,

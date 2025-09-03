@@ -17,9 +17,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
-        private static IEnumerable<Country> _countries;
-
         public CreateDocumentModal(Window parent) : base(parent: parent,
                                                          title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
                                                          size: new System.Drawing.Size(790, 546),
@@ -63,8 +60,8 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             command.Type = DocumentTab.GetDocumentType().Acronym;
-            command.PaymentConditionId = DocumentTab.GetPaymentCondition()?.Id;
-            command.CurrencyId = DocumentTab.GetCurrency().Id;
+            command.PaymentConditionId = DocumentTab.GetPaymentConditionId();
+            command.CurrencyId = DocumentTab.GetCurrencyId();
             command.ParentId = DocumentTab.GetOriginDocumentId();
             command.CustomerId = CustomerTab.CustomerId;
             command.Notes = DocumentTab.TxtNotes.Text;
@@ -95,7 +92,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var query = new GetDocumentPreviewPdfQuery();
 
-            query.CurrencyId = DocumentTab.GetCurrency().Id;
+            query.CurrencyId = DocumentTab.GetCurrencyId();
             query.Notes = DocumentTab.TxtNotes.Text;
             query.ExchangeRate = DocumentTab.GetExchangeRate();
             query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
@@ -144,23 +141,6 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs());
-
-        public static IEnumerable<Country> GetCountries()
-        {
-            if (_countries == null)
-            {
-                var getResult = DependencyInjection.Services.GetRequiredService<IMediator>().Send(new GetAllCountriesQuery()).Result;
-
-                if (getResult.IsError)
-                {
-                    return Enumerable.Empty<Country>();
-                }
-
-                _countries = getResult.Value;
-            }
-
-            return _countries;
-        }
 
         public static void ShowModal(Window parent)
         {

@@ -1,7 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using LogicPOS.UI.Components.Articles;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
@@ -22,14 +22,14 @@ namespace LogicPOS.UI.Components.POS
 
         private SaleItem()
         {
+
         }
 
         public SaleItem(OrderDetail detail)
         {
-            Article = ArticlesService.GetArticleViewModel(detail.Article.Id);
-
+            Article = detail.Article;
             Vat = detail.Vat;
-            UnitPrice =   detail.Price;
+            UnitPrice = detail.Price;
             Quantity = detail.Quantity;
             Discount = detail.Discount;
         }
@@ -68,7 +68,6 @@ namespace LogicPOS.UI.Components.POS
             };
         }
 
-
         public static IEnumerable<SaleItem> Uncompact(IEnumerable<SaleItem> items)
         {
             var singleItems = new List<SaleItem>();
@@ -90,7 +89,7 @@ namespace LogicPOS.UI.Components.POS
 
             foreach (var item in items)
             {
-                var existingItem = orderItems.FirstOrDefault(x => x.Article.Id == item.Article.Id && 
+                var existingItem = orderItems.FirstOrDefault(x => x.Article.Id == item.Article.Id &&
                                                              x.UnitPrice == item.UnitPrice);
 
                 if (existingItem == null)
@@ -112,8 +111,8 @@ namespace LogicPOS.UI.Components.POS
 
             return orderItems;
         }
-        
-        public static IEnumerable<DocumentDetailDto> GetOrderDetailsFromSaleItems( IEnumerable<SaleItem> items)
+
+        public static IEnumerable<DocumentDetailDto> GetOrderDetailsFromSaleItems(IEnumerable<SaleItem> items)
         {
             items = Compact(items);
 

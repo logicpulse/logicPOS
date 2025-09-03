@@ -16,6 +16,8 @@ using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.Finance.VatExemptionReasons;
+using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using System;
 using System.Collections.Generic;
@@ -280,13 +282,13 @@ namespace LogicPOS.UI.Components.Modals
             return _subfamilies.Where(s => s.FamilyId == familyId);
         }
         private IEnumerable<DiscountGroup> GetDiscountGroups() => ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());
-        private IEnumerable<VatRate> GetVatRates() => ExecuteGetEntitiesQuery(new GetAllVatRatesQuery());
+        private IEnumerable<VatRate> GetVatRates() => VatRatesService.VatRates;
         private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
         private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
         private IEnumerable<ArticleClass> GetClasses() => ExecuteGetEntitiesQuery(new GetAllArticleClassesQuery());
         private IEnumerable<MeasurementUnit> GetMeasurementUnits() => ExecuteGetEntitiesQuery(new GetAllMeasurementUnitsQuery());
         private IEnumerable<SizeUnit> GetSizeUnits() => ExecuteGetEntitiesQuery(new GetAllSizeUnitsQuery());
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
-        private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => ExecuteGetEntitiesQuery(new GetAllVatExemptionReasonsQuery());
+        private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => VatExemptionReasonsService.Reasons;
     }
 }

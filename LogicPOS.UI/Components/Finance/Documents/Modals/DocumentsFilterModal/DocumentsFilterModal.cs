@@ -30,30 +30,6 @@ namespace LogicPOS.UI.Components.Documents
             WindowSettings.Close.Hide();
         }
 
-        private List<Customer> InitializeCustomersForCompletion()
-        {
-            _customersForCompletion = CustomersService.GetAllCustomers();
-            return _customersForCompletion;
-        }
-
-        private List<PaymentCondition> InitializePaymentConditionsForCompletion()
-        {
-            _paymentConditionsForCompletion = PaymentConditionsService.GetAllPaymentConditions();
-            return _paymentConditionsForCompletion;
-        }
-
-        private List<PaymentMethod> InitializePaymentMethodsForCompletion()
-        {
-            _paymentMethodsForCompletion = PaymentMethodsService.GetAllPaymentMethods();
-            return _paymentMethodsForCompletion;
-        }
-
-        private List<DocumentType> InitializeDocumentTypesForCompletion()
-        {
-            _documentTypesForCompletion = DocumentTypesService.GetAllDocumentTypes();
-            return _documentTypesForCompletion;
-        }
-
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             AddEventHandlers();

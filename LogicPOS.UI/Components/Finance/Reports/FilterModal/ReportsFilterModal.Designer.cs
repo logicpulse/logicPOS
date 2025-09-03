@@ -1,6 +1,10 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
+using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
@@ -36,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
                                           includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-            var customers=CustomersForCompletion.Select(c=>(c as object, c.Name)).ToList();
+            var customers= CustomersService.Customers.Select(c=>(c as object, c.Name)).ToList();
             TxtCustomer.WithAutoCompletion(customers);
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
@@ -52,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
                                               includeKeyBoardButton: false);
 
             TxtDocumentType.Entry.IsEditable = true;
-            var documentTypes = DocumentTypesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            var documentTypes = DocumentTypesService.DocumentTypes.Select(c => (c as object, c.Designation)).ToList();
             TxtDocumentType.WithAutoCompletion(documentTypes);
             TxtDocumentType.OnCompletionSelected += c => SelectDocumentType(c as DocumentType);
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
@@ -68,7 +72,7 @@ namespace LogicPOS.UI.Components.Modals
                                          includeKeyBoardButton: false);
 
             TxtVatRate.Entry.IsEditable = true;
-            var vatRates = VatRatesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            var vatRates = VatRatesService.VatRates.Select(c => (c as object, c.Designation)).ToList();
             TxtVatRate.WithAutoCompletion(vatRates);
             TxtVatRate.OnCompletionSelected += c => SelectVatRate(c as VatRate);
             TxtVatRate.SelectEntityClicked += BtnSelectVatRate_Clicked;
@@ -132,7 +136,7 @@ namespace LogicPOS.UI.Components.Modals
                                     includeKeyBoardButton: false);
 
             TxtArticle.Entry.IsEditable = true;
-            var articles = ArticlesForCompletion.Select(c => (c as object, c.Designation)).ToList();
+            var articles = ArticlesService.Articles.Select(c => (c as object, c.Designation)).ToList();
             TxtArticle.WithAutoCompletion(articles);
             TxtArticle.OnCompletionSelected += c => SelectArticle(c as ArticleViewModel);
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
@@ -164,8 +168,6 @@ namespace LogicPOS.UI.Components.Modals
                                               includeKeyBoardButton: false);
 
             TxtDocumentNumber.Entry.IsEditable = true;
-            var documentNumbers = DocumentsForCompletion.Select(c => (c as object, c.Number)).ToList();
-            TxtDocumentNumber.WithAutoCompletion(documentNumbers);
             TxtDocumentNumber.OnCompletionSelected += c => SelectDocument(c as Document);
             TxtDocumentNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }

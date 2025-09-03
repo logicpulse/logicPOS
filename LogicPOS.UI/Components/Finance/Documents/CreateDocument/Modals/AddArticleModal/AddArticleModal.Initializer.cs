@@ -11,15 +11,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
-        private List<ArticleViewModel> _articlesForCompletion;
-        private List<ArticleViewModel> ArticlesForCompletion => _articlesForCompletion ?? InitializeArticlesForCompletion();
-
-        private List<ArticleViewModel> InitializeArticlesForCompletion()
-        {
-            _articlesForCompletion = ArticlesService.GetAllArticles();
-            return _articlesForCompletion;
-        }
-
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
@@ -151,7 +142,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
             ValidatableFields.Add(TxtArticle);
 
-            var articles = ArticlesForCompletion.Select(a => (a as object, a.Designation)).ToList();
+            var articles = ArticlesService.Articles.Select(a => (a as object, a.Designation)).ToList();
             TxtArticle.WithAutoCompletion(articles);
             TxtArticle.OnCompletionSelected += TxtCode_OnCompletionSelected;
             TxtArticle.Entry.Changed += TxtArticle_Changed;
@@ -168,7 +159,7 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtCode.Entry.WidthRequest = 120;
 
-            var articles = ArticlesForCompletion.Select(a => (a as object, a.Code)).ToList();
+            var articles = ArticlesService.Articles.Select(a => (a as object, a.Code)).ToList();
             TxtCode.WithAutoCompletion(articles);
             TxtCode.OnCompletionSelected += TxtCode_OnCompletionSelected;
             TxtCode.Entry.Changed += TxtCode_Changed;

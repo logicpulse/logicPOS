@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
@@ -80,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
         }
 
-        private static bool CanCancelDocument(Document document)
+        private static bool CanCancelDocument(DocumentViewModel document)
         {
             bool canCancel = true;
 
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 canCancel = false;
             }
-            else if (document.TypeAnalyzer.IsGuide() && document.ShipFromAdress.DeliveryDate < DateTime.Now)
+            else if (document.TypeAnalyzer.IsGuide() && document.ShipFromAdressDeliveryDate < DateTime.Now)
             {
                 canCancel = false;
             }
@@ -96,7 +97,7 @@ namespace LogicPOS.UI.Components.Modals
             return canCancel;
         }
 
-        private void CancelDocument(Document document)
+        private void CancelDocument(DocumentViewModel document)
         {
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,

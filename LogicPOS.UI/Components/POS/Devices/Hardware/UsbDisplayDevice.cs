@@ -1,6 +1,6 @@
 ﻿using LibUsbDotNet;
 using LibUsbDotNet.Main;
-using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.Utility;

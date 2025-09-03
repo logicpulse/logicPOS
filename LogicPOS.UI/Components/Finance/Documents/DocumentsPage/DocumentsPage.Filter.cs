@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Documents.GetDocuments;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents;
 using System;
 
@@ -11,7 +12,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         private DocumentsFilterModal _filterModal = null;
         public GetDocumentsQuery CurrentQuery { get; private set; } = GetDefaultQuery();
-        public PaginatedResult<Document> Documents { get; private set; }
+        public PaginatedResult<DocumentViewModel> Documents { get; private set; }
 
         private static GetDocumentsQuery GetDefaultQuery()
         {

@@ -21,11 +21,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockMovementModal : Modal
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
-        private List<Customer> _suppliersForCompletion;
-        private List<Customer> SuppliersForCompletion => _suppliersForCompletion ?? InitializeSuppliersForCompletion();
-        private List<Document> _documentsForCompletion;
-        private List<Document> DocumentsForCompletion => _documentsForCompletion ?? InitializeDocumentsForCompletion();
         public AddStockMovementModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_article_stock"),
                                                    new Size(500, 660),
@@ -47,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var result = _mediator.Send(CreateCommand()).Result;
+            var result = DependencyInjection.Mediator.Send(CreateCommand()).Result;
 
             if (result.IsError)
             {
@@ -112,17 +107,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             return ValidatableFields.All(txt => txt.IsValid());
         }
-        private List<Customer> InitializeSuppliersForCompletion()
-        {
-            _suppliersForCompletion = CustomersService.GetAllCustomers();
-            return _suppliersForCompletion;
-        }
-
-        private List<Document> InitializeDocumentsForCompletion()
-        {
-            _documentsForCompletion = DocumentsService.GetAllDocuments();
-            return _documentsForCompletion;
-        }
+   
         private void SelectSupplier(Customer customer)
         {
             TxtSupplier.SelectedEntity = customer;

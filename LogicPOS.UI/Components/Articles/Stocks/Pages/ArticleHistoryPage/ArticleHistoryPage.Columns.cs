@@ -82,7 +82,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderPurchasePrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var history = (ArticleHistory)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = history.PurchasePrice.ToMoneyString();
+                (cell as CellRendererText).Text = history.PurchasePrice.ToString("F2");
             }
             var title = LocalizedString.Instance["global_purchase_price"];
             return Columns.CreateColumn(title, 7, RenderPurchasePrice);

@@ -1,11 +1,11 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common.Pagination;
+﻿using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using System;
 using System.Text;
 
 namespace LogicPOS.Api.Features.Documents.GetDocuments
 {
-    public class GetDocumentsQuery : PaginationQuery<Document>
+    public class GetDocumentsQuery : PaginationQuery<DocumentViewModel>
     {
         public string[] Types { get; set; }
         public Guid? CustomerId { get; set; }
@@ -43,6 +43,6 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
                 urlQueryBuilder.Append($"&paymentStatus={(int)PaymentStatus}");
             }
         }
-   
+
     }
 }

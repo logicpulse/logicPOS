@@ -1,16 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Articles.Stocks.Warehouses.Service;
-using LogicPOS.UI.Components.Finance.Customers;
-using LogicPOS.UI.Components.Finance.Documents.Services;
-using LogicPOS.UI.Components.Finance.DocumentTypes;
-using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
@@ -81,43 +75,20 @@ namespace LogicPOS.UI.Components.Modals
             return vbox;
         }
 
-        public DateTime StartDate =>  DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",System.Globalization.CultureInfo.InvariantCulture);
+        public DateTime StartDate => DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+
         public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-public List<DocumentType> InitializeDocumentTypesForCompletion() 
-        {
-            _documentTypesForCompletion = DocumentTypesService.GetAllDocumentTypes();
-            return _documentTypesForCompletion;
-        }
-public List<Customer> InitializeCustomersForCompletion()
-        {
-            _customersForCompletion = CustomersService.GetAllCustomers();
-            return _customersForCompletion;
-        }
-public List<Warehouse> InitializeWarehousesForCompletion()
+        public List<Warehouse> InitializeWarehousesForCompletion()
         {
             _warehousesForCompletion = WarehousesService.GetAllWarehouses();
             return _warehousesForCompletion;
         }
-public List<ArticleViewModel> InitializeArticlesForCompletion()
-        {
-            _articlesForCompletion = ArticlesService.GetAllArticles();
-            return _articlesForCompletion;
-        }
-public List<VatRate> InitializeVatRatesForCompletion()
-        {
-            _vatRatesForCompletion = VatRatesService.GetAllVatRates();
-            return _vatRatesForCompletion;
-        }
-public List<ArticleHistory> InitializeWarehouseArticlesForCompletion()
+
+        public List<ArticleHistory> InitializeWarehouseArticlesForCompletion()
         {
             _articleHistoriesForCompletion = ArticlesService.GetAllArticleHistories();
             return _articleHistoriesForCompletion;
-        }
-public List<Document> InitializeDocumentsForCompletion()
-        {
-            _documentsForCompletion = DocumentsService.GetAllDocuments();
-            return _documentsForCompletion;
         }
 
     }

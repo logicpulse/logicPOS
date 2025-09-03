@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Errors;
 using System;
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Pages
             SelectedEntityConfirmed += OnSelectedEntityConfirmed;
         }
 
-        private void OnSelectedEntityConfirmed(Document document)
+        private void OnSelectedEntityConfirmed(DocumentViewModel document)
         {
             DocumentPdfUtils.ViewDocumentPdf(SourceWindow, document.Id);
         }
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
             {
-                var document = (Document)GridView.Model.GetValue(iterator, 0);
+                var document = (DocumentViewModel)GridView.Model.GetValue(iterator, 0);
 
                 if (SelectedDocuments.Contains(document))
                 {

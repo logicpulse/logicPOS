@@ -150,7 +150,6 @@ namespace LogicPOS.UI
                             .ShowAlert();
                 return false;
             }
-
         }
 
         public static void ConfigureLogging()

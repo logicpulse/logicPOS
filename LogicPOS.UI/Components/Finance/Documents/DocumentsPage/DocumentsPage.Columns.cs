@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderRelatedDocuments(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var docId = ((Document)model.GetValue(iter, 0)).Id;
+                var docId = ((DocumentViewModel)model.GetValue(iter, 0)).Id;
                 var relatedDocuments = _relations.FirstOrDefault(x => x.DocumentId == docId)?.RelatedDocuments;
                 (cell as CellRendererText).Text = string.Join(",", relatedDocuments);
             }
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = ((Document)model.GetValue(iter, 0));
+                var document = ((DocumentViewModel)model.GetValue(iter, 0));
                 var totalToPay = _totals.FirstOrDefault(x => x.DocumentId == document.Id)?.TotalToPay ?? document.TotalFinal;
                 (cell as CellRendererText).Text = totalToPay.ToString("0.00");
             }
@@ -39,7 +40,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderTotalPaid(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var documentId = ((Document)model.GetValue(iter, 0)).Id;
+                var documentId = ((DocumentViewModel)model.GetValue(iter, 0)).Id;
                 var totalPaid = _totals.FirstOrDefault(x => x.DocumentId == documentId)?.TotalPaid ?? 0;
                 (cell as CellRendererText).Text = totalPaid.ToString("0.00");
             }
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderTotalFinal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.TotalFinal.ToString("0.00");
             }
 
@@ -64,7 +65,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderFiscalNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Customer.FiscalNumber;
             }
 
@@ -76,7 +77,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderEntity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Customer.Name;
             }
 
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Status;
             }
 
@@ -100,7 +101,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDate(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.CreatedAt.ToString();
             }
 
@@ -112,7 +113,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderNumber(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Number;
             }
 
@@ -131,7 +132,7 @@ namespace LogicPOS.UI.Components.Pages
 
             void RenderSelect(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var document = (Document)model.GetValue(iter, 0);
+                var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererToggle).Active = SelectedDocuments.Contains(document);
             }
 
@@ -146,8 +147,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(7, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -162,8 +163,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -178,8 +179,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -194,8 +195,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -210,8 +211,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {
@@ -226,8 +227,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var a = (Document)model.GetValue(left, 0);
-                var b = (Document)model.GetValue(right, 0);
+                var a = (DocumentViewModel)model.GetValue(left, 0);
+                var b = (DocumentViewModel)model.GetValue(right, 0);
 
                 if (a == null || b == null)
                 {

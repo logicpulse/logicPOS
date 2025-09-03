@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Documents.PayDocuments;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -19,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         
 
         public PayInvoiceModal(Window parent,
-                               IEnumerable<(Document, DocumentTotals)> invoices) : base(parent,
+                               IEnumerable<(DocumentViewModel, DocumentTotals)> invoices) : base(parent,
                                                      GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
                                                      new Size(500, 500),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_pay_invoice.png")
@@ -66,8 +68,8 @@ namespace LogicPOS.UI.Components.Modals
         {
             var command = new PayDocumentsCommand
             {
-                PaymentMethodId = (TxtPaymentMethod.SelectedEntity as PaymentMethod).Id,
-                CurrencyId = (TxtCurrency.SelectedEntity as Currency).Id,
+                PaymentMethodId = (TxtPaymentMethod.SelectedEntity as ApiEntity).Id,
+                CurrencyId = (TxtCurrency.SelectedEntity as ApiEntity).Id,
                 ExchangeRate = decimal.Parse(TxtExchangeRate.Text),
                 CurrencyAmount = decimal.Parse(TxtTotalPaid.Text),
                 Amount = CalculateSystemCurrencyTotalPaid(),

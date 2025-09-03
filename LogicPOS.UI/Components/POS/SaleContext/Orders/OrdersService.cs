@@ -1,13 +1,12 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Orders.AddTicket;
+﻿using LogicPOS.Api.Features.Orders.AddTicket;
 using LogicPOS.Api.Features.Orders.CloseOrder;
 using LogicPOS.Api.Features.Orders.CreateOrder;
 using LogicPOS.Api.Features.Orders.GetAllOrders;
 using LogicPOS.Api.Features.Orders.ReduceItems;
+using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.Api.Features.POS.Orders.Orders.GetOrderById;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Errors;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +15,9 @@ namespace LogicPOS.UI.Services
 {
     public static class OrdersService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-
-        private static IEnumerable<Order> GetOpenOrders(Guid? tableId = null)
+        private static List<Order> GetOpenOrders(Guid? tableId = null)
         {
-            var getResult = _mediator.Send(new GetAllOrdersQuery(tableId)).Result;
+            var getResult = DependencyInjection.Mediator.Send(new GetOpenOrdersQuery(tableId)).Result;
 
             if (getResult.IsError)
             {
@@ -28,8 +25,9 @@ namespace LogicPOS.UI.Services
                 return null;
             }
 
-            return getResult.Value;
+            return getResult.Value.ToList();
         }
+
 
         public static IEnumerable<PosOrder> GetOpenPosOrders(Guid? tableId = null)
         {
@@ -51,7 +49,7 @@ namespace LogicPOS.UI.Services
             return posOrders;
         }
 
-        public static bool SavePosOrder(PosOrder posOrder)
+        public static bool SaveOrder(PosOrder posOrder)
         {
             var command = new CreateOrderCommand();
             command.TableId = posOrder.Table.Id;
@@ -65,7 +63,7 @@ namespace LogicPOS.UI.Services
                 })
             });
 
-            var createResult = _mediator.Send(command).Result;
+            var createResult = DependencyInjection.Mediator.Send(command).Result;
 
             if (createResult.IsError)
             {
@@ -89,7 +87,7 @@ namespace LogicPOS.UI.Services
                 UnitPrice = i.UnitPrice
             });
 
-            var createResult = _mediator.Send(command).Result;
+            var createResult = DependencyInjection.Mediator.Send(command).Result;
 
             if (createResult.IsError)
             {
@@ -102,8 +100,8 @@ namespace LogicPOS.UI.Services
 
         public static bool CloseOrder(Guid orderId)
         {
-            var closeResult = _mediator.Send(new CloseOrderCommand { OrderId = orderId }).Result;
-            
+            var closeResult = DependencyInjection.Mediator.Send(new CloseOrderCommand { OrderId = orderId }).Result;
+
             if (closeResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(closeResult);
@@ -126,7 +124,7 @@ namespace LogicPOS.UI.Services
                 UnitPrice = i.UnitPrice
             }).ToList();
 
-                    var reduceResult = _mediator.Send(command).Result;
+            var reduceResult = DependencyInjection.Mediator.Send(command).Result;
 
             if (reduceResult.IsError)
             {
@@ -139,21 +137,15 @@ namespace LogicPOS.UI.Services
 
         public static PosOrder GetPosOrder(Guid orderId)
         {
-            var orders = GetOpenOrders();
+            var getResult = DependencyInjection.Mediator.Send(new GetOrderByIdQuery(orderId)).Result;
 
-            if (orders == null)
+            if (getResult.IsError)
             {
+                ErrorHandlingService.HandleApiError(getResult);
                 return null;
             }
 
-            var order = orders.FirstOrDefault(o => o.Id == orderId);
-
-            if (order == null)
-            {
-                return null;
-            }
-
-            return new PosOrder(order);
+            return new PosOrder(getResult.Value);
         }
     }
 }

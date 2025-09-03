@@ -14,8 +14,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddStockModal
     {
-        private List<Customer> _supplierForCompletion;
-        private List<Customer> SupplierForCompletion => _supplierForCompletion ?? InitializeSuppliersForCompletion();
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private TextBox TxtSupplier { get; set; }
@@ -25,11 +23,6 @@ namespace LogicPOS.UI.Components.Modals
         private ArticleFieldsContainer ArticlesContainer { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockManagement);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
 
-        private List<Customer> InitializeSuppliersForCompletion()
-        {
-            _supplierForCompletion = CustomersService.GetAllCustomers();
-            return _supplierForCompletion;
-        }
         private void InitializeComponents()
         {
             InitializeTxtSupplier();
@@ -51,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
                                           style: TextBoxStyle.Lite);
 
             TxtSupplier.Entry.IsEditable = true;
-            var suppliers=SupplierForCompletion.Select (p => (p as object, p.Name)).ToList();
+            var suppliers= CustomersService.Customers.Select (p => (p as object, p.Name)).ToList();
             TxtSupplier.WithAutoCompletion(suppliers);
             TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
             TxtSupplier.SelectEntityClicked += BtnSelectSupplier_Clicked;

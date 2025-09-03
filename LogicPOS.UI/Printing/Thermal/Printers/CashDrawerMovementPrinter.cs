@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Printing
             _printer.Append(GeneralUtils.GetResourceByName("global_total_cashdrawer"));
             _printer.Separator(' ');
             _printer.DoubleWidth2();
-            _printer.BoldMode(_totalAmountInCashDrawer.ToMoneyString());
+            _printer.BoldMode(_totalAmountInCashDrawer.ToString("F2"));
             _printer.NormalWidth();
             _printer.Separator(' ');
 
@@ -84,7 +84,7 @@ namespace LogicPOS.UI.Printing
                 _printer.Append(GeneralUtils.GetResourceByName("global_movement_amount"));
                 _printer.Separator(' ');
                 _printer.DoubleWidth2();
-                _printer.BoldMode(_movementAmount.ToMoneyString());
+                _printer.BoldMode(_movementAmount.ToString("F2"));
                 _printer.Separator(' ');
                 _printer.NormalWidth();
             }

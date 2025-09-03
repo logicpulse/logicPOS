@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Errors;
@@ -18,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             var command = CreateAddCommand();
-            var result = _mediator.Send(command).Result;
+            var result = DependencyInjection.Mediator.Send(command).Result;
 
             if (result.IsError)
             {

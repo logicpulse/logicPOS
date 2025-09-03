@@ -44,10 +44,10 @@ namespace LogicPOS.UI.Components.POS
 
         private void SetDefaultCustomer()
         {
-            if (CustomersService.DefaultCustomer != null)
+            if (CustomersService.Default != null)
             {
-                TxtCustomer.SelectedEntity = CustomersService.DefaultCustomer;
-                TxtCustomer.Text = CustomersService.DefaultCustomer.Name;
+                TxtCustomer.SelectedEntity = CustomersService.Default;
+                TxtCustomer.Text = CustomersService.Default.Name;
                 ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
             }
         }

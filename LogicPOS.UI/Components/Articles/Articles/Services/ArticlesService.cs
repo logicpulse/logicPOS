@@ -18,15 +18,27 @@ namespace LogicPOS.UI.Components.Articles
 {
     public static class ArticlesService
     {
-        private static readonly ISender _mediator = DependencyInjection.Mediator;
+        private static List<ArticleViewModel> _articles;
 
-        public static List<ArticleViewModel> GetAllArticles()
+        public static List<ArticleViewModel> Articles
+        {
+            get
+            {
+                if (_articles == null)
+                {
+                   _articles = GetAllArticles();
+                }
+                return _articles;
+            }
+        }
+
+        private static List<ArticleViewModel> GetAllArticles()
         {
             var query = new GetArticlesQuery
             {
                 PageSize = 1000000 // High page size to retrieve all articles
             };
-            var articles = _mediator.Send(query).Result;
+            var articles = DependencyInjection.Mediator.Send(query).Result;
 
             if (articles.IsError != false)
             {
@@ -39,7 +51,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static PaginatedResult<ArticleViewModel> GetArticles(GetArticlesQuery query)
         {
-            var articles = _mediator.Send(query).Result;
+            var articles = DependencyInjection.Mediator.Send(query).Result;
 
             if (articles.IsError != false)
             {
@@ -52,7 +64,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static Article GetArticlebById(Guid id)
         {
-            var result = _mediator.Send(new GetArticleByIdQuery(id)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticleByIdQuery(id)).Result;
 
             if (result.IsError)
             {
@@ -65,7 +77,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static WarehouseArticle GetWarehouseArticleById(Guid id)
         {
-            var result = _mediator.Send(new GetWarehouseArticleByIdQuery(id)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetWarehouseArticleByIdQuery(id)).Result;
 
             if (result.IsError)
             {
@@ -78,7 +90,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static ArticleViewModel GetArticleViewModel(Guid id)
         {
-            var result = _mediator.Send(new GetArticleViewModelQuery(id)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticleViewModelQuery(id)).Result;
 
             if (result.IsError)
             {
@@ -96,7 +108,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static ArticleViewModel GetArticleByCode(string code)
         {
-            var result = _mediator.Send(new GetArticleByCodeQuery(code)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticleByCodeQuery(code)).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -113,7 +125,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static List<ArticleHistory> GetAllArticleHistories()
         {
-            var result = _mediator.Send(new GetArticlesHistoriesQuery() { PageSize = 100000 }).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticlesHistoriesQuery() { PageSize = 100000 }).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -125,7 +137,7 @@ namespace LogicPOS.UI.Components.Articles
        
         public static string GetArticleImage(Guid id)
         {
-            var result = _mediator.Send(new GetArticleImageQuery(id)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetArticleImageQuery(id)).Result;
 
             if (result.IsError)
             {

@@ -86,6 +86,7 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCURRENCY_DELETE");
             this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONCURRENCY_VIEW");
         }
+
         #region Singleton
         private static CurrenciesPage _instance;
         public static CurrenciesPage Instance

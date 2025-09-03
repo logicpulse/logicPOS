@@ -14,7 +14,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox TxtStartDate { get; set; }
         private TextBox TxtEndDate { get; set; }
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
-        private List<Customer> _customersForCompletion;
-        private List<Customer> CustomersForCompletion => _customersForCompletion ?? InitializeCustomersForCompletion();
     }
 }

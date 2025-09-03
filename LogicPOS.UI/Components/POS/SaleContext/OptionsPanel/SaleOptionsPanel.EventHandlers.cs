@@ -131,7 +131,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (SaleContext.CurrentOrder.Id.HasValue == false)
             {
-                var saveOrderResult = OrdersService.SavePosOrder(SaleContext.CurrentOrder);
+                var saveOrderResult = OrdersService.SaveOrder(SaleContext.CurrentOrder);
 
                 if (saveOrderResult == false)
                 {

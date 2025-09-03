@@ -32,11 +32,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtEndDate();
             AddEventsHandlers();
         }
-        private List<Customer> InitializeCustomersForCompletion()
-        {
-            _customersForCompletion = CustomersService.GetAllCustomers();
-            return _customersForCompletion;
-        }
+
         private void TxtCustomer_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TxtCustomer.Text))

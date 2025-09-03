@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net.Http;
 using System.Threading;
@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Documents.GetDocuments
 {
     public class GetDocumentsQueryHandler :
-        RequestHandler<GetDocumentsQuery, ErrorOr<PaginatedResult<Document>>>
+        RequestHandler<GetDocumentsQuery, ErrorOr<PaginatedResult<DocumentViewModel>>>
     {
         public GetDocumentsQueryHandler(IHttpClientFactory factory, IMemoryCache cache) : base(factory, cache)
         { }
 
-        public async override Task<ErrorOr<PaginatedResult<Document>>> Handle(GetDocumentsQuery query, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<PaginatedResult<DocumentViewModel>>> Handle(GetDocumentsQuery query, CancellationToken cancellationToken = default)
         {
             var cacheOptions = GetCacheOptions();
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<Document>>($"documents{urlQuery}", cancellationToken,cacheOptions);
+            return await HandleGetEntityQueryAsync<PaginatedResult<DocumentViewModel>>($"documents{urlQuery}", cancellationToken, cacheOptions);
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()

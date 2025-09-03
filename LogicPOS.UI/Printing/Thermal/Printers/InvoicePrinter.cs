@@ -1,17 +1,14 @@
 ﻿using ESC_POS_USB_NET.Enums;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company;
-using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
-using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using Document = LogicPOS.Api.Entities.Document;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
@@ -19,7 +16,7 @@ namespace LogicPOS.UI.Printing
     public class InvoicePrinter : ThermalPrinter
     {
         private readonly InvoicePrintingData _data;
-       
+
         public InvoicePrinter(Printer printer, InvoicePrintingData data) : base(printer)
         {
             _data = data;
@@ -57,8 +54,8 @@ namespace LogicPOS.UI.Printing
             }
             _printer.NewLine();
         }
-       
-        public void PrintDocumentDetail(TicketTable pTicketTable, DocumentDetail documentDetail, string pPaddingLeftFormat)
+
+        public void PrintDocumentDetail(TicketTable pTicketTable, Detail documentDetail, string pPaddingLeftFormat)
         {
             string designation = (documentDetail.Designation.Length <= 48) ? documentDetail.Designation : documentDetail.Designation.Substring(0, 48);
 
@@ -69,10 +66,10 @@ namespace LogicPOS.UI.Printing
                 exemptionReason = string.Format(pPaddingLeftFormat, documentDetail.VatExemptionReason);
             }
             DataRow dataRow = pTicketTable.NewRow();
-            dataRow[0] = documentDetail.Tax.Percentage;
+            dataRow[0] = documentDetail.Tax;
             dataRow[1] = documentDetail.Quantity;
             dataRow[2] = documentDetail.Unit;
-            dataRow[3] = documentDetail.Price;
+            dataRow[3] = documentDetail.UnitPrice;
             dataRow[4] = documentDetail.Discount;
             dataRow[5] = documentDetail.TotalFinal;
             pTicketTable.Rows.Add(dataRow);
@@ -80,7 +77,7 @@ namespace LogicPOS.UI.Printing
             pTicketTable.Print(_printer, true, pPaddingLeftFormat);
             _printer.Append(exemptionReason);
         }
-       
+
         private void PrintTotalTax()
         {
             var TaxResume = _data.Document.GetTaxResumes();
@@ -97,36 +94,35 @@ namespace LogicPOS.UI.Printing
             {
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Designation;
-                dataRow[1] = $"{item.Rate.ToString("F2")}%";
-                dataRow[2] = $"{item.Base.ToMoneyString()}";
-                dataRow[3] = $"{item.Total.ToMoneyString()}";
+                dataRow[1] = $"{item.Rate:F2}%";
+                dataRow[2] = $"{item.Base:F2}";
+                dataRow[3] = $"{item.Total:F2}";
                 ticketTable.Rows.Add(dataRow);
             }
             ticketTable.Print(_printer);
             _printer.NewLine();
         }
-       
+
         protected void PrintDocumentPaymentDetails()
         {
             _printer.AlignCenter();
-            if (!string.IsNullOrEmpty(_data.Document.PaymentCondition?.Designation))
+            if (!string.IsNullOrEmpty(_data.Document.PaymentCondition))
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_payment_conditions") + ": " + _data.Document.PaymentCondition.Designation);
+                _printer.Append(GeneralUtils.GetResourceByName("global_payment_conditions") + ": " + _data.Document.PaymentCondition);
             }
             if (_data.Document.PaymentMethods != null)
             {
-                foreach (var payment in _data.Document.PaymentMethods)
+                foreach (var paymentMethod in _data.Document.PaymentMethods)
                 {
-                    _printer.Append(GeneralUtils.GetResourceByName("global_payment_method_field") + ": " + payment.PaymentMethod.Designation);
+                    _printer.Append(GeneralUtils.GetResourceByName("global_payment_method_field") + ": " + paymentMethod);
                 }
             }
-            _printer.Append(GeneralUtils.GetResourceByName("global_currency_field") + ": " + _data.Document.Currency.Acronym); /* IN009055 */
+            _printer.Append(GeneralUtils.GetResourceByName("global_currency_field") + ": " + _data.Document.Currency);
             _printer.NewLine();
         }
-       
-        protected void PrintCustomer(DocumentCustomer customer)
+
+        protected void PrintCustomer(Customer customer)
         {
-            /* IN009055 block - begin */
             _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_customer"), customer.Name));
             _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_address"), customer.Address));
 
@@ -144,13 +140,13 @@ namespace LogicPOS.UI.Printing
             {
                 addressDetails = string.Format("{0} - {1}", customer.City, customer.Country);
             }
-            _printer.Append(addressDetails); /* When FS, no details */
-            _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_fiscal_number"), customer.FiscalNumber)); /* Do not print Fiscal Number when empty */
-            /* IN009055  block - end */
+            _printer.Append(addressDetails);
+            _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_fiscal_number"), customer.FiscalNumber));
+
             _printer.AlignLeft();
             _printer.Separator(' ');
         }
-       
+
         public void PrintFooter()
         {
             if (_data.CompanyInformations.TicketFinalLine1 != string.Empty || _data.CompanyInformations.TicketFinalLine1 != string.Empty)
@@ -174,12 +170,12 @@ namespace LogicPOS.UI.Printing
                 _printer.AlignLeft();
             }
         }
-        
+
         public override void Print()
         {
             var typeAnalyzer = _data.Document.TypeAnalyzer;
             var documentType = "global_data.Documentfinance_type_title_fr";
-            var documentTypeSuffix = _data.Document.Number.Substring(0, 2).ToLower()=="cm"?"dc": _data.Document.Number.Substring(0, 2).ToLower();
+            var documentTypeSuffix = _data.Document.Number.Substring(0, 2).ToLower() == "cm" ? "dc" : _data.Document.Number.Substring(0, 2).ToLower();
             documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
             _printer.AlignCenter();
             PrintHeader();
@@ -188,7 +184,7 @@ namespace LogicPOS.UI.Printing
             if (string.IsNullOrEmpty(_data.CompanyInformations.Address) == false) _printer.Append($"{_data.CompanyInformations.Address} ");
             if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode) == false) _printer.Append($"{_data.CompanyInformations.PostalCode} {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
             if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode)) _printer.Append($"0000-000 {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Phone)==false)_printer.Append($"{GeneralUtils.GetResourceByName("global_phone")}: {_data.CompanyInformations.Phone } ({GeneralUtils.GetResourceByName("report_phonenumber_label")})");
+            if (string.IsNullOrEmpty(_data.CompanyInformations.Phone) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_phone")}: {_data.CompanyInformations.Phone} ({GeneralUtils.GetResourceByName("report_phonenumber_label")})");
             if (string.IsNullOrEmpty(_data.CompanyInformations.MobilePhone) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_mobile_phone")}: {_data.CompanyInformations.MobilePhone} ({GeneralUtils.GetResourceByName("report_mobilephonenumber_label")})");
             if (string.IsNullOrEmpty(_data.CompanyInformations.Email) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_user_email")}: {_data.CompanyInformations.Email} ");
             _printer.Append($"{GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber")}: {_data.CompanyInformations.FiscalNumber} ");
@@ -202,7 +198,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
             _printer.Append(_data.Document.Number);
             _printer.Append($"Original");
-            _printer.Append(_data.Document.Date);
+            _printer.Append(_data.Document.Date.ToShortDateString());
             _printer.ExpandedMode(PrinterModeState.Off);
             _printer.Separator(' ');
             _printer.NormalWidth();
@@ -214,11 +210,11 @@ namespace LogicPOS.UI.Printing
             PrintDocumentDetails();
 
             _printer.AlignLeft();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {_data.Document.TotalNet.ToMoneyString()}");
-            _printer.NewLine(); 
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totaltax")}: {_data.Document.TotalTax.ToMoneyString()}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {_data.Document.TotalNet:F2}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totalfinal")}: {_data.Document.TotalFinal.ToMoneyString()}");
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totaltax")}: {_data.Document.TotalTax:F2}");
+            _printer.NewLine();
+            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_data.Documentfinance_totalfinal")}: {_data.Document.TotalFinal:F2}");
             _printer.Separator(' ');
             _printer.NewLine();
             PrintTotalTax();
@@ -239,7 +235,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
             _printer.SetLineHeight(100);
 
-            if(_data.CompanyInformations.CountryCode2.ToUpper()=="PT" && !string.IsNullOrEmpty(_data.Document.ATQRCode))
+            if (_data.CompanyInformations.CountryCode2.ToUpper() == "PT" && !string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
                 _printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
                 _printer.NormalLineHeight();
@@ -262,7 +258,7 @@ namespace LogicPOS.UI.Printing
 
     public struct InvoicePrintingData
     {
-        public Document Document { get; set; }
+        public DocumentPrintingModel Document { get; set; }
         public CompanyInformations CompanyInformations { get; set; }
     }
 }

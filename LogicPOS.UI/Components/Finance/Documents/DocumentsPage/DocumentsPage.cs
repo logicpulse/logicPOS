@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
@@ -12,7 +13,7 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class DocumentsPage : Page<Document>
+    public partial class DocumentsPage : Page<DocumentViewModel>
     {
         public DocumentsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
@@ -92,7 +93,7 @@ namespace LogicPOS.UI.Components.Pages
             AddTotalFinalSorting();
         }
 
-        protected override void AddEntitiesToModel(IEnumerable<Document> documents)
+        protected override void AddEntitiesToModel(IEnumerable<DocumentViewModel> documents)
         {
             var model = (ListStore)GridViewSettings.Model;
             foreach (var document in documents)
@@ -101,7 +102,7 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        public IEnumerable<(Document, DocumentTotals)> GetSelectedDocumentsWithTotals()
+        public IEnumerable<(DocumentViewModel, DocumentTotals)> GetSelectedDocumentsWithTotals()
         {
             return SelectedDocuments.Select(document => (document, _totals.FirstOrDefault(x => x.DocumentId == document.Id)));
         }

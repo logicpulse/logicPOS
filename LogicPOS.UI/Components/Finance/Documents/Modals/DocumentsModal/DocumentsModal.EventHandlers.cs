@@ -105,6 +105,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 return;
             }
+
             if (Page.SelectedEntity.IsDraft)
             {
                 CustomAlerts.Warning(this)
@@ -112,6 +113,7 @@ namespace LogicPOS.UI.Components.Modals
                             .ShowAlert();
                 return;
             }
+
             var paidDocuments = string.Join(",", Page.SelectedDocuments.Where(x => x.Paid).Select(x => x.Number));
 
             if (paidDocuments != string.Empty)

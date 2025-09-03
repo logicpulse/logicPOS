@@ -98,8 +98,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var country = CountryService.countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
-            var customer = CustomersService.GetAllCustomers().FirstOrDefault(n => n.Name == GeneralUtils.GetResourceByName("global_final_consumer"));
+            var country = CountriesService.Countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
+            var customer = CustomersService.Default;
             command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 
             command.CustomerId = customer.Id;

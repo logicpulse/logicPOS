@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Pages;
@@ -53,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
-            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCurrencyModal = new EntitySelectionModal<Api.Entities.Currency>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectCurrencyModal.Run();
             selectCurrencyModal.Destroy();
 
@@ -78,6 +79,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
             }
         }
+        
         private void TxtExchangeRate_Changed(object sender, EventArgs e)
         {
             if (TxtExchangeRate.IsValid())
@@ -90,7 +92,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtSystemCurrencyTotalPaid.Text = CalculateSystemCurrencyTotalPaid().ToString();
         }
-
 
         private void UpdateTitle()
         {
@@ -111,7 +112,7 @@ namespace LogicPOS.UI.Components.Modals
         private void SetDefaultCurrency()
         {
             TxtCurrency.SelectedEntity = Invoices.First().Invoice.Currency;
-            TxtCurrency.Text = (TxtCurrency.SelectedEntity as Currency).Designation;
+            TxtCurrency.Text = (TxtCurrency.SelectedEntity as Api.Features.Finance.Documents.Documents.Common.Currency).Designation;
         }
     }
 }

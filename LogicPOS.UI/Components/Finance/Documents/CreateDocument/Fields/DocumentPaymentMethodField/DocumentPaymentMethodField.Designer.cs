@@ -15,19 +15,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {
     public partial class DocumentPaymentMethodField
     {
-        private List<PaymentMethod> _paymentMethods;
-        private List<PaymentMethod> PaymentMethodForCompletion => _paymentMethods ?? InitializePaymenthodsForCompletion();
-
-        private List<PaymentMethod> InitializePaymenthodsForCompletion()
-        {
-            _paymentMethods=PaymentMethodsService.GetAllPaymentMethods();
-            return _paymentMethods;
-        }
-
+      
         private void SelectPaymentMethod(PaymentMethod paymentMethod)
         {
             TxtPaymentMethod.SelectedEntity = paymentMethod;
         }
+
         private void InitializeButtons()
         {
             string iconClearRecord = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_delete_record.png"}";
@@ -64,7 +57,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
                                                includeKeyBoardButton: false);
 
             TxtPaymentMethod.Entry.IsEditable = true;
-            var paymentMethods = PaymentMethodForCompletion.Select(p => (p as object, p.Designation)).ToList();
+            var paymentMethods = PaymentMethodsService.PaymentMethods.Select(p => (p as object, p.Designation)).ToList();
             TxtPaymentMethod.WithAutoCompletion(paymentMethods);
             TxtPaymentMethod.OnCompletionSelected += p => SelectPaymentMethod( p as PaymentMethod);
             TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;

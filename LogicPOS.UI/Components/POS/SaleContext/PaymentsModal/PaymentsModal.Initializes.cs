@@ -6,22 +6,13 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.POS 
-{ 
+namespace LogicPOS.UI.Components.POS
+{
     public partial class PaymentsModal
     {
-        private List<Customer> _customersForCompletion;
-        private List<Customer> CustomersForCompletion => _customersForCompletion ?? InitializeCustomersForCompletion();
-
-        private List<Customer> InitializeCustomersForCompletion()
-        {
-            _customersForCompletion = CustomersService.GetAllCustomers();
-            return _customersForCompletion;
-        }
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(this,
@@ -124,7 +115,7 @@ namespace LogicPOS.UI.Components.POS
                                               includeKeyBoardButton: true);
 
             ValidatableFields.Add(TxtFiscalNumber);
-            var customers = CustomersForCompletion.Select(c => (c as object, c.FiscalNumber)).ToList();
+            var customers = CustomersService.Customers.Select(c => (c as object, c.FiscalNumber)).ToList();
             TxtFiscalNumber.WithAutoCompletion(customers);
             TxtFiscalNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtFiscalNumber.Entry.Changed += TxtFiscalNumber_Changed;
@@ -143,11 +134,12 @@ namespace LogicPOS.UI.Components.POS
             ValidatableFields.Add(TxtCustomer);
 
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
-            var customers = CustomersForCompletion.Select(c => (c as object, c.Name)).ToList();
+            var customers = CustomersService.Customers.Select(c => (c as object, c.Name)).ToList();
             TxtCustomer.WithAutoCompletion(customers);
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
         }
+       
         private void InitializeScrollersButtons()
         {
             BtnPrevious = new IconButton(

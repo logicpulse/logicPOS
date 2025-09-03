@@ -2,31 +2,42 @@
 using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Tables.FreeTable;
 using LogicPOS.Api.Features.Tables.GetAllTables;
+using LogicPOS.Api.Features.Tables.GetDefaultTable;
+using LogicPOS.Api.Features.Tables.GetTableById;
 using LogicPOS.Api.Features.Tables.GetTableTotal;
 using LogicPOS.Api.Features.Tables.ReserveTable;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Services
 {
     public static class TablesService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-
-        public static IEnumerable<Table> GetTablesByPlace(Guid PlaceId)
+        public static Table GetTable(Guid id)
         {
-            return GetAllTables()?.Where(t => t.PlaceId == PlaceId);
+            var requestResult = DependencyInjection.Mediator.Send(new GetTableByIdQuery(id)).Result;
+
+            if (requestResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(requestResult, true);
+                return null;
+            }
+
+            return requestResult.Value;
         }
 
         public static IEnumerable<Table> GetAllTables()
         {
-            var query = new GetAllTablesQuery();
-            var requestResult = _mediator.Send(query).Result;
+            var query = new GetTablesQuery();
+
+            if (TerminalService.Terminal.PlaceId != null)
+            {
+                query.PlaceId = TerminalService.Terminal.PlaceId;
+            }
+
+            var requestResult = DependencyInjection.Mediator.Send(query).Result;
 
             if (requestResult.IsError)
             {
@@ -34,25 +45,19 @@ namespace LogicPOS.UI.Services
                 return null;
             }
 
-            var tables = requestResult.Value;
-
-            return FilterTerminalTables(requestResult.Value);
-        }
-
-        private static IEnumerable<Table> FilterTerminalTables(IEnumerable<Table> tables)
-        {
-            if (TerminalService.Terminal.PlaceId != null)
-            {
-                return tables.Where(t => t.PlaceId == TerminalService.Terminal.PlaceId);
-            }
-
-            return tables;
+            return requestResult.Value;
         }
 
         public static IEnumerable<Table> GetTablesByStatus(TableStatus status)
         {
-            var query = new GetAllTablesQuery(status);
-            var requestResult = _mediator.Send(query).Result;
+            var query = new GetTablesQuery(status);
+
+            if (TerminalService.Terminal.PlaceId != null)
+            {
+                query.PlaceId = TerminalService.Terminal.PlaceId;
+            }
+
+            var requestResult = DependencyInjection.Mediator.Send(query).Result;
 
             if (requestResult.IsError)
             {
@@ -60,7 +65,7 @@ namespace LogicPOS.UI.Services
                 return null;
             }
 
-            return FilterTerminalTables(requestResult.Value);
+            return requestResult.Value;
         }
 
         public static IEnumerable<Table> GetOpenTables() => GetTablesByStatus(TableStatus.Open);
@@ -76,7 +81,7 @@ namespace LogicPOS.UI.Services
                 return;
             }
 
-            var result = _mediator.Send(new ReserveTableCommand(table.Id)).Result;
+            var result = DependencyInjection.Mediator.Send(new ReserveTableCommand(table.Id)).Result;
 
             if (result.IsError)
             {
@@ -91,7 +96,7 @@ namespace LogicPOS.UI.Services
                 return;
             }
 
-            var result = _mediator.Send(new FreeTableCommand(table.Id)).Result;
+            var result = DependencyInjection.Mediator.Send(new FreeTableCommand(table.Id)).Result;
 
             if (result.IsError)
             {
@@ -102,7 +107,7 @@ namespace LogicPOS.UI.Services
         public static decimal GetTableTotal(Guid tableId)
         {
             var query = new GetTableTotalQuery(tableId);
-            var getResult = _mediator.Send(query).Result;
+            var getResult = DependencyInjection.Mediator.Send(query).Result;
 
             if (getResult.IsError)
             {
@@ -111,6 +116,21 @@ namespace LogicPOS.UI.Services
             }
 
             return getResult.Value;
+        }
+
+        public static Table GetDefaultTable()
+        {
+            var query = new GetDefaultTableQuery(TerminalService.Terminal.Id);
+
+            var result = DependencyInjection.Mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
         }
     }
 }

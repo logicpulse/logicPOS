@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-            var customers = CustomersForCompletion.Select(c => (c as object, c.Name)).ToList();
+            var customers = CustomersService.Customers.Select(c => (c as object, c.Name)).ToList();
             TxtCustomer.WithAutoCompletion(customers);
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
