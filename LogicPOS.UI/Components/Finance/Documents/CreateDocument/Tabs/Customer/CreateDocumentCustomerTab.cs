@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtFiscalNumber.Text = customer.FiscalNumber;
             TxtCardNumber.Text = customer.CardNumber;
-            TxtDiscount.Text = customer.Discount.ToString();
+            TxtDiscount.Text = customer.Discount.ToString("F2");
             TxtAddress.Text = customer.Address;
             TxtLocality.Text = customer.Locality;
             TxtZipCode.Text = customer.ZipCode;

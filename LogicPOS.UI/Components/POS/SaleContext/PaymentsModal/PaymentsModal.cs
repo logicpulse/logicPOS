@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
@@ -207,8 +208,10 @@ namespace LogicPOS.UI.Components.POS
             TxtLocality.Clear();
             TxtZipCode.Clear();
             TxtCity.Clear();
-            TxtCountry.Clear();
+            TxtCountry.Text = CountriesService.Default.Designation;
+            TxtCountry.SelectedEntity=CountriesService.Default;
             TxtNotes.Clear();
+            
         }
 
         protected void Validate()

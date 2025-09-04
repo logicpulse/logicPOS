@@ -79,12 +79,20 @@ namespace LogicPOS.UI.Components.Modals
        
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
+            if (SaleContext.CurrentOrder.Tickets.Count() == 0 || SaleContext.CurrentOrder.Tickets==null)
+            {
+                SimpleAlerts.Information()
+                            .WithTitle("Mesa vazia")
+                            .WithMessage("Não existem pedidos associados a esta mesa")
+                            .ShowAlert();
+                return;
+            }
             ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
             {
-                Number = SaleContext.ItemsPage.Ticket.Number,
+                Number = SaleContext.CurrentOrder.Tickets.Last().Number,
                 Place = SaleContext.CurrentTable.Place,
                 Table = SaleContext.CurrentTable.Designation,
-                Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                Items = SaleContext.CurrentOrder.Tickets.Last().Items.Select(i => new Printing.Thermal.Printers.TicketItem
                 {
                     Article = i.Article.Designation,
                     Quantity = i.Quantity,
@@ -108,7 +116,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var country = CountriesService.Countries.FirstOrDefault(c => c.Code2 == PreferenceParametersService.CompanyInformations.CountryCode2);
+            var country = CountriesService.Default;
             var customer = CustomersService.Default;
             command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 

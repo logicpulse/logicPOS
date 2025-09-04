@@ -30,8 +30,8 @@ namespace LogicPOS.UI.Components.InputFields
 
             if (current != null)
             {
-                _txtPrice.Text = current.Value.ToString();
-                _txtPromotionPrice.Text = current.PromotionValue.ToString();
+                _txtPrice.Text = current.Value.ToString("F2");
+                _txtPromotionPrice.Text = current.PromotionValue.ToString("F2");
                 _checkUsePromotionPrice.Active = current.UsePromotion;
             }
 

@@ -2,6 +2,7 @@
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeArticlePriceFields()
         {
             _prices = new List<ArticlePriceField>();
-            var pricetypes = GetPriceTypes().OrderByDescending(price => price.EnumValue).Take(5).OrderBy(x=>x.CreatedAt).ToArray();
+            var pricetypes = GetPriceTypes().OrderByDescending(price => price.EnumValue).Take(5).OrderBy(x=>x.Code).ToArray();
 
 
             

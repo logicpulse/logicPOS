@@ -1,20 +1,17 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Common;
-using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.Windows;
-using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -33,7 +30,14 @@ namespace LogicPOS.UI.Components.POS
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
-
+            if (BtnInvoice.Sensitive = true && PaymentMethod == null)
+            {
+                SimpleAlerts.Information()
+                            .WithMessage("Selecione um Método de Pagamento")
+                            .ShowAlert();
+                Run();
+                return;
+            }
             if (AllFieldsAreValid() == false)
             {
                 Run();

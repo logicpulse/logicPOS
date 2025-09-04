@@ -208,12 +208,12 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
             _checkPVPVariable.Active = _entity.PVPVariable;
             _checkPriceWithVat.Active = _entity.PriceWithVat;
-            _txtDiscount.Text = _entity.Discount.ToString();
+            _txtDiscount.Text = _entity.Discount.ToString("F2");
             _txtBarcode.Text = _entity.Barcode;
-            _txtMinimumStock.Text = _entity.MinimumStock.ToString();
-            _txtTare.Text = _entity.Tare.ToString();
-            _txtWeight.Text = _entity.Weight.ToString();
-            _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString();
+            _txtMinimumStock.Text = _entity.MinimumStock.ToString("F2");
+            _txtTare.Text = _entity.Tare.ToString("F2");
+            _txtWeight.Text = _entity.Weight.ToString("F2");
+            _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString("F2");
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
 
