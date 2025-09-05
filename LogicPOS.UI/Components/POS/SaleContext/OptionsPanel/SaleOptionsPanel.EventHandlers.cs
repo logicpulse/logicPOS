@@ -17,7 +17,6 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleOptionsPanel
     {
-        public PosTicket LastTicket { get; private set; }
         private void BtnPrevious_Clicked(object sender, EventArgs e)
         {
             SaleContext.ItemsPage.Previous();
@@ -166,8 +165,6 @@ namespace LogicPOS.UI.Components.POS
                     Unit = i.Article.Unit
                 }).ToList()
             });
-
-            LastTicket = SaleContext.ItemsPage.Ticket;
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
@@ -223,7 +220,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            SaleContext.ItemsPage.AddItem(new SaleItem(article));
+            SaleContext.ItemsPage.AddItem(new SaleItem(article, SaleContext.CurrentTable.PlacePriceType));
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)
@@ -240,7 +237,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
         {
-            var modal = new SaleOrderModal(POSWindow.Instance, LastTicket);
+            var modal = new SaleOrderModal(POSWindow.Instance);
             modal.Run();
             modal.Destroy();
             UpdateButtonsSensitivity();

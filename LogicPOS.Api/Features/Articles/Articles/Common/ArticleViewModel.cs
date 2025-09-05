@@ -15,7 +15,11 @@ namespace LogicPOS.Api.Features.Articles.Common
         public string Type { get; set; } 
         public decimal DefaultQuantity { get; set; }
         public decimal MinimumStock { get; set; }
-        public decimal Price { get; set; }
+        public decimal Price1 { get; set; }
+        public decimal Price2 { get; set; }
+        public decimal Price3 { get; set; }
+        public decimal Price4 { get; set; }
+        public decimal Price5 { get; set; }
         public decimal? VatDirectSelling { get; set; }
         public decimal Discount { get; set; }
         public string Unit { get; set; }

@@ -50,19 +50,19 @@ namespace LogicPOS.UI.Components.Menus
                 }
             }
 
-            if (article.Price <= 0)
+            if (article.Price1 <= 0)
             {
-                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), article.Price);
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), article.Price1);
 
                 if (result.Response == ResponseType.Cancel)
                 {
                     return;
                 }
 
-                article.Price = result.Value;
+                article.Price1 = result.Value;
             }
 
-            var saleItem = new SaleItem(article);
+            var saleItem = new SaleItem(article, SaleContext.CurrentTable.PlacePriceType);
 
             SaleContext.ItemsPage.AddItem(saleItem);
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();

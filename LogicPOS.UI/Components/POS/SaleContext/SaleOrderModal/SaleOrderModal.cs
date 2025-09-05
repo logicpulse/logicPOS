@@ -22,13 +22,12 @@ namespace LogicPOS.UI.Components.Modals
     {
         private IconButtonWithText BtnPrintOrder { get; set; }
         private IconButtonWithText BtnTableConsult { get; set; }
-        private readonly PosTicket _ticket;
-        public SaleOrderModal(Window parent, PosTicket ticket) : base(parent,
+        public SaleOrderModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_orders"),
                                                    new Size(500, 220),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_orders.png")
         {
-            _ticket = ticket;
+           
         }
 
         private void InitializeButtons()

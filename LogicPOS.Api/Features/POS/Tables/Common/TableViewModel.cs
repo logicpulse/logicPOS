@@ -8,6 +8,7 @@ namespace LogicPOS.Api.Features.POS.Tables.Common
     {
         public string Code { get; set; }
         public string Place { get; set; }
+        public string PlacePriceType { get; set; }
         public string Designation { get; set; }
         public TableStatus Status { get; set; }
         public DateTime? OpennedAt { get; set; }
