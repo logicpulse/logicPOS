@@ -16,7 +16,8 @@ namespace LogicPOS.UI.Components.Modals
 {
     public class SplitAccountModal : Modal
     {
-        VBox vBox = new VBox(false, 0);
+        VBox VBox = new VBox(false, 0);
+        ScrolledWindow ScrolledWindow = new ScrolledWindow();
         private IconButtonWithText BtnOk;
         private IconButtonWithText BtnCancel;
         private IconButtonWithText BtnRemoveSplitter;
@@ -24,6 +25,7 @@ namespace LogicPOS.UI.Components.Modals
         private static string Title="";
         private readonly PosOrder _order;
         private static int TitleNumber = 2;
+
         public  List<SplitAccountCustomerButton> Splitters =new List<SplitAccountCustomerButton>();
         public SplitAccountModal(Window parent, PosOrder order) : base(parent, Title, new Size(610, 460),
                                                                        AppSettings.Paths.Images + @"Icons\Windows\icon_window_split_payments.png")
@@ -43,18 +45,18 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle(PosOrder order)
         {
-            WindowSettings.Title.Text = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_split_payment"), TitleNumber.ToString(), (order.TotalFinal / TitleNumber).ToString()) + PreferenceParametersService.SystemCurrency;
+            WindowSettings.Title.Text = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_split_payment"), TitleNumber.ToString(), (order.TotalFinal / TitleNumber).ToString("F2")) + PreferenceParametersService.SystemCurrency;
         }
 
         private void UpdateSplitters()
         {
+            SplitAccountCustomerButton.SplittersNumber = Splitters.Count();
             TitleNumber = Splitters.Count;
             
             foreach (var splitter in Splitters)
             {
                 splitter.Clicked += Splitter_Clicked;
-                splitter.SplittersNumber = Splitters.Count;
-                vBox.PackStart(splitter, false, true, 5);
+                VBox.PackStart(splitter, false, true, 5);
             }
             UpdateTitle(_order);
 
@@ -85,11 +87,13 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (!Splitters[Splitters.Count - 1].Paid)
                 {
-                    VBox.Remove(Splitters[Splitters.Count - 1]);
+                    base.VBox.Remove(Splitters[Splitters.Count - 1]);
                     Splitters[Splitters.Count - 1].Destroy();
                     Splitters.Remove(Splitters[Splitters.Count - 1]);
+                    
                 }
             }
+            SplitAccountCustomerButton.SplittersNumber = Splitters.Count();
             UpdateSplitters();
         }
         private void Splitter_Clicked(object sender, EventArgs e)
@@ -98,18 +102,13 @@ namespace LogicPOS.UI.Components.Modals
             {
                 BtnAddSplitter.Sensitive = false;
                 BtnRemoveSplitter.Sensitive = false;
-
-                foreach (var splitter in Splitters)
-                {
-                    splitter.SplittersNumber --;
-                }
             }
         }
         private void BtnAddSplitter_Clicked(object sender, EventArgs e)
         {
-            if (Splitters.Count < 4)
+            if (Splitters.Count < 12)
             {
-               Splitters.Add(new SplitAccountCustomerButton("splitPaymentButton", AppSettings.Instance.ColorSplitPaymentTouchButtonFilledDataBackground, $"Cliente #{Splitters.Count + 1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count > 2 ? Splitters.Count+1 : 2));
+               Splitters.Add(new SplitAccountCustomerButton("splitPaymentButton", AppSettings.Instance.ColorSplitPaymentTouchButtonFilledDataBackground, $"Cliente #{Splitters.Count() + 1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count() + 1));
             }
             UpdateSplitters();
         }
@@ -146,7 +145,8 @@ namespace LogicPOS.UI.Components.Modals
         
         protected override Widget CreateBody()
         {
-            return vBox;
+            ScrolledWindow.AddWithViewport(VBox);
+            return ScrolledWindow;
         }
         protected override void OnResponse(ResponseType response)
         {
@@ -158,7 +158,29 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
+            UpdateTickets();
+
             base.OnResponse(response);
+        }
+
+        private void UpdateTickets()
+        {
+            
+            if (Splitters.Any(x=>x.Sensitive==false) && SplitAccountCustomerButton.SplittersNumber != 0)
+            {
+                foreach (var ticket in SaleContext.CurrentOrder.Tickets)
+                {
+                    foreach (var item in ticket.Items)
+                    {
+                        item.Quantity = item.Quantity * SplitAccountCustomerButton.SplittersNumber;
+                    }
+                    OrdersService.SavePosTicket(SaleContext.CurrentOrder,ticket);   
+                }
+                SplitAccountCustomerButton.SplittersNumber = 0;
+                PaymentsModal.InitialSplittersNumber = 0;
+                SaleContext.ItemsPage.Clear();
+                SaleContext.ItemsPage.PresentOrderItems();
+            }
         }
     }
 }

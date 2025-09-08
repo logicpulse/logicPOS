@@ -64,7 +64,10 @@ namespace LogicPOS.UI.Components.POS
         {
             return OrdersService.ReduceOrderItems(Id.Value, items);
         }
-
+        public bool SplitTicket(IEnumerable<SaleItem> items, int splittersNumber)
+        {
+            return OrdersService.SplitTicket(Id.Value, items, splittersNumber);
+        }
         public void Close()
         {
             if (Id != null)

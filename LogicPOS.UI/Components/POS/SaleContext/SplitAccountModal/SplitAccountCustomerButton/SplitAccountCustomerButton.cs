@@ -5,6 +5,7 @@ using LogicPOS.UI.Settings;
 using Pango;
 using System;
 using System.Drawing;
+using System.Linq;
 using Color = System.Drawing.Color;
 
 namespace LogicPOS.UI.Buttons
@@ -13,8 +14,8 @@ namespace LogicPOS.UI.Buttons
     {
         public static string Customer { get; set; }
         public static string PaymentMethod { get; set; }
-        public static decimal Total { get; set; }
-        public int SplittersNumber { get; set; }
+        public decimal Total { get; set; }
+        public static int SplittersNumber { get; set; }
         public bool Paid { get; set; }
         private readonly Window _window;
         string PaymentDetailsString { get; set; } = "";
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Buttons
             _window = window;
             if (splittersNumber == 0)
             {
-                this.SplittersNumber = splittersNumber;
+                SplittersNumber = splittersNumber;
 
             }
             initializeObject();
@@ -63,7 +64,7 @@ namespace LogicPOS.UI.Buttons
             if (Paid)
             {
                 PaymentDetailsString = "{0} : {1} : {2}";
-                LabelPaymentDetails.Text = PaymentDetailsString = string.Format(PaymentDetailsString, Customer, PaymentMethod, Total);
+                LabelPaymentDetails.Text = PaymentDetailsString = string.Format(PaymentDetailsString, Customer, PaymentMethod, Math.Round(Total, 2, MidpointRounding.AwayFromZero));
             }
 
         }
@@ -80,12 +81,14 @@ namespace LogicPOS.UI.Buttons
                 Paid = true;
                 Total = SaleContext.CurrentOrder.TotalFinal;
                 PaymentMethod = modal.paymentMethodDesignation;
+                SplittersNumber--;
                 UpdatePaymentDetails();
-                if (SplittersNumber == 1)
+                if (SplittersNumber == 0)
                 {
+                    var ticket = SaleContext.CurrentOrder.Tickets.FirstOrDefault();
                     SaleContext.ItemsPage.Clear(true);
+                    SaleContext.CurrentOrder.Tickets.Remove(ticket);
                     SaleContext.CurrentOrder.Close();
-                    SaleContext.ReloadCurrentOrder();
                 }
                 Sensitive = false;
             }

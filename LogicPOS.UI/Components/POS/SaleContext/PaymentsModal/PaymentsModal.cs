@@ -32,6 +32,7 @@ namespace LogicPOS.UI.Components.POS
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
+        public static int InitialSplittersNumber { get; set; } = 0;
         private int SplittersNumber;
         public string paymentMethodDesignation { get; set; }
         public PaymentsModal(Window parent) : base(parent,
@@ -63,6 +64,10 @@ namespace LogicPOS.UI.Components.POS
         private void SplitModeInitilizer(int splittersNumber)
         {
             SplittersNumber = splittersNumber;
+            if (InitialSplittersNumber == 0)
+            {
+                InitialSplittersNumber = SplittersNumber;
+            }
             _paymentMode = PaymentMode.Splited;
             TxtCustomer.Component.Sensitive = false;
             TxtCardNumber.Entry.Sensitive = false;
@@ -165,7 +170,14 @@ namespace LogicPOS.UI.Components.POS
                     TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
                     break;
                 case PaymentMode.Splited:
-                    TotalFinal = OrderTotalFinal/SplittersNumber;
+                    if(InitialSplittersNumber != 0 && InitialSplittersNumber==SplittersNumber)
+                    {
+                        TotalFinal = OrderTotalFinal/InitialSplittersNumber;
+                    }
+                    else
+                    {
+                        TotalFinal = OrderTotalFinal;
+                    }
                     break;
             }
 
@@ -248,7 +260,7 @@ namespace LogicPOS.UI.Components.POS
 
         private string GetDocumentType()
         {
-            return BtnInvoice.Sensitive ? "FR" : "FT";
+            return (BtnInvoice.Sensitive==true) ? "FR" : "FT";
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()
@@ -297,12 +309,15 @@ namespace LogicPOS.UI.Components.POS
 
             if (_paymentMode == PaymentMode.Splited)
             {
-                var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
-                foreach (var item in details)
+                if (InitialSplittersNumber == SplittersNumber)
                 {
-                    item.Quantity = item.Quantity / SplittersNumber;
+                    SplitTickets(SplittersNumber);
                 }
-
+                if(SplittersNumber==1)
+                {
+                    InitialSplittersNumber = 0;
+                }
+                var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
                 command.Details = details;
                 return command;
             }

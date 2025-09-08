@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals;
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             Validate();
-            if (BtnInvoice.Sensitive = true && PaymentMethod == null)
+            if (BtnInvoice.Sensitive == true && PaymentMethod == null)
             {
                 SimpleAlerts.Information()
                             .WithMessage("Selecione um Método de Pagamento")
@@ -68,25 +69,18 @@ namespace LogicPOS.UI.Components.POS
 
             if (_paymentMode == PaymentMode.Splited)
             {
-                SaleContext.CurrentOrder.ReduceItems(SplitTickets(SplittersNumber));
-                var ticket = SaleContext.CurrentOrder.Tickets.FirstOrDefault();
-                var saveTicketResult = OrdersService.SavePosTicket(SaleContext.CurrentOrder, ticket);
-                SaleContext.ItemsPage.Clear(true);
-                SaleContext.ReloadCurrentOrder();
-
-                if (SplittersNumber == 1)
+                if (InitialSplittersNumber != SplittersNumber)
                 {
-
-                    SaleContext.ItemsPage.Clear(true);
+                    OrdersService.SavePosTicket(SaleContext.CurrentOrder, SaleContext.CurrentOrder.Tickets.FirstOrDefault());
                 }
-                SaleContext.ReloadCurrentOrder();
+                UpdateLabels();
                 return;
             }
 
             ProcessPartialPayment();
         }
 
-        private List<SaleItem> SplitTickets(int splitNumber)
+        private List<SaleItem> SplitTickets(int splittersNumber)
         {
             List<SaleItem> itemsToUpdate = null;
             if (SaleContext.CurrentOrder.Tickets.Any())
@@ -96,12 +90,14 @@ namespace LogicPOS.UI.Components.POS
                 {
                     foreach (var item in ticket.Items)
                     {
-                        item.Quantity = (item.Quantity / splitNumber);
+                        item.Quantity = (item.Quantity / splittersNumber);
+
 
                     }
                     itemsToUpdate = ticket.Items;
                 }
             }
+            SaleContext.CurrentOrder.SplitTicket(itemsToUpdate, splittersNumber);
             return itemsToUpdate;
         }
         private void ProcessPartialPayment()
