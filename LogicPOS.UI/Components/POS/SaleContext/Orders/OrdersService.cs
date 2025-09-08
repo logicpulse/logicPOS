@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Orders.GetAllOrders;
 using LogicPOS.Api.Features.Orders.ReduceItems;
 using LogicPOS.Api.Features.Orders.SplitTicket;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.Api.Features.POS.Orders.Orders.DeleteOrder;
 using LogicPOS.Api.Features.POS.Orders.Orders.GetOrderById;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Errors;
@@ -172,6 +173,19 @@ namespace LogicPOS.UI.Services
             }
 
             return new PosOrder(getResult.Value);
+        }
+
+        public static bool DeleteOrder(Guid orderId, string reason)
+        {
+            var closeResult = DependencyInjection.Mediator.Send(new DeleteOrderCommand(orderId,reason)).Result;
+
+            if (closeResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(closeResult);
+                return false;
+            }
+
+            return true;
         }
     }
 }

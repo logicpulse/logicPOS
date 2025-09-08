@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Reports.GetSalesByPlaceDetailedReportPdf
+namespace LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedReportPdf
 {
     public class GetSalesByPlaceDetailedReportPdfQueryHandler :
         RequestHandler<GetSalesByPlaceDetailedReportPdfQuery, ErrorOr<TempFile>>

@@ -40,15 +40,13 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
+
+
             if (SaleContext.CurrentOrder.Id.HasValue)
             {
-                var deleteOrderResult = OrdersService.CloseOrder(SaleContext.CurrentOrder.Id.Value);
-
-                if (deleteOrderResult == false)
+                bool deletedOrder = DeleteCurrentOrder();
+                if (!deletedOrder)
                 {
-                    CustomAlerts.Error(POSWindow.Instance)
-                                .WithMessage("Não foi possível cancelar o pedido. Tente novamente.")
-                                .ShowAlert();
                     return;
                 }
             }
@@ -58,6 +56,21 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.ItemsPage.SetTicketModeBackGround();
             POSWindow.Instance.UpdateUI();
             UpdateButtonsSensitivity();
+        }
+
+        private static bool DeleteCurrentOrder()
+        {
+            DeleteOrderModal modal = new DeleteOrderModal(SaleContext.CurrentOrder.Id.Value,POSWindow.Instance);
+
+            ResponseType deleteModalResponse = (ResponseType)modal.Run();
+            modal.Destroy();
+
+            if (deleteModalResponse != ResponseType.Ok)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void BtnDecrease_Clicked(object sender, EventArgs e)
@@ -152,7 +165,7 @@ namespace LogicPOS.UI.Components.POS
                     return;
                 }
             }
-        
+
             ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
             {
                 Number = SaleContext.ItemsPage.Ticket.Number,
@@ -281,7 +294,7 @@ namespace LogicPOS.UI.Components.POS
             var modal = new SplitAccountModal(SourceWindow, SaleContext.CurrentOrder);
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
-            PaymentsModal.InitialSplittersNumber=0;
+            PaymentsModal.InitialSplittersNumber = 0;
         }
     }
 }

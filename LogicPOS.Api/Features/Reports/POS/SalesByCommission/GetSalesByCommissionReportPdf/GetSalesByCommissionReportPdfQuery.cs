@@ -5,7 +5,7 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 
-namespace LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf
+namespace LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf
 {
     public class GetSalesByCommissionReportPdfQuery : StartAndEndDateReportQuery
     {

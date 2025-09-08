@@ -816,5 +816,25 @@ namespace LogicPOS.UI.Components.Modals
             }
             modal.Destroy();
         }
+
+        private void BtnDeletedOrdersReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            modal.TxtArticle.Component.Sensitive = false;
+            modal.TxtCustomer.Component.Sensitive = false;
+            modal.TxtDocumentNumber.Component.Sensitive = false;
+            modal.TxtDocumentType.Component.Sensitive = false;
+            modal.TxtSerialNumber.Component.Sensitive = false;
+            modal.TxtVatRate.Component.Sensitive = false;
+            modal.TxtWarehouse.Component.Sensitive = false;
+
+            var response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowDeletedOrdersReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
     }
 }

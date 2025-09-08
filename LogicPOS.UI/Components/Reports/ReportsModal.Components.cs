@@ -72,6 +72,7 @@ namespace LogicPOS.UI.Components.Modals
         private VBox PanelOtherReports = new VBox(false, 2);
         private XAccordionChildButton BtnAuditReport = new XAccordionChildButton(LocalizedString.Instance["report_list_audit_table"]);
         private XAccordionChildButton BtnComissionsReport = new XAccordionChildButton(LocalizedString.Instance["report_list_user_commission"]);
+        private XAccordionChildButton BtnDeletedOrdersReport = new XAccordionChildButton("Pedidos eliminados");
         #endregion
 
         #region Stock Reports

@@ -3,7 +3,7 @@ using LogicPOS.Api.Features.Reports.Common;
 using MediatR;
 using System;
 
-namespace LogicPOS.Api.Features.Reports.GetSalesByPlaceDetailedReportPdf
+namespace LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedReportPdf
 {
     public class GetSalesByPlaceDetailedReportPdfQuery : StartAndEndDateReportQuery
     {

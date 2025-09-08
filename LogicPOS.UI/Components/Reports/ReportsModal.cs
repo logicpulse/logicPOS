@@ -3,6 +3,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -67,7 +68,10 @@ namespace LogicPOS.UI.Components.Modals
             BtnStockBySupplierReport.Button.Clicked += BtnStockBySupplierReport_Clicked;
             BtnStockByArticleGainReport.Button.Clicked += BtnStockByArticleGainReport_Clicked;
             BtnArticleTotalSoldReport.Button.Clicked += BtnArticleTotalSoldReport_Clicked;
+            BtnDeletedOrdersReport.Button.Clicked += BtnDeletedOrdersReport_Clicked;
         }
+
+
 
         public static void ShowModal(Window parent)
         {

@@ -5,7 +5,6 @@ using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf;
 using LogicPOS.Api.Features.Reports.GetCompanyBillingReportPdf;
 using LogicPOS.Api.Features.Reports.GetCustomerReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCountryDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCountryReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCurrencyDetailedReportPdf;
@@ -23,12 +22,8 @@ using LogicPOS.Api.Features.Reports.GetSalesByPaymentConditionDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByPaymentConditionReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByPaymentMethodDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByPaymentMethodReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByPlaceDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByTableDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByTaxGroupDetailedReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByTerminalDetailedReportPdf;
-using LogicPOS.Api.Features.Reports.GetSalesByTerminalReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleClassReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleTypeReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockByArticleGainReportPdf;
@@ -36,6 +31,12 @@ using LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockBySupplierReportPdfReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockMovementReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockReportPdf;
+using LogicPOS.Api.Features.Reports.POS.DeletedOrders.GetDeletedOrdersReportPdf;
+using LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf;
+using LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedReportPdf;
+using LogicPOS.Api.Features.Reports.POS.SalesByTable.GetSalesByTableDetailedReportPdf;
+using LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalDetailedReportPdf;
+using LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalReportPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
@@ -50,6 +51,11 @@ namespace LogicPOS.UI.Services
         public static void ShowCompanyBillingReport(DateTime startDate, DateTime endDate)
         {
             ShowReport(new GetCompanyBillingReportPdfQuery(startDate, endDate));
+        }
+
+        public static void ShowDeletedOrdersReport(DateTime startDate, DateTime endDate)
+        {
+            ShowReport(new GetDeletedOrdersReportPdfQuery(startDate, endDate));
         }
 
         public static void ShowSalesByDocumentTypeReport(DateTime startDate, DateTime endDate)
@@ -224,12 +230,12 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseId, serialNumber));
         }
 
-        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid articleId=new Guid())
+        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid articleId = new Guid())
         {
             ShowReport(new GetStockByArticleReportPdfQuery(startDate, endDate, articleId));
         }
 
-        public static void ShowStockBySupplierReport(DateTime startDate, DateTime endDate, Guid supplierId = new Guid(), string documentNumber="")
+        public static void ShowStockBySupplierReport(DateTime startDate, DateTime endDate, Guid supplierId = new Guid(), string documentNumber = "")
         {
             ShowReport(new GetStockBySupplierReportPdfQuery(startDate, endDate, supplierId, documentNumber));
         }

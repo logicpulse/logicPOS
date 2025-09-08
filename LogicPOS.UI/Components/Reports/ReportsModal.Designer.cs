@@ -72,6 +72,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 PanelOtherReports.PackStart(BtnAuditReport.Button, false, false, 0);
                 PanelOtherReports.PackStart(BtnComissionsReport.Button, false, false, 0);
+                PanelOtherReports.PackStart(BtnDeletedOrdersReport.Button, false, false, 0);
             }
             container.PackStart(PanelOtherReports, false, false, 0);
             BtnOtherTablesReports.Button.Clicked += (sender, e) => ShowPanel(PanelOtherReports);

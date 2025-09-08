@@ -6,7 +6,7 @@ using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Reports.GetSalesByCommissionReportPdf
+namespace LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf
 {
     public class GetSalesByCommissionReportPdfQueryHandler :
         RequestHandler<GetSalesByCommissionReportPdfQuery, ErrorOr<TempFile>>
