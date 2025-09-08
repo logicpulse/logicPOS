@@ -7,7 +7,7 @@ namespace LogicPOS.UI.Components.Windows
     {
         public void UpdatePrivileges()
         {
-            DashBoardPage.LastInstanciated?.UpdatePrivileges();
+            DashBoardPage.Instance?.UpdatePrivileges();
 
             #region Documents
             BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU");

@@ -11,6 +11,32 @@ namespace LogicPOS.UI.Components.Pages
 {
     internal partial class DashBoardPage
     {
+        private void AddEventHandlers()
+        {
+            BtnTerminals.Clicked += BtnTerminals_Clicked;
+            BtnPreferenceParameters.Clicked += BtnPreferenceParameters_Clicked;
+            BtnFiscalYears.Clicked += BtnFiscalYears_Clicked;
+            BtnPrinters.Clicked += BtnPrinters_Clicked;
+
+            BtnArticles.Clicked += BtnArticles_Clicked;
+            BtnCustomers.Clicked += BtnCustomers_Clicked;
+            BtnUsers.Clicked += BtnUsers_Clicked;
+            BtnTables.Clicked += BtnTables_Clicked;
+
+            BtnDocuments.Clicked += BtnDocuments_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnPayments.Clicked += BtnPayments_Clicked;
+            BtnArticleStock.Clicked += BtnArticleStock_Clicked;
+
+            BtnReportsMenu.Clicked += BtnReports_Clicked;
+            BtnPrintReportRouter.Clicked += BtnPrintReportRouter_Clicked;
+
+            BtnCustomerBalanceDetails.Clicked += BtnCustomerBalanceDetails_Clicked;
+            BtnSalesPerDate.Clicked += BtnSalesPerDate_Clicked;
+
+            ComboSalesYear.Changed += ComboSalesYear_Changed;
+
+        }
 
         #region Documents
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
@@ -170,5 +196,12 @@ namespace LogicPOS.UI.Components.Pages
             BtnTerminals.Page = TerminalsPage.Instance;
             BackOfficeWindow.Instance.MenuBtn_Clicked(BtnTerminals, null);
         }
+
+        private void ComboSalesYear_Changed(object sender, EventArgs e)
+        {
+            ShowTotals();
+        }
+
+
     }
 }

@@ -442,28 +442,6 @@ namespace logicpos
             }
         }
 
-        public static Gtk.Style GetImageBackgroundDashboard(Gdk.Pixbuf image)
-        {
-
-            if (image == null)
-            {
-                return null;
-            }
-
-            Gdk.Pixmap pixmap = PixbufToPixmap(image);
-
-            if (pixmap != null)
-            {
-                Gtk.Style style = new Style();
-                style.SetBgPixmap(StateType.Normal, pixmap);
-                return style;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         public static void ShowChangeLog(Window parentWindow)
         {
             WebClient wc = new WebClient();

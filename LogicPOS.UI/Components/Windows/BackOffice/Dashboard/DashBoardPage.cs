@@ -18,41 +18,12 @@ namespace LogicPOS.UI.Components.Pages
 
             InitializeButtons();
             AddEventHandlers();
-
             Design(parentWindow, themeWindow);
-
             ShowAll();
-
             UpdatePrivileges();
-
-            LastInstanciated = this;
+            Instance = this;
         }
 
-        private void AddEventHandlers()
-        {
-            BtnTerminals.Clicked += BtnTerminals_Clicked;
-            BtnPreferenceParameters.Clicked += BtnPreferenceParameters_Clicked;
-            BtnFiscalYears.Clicked += BtnFiscalYears_Clicked;
-            BtnPrinters.Clicked += BtnPrinters_Clicked;
-
-            BtnArticles.Clicked += BtnArticles_Clicked;
-            BtnCustomers.Clicked += BtnCustomers_Clicked;
-            BtnUsers.Clicked += BtnUsers_Clicked;
-            BtnTables.Clicked += BtnTables_Clicked;
-
-            BtnDocuments.Clicked += BtnDocuments_Clicked;
-            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
-            BtnPayments.Clicked += BtnPayments_Clicked;
-            BtnArticleStock.Clicked += BtnArticleStock_Clicked;
-
-            BtnReportsMenu.Clicked += BtnReports_Clicked;
-            BtnPrintReportRouter.Clicked += BtnPrintReportRouter_Clicked;
-
-            BtnCustomerBalanceDetails.Clicked += BtnCustomerBalanceDetails_Clicked;
-            BtnSalesPerDate.Clicked += BtnSalesPerDate_Clicked;
-
-        }
-
-        public static DashBoardPage LastInstanciated { get; private set; }
+        public static DashBoardPage Instance { get; private set; }
     }
 }

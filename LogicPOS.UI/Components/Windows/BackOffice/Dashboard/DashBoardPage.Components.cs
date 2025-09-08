@@ -1,13 +1,19 @@
 ﻿using Gtk;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Settings;
 using Medsphere.Widgets;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Pages
 {
     internal partial class DashBoardPage
     {
-        private Label _label;
+        private VBox VBox1 { get; } = new VBox(false, 2);
+        private Fixed FixedContainer { get; } = new Fixed();
+        private HBox FrameContainer { get; } = new HBox();
+        private Frame Frame { get; } = new Frame();
+        private Label LabelTotals { get; } = new Label();
         private IconButtonWithText BtnTerminals { get; set; }
         private IconButtonWithText BtnPreferenceParameters { get; set; }
         private IconButtonWithText BtnFiscalYears { get; set; }
@@ -24,34 +30,31 @@ namespace LogicPOS.UI.Components.Pages
         private IconButtonWithText BtnPrintReportRouter { get; set; }
         private IconButtonWithText BtnCustomerBalanceDetails { get; set; }
         private IconButtonWithText BtnSalesPerDate { get; set; }
+        private ComboBox ComboSalesYear { get; set; } = new Gtk.ComboBox(GetYears());
+        private Graph Graph { get; } = new Graph2D();
 
-        public ComboBox selAno;
-        private readonly Graph newGraph = new Graph2D();
+        #region Colors
+        //ScreenArea
+        protected EventBox EventBox { get; set; }
+        protected Color _colorBaseDialogDefaultButtonFont = ("76, 72, 70").StringToColor();
+        protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
+        protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
+        protected Color _colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground;
+        //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.AppSettings.Instance.FontBaseDialogButton"]);
+        protected string _fontBaseDialogActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
+        protected string _fileActionDefault = AppSettings.Paths.Images + @"Icons\icon_pos_default.png";
+        protected string _fileActionOK = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
+        protected string _fileActionCancel = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_cancel.png";
 
+        //Colors
+        private readonly Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
+        private readonly Color colorBackOfficeStatusBarBackground = AppSettings.Instance.ColorBackOfficeStatusBarBackground;
+        private readonly Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.ColorBackOfficeAccordionFixBackground;
+        private readonly Color colorBackOfficeStatusBarFont = AppSettings.Instance.ColorBackOfficeStatusBarFont;
+        private readonly Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.ColorBackOfficeStatusBarBottomBackground;
+        public Color slateBlue = Color.FromName("White");
+        //private Frame frame;
+        #endregion
 
-
-
-        public void UpdatePrivileges()
-        {
-            BtnTerminals.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU");
-            BtnPreferenceParameters.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
-            BtnFiscalYears.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE");
-            BtnPrinters.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW");
-
-            BtnArticles.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_VIEW");
-            BtnCustomers.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_VIEW");
-            BtnUsers.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERDETAIL_VIEW");
-            BtnTables.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW");
-
-            BtnDocuments.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU");
-            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
-            BtnPayments.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW");
-            BtnArticleStock.Sensitive = AuthenticationService.UserHasPermission("STOCK_MERCHANDISE_ENTRY_ACCESS");
-
-            BtnReportsMenu.Sensitive = AuthenticationService.UserHasPermission("REPORT_ACCESS");
-            BtnPrintReportRouter.Sensitive = AuthenticationService.UserHasPermission("REPORT_COMPANY_BILLING");
-            BtnCustomerBalanceDetails.Sensitive = AuthenticationService.UserHasPermission("REPORT_CUSTOMER_BALANCE_DETAILS");
-            BtnSalesPerDate.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_DATE");
-        }
     }
 }
