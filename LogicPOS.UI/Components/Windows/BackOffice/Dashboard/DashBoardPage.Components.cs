@@ -30,8 +30,9 @@ namespace LogicPOS.UI.Components.Pages
         private IconButtonWithText BtnPrintReportRouter { get; set; }
         private IconButtonWithText BtnCustomerBalanceDetails { get; set; }
         private IconButtonWithText BtnSalesPerDate { get; set; }
-        private ComboBox ComboSalesYear { get; set; } = new Gtk.ComboBox(GetYears());
-        private Graph Graph { get; } = new Graph2D();
+        private ComboBox ComboSalesYear { get; set; } 
+        private  Graph Graph { get; } = new Graph2D();
+        private HBox GraphComponent { get; set; } = new HBox(false, 0);
 
         #region Colors
         //ScreenArea

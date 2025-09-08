@@ -16,12 +16,18 @@ namespace LogicPOS.UI.Components.Pages
             var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "PosBaseWindow");
             var themeWindow = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-            InitializeButtons();
+            Initialize();
             AddEventHandlers();
             Design(parentWindow, themeWindow);
             ShowAll();
             UpdatePrivileges();
             Instance = this;
+        }
+
+        private void Initialize()
+        {
+            InitializeButtons();
+            InitializeComboBoxSalesYears();
         }
 
         public static DashBoardPage Instance { get; private set; }

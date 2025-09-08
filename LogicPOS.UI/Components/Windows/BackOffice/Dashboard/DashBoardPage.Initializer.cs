@@ -226,5 +226,12 @@ namespace LogicPOS.UI.Components.Pages
                 });
 
         }
+
+        private void InitializeComboBoxSalesYears()
+        {
+            var years = GetAvailableSalesYears();
+            ComboSalesYear = new Gtk.ComboBox(years);
+            ComboSalesYear.Active = years.Length - 1;
+        }
     }
 }

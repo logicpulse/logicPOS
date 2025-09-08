@@ -74,8 +74,8 @@ namespace LogicPOS.UI.Components.Windows
             //{
             //    Process.Start("https://logic-pos.com/");
             //}
-            var modalSize= (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800)? new Size (1000, 700): new Size (1200, 700);
-            
+            var modalSize = (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800) ? new Size(1000, 700) : new Size(1200, 700);
+
             var modal = new StockManagementModal(this, modalSize);
             modal.Run();
             modal.Destroy();

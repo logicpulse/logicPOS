@@ -45,6 +45,7 @@ namespace LogicPOS.UI.Application
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "An error occurred during application startup: {Message}", ex.Message);
                 CustomAlerts.ShowContactSupportErrorAlert(LoginWindow.Instance, ex.StackTrace);
             }
             finally

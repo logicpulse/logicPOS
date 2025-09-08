@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -11,6 +12,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace LogicPOS.UI.Components.Pages
@@ -40,19 +42,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void ShowTotals()
         {
-            string currency = PreferenceParametersService.SystemCurrency;
-            decimal dailyTotal = 0;
-            decimal monthlyTotal = 0;
-            decimal annualTotal = 0;
+           var dayTotalSales = DashboardDataService.GetTotalSalesForDay(DateTime.Now);
 
-            var text = ComboSalesYear.ActiveText;
-
-            LabelTotals.Text = $"{dailyTotal:F2}\n\n{monthlyTotal:F2}\n\n{annualTotal:F2} {text}";
+            LabelTotals.Text = $"{dayTotalSales.DayTotal:F2}\n\n{dayTotalSales.MonthTotal:F2}\n\n{dayTotalSales.YearTotal:F2} ";
         }
 
-        private static string[] GetYears() => new string[] { "2025", "2024", "2023", "2022", "2021", "2020" };
+        private static string[] GetAvailableSalesYears() => DashboardDataService.GetAvailableYearsForSalesReport().Select(y => y.ToString()).ToArray();
 
-       
         private void Design(Window parentWindow, dynamic themeWindow)
         {
             Frame.ShadowType = (ShadowType)0;
@@ -74,10 +70,8 @@ namespace LogicPOS.UI.Components.Pages
                 VBox1.PackStart(FrameContainer, false, false, 0);
                 FixedContainer.Put(VBox1, 628, 515);
 
-                var graph = DrawGraph(DateTime.Now, false);
-                FixedContainer.Put(graph, 55, 485);
-
-                SelectFirstYear();
+                DrawGraph(int.Parse(ComboSalesYear.ActiveText));
+                FixedContainer.Put(GraphComponent, 55, 485);
 
                 FixedContainer.Put(ComboSalesYear, 220, 665);
                 EventBox.ModifyBg(StateType.Normal, new Gdk.Color(0, 0, 0));
@@ -96,23 +90,6 @@ namespace LogicPOS.UI.Components.Pages
             LabelTotals.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 16"));
             LabelTotals.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
             LabelTotals.Justify = Justification.Right;
-        }
-
-        private void SelectFirstYear()
-        {
-            TreeIter iter;
-            ComboSalesYear.Model.GetIterFirst(out iter);
-            do
-            {
-                GLib.Value thisRow = new GLib.Value();
-                ComboSalesYear.Model.GetValue(iter, 0, ref thisRow);
-                if ((thisRow.Val as string).Equals(GetYears()))
-                {
-                    ComboSalesYear.SetActiveIter(iter);
-                    break;
-                }
-
-            } while (ComboSalesYear.Model.IterNext(ref iter));
         }
 
         private void InitializeAlignment()

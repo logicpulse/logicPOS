@@ -199,9 +199,8 @@ namespace LogicPOS.UI.Components.Pages
 
         private void ComboSalesYear_Changed(object sender, EventArgs e)
         {
-            ShowTotals();
+            DrawGraph(int.Parse(ComboSalesYear.ActiveText));
         }
-
 
     }
 }

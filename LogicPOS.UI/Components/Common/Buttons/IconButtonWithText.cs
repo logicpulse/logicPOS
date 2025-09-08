@@ -1,9 +1,7 @@
 ﻿using Gtk;
 using logicpos;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
-using System;
 using System.IO;
 
 namespace LogicPOS.UI.Buttons
@@ -13,7 +11,7 @@ namespace LogicPOS.UI.Buttons
         public Widget Page { get; set; }
 
         public IconButtonWithText(ButtonSettings settings)
-            : base(settings,false)
+            : base(settings, false)
         {
             ButtonSettings.Widget = CreateWidget(settings);
             Initialize();
@@ -21,7 +19,7 @@ namespace LogicPOS.UI.Buttons
 
         private Widget CreateWidget(ButtonSettings settings)
         {
-            
+
 
             System.Drawing.Image buttonIcon;
 
@@ -89,7 +87,7 @@ namespace LogicPOS.UI.Buttons
                                                       string label,
                                                       string icon)
         {
-          
+
 
             return new IconButtonWithText(
                 new ButtonSettings
