@@ -250,13 +250,14 @@ namespace LogicPOS.UI.Printing
             }
 
             PrintFooter();
-            if (_data.Document.PaymentMethods.Count > 0 && _data.Document.PaymentMethods.Any(x => x.ToLower()=="numerário"))
+            if (_data.Document.TypeOpenDrawer)
             {
-                _printer.OpenDrawer();
+                AuthenticationService.HardwareOpenDrawer();
             }
             _printer.FullPaperCut();
             _printer.PrintDocument();
             _printer.Clear();
+
         }
 
     }

@@ -52,14 +52,7 @@ namespace LogicPOS.UI.Components.Windows
 
                 if (pinModalResponse == ResponseType.Ok)
                 {
-                    if (!TerminalService.HasThermalPrinter)
-                    {
-                        return;
-                    }
-                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
-                    printer.OpenDrawer();
-                    printer.PrintDocument();
-                    printer.Clear();
+                    AuthenticationService.HardwareOpenDrawer();
                 }
 
                 pinModal.Destroy();

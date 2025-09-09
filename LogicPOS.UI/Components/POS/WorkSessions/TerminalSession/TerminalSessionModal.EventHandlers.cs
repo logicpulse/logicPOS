@@ -3,7 +3,7 @@ using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing;
@@ -81,12 +81,12 @@ namespace LogicPOS.UI.Components.POS
 
             ThermalPrintingService.PrintWorkSessionReport(reportData);
         }
-        
+
         private void UpdateBtnPrint()
         {
             BtnPrint.Sensitive = WorkSessionsService.DayIsOpen() || WorkSessionsService.TerminalIsOpen();
         }
-        
+
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             if (!AllFieldsAreValid())
@@ -143,17 +143,7 @@ namespace LogicPOS.UI.Components.POS
                     var totalInCashDrawer = WorkSessionsService.GetTotalCashInCashDrawer();
                     ThermalPrintingService.PrintCashDrawerOutMovement(totalInCashDrawer, amount, description);
                 }
-                else
-                {
-                    if (!TerminalService.HasThermalPrinter)
-                    {
-                        return;
-                    }
-                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
-                    printer.OpenDrawer();
-                    printer.PrintDocument();
-                    printer.Clear();
-                }
+                AuthenticationService.HardwareOpenDrawer();
             }
         }
 
@@ -174,17 +164,6 @@ namespace LogicPOS.UI.Components.POS
                 {
                     var totalInCashDrawer = WorkSessionsService.GetTotalCashInCashDrawer();
                     ThermalPrintingService.PrintCashDrawerInMovement(totalInCashDrawer, amount, description);
-                }
-                else
-                {
-                    if (!TerminalService.HasThermalPrinter)
-                    {
-                        return;
-                    }
-                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
-                    printer.OpenDrawer();
-                    printer.PrintDocument();
-                    printer.Clear();
                 }
 
             }
@@ -217,7 +196,8 @@ namespace LogicPOS.UI.Components.POS
                 if (newTotalInCashDrawer > totalInCashDrawer)
                 {
                     ThermalPrintingService.PrintCashDrawerInMovement(newTotalInCashDrawer, amount - totalInCashDrawer, description);
-                } else if (newTotalInCashDrawer < totalInCashDrawer)
+                }
+                else if (newTotalInCashDrawer < totalInCashDrawer)
                 {
                     ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer - newTotalInCashDrawer, description);
                 }

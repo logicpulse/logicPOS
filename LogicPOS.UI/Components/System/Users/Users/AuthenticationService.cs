@@ -3,7 +3,10 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Authentication;
 using LogicPOS.Api.Features.Authentication.Login;
 using LogicPOS.Api.Features.Users.GetUserPermissions;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -17,7 +20,24 @@ namespace LogicPOS.UI.Components.Users
         public static User User { get; private set; }
         public static List<string> Permissions { get; private set; } = new List<string>();
 
-
+        public static void HardwareOpenDrawer()
+        {
+            if (!TerminalService.HasThermalPrinter)
+            {
+                return;
+            }
+            if(!UserHasPermission("HARDWARE_DRAWER_OPEN"))
+            {
+                CustomAlerts.Information()
+                             .WithMessage(GeneralUtils.GetResourceByName("open_cash_draw_permissions"))
+                            .ShowAlert();
+                 return;
+            }
+            var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+            printer.OpenDrawer();
+            printer.PrintDocument();
+            printer.Clear();
+        }
         public static bool UserHasPermission(string permission)
         {
             return Permissions.Contains(permission);
