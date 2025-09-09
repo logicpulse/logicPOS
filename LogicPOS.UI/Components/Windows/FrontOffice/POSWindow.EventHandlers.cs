@@ -1,10 +1,14 @@
-﻿using Gtk;
+﻿using ESC_POS_USB_NET.Printer;
+using Gtk;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using System;
 
@@ -37,6 +41,29 @@ namespace LogicPOS.UI.Components.Windows
         private void Window_StateEvent(object o, WindowStateEventArgs args)
         {
            
+        }
+
+        private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
+        {
+            if (args.Event.Type == Gdk.EventType.TwoButtonPress)
+            {
+                UserPinModal pinModal = new UserPinModal(this, AuthenticationService.User);
+                var pinModalResponse = (ResponseType)pinModal.Run();
+
+                if (pinModalResponse == ResponseType.Ok)
+                {
+                    if (!TerminalService.HasThermalPrinter)
+                    {
+                        return;
+                    }
+                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+                    printer.OpenDrawer();
+                    printer.PrintDocument();
+                    printer.Clear();
+                }
+
+                pinModal.Destroy();
+            }
         }
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)

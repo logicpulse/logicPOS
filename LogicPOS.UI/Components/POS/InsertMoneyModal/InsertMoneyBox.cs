@@ -69,7 +69,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
             Size moneyButtonSize = new Size(100, 64);
 
             //Delivery Entry
-            string initialValue = (pInitialValue > 0) ? pInitialValue.ToString() : string.Empty;
+            string initialValue = (pInitialValue > 0) ? pInitialValue.ToString("F2") : string.Empty;
             _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, RegularExpressions.DecimalNumber, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog

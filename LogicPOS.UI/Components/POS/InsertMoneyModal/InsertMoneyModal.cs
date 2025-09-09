@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Modals
                 windowTitle = string.Format("{0} - {1} : {2}",
                                             GeneralUtils.GetResourceByName("window_title_dialog_moneypad"),
                                             GeneralUtils.GetResourceByName("global_total_table_tickets"),
-                                            pTotalOrder.ToString("C"));
+                                            pTotalOrder.ToString("F2"));
             }
             else
             {
@@ -116,7 +116,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             ResponseType resultResponse;
             decimal resultValue = -1.0m;
-            string defaultValue = pInitialValue.ToString();
+            string defaultValue = pInitialValue.ToString("F2");
 
             InsertMoneyModal modal;
 

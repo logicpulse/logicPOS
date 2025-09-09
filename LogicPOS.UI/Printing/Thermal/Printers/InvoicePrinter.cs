@@ -9,6 +9,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
@@ -249,6 +250,10 @@ namespace LogicPOS.UI.Printing
             }
 
             PrintFooter();
+            if (_data.Document.PaymentMethods.Count > 0 && _data.Document.PaymentMethods.Any(x => x.ToLower()=="numerário"))
+            {
+                _printer.OpenDrawer();
+            }
             _printer.FullPaperCut();
             _printer.PrintDocument();
             _printer.Clear();

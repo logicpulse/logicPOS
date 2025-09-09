@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Printing;
@@ -142,6 +143,17 @@ namespace LogicPOS.UI.Components.POS
                     var totalInCashDrawer = WorkSessionsService.GetTotalCashInCashDrawer();
                     ThermalPrintingService.PrintCashDrawerOutMovement(totalInCashDrawer, amount, description);
                 }
+                else
+                {
+                    if (!TerminalService.HasThermalPrinter)
+                    {
+                        return;
+                    }
+                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+                    printer.OpenDrawer();
+                    printer.PrintDocument();
+                    printer.Clear();
+                }
             }
         }
 
@@ -163,6 +175,18 @@ namespace LogicPOS.UI.Components.POS
                     var totalInCashDrawer = WorkSessionsService.GetTotalCashInCashDrawer();
                     ThermalPrintingService.PrintCashDrawerInMovement(totalInCashDrawer, amount, description);
                 }
+                else
+                {
+                    if (!TerminalService.HasThermalPrinter)
+                    {
+                        return;
+                    }
+                    var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+                    printer.OpenDrawer();
+                    printer.PrintDocument();
+                    printer.Clear();
+                }
+
             }
         }
 

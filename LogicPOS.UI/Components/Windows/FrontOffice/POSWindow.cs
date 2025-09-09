@@ -118,15 +118,23 @@ namespace LogicPOS.UI.Components.Windows
                 Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
                 imageLogo = new Image(pixbufImageLogo);
             }
-
+            else
+            {
+                var bitmapLogoImage= new Bitmap(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
+                Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(bitmapLogoImage);
+                pixbufOriginal = pixbufOriginal.ScaleSimple(eventBoxImageLogoSize.Width-90, eventBoxImageLogoSize.Height-5, Gdk.InterpType.Bilinear);
+                imageLogo=new Image(pixbufOriginal);
+            }
             //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 300, 50);
             //UI
             EventBox eventBoxImageLogo = new EventBox();
             eventBoxImageLogo.WidthRequest = eventBoxImageLogoSize.Width;
             eventBoxImageLogo.HeightRequest = eventBoxImageLogoSize.Height;
             eventBoxImageLogo.VisibleWindow = eventBoxImageLogoVisibleWindow;
+            eventBoxImageLogo.ButtonPressEvent += ImageLogo_Clicked;
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
+            
 
             eventBoxImageLogo.Add(imageLogo);
         }
