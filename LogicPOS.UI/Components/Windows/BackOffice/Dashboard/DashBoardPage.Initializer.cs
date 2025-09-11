@@ -1,7 +1,10 @@
 ﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -229,9 +232,14 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeComboBoxSalesYears()
         {
-            var years = GetAvailableSalesYears();
-            ComboSalesYear = new Gtk.ComboBox(years);
-            ComboSalesYear.Active = years.Length - 1;
+            var years = DashboardDataService.GetAvailableYearsForSalesReport().Select(y => y.ToString()).ToList();
+
+            if(years.Any() == false)
+            {
+                years.Add(DateTime.Now.Year.ToString());
+            }
+            ComboSalesYear = new Gtk.ComboBox(years.ToArray());
+            ComboSalesYear.Active = years.Count - 1;
         }
     }
 }

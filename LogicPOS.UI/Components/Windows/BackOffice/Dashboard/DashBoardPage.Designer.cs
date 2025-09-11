@@ -47,7 +47,6 @@ namespace LogicPOS.UI.Components.Pages
             LabelTotals.Text = $"{dayTotalSales.DayTotal:F2}\n\n{dayTotalSales.MonthTotal:F2}\n\n{dayTotalSales.YearTotal:F2} ";
         }
 
-        private static string[] GetAvailableSalesYears() => DashboardDataService.GetAvailableYearsForSalesReport().Select(y => y.ToString()).ToArray();
 
         private void Design(Window parentWindow, dynamic themeWindow)
         {
