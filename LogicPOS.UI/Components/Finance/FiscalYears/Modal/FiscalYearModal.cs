@@ -11,8 +11,19 @@ namespace LogicPOS.UI.Components.Modals
         public FiscalYearModal(EntityEditionModalMode modalMode,
                                FiscalYear entity = null) : base(modalMode, entity)
         {
-            _txtYear.Text = DateTime.Now.Year.ToString();
+            if (modalMode == EntityEditionModalMode.Insert)
+            {
+                InitializeForInsert();
+            }
             _txtYear.Entry.Sensitive = false;
+        }
+
+        private void InitializeForInsert()
+        {
+            string currentYear = DateTime.Now.Year.ToString();
+            _txtYear.Text = currentYear;
+            _txtDesignation.Text = $"Ano {currentYear}";
+            _txtAcronym.Text = $"{currentYear}A1";
         }
 
         private AddFiscalYearCommand CreateAddCommand()

@@ -11,13 +11,13 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItem : IWithCode
     {
-        public SaleItem(ArticleViewModel article, string PlacePriceType)
+        public SaleItem(ArticleViewModel article, string placePriceType)
         {
             Article = article;
             Vat = article.VatDirectSelling ?? 0;
             Quantity = article.DefaultQuantity > 0 ? article.DefaultQuantity : 1;
             Discount = article.Discount;
-            switch(PlacePriceType)
+            switch(placePriceType)
             {
                 case "20":
                     SetUnitPrice(article.Price2);
