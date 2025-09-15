@@ -9,6 +9,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public GetArticlesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
         public PaginatedResult<ArticleViewModel> Articles { get; private set; }
+        private Dictionary<Guid,decimal> _articleStocks = new Dictionary<Guid, decimal>();
 
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
@@ -44,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
                 _entities.AddRange(Articles.Items);
             }
 
-            ArticleTotalStockService.LoadTotals(_entities.Select(x => x.Id));
+            _articleStocks = ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id));
         }
 
         public Article GetSelectedArticle()

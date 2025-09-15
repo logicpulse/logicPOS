@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalStock(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
 				var articleId = ((ArticleViewModel)model.GetValue(iter, 0)).Id;
-				(cell as CellRendererText).Text = (ArticleTotalStockService.GetArticleTotalStock(articleId)).ToString("0.#####");
+				(cell as CellRendererText).Text = (_articleStocks[articleId]).ToString("0.00");
 			}
 
 			var title = GeneralUtils.GetResourceByName("global_total_stock");

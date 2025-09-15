@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Errors;
@@ -151,6 +152,33 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             return result.Value;
+        }
+
+        public static decimal GetArticleTotalStock(Guid articleId)
+        {
+            
+            var query = new GetArticlesTotalStocksQuery(new List<Guid> { articleId });
+            var result = DependencyInjection.Mediator.Send(query).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return 0;
+            }
+
+            return result.Value.First().Quantity;
+        }
+        
+        public static Dictionary<Guid, decimal> GetArticlesTotalStocks(IEnumerable<Guid> articleIds)
+        {
+            var query = new GetArticlesTotalStocksQuery(articleIds);
+            var result = DependencyInjection.Mediator.Send(query).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return new Dictionary<Guid, decimal>();
+            }
+            return result.Value.ToDictionary(x => x.ArticleId, x => x.Quantity);
         }
     }
 }

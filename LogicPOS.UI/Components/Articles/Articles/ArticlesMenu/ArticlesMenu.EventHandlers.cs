@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Menus
         private void BtnArticle_Clicked(ArticleViewModel article)
         {
             article = ArticlesService.GetArticleViewModel(article.Id);
-            var totalStock = ArticleTotalStockService.GetArticleTotalStock(article.Id);
+            var totalStock = ArticlesService.GetArticleTotalStock(article.Id);
 
             if (totalStock - article.DefaultQuantity <= article.MinimumStock)
             {
