@@ -1,12 +1,10 @@
-﻿using Gtk;
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -14,29 +12,27 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class AddStockMovementModal: Modal
+    public partial class AddFullStockMovementModal
     {
-        #region Components
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private TextBox TxtSupplier { get; set; }
         private TextBox TxtDate { get; set; }
-        private TextBox TxtDocumentNumber { get; set; }
+        private TextBox TxtDocumnetNumber { get; set; }
         private TextBox TxtNotes { get; set; }
-        private ArticleFieldsContainer AddArticlesBox { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockMovement);
+        private ArticleFieldsContainer ArticlesContainer { get; } = new ArticleFieldsContainer(ArticlesBoxMode.StockManagement);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
-        #endregion
 
         private void InitializeComponents()
         {
             InitializeTxtSupplier();
             InitializeTxtDate();
-            InitializeTxtDocumentNumber();
+            InitializeTxtDocumnetNumber();
             InitializeTxtNotes();
-            ValidatableFields.Add(AddArticlesBox);
+            ValidatableFields.Add(ArticlesContainer);
             AddEventHandlers();
         }
-       
+
         private void InitializeTxtSupplier()
         {
             TxtSupplier = new TextBox(WindowSettings.Source,
@@ -44,18 +40,24 @@ namespace LogicPOS.UI.Components.Modals
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
-                                          includeKeyBoardButton: false);
+                                          includeKeyBoardButton: false,
+                                          style: TextBoxStyle.Lite);
 
             TxtSupplier.Entry.IsEditable = true;
-            var suppliers = CustomersService.Customers.Select(s => (s as object, s.Name)).ToList();
+            var suppliers= CustomersService.Customers.Select (p => (p as object, p.Name)).ToList();
             TxtSupplier.WithAutoCompletion(suppliers);
             TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
-            TxtSupplier.Entry.Changed += TxtSupplier_Changed;
             TxtSupplier.SelectEntityClicked += BtnSelectSupplier_Clicked;
-
+            TxtSupplier.Entry.Changed += TxtSupplier_Changed;
             ValidatableFields.Add(TxtSupplier);
         }
 
+        private void SelectSupplier(Customer supplier)
+        {
+            TxtSupplier.SelectedEntity = supplier;
+            TxtSupplier.Text = supplier.Name;
+            
+        }
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
@@ -63,20 +65,21 @@ namespace LogicPOS.UI.Components.Modals
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: true);
+                                       includeKeyBoardButton: false,
+                                       style: TextBoxStyle.Lite);
         }
 
-        private void InitializeTxtDocumentNumber()
+        private void InitializeTxtDocumnetNumber()
         {
-            TxtDocumentNumber = new TextBox(WindowSettings.Source,
+            TxtDocumnetNumber = new TextBox(WindowSettings.Source,
                                             GeneralUtils.GetResourceByName("global_document_number"),
                                             isRequired: false,
                                             isValidatable: false,
-                                            includeSelectButton: false,
-                                            includeKeyBoardButton: true);
+                                            includeSelectButton: true,
+                                            includeKeyBoardButton: false,
+                                            style: TextBoxStyle.Lite);
 
-            TxtDocumentNumber.Entry.Changed += TxtDocumentNumber_Changed;
-            
+            TxtDocumnetNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
         }
 
         private void InitializeTxtDate()
@@ -86,35 +89,13 @@ namespace LogicPOS.UI.Components.Modals
                                       isRequired: true,
                                       isValidatable: false,
                                       includeSelectButton: true,
-                                      includeKeyBoardButton: false);
+                                      includeKeyBoardButton: false,
+                                      style: TextBoxStyle.Lite);
 
-            TxtDate.Entry.IsEditable = false;
+            TxtDate.Entry.IsEditable = true;
             TxtDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
 
             TxtDate.SelectEntityClicked += TxtDate_SelectEntityClicked;
         }
-
-        protected override ActionAreaButtons CreateActionAreaButtons()
-        {
-            return new ActionAreaButtons
-            {
-                new ActionAreaButton(BtnOk, ResponseType.Ok),
-                new ActionAreaButton(BtnCancel, ResponseType.Cancel)
-            };
-        }
-
-        protected override Widget CreateBody()
-        {
-            InitializeComponents();
-
-            var vbox = new VBox(false, 2);
-            vbox.PackStart(TxtSupplier.Component, false, false, 0);
-            vbox.PackStart(TxtDate.Component, false, false, 0);
-            vbox.PackStart(TxtDocumentNumber.Component, false, false, 0);
-            vbox.PackStart(TxtNotes.Component, false, false, 0);
-            vbox.PackStart(AddArticlesBox.Component, true, true, 0);
-            return vbox;
-        }
-
     }
 }

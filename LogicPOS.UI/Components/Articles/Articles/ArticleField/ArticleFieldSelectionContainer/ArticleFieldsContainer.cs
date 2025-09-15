@@ -96,11 +96,11 @@ namespace LogicPOS.UI.Components.Articles
             {
                 if (_mode == ArticlesBoxMode.StockManagement)
                 {
-                    items.AddRange(field.GetLocalizedStockMovementItems());
+                    items.AddRange(field.GetFullStockMovementItems());
                     continue;
                 }
 
-                items.AddRange(field.GetNonLocalizedStockMovementItems());
+                items.AddRange(field.GetSimpleStockMovementItems());
             }
 
             return items;

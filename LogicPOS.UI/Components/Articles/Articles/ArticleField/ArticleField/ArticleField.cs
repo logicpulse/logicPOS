@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.InputFields
             TxtCode.Text = Article.Code;
             TxtDesignation.Text = Article.Designation;
             TxtQuantity.Text = "1";
-            
+
             if (_isUniqueArticle)
             {
                 UpdateSerialNumbersComponents();
@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.InputFields
             return result;
         }
 
-        public IEnumerable<StockMovementItem> GetNonLocalizedStockMovementItems()
+        public IEnumerable<StockMovementItem> GetSimpleStockMovementItems()
         {
             yield return new StockMovementItem
             {
@@ -109,15 +109,16 @@ namespace LogicPOS.UI.Components.InputFields
             };
         }
 
-        public IEnumerable<StockMovementItem> GetLocalizedStockMovementItems()
+        public IEnumerable<StockMovementItem> GetFullStockMovementItems()
         {
             foreach (var serialNumberField in _serialNumberFields)
             {
+                string serialnumber = string.IsNullOrWhiteSpace(serialNumberField.TxtSerialNumber.Text) ? null : serialNumberField.TxtSerialNumber.Text.Trim();
                 var item = new StockMovementItem
                 {
                     ArticleId = Article.Id,
-                    Quantity = decimal.Parse(TxtQuantity.Text),
-                    SerialNumber = serialNumberField.TxtSerialNumber.Text,
+                    Quantity = 1,
+                    SerialNumber = serialnumber,
                     WarehouseLocationId = WarehouseLocationId,
                     Price = Price
                 };
@@ -186,13 +187,12 @@ namespace LogicPOS.UI.Components.InputFields
         {
             object entity = args.Model.GetValue(args.Iter, 0);
             SelectedEntity = entity;
-            Article=ArticlesService.GetArticlebById((entity as ArticleViewModel).Id);
+            Article = ArticlesService.GetArticlebById((entity as ArticleViewModel).Id);
             ShowEntity();
             UpdateValidationColors();
             OnCompletionSelected?.Invoke(entity);
         }
 
-  
 
         private decimal Price => string.IsNullOrEmpty(TxtPrice.Text) ? 0 : decimal.Parse(TxtPrice.Text);
 

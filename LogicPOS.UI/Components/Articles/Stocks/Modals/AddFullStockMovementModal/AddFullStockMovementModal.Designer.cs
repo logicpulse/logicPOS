@@ -3,7 +3,7 @@ using LogicPOS.UI.Buttons;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class AddStockModal
+    public partial class AddFullStockMovementModal
     {
         protected override ActionAreaButtons CreateActionAreaButtons()
         {

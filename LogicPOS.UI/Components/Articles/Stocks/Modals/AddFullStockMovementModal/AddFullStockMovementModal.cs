@@ -18,11 +18,11 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class AddStockModal : Modal
+    public partial class AddFullStockMovementModal : Modal
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
 
-        public AddStockModal(Window parent) : base(parent,
+        public AddFullStockMovementModal(Window parent) : base(parent,
                                                    LocalizedString.Instance["window_title_dialog_article_stock"],
                                                    new Size(500, 660),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_stocks.png",

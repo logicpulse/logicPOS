@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private int RunInsertModal()
         {
-            var modal = new AddStockModal(SourceWindow);
+            var modal = new AddFullStockMovementModal(SourceWindow);
             var response = modal.Run();
             modal.Destroy();
             return response;

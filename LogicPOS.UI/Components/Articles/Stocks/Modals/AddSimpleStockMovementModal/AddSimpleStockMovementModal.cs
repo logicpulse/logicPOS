@@ -2,26 +2,21 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
-using LogicPOS.UI.Components.Finance.Customers;
-using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
-    public partial class AddStockMovementModal : Modal
+    public partial class AddSimpleStockMovementModal : Modal
     {
-        public AddStockMovementModal(Window parent) : base(parent,
+        public AddSimpleStockMovementModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_article_stock"),
                                                    new Size(500, 660),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_stocks.png")
@@ -107,17 +102,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             return ValidatableFields.All(txt => txt.IsValid());
         }
-   
+
         private void SelectSupplier(Customer customer)
         {
             TxtSupplier.SelectedEntity = customer;
             TxtSupplier.Text = customer.Name;
-        }
-
-        private void SelectDocument(Document document)
-        {
-            TxtDocumentNumber.SelectedEntity = document;
-            TxtDocumentNumber.Text = document.Number;
         }
 
         private void TxtSupplier_Changed(object sender, EventArgs e)
@@ -127,6 +116,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtSupplier.Clear();
             }
         }
+        
         private void TxtDocumentNumber_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(TxtDocumentNumber.Text))
