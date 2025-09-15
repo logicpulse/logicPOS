@@ -233,7 +233,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            SaleContext.ItemsPage.AddItem(new SaleItem(article, SaleContext.CurrentTable.PlacePriceType));
+            SaleContext.ItemsPage.AddItem(new SaleItem(article, SaleContext.CurrentTable.PriceTypeEnum));
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)

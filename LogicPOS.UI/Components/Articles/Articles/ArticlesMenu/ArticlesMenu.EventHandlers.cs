@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Menus
                 article.Price1 = result.Value;
             }
 
-            var saleItem = new SaleItem(article, SaleContext.CurrentTable.PlacePriceType);
+            var saleItem = new SaleItem(article, SaleContext.CurrentTable.PriceTypeEnum);
 
             SaleContext.ItemsPage.AddItem(saleItem);
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();

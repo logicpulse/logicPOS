@@ -250,7 +250,7 @@ namespace LogicPOS.UI.Printing
             }
 
             PrintFooter();
-            if (_data.Document.TypeOpenDrawer)
+            if (_data.Document.Type.ToUpper()=="FR" || _data.Document.Type.ToUpper() == "FS" || _data.Document.Type.ToUpper() == "VD")
             {
                 AuthenticationService.HardwareOpenDrawer();
             }

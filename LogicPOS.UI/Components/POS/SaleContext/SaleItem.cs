@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.POS
 {
     public class SaleItem : IWithCode
     {
-        public SaleItem(ArticleViewModel article, string placePriceType)
+        public SaleItem(ArticleViewModel article, int placePriceType)
         {
             Article = article;
             Vat = article.VatDirectSelling ?? 0;
@@ -19,16 +19,16 @@ namespace LogicPOS.UI.Components.POS
             Discount = article.Discount;
             switch(placePriceType)
             {
-                case "20":
+                case 2:
                     SetUnitPrice(article.Price2);
                     break;
-                case "30":
+                case 3:
                     SetUnitPrice(article.Price3);
                     break;
-                case "40":
+                case 4:
                     SetUnitPrice(article.Price4);
                     break;
-                case "50":
+                case 5:
                     SetUnitPrice(article.Price5);
                     break;
                 default:

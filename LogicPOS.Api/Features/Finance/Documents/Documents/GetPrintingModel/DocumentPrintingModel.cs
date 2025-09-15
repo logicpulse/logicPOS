@@ -9,7 +9,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel
     public class DocumentPrintingModel
     {
         public string Type { get; set; }
-        public bool TypeOpenDrawer { get; set; }
         public DateTime Date { get; set; }
         public string Number { get; set; }
         public string Currency { get; set; }
