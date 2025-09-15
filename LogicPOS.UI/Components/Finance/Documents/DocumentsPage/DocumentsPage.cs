@@ -81,18 +81,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateRelatedDocumentsColumn());
         }
 
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-
-            AddDateSorting();
-            AddNumberSorting();
-            AddStatusSorting();
-            AddEntitySorting();
-            AddFiscalNumberSorting();
-            AddTotalFinalSorting();
-        }
-
         protected override void AddEntitiesToModel(IEnumerable<DocumentViewModel> documents)
         {
             var model = (ListStore)GridViewSettings.Model;

@@ -9,6 +9,18 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage
     {
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Model);
+
+            AddDateSorting();
+            AddNumberSorting();
+            AddStatusSorting();
+            AddEntitySorting();
+            AddFiscalNumberSorting();
+            AddTotalFinalSorting();
+        }
+
         #region Creators
         private TreeViewColumn CreateRelatedDocumentsColumn()
         {
