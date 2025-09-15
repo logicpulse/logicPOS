@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.POS
             Validate();
             if (BtnInvoice.Sensitive == true && PaymentMethod == null)
             {
-                SimpleAlerts.Information()
+                CustomAlerts.Warning(this)
                             .WithMessage("Selecione um Método de Pagamento")
                             .ShowAlert();
                 Run();

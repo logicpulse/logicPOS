@@ -72,7 +72,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, fixedContent, null);
         }
 
-        //Override Responses - Required to Keep Keyboard in Memory
+
         protected override void OnResponse(ResponseType pResponse)
         {
             bool useBaseDialogWindowMask = Convert.ToBoolean(AppSettings.Instance.UseBaseDialogWindowMask);
@@ -82,47 +82,23 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             this.Hide();
         }
 
-        //:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        //Static Methods
-
-        public static decimal RequestDecimalValue(Window parentWindow, decimal pDefaultValue, bool pUseDefaultValue = true)
+   
+        public static decimal RequestDecimalValue(Window parentWindow, decimal defaultValue)
         {
             decimal result;
             string regexDecimalGreaterThanZero = RegularExpressions.DecimalGreaterThanZero;
-            string defaultValue = (pUseDefaultValue) ? pDefaultValue.ToString() : string.Empty;
-
-            PosKeyboardDialog dialog = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue, regexDecimalGreaterThanZero);
+ 
+            PosKeyboardDialog dialog = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, defaultValue.ToString("0.00"), regexDecimalGreaterThanZero);
             int response = dialog.Run();
 
             if (response == (int)ResponseType.Ok)
             {
-                result = decimal.Parse(dialog.Text, CultureInfo.CurrentCulture);
+                string input = string.IsNullOrEmpty(dialog.Text) ? defaultValue.ToString("0.00"): dialog.Text;
+                result = decimal.Parse(input, CultureInfo.CurrentCulture);
             }
             else
             {
-                result = response;
-            }
-            dialog.Destroy();
-
-            return result;
-        }
-
-        public static string RequestAlfaNumericValue(Window parentWindow, KeyboardMode pKeyboardMode, string pDefaultValue, bool pUseDefaultValue = true)
-        {
-            string result;
-            string regexAlfaNumeric = RegularExpressions.AlfaNumeric;
-            string defaultValue = (pUseDefaultValue) ? pDefaultValue : string.Empty;
-
-            PosKeyboardDialog dialog = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, pKeyboardMode, defaultValue, regexAlfaNumeric);
-            int response = dialog.Run();
-
-            if (response == (int)ResponseType.Ok)
-            {
-                result = dialog.Text;
-            }
-            else
-            {
-                result = string.Empty;
+                result = defaultValue;
             }
             dialog.Destroy();
 
