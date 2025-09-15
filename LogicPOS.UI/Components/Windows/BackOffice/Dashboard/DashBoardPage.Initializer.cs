@@ -232,7 +232,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeComboBoxSalesYears()
         {
-            var years = DashboardDataService.GetAvailableYearsForSalesReport().Select(y => y.ToString()).ToList();
+            var years = DashboardDataService.GetAvailableYearsForSalesReport()?.Select(y => y.ToString()).ToList() ?? Enumerable.Empty<string>().ToList();
 
             if(years.Any() == false)
             {
