@@ -65,7 +65,7 @@ namespace LogicPOS.UI.Components.Modals
                     Copies.Remove(1);
                 }
 
-                TxtMotive.Component.Sensitive = BtnOriginal.Active;
+                TxtMotive.Component.Sensitive = BtnOriginal.Active && !CheckSecondCopy.Active;
             };
 
             BtnCopy2.Toggled += (sender, args) =>

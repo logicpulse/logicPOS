@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Customers.AddCustomer;
 using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
@@ -101,7 +102,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private AddCustomerCommand CreateAddCommand()
         {
-            return new AddCustomerCommand
+            var customer= new AddCustomerCommand
             {
                 Name = _txtName.Text,
                 PriceTypeId = _comboPriceTypes.SelectedEntity.Id,
@@ -122,6 +123,8 @@ namespace LogicPOS.UI.Components.Modals
                 CardCredit = decimal.Parse(_txtCardCredit.Text),
                 Supplier = _checkSupplier.Active
             };
+            CustomersService.RefreshCustomersCache();
+            return customer;
         }
 
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());

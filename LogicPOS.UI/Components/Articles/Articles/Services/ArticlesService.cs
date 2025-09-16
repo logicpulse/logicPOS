@@ -32,6 +32,10 @@ namespace LogicPOS.UI.Components.Articles
                 return _articles;
             }
         }
+        public static void RefreshArticlesCache()
+        {
+            _articles = GetAllArticles();
+        }
 
         private static List<ArticleViewModel> GetAllArticles()
         {

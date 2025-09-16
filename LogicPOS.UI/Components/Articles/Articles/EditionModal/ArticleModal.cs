@@ -14,8 +14,7 @@ using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
-using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
-using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
@@ -39,32 +38,32 @@ namespace LogicPOS.UI.Components.Modals
         private AddArticleCommand CreateAddCommand()
         {
             var addArticleCommand = new AddArticleCommand();
-            
-                addArticleCommand.CodeDealer = _txtCodeDealer.Text;
-                addArticleCommand.Designation = _txtDesignation.Text;
-                addArticleCommand.Button = GetButton();
-                addArticleCommand.PriceWithVat = _checkPriceWithVat.Active;
-                addArticleCommand.Discount = decimal.Parse(_txtDiscount.Text);
-                addArticleCommand.DefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
-                addArticleCommand.MinimumStock = decimal.Parse(_txtMinimumStock.Text);
-                addArticleCommand.Tare = decimal.Parse(_txtTare.Text);
-                addArticleCommand.Weight = float.Parse(_txtWeight.Text);
-                addArticleCommand.Barcode = _txtBarcode.Text;
-                addArticleCommand.PVPVariable = _checkPVPVariable.Active;
-                addArticleCommand.Favorite = _checkFavorite.Active;
-                addArticleCommand.UseWeighingBalance = _checkUseWeighingBalance.Active;
-                addArticleCommand.SubfamilyId = _comboSubfamilies.SelectedEntity.Id;
-                addArticleCommand.TypeId = _comboTypes.SelectedEntity.Id;
-                addArticleCommand.ClassId = _comboClasses.SelectedEntity.Id;
-                addArticleCommand.MeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
-                addArticleCommand.SizeUnitId = _comboSizeUnits.SelectedEntity.Id;
-                addArticleCommand.CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id;
-                addArticleCommand.DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id;
-                addArticleCommand.VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
-                addArticleCommand.VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id;
-                addArticleCommand.IsComposed = _checkIsComposed.Active;
-                addArticleCommand.UniqueArticles = _checkUniqueArticles.Active;
-                addArticleCommand.Notes = _txtNotes.Value.Text;
+
+            addArticleCommand.CodeDealer = _txtCodeDealer.Text;
+            addArticleCommand.Designation = _txtDesignation.Text;
+            addArticleCommand.Button = GetButton();
+            addArticleCommand.PriceWithVat = _checkPriceWithVat.Active;
+            addArticleCommand.Discount = decimal.Parse(_txtDiscount.Text);
+            addArticleCommand.DefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
+            addArticleCommand.MinimumStock = decimal.Parse(_txtMinimumStock.Text);
+            addArticleCommand.Tare = decimal.Parse(_txtTare.Text);
+            addArticleCommand.Weight = float.Parse(_txtWeight.Text);
+            addArticleCommand.Barcode = _txtBarcode.Text;
+            addArticleCommand.PVPVariable = _checkPVPVariable.Active;
+            addArticleCommand.Favorite = _checkFavorite.Active;
+            addArticleCommand.UseWeighingBalance = _checkUseWeighingBalance.Active;
+            addArticleCommand.SubfamilyId = _comboSubfamilies.SelectedEntity.Id;
+            addArticleCommand.TypeId = _comboTypes.SelectedEntity.Id;
+            addArticleCommand.ClassId = _comboClasses.SelectedEntity.Id;
+            addArticleCommand.MeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
+            addArticleCommand.SizeUnitId = _comboSizeUnits.SelectedEntity.Id;
+            addArticleCommand.CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id;
+            addArticleCommand.DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id;
+            addArticleCommand.VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
+            addArticleCommand.VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id;
+            addArticleCommand.IsComposed = _checkIsComposed.Active;
+            addArticleCommand.UniqueArticles = _checkUniqueArticles.Active;
+            addArticleCommand.Notes = _txtNotes.Value.Text;
 
 
             switch (_prices.Count())
@@ -180,6 +179,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override void AddEntity()
         {
             var result = ExecuteAddCommand(CreateAddCommand());
+            ArticlesService.RefreshArticlesCache();
 
             if (result.IsError || _checkIsComposed.Active == false)
             {
@@ -224,7 +224,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-     
+
         private void UpdateValidatableFields()
         {
             if (_comboVatDirectSelling.SelectedEntity == null)

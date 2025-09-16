@@ -260,7 +260,15 @@ namespace LogicPOS.UI.Components.POS
 
         private string GetDocumentType()
         {
-            return (BtnInvoice.Sensitive==true) ? "FR" : "FT";
+            var type=(BtnInvoice.Sensitive==true) ? "FR" : "FT";
+            if (type == "FR")
+            {
+                if(CountriesService.Default.Code2 == "PT")
+                {
+                    type = "FS";
+                }
+            }
+            return type;
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()

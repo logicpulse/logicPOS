@@ -24,6 +24,10 @@ namespace LogicPOS.UI.Components.Finance.Customers
             }
         }
 
+        public static void RefreshCustomersCache()
+        {
+            _customers = GetAllCustomers();
+        }
         public static Customer Default
         {
             get

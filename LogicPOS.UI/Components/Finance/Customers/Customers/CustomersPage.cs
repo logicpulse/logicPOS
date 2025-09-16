@@ -4,6 +4,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Customers.DeleteCustomer;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
@@ -39,7 +40,9 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override DeleteCommand GetDeleteCommand()
         {
-            return new DeleteCustomerCommand(SelectedEntity.Id);
+            var result= new DeleteCustomerCommand(SelectedEntity.Id);
+            CustomersService.RefreshCustomersCache();
+            return result;
         }
 
         public override void UpdateButtonPrevileges()

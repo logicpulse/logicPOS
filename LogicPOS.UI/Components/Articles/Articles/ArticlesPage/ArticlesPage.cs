@@ -82,7 +82,9 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override DeleteCommand GetDeleteCommand()
         {
-            return new DeleteArticleCommand(SelectedEntity.Id);
+            var result = new DeleteArticleCommand(SelectedEntity.Id);
+            ArticlesService.RefreshArticlesCache();
+            return result;
         }
 
         public override void UpdateButtonPrevileges()
