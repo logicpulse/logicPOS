@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel
 {
     public class GetDocumentPrintingModelQueryHandler : RequestHandler<GetDocumentPrintingModelQuery, ErrorOr<DocumentPrintingModel>>
     {

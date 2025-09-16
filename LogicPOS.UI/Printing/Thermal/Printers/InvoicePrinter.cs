@@ -1,6 +1,6 @@
 ﻿using ESC_POS_USB_NET.Enums;
 using LogicPOS.Api.Features.Company;
-using LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
@@ -264,6 +264,7 @@ namespace LogicPOS.UI.Printing
 
     public struct InvoicePrintingData
     {
+        public Guid DocumentId { get; set; }
         public DocumentPrintingModel Document { get; set; }
         public CompanyInformations CompanyInformations { get; set; }
     }

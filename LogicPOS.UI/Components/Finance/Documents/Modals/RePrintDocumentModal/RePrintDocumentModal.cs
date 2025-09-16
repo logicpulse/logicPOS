@@ -56,8 +56,13 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (BtnOriginal.Active)
                 {
-                    CheckButton(BtnOriginal);
-                    CopyNumber = 1;
+                    CheckButtonOnly(BtnOriginal);
+                    Copies.Clear();
+                    Copies.Add(1);
+                }
+                else
+                {
+                    Copies.Remove(1);
                 }
 
                 TxtMotive.Component.Sensitive = BtnOriginal.Active;
@@ -67,17 +72,22 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     if (BtnCopy2.Active)
                     {
-                        CheckButton(BtnCopy2);
-                        CopyNumber = 2;
+                        Copies.Add(2);
+                    } else
+                    {
+                        Copies.Remove(2);
                     }
-            };
+                };
 
             BtnCopy3.Toggled += (sender, args) =>
             {
                 if (BtnCopy3.Active)
                 {
-                    CheckButton(BtnCopy3);
-                    CopyNumber = 3;
+                    Copies.Add(3);
+                }
+                else
+                {
+                    Copies.Remove(3);
                 }
             };
 
@@ -85,8 +95,11 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (BtnCopy4.Active)
                 {
-                    CheckButton(BtnCopy4);
-                    CopyNumber = 4;
+                    Copies.Add(4);
+                }
+                else
+                {
+                    Copies.Remove(4);
                 }
             };
         }

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel
 {
     public class DocumentPrintingModel
     {

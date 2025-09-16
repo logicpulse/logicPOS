@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Errors;
 using System;
 
@@ -19,16 +20,14 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             var command = CreateAddCommand();
-            var result = DependencyInjection.Mediator.Send(command).Result;
-
-            if (result.IsError)
+            Guid? id = DocumentsService.IssueDocument(command);
+            if (id == null)
             {
-                ErrorHandlingService.HandleApiError(result, source: this);
                 Run();
                 return;
             }
 
-            DocumentPdfUtils.ViewDocumentPdf(this, result.Value);
+            DocumentPdfUtils.ViewDocumentPdf(this, id.Value);
         }
 
         private void BtnClear_Clicked(object sender, EventArgs e)
@@ -42,7 +41,8 @@ namespace LogicPOS.UI.Components.Modals
             if (!TabsForPreviewAreValid())
             {
                 ShowValidationErrors();
-            } else
+            }
+            else
             {
                 var query = CreateDocumentPreviewQuery();
                 DocumentPdfUtils.PreviewDocument(this, query);
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
 
             Run();
         }
-       
+
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
             ShowTabsForDocumentType(documentType);

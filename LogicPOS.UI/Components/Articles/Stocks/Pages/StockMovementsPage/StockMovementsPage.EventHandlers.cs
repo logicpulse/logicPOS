@@ -1,5 +1,5 @@
 ﻿using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
-using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Pages
                     return;
                 }
 
-                LogicPOSPDFViewer.ShowPDF(result.Value.Path,result.Value.Name);
+                LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
                 return;
             }
         }
@@ -59,14 +59,14 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnMore_Clicked(object sender, EventArgs e)
         {
-            if(CurrentQuery.Page >= Movements.TotalPages)
+            if (CurrentQuery.Page >= Movements.TotalPages)
             {
                 return;
             }
 
             var paginatedResult = ShowMore(CurrentQuery);
 
-            if(paginatedResult == null)
+            if (paginatedResult == null)
             {
                 return;
             }

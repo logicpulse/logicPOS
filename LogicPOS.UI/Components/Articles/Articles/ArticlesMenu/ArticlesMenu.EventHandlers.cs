@@ -49,19 +49,22 @@ namespace LogicPOS.UI.Components.Menus
                 }
             }
 
-            if (article.Price1 <= 0)
+            int priceType = SaleContext.CurrentTable.PriceTypeEnum;
+            decimal price = article.GetPrice(priceType);
+
+            if (price <= 0)
             {
-                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), article.Price1);
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
 
                 if (result.Response == ResponseType.Cancel)
                 {
                     return;
                 }
 
-                article.Price1 = result.Value;
+                article.SetPrice(priceType, result.Value);
             }
 
-            var saleItem = new SaleItem(article, SaleContext.CurrentTable.PriceTypeEnum);
+            var saleItem = new SaleItem(article, priceType);
 
             SaleContext.ItemsPage.AddItem(saleItem);
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();

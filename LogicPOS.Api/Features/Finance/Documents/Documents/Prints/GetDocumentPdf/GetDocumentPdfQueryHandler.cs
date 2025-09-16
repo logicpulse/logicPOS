@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf
 {
     public class GetDocumentPdfQueryHandler :
         RequestHandler<GetDocumentPdfQuery, ErrorOr<TempFile>>

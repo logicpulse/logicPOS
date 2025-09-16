@@ -56,7 +56,11 @@ namespace LogicPOS.UI.Components.POS
 
             ProcesPayment();
 
-            ThermalPrintingService.PrintInvoice(printingData.Value);
+
+            if (ThermalPrintingService.PrintInvoice(printingData.Value))
+            {
+                DocumentsService.RegisterPrint(printingData.Value.DocumentId, new List<int> { 1 }, false);
+            }
         }
 
         private void ProcesPayment()
@@ -100,6 +104,7 @@ namespace LogicPOS.UI.Components.POS
             SaleContext.CurrentOrder.SplitTicket(itemsToUpdate, splittersNumber);
             return itemsToUpdate;
         }
+       
         private void ProcessPartialPayment()
         {
             SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);

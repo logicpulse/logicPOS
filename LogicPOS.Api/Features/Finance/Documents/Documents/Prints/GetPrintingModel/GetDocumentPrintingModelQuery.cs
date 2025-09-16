@@ -2,7 +2,7 @@
 using MediatR;
 using System;
 
-namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetPrintingModel
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel
 {
     public class GetDocumentPrintingModelQuery : IRequest<ErrorOr<DocumentPrintingModel>>
     {

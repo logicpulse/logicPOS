@@ -1,7 +1,7 @@
 ﻿using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Common.Requests;
-using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
 
             TempFile tempFile = result.Value;
 
-            LogicPOSPDFViewer.ShowPDF(tempFile.Path,tempFile.Name);
+            LogicPOSPDFViewer.ShowPDF(tempFile.Path, tempFile.Name);
             return;
         }
 

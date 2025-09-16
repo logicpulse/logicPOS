@@ -1,7 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
-using LogicPOS.UI.Components.Articles;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
@@ -17,24 +16,7 @@ namespace LogicPOS.UI.Components.POS
             Vat = article.VatDirectSelling ?? 0;
             Quantity = article.DefaultQuantity > 0 ? article.DefaultQuantity : 1;
             Discount = article.Discount;
-            switch(placePriceType)
-            {
-                case 2:
-                    SetUnitPrice(article.Price2);
-                    break;
-                case 3:
-                    SetUnitPrice(article.Price3);
-                    break;
-                case 4:
-                    SetUnitPrice(article.Price4);
-                    break;
-                case 5:
-                    SetUnitPrice(article.Price5);
-                    break;
-                default:
-                    SetUnitPrice(article.Price1);
-                    break;
-            }
+            SetUnitPrice(article.GetPrice(placePriceType));
         }
 
         private SaleItem()

@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        private void CheckButton(CheckButtonExtended button)
+        private void CheckButtonOnly(CheckButtonExtended button)
         {
             foreach (var btn in Buttons)
             {

@@ -3,8 +3,10 @@ using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
+using Serilog;
 using System;
 using System.Linq;
 
@@ -21,7 +23,9 @@ namespace LogicPOS.UI.Components.Modals
 
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
             ResponseType reponse = (ResponseType)modal.Run();
-            var copyNumber = modal.CopyNumber;
+            var copies = modal.Copies;
+            bool secondPrint = modal.SecondPrint;
+            string reason = modal.Reason;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
@@ -29,14 +33,27 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
 
             if (tempFile == null)
             {
                 return;
             }
 
-            PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path);
+            try
+            {
+                if (PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path) == System.Windows.Forms.DialogResult.OK)
+                {
+                    DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error printing document {DocumentId}", Page.SelectedEntity.Id);
+                CustomAlerts.Error(this)
+                            .WithMessage("Ocorreu um erro ao tentar imprimir o documento.")
+                            .ShowAlert();
+            }
         }
 
         private void BtnOpenDocument_Clicked(object sender, EventArgs e)
@@ -81,7 +98,9 @@ namespace LogicPOS.UI.Components.Modals
 
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
             ResponseType reponse = (ResponseType)modal.Run();
-            var copyNumber = modal.CopyNumber;
+            var copies = modal.Copies;
+            bool secondPrint = modal.SecondPrint;
+            string reason = modal.Reason;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
@@ -89,14 +108,25 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
 
             if (tempFile == null)
             {
                 return;
             }
 
-            PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+            try
+            {
+                PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error printing document {DocumentId}", Page.SelectedEntity.Id);
+                CustomAlerts.Error(this)
+                            .WithMessage("Ocorreu um erro ao tentar imprimir o documento.")
+                            .ShowAlert();
+            }
         }
 
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)
@@ -156,11 +186,11 @@ namespace LogicPOS.UI.Components.Modals
                 if (deleteResult.IsError)
                 {
                     ErrorHandlingService.HandleApiError(deleteResult);
-                    return ;
-                } 
-                 Page.Refresh();
+                    return;
+                }
+                Page.Refresh();
                 return;
-               
+
             }
 
             if (CanCancelDocument(selectedDocument) == false)

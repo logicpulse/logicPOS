@@ -1,18 +1,19 @@
 ﻿using LogicPOS.Api.Features.Common.Requests;
-using LogicPOS.Api.Features.Documents.Documents.GetDocumentPdf;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.PDFViewer;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.Utilities
 {
     public static class DocumentPdfUtils
     {
-        public static TempFile? GetDocumentPdfFileLocation(Guid documentId, uint copyNumber)
+        public static TempFile? GetDocumentPdfFileLocation(Guid documentId, IEnumerable<int> copies)
         {
             var mediator = DependencyInjection.Mediator;
-            var command = new GetDocumentPdfQuery(documentId, copyNumber);
+            var command = new GetDocumentPdfQuery(documentId, copies);
             var result = mediator.Send(command).Result;
 
             if (result.IsError)
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static void ViewDocumentPdf(Gtk.Window source, Guid documentId)
         {
-            var tempFile = GetDocumentPdfFileLocation(documentId, 1);
+            var tempFile = GetDocumentPdfFileLocation(documentId, new int[] { 1 });
 
             if (tempFile == null)
             {

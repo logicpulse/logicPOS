@@ -5,17 +5,17 @@ namespace LogicPOS.Printing.Services
 {
     public static class PdfPrinter
     {
-        public static void PrintWithNativeDialog(string fileLocation)
+        public static DialogResult PrintWithNativeDialog(string fileLocation)
         {
             PrintDialog printDialog = new PrintDialog();
+            var dialogResult = printDialog.ShowDialog();
 
-            if (printDialog.ShowDialog() != DialogResult.OK)
+            if (dialogResult != DialogResult.OK)
             {
-                return;
+                return dialogResult;
             }
 
             var printerName = printDialog.PrinterSettings.PrinterName;
-
             printDialog.Dispose();
 
             PdfDocument pdf = new PdfDocument();
@@ -23,6 +23,8 @@ namespace LogicPOS.Printing.Services
             pdf.PrintSettings.PrinterName = printDialog.PrinterSettings.PrinterName;
             pdf.Print();
             pdf.Dispose();
+
+            return dialogResult;
         }
 
         public static void Print(string fileLocation, 

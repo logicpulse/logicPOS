@@ -27,5 +27,44 @@ namespace LogicPOS.Api.Features.Articles.Common
         public Guid FamilyId { get; set; }
         public Button Button { get; set; }
         public bool PriceWithVat { get; set; }
+
+        public decimal GetPrice(int priceType)
+        {
+            switch (priceType)
+            {
+                case 2:
+                    return Price2;
+                case 3:
+                    return Price3;
+                case 4:
+                    return Price4;
+                case 5:
+                    return Price5;
+                default:
+                     return Price1;
+            }
+        }
+
+        public void SetPrice(int priceType, decimal price)
+        {
+            switch (priceType)
+            {
+                case 2:
+                    Price2 = price;
+                    break;
+                case 3:
+                    Price3 = price;
+                    break;
+                case 4:
+                    Price4 = price;
+                    break;
+                case 5:
+                    Price5 = price;
+                    break;
+                default:
+                    Price1 = price;
+                    break;
+            }
+        }
     }
 }

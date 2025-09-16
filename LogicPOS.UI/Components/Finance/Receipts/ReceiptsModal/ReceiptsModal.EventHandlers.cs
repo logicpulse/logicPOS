@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.RefNo);
             ResponseType reponse = (ResponseType)modal.Run();
-            var copyNumber = modal.CopyNumber;
+            var copyNumber = modal.Copies;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (Page.SelectedEntity != null)
             {
-                var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+                var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, 1);
 
                 if (tempFile == null)
                 {
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.RefNo);
             ResponseType reponse = (ResponseType)modal.Run();
-            var copyNumber = modal.CopyNumber;
+            var copies = modal.Copies;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, copyNumber);
+            var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, 1);
 
             if (tempFile == null)
             {
@@ -116,8 +116,6 @@ namespace LogicPOS.UI.Components.Modals
 
             CancelReceipt(receipt);
         }
-
-        
 
         private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
         {

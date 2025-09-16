@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public static void PrintInvoice(InvoicePrintingData data)
+        public static bool PrintInvoice(InvoicePrintingData data)
         {
             try
             {
@@ -61,6 +61,7 @@ namespace LogicPOS.UI.Printing
                 {
                     new InvoicePrinter(Printer, data).Print();
                 }
+                return true;
             }
             catch (Exception ex)
             {
@@ -69,6 +70,7 @@ namespace LogicPOS.UI.Printing
                             .ShowAlert();
 
                 Log.Error(ex, "Error printing...");
+                return false;
             }
         }
 
