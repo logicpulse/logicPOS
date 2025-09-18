@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.WeighingMachines.UpdateWeighingMachine
 {
-    public class UpdateWeighingMachineCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateWeighingMachineCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

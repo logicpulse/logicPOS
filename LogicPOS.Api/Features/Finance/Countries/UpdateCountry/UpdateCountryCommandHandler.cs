@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Countries.UpdateCountry
 {
     public class UpdateCountryCommandHandler :
-        RequestHandler<UpdateCountryCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateCountryCommand, ErrorOr<Success>>
     {
         public UpdateCountryCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateCountryCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateCountryCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"countries/{command.Id}", command, cancellationToken);
         }

@@ -1,10 +1,13 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,37 +17,29 @@ namespace LogicPOS.UI.Components.Licensing
 {
     internal partial class PosLicenceDialog : BaseDialog
     {
-        //Parameters
-        private string _hardwareId;
-        private List<string> Countries { get; } = LicensingService.GetCountries().ToList();
+        private readonly string _hardwareId;
+        private List<string> Countries { get; } = LicensingService.GetCountries();
 
 
-        public PosLicenceDialog(Window parentWindow,
-                                DialogFlags pDialogFlags,
-                                string hardWareId)
-                    : base(parentWindow, pDialogFlags)
+        public PosLicenceDialog(Window parent,
+                                DialogFlags flags,
+                                string hardwareId = null)
+                    : base(parent, flags)
         {
-            //Init Local Vars
             string windowTitle = LocalizedString.Instance["window_title_license"];
             System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_license.png";
 
-            //If detected empty Hardware TerminalId from Parameters, get it from IntelliLock
-            if (string.IsNullOrEmpty(hardWareId))
+            if (string.IsNullOrWhiteSpace(hardwareId))
             {
-                _hardwareId = AppSettings.Plugins.LicenceManager.GetHardwareID();
+                hardwareId = LicensingService.GetHardwareId();
             }
-            else
-            {
-                _hardwareId = hardWareId;
-            }
-
-
-            //Files
+ 
+            _hardwareId = hardwareId;
+            
             string fileActionRegister = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
             string fileActionContinue = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
-            //ActionArea Buttons
             _buttonRegister = new IconButtonWithText(
                 new ButtonSettings
                 {
@@ -72,7 +67,6 @@ namespace LogicPOS.UI.Components.Licensing
 
             _buttonClose = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Close);
 
-            //ActionArea
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons
             {
                 new ActionAreaButton(_buttonRegister, ResponseType.Accept),
@@ -80,15 +74,11 @@ namespace LogicPOS.UI.Components.Licensing
                 new ActionAreaButton(_buttonClose, ResponseType.Close)
             };
 
-            //Init Content
             InitUI();
-
-            //Start Validated
             Validate();
-
-            //Init Object
-            Initialize(this, pDialogFlags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
+            Initialize(this, flags, fileDefaultWindowIcon, windowTitle, windowSize, _hboxMain, actionAreaButtons);
         }
+
         private void Validate()
         {
             _buttonRegister.Sensitive =
@@ -112,10 +102,8 @@ namespace LogicPOS.UI.Components.Licensing
 
         private void ActionRegister()
         {
-            if (AppSettings.Plugins.LicenceManager == null)
+            if (LicensingService.ConnectToWs() == false)
             {
-                
-
                 CustomAlerts.Error(this)
                             .WithSize(new System.Drawing.Size(600, 300))
                             .WithTitleResource("global_error")
@@ -123,28 +111,13 @@ namespace LogicPOS.UI.Components.Licensing
                             .ShowAlert();
                 return;
             }
-            
-
 
             byte[] registeredLicence = new byte[0];
 
             try
             {
-                //Returns ByteWrite File
-                registeredLicence = AppSettings.Plugins.LicenceManager.ActivateLicense(EntryBoxName.EntryValidation.Text,
-                                                                                 EntryBoxCompany.EntryValidation.Text,
-                                                                                 EntryBoxFiscalNumber.EntryValidation.Text,
-                                                                                 EntryBoxAddress.EntryValidation.Text,
-                                                                                 EntryBoxEmail.EntryValidation.Text,
-                                                                                 EntryBoxPhone.EntryValidation.Text,
-                                                                                 _entryBoxHardwareId.EntryValidation.Text,
-                                                                                 System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
-                                                                                 Countries.IndexOf(ComboBoxCountry.Value) + 1,
-                                                                                 _entryBoxSoftwareKey.EntryValidation.Text);
-
-                string licenseFilePath = AppSettings.Plugins.LicenceManager.GetLicenseFilename();
-
-                File.WriteAllBytes(licenseFilePath, registeredLicence);
+                var activateCommand = GetActivateLicenseCommand();
+                registeredLicence = LicensingService.ActivateLicense(activateCommand);
 
                 CustomAlerts.Information(this)
                             .WithSize(new System.Drawing.Size(600, 300))
@@ -157,8 +130,9 @@ namespace LogicPOS.UI.Components.Licensing
                 Environment.Exit(0);
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Log.Error(ex.Message, ex);
 
                 CustomAlerts.Error(this)
                             .WithSize(new System.Drawing.Size(600, 300))
@@ -167,6 +141,23 @@ namespace LogicPOS.UI.Components.Licensing
                             .ShowAlert();
                 Run();
             }
+        }
+
+        private ActivateLicenseCommand GetActivateLicenseCommand()
+        {
+            ActivateLicenseCommand activateLicenseCommand = new ActivateLicenseCommand();
+            activateLicenseCommand.Name = EntryBoxName.EntryValidation.Text;
+            activateLicenseCommand.Company = EntryBoxCompany.EntryValidation.Text;
+            activateLicenseCommand.FiscalNumber = EntryBoxFiscalNumber.EntryValidation.Text;
+            activateLicenseCommand.Address = EntryBoxAddress.EntryValidation.Text;
+            activateLicenseCommand.Email = EntryBoxEmail.EntryValidation.Text;
+            activateLicenseCommand.Phone = EntryBoxPhone.EntryValidation.Text;
+            activateLicenseCommand.HardwareId = _entryBoxHardwareId.EntryValidation.Text;
+            activateLicenseCommand.AssemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            activateLicenseCommand.IdCountry = Countries.IndexOf(ComboBoxCountry.Value) + 1;
+            activateLicenseCommand.SoftwareKey = _entryBoxSoftwareKey.EntryValidation.Text;
+
+            return activateLicenseCommand;
         }
 
         public static LicenseUIResult GetLicenseDetails(string hardWareId)
@@ -179,7 +170,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             switch (result.Response)
             {
-                case ResponseType.Accept:
+                case ResponseType.Ok:
                     result.Address = dialog.EntryBoxAddress.EntryValidation.Text;
                     result.Company = dialog.EntryBoxCompany.EntryValidation.Text;
                     result.Email = dialog.EntryBoxEmail.EntryValidation.Text;
@@ -187,7 +178,7 @@ namespace LogicPOS.UI.Components.Licensing
                     result.Name = dialog.EntryBoxName.EntryValidation.Text;
                     result.Phone = dialog.EntryBoxPhone.EntryValidation.Text;
                     break;
-                case ResponseType.Ok:
+                case ResponseType.Cancel:
                     break;
                 case ResponseType.Close:
                     Environment.Exit(0);

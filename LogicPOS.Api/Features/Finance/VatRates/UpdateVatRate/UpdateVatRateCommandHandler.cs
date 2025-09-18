@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.VatRates.UpdateVatRate
 {
     public class UpdateVatRateCommandHandler :
-        RequestHandler<UpdateVatRateCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateVatRateCommand, ErrorOr<Success>>
     {
         public UpdateVatRateCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateVatRateCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateVatRateCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/vatrates/{command.Id}", command, cancellationToken);
         }

@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
 using MediatR;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -12,17 +11,18 @@ namespace LogicPOS.Api.Features.Common.Requests
 {
     public abstract partial class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        protected async Task<ErrorOr<Guid>> HandleAddEntityHttpResponseAsync(HttpResponseMessage httpResponse)
+        protected async Task<ErrorOr<T>> HandlePostHttpResponseAsync<T>(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.Created:
-                    var response = await httpResponse.Content.ReadFromJsonAsync<AddEntityResponse>();
-                    return response.Id;
-                case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
+                case HttpStatusCode.OK:
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>();
+                    return response;
+                case HttpStatusCode.NoContent:
+                    return default(T);
                 default:
-                    return ApiErrors.UnknownAPIResponse;
+                    return await GetProblemDetailsFromResponseAsync(httpResponse);
             }
         }
 
@@ -32,18 +32,16 @@ namespace LogicPOS.Api.Features.Common.Requests
             return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
 
-        private async Task<ErrorOr<Unit>> HandleHttpResponseAsync(HttpResponseMessage httpResponse)
+        private async Task<ErrorOr<Success>> HandleNoContentHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
                 case HttpStatusCode.Created:
                 case HttpStatusCode.NoContent:
-                    return Unit.Value;
-                case HttpStatusCode.BadRequest:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
+                    return Result.Success;
                 default:
-                    return ApiErrors.UnknownAPIResponse;
+                    return await GetProblemDetailsFromResponseAsync(httpResponse);
             }
         }
 
@@ -58,7 +56,7 @@ namespace LogicPOS.Api.Features.Common.Requests
                 case HttpStatusCode.NotFound:
                     return false;
                 default:
-                    return ApiErrors.UnknownAPIResponse;
+                    return false;
             }
         }
 

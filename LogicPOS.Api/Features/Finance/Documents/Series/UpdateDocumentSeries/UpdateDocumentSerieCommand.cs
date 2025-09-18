@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie
 {
-    public class UpdateDocumentSerieCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateDocumentSerieCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint? NewOrder { get; set; }

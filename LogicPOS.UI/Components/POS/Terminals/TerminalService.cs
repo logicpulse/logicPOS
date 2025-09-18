@@ -6,81 +6,62 @@ using LogicPOS.Api.Features.Terminals.GetTerminalById;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Threading;
-using System.Threading.Tasks;
+using static LogicPOS.UI.Application.Licensing.LicenseRouter;
 
 namespace LogicPOS.UI.Components.Terminals
 {
     public static class TerminalService
     {
-        private const string TERMINAL_HARDWAREID_FILE = "terminal.id";
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public static Terminal Terminal { get; private set; }
 
         public static bool HasThermalPrinter => Terminal != null && Terminal.ThermalPrinter != null;
-        private static async Task<ErrorOr<Guid>> CreateTerminalAsync(CancellationToken ct = default)
+
+        private static ErrorOr<Guid> CreateTerminal(string hardwareId)
         {
-            var command = new CreateTerminalCommand();
-            return await _mediator.Send(command, ct);
+            var command = new CreateTerminalCommand(hardwareId);
+            return _mediator.Send(command).Result;
         }
 
-        public static async Task<ErrorOr<Terminal>> InitializeTerminalAsync(CancellationToken ct = default)
+        public static ErrorOr<Terminal> InitializeTerminal()
         {
-            if (HardwareIdFileExists())
+            var hardwareId = GlobalFramework.LicenceHardwareId;
+
+            if (string.IsNullOrWhiteSpace(hardwareId))
             {
-                var getTerminal = await _mediator.Send(new GetTerminalByHardwareIdQuery(GetHardwareIdFromFile()), ct);
-
-                if (getTerminal.IsError)
-                {
-                    return getTerminal.FirstError;
-                }
-
-                Terminal = getTerminal.Value;
-
-                if(Terminal == null)
-                {
-                    var hardwareId = GetHardwareIdFromFile();
-                    return Error.NotFound(description:$"Terminal com o HardwareId [{hardwareId}] não econtrado.");
-                }
-
-                return Terminal;
+                return Error.NotFound(description: "HardwareId não encontrado no GlobalFramework.");
             }
 
-            var createTerminalResult = await CreateTerminalAsync(ct);
-
-            if (createTerminalResult.IsError)
-            {
-                return createTerminalResult.FirstError;
-            }
-
-            var getTerminalResult = await _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value), ct);
+            var getTerminalResult = _mediator.Send(new GetTerminalByHardwareIdQuery(hardwareId)).Result;
 
             if (getTerminalResult.IsError)
             {
-                return getTerminalResult.FirstError;
+                return getTerminalResult.Errors;
             }
 
-            CreateHardwareIdFile(getTerminalResult.Value.HardwareId);
+            var terminal = getTerminalResult.Value;
 
-            Terminal = getTerminalResult.Value;
+            if (terminal == null)
+            {
+                var createTerminalResult = CreateTerminal(hardwareId);
 
+                if (createTerminalResult.IsError)
+                {
+                    return createTerminalResult.Errors;
+                }
+
+                var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
+
+                if (getCreatedTerminal.IsError)
+                {
+                    return getCreatedTerminal.FirstError;
+                }
+
+                terminal = getCreatedTerminal.Value;
+            }
+
+            Terminal = terminal;
             return Terminal;
         }
-
-        private static bool HardwareIdFileExists()
-        {
-            return System.IO.File.Exists(TERMINAL_HARDWAREID_FILE);
-        }
-
-        private static string GetHardwareIdFromFile()
-        {
-            return System.IO.File.ReadAllText(TERMINAL_HARDWAREID_FILE);
-        }
-
-        private static void CreateHardwareIdFile(string hardwareId)
-        {
-            System.IO.File.WriteAllText(TERMINAL_HARDWAREID_FILE, hardwareId);
-        }
-
     }
 }

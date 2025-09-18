@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Documents.CancelDocument
 {
-    public class CancelDocumentCommand : IRequest<ErrorOr<Unit>>
+    public class CancelDocumentCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public string Reason { get; set; }

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Orders.ReduceItems
 {
     public class ReduceOrderItemsCommandHandler :
-        RequestHandler<ReduceOrderItemsCommand, ErrorOr<Unit>>
+        RequestHandler<ReduceOrderItemsCommand, ErrorOr<Success>>
     {
         public ReduceOrderItemsCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(ReduceOrderItemsCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(ReduceOrderItemsCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"orders/{command.OrderId}/reduce-items", command, cancellationToken);
         }

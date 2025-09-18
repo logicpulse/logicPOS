@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Terminals.UpdateTerminal
 {
     public class UpdateTerminalCommandHandler :
-        RequestHandler<UpdateTerminalCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateTerminalCommand, ErrorOr<Success>>
     {
         public UpdateTerminalCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateTerminalCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateTerminalCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"terminals/{command.Id}", command, cancellationToken);
         }

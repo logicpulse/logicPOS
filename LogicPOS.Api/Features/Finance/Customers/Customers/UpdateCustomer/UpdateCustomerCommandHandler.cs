@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Customers.UpdateCustomer
 {
     public class UpdateCustomerCommandHandler :
-        RequestHandler<UpdateCustomerCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateCustomerCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedCache;
         public UpdateCustomerCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache keyedMemoryCache) : base(factory)
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Customers.UpdateCustomer
             _keyedCache = keyedMemoryCache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateCustomerCommand command, CancellationToken cancellationToken = default)
         {
             var result = await HandleUpdateCommandAsync($"customers/{command.Id}", command, cancellationToken);
 

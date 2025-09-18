@@ -96,21 +96,15 @@ namespace LogicPOS.UI.Components.Windows
             statusBar.ModifyBg(StateType.Normal, colorBackOfficeStatusBarBackground.ToGdkColor());
 
             //Reseller
-            Reseller = new Label();
-            Reseller.Text = string.Format(" Powered by {0} ©", AppSettings.License.LicenseData.Reseller);
+            Reseller = new Label
+            {
+                Text = $" Powered by Logicpulse Technologies ©"
+            };
             Reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
             Reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             Reseller.Justify = Justification.Left;
 
             Logo = new Image(fileImageBackOfficeLogoLong);
-
-            if (AppSettings.License.LicenseData.Reseller != null &&
-                AppSettings.License.LicenseData.Reseller.ToString() != "Logicpulse" &&
-                AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "")
-            {
-                Logo = new Image(fileImageBackOfficeLogo);
-            }
-
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
@@ -141,7 +135,6 @@ namespace LogicPOS.UI.Components.Windows
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
-            if (AppSettings.License.LicenseData.Reseller != null && AppSettings.License.LicenseData.Reseller.ToString() != "Logicpulse" && AppSettings.License.LicenseData.Registered) StatusBar.PackStart(Reseller, false, false, 0);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
 

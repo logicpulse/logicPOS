@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.PoleDisplays.UpdatePoleDisplay
 {
-    public class UpdatePoleDisplayCommand : IRequest<ErrorOr<Unit>>
+    public class UpdatePoleDisplayCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

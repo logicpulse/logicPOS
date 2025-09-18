@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
@@ -73,8 +74,6 @@ namespace LogicPOS.UI
 
                 ShowLoadingScreen();
 
-                AppSettings.Plugins.InitializePlugins();
-
                 CloseLoadingScreen();
 
                 KeepUIResponsive();          
@@ -99,18 +98,25 @@ namespace LogicPOS.UI
 
         private static void StartApp()
         {
-            var intializeTerminalResult = TerminalService.InitializeTerminalAsync().Result;
+            LicenseRouter licenseRouter = new LicenseRouter();
+
+            if (licenseRouter.LoadApp == false)
+            {
+                return;
+            }
+
+            var intializeTerminalResult = TerminalService.InitializeTerminal();
 
             if (intializeTerminalResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(intializeTerminalResult, true);
                 return;
             }
-            if (AppSettings.Plugins.LicenceManager != null && string.IsNullOrEmpty(TerminalService.Terminal.HardwareId))
+
+            if (LicenseRouter.NeedToRegister())
             {
                 ShowLicenseDialog();
             }
-
 
             LogicPOSApp app = new LogicPOSApp();
             app.Start();

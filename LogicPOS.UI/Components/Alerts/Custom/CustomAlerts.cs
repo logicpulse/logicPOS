@@ -299,15 +299,20 @@ namespace LogicPOS.UI.Alerts
 
                 errorMessage.AppendLine("\nProblem Details:");
                 errorMessage.AppendLine("Title: " + problemDetails.Title);
+                errorMessage.AppendLine($"Detail: {problemDetails.Detail}");
                 errorMessage.AppendLine("Status: " + problemDetails.Status);
                 errorMessage.AppendLine("Type: " + problemDetails.Type);
                 errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
+                errorMessage.AppendLine("Instance: " + problemDetails.Instance);
 
-                foreach (var problemDetailsError in problemDetails.Errors)
+                if (problemDetails.Errors != null)
                 {
-                    errorMessage.AppendLine("\nError:");
-                    errorMessage.AppendLine("Name: " + problemDetailsError.Name);
-                    errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        errorMessage.AppendLine("\nError:");
+                        errorMessage.AppendLine("Name: " + problemDetailsError.Name);
+                        errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
+                    }
                 }
             }
 

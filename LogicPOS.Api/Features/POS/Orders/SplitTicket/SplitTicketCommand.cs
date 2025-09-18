@@ -5,7 +5,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Orders.SplitTicket
 {
-    public class SplitTicketCommand : IRequest<ErrorOr<Unit>>
+    public class SplitTicketCommand : IRequest<ErrorOr<Success>>
     {
         public Guid OrderId { get; set; }
         public int SplittersNumber { get; set; }

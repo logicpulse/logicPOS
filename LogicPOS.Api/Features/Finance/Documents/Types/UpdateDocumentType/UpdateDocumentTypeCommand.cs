@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.DocumentTypes.UpdateDocumentType
 {
-    public class UpdateDocumentTypeCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateDocumentTypeCommand : IRequest<ErrorOr<Success>>
     {
         public uint NewOrder { get; set; }
         public string NewCode { get; set; }

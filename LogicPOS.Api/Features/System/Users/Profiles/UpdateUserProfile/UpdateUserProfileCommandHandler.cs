@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Users.Profiles.UpdateUserProfile
 {
-    public class UpdateUserProfileCommandHandler : RequestHandler<UpdateUserProfileCommand, ErrorOr<Unit>>
+    public class UpdateUserProfileCommandHandler : RequestHandler<UpdateUserProfileCommand, ErrorOr<Success>>
     {
         public UpdateUserProfileCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateUserProfileCommand command,
+        public override async Task<ErrorOr<Success>> Handle(UpdateUserProfileCommand command,
                                                          CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"users/profiles/{command.Id}", command, cancellationToken);

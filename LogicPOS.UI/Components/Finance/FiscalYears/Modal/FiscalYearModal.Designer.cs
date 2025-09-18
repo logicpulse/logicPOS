@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class FiscalYearModal
     {
-        public override Size ModalSize => new Size(500, 550);
+        public override Size ModalSize => new Size(500, 300);
         public override string ModalTitleResourceName => "global_fiscal_year";
         protected override void AddSensitiveFields()
         {
@@ -42,30 +42,15 @@ namespace LogicPOS.UI.Components.Modals
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
             yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
         private VBox CreateDetailsTab()
         {
             var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_modalMode != EntityEditionModalMode.Insert)
-            {
-                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
-                detailsTab.PackStart(_txtCode.Component, false, false, 0);
-
-            }
-
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtYear.Component, false, false, 0);
             detailsTab.PackStart(_txtAcronym.Component, false, false, 0);
-
-            if (_modalMode != EntityEditionModalMode.Insert)
-            {
-                _checkDisabled.Sensitive = false;
-                detailsTab.PackStart(_checkDisabled, false, false, 0);
-            }
-
             return detailsTab;
         }
     }

@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Errors
     {
         public static void HandleApiError<TResult>(ErrorOr<TResult> error, bool closeApplication = false, Window source = null)
         {
-            Log.Logger.Error("API Error: {Error}", error.Errors);
+            Log.Error("API Error: {Error}", error.Errors);
 
             if (source == null)
             {

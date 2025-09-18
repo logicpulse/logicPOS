@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.PaymentConditions.UpdatePaymentCondition
 {
     public class UpdatePaymentConditionCommandHandler :
-        RequestHandler<UpdatePaymentConditionCommand, ErrorOr<Unit>>
+        RequestHandler<UpdatePaymentConditionCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
         public UpdatePaymentConditionCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.PaymentConditions.UpdatePaymentCondition
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePaymentConditionCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdatePaymentConditionCommand command, CancellationToken cancellationToken = default)
         {
             var result= await HandleUpdateCommandAsync($"/payment/conditions/{command.Id}", command, cancellationToken);
             if (result.IsError == false)

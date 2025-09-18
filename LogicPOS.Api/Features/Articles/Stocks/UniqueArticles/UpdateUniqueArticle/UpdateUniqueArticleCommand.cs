@@ -5,7 +5,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.UpdateUniqueArticle
 {
-    public class UpdateUniqueArticleCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateUniqueArticleCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public string SerialNumber { get; set; }

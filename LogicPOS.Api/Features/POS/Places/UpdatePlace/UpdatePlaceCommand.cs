@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Places.UpdatePlace
 {
-    public class UpdatePlaceCommand : IRequest<ErrorOr<Unit>>
+    public class UpdatePlaceCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

@@ -18,8 +18,15 @@ namespace LogicPOS.Api.Features.Common.Requests
         {
             try
             {
-                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleAddEntityHttpResponseAsync(response);
+                var httpResponse = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
+                var addEntityResponse = await HandlePostHttpResponseAsync<AddEntityResponse>(httpResponse);
+                
+                if(addEntityResponse.IsError)
+                {
+                    return addEntityResponse.Errors;
+                }
+
+                return addEntityResponse.Value.Id;
             }
             catch (HttpRequestException)
             {
@@ -27,14 +34,14 @@ namespace LogicPOS.Api.Features.Common.Requests
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandlePostCommandAsync(string endpoint,
+        protected async Task<ErrorOr<Success>> HandleNoResponsePostCommandAsync(string endpoint,
                                                                    TRequest command,
                                                                    CancellationToken cancellationToken = default)
         {
             try
             {
                 var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
+                return await HandleNoContentHttpResponseAsync(response);
             }
             catch (HttpRequestException)
             {
@@ -42,14 +49,29 @@ namespace LogicPOS.Api.Features.Common.Requests
             }
         }
 
-        protected async Task<ErrorOr<Unit>> HandleUpdateCommandAsync(string endpoint,
+        protected async Task<ErrorOr<T>> HandlePostCommandAsync<T>(string endpoint,
+                                                                   TRequest command,
+                                                                   CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
+                return await HandlePostHttpResponseAsync<T>(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
+            }
+        }
+
+        protected async Task<ErrorOr<Success>> HandleUpdateCommandAsync(string endpoint,
                                                                      TRequest command,
                                                                      CancellationToken cancellationToken = default)
         {
             try
             {
                 var response = await _httpClient.PutAsJsonAsync(endpoint, command, cancellationToken);
-                return await HandleHttpResponseAsync(response);
+                return await HandleNoContentHttpResponseAsync(response);
             }
             catch (HttpRequestException)
             {
@@ -70,6 +92,25 @@ namespace LogicPOS.Api.Features.Common.Requests
             }
         }
 
+        protected async Task<ErrorOr<Success>> HandleGetCommandAsync(string endpoint,
+                                                                CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync(endpoint, cancellationToken);
+
+                if (response.IsSuccessStatusCode == false)
+                {
+                    return Error.Failure();
+                }
+
+                return Result.Success;
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
+            }
+        }
 
     }
 

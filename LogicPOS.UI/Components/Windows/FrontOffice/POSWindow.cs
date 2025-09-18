@@ -104,28 +104,14 @@ namespace LogicPOS.UI.Components.Windows
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
             //LOGO
-            Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
-            if (AppSettings.Plugins.LicenceManager != null)
-            {
-                string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_logicpulse_login.png");
+            var imageLogoPath = AppSettings.Paths.Themes + @"Default\Images\logicPOS_logo.png";
+            Image imageLogo = new Image(imageLogoPath);
 
-                if (!string.IsNullOrEmpty(AppSettings.License.LicenseData.Reseller) && AppSettings.License.LicenseData.Reseller == "NewTech")
-                {
-                    fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_logicpulse_login.png", "NT");
-                }
+            var bitmapLogoImage = new Bitmap(Utils.GetThemeFileLocation("Images\\logicPOS_logo.png"));
+            Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(bitmapLogoImage);
+            pixbufOriginal = pixbufOriginal.ScaleSimple(eventBoxImageLogoSize.Width - 180, eventBoxImageLogoSize.Height - 10, Gdk.InterpType.Bilinear);
+            imageLogo = new Image(pixbufOriginal);
 
-                var bitmapImage = AppSettings.Plugins.LicenceManager.DecodeImage(fileImageBackOfficeLogo, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
-                Gdk.Pixbuf pixbufImageLogo = Utils.ImageToPixbuf(bitmapImage);
-                imageLogo = new Image(pixbufImageLogo);
-            }
-            else
-            {
-                var bitmapLogoImage= new Bitmap(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
-                Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(bitmapLogoImage);
-                pixbufOriginal = pixbufOriginal.ScaleSimple(eventBoxImageLogoSize.Width-90, eventBoxImageLogoSize.Height-5, Gdk.InterpType.Bilinear);
-                imageLogo=new Image(pixbufOriginal);
-            }
-            //fix.Put(imageLogo, GlobalApp.ScreenSize.Width - 300, 50);
             //UI
             EventBox eventBoxImageLogo = new EventBox();
             eventBoxImageLogo.WidthRequest = eventBoxImageLogoSize.Width;
@@ -134,7 +120,7 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxImageLogo.ButtonPressEvent += ImageLogo_Clicked;
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
-            
+
 
             eventBoxImageLogo.Add(imageLogo);
         }
@@ -245,7 +231,7 @@ namespace LogicPOS.UI.Components.Windows
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
             vboxCurrentTable.PackStart(LabelCurrentTable);
 
-            if(AppSettings.Instance.AppScreenSize==new Size(800, 600))
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
             {
                 labelTotalTableAlignmentX -= 20;
                 labelTotalTableLabelAlignmentX -= 20;
@@ -302,7 +288,7 @@ namespace LogicPOS.UI.Components.Windows
                     FontSize = buttonFavoritesFontSize,
                     Image = buttonFavoritesImageFileName,
                     Overlay = buttonFavoritesImageOverlay,
-                    ButtonSize = (AppSettings.Instance.AppScreenSize==new Size(800,600))? new Size(99,77) : new Size(buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height)
+                    ButtonSize = (AppSettings.Instance.AppScreenSize == new Size(800, 600)) ? new Size(99, 77) : new Size(buttonFavoritesButtonSize.Width, buttonFavoritesButtonSize.Height)
                 });
 
 
@@ -393,9 +379,9 @@ namespace LogicPOS.UI.Components.Windows
             btnFamiliesNext.BorderWidth = 0;
             btnFamiliesNext.CanFocus = false;
 
-            if(AppSettings.Instance.AppScreenSize== new Size(800, 600))
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
             {
-                tablePadSubFamilyTableConfig= new TableConfig
+                tablePadSubFamilyTableConfig = new TableConfig
                 {
                     Columns = 1,
                     Rows = 5
@@ -408,30 +394,30 @@ namespace LogicPOS.UI.Components.Windows
                 menuSubfamiliesPosition.X -= 5;
                 tablePadArticlePosition.X -= 5;
                 btnMenuFamiliesNextPosition.Y -= 5;
-                
+
 
             }
 
             MenuFamilies = new ArticleFamiliesMenu(btnFamiliesPrevious,
                                                    btnFamiliesNext,
-                                                   this, 
+                                                   this,
                                                    tablePadFamilyButtonSize,
                                                    tablePadFamilyTableConfig);
 
-            if (AppSettings.Instance.AppScreenSize == new Size(800, 600)) 
-            { 
+            if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
+            {
                 MenuFamilies.RowSpacing = 2;
                 btnMenuSubfamiliesNextPosition.X -= 40;
                 btnMenuSubfamiliesPreviousPosition.X -= 40;
                 btnMenuArticlesNextPosition.X -= 40;
-                btnMenuArticlesPreviousPosition.X -= 40; 
+                btnMenuArticlesPreviousPosition.X -= 40;
                 btnMenuArticlesNextPosition.Y -= 10;
                 btnMenuArticlesPreviousPosition.Y -= 10;
             }
-            
+
             if (showFamiliesMenu)
             {
-                
+
                 FixedWindow.Put(btnFamiliesPrevious, btnMenuFamiliesPreviousPosition.X, btnMenuFamiliesPreviousPosition.Y);
                 FixedWindow.Put(btnFamiliesNext, btnMenuFamiliesNextPosition.X, btnMenuFamiliesNextPosition.Y);
                 FixedWindow.Put(MenuFamilies, menuFamiliesPosition.X, menuFamiliesPosition.Y);
@@ -463,7 +449,7 @@ namespace LogicPOS.UI.Components.Windows
                                                          tablePadSubFamilyButtonSize,
                                                          tablePadSubFamilyTableConfig);
 
-            if(AppSettings.Instance.AppScreenSize.Width==800 && AppSettings.Instance.AppScreenSize.Height==600)MenuSubfamilies.ColumnSpacing = 2;
+            if (AppSettings.Instance.AppScreenSize.Width == 800 && AppSettings.Instance.AppScreenSize.Height == 600) MenuSubfamilies.ColumnSpacing = 2;
             if (showSubfamiliesMenu)
             {
                 FixedWindow.Put(btnSubfamiliesPrevious, btnMenuSubfamiliesPreviousPosition.X, btnMenuSubfamiliesPreviousPosition.Y);
@@ -695,7 +681,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Static
         private static POSWindow _instance;
         public static bool HasInstance => _instance != null;
-       
+
         public static POSWindow Instance
         {
             get

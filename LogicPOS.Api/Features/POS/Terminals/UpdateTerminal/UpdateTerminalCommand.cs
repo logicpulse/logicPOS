@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Terminals.UpdateTerminal
 {
-    public class UpdateTerminalCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateTerminalCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint? NewOrder { get; set; }

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Articles.Classes.UpdateArticleClass
 {
     public class UpdateArticleClassCommandHandler :
-        RequestHandler<UpdateArticleClassCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateArticleClassCommand, ErrorOr<Success>>
     {
         public UpdateArticleClassCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateArticleClassCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateArticleClassCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/articles/classes/{command.Id}", command, cancellationToken);
         }

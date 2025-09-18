@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.PaymentConditions.UpdatePaymentCondition
 {
-    public class UpdatePaymentConditionCommand : IRequest<ErrorOr<Unit>>
+    public class UpdatePaymentConditionCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

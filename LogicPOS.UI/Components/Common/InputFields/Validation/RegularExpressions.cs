@@ -64,13 +64,12 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         {
             get
             {
-                switch (PreferenceParametersService.CompanyInformations.CountryCode2.ToLower())
+                if (PreferenceParametersService.CompanyInformations.IsAngola)
                 {
-                    case "ao":
-                        return AngolanFiscalNumber;
-                    default:
-                        return PortugueseFiscalNumber;
+                    return AngolanFiscalNumber;
                 }
+
+                return PortugueseFiscalNumber;
             }
         }
     }

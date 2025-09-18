@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Warehouses.Locations.AddWarehouseLocations
 {
-    public class AddWarehouseLocationsCommand : IRequest<ErrorOr<Unit>>
+    public class AddWarehouseLocationsCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public IEnumerable<string> Locations { get; set; }

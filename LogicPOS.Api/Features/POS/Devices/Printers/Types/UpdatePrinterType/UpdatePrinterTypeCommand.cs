@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.PrinterTypes.UpdatePrinterType
 {
-    public class UpdatePrinterTypeCommand : IRequest<ErrorOr<Unit>>
+    public class UpdatePrinterTypeCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

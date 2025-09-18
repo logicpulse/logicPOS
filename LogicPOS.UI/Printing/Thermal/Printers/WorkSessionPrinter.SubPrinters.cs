@@ -195,8 +195,8 @@ namespace LogicPOS.UI.Printing
                 summaryTotal = item.Total;
 
                 var documentType = "global_documentfinance_type_title_fr";
-                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.DocumentType.ToLower() == "cm") ? "dc" : item.DocumentType.ToLower();
-                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.CountryCode2.ToUpper() == "AO" && item.DocumentType.ToLower() == "pp") ? "fp" : documentTypeSuffix;
+                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.IsAngola && item.DocumentType.ToLower() == "cm") ? "dc" : item.DocumentType.ToLower();
+                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.IsAngola && item.DocumentType.ToLower() == "pp") ? "fp" : documentTypeSuffix;
 
                 documentType = documentType.Substring(0, documentType.Length - 2) +documentTypeSuffix;
 

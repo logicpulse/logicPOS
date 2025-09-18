@@ -19,29 +19,7 @@ namespace LogicPOS.Api.Features.Common.Requests
                                                                                              CancellationToken cancellationToken = default,
                                                                                              MemoryCacheEntryOptions cacheOptions = null)
         {
-            bool useCache = UseCache(cacheOptions);
-
-            if (useCache && _cache.TryGetValue(endpoint, out List<TEntity> entities))
-            {
-                return entities;
-            }
-
-            try
-            {
-
-                entities = await _httpClient.GetFromJsonAsync<List<TEntity>>(endpoint, cancellationToken);
-
-                if (useCache)
-                {
-                    _cache.Set(endpoint, entities, cacheOptions);
-                }
-
-                return entities;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
+            return await HandleGetEntityQueryAsync<IEnumerable<TEntity>>(endpoint, cancellationToken, cacheOptions);
         }
 
         protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(string endpoint,
@@ -62,6 +40,11 @@ namespace LogicPOS.Api.Features.Common.Requests
                 if (response.StatusCode == HttpStatusCode.NotFound)
                 {
                     return default(TEntity);
+                }
+
+                if (response.IsSuccessStatusCode == false)
+                {
+                    return await GetProblemDetailsFromResponseAsync(response);
                 }
 
                 entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Documents.SendDocumentsByEmail
 {
-    public class SendDocumentsByEmailCommand : IRequest<ErrorOr<Unit>>
+    public class SendDocumentsByEmailCommand : IRequest<ErrorOr<Success>>
     {
         public string Subject { get; set; }
         public string To { get; set; }

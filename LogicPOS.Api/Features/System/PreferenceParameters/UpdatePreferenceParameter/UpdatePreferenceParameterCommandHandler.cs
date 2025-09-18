@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter
 {
     public class UpdatePreferenceParameterCommandHandler :
-        RequestHandler<UpdatePreferenceParameterCommand, ErrorOr<Unit>>
+        RequestHandler<UpdatePreferenceParameterCommand, ErrorOr<Success>>
     {
         public UpdatePreferenceParameterCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePreferenceParameterCommand command,
+        public override async Task<ErrorOr<Success>> Handle(UpdatePreferenceParameterCommand command,
                                                    CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"preferenceparameters/{command.Id}", command, cancellationToken);

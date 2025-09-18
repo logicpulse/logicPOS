@@ -187,5 +187,18 @@ namespace LogicPOS.UI.Services
 
             return true;
         }
+
+        public static bool DeleteOrder(Guid orderId)
+        {
+            var closeResult = DependencyInjection.Mediator.Send(new DeleteOrderCommand(orderId, "?")).Result;
+
+            if (closeResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(closeResult);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

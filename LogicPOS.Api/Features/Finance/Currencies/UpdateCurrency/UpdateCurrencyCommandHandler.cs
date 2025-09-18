@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Currencies.UpdateCurrency
 {
-    public class UpdateCurrencyCommandHandler : RequestHandler<UpdateCurrencyCommand, ErrorOr<Unit>>
+    public class UpdateCurrencyCommandHandler : RequestHandler<UpdateCurrencyCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
         public UpdateCurrencyCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Currencies.UpdateCurrency
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateCurrencyCommand command,
+        public override async Task<ErrorOr<Success>> Handle(UpdateCurrencyCommand command,
                                                            CancellationToken cancellationToken = default)
         {
            var result= await HandleUpdateCommandAsync($"currencies/{command.Id}", command, cancellationToken);

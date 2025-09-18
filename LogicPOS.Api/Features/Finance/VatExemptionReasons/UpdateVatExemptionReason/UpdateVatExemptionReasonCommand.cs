@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.VatExemptionReasons.UpdateVatExemptionReason
 {
-    public class UpdateVatExemptionReasonCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateVatExemptionReasonCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

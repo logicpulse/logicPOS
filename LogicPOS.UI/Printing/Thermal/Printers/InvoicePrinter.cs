@@ -236,7 +236,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
             _printer.SetLineHeight(100);
 
-            if (_data.CompanyInformations.CountryCode2.ToUpper() == "PT" && !string.IsNullOrEmpty(_data.Document.ATQRCode))
+            if (_data.CompanyInformations.IsPortugal && !string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
                 _printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
                 _printer.NormalLineHeight();

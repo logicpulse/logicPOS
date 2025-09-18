@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Warehouses.Locations.UpdateWarehouseLocation
 {
     public class UpdateWarehouseLocationCommandHandler :
-        RequestHandler<UpdateWarehouseLocationCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateWarehouseLocationCommand, ErrorOr<Success>>
     {
         public UpdateWarehouseLocationCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateWarehouseLocationCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateWarehouseLocationCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"articles/stocks/warehouses/locations/{command.Id}", command, cancellationToken);
         }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily
 {
     public class UpdateArticleSubfamilyCommandHandler :
-        RequestHandler<UpdateArticleSubfamilyCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateArticleSubfamilyCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
         public UpdateArticleSubfamilyCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateArticleSubfamilyCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateArticleSubfamilyCommand command, CancellationToken cancellationToken = default)
         {
             var result = await HandleUpdateCommandAsync($"articles/subfamilies/{command.Id}", command, cancellationToken);
 

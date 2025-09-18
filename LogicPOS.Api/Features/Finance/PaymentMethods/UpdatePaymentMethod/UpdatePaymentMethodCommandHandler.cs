@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.PaymentMethods.UpdatePaymentMethod
 {
     public class UpdatePaymentMethodCommandHandler :
-        RequestHandler<UpdatePaymentMethodCommand, ErrorOr<Unit>>
+        RequestHandler<UpdatePaymentMethodCommand, ErrorOr<Success>>
     {
         public UpdatePaymentMethodCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePaymentMethodCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdatePaymentMethodCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/payment/methods/{command.Id}", command, cancellationToken);
         }

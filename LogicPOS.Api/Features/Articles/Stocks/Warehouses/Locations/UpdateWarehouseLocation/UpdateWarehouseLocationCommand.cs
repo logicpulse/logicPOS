@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Warehouses.Locations.UpdateWarehouseLocation
 {
-    public class UpdateWarehouseLocationCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateWarehouseLocationCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public string Designation { get; set; }

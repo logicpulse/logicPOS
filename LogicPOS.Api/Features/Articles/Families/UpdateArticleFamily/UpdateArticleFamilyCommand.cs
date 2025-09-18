@@ -5,7 +5,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily
 {
-    public class UpdateArticleFamilyCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateArticleFamilyCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint? NewOrder { get; set; }

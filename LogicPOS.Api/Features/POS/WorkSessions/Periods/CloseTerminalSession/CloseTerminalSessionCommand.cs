@@ -3,7 +3,7 @@ using MediatR;
 
 namespace LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodSession
 {
-    public class CloseTerminalSessionCommand : IRequest<ErrorOr<Unit>>
+    public class CloseTerminalSessionCommand : IRequest<ErrorOr<Success>>
     {
         public decimal Amount { get; set; }
         public string Notes { get; set; }

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Users.ResetPassword
 {
     public class ResetPasswordCommandHandler :
-        RequestHandler<ResetPasswordCommand, ErrorOr<Unit>>
+        RequestHandler<ResetPasswordCommand, ErrorOr<Success>>
     {
         public ResetPasswordCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public async override Task<ErrorOr<Unit>> Handle(ResetPasswordCommand command, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<Success>> Handle(ResetPasswordCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"users/{command.UserId}/reset-password", command, cancellationToken);
         }

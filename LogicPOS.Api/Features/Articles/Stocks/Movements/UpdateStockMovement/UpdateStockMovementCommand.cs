@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.UpdateStockMovement
 {
-    public class UpdateStockMovementCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateStockMovementCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public Guid? SupplierId { get; set; }

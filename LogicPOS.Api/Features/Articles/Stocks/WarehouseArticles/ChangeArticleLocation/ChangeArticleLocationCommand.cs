@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation
 {
-    public class ChangeArticleLocationCommand : IRequest<ErrorOr<Unit>>
+    public class ChangeArticleLocationCommand : IRequest<ErrorOr<Success>>
     {
         public Guid WarehouseArticleId { get; set; }
         public Guid LocationId { get; set; }

@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Users.UpdateUser
 {
-    public class UpdateUserCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateUserCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint? NewOrder { get; set; }

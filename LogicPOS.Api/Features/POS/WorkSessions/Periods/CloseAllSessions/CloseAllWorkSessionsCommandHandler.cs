@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.WorkSessions.CloseAllSessions
 {
     public class CloseAllWorkSessionsCommandHandler :
-        RequestHandler<CloseAllWorkSessionsCommand, ErrorOr<Unit>>
+        RequestHandler<CloseAllWorkSessionsCommand, ErrorOr<Success>>
     {
         public CloseAllWorkSessionsCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(CloseAllWorkSessionsCommand command,
+        public override async Task<ErrorOr<Success>> Handle(CloseAllWorkSessionsCommand command,
                                                          CancellationToken cancellationToken = default)
         {
            return await HandleUpdateCommandAsync("worksessions/periods/close-all-sessions",

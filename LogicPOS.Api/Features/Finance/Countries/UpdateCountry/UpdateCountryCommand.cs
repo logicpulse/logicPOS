@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Countries.UpdateCountry
 {
-    public class UpdateCountryCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateCountryCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

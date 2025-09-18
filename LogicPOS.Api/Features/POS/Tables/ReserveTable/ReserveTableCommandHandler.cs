@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Tables.ReserveTable
 {
     public class ReserveTableCommandHandler :
-        RequestHandler<ReserveTableCommand, ErrorOr<Unit>>
+        RequestHandler<ReserveTableCommand, ErrorOr<Success>>
     {
         public ReserveTableCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(ReserveTableCommand command,
+        public override async Task<ErrorOr<Success>> Handle(ReserveTableCommand command,
                                                          CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"tables/{command.TableId}/reserve",

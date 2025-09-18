@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Places.UpdatePlace
 {
     public class UpdatePlaceCommandHandler
-         : RequestHandler<UpdatePlaceCommand, ErrorOr<Unit>>
+         : RequestHandler<UpdatePlaceCommand, ErrorOr<Success>>
     {
         public UpdatePlaceCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePlaceCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdatePlaceCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"places/{command.Id}", command, cancellationToken);
         }

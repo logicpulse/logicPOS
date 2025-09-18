@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.InputReaders.UpdateInputReader
 {
-    public class UpdateInputReaderCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateInputReaderCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

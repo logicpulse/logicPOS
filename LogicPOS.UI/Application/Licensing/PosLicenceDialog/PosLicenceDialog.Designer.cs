@@ -147,13 +147,13 @@ namespace LogicPOS.UI.Components.Licensing
             labelWithoutInternetContactCompanyNameLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyNameValue = new Label(AppSettings.Plugins.AppCompanyName);
+            Label labelWithoutInternetContactCompanyNameValue = new Label("LogicPulse Technologies");
             labelWithoutInternetContactCompanyNameValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameValue, false, false, 0);
 
             //Phone
-            string[] primaryPhones = AppSettings.Plugins.AppCompanyPhone?.Split(new string[] { " / " }, StringSplitOptions.None);
+            string[] primaryPhones = ("+351 233 042 347 / +351 910 287 029 / +351 800 180 500").Split(new string[] { " / " }, StringSplitOptions.None);
             Label labelWithoutInternetContactCompanyPhoneLabel = new Label(GeneralUtils.GetResourceByName("global_phone"));
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
@@ -168,7 +168,7 @@ namespace LogicPOS.UI.Components.Licensing
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebLabel, false, false, (uint)padding * 2);
-            Label labelWithoutInternetContactCompanyWebValue = new Label(AppSettings.Plugins.AppCompanyWeb);
+            Label labelWithoutInternetContactCompanyWebValue = new Label("http://www.logicpulse.com");
             labelWithoutInternetContactCompanyWebValue.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebValue.ModifyFont(FontDescription.FromString("Courier 10"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebValue, false, false, 0);

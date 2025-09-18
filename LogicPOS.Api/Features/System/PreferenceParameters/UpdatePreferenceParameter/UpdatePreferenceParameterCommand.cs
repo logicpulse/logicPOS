@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter
 {
-    public class UpdatePreferenceParameterCommand : IRequest<ErrorOr<Unit>>
+    public class UpdatePreferenceParameterCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

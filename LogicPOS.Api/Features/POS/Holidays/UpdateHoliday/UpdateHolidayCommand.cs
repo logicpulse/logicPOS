@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Holidays.UpdateHoliday
 {
-    public class UpdateHolidayCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateHolidayCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

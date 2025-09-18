@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Articles.Classes.UpdateArticleClass
 {
-    public class UpdateArticleClassCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateArticleClassCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

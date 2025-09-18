@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Articles.Types.UpdateArticleType
 {
     public class UpdateArticleTypeCommandHandler :
-        RequestHandler<UpdateArticleTypeCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateArticleTypeCommand, ErrorOr<Success>>
     {
         public UpdateArticleTypeCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateArticleTypeCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateArticleTypeCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/articles/types/{command.Id}", command, cancellationToken);
         }

@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.PrinterTypes.UpdatePrinterType
 {
     public class UpdatePrinterTypeCommandHandler
-         : RequestHandler<UpdatePrinterTypeCommand, ErrorOr<Unit>>
+         : RequestHandler<UpdatePrinterTypeCommand, ErrorOr<Success>>
     {
         public UpdatePrinterTypeCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePrinterTypeCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdatePrinterTypeCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"printers/types/{command.Id}", command, cancellationToken);
         }

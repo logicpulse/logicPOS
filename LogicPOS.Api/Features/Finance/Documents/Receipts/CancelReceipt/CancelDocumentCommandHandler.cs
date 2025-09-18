@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Documents.Receipts.CancelReceipt
 {
     public class CancelReceiptCommandHandler :
-        RequestHandler<CancelReceiptCommand, ErrorOr<Unit>>
+        RequestHandler<CancelReceiptCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
         public CancelReceiptCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Documents.Receipts.CancelReceipt
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(CancelReceiptCommand command,
+        public override async Task<ErrorOr<Success>> Handle(CancelReceiptCommand command,
                                                          CancellationToken cancellationToken = default)
         {
             var result = await HandleUpdateCommandAsync($"receipts/{command.Id}/cancel", command, cancellationToken);

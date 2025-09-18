@@ -36,27 +36,6 @@ namespace LogicPOS.Api.Features.Common.Requests
 
         public abstract Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken = default);
 
-        protected async Task<ErrorOr<Unit>> HandleGetCommandAsync(string endpoint,
-                                                                  CancellationToken cancellationToken = default)
-        {
-            try
-            {
-                var response = await _httpClient.GetAsync(endpoint, cancellationToken);
-
-                if (response.IsSuccessStatusCode == false)
-                {
-                    return Error.Failure();
-                }
-
-           
-                return Unit.Value;
-            }
-            catch (HttpRequestException)
-            {
-                return ApiErrors.APICommunication;
-            }
-        }
-
        
     }
 }

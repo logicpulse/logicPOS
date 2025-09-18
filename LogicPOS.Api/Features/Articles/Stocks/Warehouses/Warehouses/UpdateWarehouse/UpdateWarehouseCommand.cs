@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace LogicPOS.Api.Features.Warehouses.UpdateWarehouse
 {
-    public class UpdateWarehouseCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateWarehouseCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

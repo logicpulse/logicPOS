@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.VatExemptionReasons.UpdateVatExemptionReason
 {
     public class UpdateVatExemptionReasonCommandHandler :
-        RequestHandler<UpdateVatExemptionReasonCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateVatExemptionReasonCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
         public UpdateVatExemptionReasonCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache Cache) : base(factory)
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.VatExemptionReasons.UpdateVatExemptionReason
             _keyedMemoryCache = Cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateVatExemptionReasonCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateVatExemptionReasonCommand command, CancellationToken cancellationToken = default)
         {
             var result= await HandleUpdateCommandAsync($"/vatexemptionreasons/{command.Id}", command, cancellationToken);
             if (result.IsError == false)

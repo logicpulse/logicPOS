@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Tables.UpdateTable
 {
     public class UpdateTableCommandHandler
-         : RequestHandler<UpdateTableCommand, ErrorOr<Unit>>
+         : RequestHandler<UpdateTableCommand, ErrorOr<Success>>
     {
         public UpdateTableCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateTableCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateTableCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"tables/{command.Id}", command, cancellationToken);
         }

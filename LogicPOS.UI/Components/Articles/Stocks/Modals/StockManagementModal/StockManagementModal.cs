@@ -12,14 +12,14 @@ namespace LogicPOS.UI.Components.Modals
     public partial class StockManagementModal : Modal
     {
         private static Size _modalSize;
-        public StockManagementModal(Window parent, Size modalSize) : base(parent,
+        private StockManagementModal(Window parent, Size modalSize) : base(parent,
                                                           LocalizedString.Instance["global_stock_movements"],
                                                           modalSize,
                                                           windowMode: true)
         {
         }
 
-        public static void RunModal()
+        public static void RunModal(Window parent)
         {
             if (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800)
             {
@@ -29,10 +29,10 @@ namespace LogicPOS.UI.Components.Modals
             {
                 _modalSize=new Size(1200, 700);
             }
-            if (AppSettings.License.LicenseData.ModuleStocks)
+
+            if (false)
             {
-                var parentWindow = BackOfficeWindow.Instance;
-                var stockManagementModal = new StockManagementModal(parentWindow,_modalSize);
+                var stockManagementModal = new StockManagementModal(parent,_modalSize);
                 stockManagementModal.Run();
                 stockManagementModal.Destroy();
             }

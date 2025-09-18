@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement
 {
     public class AddStockMovementCommandHandler :
-        RequestHandler<AddStockMovementCommand, ErrorOr<Unit>>
+        RequestHandler<AddStockMovementCommand, ErrorOr<Success>>
     {
         public AddStockMovementCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(AddStockMovementCommand command,
+        public override async Task<ErrorOr<Success>> Handle(AddStockMovementCommand command,
                                                          CancellationToken cancellationToken = default)
         {
-            return await HandlePostCommandAsync("articles/stocks/movements", command, cancellationToken);
+            return await HandleNoResponsePostCommandAsync("articles/stocks/movements", command, cancellationToken);
         }
     }
 }

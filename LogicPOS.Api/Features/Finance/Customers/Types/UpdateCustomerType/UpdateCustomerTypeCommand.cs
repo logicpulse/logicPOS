@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Customers.Types.UpdateCustomerType
 {
-    public class UpdateCustomerTypeCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateCustomerTypeCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

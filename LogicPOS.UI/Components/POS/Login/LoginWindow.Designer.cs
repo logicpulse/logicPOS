@@ -14,7 +14,7 @@ using Image = Gtk.Image;
 
 namespace LogicPOS.UI.Components.Windows
 {
-    public partial class LoginWindow 
+    public partial class LoginWindow
     {
         private UserPinPanel PinPanel { get; set; }
         public UsersMenu MenuUsers { get; set; }
@@ -141,24 +141,8 @@ namespace LogicPOS.UI.Components.Windows
                     fix.Put(MenuUsers, tablePadUserPosition.X, tablePadUserPosition.Y);
                 }
 
-                //Label Version
-                string appVersion = "";
-                if (AppSettings.License.LicenseData.Reseller != null &&
-                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "logicpulse" &&
-                    AppSettings.License.LicenseData.Reseller.ToString().ToLower() != "")
-                {
-                    //appVersion = string.Format("Brough by {1}\n{0}",appVersion, GlobalFramework.LicenceReseller);
-                    appVersion = string.Format("Powered by {0}© Vers. {1}", AppSettings.License.LicenseData.Reseller, AppSettings.ProductVersion);
-                }
-                else
-                {
-                    if (AppSettings.Plugins.AppSoftwareVersionFormat != null)
-                    {
-                        appVersion = string.Format(AppSettings.Plugins.AppSoftwareVersionFormat, AppSettings.ProductVersion);
-                    }
-                }
 
-                Label labelVersion = new Label(appVersion);
+                Label labelVersion = new Label($"Powered by LogicPulse Technologies © Vers. {AppSettings.ProductVersion}");
                 Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                 labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
                 labelVersion.ModifyFont(fontDescLabelVersion);
@@ -170,21 +154,9 @@ namespace LogicPOS.UI.Components.Windows
                 //Put in Fix
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
-                //LOGO
-                if (AppSettings.Plugins.LicenceManager != null)
-                {
-                    string fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\logicPOS_loggericpulse_login.png");
+                Image imageLogo = new Image(Utils.GetThemeFileLocation("Images\\logicPOS_logo.png"));
+                fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
 
-                    if (!string.IsNullOrEmpty(AppSettings.License.LicenseData.Reseller) && AppSettings.License.LicenseData.Reseller == "NewTech")
-                    {
-                        fileImageBackOfficeLogo = string.Format(AppSettings.Paths.Themes + @"Default\Images\Branding\{0}\logicPOS_loggericpulse_login.png", "NT");
-                    }
-                }
-                else
-                {
-                    Image imageLogo = new Image(Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo));
-                    fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
-                }
 
                 ScreenArea.Add(fix);
 

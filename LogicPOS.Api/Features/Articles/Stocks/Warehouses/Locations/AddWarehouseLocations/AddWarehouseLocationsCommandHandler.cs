@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Warehouses.Locations.AddWarehouseLocations
 {
     public class AddWarehouseLocationsCommandHandler :
-        RequestHandler<AddWarehouseLocationsCommand, ErrorOr<Unit>>
+        RequestHandler<AddWarehouseLocationsCommand, ErrorOr<Success>>
     {
         public AddWarehouseLocationsCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(AddWarehouseLocationsCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(AddWarehouseLocationsCommand command, CancellationToken cancellationToken = default)
         {
-            return await HandlePostCommandAsync($"articles/stocks/warehouses/{command.Id}/locations", command, cancellationToken);
+            return await HandleNoResponsePostCommandAsync($"articles/stocks/warehouses/{command.Id}/locations", command, cancellationToken);
         }
     }
 }

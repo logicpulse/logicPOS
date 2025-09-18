@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.CommissionGroups.UpdateCommissionGroup
 {
-    public class UpdateCommissionGroupCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateCommissionGroupCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

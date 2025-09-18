@@ -95,11 +95,8 @@ namespace LogicPOS.UI.Components.Modals
 
             VBox.PackStart(CreateNoteBook(), true, true, 0);
 
-            if (_modalMode != EntityEditionModalMode.Insert)
-            {
-                AddStatusBar();
-            }
-
+            AddStatusBar();
+            
             AddActionButtons();
         }
 
@@ -306,7 +303,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected ErrorOr<Guid> ExecuteAddCommand(IRequest<ErrorOr<Guid>> command) => ExecuteCommand(command);
 
-        protected ErrorOr<Unit> ExecuteUpdateCommand(IRequest<ErrorOr<Unit>> command) => ExecuteCommand(command);
+        protected ErrorOr<Success> ExecuteUpdateCommand(IRequest<ErrorOr<Success>> command) => ExecuteCommand(command);
 
         protected IEnumerable<TE> ExecuteGetEntitiesQuery<TE>(IRequest<ErrorOr<IEnumerable<TE>>> query)
         {

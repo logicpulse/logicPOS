@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay
 {
     public class CloseWorkSessionPeriodDayCommandHandler :
-        RequestHandler<CloseWorkSessionPeriodDayCommand, ErrorOr<Unit>>
+        RequestHandler<CloseWorkSessionPeriodDayCommand, ErrorOr<Success>>
     {
         public CloseWorkSessionPeriodDayCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(CloseWorkSessionPeriodDayCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(CloseWorkSessionPeriodDayCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync("worksession/periods/close-day", command, cancellationToken);
        

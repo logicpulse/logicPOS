@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Documents.CancelDocument
 {
     public class CancelDocumentCommandHandler :
-        RequestHandler<CancelDocumentCommand, ErrorOr<Unit>>
+        RequestHandler<CancelDocumentCommand, ErrorOr<Success>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
 
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Documents.CancelDocument
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(CancelDocumentCommand command,
+        public override async Task<ErrorOr<Success>> Handle(CancelDocumentCommand command,
                                                    CancellationToken cancellationToken = default)
         {
             var result =  await HandleUpdateCommandAsync($"documents/{command.Id}/cancel", command, cancellationToken);

@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup
 {
-    public class UpdateDiscountGroupCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateDiscountGroupCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

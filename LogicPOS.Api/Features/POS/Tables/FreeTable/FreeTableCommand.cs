@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Tables.FreeTable
 {
-    public class FreeTableCommand : IRequest<ErrorOr<Unit>>
+    public class FreeTableCommand : IRequest<ErrorOr<Success>>
     {
         public Guid TableId { get; set; }
 

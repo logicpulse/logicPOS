@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Users.ResetPassword
 {
-    public class ResetPasswordCommand : IRequest<ErrorOr<Unit>>
+    public class ResetPasswordCommand : IRequest<ErrorOr<Success>>
     {
         public Guid UserId { get; set; }
         public string OldPassword { get; set; }

@@ -62,23 +62,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Articles 
         private void BtnStock_Clicked(object sender, EventArgs e)
         {
-            var messageDialog = new CustomAlert(this)
-                                        .WithMessageType(MessageType.Warning)
-                                        .WithButtonsType(ButtonsType.OkCancel)
-                                        .WithTitleResource("global_warning")
-                                        .WithMessageResource("global_warning_acquire_module_stocks")
-                                        .ShowAlert();
-
-
-            //if (messageDialog == ResponseType.Ok)
-            //{
-            //    Process.Start("https://logic-pos.com/");
-            //}
-            var modalSize = (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800) ? new Size(1000, 700) : new Size(1200, 700);
-
-            var modal = new StockManagementModal(this, modalSize);
-            modal.Run();
-            modal.Destroy();
+            StockManagementModal.RunModal(this);
         }
         #endregion
 

@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Tables.ReserveTable
 {
-    public class ReserveTableCommand : IRequest<ErrorOr<Unit>>
+    public class ReserveTableCommand : IRequest<ErrorOr<Success>>
     {
         public Guid TableId { get; set; }
 

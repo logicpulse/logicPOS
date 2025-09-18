@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.MeasurementUnits.UpdateMeasurementUnit
 {
     public class UpdateMeasurementUnitCommandHandler :
-        RequestHandler<UpdateMeasurementUnitCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateMeasurementUnitCommand, ErrorOr<Success>>
     {
         public UpdateMeasurementUnitCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateMeasurementUnitCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateMeasurementUnitCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/articles/measurementunits/{command.Id}", command, cancellationToken);
         }

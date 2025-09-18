@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.SizeUnits.UpdateSizeUnit
 {
-    public class UpdateSizeUnitCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateSizeUnitCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

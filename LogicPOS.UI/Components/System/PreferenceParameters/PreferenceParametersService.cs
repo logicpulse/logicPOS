@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,16 +43,30 @@ namespace LogicPOS.UI.Services
 
         private static void LoadCompanyInformations()
         {
-            var mediator = DependencyInjection.Mediator;
-            var companyInformations = mediator.Send(new GetCompanyInformationsQuery()).Result;
-
-            if (companyInformations.IsError)
+            try
             {
-                ErrorHandlingService.HandleApiError(companyInformations, true);
-                return;
-            }
+                var companyInformations = DependencyInjection.Mediator.Send(new GetCompanyInformationsQuery()).Result;
 
-            _companyInformations = companyInformations.Value;
+                if (companyInformations.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(companyInformations, false);
+                    _companyInformations = new CompanyInformations
+                    {
+                        CountryCode2 = "PT" 
+                    };
+                    return;
+                }
+
+                _companyInformations = companyInformations.Value;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to load company informations");
+                _companyInformations = new CompanyInformations
+                {
+                    CountryCode2 = "PT" 
+                };
+            }
         }
 
         public static bool UseCachedImages => Convert.ToBoolean(GetPreferenceParameterValue("USE_CACHED_IMAGES"));

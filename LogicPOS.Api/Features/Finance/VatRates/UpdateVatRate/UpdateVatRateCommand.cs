@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.VatRates.UpdateVatRate
 {
-    public class UpdateVatRateCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateVatRateCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

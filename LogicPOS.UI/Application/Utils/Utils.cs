@@ -521,58 +521,6 @@ namespace logicpos
             return result;
         }
 
-        public static bool AssignLicence(string pFileName, bool pDebug = false)
-        {
-            bool result = false;
-
-            try
-            {
-                StreamReader sr = null;
-                try
-                {
-                    IniFileParser iNIFile = new IniFileParser(pFileName);
-
-                    //Load
-                    AppSettings.License.LicenseData.HardwareId =CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "HardwareId", "Empresa Demonstração"), true);
-                    AppSettings.License.LicenseData.Company = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Company", "NIF Demonstração"), true);
-                    AppSettings.License.LicenseData.FiscalNumber = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Nif", "Morada Demonstração"), true);
-                    AppSettings.License.LicenseData.Address = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Address", "mail@demonstracao.tld"), true);
-                    AppSettings.License.LicenseData.Email = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Email", string.Empty), true);
-                    AppSettings.License.LicenseData.Telephone = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Telephone", "Telefone Demonstração"), true);
-                    AppSettings.License.LicenseData.Reseller = CryptographyUtils.Decrypt(iNIFile.GetValue("Licence", "Reseller", "LogicPulse"), true);
-                    //Test
-                    if (pDebug)
-                    {
-                        Log.Debug(string.Format("{0}:{1}", "HardwareId", AppSettings.License.LicenseData.HardwareId));
-                        Log.Debug(string.Format("{0}:{1}", "Company", AppSettings.License.LicenseData.Company));
-                        Log.Debug(string.Format("{0}:{1}", "Nif", AppSettings.License.LicenseData.FiscalNumber));
-                        Log.Debug(string.Format("{0}:{1}", "Address", AppSettings.License.LicenseData.Address));
-                        Log.Debug(string.Format("{0}:{1}", "Email", AppSettings.License.LicenseData.Email));
-                        Log.Debug(string.Format("{0}:{1}", "Telephone", AppSettings.License.LicenseData.Telephone));
-                        Log.Debug(string.Format("{0}:{1}", "Reseller", AppSettings.License.LicenseData.Reseller));
-                    }
-                    iNIFile.Flush();
-
-                    result = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-                finally
-                {
-                    if (sr != null) sr.Close();
-                    sr = null;
-                }
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex,"Exception");
-            }
-
-            return result;
-        }
-
         public static bool IsPortOpen(string portName)
         {
             var port = new SerialPort(portName);

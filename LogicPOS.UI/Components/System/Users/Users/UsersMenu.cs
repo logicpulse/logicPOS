@@ -1,17 +1,15 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Users.GetAllUsers;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Common.Menus;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
-using MediatR;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
 {
     public class UsersMenu : Menu<User>
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
         private Size ButtonSize { get; } = new Size(120, 102);
         private string ButtonName => "buttonUserId";
 
@@ -25,17 +23,18 @@ namespace LogicPOS.UI.Components.Menus
                                                      btnNext: btnNext,
                                                      sourceWindow: sourceWindow)
         {
+            SelectFirstOnReload = true;
             Refresh();
         }
 
         protected override void LoadEntities()
         {
             Entities.Clear();
-            var getUsersResult = _mediator.Send(new GetAllUsersQuery()).Result;
+            var users = UsersService.GetAllUsers();
 
-            if (getUsersResult.IsError == false)
+            if (users != null)
             {
-                Entities.AddRange(getUsersResult.Value);
+                Entities.AddRange(users);
             }
         }
 

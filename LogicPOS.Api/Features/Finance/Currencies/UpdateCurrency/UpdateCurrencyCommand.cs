@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Currencies.UpdateCurrency
 {
-    public class UpdateCurrencyCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateCurrencyCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }

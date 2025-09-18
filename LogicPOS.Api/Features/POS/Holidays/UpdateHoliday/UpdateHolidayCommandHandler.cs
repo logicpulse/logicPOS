@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Holidays.UpdateHoliday
 {
     public class UpdateHolidayCommandHandler :
-        RequestHandler<UpdateHolidayCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateHolidayCommand, ErrorOr<Success>>
     {
         public UpdateHolidayCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateHolidayCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateHolidayCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/holidays/{command.Id}", command, cancellationToken);
         }

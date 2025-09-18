@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.InputReaders.UpdateInputReader
 {
     public class UpdateInputReaderCommandHandler
-         : RequestHandler<UpdateInputReaderCommand, ErrorOr<Unit>>
+         : RequestHandler<UpdateInputReaderCommand, ErrorOr<Success>>
     {
         public UpdateInputReaderCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateInputReaderCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateInputReaderCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"inputreaders/{command.Id}", command, cancellationToken);
         }

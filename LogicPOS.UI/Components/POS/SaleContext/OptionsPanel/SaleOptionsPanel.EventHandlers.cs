@@ -60,6 +60,12 @@ namespace LogicPOS.UI.Components.POS
 
         private static bool DeleteCurrentOrder()
         {
+            if (PreferenceParametersService.CompanyInformations.IsPortugal)
+            {
+                return  OrdersService.DeleteOrder(SaleContext.CurrentOrder.Id.Value);
+
+            }
+
             DeleteOrderModal modal = new DeleteOrderModal(SaleContext.CurrentOrder.Id.Value,POSWindow.Instance);
 
             ResponseType deleteModalResponse = (ResponseType)modal.Run();

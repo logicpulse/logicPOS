@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Customers.DiscountGroups.UpdateDiscountGroup
 {
     public class UpdateDiscountGroupCommandHandler :
-        RequestHandler<UpdateDiscountGroupCommand, ErrorOr<Unit>>
+        RequestHandler<UpdateDiscountGroupCommand, ErrorOr<Success>>
     {
         public UpdateDiscountGroupCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdateDiscountGroupCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateDiscountGroupCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"discountgroups/{command.Id}", command, cancellationToken);
         }

@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Articles.PriceTypes.UpdatePriceType
 {
     public class UpdatePriceTypeCommandHandler :
-        RequestHandler<UpdatePriceTypeCommand, ErrorOr<Unit>>
+        RequestHandler<UpdatePriceTypeCommand, ErrorOr<Success>>
     {
         public UpdatePriceTypeCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Unit>> Handle(UpdatePriceTypeCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdatePriceTypeCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"/articles/pricetypes/{command.Id}", command, cancellationToken);
         }

@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Tables.UpdateTable
 {
-    public class UpdateTableCommand : IRequest<ErrorOr<Unit>>
+    public class UpdateTableCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
         public uint NewOrder { get; set; }
