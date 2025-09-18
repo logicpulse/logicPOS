@@ -1,10 +1,10 @@
 ﻿namespace LogicPOS.Api.Features.Company
 {
-    public class CompanyInformations
+    public class CompanyInformation
     {
         public string Name { get; set; }
         public string BusinessName { get; set; }
-        public string ComercialName { get; set; }
+        public string CommercialName { get; set; }
         public string LogoPng { get; set; }
         public string LogoBmp { get; set; }
         public string Address { get; set; }

@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Printing
 
         public abstract void Print();
 
-        protected CompanyInformations GetCompanyInformations()
+        protected CompanyInformation GetCompanyInformations()
         {
             return PreferenceParametersService.CompanyInformations;
         }

@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Company.GetCompanyInformations
 {
-    public class GetCompanyInformationsQueryHandler : RequestHandler<GetCompanyInformationsQuery, ErrorOr<CompanyInformations>>
+    public class GetCompanyInformationsQueryHandler : RequestHandler<GetCompanyInformationsQuery, ErrorOr<CompanyInformation>>
     {
         public GetCompanyInformationsQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public async override Task<ErrorOr<CompanyInformations>> Handle(GetCompanyInformationsQuery request, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<CompanyInformation>> Handle(GetCompanyInformationsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<CompanyInformations>("company/info", cancellationToken);
+            return await HandleGetEntityQueryAsync<CompanyInformation>("company/info", cancellationToken);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Services
     public static class PreferenceParametersService
     {
         private static IEnumerable<PreferenceParameter> _preferenceParameters;
-        private static CompanyInformations _companyInformations;
+        private static CompanyInformation _companyInformations;
 
         public static string GetPreferenceParameterValue(string token)
         {
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Services
                 if (companyInformations.IsError)
                 {
                     ErrorHandlingService.HandleApiError(companyInformations, false);
-                    _companyInformations = new CompanyInformations
+                    _companyInformations = new CompanyInformation
                     {
                         CountryCode2 = "PT" 
                     };
@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Services
             catch (Exception ex)
             {
                 Log.Error(ex, "Failed to load company informations");
-                _companyInformations = new CompanyInformations
+                _companyInformations = new CompanyInformation
                 {
                     CountryCode2 = "PT" 
                 };
@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Services
         public static bool ServiceAtSendDocumentsWaybill => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS_WAYBILL"));
         public static string SystemCurrency => GetPreferenceParameterValue("SYSTEM_CURRENCY");
 
-        public static CompanyInformations CompanyInformations
+        public static CompanyInformation CompanyInformations
         {
             get
             {

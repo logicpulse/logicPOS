@@ -266,6 +266,6 @@ namespace LogicPOS.UI.Printing
     {
         public Guid DocumentId { get; set; }
         public DocumentPrintingModel Document { get; set; }
-        public CompanyInformations CompanyInformations { get; set; }
+        public CompanyInformation CompanyInformations { get; set; }
     }
 }
