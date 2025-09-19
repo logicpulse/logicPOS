@@ -91,7 +91,7 @@ namespace LogicPOS.UI.Application
                 }
                 else
                 {
-                    if (Utils.IsPortOpen(TerminalService.Terminal.WeighingMachine.PortName))
+                    if (logicpos.Utils.IsPortOpen(TerminalService.Terminal.WeighingMachine.PortName))
                     {
                         WeighingBalance = new WeighingBalance(TerminalService.Terminal.WeighingMachine);
                     }

@@ -5,6 +5,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Licensing;
+using LogicPOS.UI.Application.Utils;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
@@ -12,7 +13,9 @@ using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Globalization;
+using System.IO;
 using System.Threading;
+using System.Windows;
 
 
 namespace LogicPOS.UI
@@ -50,6 +53,13 @@ namespace LogicPOS.UI
         {
             ConfigureLogging();
 
+            if(IsFirstLaunch())
+            {
+                Log.Information("First launch detected, starting migrator...");
+                MigratorUtility.LaunchMigrator();
+                DisableFirstLaunch();
+            }
+
             using (var singleProgramInstance = new SingleProgramInstance())
             {
                 if (singleProgramInstance.IsSingleInstance == false)
@@ -82,6 +92,24 @@ namespace LogicPOS.UI
             }
 
             Log.CloseAndFlush();
+        }
+        
+        private static bool IsFirstLaunch()
+        {
+            return File.Exists("_booted.pos") == false;
+        }
+
+
+        private static void DisableFirstLaunch()
+        {
+            try
+            {
+               File.CreateText("_booted.pos").Close();
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error disabling first launch: " + ex.Message, ex);
+            }
         }
 
         private static void Quit()
