@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public GetArticlesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
         public PaginatedResult<ArticleViewModel> Articles { get; private set; }
-        private Dictionary<Guid,decimal> _articleStocks = new Dictionary<Guid, decimal>();
+        private Dictionary<Guid, decimal> _articleStocks = new Dictionary<Guid, decimal>();
 
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
@@ -46,7 +46,15 @@ namespace LogicPOS.UI.Components.Pages
                 _entities.AddRange(Articles.Items);
             }
 
-            _articleStocks = ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id));
+            LoadCurrentArticlesStocks();
+        }
+
+        private void LoadCurrentArticlesStocks()
+        {
+            ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id)).ForEach(ts =>
+            {
+                _articleStocks[ts.ArticleId] =  ts.Quantity; 
+            });
         }
 
         public Article GetSelectedArticle()
@@ -89,14 +97,14 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            
+
             this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_CREATE");
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_EDIT");
             this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_DELETE");
             this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLE_VIEW");
 
         }
-        
+
         #region Singleton
         private static ArticlesPage _instance;
 

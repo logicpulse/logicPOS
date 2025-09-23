@@ -24,6 +24,8 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             Articles = paginatedResult.Value;
+            LoadCurrentArticlesStocks();
+
             AddEntitiesToModel(Articles.Items);
         }
     }

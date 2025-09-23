@@ -19,8 +19,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnTerminals = new IconButtonWithText(
                    new ButtonSettings
                    {
-                       Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_MENU",
-                       BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                       Name = "touchButton_Green",
                        Text = GeneralUtils.GetResourceByName("dialog_edit_ConfigurationPlaceTerminal_tab1_label"),
                        Font = font,
                        FontColor = _colorBaseDialogDefaultButtonFont,
@@ -32,8 +31,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnPreferenceParameters = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_application_setup"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -46,8 +44,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnFiscalYears = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_documentfinance_years_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -59,8 +56,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnPrinters = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_printers"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -73,8 +69,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnArticles = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_ARTICLE_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_articles"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -86,8 +81,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnCustomers = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_CUSTOMER_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_customers"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -99,8 +93,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnUsers = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_USERDETAIL_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_users"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -112,8 +105,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnTables = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_CONFIGURATIONPLACETABLE_VIEW",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_other_tables"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -126,8 +118,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnDocuments = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_DOCUMENTSSHOW_MENU",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -139,8 +130,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnNewDocument = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_DOCUMENTSNEW_MENU",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -152,8 +142,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnPayments = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -165,8 +154,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnArticleStock = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "STOCK_MERCHANDISE_ENTRY_ACCESS",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -179,8 +167,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnReportsMenu = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "REPORT_ACCESS",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("global_reports"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -192,8 +179,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnPrintReportRouter = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "REPORT_COMPANY_BILLING",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("report_company_billing_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -205,8 +191,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnCustomerBalanceDetails = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "REPORT_CUSTOMER_BALANCE_DETAILS",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("report_customer_balance_details_short"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
@@ -218,8 +203,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnSalesPerDate = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "REPORT_SALES_DETAIL_PER_DATE",
-                    BackgroundColor = _colorBaseDialogDefaultButtonBackground,
+                    Name = "touchButton_Green",
                     Text = GeneralUtils.GetResourceByName("report_sales_per_date"),
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,

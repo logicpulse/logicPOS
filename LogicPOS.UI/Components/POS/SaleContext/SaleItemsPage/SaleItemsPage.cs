@@ -196,6 +196,7 @@ namespace LogicPOS.UI.Components.POS
             SelectItem(item);
             UpdateLabelTotalValue();
         }
+
         private void OpenTicket(SaleItem item)
         {
             Clear(true);
@@ -205,6 +206,7 @@ namespace LogicPOS.UI.Components.POS
             SelectItem(item);
             UpdateLabelTotalValue();
             TicketOpened?.Invoke(this, EventArgs.Empty);
+            POSWindow.Instance.UpdateUI();
         }
 
         public void FinishTicket()

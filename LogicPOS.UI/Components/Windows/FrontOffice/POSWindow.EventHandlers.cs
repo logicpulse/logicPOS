@@ -1,14 +1,11 @@
-﻿using ESC_POS_USB_NET.Printer;
-using Gtk;
+﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
-using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using System;
 
@@ -40,7 +37,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void Window_StateEvent(object o, WindowStateEventArgs args)
         {
-           
+
         }
 
         private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)

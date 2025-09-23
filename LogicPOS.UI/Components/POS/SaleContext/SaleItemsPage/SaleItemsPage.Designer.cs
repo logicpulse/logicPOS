@@ -19,10 +19,13 @@ namespace LogicPOS.UI.Components.POS
             GridView = new TreeView();
             GridView.Model = GridViewSettings.Model;
             GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
+            GridView.RulesHint = false;
+            GridView.CanFocus = false;
 
             AddColumns();
             AddGridViewEventHandlers();
         }
+       
         private EventBox CreateTotalPanel()
         {
             Gdk.Color bgColor = (Theme.EventBoxTotal.BackgroundColor as string).StringToGdkColor();
@@ -59,6 +62,7 @@ namespace LogicPOS.UI.Components.POS
 
             return eventBoxTotal;
         }
+      
         public void SetOrderModeBackGround()
         {
             GridView.ModifyBase(StateType.Normal, AppSettings.Instance.ColorPosTicketListModeOrderMainBackground.ToGdkColor());
@@ -68,13 +72,12 @@ namespace LogicPOS.UI.Components.POS
         {
             GridView.ModifyBase(StateType.Normal, AppSettings.Instance.ColorPosTicketListModeTicketBackground.ToGdkColor());
         }
+       
         private void AddColumns()
         {
             GridView.AppendColumn(CreateDesignationColumn());
             GridView.AppendColumn(CreatePriceColumn());
             GridView.AppendColumn(CreateQuantityColumn());
-            GridView.AppendColumn(CreateDiscountColumn());
-            GridView.AppendColumn(CreateVatColumn());
             GridView.AppendColumn(CreateTotalColumn());
         }
 

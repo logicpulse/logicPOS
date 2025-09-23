@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.POS
 
         public static void ReloadCurrentOrder()
         {
-            if(CurrentOrder.Id == null)
+            if (CurrentOrder.Id == null)
             {
                 return;
             }
@@ -53,6 +53,8 @@ namespace LogicPOS.UI.Components.POS
                 }
             }
         }
+
+        public static bool HasOpenTicket() => ItemsPage.Ticket != null;
 
     }
 }

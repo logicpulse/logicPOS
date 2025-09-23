@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.POS;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -31,5 +32,27 @@ namespace LogicPOS.UI.Components.Windows
         public Label LabelCurrentTable { get; set; } = new Label();
         public Label LabelTotalTable { get; set; }
         #endregion
+
+        private IEnumerable<IconButtonWithText> GetBottomActionButtons()
+        {
+            yield return BtnBackOffice;
+            yield return BtnReports;
+            yield return BtnNewDocument;
+            yield return BtnSessionOpening;
+            yield return BtnDocuments;
+            yield return BtnLogOut;
+            yield return BtnChangeUser;
+
+        }
+
+        public void DisableBottomActionButtons(bool disable = true)
+        {
+            var buttons = GetBottomActionButtons();
+            foreach (var button in buttons)
+            {
+                button.Sensitive = !disable;
+            }
+        }
+
     }
 }

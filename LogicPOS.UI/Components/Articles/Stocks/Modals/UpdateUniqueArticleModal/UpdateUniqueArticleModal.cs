@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.StockManagement.UpdateUniqueArticle;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Pages;
@@ -150,7 +151,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             return new AddStockMovementCommand
             {
-                SupplierId = (TxtSaleDocument.SelectedEntity as Document).CustomerId,
+                SupplierId = (TxtSaleDocument.SelectedEntity as DocumentViewModel).Customer.Id,
                 DocumentNumber = TxtSaleDocument.Text,
                 Date = DateTime.Parse(TxtSaleDate.Text),
                 Items = new StockMovementItem[]

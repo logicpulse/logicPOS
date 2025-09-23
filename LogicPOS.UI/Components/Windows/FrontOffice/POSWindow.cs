@@ -657,7 +657,15 @@ namespace LogicPOS.UI.Components.Windows
             {
                 Instance.LabelTotalTable.Text = $"{SaleContext.CurrentOrder.TotalFinal:0.00} : #{SaleContext.CurrentOrder.Tickets.Count}";
             }
-            UpdatePrivileges();
+
+            bool hasOpenTicket = SaleContext.HasOpenTicket();
+            DisableBottomActionButtons(hasOpenTicket);
+
+            if (hasOpenTicket == false)
+            {
+                UpdatePrivileges();
+            }
+
             SaleOptionsPanel.UpdateUI();
         }
 

@@ -15,12 +15,12 @@ namespace LogicPOS.UI.Buttons
 
         private Widget CreateWidget()
         {
-            var image = System.Drawing.Image.FromFile(ButtonSettings.Icon);
-            image = Utils.ResizeAndCrop(image, ButtonSettings.IconSize);
-            Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(image);
+            var icon = System.Drawing.Image.FromFile(ButtonSettings.Icon);
+            icon = Utils.ResizeAndCrop(icon, ButtonSettings.IconSize);
+            Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(icon);
             Image button = new Image(pixBuf);
 
-            image.Dispose();
+            icon.Dispose();
             pixBuf.Dispose();
 
             return button;

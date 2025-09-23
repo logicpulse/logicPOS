@@ -173,16 +173,16 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value.First().Quantity;
         }
         
-        public static Dictionary<Guid, decimal> GetArticlesTotalStocks(IEnumerable<Guid> articleIds)
+        public static List<TotalStock> GetArticlesTotalStocks(IEnumerable<Guid> articleIds)
         {
             var query = new GetArticlesTotalStocksQuery(articleIds);
             var result = DependencyInjection.Mediator.Send(query).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-                return new Dictionary<Guid, decimal>();
+                return null;
             }
-            return result.Value.ToDictionary(x => x.ArticleId, x => x.Quantity);
+            return result.Value.ToList();
         }
     }
 }
