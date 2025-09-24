@@ -139,12 +139,13 @@ namespace LogicPOS.UI.Components.POS
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
         }
-       
+
         private void InitializeScrollersButtons()
         {
             BtnPrevious = new IconButton(
               new ButtonSettings
               {
+                  Name = "buttonPosScrollers",
                   BackgroundColor = Color.White,
                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
@@ -154,6 +155,7 @@ namespace LogicPOS.UI.Components.POS
             BtnNext = new IconButton(
                new ButtonSettings
                {
+                   Name = "buttonPosScrollers",
                    BackgroundColor = Color.White,
                    Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),

@@ -356,7 +356,7 @@ namespace LogicPOS.UI.Components.Windows
             IconButton btnFamiliesPrevious = new IconButton(
                 new ButtonSettings
                 {
-                    Name = "TablePadFamilyButtonPrev",
+                    Name = "buttonPosScrollers",
                     Icon = TablePadFamilyButtonPrevImageFileName,
                     IconSize = new Size(TablePadFamilyButtonPrevSize.Width - 2, TablePadFamilyButtonPrevSize.Height - 2),
                     ButtonSize = new Size(TablePadFamilyButtonPrevSize.Width, TablePadFamilyButtonPrevSize.Height)
@@ -369,7 +369,7 @@ namespace LogicPOS.UI.Components.Windows
             IconButton btnFamiliesNext = new IconButton(
                 new ButtonSettings
                 {
-                    Name = "TablePadFamilyButtonNext",
+                    Name = "buttonPosScrollers",
                     Icon = TablePadFamilyButtonNextImageFileName,
                     IconSize = new Size(TablePadFamilyButtonNextSize.Width - 2, TablePadFamilyButtonNextSize.Height - 2),
                     ButtonSize = new Size(TablePadFamilyButtonNextSize.Width, TablePadFamilyButtonNextSize.Height)
@@ -426,7 +426,7 @@ namespace LogicPOS.UI.Components.Windows
             IconButton btnSubfamiliesPrevious = new IconButton(
                 new ButtonSettings
                 {
-                    Name = "TablePadSubFamilyButtonPrev",
+                    Name = "buttonPosScrollers",
                     Icon = TablePadSubFamilyButtonPrevImageFileName,
                     IconSize = new Size(TablePadSubFamilyButtonPrevSize.Width - 6, TablePadSubFamilyButtonPrevSize.Height - 6),
                     ButtonSize = new Size(TablePadSubFamilyButtonPrevSize.Width, TablePadSubFamilyButtonPrevSize.Height)
@@ -437,7 +437,7 @@ namespace LogicPOS.UI.Components.Windows
             btnSubfamiliesPrevious.CanFocus = false;
 
 
-            IconButton btnSubfamiliesNext = new IconButton(new ButtonSettings { Name = "TablePadSubFamilyButtonNext", Icon = TablePadSubFamilyButtonNextImageFileName, IconSize = new Size(TablePadSubFamilyButtonNextSize.Width - 6, TablePadSubFamilyButtonNextSize.Height - 6), ButtonSize = new Size(TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height) });
+            IconButton btnSubfamiliesNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollers", Icon = TablePadSubFamilyButtonNextImageFileName, IconSize = new Size(TablePadSubFamilyButtonNextSize.Width - 6, TablePadSubFamilyButtonNextSize.Height - 6), ButtonSize = new Size(TablePadSubFamilyButtonNextSize.Width, TablePadSubFamilyButtonNextSize.Height) });
             btnSubfamiliesNext.Relief = ReliefStyle.None;
             btnSubfamiliesNext.BorderWidth = 0;
             btnSubfamiliesNext.CanFocus = false;
@@ -458,12 +458,12 @@ namespace LogicPOS.UI.Components.Windows
             }
 
 
-            IconButton btnMenuArticlesPrevious = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonPrev", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
+            IconButton btnMenuArticlesPrevious = new IconButton(new ButtonSettings { Name = "buttonPosScrollers", Icon = TablePadArticleButtonPrevImageFileName, IconSize = new Size(TablePadArticleButtonPrevSize.Width - 6, TablePadArticleButtonPrevSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonPrevSize.Width, TablePadArticleButtonPrevSize.Height) });
             btnMenuArticlesPrevious.Relief = ReliefStyle.None;
             btnMenuArticlesPrevious.BorderWidth = 0;
             btnMenuArticlesPrevious.CanFocus = false;
 
-            IconButton btnMenuArticlesNext = new IconButton(new ButtonSettings { Name = "TablePadArticleButtonNext", Icon = TablePadArticleButtonNextImageFileName, IconSize = new Size(TablePadArticleButtonNextSize.Width - 6, TablePadArticleButtonNextSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height) });
+            IconButton btnMenuArticlesNext = new IconButton(new ButtonSettings { Name = "buttonPosScrollers", Icon = TablePadArticleButtonNextImageFileName, IconSize = new Size(TablePadArticleButtonNextSize.Width - 6, TablePadArticleButtonNextSize.Height - 6), ButtonSize = new Size(TablePadArticleButtonNextSize.Width, TablePadArticleButtonNextSize.Height) });
             btnMenuArticlesNext.Relief = ReliefStyle.None;
             btnMenuArticlesNext.BorderWidth = 0;
             btnMenuArticlesNext.CanFocus = false;
@@ -649,7 +649,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (SaleContext.CurrentTable != null)
             {
-                string tableDenomination = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()];
+                string tableDenomination = LocalizedString.Instance[$"global_table_appmode_{AppSettings.Instance.AppOperationModeTheme}".ToLower()];
                 Instance.LabelCurrentTable.Text = $"{tableDenomination} {SaleContext.CurrentTable.Designation}";
             }
 
@@ -694,9 +694,9 @@ namespace LogicPOS.UI.Components.Windows
         {
             get
             {
-                if (_instance == null /*&& AppSettings.Instance.UseBackOfficeMode == false*/)
+                if (_instance == null)
                 {
-                    _instance = new POSWindow(GetBackgroundImage());
+                    _instance = new POSWindow(GetBackgroundImageFilePath());
                 }
 
                 return _instance;
@@ -709,12 +709,12 @@ namespace LogicPOS.UI.Components.Windows
             SaleContext.Initialize();
         }
 
-        public static string GetBackgroundImage()
+        public static string GetBackgroundImageFilePath()
         {
             Predicate<dynamic> predicate = (dynamic x) => x.ID == "PosMainWindow";
             dynamic themeWindow = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
 
-            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, "default", AppSettings.Instance.AppScreenSize.Width, AppSettings.Instance.AppScreenSize.Height);
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName, AppSettings.Instance.AppOperationModeTheme, AppSettings.Instance.AppScreenSize.Width, AppSettings.Instance.AppScreenSize.Height);
 
             return windowImageFileName;
         }

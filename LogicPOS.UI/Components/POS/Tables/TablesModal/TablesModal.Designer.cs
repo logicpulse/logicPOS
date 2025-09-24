@@ -95,6 +95,7 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollTablesPrevious = new IconButton(
               new ButtonSettings
               {
+                  Name = "buttonPosScrollers",
                   BackgroundColor = Color.White,
                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
@@ -104,6 +105,7 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollTablesNext = new IconButton(
                new ButtonSettings
                {
+                   Name = "buttonPosScrollers",
                    BackgroundColor = Color.White,
                    Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),
@@ -140,6 +142,7 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollPlacesPrevious = new IconButton(
               new ButtonSettings
               {
+                  Name = "buttonPosScrollers",
                   BackgroundColor = Color.White,
                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
                   IconSize = new Size(62, 31),
@@ -149,6 +152,7 @@ namespace LogicPOS.UI.Components.POS
             BtnScrollPlacesNext = new IconButton(
                new ButtonSettings
                {
+                   Name = "buttonPosScrollers",
                    BackgroundColor = Color.White,
                    Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
                    IconSize = new Size(62, 31),

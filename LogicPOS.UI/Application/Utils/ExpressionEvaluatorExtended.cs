@@ -2,6 +2,7 @@
 using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Settings;
@@ -14,7 +15,7 @@ namespace logicpos
 {
     public class ExpressionEvaluatorExtended
     {
-		//IN009257 Redimensionar botões para a resolução 1024 x 768
+        //IN009257 Redimensionar botões para a resolução 1024 x 768
         public static Size sizePosBaseButtonSizeDefault;
         public static Size SizePosToolbarButtonSizeDefault { get; set; }
         public static Size SizePosTicketPadButtonSizeDefault { get; set; }
@@ -92,7 +93,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Exception");
+                Log.Error(ex, "Exception");
             }
         }
 
@@ -101,14 +102,13 @@ namespace logicpos
             // ConfigValues to ExpressionVars
             try
             {
-                // Config
-                /* IN008024 */
-                /* For  CustomAppOperationMode.RETAIL */
-				//IN009345 - Front-End - Falta de funcionalidades em modo Retalho (Botões) 
                 int intEventBoxPosTicketPadColumns = 4;
                 int intEventBoxPosTicketPadRows = 4;
-                intEventBoxPosTicketPadRows = 5;
-                
+
+                if (AppSettings.Instance.OperationMode.IsDefaultMode())
+                {
+                    intEventBoxPosTicketPadRows = 5;
+                }
 
                 // Detect Dynamic Size
                 bool appThemeCalcDynamicSize = AppSettings.Instance.AppThemeCalcDynamicSize;
@@ -219,7 +219,7 @@ namespace logicpos
                 }
                 catch (Exception ex)
                 {
-                    Log.Error(ex,"Exception");
+                    Log.Error(ex, "Exception");
                     var messageDialog = new CustomAlert(LoginWindow.Instance)
                                               .WithMessage($"Unsupported Resolution Detected: {AppSettings.Instance.AppScreenSize.Width}x{AppSettings.Instance.AppScreenSize.Height}")
                                               .WithMessageType(MessageType.Error)
@@ -237,7 +237,7 @@ namespace logicpos
 
                 //IN009257 Redimensionar botões para a resolução 1024 x 768.
                 sizePosBaseButtonSizeDefault = sizePosBaseButtonSize;
-                SizePosToolbarButtonSizeDefault = new Size((int)(sizePosToolbarButtonSize.Width / 1.4), (int)(sizePosToolbarButtonSize.Height / 1.4)); 
+                SizePosToolbarButtonSizeDefault = new Size((int)(sizePosToolbarButtonSize.Width / 1.4), (int)(sizePosToolbarButtonSize.Height / 1.4));
                 SizePosTicketPadButtonSizeDefault = sizePosTicketPadButtonSize;
                 SizePosTicketPadButtonDoubleWidthDefault = sizePosTicketPadButtonDoubleWidth;
                 SizePosToolbarButtonIconSizeDefault = new Size((int)(sizePosToolbarButtonIconSize.Width / 1.7), (int)(sizePosToolbarButtonIconSize.Height / 1.7));
@@ -318,7 +318,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Exception");
+                Log.Error(ex, "Exception");
             }
         }
     }

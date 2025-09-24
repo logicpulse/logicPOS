@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Menus
     public class ArticleFamiliesMenu : Menu<ArticleFamily>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
-        private string ButtonName => "buttonFamilyId";
+        private string ButtonName => "touchButton_Green.buttonFamilyId";
         private Size ButtonSize { get; }
 
         public ArticleFamiliesMenu(CustomButton btnPrevious,

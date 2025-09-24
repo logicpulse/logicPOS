@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Windows
                 IconButton tablePadUserButtonPrev = new IconButton(
                     new ButtonSettings
                     {
-                        Name = "TablePadUserButtonPrev",
+                        Name = "buttonPosScrollers",
                         Icon = tablePadUserButtonPrevImageFileName,
                         IconSize = new System.Drawing.Size(tablePadUserButtonPrevSize.Width - 2, tablePadUserButtonPrevSize.Height - 2),
                         ButtonSize = new System.Drawing.Size(tablePadUserButtonPrevSize.Width, tablePadUserButtonPrevSize.Height)
@@ -114,7 +114,7 @@ namespace LogicPOS.UI.Components.Windows
                 IconButton tablePadUserButtonNext = new IconButton(
                     new ButtonSettings
                     {
-                        Name = "TablePadUserButtonNext",
+                        Name = "buttonPosScrollers",
                         Icon = tablePadUserButtonNextImageFileName,
                         IconSize = new System.Drawing.Size(tablePadUserButtonNextSize.Width - 2,
                                                            tablePadUserButtonNextSize.Height - 2),

@@ -399,6 +399,7 @@ widget_class '*KeyboardPadKey' style 'TouchButton_DarkGrey'
 class '*TouchButton*' style 'TouchButton'
 
 widget_class '*TouchButton*' style 'TouchButton'
+widget '*touchButton*' style 'TouchButton'
 #widget_class '*TouchButtonText*' style 'TouchButton'
 
 #Articles

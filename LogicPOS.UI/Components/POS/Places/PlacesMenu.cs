@@ -8,16 +8,14 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Settings;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
     public class PlacesMenu : Menu<Place>
     {
         private readonly ISender _mediator = DependencyInjection.Mediator;
-        private string ButtonName => "buttonFamilyId";
+        private string ButtonName => "touchButton_Green.buttonPlaceId";
         private Size ButtonSize => AppSettings.Instance.SizePosTableButton;
 
         public PlacesMenu(CustomButton btnPrevious,
