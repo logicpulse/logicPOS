@@ -4,8 +4,10 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -13,6 +15,39 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class PaymentsModal
     {
+        private void InitializeTextFields()
+        {
+            InitializeTxtCustomer();
+            InitializeTxtFiscalNumber();
+            InitializeTxtCardNumber();
+            InitializeTxtDiscount();
+            InitializeTxtAddress();
+            InitializeTxtLocality();
+            InitializeTxtZipCode();
+            InitializeTxtCity();
+            InitializeTxtCountry();
+            InitializeTxtNotes();
+        }
+
+        private void InitializeButtons()
+        {
+            BtnFullPayment.Sensitive = false;
+
+            InitializePaymentMethodButtons();
+
+            PaymentMethodButtons = new List<IconButtonWithText> {
+                BtnMoney,
+                BtnCheck,
+                BtnMB,
+                BtnCreditCard,
+                BtnDebitCard,
+                BtnVisa,
+                BtnCustomerCard,
+                BtnCurrentAccountMethod };
+
+            AddEventHandlers();
+        }
+
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(this,
@@ -20,7 +55,8 @@ namespace LogicPOS.UI.Components.POS
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: true,
-                                         includeKeyBoardButton: false);
+                                         includeKeyBoardButton: false, 
+                                         includeClearButton: false);
 
             TxtCountry.Entry.IsEditable = false;
             TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
@@ -34,7 +70,8 @@ namespace LogicPOS.UI.Components.POS
                                       isRequired: false,
                                       isValidatable: false,
                                       includeSelectButton: false,
-                                      includeKeyBoardButton: true);
+                                      includeKeyBoardButton: true, 
+                                      includeClearButton: false);
         }
 
         private void InitializeTxtZipCode()
@@ -44,7 +81,8 @@ namespace LogicPOS.UI.Components.POS
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
-                                         includeKeyBoardButton: true);
+                                         includeKeyBoardButton: true, 
+                                         includeClearButton: false);
         }
 
         private void InitializeTxtNotes()
@@ -54,7 +92,8 @@ namespace LogicPOS.UI.Components.POS
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: true);
+                                       includeKeyBoardButton: true, 
+                                       includeClearButton: false);
 
             TxtNotes.Entry.IsEditable = true;
         }
@@ -66,7 +105,8 @@ namespace LogicPOS.UI.Components.POS
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: false,
-                                          includeKeyBoardButton: true);
+                                          includeKeyBoardButton: true, 
+                                          includeClearButton: false);
         }
 
         private void InitializeTxtAddress()
@@ -76,7 +116,8 @@ namespace LogicPOS.UI.Components.POS
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
-                                         includeKeyBoardButton: true);
+                                         includeKeyBoardButton: true, 
+                                         includeClearButton: false);
         }
 
         private void InitializeTxtDiscount()
@@ -87,7 +128,8 @@ namespace LogicPOS.UI.Components.POS
                                           isValidatable: true,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
-                                          regex: RegularExpressions.DecimalNumber);
+                                          regex: RegularExpressions.DecimalNumber,
+                                          includeClearButton: false);
 
             TxtDiscount.Text = 0.00M.ToString("");
             TxtDiscount.Entry.Changed += (s, args) => UpdateTotals();
@@ -101,7 +143,8 @@ namespace LogicPOS.UI.Components.POS
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
-                                            includeKeyBoardButton: true);
+                                            includeKeyBoardButton: true,
+                                          includeClearButton: false);
         }
 
         private void InitializeTxtFiscalNumber()
@@ -112,7 +155,8 @@ namespace LogicPOS.UI.Components.POS
                                               isValidatable: true,
                                               regex: RegularExpressions.FiscalNumber,
                                               includeSelectButton: false,
-                                              includeKeyBoardButton: true);
+                                              includeKeyBoardButton: true,
+                                              includeClearButton: false);
 
             ValidatableFields.Add(TxtFiscalNumber);
             var customers = CustomersService.Customers.Select(c => (c as object, c.FiscalNumber)).ToList();
@@ -128,7 +172,8 @@ namespace LogicPOS.UI.Components.POS
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
-                                          includeKeyBoardButton: true);
+                                          includeKeyBoardButton: true,
+                                          includeClearButton: false);
 
 
             ValidatableFields.Add(TxtCustomer);
@@ -140,35 +185,32 @@ namespace LogicPOS.UI.Components.POS
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
         }
 
-        private void InitializeScrollersButtons()
+        private void InitializePaymentMethodButtons()
         {
-            BtnPrevious = new IconButton(
-              new ButtonSettings
-              {
-                  Name = "buttonPosScrollers",
-                  BackgroundColor = Color.White,
-                  Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png",
-                  IconSize = new Size(62, 31),
-                  ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
-              });
+            BtnMoney = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_money"),
+                                                             AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_money.png");
 
-            BtnNext = new IconButton(
-               new ButtonSettings
-               {
-                   Name = "buttonPosScrollers",
-                   BackgroundColor = Color.White,
-                   Icon = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png",
-                   IconSize = new Size(62, 31),
-                   ButtonSize = AppSettings.Instance.SizePosSmallButtonScroller
-               });
+            BtnCheck = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_bank_check"),
+                                                  AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_bank_check.png");
 
-            BtnPrevious.Relief = ReliefStyle.None;
-            BtnPrevious.BorderWidth = 0;
-            BtnPrevious.CanFocus = false;
+            BtnMB = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_cash_machine"),
+                                              AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_cash_machine.png");
 
-            BtnNext.Relief = ReliefStyle.None;
-            BtnNext.BorderWidth = 0;
-            BtnNext.CanFocus = false;
+            BtnCreditCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_credit_card"),
+                                                      AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_credit_card.png");
+
+            BtnDebitCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_debit_card"),
+                                                     AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_debit_card.png");
+
+            BtnVisa = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_visa"),
+                                                AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_visa.png");
+
+            BtnCustomerCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_customer_card"),
+                                                        AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_customer_card.png");
+
+            BtnCurrentAccountMethod = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_current_account"),
+                                                          AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_current_account.png");
         }
+
     }
 }

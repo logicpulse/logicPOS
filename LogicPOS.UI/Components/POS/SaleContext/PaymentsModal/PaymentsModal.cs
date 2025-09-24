@@ -2,7 +2,6 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
-using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
@@ -13,7 +12,6 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using MediatR;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -27,17 +25,17 @@ namespace LogicPOS.UI.Components.POS
         private PaymentCondition _selectedPaymentCondition;
         private PaymentMode _paymentMode = PaymentMode.Full;
         private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
-        private PaymentMethod PaymentMethod => PaymentMethodsMenu.SelectedEntity;
+        public PaymentMethod PaymentMethod => _selectedPaymentMethod;
+        private PaymentMethod _selectedPaymentMethod;
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
         public static int InitialSplittersNumber { get; set; } = 0;
         private int SplittersNumber;
-        public string paymentMethodDesignation { get; set; }
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
-                                                   new Size(640, 700),
+                                                   new Size(633, 620),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
             UpdateLabels();
@@ -116,14 +114,6 @@ namespace LogicPOS.UI.Components.POS
             LabelChangeValue.ModifyFont(fontDescriptionValue);
         }
 
-        private void EnableAllPaymentMethodButtons(bool enable = true)
-        {
-            foreach (var button in PaymentMethodsMenu.ButtonsCache)
-            {
-                button.Button.Sensitive = enable;
-            }
-        }
-
         private bool SelectPaymentCondition()
         {
             var page = new PaymentConditionsPage(this, PageOptions.SelectionPageOptions);
@@ -170,9 +160,9 @@ namespace LogicPOS.UI.Components.POS
                     TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
                     break;
                 case PaymentMode.Splited:
-                    if(InitialSplittersNumber != 0 && InitialSplittersNumber==SplittersNumber)
+                    if (InitialSplittersNumber != 0 && InitialSplittersNumber == SplittersNumber)
                     {
-                        TotalFinal = OrderTotalFinal/InitialSplittersNumber;
+                        TotalFinal = OrderTotalFinal / InitialSplittersNumber;
                     }
                     else
                     {
@@ -221,9 +211,9 @@ namespace LogicPOS.UI.Components.POS
             TxtZipCode.Clear();
             TxtCity.Clear();
             TxtCountry.Text = CountriesService.Default.Designation;
-            TxtCountry.SelectedEntity=CountriesService.Default;
+            TxtCountry.SelectedEntity = CountriesService.Default;
             TxtNotes.Clear();
-            
+
         }
 
         protected void Validate()
@@ -260,10 +250,10 @@ namespace LogicPOS.UI.Components.POS
 
         private string GetDocumentType()
         {
-            var type=(BtnInvoice.Sensitive==true) ? "FR" : "FT";
+            var type = (BtnInvoice.Sensitive == true) ? "FR" : "FT";
             if (type == "FR")
             {
-                if(CountriesService.Default.Code2 == "PT")
+                if (CountriesService.Default.Code2 == "PT")
                 {
                     type = "FS";
                 }
@@ -321,7 +311,7 @@ namespace LogicPOS.UI.Components.POS
                 {
                     SplitTickets(SplittersNumber);
                 }
-                if(SplittersNumber==1)
+                if (SplittersNumber == 1)
                 {
                     InitialSplittersNumber = 0;
                 }

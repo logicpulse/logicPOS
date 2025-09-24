@@ -1,11 +1,12 @@
-﻿using LogicPOS.UI.Buttons;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.Utility;
-using System.Collections.Generic;
-using Gtk;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
+using System.Collections.Generic;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -30,12 +31,6 @@ namespace LogicPOS.UI.Components.POS
         private IconButtonWithText BtnInvoice { get; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPartialPayment_DialogActionArea",
                                                                                                                    GeneralUtils.GetResourceByName("global_documentfinance_type_title_ft"),
                                                                                                                  AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_finance_document.png");
-
-        private IconButton BtnPrevious { get; set; }
-        private IconButton BtnNext { get; set; }
-
-        private PaymentMethodsMenu PaymentMethodsMenu { get; set; }
-
         private TextBox TxtCustomer { get; set; }
         private TextBox TxtFiscalNumber { get; set; }
         private TextBox TxtCountry { get; set; }
@@ -52,9 +47,19 @@ namespace LogicPOS.UI.Components.POS
         private Label LabelTotal { get; } = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay") + ":");
         private Label LabelDelivery { get; } = new Label(GeneralUtils.GetResourceByName("global_total_deliver") + ":");
         private Label LabelChange { get; } = new Label(GeneralUtils.GetResourceByName("global_total_change") + ":");
-        private Label LabelTotalValue { get; } = new Label("0");
+        private Label LabelTotalValue { get; } = new Label("0") { WidthRequest = 135 };
         private Label LabelDeliveryValue { get; } = new Label("0");
         private Label LabelChangeValue { get; } = new Label("0");
-        
+
+        private IconButtonWithText BtnCurrentAccountMethod { get; set; }
+        private IconButtonWithText BtnMoney { get; set; }
+        private IconButtonWithText BtnCheck { get; set; }
+        private IconButtonWithText BtnMB { get; set; }
+        private IconButtonWithText BtnCreditCard { get; set; }
+        private IconButtonWithText BtnDebitCard { get; set; }
+        private IconButtonWithText BtnVisa { get; set; }
+        private IconButtonWithText BtnCustomerCard { get; set; }
+        private List<IconButtonWithText> PaymentMethodButtons { get; set; }
+
     }
 }

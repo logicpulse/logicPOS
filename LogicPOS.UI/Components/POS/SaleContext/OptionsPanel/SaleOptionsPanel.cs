@@ -122,10 +122,9 @@ namespace LogicPOS.UI.Components.POS
             BtnQuantity.Sensitive = hasTicketItems;
             BtnWeight.Sensitive = hasTicketItems;
             BtnFinishOrder.Sensitive = hasTicketItems;
-
             var hasOrder = SaleContext.CurrentOrder != null;
-            //BtnDelete.Sensitive = hasOrder;
-
+            BtnDelete.Sensitive = hasTicketItems ||(hasOrder && SaleContext.CurrentOrder.Id != null);
+        
             var hasFinshedOrder = hasOrder && SaleContext.CurrentOrder.Id != null;
             BtnPayments.Sensitive = hasFinshedOrder;
             
@@ -142,8 +141,8 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdatePrivileges()
         {
-            BtnPrice.Sensitive = AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
-            BtnDelete.Sensitive = AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
+            BtnPrice.Sensitive = BtnPrice.Sensitive && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
+            BtnDelete.Sensitive = BtnDelete.Sensitive && AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
         }
     }
 }

@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Settings;
 using MediatR;
 using System.Drawing;
@@ -10,7 +11,6 @@ namespace LogicPOS.UI.Components.Menus
 {
     public class PaymentMethodsMenu : Menu<PaymentMethod>
     {
-        private readonly ISender _mediator = DependencyInjection.Mediator;
         public uint Rows { get; set; } = 1;
         public uint Columns { get; set; } = 4;
         public Size ButtonSize => AppSettings.Instance.SizeBaseDialogDefaultButton;
@@ -105,14 +105,14 @@ namespace LogicPOS.UI.Components.Menus
         {
             Entities.Clear();
 
-            var paymentMethods = _mediator.Send(new GetAllPaymentMethodsQuery()).Result;
+            var paymentMethods = PaymentMethodsService.PaymentMethods;
 
-            if (paymentMethods.IsError != false)
+            if (paymentMethods == null)
             {
                 return;
             }
 
-            Entities.AddRange(paymentMethods.Value);
+            Entities.AddRange(paymentMethods);
         }
 
 

@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
@@ -26,6 +28,15 @@ namespace LogicPOS.UI.Components.POS
             BtnOk.Clicked += BtnOk_Clicked;
             BtnPartialPayment.Clicked += BtnPartialPayment_Clicked;
             BtnFullPayment.Clicked += BtnFullPayment_Clicked;
+            BtnMoney.Clicked += BtnMoney_Clicked;
+            BtnCheck.Clicked += BtnCheck_Clicked;
+            BtnMB.Clicked += BtnMB_Clicked;
+            BtnCreditCard.Clicked += BtnCreditCard_Clicked;
+            BtnDebitCard.Clicked += BtnDebitCard_Clicked;
+            BtnVisa.Clicked += BtnVisa_Clicked;
+            BtnCustomerCard.Clicked += BtnCustomerCard_Clicked;
+            BtnCurrentAccountMethod.Clicked += BtnCurrentAccountMethod_Clicked;
+            PaymentMethodButtons.ForEach(button => { button.Clicked += BtnPaymentMethod_Clicked; });
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)
@@ -140,13 +151,19 @@ namespace LogicPOS.UI.Components.POS
                     TotalChange = 0;
                 }
             }
-            paymentMethodDesignation = paymentMethod.Designation;
             UncheckInvoiceMode();
             UpdateTotals();
         }
 
         private void BtnInvoice_Clicked(object sender, EventArgs e)
         {
+            if(TxtCustomer.SelectedEntity == null || (TxtCustomer.SelectedEntity as Customer).IsFinalConsumer)
+            {
+                CustomAlerts.Error(this).WithMessageResource("dialog_message_cant_create_cc_document_with_default_entity").ShowAlert();
+                return;
+            }
+
+
             if (SelectPaymentCondition() == false)
             {
                 _selectedPaymentCondition = null;
@@ -155,8 +172,6 @@ namespace LogicPOS.UI.Components.POS
 
             EnableAllPaymentMethodButtons();
             BtnInvoice.Sensitive = false;
-            PaymentMethodsMenu.SelectedEntity = null;
-
             UpdateTotals();
         }
 
@@ -255,6 +270,67 @@ namespace LogicPOS.UI.Components.POS
             {
                 Clear();
             }
+        }
+
+        private void EnableAllPaymentMethodButtons()
+        {
+            foreach (var button in PaymentMethodButtons)
+            {
+                button.Sensitive = true;
+            }
+        }
+
+        private void BtnCurrentAccountMethod_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CURRENT_ACCOUNT");
+        }
+
+        private void BtnCustomerCard_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CUSTOMER_CARD");
+        }
+
+        private void BtnVisa_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("VISA");
+        }
+
+        private void BtnDebitCard_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("DEBIT_CARD");
+        }
+
+        private void BtnCreditCard_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CREDIT_CARD");
+        }
+
+        private void BtnMB_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CASH_MACHINE");
+        }
+
+        private void BtnCheck_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("BANK_CHECK");
+        }
+
+        private void BtnMoney_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("MONEY");
+        }
+
+        private void SelectPaymentMethodByToken(string token)
+        {
+            _selectedPaymentMethod = PaymentMethodsService.PaymentMethods.FirstOrDefault(x => x.Token == token);
+            PaymentMethodSelected(_selectedPaymentMethod);
+        }
+
+        private void BtnPaymentMethod_Clicked(object sender, EventArgs e)
+        {
+            EnableAllPaymentMethodButtons();
+            (sender as IconButtonWithText).Sensitive = false;
+            UpdateTotals();
         }
     }
 }

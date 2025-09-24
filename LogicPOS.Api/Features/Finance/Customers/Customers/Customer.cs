@@ -37,5 +37,7 @@ namespace LogicPOS.Api.Entities
         public decimal Discount { get; set; }
         public decimal CardCredit { get; set; }
         public bool Supplier { get; set; }
+
+        public bool IsFinalConsumer => Name == "Consumidor Final";
     }
 }

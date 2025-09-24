@@ -80,7 +80,7 @@ namespace LogicPOS.UI.Buttons
             {
                 Paid = true;
                 Total = SaleContext.CurrentOrder.TotalFinal;
-                PaymentMethod = modal.paymentMethodDesignation;
+                PaymentMethod = modal.PaymentMethod.Designation;
                 SplittersNumber--;
                 UpdatePaymentDetails();
                 if (SplittersNumber == 0)

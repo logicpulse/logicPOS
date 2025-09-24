@@ -215,8 +215,8 @@ namespace LogicPOS.UI.Components.Windows
             eventBoxStatusBar2.ModifyBg(StateType.Normal, eventBoxStatusBar2BackgroundColor);
 
             //EventBoxStatusBar2:vboxCurrentTable:LabelCurrentTableLabel
-            string global_table = LocalizedString.Instance[string.Format("global_table_appmode_{0}", "default").ToLower()]; /* IN008024 */
-            Label labelCurrentTableLabel = new Label(global_table);
+            string currentTableLableText = LocalizedString.Instance[$"global_table_appmode_{AppSettings.Instance.AppOperationModeTheme}".ToLower()];
+            Label labelCurrentTableLabel = new Label(currentTableLableText);
             labelCurrentTableLabel.ModifyFont(labelCurrentTableLabelFont);
             labelCurrentTableLabel.ModifyFg(StateType.Normal, labelCurrentTableLabelFontColor);
             labelCurrentTableLabel.SetAlignment(labelCurrentTableLabelAlignmentX, 0.5F);

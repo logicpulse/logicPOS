@@ -225,7 +225,7 @@ namespace LogicPOS.UI.Components.Modals
             //UpdatedBy
             VBox vboxUpdatedBy = new VBox(true, 0);
             Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
-            string lastUpdatedBy = "?";
+            string lastUpdatedBy = AuthenticationService.User.Name;
 
             if (_entity != null && _entity.UpdatedBy != Guid.Empty)
             {
@@ -241,7 +241,7 @@ namespace LogicPOS.UI.Components.Modals
             //CreatedAt
             VBox vboxCreatedAt = new VBox(true, 0);
             Label labelCreatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_created"));
-            var createdAt = _entity?.CreatedAt.ToString() ?? "?";
+            var createdAt = _entity?.CreatedAt.ToString() ?? DateTime.Now.ToString();
             Label labelCreatedAtValue = new Label(createdAt);
             labelCreatedAt.SetAlignment(0.5F, 0.5F);
             labelCreatedAtValue.SetAlignment(0.5F, 0.5F);
@@ -251,7 +251,7 @@ namespace LogicPOS.UI.Components.Modals
             //UpdatedAt
             VBox vboxUpdatedAt = new VBox(true, 0);
             Label labelUpdatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_updated_for_base_dialog"));
-            var updatedAt = _entity?.UpdatedAt.ToString() ?? "?";
+            var updatedAt = _entity?.UpdatedAt.ToString() ?? DateTime.Now.ToString();
             Label labelUpdatedAtValue = new Label(updatedAt);
             labelUpdatedAt.SetAlignment(1.0F, 0.5F);
             labelUpdatedAtValue.SetAlignment(1.0F, 0.5F);
