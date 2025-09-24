@@ -1,4 +1,6 @@
 ﻿using Gtk;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Modals.Common;
@@ -10,10 +12,13 @@ namespace LogicPOS.UI.Components.POS
 {
     public partial class TablesModal : Modal
     {
+        private static string MotalTitle => LocalizedString.Instance[$"window_title_dialog_tables_appmode_{AppSettings.Instance.AppOperationModeTheme}"];
+        private static string ModalIcon => AppSettings.Instance.OperationMode.IsRetailMode() ? AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png": AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables.png";
+
         public TablesModal(Window parent) : base(parent,
-                                                 GeneralUtils.GetResourceByName("window_title_dialog_orders"),
+                                                 MotalTitle,
                                                  new Size(720, 580),
-                                                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png")
+                                                 ModalIcon)
         {
             BtnViewTables.Visible = false;
         }

@@ -16,6 +16,12 @@ namespace LogicPOS.UI.Settings
             public static string Plugins => Instance.PathPlugins;
             public static string Certificates => Instance.PathCertificates;
             public static string Assets => Instance.PathAssets;
+
+            public static string GetThemeFileLocation(string file)
+            {
+                return $@"{Themes}Default\{file}";
+            }
+
         }
     }
 }

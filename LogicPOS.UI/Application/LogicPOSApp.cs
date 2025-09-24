@@ -73,7 +73,7 @@ namespace LogicPOS.UI.Application
             {
                 UsbDisplay = UsbDisplayDevice.InitDisplay();
                 UsbDisplay.WriteCentered(string.Format("{0} {1}", AppSettings.AppName, AppSettings.ProductVersion), 1);
-                UsbDisplay.WriteCentered(AppSettings.AppUrl, 2);
+                UsbDisplay.WriteCentered("www.logicpulse.com", 2);
                 UsbDisplay.EnableStandBy();
             }
 
@@ -105,11 +105,11 @@ namespace LogicPOS.UI.Application
         {
             try
             {
-                Theme = XmlToObjectParser.ParseFromFile(AppSettings.ThemeFile);
+                Theme = XmlToObjectParser.ParseFromFile(AppSettings.Instance.ThemeFilePath);
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error parsing theme {File}", AppSettings.ThemeFile);
+                Log.Error(ex, "Error parsing theme {File}", AppSettings.Instance.ThemeFilePath);
                 DialogThreadNotify.WakeupMain();
                 CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message, LoginWindow.Instance);
             }

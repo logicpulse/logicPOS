@@ -2,6 +2,7 @@
 using logicpos;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Terminals;
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.Windows
 
             string fontBackOfficeStatusBar = AppSettings.Instance.FontPosStatusBar;
             string fileImageBackOfficeLogoLong = AppSettings.Paths.Themes + @"Default\Images\logo_backoffice_long.png";
-            string fileImageBackOfficeLogo = Utils.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo);
+            string fileImageBackOfficeLogo = AppSettings.Paths.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo);
 
             //Colors
             System.Drawing.Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
@@ -150,7 +151,7 @@ namespace LogicPOS.UI.Components.Windows
 
             }
 
-            if (AppSettings.Instance.UseBackOfficeMode)
+            if (AppSettings.Instance.OperationMode.IsBackOfficeMode())
             {
                 EventBox eventBoxMinimize = GtkUtils.CreateMinimizeButton();
                 eventBoxMinimize.ButtonReleaseEvent += delegate
@@ -223,7 +224,7 @@ namespace LogicPOS.UI.Components.Windows
             PanelLeft.ModifyBg(StateType.Normal, colorBackOfficeAccordionFixBackground.ToGdkColor());
             PanelLeft.Put(BtnDashboard, 0, 0);
 
-            if (AppSettings.Instance.UseBackOfficeMode == false)
+            if (AppSettings.Instance.OperationMode.IsBackOfficeMode() == false)
             {
                 if (BackOfficeWindow.ScreenSize.Height <= 800)
                 {

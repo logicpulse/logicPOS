@@ -107,7 +107,7 @@ namespace LogicPOS.UI.Components.Windows
             var imageLogoPath = AppSettings.Paths.Themes + @"Default\Images\logicPOS_logo.png";
             Image imageLogo = new Image(imageLogoPath);
 
-            var bitmapLogoImage = new Bitmap(Utils.GetThemeFileLocation("Images\\logicPOS_logo.png"));
+            var bitmapLogoImage = new Bitmap(AppSettings.Paths.GetThemeFileLocation("Images\\logicPOS_logo.png"));
             Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(bitmapLogoImage);
             pixbufOriginal = pixbufOriginal.ScaleSimple(eventBoxImageLogoSize.Width - 180, eventBoxImageLogoSize.Height - 10, Gdk.InterpType.Bilinear);
             imageLogo = new Image(pixbufOriginal);

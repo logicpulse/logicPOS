@@ -361,13 +361,6 @@ namespace logicpos
         }
 
 
-
-        // Used to get the final Resolution for Render template, it uses some stuff from config and detected ScreenSize to get guest best resolution for themes
-
-
-
-
-
         public static Dialog CreateSplashScreen(string backupProcess = "")
         {
             string loadingImage = AppSettings.Paths.Images + @"Other\working.gif";
@@ -410,15 +403,9 @@ namespace logicpos
         }
 
 
-        public static string GetThemeFileLocation(string pFile)
+        public static Gtk.Style GetThemeStyleBackground(string file)
         {
-            return string.Format(@"{0}{1}\{2}", AppSettings.Paths.Themes, AppSettings.AppTheme, pFile);
-        }
-
-        public static Gtk.Style GetThemeStyleBackground(string pFile)
-        {
-            /* IN008024 */
-            string fileImageBackground = GetThemeFileLocation(pFile);
+            string fileImageBackground = AppSettings.Paths.GetThemeFileLocation(file);
 
             if (fileImageBackground != null && File.Exists(fileImageBackground))
             {
@@ -437,7 +424,7 @@ namespace logicpos
             }
             else
             {
-                Log.Error(string.Format("Missing Theme[{0}] Image: [{1}]", AppSettings.AppTheme, fileImageBackground));
+                Log.Error($"Missing Theme[{AppSettings.Instance.AppOperationModeTheme}] Image: [{fileImageBackground}]");
                 return null;
             }
         }

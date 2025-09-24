@@ -3,6 +3,7 @@ using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -47,7 +48,7 @@ namespace LogicPOS.UI.Components.Windows
             AuthenticationService.LoginUser(MenuUsers.SelectedEntity, PinPanel.JwtToken);
             PinPanel.Mode = NumberPadPinMode.Password;
 
-            if (AppSettings.Instance.UseBackOfficeMode)
+            if (AppSettings.Instance.OperationMode.IsBackOfficeMode())
             {
                 BackOfficeWindow.ShowBackOffice();
             }

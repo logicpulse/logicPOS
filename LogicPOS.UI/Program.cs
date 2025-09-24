@@ -27,7 +27,7 @@ namespace LogicPOS.UI
         public static void InitializeGtk()
         {
             Gtk.Application.Init();
-            Theme.ParseTheme();
+            GtkThemeStyle.ParseTheme();
         }
 
         public static void ShowLoadingScreen()

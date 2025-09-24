@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Printing
                 , GeneralUtils.GetResourceByName("global_order_request")
                 , _ticket.Number.ToString()
             );
-            var mode = AppSettings.Instance.UseBackOfficeMode ? "retail" : "default";
+            var mode = AppSettings.Instance.AppOperationModeTheme.ToLower();
             //Table|Order #2|Name/Zone
             _ticketSubTitle = string.Format("{0}: #{1}/{2}"
                 , GeneralUtils.GetResourceByName(string.Format($"global_table_appmode_{mode}").ToLower()) /* IN008024 */

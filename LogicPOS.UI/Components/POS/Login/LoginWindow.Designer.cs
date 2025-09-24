@@ -154,7 +154,7 @@ namespace LogicPOS.UI.Components.Windows
                 //Put in Fix
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
-                Image imageLogo = new Image(Utils.GetThemeFileLocation("Images\\logicPOS_logo.png"));
+                Image imageLogo = new Image(AppSettings.Paths.GetThemeFileLocation("Images\\logicPOS_logo.png"));
                 fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
 
 

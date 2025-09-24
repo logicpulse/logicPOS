@@ -2,7 +2,7 @@
 
 namespace LogicPOS.UI.Application
 {
-    internal class Theme
+    internal class GtkThemeStyle
     {
         public static void ParseTheme()
         {

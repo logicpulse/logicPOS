@@ -427,7 +427,7 @@ namespace LogicPOS.UI.Components
 
         public IconButtonWithText CreateBtnCardCode()
         {
-            var button = CreateButton(BtnCardCodeName,
+            var button = CreateButton("buttonUserId",
                                       BtnCardCodeText,
                                       BtnCardCodeSize,
                                       BtnCardCodeImageFileName);

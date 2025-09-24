@@ -31,8 +31,6 @@ namespace LogicPOS.UI.Settings
         }
 
         #region Properties
-        public  bool UseBackOfficeMode { get; set; } 
-
         public Size AppScreenSize { get; set; }
 
         public int AppScreen { get; set; }
@@ -47,15 +45,11 @@ namespace LogicPOS.UI.Settings
         public bool AppShowMinimize { get; set; }
         public bool SendDocumentsATinRealTime { get; set; }
         public bool SendDocumentsATinRealTimeWB { get; set; }
-        public bool AppUseParkingTicketModule { get; set; }
         public bool UseVirtualKeyBoard { get; set; }
         public bool UseBaseDialogWindowMask { get; set; }
-
         public int PosBaseButtonMaxCharsPerLabel { get; set; }
-
-        public bool UseDatabaseDataDemo { get; set; }
-
         public string DateTimeFormatStatusBar { get; set; }
+
         public string PathAssets { get; set; }
         public string PathImages { get; set; }
         public string PathThemes { get; set; }

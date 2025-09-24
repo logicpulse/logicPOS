@@ -113,7 +113,7 @@ namespace LogicPOS.UI.Alerts
         public static void ShowThemeRenderingErrorAlert(string message, Window parent = null)
         {
             string errorMessage = string.Format(LocalizedString.Instance[ResourceNames.APP_ERROR_RENDERING_THEME],
-                                                AppSettings.ThemeFile,
+                                                AppSettings.Instance.ThemeFilePath,
                                                 message);
 
             Error(parent).WithTitleResource("global_error")

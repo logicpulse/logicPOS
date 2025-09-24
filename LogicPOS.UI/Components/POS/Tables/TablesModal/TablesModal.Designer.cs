@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Settings;
@@ -167,13 +168,16 @@ namespace LogicPOS.UI.Components.POS
         {
             InitializeButtons();
             var actionAreaButtons = new ActionAreaButtons();
-            actionAreaButtons.Add(new ActionAreaButton(BtnFilterAll, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnFilterFree, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnFilterOpen, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnFilterReserved, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnViewOrders, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnViewTables, ResponseType.None));
-            actionAreaButtons.Add(new ActionAreaButton(BtnReservation, ResponseType.None));
+            if(AppSettings.Instance.OperationMode.IsDefaultMode())
+            {
+                actionAreaButtons.Add(new ActionAreaButton(BtnFilterAll, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnFilterFree, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnFilterOpen, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnFilterReserved, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnViewOrders, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnViewTables, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnReservation, ResponseType.None));
+            }
             actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnCancel, ResponseType.Cancel));
             return actionAreaButtons;

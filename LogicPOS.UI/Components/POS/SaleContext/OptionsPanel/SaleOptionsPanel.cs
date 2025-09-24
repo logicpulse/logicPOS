@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -95,7 +96,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void SetButtonsVisibility()
         {
-            if (AppSettings.Instance.AppUseParkingTicketModule)
+            if (AppSettings.Instance.OperationMode.IsParkingMode())
             {
                 BtnCardCode.Visible = true;
                 BtnWeight.Visible = false;
