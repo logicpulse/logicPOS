@@ -16,6 +16,8 @@ namespace LogicPOS.UI.Components.InputFields
         public Window SourceWindow { get; private set; }
         public Entry Entry { get; private set; } = new Entry();
         public string Text { get => Entry.Text; set => Entry.Text = value; }
+        public IconButton BtnKeyboard { get; private set; } 
+        public IconButton BtnSelect { get; private set; }
         public Label Label { get; private set; }
         public bool IsRequired { get; set; }
         private bool IsEmpty => string.IsNullOrWhiteSpace(Entry.Text);
@@ -50,12 +52,19 @@ namespace LogicPOS.UI.Components.InputFields
             IsRequired = isRequired;
             IsValidatable = isValidatable;
             Regex = regex;
+            InitializeButtons();
             Component = CreateComponent(includeSelectButton,
                                         includeKeyBoardButton,
                                         includeClearButton);
             AddEventHandlers();
             UpdateValidationColors();
             ApplyStyle();
+        }
+
+        private void InitializeButtons()
+        {
+            BtnKeyboard = CreateKeyBoardButton();
+            BtnSelect = CreateKeyBoardButton();
         }
 
 
@@ -140,7 +149,7 @@ namespace LogicPOS.UI.Components.InputFields
 
             if (includeKeyBoardButton)
             {
-                hbox.PackStart(CreateKeyBoardButton(), false, false, 0);
+                hbox.PackStart(BtnKeyboard, false, false, 0);
             }
 
             if (includeClearButton)

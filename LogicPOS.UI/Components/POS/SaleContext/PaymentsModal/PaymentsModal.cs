@@ -12,6 +12,7 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -46,9 +47,7 @@ namespace LogicPOS.UI.Components.POS
         {
             if (CustomersService.Default != null)
             {
-                TxtCustomer.SelectedEntity = CustomersService.Default;
-                TxtCustomer.Text = CustomersService.Default.Name;
-                ShowCustomerData(TxtCustomer.SelectedEntity as Customer);
+                SelectCustomer(CustomersService.Default);
             }
         }
 
@@ -213,7 +212,7 @@ namespace LogicPOS.UI.Components.POS
             TxtCountry.Text = CountriesService.Default.Designation;
             TxtCountry.SelectedEntity = CountriesService.Default;
             TxtNotes.Clear();
-
+            FreezeEditableFields(false);
         }
 
         protected void Validate()
@@ -335,6 +334,20 @@ namespace LogicPOS.UI.Components.POS
             TxtCustomer.Text = customer.Name;
             TxtCustomer.SelectedEntity = customer;
             ShowCustomerData(customer);
+            FreezeEditableFields(customer.IsFinalConsumer);
+        }
+
+        private void FreezeEditableFields(bool freeze = true)
+        {
+            TxtFiscalNumber.BtnKeyboard.Sensitive = TxtFiscalNumber.Entry.Sensitive = !freeze;
+            TxtCardNumber.BtnKeyboard.Sensitive = TxtCardNumber.Entry.Sensitive = !freeze;
+            TxtCustomer.BtnKeyboard.Sensitive = TxtCustomer.Entry.Sensitive = !freeze;
+            TxtAddress.BtnKeyboard.Sensitive = TxtAddress.Entry.Sensitive = !freeze;
+            TxtAddress.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
+            TxtCountry.BtnKeyboard.Sensitive = TxtCountry.Entry.Sensitive = !freeze;
+            TxtCity.BtnKeyboard.Sensitive = TxtCity.Entry.Sensitive = !freeze;
+            TxtNotes.BtnKeyboard.Sensitive = TxtNotes.Entry.Sensitive = !freeze;
+            TxtZipCode.BtnKeyboard.Sensitive = TxtZipCode.Entry.Sensitive = !freeze;
         }
     }
 }

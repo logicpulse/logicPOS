@@ -189,9 +189,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                TxtCustomer.Text = page.SelectedEntity.Name;
-                TxtCustomer.SelectedEntity = page.SelectedEntity;
-                ShowCustomerData(page.SelectedEntity);
+                SelectCustomer(page.SelectedEntity);
             }
         }
 
