@@ -2,20 +2,19 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.UI.Components.Pages.GridViews;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentItemsPage : Page<Item>
+    public partial class DetailsPage : Page<Item>
     {
         public List<Item> Items => _entities;
         public event Action<decimal> OnTotalChanged;
         public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
 
-        public CreateDocumentItemsPage(Window parent) : base(parent)
+        public DetailsPage(Window parent) : base(parent)
         {
         }
         protected override void LoadEntities() { }
@@ -88,7 +87,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             OnTotalChanged?.Invoke(TotalFinal);
             return (int)response;
         }
-        
+
         private void UpdateItemData(Guid articleId, Item newData)
         {
             var existingItem = _entities.Find(x => x.ArticleId == articleId);
@@ -108,7 +107,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             existingItem.ExemptionReason = newData.ExemptionReason;
             existingItem.VatExemptionReason = newData.VatExemptionReason;
         }
-        
+
         private bool ItemExists(Guid articleId)
         {
             return _entities.Exists(x => x.ArticleId == articleId);

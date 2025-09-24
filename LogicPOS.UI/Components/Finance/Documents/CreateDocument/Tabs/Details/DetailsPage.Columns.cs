@@ -5,7 +5,7 @@ using System.Data.Common;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentItemsPage
+    public partial class DetailsPage
     {
 
         protected override void AddColumns()

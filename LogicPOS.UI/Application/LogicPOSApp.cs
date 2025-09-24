@@ -106,11 +106,10 @@ namespace LogicPOS.UI.Application
             try
             {
                 Theme = XmlToObjectParser.ParseFromFile(AppSettings.ThemeFile);
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(Theme);
-
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Error parsing theme {File}", AppSettings.ThemeFile);
                 DialogThreadNotify.WakeupMain();
                 CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message, LoginWindow.Instance);
             }

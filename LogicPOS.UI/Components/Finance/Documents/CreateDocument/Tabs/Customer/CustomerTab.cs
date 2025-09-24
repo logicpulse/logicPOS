@@ -9,10 +9,10 @@ using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentCustomerTab : ModalTab
+    public partial class CustomerTab : ModalTab
     {
 
-        public CreateDocumentCustomerTab(Window parent) : base(parent: parent,
+        public CustomerTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
                                                                icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
         {

@@ -8,11 +8,11 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public class CreateDocumentArticlesTab : ModalTab
+    public class DetailsTab : ModalTab
     {
-        public CreateDocumentItemsPage ItemsPage { get; set; }
+        public DetailsPage Page { get; set; }
 
-        public CreateDocumentArticlesTab(Window parent) : base(parent: parent,
+        public DetailsTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"),
                                                                icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_3_article.png")
         {
@@ -22,25 +22,25 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void Initialize()
         {
-            ItemsPage = new CreateDocumentItemsPage(SourceWindow);
-            ItemsPage.Navigator.RightButtons.Remove(ItemsPage.Navigator.BtnRefresh);
-            ItemsPage.Navigator.SearchBox.Bar.Remove(ItemsPage.Navigator.SearchBox.BtnFilter);
-            ItemsPage.Navigator.SearchBox.Bar.Remove(ItemsPage.Navigator.SearchBox.BtnMore);
-            ItemsPage.Navigator.ExtraButtonSpace.Remove(ItemsPage.Navigator.BtnApply);
+            Page = new DetailsPage(SourceWindow);
+            Page.Navigator.RightButtons.Remove(Page.Navigator.BtnRefresh);
+            Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnFilter);
+            Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnMore);
+            Page.Navigator.ExtraButtonSpace.Remove(Page.Navigator.BtnApply);
         }
 
         private void Design()
         {
-            PackStart(ItemsPage);
+            PackStart(Page);
         }
 
         public void ImportDataFromDocument(Api.Entities.Document document)
         {
-            ItemsPage.Items.Clear();
+            Page.Items.Clear();
 
             foreach (var detail in document.Details)
             {
-                ItemsPage.Items.Add(new Item
+                Page.Items.Add(new Item
                 {
                     ArticleId = detail.ArticleId,
                     Designation = detail.Designation,
@@ -51,16 +51,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     Vat = detail.Tax.Percentage,
                     VatDesignation = detail.Tax.Designation,
                     ExemptionReason = detail.VatExemptionReason,
-                    Discount = detail.Discount
+                    Discount = detail.Discount,
+                    Notes = detail.Notes,
                 });
             }
 
-            ItemsPage.Refresh();
+            Page.Refresh();
         }
 
         public List<DocumentDetail> GetDocumentDetails(int? priceType)
         {
-            var details = ItemsPage.Items.Select(item => new DocumentDetail
+            var details = Page.Items.Select(item => new DocumentDetail
             {
                 ArticleId = item.ArticleId,
                 Quantity = item.Quantity,
@@ -77,7 +78,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public override bool IsValid()
         {
-            return ItemsPage.Items.Count > 0;
+            return Page.Items.Count > 0;
         }
     }
 }

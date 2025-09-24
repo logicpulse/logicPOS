@@ -18,9 +18,20 @@ namespace LogicPOS.UI.Components.Modals
         {
             InitializeTabs();
 
+
+            if (SinglePaymentMethod)
+            {
+                Navigator = new ModalTabsNavigator(DocumentTab,
+                                           CustomerTab,
+                                           DetailsTab,
+                                           ShipToTab,
+                                           ShipFromTab);
+                return;
+            }
+
             Navigator = new ModalTabsNavigator(DocumentTab,
                                                CustomerTab,
-                                               ArticlesTab,
+                                               DetailsTab,
                                                PaymentMethodsTab,
                                                ShipToTab,
                                                ShipFromTab);
@@ -28,12 +39,15 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeTabs()
         {
-            DocumentTab = new CreateDocumentDocumentTab(this);
-            CustomerTab = new CreateDocumentCustomerTab(this);
-            ArticlesTab = new CreateDocumentArticlesTab(this);
-            ShipToTab = new CreateDocumentShipToTab(this);
-            ShipFromTab = new CreateDocumentShipFromTab(this);
-            PaymentMethodsTab = new CreateDocumentPaymentMethodsTab(this);
+            DocumentTab = new DocumentTab(this);
+            CustomerTab = new CustomerTab(this);
+            DetailsTab = new DetailsTab(this);
+            ShipToTab = new DocumentShipToTab(this);
+            ShipFromTab = new ShipFromTab(this);
+            if (SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab = new PaymentMethodsTab(this);
+            }
             AddTabsEventHandlers();
         }
 
@@ -41,7 +55,10 @@ namespace LogicPOS.UI.Components.Modals
         {
             var analyzer = documentType.Analyzer;
             ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
-            PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
+            if (SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
+            }
         }
 
         private void EnableTabsForDocumentType(DocumentType documentType)

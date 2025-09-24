@@ -4,6 +4,7 @@ namespace LogicPOS.Globalization
 {
     public class LocalizedString
     {
+        public static LocalizedString Default { get; } = new LocalizedString ("pt-PT");
         public static LocalizedString Instance { get; set; }
 
         private readonly string _culture;
@@ -14,6 +15,7 @@ namespace LogicPOS.Globalization
             _culture = culture;
             ResourceSet = GetResourceSetByLanguage(_culture);
         }
+
 
         public string this[string key]
         {

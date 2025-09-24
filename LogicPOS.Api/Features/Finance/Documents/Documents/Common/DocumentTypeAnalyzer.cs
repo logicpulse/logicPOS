@@ -24,8 +24,5 @@
         public bool IsConsignmentInvoice() => Type == "FC";
         public bool IsInformative() => IsProform() || IsBudget();
         public bool IsGuide() => IsTransportGuide() || IsConsignmentGuide() || IsManagementOfFixedAssetsForm() || IsDeliveryNote() || IsReturnSlip();
-        public bool MoveStock() => IsInvoice() || IsSimplifiedInvoice() || IsConsignmentInvoice() || IsInvoiceReceipt() || IsCreditNote() || IsDebitNote();
-        public bool RequireFullPayment() => IsSimplifiedInvoice() || IsInvoiceReceipt();
-
     }
 }

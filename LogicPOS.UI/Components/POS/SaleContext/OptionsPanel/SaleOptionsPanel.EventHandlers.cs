@@ -60,7 +60,7 @@ namespace LogicPOS.UI.Components.POS
 
         private static bool DeleteCurrentOrder()
         {
-            if (PreferenceParametersService.CompanyInformations.IsPortugal)
+            if (SystemInformationService.SystemInformation.IsPortugal)
             {
                 return  OrdersService.DeleteOrder(SaleContext.CurrentOrder.Id.Value);
 

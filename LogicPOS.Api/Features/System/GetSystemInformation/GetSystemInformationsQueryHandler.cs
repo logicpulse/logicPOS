@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.System.GetSystemInformations
 {
     public class GetSystemInformationsQueryHandler :
-        RequestHandler<GetSystemInformationsQuery, ErrorOr<SystemInformations>>
+        RequestHandler<GetSystemInformationsQuery, ErrorOr<SystemInformation>>
     {
         public GetSystemInformationsQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<SystemInformations>> Handle(GetSystemInformationsQuery query, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<SystemInformation>> Handle(GetSystemInformationsQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<SystemInformations>("system/informations", cancellationToken);
+            return await HandleGetEntityQueryAsync<SystemInformation>("system/information", cancellationToken);
         }
     }
 }

@@ -1,6 +1,5 @@
 using Gtk;
 using logicpos;
-using LogicPOS.Api.Features.System.GetSystemInformations;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -9,13 +8,12 @@ using LogicPOS.UI.Application.Utils;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.Settings;
+using LogicPOS.UI.Services;
 using Serilog;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Threading;
-using System.Windows;
 
 
 namespace LogicPOS.UI
@@ -53,7 +51,7 @@ namespace LogicPOS.UI
         {
             ConfigureLogging();
 
-            if(IsFirstLaunch())
+            if (IsFirstLaunch())
             {
                 Log.Information("First launch detected, starting migrator...");
                 MigratorUtility.LaunchMigrator();
@@ -86,14 +84,14 @@ namespace LogicPOS.UI
 
                 CloseLoadingScreen();
 
-                KeepUIResponsive();          
+                KeepUIResponsive();
 
                 StartApp();
             }
 
             Log.CloseAndFlush();
         }
-        
+
         private static bool IsFirstLaunch()
         {
             return File.Exists("_booted.pos") == false;
@@ -104,7 +102,7 @@ namespace LogicPOS.UI
         {
             try
             {
-               File.CreateText("_booted.pos").Close();
+                File.CreateText("_booted.pos").Close();
             }
             catch (Exception ex)
             {
@@ -160,16 +158,13 @@ namespace LogicPOS.UI
         {
             try
             {
-                var getSystemInformationsResult = DependencyInjection.Mediator.Send(new GetSystemInformationsQuery()).Result;
 
-                if (getSystemInformationsResult.IsError)
+                if (SystemInformationService.SystemInformation == null)
                 {
-                    SimpleAlerts.ShowApiErrorAlert(getSystemInformationsResult.FirstError);
-
                     return false;
                 }
 
-                var culture = getSystemInformationsResult.Value.Culture;
+                var culture = SystemInformationService.SystemInformation.Culture;
                 LocalizedString.Instance = new LocalizedString(culture);
                 CultureInfo.CurrentCulture = new CultureInfo(culture);
                 CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
@@ -195,12 +190,5 @@ namespace LogicPOS.UI
                                             outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}")
                               .CreateLogger();
         }
-
-#if (DEBUG)
-        public static readonly bool DebugMode = true;
-#else
-        public static readonly bool DebugMode = false;
-#endif
-
     }
 }

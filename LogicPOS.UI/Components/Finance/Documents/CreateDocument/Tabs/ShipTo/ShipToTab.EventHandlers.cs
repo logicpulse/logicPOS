@@ -7,7 +7,7 @@ using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentShipToTab
+    public partial class DocumentShipToTab
     {
 
         private void TxtDeliveryDate_SelectEntityClicked(object sender, EventArgs e)

@@ -7,10 +7,10 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public class CreateDocumentPaymentMethodsTab : ModalTab
+    public class PaymentMethodsTab : ModalTab
     {
         public DocumentPaymentMethodsBox PaymentMethodsBox { get; set; }
-        public CreateDocumentPaymentMethodsTab(Window parent) : base(parent: parent,
+        public PaymentMethodsTab(Window parent) : base(parent: parent,
                                                                      name: GeneralUtils.GetResourceByName("global_payment_method"),
                                                                      icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png",
                                                                      false)

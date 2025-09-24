@@ -11,7 +11,7 @@ using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentDocumentTab
+    public partial class DocumentTab
     {
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
         {
@@ -144,6 +144,29 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (string.IsNullOrWhiteSpace(TxtPaymentCondition.Text))
             {
                 TxtPaymentCondition.Clear();
+            }
+        }
+
+        private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
+        {
+            var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
+            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectPaymentMethodModal.Run();
+            selectPaymentMethodModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtPaymentMethod.Text = page.SelectedEntity.Designation;
+                TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void TxtPaymentMethod_Changed(object sender, EventArgs e)
+        {
+
+            if (string.IsNullOrWhiteSpace(TxtPaymentMethod.Text))
+            {
+                TxtPaymentMethod.Clear();
             }
         }
 

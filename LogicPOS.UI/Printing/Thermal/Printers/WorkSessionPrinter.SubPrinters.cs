@@ -5,7 +5,6 @@ using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Printing
 {
@@ -195,10 +194,10 @@ namespace LogicPOS.UI.Printing
                 summaryTotal = item.Total;
 
                 var documentType = "global_documentfinance_type_title_fr";
-                var documentTypeSuffix = (PreferenceParametersService.CompanyInformations.IsAngola && item.DocumentType.ToLower() == "cm") ? "dc" : item.DocumentType.ToLower();
-                documentTypeSuffix= (PreferenceParametersService.CompanyInformations.IsAngola && item.DocumentType.ToLower() == "pp") ? "fp" : documentTypeSuffix;
+                var documentTypeSuffix = (SystemInformationService.SystemInformation.IsAngola && item.DocumentType.ToLower() == "cm") ? "dc" : item.DocumentType.ToLower();
+                documentTypeSuffix = (SystemInformationService.SystemInformation.IsAngola && item.DocumentType.ToLower() == "pp") ? "fp" : documentTypeSuffix;
 
-                documentType = documentType.Substring(0, documentType.Length - 2) +documentTypeSuffix;
+                documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
 
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = GeneralUtils.GetResourceByName(documentType);

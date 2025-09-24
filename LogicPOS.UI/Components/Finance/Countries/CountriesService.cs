@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Services
             var countriesResult = DependencyInjection.Mediator.Send(new GetAllCountriesQuery()).Result;
             if (countriesResult.IsError)
             {
-                SimpleAlerts.ShowApiErrorAlert(countriesResult.FirstError);
+                ErrorHandlingService.HandleApiError(countriesResult);
                 return null;
             }
             return countriesResult.Value.ToList();

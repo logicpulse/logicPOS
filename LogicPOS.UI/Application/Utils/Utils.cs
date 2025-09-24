@@ -4,7 +4,6 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
@@ -63,7 +62,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Exception");
+                Log.Error(ex, "Exception");
             }
             finally
             {
@@ -207,7 +206,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Exception");
+                Log.Error(ex, "Exception");
                 return pImage;
             }
         }
@@ -277,7 +276,8 @@ namespace logicpos
                     targetResizeImageWidth = (int)(pImageWidth * (float)pTargetImageHeight / pImageHeight);
                     targetResizeImageHeight = pTargetImageHeight;
                 }
-            };
+            }
+            ;
 
             //Log.Debug(
             //  "ImageFindResizeSize()" +
@@ -330,7 +330,7 @@ namespace logicpos
             }
             catch (Exception ex)
             {
-                Log.Error(ex,"Exception");
+                Log.Error(ex, "Exception");
                 return resultTableConfig;
             }
             return resultTableConfig;
@@ -360,13 +360,13 @@ namespace logicpos
             return string.Format("{0} : {1}", AppSettings.AppName, pTitle);
         }
 
-      
+
 
         // Used to get the final Resolution for Render template, it uses some stuff from config and detected ScreenSize to get guest best resolution for themes
 
-       
 
-       
+
+
 
         public static Dialog CreateSplashScreen(string backupProcess = "")
         {

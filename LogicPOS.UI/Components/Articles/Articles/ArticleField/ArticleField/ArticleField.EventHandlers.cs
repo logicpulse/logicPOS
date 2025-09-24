@@ -8,9 +8,8 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields
 {
-    public partial  class ArticleField
+    public partial class ArticleField
     {
-
         private void BtnSelect_Clicked(object sender, System.EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);

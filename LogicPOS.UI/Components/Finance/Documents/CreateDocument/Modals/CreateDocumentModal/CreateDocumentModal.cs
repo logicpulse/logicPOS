@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -17,8 +18,9 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal : Modal
     {
+        
         public CreateDocumentModal(Window parent) : base(parent: parent,
-                                                         title: GeneralUtils.GetResourceByName("window_title_dialog_new_finance_document"),
+                                                         title: LocalizedString.Instance["window_title_dialog_new_finance_document"],
                                                          size: new System.Drawing.Size(790, 546),
                                                          icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
@@ -31,19 +33,16 @@ namespace LogicPOS.UI.Components.Modals
             AddEventHandlers();
         }
 
-        private void AddEventHandlers()
-        {
-            BtnOk.Clicked += BtnOk_Clicked;
-            BtnPreview.Clicked += BtnPreview_Clicked;
-            BtnClear.Clicked += BtnClear_Clicked;
-        }
-
         private void AddTabsEventHandlers()
         {
             DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
             DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
             DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
-            ArticlesTab.ItemsPage.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
+            if (SinglePaymentMethod == false)
+            {
+                DetailsTab.Page.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
+            }
+            DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
         }
 
         private AddDocumentCommand CreateAddCommand()
@@ -56,7 +55,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice())
             {
-                command.PaymentMethods = PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
+                command.PaymentMethods = SinglePaymentMethod ? DocumentTab.GetPaymentMethods() : PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
             }
 
             command.Type = DocumentTab.GetDocumentType().Acronym;
@@ -77,7 +76,7 @@ namespace LogicPOS.UI.Components.Modals
 
             command.Customer = CustomerTab.GetDocumentCustomer();
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
-            command.Details = ArticlesTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
+            command.Details = DetailsTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
 
             if (analyzer.IsGuide())
             {
@@ -96,7 +95,7 @@ namespace LogicPOS.UI.Components.Modals
             query.Notes = DocumentTab.TxtNotes.Text;
             query.ExchangeRate = DocumentTab.GetExchangeRate();
             query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
-            query.Details = ArticlesTab.GetDocumentDetails(null);
+            query.Details = DetailsTab.GetDocumentDetails(null);
 
             return query;
         }
@@ -105,7 +104,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public bool TabsForPreviewAreValid()
         {
-            return ArticlesTab.IsValid();
+            return DetailsTab.IsValid();
         }
 
         public IEnumerable<IValidatableField> GetValidatableTabs()
@@ -114,24 +113,25 @@ namespace LogicPOS.UI.Components.Modals
             {
                 DocumentTab,
                 CustomerTab,
-                ArticlesTab
+                DetailsTab
             };
 
-            var documentType = DocumentTab.GetDocumentType();
+            var docAnalyzer = DocumentTab.DocumentTypeAnalyzer;
 
-            if (documentType == null)
+            if (docAnalyzer == null)
             {
                 return validatableTabs;
             }
 
-            var analyzer = documentType.Analyzer;
-
-            if (analyzer.IsInvoiceReceipt() || analyzer.IsInvoiceReceipt())
+            if(SinglePaymentMethod == false)
             {
-                validatableTabs.Add(PaymentMethodsTab);
+                if (docAnalyzer.Value.IsInvoiceReceipt() || docAnalyzer.Value.IsSimplifiedInvoice())
+                {
+                    validatableTabs.Add(PaymentMethodsTab);
+                }
             }
-
-            if (analyzer.IsGuide())
+         
+            if (docAnalyzer.Value.IsGuide())
             {
                 validatableTabs.Add(ShipToTab);
                 validatableTabs.Add(ShipFromTab);
@@ -154,5 +154,12 @@ namespace LogicPOS.UI.Components.Modals
             modal.Run();
             modal.Destroy();
         }
+
+        private void UpdateTitle()
+        {
+            decimal total = DetailsTab.Page.TotalFinal;
+            WindowSettings.Title.Text = $"{LocalizedString.Instance["window_title_dialog_new_finance_document"]} :: {Navigator.CurrentTab.TabName} : {total:C}";
+        }
+
     }
 }

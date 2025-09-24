@@ -55,6 +55,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
             field.Component.ShowAll();
             Fields.Add(field);
         }
+
         public void UpdateDocumentTotal(decimal total)
         {
             if (Fields.Count == 1)
@@ -64,14 +65,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 
             UpdateTotalLabel();
         }
-       public bool IsValid()
+
+        public bool IsValid()
         {
             return Fields.All(f => f.IsValid());
         }
 
-        public IEnumerable<AddDocumentPaymentMethodDto> GetPaymentMethods()
+        public IEnumerable<DocumentPaymentMethod> GetPaymentMethods()
         {
-            return Fields.Select(f => new AddDocumentPaymentMethodDto
+            return Fields.Select(f => new DocumentPaymentMethod
             {
                 PaymentMethodId = (f.TxtPaymentMethod.SelectedEntity as ApiEntity).Id,
                 Amount = decimal.Parse(f.TxtAmount.Text)

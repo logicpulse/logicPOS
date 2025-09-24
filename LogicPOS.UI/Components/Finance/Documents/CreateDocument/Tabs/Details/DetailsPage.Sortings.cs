@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentItemsPage
+    public partial class DetailsPage
     {
         private void AddTotalWithTaxSorting()
         {

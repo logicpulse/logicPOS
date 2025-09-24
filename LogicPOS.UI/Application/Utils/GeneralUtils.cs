@@ -194,7 +194,7 @@ namespace LogicPOS.Utility
 
         public static string GetResourceByName(string resourceName)
         {
-            return LocalizedString.Instance[resourceName];
+            return (LocalizedString.Instance == null ? LocalizedString.Default : LocalizedString.Instance)[resourceName];
         }
 
         public static string PrepareCutWord(string pText)

@@ -16,12 +16,12 @@ namespace logicpos
     {
 		//IN009257 Redimensionar botões para a resolução 1024 x 768
         public static Size sizePosBaseButtonSizeDefault;
-        public static Size sizePosToolbarButtonSizeDefault { get; set; }
-        public static Size sizePosTicketPadButtonSizeDefault;
-        public static Size sizePosTicketPadButtonDoubleWidthDefault;
-        public static Size sizePosToolbarButtonIconSizeDefault;
-        public static Size sizePosTicketPadButtonIconSizeDefault;
-        public static string fontDocumentsSizeDefault;
+        public static Size SizePosToolbarButtonSizeDefault { get; set; }
+        public static Size SizePosTicketPadButtonSizeDefault { get; set; }
+        public static Size SizePosTicketPadButtonDoubleWidthDefault { get; set; }
+        public static Size SizePosToolbarButtonIconSizeDefault { get; set; }
+        public static Size SizePosTicketPadButtonIconSizeDefault { get; set; }
+        public static string FontDocumentsSizeDefault { get; set; }
 
         public static void ExpressionEvaluator_EvaluateFunction(object sender, FunctionEvaluationEventArg e)
         {
@@ -140,7 +140,7 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 8";
                                 fontTicketListColumn = "8";
-                                fontDocumentsSizeDefault = "6";
+                                FontDocumentsSizeDefault = "6";
                                 break;
                             case ScreenResolution.res1024x600:
                             case ScreenResolution.res1024x768:
@@ -152,7 +152,7 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 9";
                                 fontTicketListColumn = "9";
-                                fontDocumentsSizeDefault = "6";
+                                FontDocumentsSizeDefault = "6";
                                 break;
                             case ScreenResolution.res1152x864:
                             case ScreenResolution.res1280x720:
@@ -172,7 +172,7 @@ namespace logicpos
                                 sizePosTicketPadButtonDoubleWidth = new Size(sizePosToolbarButtonSize.Width * 2, sizePosToolbarButtonSize.Height);
                                 sizePosToolbarButtonIconSize = new Size(42, 42);
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
-                                fontDocumentsSizeDefault = "8";
+                                FontDocumentsSizeDefault = "8";
                                 break;
                             case ScreenResolution.res1680x1050:
                             case ScreenResolution.res1920x1080:
@@ -190,7 +190,7 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 10";
                                 fontTicketListColumn = "10";
-                                fontDocumentsSizeDefault = "10";
+                                FontDocumentsSizeDefault = "10";
                                 break;
                             /* IN008023: apply "1024x768" settings as default */
                             default:
@@ -202,7 +202,7 @@ namespace logicpos
                                 sizePosTicketPadButtonIconSize = new Size(sizePosToolbarButtonIconSize.Width, sizePosToolbarButtonIconSize.Height);
                                 fontTicketListColumnTitle = "Bold 9";
                                 fontTicketListColumn = "9";
-                                fontDocumentsSizeDefault = "6";
+                                FontDocumentsSizeDefault = "6";
                                 break;
                         }
                     }
@@ -237,11 +237,11 @@ namespace logicpos
 
                 //IN009257 Redimensionar botões para a resolução 1024 x 768.
                 sizePosBaseButtonSizeDefault = sizePosBaseButtonSize;
-                sizePosToolbarButtonSizeDefault = new Size((int)(sizePosToolbarButtonSize.Width / 1.4), (int)(sizePosToolbarButtonSize.Height / 1.4)); 
-                sizePosTicketPadButtonSizeDefault = sizePosTicketPadButtonSize;
-                sizePosTicketPadButtonDoubleWidthDefault = sizePosTicketPadButtonDoubleWidth;
-                sizePosToolbarButtonIconSizeDefault = new Size((int)(sizePosToolbarButtonIconSize.Width / 1.7), (int)(sizePosToolbarButtonIconSize.Height / 1.7));
-                sizePosTicketPadButtonIconSizeDefault = sizePosTicketPadButtonIconSize;
+                SizePosToolbarButtonSizeDefault = new Size((int)(sizePosToolbarButtonSize.Width / 1.4), (int)(sizePosToolbarButtonSize.Height / 1.4)); 
+                SizePosTicketPadButtonSizeDefault = sizePosTicketPadButtonSize;
+                SizePosTicketPadButtonDoubleWidthDefault = sizePosTicketPadButtonDoubleWidth;
+                SizePosToolbarButtonIconSizeDefault = new Size((int)(sizePosToolbarButtonIconSize.Width / 1.7), (int)(sizePosToolbarButtonIconSize.Height / 1.7));
+                SizePosTicketPadButtonIconSizeDefault = sizePosTicketPadButtonIconSize;
                 //IN009257 END
 
                 LogicPOSApp.ExpressionEvaluator.Variables.Add("posMainWindowTicketPadColumns", intEventBoxPosTicketPadColumns);

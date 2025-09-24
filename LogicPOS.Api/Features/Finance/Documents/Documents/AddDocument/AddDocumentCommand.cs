@@ -8,7 +8,7 @@ namespace LogicPOS.Api.Features.Documents.AddDocument
 {
     public class AddDocumentCommand : IRequest<ErrorOr<Guid>>
     {
-        public IEnumerable<AddDocumentPaymentMethodDto> PaymentMethods { get; set; }
+        public IEnumerable<DocumentPaymentMethod> PaymentMethods { get; set; }
         public Guid? PaymentConditionId { get; set; }
         public Guid? CustomerId { get; set; }
         public Guid? CurrencyId { get; set; }

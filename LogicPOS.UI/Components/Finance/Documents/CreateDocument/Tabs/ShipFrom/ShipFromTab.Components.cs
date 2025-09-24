@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentShipToTab
+    public partial class ShipFromTab
     {
         private TextBox TxtAddress { get; set; }
         private TextBox TxtRegion { get; set; }

@@ -2,6 +2,7 @@
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
@@ -22,12 +23,13 @@ namespace LogicPOS.UI.Components.Modals
         #endregion
 
         #region Tabs
-        private CreateDocumentDocumentTab DocumentTab { get; set; }
-        private CreateDocumentCustomerTab CustomerTab { get; set; }
-        private CreateDocumentArticlesTab ArticlesTab { get; set; }
-        private CreateDocumentShipToTab ShipToTab { get; set; }
-        private CreateDocumentShipFromTab ShipFromTab { get; set; }
-        private CreateDocumentPaymentMethodsTab PaymentMethodsTab { get; set; }
+        private DocumentTab DocumentTab { get; set; }
+        private CustomerTab CustomerTab { get; set; }
+        private DetailsTab DetailsTab { get; set; }
+        private DocumentShipToTab ShipToTab { get; set; }
+        private ShipFromTab ShipFromTab { get; set; }
+        private PaymentMethodsTab PaymentMethodsTab { get; set; }
+        private bool SinglePaymentMethod => SystemInformationService.SystemInformation.IsPortugal;
         #endregion
 
         private ModalTabsNavigator Navigator { get; set; }

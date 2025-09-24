@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentShipToTab
+    public partial class DocumentShipToTab
     {
         private void Design()
         {

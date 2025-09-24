@@ -2,7 +2,7 @@
 
 namespace LogicPOS.Api.Features.Documents.Documents.AddDocument
 {
-    public class AddDocumentPaymentMethodDto
+    public class DocumentPaymentMethod
     {
         public Guid PaymentMethodId { get; set; }
         public decimal Amount { get; set; }

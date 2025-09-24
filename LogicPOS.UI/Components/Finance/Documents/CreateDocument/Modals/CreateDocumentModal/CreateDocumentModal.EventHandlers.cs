@@ -1,8 +1,10 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Errors;
 using System;
 
@@ -10,6 +12,14 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal
     {
+        private void AddEventHandlers()
+        {
+            BtnOk.Clicked += BtnOk_Clicked;
+            BtnPreview.Clicked += BtnPreview_Clicked;
+            BtnClear.Clicked += BtnClear_Clicked;
+            Navigator.CurrentTabChanged += t => UpdateTitle();
+        }
+
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
             if (!AllTabsAreValid())
@@ -61,13 +71,13 @@ namespace LogicPOS.UI.Components.Modals
         private void OnOriginDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            ArticlesTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document);
         }
 
         private void OnCopyDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            ArticlesTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document);
 
             if (document.TypeAnalyzer.IsGuide())
             {

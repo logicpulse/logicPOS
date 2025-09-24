@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         {
             get
             {
-                if (PreferenceParametersService.CompanyInformations.IsAngola)
+                if (SystemInformationService.SystemInformation.IsAngola)
                 {
                     return AngolanFiscalNumber;
                 }

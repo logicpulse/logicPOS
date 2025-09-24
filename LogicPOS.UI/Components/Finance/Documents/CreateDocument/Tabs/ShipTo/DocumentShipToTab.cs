@@ -12,9 +12,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentShipToTab : ModalTab
+    public partial class DocumentShipToTab : ModalTab
     {
-        public CreateDocumentShipToTab(Window parent) : base(parent,
+        public DocumentShipToTab(Window parent) : base(parent,
                                                              GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page4"),
                                                              AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_4_waybill_to.png",
                                                              false)

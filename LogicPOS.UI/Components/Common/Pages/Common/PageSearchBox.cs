@@ -59,8 +59,8 @@ namespace LogicPOS.UI.Components.Pages
 
         private IconButtonWithText CreateIconButton(string name, string text, string icon)
         {
-            Size buttonSize = ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault;
-            Size buttonIconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault;
+            Size buttonSize = ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault;
+            Size buttonIconSize = ExpressionEvaluatorExtended.SizePosToolbarButtonIconSizeDefault;
 
             return new IconButtonWithText(
                 new ButtonSettings
@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Pages
                     Name = name,
                     BackgroundColor = Color.Transparent,
                     Text = text,
-                    Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
+                    Font = ExpressionEvaluatorExtended.FontDocumentsSizeDefault,
                     FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
                     Icon = icon,
                     IconSize = buttonIconSize,

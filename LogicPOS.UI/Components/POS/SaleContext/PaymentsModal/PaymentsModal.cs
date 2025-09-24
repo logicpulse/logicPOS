@@ -281,16 +281,16 @@ namespace LogicPOS.UI.Components.POS
             return SaleItem.GetOrderDetailsFromSaleItems(_partialPaymentItems);
         }
 
-        private IEnumerable<AddDocumentPaymentMethodDto> GetPaymentMethodsDtos()
+        private IEnumerable<Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod> GetPaymentMethodsDtos()
         {
-            var paymentMethods = new List<AddDocumentPaymentMethodDto>();
+            var paymentMethods = new List<Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod>();
 
             if (PaymentMethod == null)
             {
                 return null;
             }
 
-            paymentMethods.Add(new AddDocumentPaymentMethodDto
+            paymentMethods.Add(new Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod
             {
                 PaymentMethodId = PaymentMethod.Id,
                 Amount = TotalFinal

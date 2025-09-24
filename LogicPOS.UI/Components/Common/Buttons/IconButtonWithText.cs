@@ -97,10 +97,10 @@ namespace LogicPOS.UI.Buttons
                     Font = AppSettings.Instance.FontBaseDialogActionAreaButton,
                     FontColor = AppSettings.Instance.ColorBaseDialogActionAreaButtonFont,
                     Icon = AppSettings.Paths.Images + icon,
-                    IconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault,
+                    IconSize = ExpressionEvaluatorExtended.SizePosToolbarButtonIconSizeDefault,
                     ButtonSize = new System.Drawing.Size(
-                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Width,
-                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Height)
+                        ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Width,
+                        ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Height)
                     /*AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
                     ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton*/
                 });

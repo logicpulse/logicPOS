@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Components.Modals.Common
         public IconButtonWithText BtnNext { get; private set; }
         public List<ModalTab> Tabs { get; set; }
         public ModalTab CurrentTab { get; set; }
+        public event Action<ModalTab> CurrentTabChanged;
 
         public ModalTabsNavigator(params ModalTab[] pages)
         {
@@ -101,6 +102,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             });
 
             UpdateNavigatorButtons();
+            CurrentTabChanged?.Invoke(CurrentTab);
         }
 
         private void InitializeButtons()
@@ -231,6 +233,7 @@ namespace LogicPOS.UI.Components.Modals.Common
                 BtnNext.Sensitive = true;
             }
         }
+
 
     }
 }

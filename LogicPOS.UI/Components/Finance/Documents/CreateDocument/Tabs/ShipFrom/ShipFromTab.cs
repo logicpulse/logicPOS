@@ -11,9 +11,9 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentShipFromTab : ModalTab
+    public partial class ShipFromTab : ModalTab
     {
-        public CreateDocumentShipFromTab(Window parent) : base(parent,
+        public ShipFromTab(Window parent) : base(parent,
                                                                GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"),
                                                                AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
                                                                false)

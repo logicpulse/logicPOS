@@ -3,7 +3,7 @@ using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentCustomerTab
+    public partial class CustomerTab
     {
         public TextBox TxtCustomer { get; set; }
         public TextBox TxtFiscalNumber { get; set; }

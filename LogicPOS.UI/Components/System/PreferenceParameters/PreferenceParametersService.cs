@@ -35,7 +35,8 @@ namespace LogicPOS.UI.Services
            
             if (preferenceParameters.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(null, preferenceParameters.FirstError);
+                ErrorHandlingService.HandleApiError(preferenceParameters);
+                return;
             }
              
             _preferenceParameters = preferenceParameters.Value;

@@ -255,13 +255,13 @@ namespace LogicPOS.UI.Buttons
                 {
                     Name = buttonName,
                     Text = buttonLabel,
-                    Font = ExpressionEvaluatorExtended.fontDocumentsSizeDefault,
+                    Font = ExpressionEvaluatorExtended.FontDocumentsSizeDefault,
                     FontColor = colorBaseDialogActionAreaButtonFont,
                     Icon = buttonImage,
-                    IconSize = ExpressionEvaluatorExtended.sizePosToolbarButtonIconSizeDefault,
+                    IconSize = ExpressionEvaluatorExtended.SizePosToolbarButtonIconSizeDefault,
                     ButtonSize = new System.Drawing.Size(
-                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Width,
-                        ExpressionEvaluatorExtended.sizePosToolbarButtonSizeDefault.Height)
+                        ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Width,
+                        ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Height)
                 });
         }
 

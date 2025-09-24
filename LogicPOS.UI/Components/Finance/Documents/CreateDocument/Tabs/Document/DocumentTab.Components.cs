@@ -1,13 +1,16 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Services;
 using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class CreateDocumentDocumentTab
+    public partial class DocumentTab
     {
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtPaymentCondition { get; set; }
+        public TextBox TxtPaymentMethod { get; set; }
+        private bool SinglePaymentMethod => SystemInformationService.SystemInformation.IsPortugal;
         public TextBox TxtCurrency { get; set; }
         public TextBox TxtExchangeRate { get; private set; }
         public TextBox TxtOriginDocument { get; set; }
