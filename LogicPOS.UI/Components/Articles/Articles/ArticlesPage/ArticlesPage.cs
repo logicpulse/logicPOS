@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Articles.DeleteArticle;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
@@ -72,6 +73,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             var modal = new ArticleModal(mode, GetSelectedArticle());
             var response = modal.Run();
+            ArticlesService.RefreshArticlesCache();
             modal.Destroy();
             return response;
         }
@@ -91,8 +93,33 @@ namespace LogicPOS.UI.Components.Pages
         protected override DeleteCommand GetDeleteCommand()
         {
             var result = new DeleteArticleCommand(SelectedEntity.Id);
-            ArticlesService.RefreshArticlesCache();
             return result;
+        }
+
+        public override bool DeleteEntity()
+        {
+            var command = GetDeleteCommand();
+
+            if (command == null)
+            {
+                return false;
+            }
+
+            var result = _mediator.Send(GetDeleteCommand()).Result;
+            ArticlesService.RefreshArticlesCache();
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                return false;
+            }
+
+            if (result.Value == false)
+            {
+                CustomAlerts.ShowCannotDeleteEntityErrorAlert(SourceWindow);
+            }
+
+            return result.Value;
         }
 
         public override void UpdateButtonPrevileges()

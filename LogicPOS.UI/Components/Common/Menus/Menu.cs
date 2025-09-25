@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace LogicPOS.UI.Components.Menus
 {
@@ -112,14 +113,15 @@ namespace LogicPOS.UI.Components.Menus
             var entities = GetPage(CurrentPage);
 
             uint row = 0, column = 0;
+            MenuButton<TEntity> FirstButton=null;
   
             foreach (var entity in entities)
             {
                 var menuButton = GetOrCreateMenuButtonForEntity(entity);
 
-                if (column == 0 && row == 0 && SelectFirstOnReload && _toggleMode)
+                if (column == 0 && row == 0  && _toggleMode)
                 {
-                    MenuButton_Clicked(menuButton.Button, EventArgs.Empty);
+                    FirstButton = menuButton;
                 }
 
                 this.Attach(menuButton.Button,
@@ -142,6 +144,10 @@ namespace LogicPOS.UI.Components.Menus
                     ++column;
                 }
 
+            }
+            if (SelectFirstOnReload && FirstButton!=null)
+            {
+                MenuButton_Clicked(FirstButton.Button, EventArgs.Empty);
             }
         }
 

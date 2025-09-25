@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.Name;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_users");
+            var title = GeneralUtils.GetResourceByName("global_customers");
             return Columns.CreateColumn(title, 1, RenderValue);
         }
 

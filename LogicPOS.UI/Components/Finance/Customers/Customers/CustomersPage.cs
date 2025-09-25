@@ -4,10 +4,12 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Customers.DeleteCustomer;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
 using MediatR;
 using System.Collections.Generic;
 
@@ -26,6 +28,7 @@ namespace LogicPOS.UI.Components.Pages
             var modal = new CustomerModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
+            CustomersService.RefreshCustomersCache();
             return response;
         }
 
@@ -38,10 +41,34 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
 
+        public override bool DeleteEntity()
+        {
+            var command = GetDeleteCommand();
+
+            if (command == null)
+            {
+                return false;
+            }
+
+            var result = _mediator.Send(GetDeleteCommand()).Result;
+            CustomersService.RefreshCustomersCache();
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                return false;
+            }
+
+            if (result.Value == false)
+            {
+                CustomAlerts.ShowCannotDeleteEntityErrorAlert(SourceWindow);
+            }
+            return result.Value;
+        }
+
         protected override DeleteCommand GetDeleteCommand()
         {
             var result= new DeleteCustomerCommand(SelectedEntity.Id);
-            CustomersService.RefreshCustomersCache();
             return result;
         }
 
