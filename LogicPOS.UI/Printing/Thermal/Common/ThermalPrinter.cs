@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Printing
 
         protected CompanyInformation GetCompanyInformations()
         {
-            return PreferenceParametersService.CompanyInformations;
+            return CompanyDetailsService.CompanyInformation;
         }
 
         protected Bitmap GetCompanyLogo()

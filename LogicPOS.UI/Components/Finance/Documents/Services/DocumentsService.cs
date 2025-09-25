@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             {
                 DocumentId = documentId.Value,
                 Document = document,
-                CompanyInformations = PreferenceParametersService.CompanyInformations
+                CompanyInformations = CompanyDetailsService.CompanyInformation
             };
         }
         

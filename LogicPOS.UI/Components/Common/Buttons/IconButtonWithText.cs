@@ -101,8 +101,6 @@ namespace LogicPOS.UI.Buttons
                     ButtonSize = new System.Drawing.Size(
                         ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Width,
                         ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Height)
-                    /*AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButtonIcon,
-                    ButtonSize = AppSettings.Instance.SizeBaseDialogActionAreaBackOfficeNavigatorButton*/
                 });
         }
     }

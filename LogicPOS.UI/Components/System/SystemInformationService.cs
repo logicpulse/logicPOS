@@ -26,7 +26,6 @@ namespace LogicPOS.UI.Services
             CountryCode2 = "PT"
         };
       
-
         private static SystemInformation GetSystemInformation()
         {
             var result = DependencyInjection.Mediator.Send(new GetSystemInformationsQuery()).Result;

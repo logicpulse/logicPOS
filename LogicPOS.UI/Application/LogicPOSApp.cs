@@ -22,7 +22,6 @@ namespace LogicPOS.UI.Application
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }
         public static PosKeyboardDialog DialogPosKeyboard { get; set; }
-        public static Dictionary<string, bool> Notifications { get; set; }
         public static dynamic Theme { get; set; }
         public static ExpressionEvaluationService ExpressionEvaluator { get; set; } = new ExpressionEvaluationService();
         public static UsbDisplayDevice UsbDisplay { get; set; }
@@ -34,7 +33,6 @@ namespace LogicPOS.UI.Application
         {
             try
             {
-                InitializeNotifications();
                 InitializeScreenSize();
                 InitializeExpressionEvaluator();
                 InitializeTheme();
@@ -128,14 +126,6 @@ namespace LogicPOS.UI.Application
             var appScreenSize = AppSettings.Instance.AppScreenSize;
             AppSettings.Instance.AppScreenSize = appScreenSize == new Size(0, 0) ? ScreenSizeUtil.GetThemeScreenSize() : ScreenSizeUtil.GetThemeScreenSize(appScreenSize);
             AppSettings.MaxWindowSize = new Size(AppSettings.Instance.AppScreenSize.Width - 40, AppSettings.Instance.AppScreenSize.Height - 40);
-        }
-
-        private static void InitializeNotifications()
-        {
-            Notifications = new Dictionary<string, bool>
-            {
-                ["SHOW_PRINTER_UNDEFINED"] = true
-            };
         }
 
     }

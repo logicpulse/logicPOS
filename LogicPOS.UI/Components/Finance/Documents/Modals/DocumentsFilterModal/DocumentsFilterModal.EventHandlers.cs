@@ -60,6 +60,7 @@ namespace LogicPOS.UI.Components.Documents
                 TxtPaymentCondition.Clear();
             }
         }
+       
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
@@ -73,6 +74,7 @@ namespace LogicPOS.UI.Components.Documents
                 TxtCustomer.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void BtnSelectDocumentType_Clicked(object sender, EventArgs e)
         {
             var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);
@@ -86,6 +88,7 @@ namespace LogicPOS.UI.Components.Documents
                 TxtDocumentType.SelectedEntity = page.SelectedEntity;
             }
         }
+        
         private void BtnSelectPaymentCondition_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentConditionsPage(null, PageOptions.SelectionPageOptions);
@@ -99,6 +102,7 @@ namespace LogicPOS.UI.Components.Documents
                 TxtPaymentCondition.SelectedEntity = page.SelectedEntity;
             }
         }
+        
         private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
@@ -112,6 +116,7 @@ namespace LogicPOS.UI.Components.Documents
                 TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void TxtStartDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);
@@ -124,6 +129,7 @@ namespace LogicPOS.UI.Components.Documents
 
             dateTimePicker.Destroy();
         }
+        
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);

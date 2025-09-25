@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Components.Documents
             InitializeTxtPaymentCondition();
             InitializeComboPaymentStatus();
         }
+       
         private void InitializeComboPaymentStatus()
         {
             ComboPaymentStatus = new PageComboBox<int>("Estado do Pagamento");
@@ -34,6 +35,7 @@ namespace LogicPOS.UI.Components.Documents
             ComboPaymentStatus.AddItem(1, "Pago");
             ComboPaymentStatus.AddItem(2, "Não Pago");
         }
+       
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
@@ -50,6 +52,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
         }
+        
         private void InitializeTxtDocumentType()
         {
             TxtDocumentType = new TextBox(this,
@@ -66,6 +69,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
         }
+        
         private void InitializeTxtPaymentCondition()
         {
             TxtPaymentCondition = new TextBox(this,
@@ -82,6 +86,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
         }
+       
         private void InitializeTxtPaymentMethod()
         {
             TxtPaymentMethod = new TextBox(this,
@@ -98,6 +103,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;
         }
+       
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
@@ -113,6 +119,7 @@ namespace LogicPOS.UI.Components.Documents
             TxtStartDate.Entry.Changed += TxtStartDate_Entry_Changed;
             TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
         }
+       
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,

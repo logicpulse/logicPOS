@@ -1,4 +1,6 @@
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using System;
 
@@ -11,6 +13,11 @@ namespace LogicPOS.UI.Components.Windows
         {
             AddEventHandlers();
             InitializeUI();
+
+            if(CompanyDetailsService.CompnayIsConfigured() == false)
+            {
+                EditCompanyDetailsModal.ShowModal(this);
+            }
         }
 
         private void AddEventHandlers()
@@ -28,6 +35,7 @@ namespace LogicPOS.UI.Components.Windows
 
         #region Static 
         private static LoginWindow _instance;
+        
         public static LoginWindow Instance
         {
             get

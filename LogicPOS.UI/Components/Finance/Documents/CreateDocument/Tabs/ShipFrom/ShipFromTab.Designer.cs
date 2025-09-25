@@ -112,7 +112,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                       includeSelectButton: false,
                                       includeKeyBoardButton: true);
 
-            TxtCity.Text = PreferenceParametersService.CompanyInformations.City;
+            TxtCity.Text = CompanyDetailsService.CompanyInformation.City;
         }
 
         private void InitializeTxtZipCode()
@@ -146,7 +146,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
 
-            TxtAddress.Text = PreferenceParametersService.CompanyInformations.Address;
+            TxtAddress.Text = CompanyDetailsService.CompanyInformation.Address;
         }
 
     }

@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Services
             {
                 if (_default == null)
                 {
-                    _default = Countries.FirstOrDefault(c => c.Code2.ToLower() == PreferenceParametersService.CompanyInformations.CountryCode2.ToLower());
+                    _default = Countries.FirstOrDefault(c => c.Code2.ToLower() == CompanyDetailsService.CompanyInformation.CountryCode2.ToLower());
                 }
                 return _default;
             }
