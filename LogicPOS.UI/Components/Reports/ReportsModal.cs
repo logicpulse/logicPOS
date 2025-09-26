@@ -69,6 +69,8 @@ namespace LogicPOS.UI.Components.Modals
             BtnStockByArticleGainReport.Button.Clicked += BtnStockByArticleGainReport_Clicked;
             BtnArticleTotalSoldReport.Button.Clicked += BtnArticleTotalSoldReport_Clicked;
             BtnDeletedOrdersReport.Button.Clicked += BtnDeletedOrdersReport_Clicked;
+            BtnAuditReport.Button.Clicked += BtnAuditReport_Clicked;
+            
         }
 
 
@@ -100,8 +102,8 @@ namespace LogicPOS.UI.Components.Modals
             BtnStockByWarehouseReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_WAREHOUSE");
             BtnStockByArticleReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_ARTICLE");
             BtnStockBySupplierReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_SUPPLIER");
-            //BtnStockByArticleGainReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_GAIN");
-           // BtnSalesByVatReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_VAT");
+            BtnStockByArticleGainReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_LIST_STOCK_GAIN");
+            BtnSalesByVatReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_VAT");
             BtnSalesByVatAndArticleClassReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_PER_VAT_BY_ARTICLE_CLASS");
             BtnDetailedSalesByCountryReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_COUNTRY");
             BtnDetailedSalesByCurrencyReport.Button.Sensitive = AuthenticationService.UserHasPermission("REPORT_SALES_DETAIL_PER_CURRENCY");

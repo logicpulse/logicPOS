@@ -302,7 +302,7 @@ namespace LogicPOS.UI.Components.Modals
             modal.TxtSerialNumber.Component.Sensitive = false;
             modal.TxtVatRate.Component.Sensitive = false;
             modal.TxtWarehouse.Component.Sensitive = false;
-            
+
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -316,7 +316,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtCustomer.IsRequired=true;
+            modal.TxtCustomer.IsRequired = true;
             modal.TxtCustomer.Regex = @"^[0-9a-zA-Z\s]+$";
             modal.TxtArticle.Component.Sensitive = false;
             modal.TxtDocumentNumber.Component.Sensitive = false;
@@ -618,13 +618,13 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         private void BtnArticlesReport_Clicked(object sender, EventArgs e)
-        {           
-                ReportsService.ShowArticlesReport();
+        {
+            ReportsService.ShowArticlesReport();
         }
 
         private void BtnCustomersReport_Clicked(object sender, EventArgs e)
-        {           
-                ReportsService.ShowCustomersReport();
+        {
+            ReportsService.ShowCustomersReport();
         }
 
         private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
@@ -701,7 +701,7 @@ namespace LogicPOS.UI.Components.Modals
                 else
                 if (modal.TxtArticle.SelectedEntity == null && modal.TxtWarehouse.SelectedEntity == null)
                 {
-                    ReportsService.ShowStockByWarehouseReport(modal.StartDate, 
+                    ReportsService.ShowStockByWarehouseReport(modal.StartDate,
                                                     modal.EndDate,
                                                     Guid.Empty,
                                                     Guid.Empty,
@@ -709,11 +709,11 @@ namespace LogicPOS.UI.Components.Modals
                 }
                 else
                 {
-                    
-                        ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
-                                                        (modal.TxtArticle?.SelectedEntity as Article).Id,
-                                                        (modal.TxtWarehouse.SelectedEntity as Warehouse).Id,
-                                                        modal.TxtSerialNumber.Text);
+
+                    ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
+                                                    (modal.TxtArticle?.SelectedEntity as Article).Id,
+                                                    (modal.TxtWarehouse.SelectedEntity as Warehouse).Id,
+                                                    modal.TxtSerialNumber.Text);
                 }
 
 
@@ -735,7 +735,7 @@ namespace LogicPOS.UI.Components.Modals
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
-                if (modal.TxtArticle.SelectedEntity==null)
+                if (modal.TxtArticle.SelectedEntity == null)
                 {
                     ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate);
                 }
@@ -835,6 +835,11 @@ namespace LogicPOS.UI.Components.Modals
                 ReportsService.ShowDeletedOrdersReport(modal.StartDate, modal.EndDate);
             }
             modal.Destroy();
+        }
+
+        private void BtnAuditReport_Clicked(object sender, EventArgs e)
+        {
+            SystemAuditFilterModal.ShowModal(this);
         }
     }
 }
