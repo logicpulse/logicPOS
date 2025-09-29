@@ -41,7 +41,12 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            Validate();
+            if (Validate() == false)
+            {
+                Run();
+                return;
+            }
+
             if (BtnInvoice.Sensitive == true && PaymentMethod == null)
             {
                 CustomAlerts.Warning(this)
@@ -50,11 +55,7 @@ namespace LogicPOS.UI.Components.POS
                 Run();
                 return;
             }
-            if (AllFieldsAreValid() == false)
-            {
-                Run();
-                return;
-            }
+
 
             var addDocumentCommand = CreateAddDocumentCommand();
             var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand);
@@ -73,6 +74,8 @@ namespace LogicPOS.UI.Components.POS
                 DocumentsService.RegisterPrint(printingData.Value.DocumentId, new List<int> { 1 }, false);
             }
         }
+
+       
 
         private void ProcesPayment()
         {

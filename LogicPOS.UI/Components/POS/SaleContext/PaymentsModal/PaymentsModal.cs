@@ -1,8 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.Documents.Rules;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -16,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Permissions;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
 
 
@@ -24,6 +29,7 @@ namespace LogicPOS.UI.Components.POS
     public partial class PaymentsModal : Modal
     {
         private PaymentCondition _selectedPaymentCondition;
+        private string _documentType = GetDefaultDocumentType();
         private PaymentMode _paymentMode = PaymentMode.Full;
         private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
         public PaymentMethod PaymentMethod => _selectedPaymentMethod;
@@ -34,6 +40,7 @@ namespace LogicPOS.UI.Components.POS
         private decimal TotalChange { get; set; }
         public static int InitialSplittersNumber { get; set; } = 0;
         private int SplittersNumber;
+
         public PaymentsModal(Window parent) : base(parent,
                                                    GeneralUtils.GetResourceByName("window_title_dialog_payments"),
                                                    new Size(633, 620),
@@ -215,14 +222,52 @@ namespace LogicPOS.UI.Components.POS
             FreezeEditableFields(false);
         }
 
-        protected void Validate()
+        protected bool Validate()
         {
-            if (AllFieldsAreValid())
+            if (AllFieldsAreValid() == false)
             {
-                return;
+                ValidationUtilities.ShowValidationErrors(ValidatableFields);
+                return false;
             }
 
-            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+            if (CompanyDetailsService.CompanyInformation.IsPortugal)
+            {
+                if (DocTypeAnalyzer.IsSimplifiedInvoice() && TotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal)
+                {
+                    string messageFormat = LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_max_value"];
+                    string message = string.Format(messageFormat, $"Total: {TotalFinal:C}\nMáximo: {DocumentRules.Portugal.SimplifiedInvoiceMaxTotal:C}", LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog"]);
+                    
+                    var response = CustomAlerts.Warning(this)
+                        .WithButtonsType(ButtonsType.YesNo)
+                        .WithMessage(message)
+                        .ShowAlert();
+
+                    if(response != ResponseType.Yes)
+                    {
+                        return false;
+                    }
+
+                    _documentType = "FR";
+                }
+
+                if (GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber && TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal) {
+
+                    string messageFormat = LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer"];
+                    string message = string.Format(messageFormat, 
+                        $"Total: {TotalFinal:C}",
+                         $"Máximo: {DocumentRules.Portugal.FinalConsumerMaxTotal:C}");
+
+                    var response = CustomAlerts.Warning(this)
+                        .WithSize(new Size(550,480))
+                        .WithMessage(message)
+                        .ShowAlert();
+
+                    return false;
+                }
+
+            }
+
+            return true;
         }
 
         protected bool AllFieldsAreValid()
@@ -249,15 +294,14 @@ namespace LogicPOS.UI.Components.POS
 
         private string GetDocumentType()
         {
-            var type = (BtnInvoice.Sensitive == true) ? "FR" : "FT";
-            if (type == "FR")
-            {
-                if (CountriesService.Default.Code2 == "PT")
-                {
-                    type = "FS";
-                }
-            }
-            return type;
+            return (BtnInvoice.Sensitive == true) ? _documentType : "FT";
+        }
+
+        private DocumentTypeAnalyzer DocTypeAnalyzer => new DocumentTypeAnalyzer(GetDocumentType());
+
+        private static string GetDefaultDocumentType()
+        {
+            return CompanyDetailsService.CompanyInformation.IsPortugal ? "FS" : "FR";
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()

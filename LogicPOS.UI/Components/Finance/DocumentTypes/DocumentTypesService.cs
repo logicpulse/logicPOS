@@ -36,7 +36,6 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
             }
         }
 
-
         private static List<DocumentType> GetAllDocumentTypes()
         {
             var documentTypes = DependencyInjection.Mediator.Send(new GetAllDocumentTypesQuery()).Result;
@@ -49,5 +48,7 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
 
             return documentTypes.Value.ToList();
         }
+    
+
     }
 }
