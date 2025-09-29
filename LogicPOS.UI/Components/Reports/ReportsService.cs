@@ -246,9 +246,9 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetStockByArticleGainReportPdfQuery(startDate, endDate, articleId, customerId));
         }
 
-        public static void ShowSystemAuditsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSystemAuditsReport(DateTime startDate, DateTime endDate, Guid terminalId= new Guid())
         {
-            ShowReport(new GetSystemAuditsReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSystemAuditsReportPdfQuery(startDate, endDate, terminalId));
         }
     }
 }

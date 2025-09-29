@@ -14,7 +14,8 @@ namespace LogicPOS.Api.Features.Reports.SystemAudits.GetSystemAuditsReportPdf
 
         public override async Task<ErrorOr<TempFile>> Handle(GetSystemAuditsReportPdfQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/system-audits/pdf{request.GetUrlQuery()}");
+            return await HandleGetFileQueryAsync($"reports/system-audits/pdf{request.GetUrlQuery()}"+
+                                                                        $"&terminalId={request.TerminalId}");
         }
     }
 }

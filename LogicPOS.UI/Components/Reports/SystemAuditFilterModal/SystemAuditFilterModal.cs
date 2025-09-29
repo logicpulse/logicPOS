@@ -1,7 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
-using LogicPOS.Api.Features.Reports.SystemAudits;
+using LogicPOS.Api.Features.Reports.SystemAudits.GetSystemAuditsReportPdf;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -45,12 +44,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private GetSystemAuditsReportPdfQuery CreateQuery()
         {
-            return new GetSystemAuditsReportPdfQuery
-            {
-                TerminalId = TxtTerminal.SelectedEntity != null? (TxtTerminal.SelectedEntity as Terminal).Id:Guid.Empty,
-                StartDate = DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",CultureInfo.InvariantCulture),
-                EndDate = DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-            };
+            return new GetSystemAuditsReportPdfQuery(   DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                                                        DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
+                                                        TxtTerminal.SelectedEntity != null ? (TxtTerminal.SelectedEntity as Terminal).Id : Guid.Empty);
+            
         }
         private void SelectCustomer(Terminal terminal)
         {
