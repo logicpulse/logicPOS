@@ -4,6 +4,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -15,13 +16,13 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Licensing
 {
-    internal partial class PosLicenceDialog : BaseDialog
+    internal partial class RegisterModal : BaseDialog
     {
         private readonly string _hardwareId;
         private List<string> Countries { get; } = LicensingService.GetCountries();
 
 
-        public PosLicenceDialog(Window parent,
+        public RegisterModal(Window parent,
                                 DialogFlags flags,
                                 string hardwareId = null)
                     : base(parent, flags)
@@ -34,9 +35,9 @@ namespace LogicPOS.UI.Components.Licensing
             {
                 hardwareId = LicensingService.GetHardwareId();
             }
- 
+
             _hardwareId = hardwareId;
-            
+
             string fileActionRegister = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_register.png";
             string fileActionContinue = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";
 
@@ -96,11 +97,11 @@ namespace LogicPOS.UI.Components.Licensing
         {
             if (response == ResponseType.Accept)
             {
-                ActionRegister();
+                Register();
             }
         }
 
-        private void ActionRegister()
+        private void Register()
         {
             if (LicensingService.ConnectToWs() == false)
             {
@@ -109,41 +110,35 @@ namespace LogicPOS.UI.Components.Licensing
                             .WithTitleResource("global_error")
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
                             .ShowAlert();
+                Run();
                 return;
             }
 
-            byte[] registeredLicence = new byte[0];
+            var activateCommand = CreateActivateLicenseCommand();
+            var activateResult = LicensingService.ActivateLicense(activateCommand);
 
-            try
-            {
-                var activateCommand = GetActivateLicenseCommand();
-                registeredLicence = LicensingService.ActivateLicense(activateCommand);
-
-                CustomAlerts.Information(this)
-                            .WithSize(new System.Drawing.Size(600, 300))
-                            .WithTitleResource("global_information")
-                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
-                            .ShowAlert();
-
-                Destroy();
-
-                Environment.Exit(0);
-
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
+            if (activateResult == null || activateResult.Value.Success == false) {
 
                 CustomAlerts.Error(this)
-                            .WithSize(new System.Drawing.Size(600, 300))
-                            .WithTitleResource("global_error")
-                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_timeout"))
-                            .ShowAlert();
+                       .WithMessage("Erro ao activar licença. Tenta novamente")
+                       .ShowAlert();
+
                 Run();
+                return;
             }
+
+            CustomAlerts.Information(this)
+                        .WithSize(new System.Drawing.Size(600, 300))
+                        .WithTitleResource("global_information")
+                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
+                        .ShowAlert();
+
+            Destroy();
+
+            Environment.Exit(0);
         }
 
-        private ActivateLicenseCommand GetActivateLicenseCommand()
+        private ActivateLicenseCommand CreateActivateLicenseCommand()
         {
             ActivateLicenseCommand activateLicenseCommand = new ActivateLicenseCommand();
             activateLicenseCommand.Name = EntryBoxName.EntryValidation.Text;
@@ -160,32 +155,35 @@ namespace LogicPOS.UI.Components.Licensing
             return activateLicenseCommand;
         }
 
-        public static LicenseUIResult GetLicenseDetails(string hardWareId)
+        public static RegisterModalResult ShowModal()
         {
-            LicenseUIResult result = new LicenseUIResult();
+            RegisterModalResult result = new RegisterModalResult();
 
-            PosLicenceDialog dialog = new PosLicenceDialog(new Window(string.Empty), DialogFlags.DestroyWithParent, hardWareId);
+            string hardwareId = TerminalService.Terminal.HardwareId;
 
-            result.Response = (ResponseType)dialog.Run();
+            RegisterModal modal = new RegisterModal(new Window(string.Empty), DialogFlags.DestroyWithParent, hardwareId);
+
+            result.Response = (ResponseType)modal.Run();
 
             switch (result.Response)
             {
                 case ResponseType.Ok:
-                    result.Address = dialog.EntryBoxAddress.EntryValidation.Text;
-                    result.Company = dialog.EntryBoxCompany.EntryValidation.Text;
-                    result.Email = dialog.EntryBoxEmail.EntryValidation.Text;
-                    result.FiscalNumber = dialog.EntryBoxFiscalNumber.EntryValidation.Text;
-                    result.Name = dialog.EntryBoxName.EntryValidation.Text;
-                    result.Phone = dialog.EntryBoxPhone.EntryValidation.Text;
+                    result.Address = modal.EntryBoxAddress.EntryValidation.Text;
+                    result.Company = modal.EntryBoxCompany.EntryValidation.Text;
+                    result.Email = modal.EntryBoxEmail.EntryValidation.Text;
+                    result.FiscalNumber = modal.EntryBoxFiscalNumber.EntryValidation.Text;
+                    result.Name = modal.EntryBoxName.EntryValidation.Text;
+                    result.Phone = modal.EntryBoxPhone.EntryValidation.Text;
                     break;
                 case ResponseType.Cancel:
+                    Environment.Exit(0);
                     break;
                 case ResponseType.Close:
                     Environment.Exit(0);
                     break;
             }
 
-            dialog.Destroy();
+            modal.Destroy();
 
             return result;
         }

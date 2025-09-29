@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Menus
             };
         }
 
-    
+  
         private string GetButtonImageFromApi(ArticleViewModel article)
         {
             string base64Image = ArticlesService.GetArticleImage(article.Id);

@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using System;
 using System.Collections.Generic;
@@ -68,11 +69,22 @@ namespace LogicPOS.UI.Components.Modals
             _txtCode.Text = _entity.Code;
             _txtDesignation.Text = _entity.Designation;
             _txtButtonName.Text = _entity.Button?.Label;
-            _imagePicker.SetBase64Image(_entity.Button?.Image, _entity.Button?.ImageExtension);
+            if (EntityHasImage)
+            {
+                ShowImage();
+            }
             _comboPrinters.SelectedEntity = PrinterAssociationService.GetPrinter(_entity.Id);
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
 
+        }
+
+        private bool EntityHasImage => string.IsNullOrWhiteSpace(_entity.Button?.Image) == false && string.IsNullOrWhiteSpace(_entity.Button?.ImageExtension) == false;
+
+        private void ShowImage()
+        {
+            string imagePath = ButtonImageCache.GetImagePath(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
+            _imagePicker.SetImage(imagePath);
         }
 
         protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());

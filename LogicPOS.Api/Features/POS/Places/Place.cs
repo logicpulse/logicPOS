@@ -9,5 +9,7 @@ namespace LogicPOS.Api.Entities
         public string Designation { get; set; }
         public PriceType PriceType { get; set; }
         public MovementType MovementType { get; set; }
+        public string ButtonImage { get; set; }
+        public string ImageExtension => "png";
     }
 }

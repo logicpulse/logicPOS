@@ -97,7 +97,6 @@ namespace LogicPOS.UI
             return File.Exists("_booted.pos") == false;
         }
 
-
         private static void DisableFirstLaunch()
         {
             try
@@ -124,9 +123,7 @@ namespace LogicPOS.UI
 
         private static void StartApp()
         {
-            LicenseRouter licenseRouter = new LicenseRouter();
-
-            if (licenseRouter.LoadApp == false)
+            if (LicensingService.Initialize() == false)
             {
                 return;
             }
@@ -139,19 +136,14 @@ namespace LogicPOS.UI
                 return;
             }
 
-            if (LicenseRouter.NeedToRegister())
+            if (LicensingService.Data.LicenceRegistered == false)
             {
-                ShowLicenseDialog();
+                RegisterModal.ShowModal();
+                return;
             }
 
             LogicPOSApp app = new LogicPOSApp();
             app.Start();
-        }
-
-        private static void ShowLicenseDialog()
-        {
-            string hardWareId = TerminalService.Terminal.HardwareId;
-            PosLicenceDialog.GetLicenseDetails(hardWareId);
         }
 
         public static bool InitializeCulture()

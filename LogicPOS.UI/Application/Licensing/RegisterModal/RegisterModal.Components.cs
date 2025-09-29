@@ -4,7 +4,7 @@ using LogicPOS.UI.Buttons;
 
 namespace LogicPOS.UI.Components.Licensing
 {
-    internal partial class PosLicenceDialog
+    internal partial class RegisterModal
     {
         private HBox _hboxMain;
         private EntryBoxValidation _entryBoxHardwareId;

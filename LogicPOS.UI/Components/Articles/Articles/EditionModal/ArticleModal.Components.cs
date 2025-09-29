@@ -48,126 +48,90 @@ namespace LogicPOS.UI.Components.Modals
         private VBox _compositionTab;
         #endregion
 
-        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
-        {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateFinanceDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label"));
-            yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
-            yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
 
-            if (_entity != null)
+        private Api.ValueObjects.Button GetButton()
+        {
+            return new Api.ValueObjects.Button
             {
-                yield return (CreateUniqueArticlesTab(), GeneralUtils.GetResourceByName("global_serial_number"));
+                Label = _txtButtonName.Text,
+                Image = _imagePicker.GetBase64Image(),
+                ImageExtension = _imagePicker.GetImageExtension()
+            };
+        }
+
+        protected override void AddSensitiveFields()
+        {
+            SensitiveFields.Add(_txtOrder.Entry);
+            SensitiveFields.Add(_txtCode.Entry);
+            SensitiveFields.Add(_txtDesignation.Entry);
+            SensitiveFields.Add(_txtButtonName.Entry);
+            SensitiveFields.Add(_txtNotes.TextView);
+            SensitiveFields.Add(_checkDisabled);
+            SensitiveFields.Add(_imagePicker.FileChooserButton);
+            SensitiveFields.Add(_comboCommissionGroups.ComboBox);
+            SensitiveFields.Add(_comboFamilies.ComboBox);
+            SensitiveFields.Add(_comboDiscountGroups.ComboBox);
+            SensitiveFields.Add(_comboVatDirectSelling.ComboBox);
+            SensitiveFields.Add(_comboVatExemptionReasons.ComboBox);
+            SensitiveFields.Add(_comboMeasurementUnits.ComboBox);
+            SensitiveFields.Add(_comboSizeUnits.ComboBox);
+            SensitiveFields.Add(_comboTypes.ComboBox);
+            SensitiveFields.Add(_comboSubfamilies.ComboBox);
+            SensitiveFields.Add(_comboClasses.ComboBox);
+            SensitiveFields.Add(_checkIsComposed);
+            SensitiveFields.Add(_checkUniqueArticles);
+            SensitiveFields.Add(_checkFavorite);
+            SensitiveFields.Add(_checkUseWeighingBalance);
+            SensitiveFields.Add(_checkPriceWithVat);
+            SensitiveFields.Add(_checkPVPVariable);
+            SensitiveFields.Add(_txtDiscount.Entry);
+            SensitiveFields.Add(_txtDefaultQuantity.Entry);
+            SensitiveFields.Add(_txtMinimumStock.Entry);
+            SensitiveFields.Add(_txtTare.Entry);
+            SensitiveFields.Add(_txtWeight.Entry);
+            SensitiveFields.Add(_txtBarcode.Entry);
+            foreach (var priceField in _prices)
+            {
+                SensitiveFields.Add(priceField.Component);
             }
 
+            SensitiveFields.Add(_txtCodeDealer.Entry);
         }
 
-        private VBox CreateDetailsTab()
+        protected override void AddValidatableFields()
         {
-            var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
-            if (_modalMode != EntityEditionModalMode.Insert)
+            if (_modalMode == EntityEditionModalMode.Update)
             {
-                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
-                detailsTab.PackStart(_txtCode.Component, false, false, 0);
+                ValidatableFields.Add(_txtOrder);
+                ValidatableFields.Add(_txtCode);
             }
 
-            detailsTab.PackStart(_txtCodeDealer.Component, false, false, 0);
-            detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
-            detailsTab.PackStart(_txtButtonName.Component, false, false, 0);
-            detailsTab.PackStart(_comboFamilies.Component, false, false, 0);
-            detailsTab.PackStart(_comboSubfamilies.Component, false, false, 0);
-            detailsTab.PackStart(_comboTypes.Component, false, false, 0);
-            detailsTab.PackStart(_imagePicker.Component, false, false, 0);
-            detailsTab.PackStart(_checkIsComposed, false, false, 0);
-            detailsTab.PackStart(_checkUniqueArticles, false, false, 0);
-            detailsTab.PackStart(_checkFavorite, false, false, 0);
-            detailsTab.PackStart(_checkUseWeighingBalance, false, false, 0);
-
-            if (_modalMode != EntityEditionModalMode.Insert)
+            ValidatableFields.Add(_txtDesignation);
+            ValidatableFields.Add(_txtDiscount);
+            ValidatableFields.Add(_txtDefaultQuantity);
+            ValidatableFields.Add(_txtMinimumStock);
+            ValidatableFields.Add(_txtTare);
+            ValidatableFields.Add(_txtWeight);
+            ValidatableFields.Add(_txtBarcode);
+            foreach (var priceField in _prices)
             {
-                detailsTab.PackStart(_checkDisabled, false, false, 0);
+                ValidatableFields.Add(priceField);
             }
-
-            return detailsTab;
         }
 
-        private VBox CreateCompositionTab()
+        private void UpdateCompositionTabVisibility()
         {
-            _compositionTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            _compositionTab.PackStart(_addArticlesBox.Component, true, true, 0);
-            return _compositionTab;
-        }
+            _compositionTab.Visible = _checkIsComposed.Active;
 
-        private VBox CreateFinanceDetailsTab()
-        {
-            var financeDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
-            financeDetailsTab.PackStart(CreatePricesArea(), false, false, 0);
-            financeDetailsTab.PackStart(_checkPVPVariable, false, false, 0);
-            financeDetailsTab.PackStart(_checkPriceWithVat, false, false, 0);
-            financeDetailsTab.PackStart(_txtDiscount.Component, false, false, 0);
-            financeDetailsTab.PackStart(_comboClasses.Component, false, false, 0);
-            financeDetailsTab.PackStart(_comboVatDirectSelling.Component, false, false, 0);
-            financeDetailsTab.PackStart(_comboVatExemptionReasons.Component, false, false, 0);
-
-            return financeDetailsTab;
-        }
-
-        private VBox CreateOtherDetailsTab()
-        {
-            var otherDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
-            otherDetailsTab.PackStart(_txtBarcode.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtMinimumStock.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtTare.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtWeight.Component, false, false, 0);
-            otherDetailsTab.PackStart(_txtDefaultQuantity.Component, false, false, 0);
-            otherDetailsTab.PackStart(_comboMeasurementUnits.Component, false, false, 0);
-            otherDetailsTab.PackStart(_comboSizeUnits.Component, false, false, 0);
-            otherDetailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
-            otherDetailsTab.PackStart(_comboDiscountGroups.Component, false, false, 0);
-            otherDetailsTab.PackStart(_comboPrinters.Component, false, false, 0);
-
-            return otherDetailsTab;
-        }
-
-        private VBox CreatePricesArea()
-        {
-            int[] columnsWidths = new int[] { 100, 90, 90, 160 };
-            var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
-            Label labelEmpty = new Label(string.Empty) { WidthRequest = columnsWidths[0] };
-            Label labelNormal = new Label(GeneralUtils.GetResourceByName("article_normal_price")) { WidthRequest = columnsWidths[1] };
-            Label labelPromotion = new Label(GeneralUtils.GetResourceByName("article_promotion_price")) { WidthRequest = columnsWidths[2] };
-            Label labelUsePromotion = new Label(GeneralUtils.GetResourceByName("article_use_promotion_price")) { WidthRequest = columnsWidths[3] };
-            labelNormal.SetAlignment(0.0F, 0.5F);
-            labelPromotion.SetAlignment(0.0F, 0.5F);
-            labelUsePromotion.SetAlignment(0.0F, 0.5F);
-
-            //Header
-            HBox header = new HBox(false, _boxSpacing);
-            header.PackStart(labelEmpty, true, true, 0);
-            header.PackStart(labelNormal, false, false, 0);
-            header.PackStart(labelPromotion, false, false, 0);
-            header.PackStart(labelUsePromotion, false, false, 0);
-            vbox.PackStart(header, false, false, 0);
-
-            //Prices
-            foreach(var price in _prices)
+            if (_checkIsComposed.Active == false)
             {
-                vbox.PackStart(price.Component, false, false, 0);
+                ValidatableFields.Remove(_addArticlesBox);
             }
-
-            return vbox;
+            else
+            {
+                ValidatableFields.Add(_addArticlesBox);
+            }
         }
 
-        private VBox CreateUniqueArticlesTab()
-        {
-            var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-            vbox.PackStart(new UniqueArticleFieldsContainer(_entity.Id).Component, true, true, 0);
-            return vbox;
-        }
     }
 }

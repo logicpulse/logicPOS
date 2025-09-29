@@ -402,7 +402,6 @@ namespace logicpos
             }
         }
 
-
         public static Gtk.Style GetThemeStyleBackground(string file)
         {
             string fileImageBackground = AppSettings.Paths.GetThemeFileLocation(file);
@@ -450,30 +449,23 @@ namespace logicpos
         {
             bool useBaseDialogWindowMask = AppSettings.Instance.UseBaseDialogWindowMask;
 
-            //if (GlobalApp.DialogPosKeyboard == null)
-            //{
-            //Chama teclado certo na janela de artigos
             switch (pMode)
             {
                 case KeyboardMode.Alfa:
                 case KeyboardMode.AlfaNumeric:
-                    //On Create SourceWindow is always GlobalApp.WindowPos else if its a Dialog, when it is destroyed, in Memory Keyboard is Destroyed too, this way we keep it in Memory
-                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
+                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, KeyboardMode.AlfaNumeric, pInitialValue, pRegExRule);
                     break;
 
                 case KeyboardMode.Numeric:
-                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(POSWindow.Instance, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
+                    LogicPOSApp.DialogPosKeyboard = new PosKeyboardDialog(parentWindow, DialogFlags.DestroyWithParent, KeyboardMode.Numeric, pInitialValue, pRegExRule);
                     break;
                 default: break;
             }
-            //}
-            //else
-            //{
-            //pInitialValue, pRegExRule
+         
             LogicPOSApp.DialogPosKeyboard.Text = pInitialValue;
             LogicPOSApp.DialogPosKeyboard.Rule = pRegExRule;
 
-            //Fix TransientFor, ALT+TABS
+
             if (useBaseDialogWindowMask)
             {
                 LogicPOSApp.DialogPosKeyboard.TransientFor = LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask;
@@ -482,14 +474,10 @@ namespace logicpos
             }
             else
             {
-                //Now we can change its TransientFor
                 LogicPOSApp.DialogPosKeyboard.TransientFor = parentWindow;
             }
-            //}
 
-            //Always Start Validated, else Only Construct start Validated
             LogicPOSApp.DialogPosKeyboard.TextEntry.Validate();
-            //Put Cursor in End
             LogicPOSApp.DialogPosKeyboard.TextEntry.Position = LogicPOSApp.DialogPosKeyboard.TextEntry.Text.Length;
             LogicPOSApp.DialogPosKeyboard.TextEntry.GrabFocus();
             int response = LogicPOSApp.DialogPosKeyboard.Run();
@@ -503,7 +491,7 @@ namespace logicpos
                 result = null;
             }
 
-            LogicPOSApp.DialogPosKeyboard.TransientFor = POSWindow.Instance;
+            LogicPOSApp.DialogPosKeyboard.TransientFor = parentWindow;
 
             return result;
         }

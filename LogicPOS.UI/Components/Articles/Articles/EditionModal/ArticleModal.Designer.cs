@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Entities;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
@@ -18,18 +19,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void BeforeDesign()
         {
-            InitializeCommissionGroupsComboBox();
-            InitializeFamiliesComboBox();
-            InitializeSubfamiliesComboBox();
-            InitializeDiscountGroupsComboBox();
-            InitializeVatDirectSellingComboBox();
-            InitializeVatExemptionReasonsComboBox();
-            InitializeArticlePriceFields();
-            InitializeMeasurementUnitsComboBox();
-            InitializeSizeUnitsComboBox();
-            InitializeArticleClassesComboBox();
-            InitializeArticleTypesComboBox();
-            InitializePrinterComboBox();
+            InitializeFields();
 
             _checkUniqueArticles.Sensitive = false;
 
@@ -37,280 +27,126 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        private void InitializeArticlePriceFields()
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            _prices = new List<ArticlePriceField>();
-            var pricetypes = GetPriceTypes().OrderByDescending(price => price.EnumValue).Take(5).OrderBy(x=>x.Code).ToArray();
-
-
-            
-            switch (pricetypes.Length)
-            {
-                case 1:
-                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
-                       
-                    break;
-                case 2:
-                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
-                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
-                    
-                    break;
-                case 3:
-                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
-                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
-                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
-                    
-                    break;
-                case 4:
-                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
-                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
-                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
-                        _prices.Add(new ArticlePriceField(pricetypes[3], _entity?.Price4));
-                    
-                    break;
-                case 5:
-                        _prices.Add(new ArticlePriceField(pricetypes[0], _entity?.Price1));
-                        _prices.Add(new ArticlePriceField(pricetypes[1], _entity?.Price2));
-                        _prices.Add(new ArticlePriceField(pricetypes[2], _entity?.Price3));
-                        _prices.Add(new ArticlePriceField(pricetypes[3], _entity?.Price4));
-                        _prices.Add(new ArticlePriceField(pricetypes[4], _entity?.Price5));
-                    break;
-            }
-        }
-
-        private void InitializeCommissionGroupsComboBox()
-        {
-            var groups = GetCommissionGroups();
-            var labelText = GeneralUtils.GetResourceByName("global_commission_group");
-            var currentCommissionGroup = _entity != null ? _entity.CommissionGroup : null;
-
-            _comboCommissionGroups = new EntityComboBox<CommissionGroup>(labelText,
-                                                                         groups,
-                                                                         currentCommissionGroup);
-        }
-
-        private void InitializeFamiliesComboBox()
-        {
-            var families = GetFamilies();
-            var labelText = GeneralUtils.GetResourceByName("global_families");
-            var currentFamily = _entity != null ? _entity.Subfamily.Family : null;
-
-            _comboFamilies = new EntityComboBox<ArticleFamily>(labelText,
-                                                               families,
-                                                               currentFamily,
-                                                               true);
-
-            _comboFamilies.ComboBox.Changed += (sender, e) =>
-            {
-               _comboSubfamilies.Entities = GetSubfamilies(_comboFamilies.SelectedEntity?.Id);
-               _comboSubfamilies.ReLoad();
-            };
-        }
-
-        private void InitializeSubfamiliesComboBox()
-        {
-            var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
-            var currentSubfamily = _entity != null ? _entity.Subfamily : null;
-            var subfamilies = Enumerable.Empty<ArticleSubfamily>();
+            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateFinanceDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label"));
+            yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
+            yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
+            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
 
             if (_entity != null)
             {
-                subfamilies = GetSubfamilies(currentSubfamily.FamilyId);
+                yield return (CreateUniqueArticlesTab(), GeneralUtils.GetResourceByName("global_serial_number"));
             }
 
-            _comboSubfamilies = new EntityComboBox<ArticleSubfamily>(labelText,
-                                                                     subfamilies,
-                                                                     currentSubfamily,
-                                                                     true);
         }
 
-        private void InitializeDiscountGroupsComboBox()
+        private VBox CreateDetailsTab()
         {
-            var groups = GetDiscountGroups();
-            var labelText = GeneralUtils.GetResourceByName("global_discount_group");
-            var currentDiscountGroup = _entity != null ? _entity.DiscountGroup : null;
+            var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            _comboDiscountGroups = new EntityComboBox<DiscountGroup>(labelText,
-                                                                     groups,
-                                                                     currentDiscountGroup);
-        }
-
-        private void InitializeVatDirectSellingComboBox()
-        {
-            var vatRates = GetVatRates();
-            var labelText = GeneralUtils.GetResourceByName("global_vat_direct_selling");
-            var currentVatRate = _entity != null ? _entity.VatDirectSelling : null;
-
-            _comboVatDirectSelling = new EntityComboBox<VatRate>(labelText,
-                                                                 vatRates,
-                                                                 currentVatRate,
-                                                                 true);
-
-            _comboVatDirectSelling.ComboBox.Changed += ComboBox_VatDirectSelling_Changed;
-        }
-
-        private void InitializeVatExemptionReasonsComboBox()
-        {
-            var reasons = GetVatExemptionReasons();
-            var labelText = GeneralUtils.GetResourceByName("global_vat_exemption_reason");
-            var currentReason = _entity != null ? _entity.VatExemptionReason : null;
-
-            _comboVatExemptionReasons = new EntityComboBox<VatExemptionReason>(labelText,
-                                                                               reasons,
-                                                                               currentReason,
-                                                                               false);
-        }
-
-        private void InitializeArticleTypesComboBox()
-        {
-            var types = GetTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_article_type");
-            var currentType = _entity != null ? _entity.Type : null;
-
-            _comboTypes = new EntityComboBox<ArticleType>(labelText,
-                                                           types,
-                                                           currentType,
-                                                           true);
-        }
-
-        private void InitializeArticleClassesComboBox()
-        {
-            var classes = GetClasses();
-            var labelText = GeneralUtils.GetResourceByName("global_article_class");
-            var currentClass = _entity != null ? classes.FirstOrDefault(c => c.Id == _entity.ClassId) : null;
-            if (_modalMode == EntityEditionModalMode.Insert && classes.Any())
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
-                currentClass= classes.First();
-            }
-            _comboClasses = new EntityComboBox<ArticleClass>(labelText,
-                                                             classes,
-                                                             currentClass,
-                                                             true);
-        }
-
-        private void InitializeMeasurementUnitsComboBox()
-        {
-            var units = GetMeasurementUnits();
-            var labelText = GeneralUtils.GetResourceByName("global_unit_measure");
-            var currentUnit = _entity != null ? _entity.MeasurementUnit : null;
-            if(_modalMode == EntityEditionModalMode.Insert && units.Any())
-            {
-                currentUnit = units.First();
+                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
+                detailsTab.PackStart(_txtCode.Component, false, false, 0);
             }
 
-            _comboMeasurementUnits = new EntityComboBox<MeasurementUnit>(labelText,
-                                                                          units,
-                                                                          currentUnit,
-                                                                          true);
-        }
+            detailsTab.PackStart(_txtCodeDealer.Component, false, false, 0);
+            detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
+            detailsTab.PackStart(_txtButtonName.Component, false, false, 0);
+            detailsTab.PackStart(_comboFamilies.Component, false, false, 0);
+            detailsTab.PackStart(_comboSubfamilies.Component, false, false, 0);
+            detailsTab.PackStart(_comboTypes.Component, false, false, 0);
+            detailsTab.PackStart(_imagePicker.Component, false, false, 0);
+            detailsTab.PackStart(_checkIsComposed, false, false, 0);
+            detailsTab.PackStart(_checkUniqueArticles, false, false, 0);
+            detailsTab.PackStart(_checkFavorite, false, false, 0);
+            detailsTab.PackStart(_checkUseWeighingBalance, false, false, 0);
 
-        private void InitializeSizeUnitsComboBox()
-        {
-            var units = GetSizeUnits();
-            var labelText = GeneralUtils.GetResourceByName("global_unit_size");
-            var currentUnit = _entity != null ? _entity.SizeUnit : null;
-
-            _comboSizeUnits = new EntityComboBox<SizeUnit>(labelText,
-                                                           units,
-                                                           currentUnit,
-                                                           true);
-        }
-
-        private void InitializePrinterComboBox()
-        {
-            var printers = GetPrinters();
-            var labelText = GeneralUtils.GetResourceByName("global_printers");
-            var currentPrinter = _entity != null ? PrinterAssociationService.GetPrinter(_entity.Id) : null;
-
-            _comboPrinters = new EntityComboBox<Printer>(labelText,
-                                                         printers,
-                                                         currentPrinter,
-                                                         false);
-        }
-
-        private Api.ValueObjects.Button GetButton()
-        {
-            return new Api.ValueObjects.Button
+            if (_modalMode != EntityEditionModalMode.Insert)
             {
-                Label = _txtButtonName.Text,
-                Image = _imagePicker.GetBase64Image(),
-                ImageExtension = _imagePicker.GetImageExtension()
-            };
-        }
-
-        protected override void AddSensitiveFields()
-        {
-            SensitiveFields.Add(_txtOrder.Entry);
-            SensitiveFields.Add(_txtCode.Entry);
-            SensitiveFields.Add(_txtDesignation.Entry);
-            SensitiveFields.Add(_txtButtonName.Entry);
-            SensitiveFields.Add(_txtNotes.TextView);
-            SensitiveFields.Add(_checkDisabled);
-            SensitiveFields.Add(_imagePicker.FileChooserButton);
-            SensitiveFields.Add(_comboCommissionGroups.ComboBox);
-            SensitiveFields.Add(_comboFamilies.ComboBox);
-            SensitiveFields.Add(_comboDiscountGroups.ComboBox);
-            SensitiveFields.Add(_comboVatDirectSelling.ComboBox);
-            SensitiveFields.Add(_comboVatExemptionReasons.ComboBox);
-            SensitiveFields.Add(_comboMeasurementUnits.ComboBox);
-            SensitiveFields.Add(_comboSizeUnits.ComboBox);
-            SensitiveFields.Add(_comboTypes.ComboBox);
-            SensitiveFields.Add(_comboSubfamilies.ComboBox);
-            SensitiveFields.Add(_comboClasses.ComboBox);
-            SensitiveFields.Add(_checkIsComposed);
-            SensitiveFields.Add(_checkUniqueArticles);
-            SensitiveFields.Add(_checkFavorite);
-            SensitiveFields.Add(_checkUseWeighingBalance);
-            SensitiveFields.Add(_checkPriceWithVat);
-            SensitiveFields.Add(_checkPVPVariable);
-            SensitiveFields.Add(_txtDiscount.Entry);
-            SensitiveFields.Add(_txtDefaultQuantity.Entry);
-            SensitiveFields.Add(_txtMinimumStock.Entry);
-            SensitiveFields.Add(_txtTare.Entry);
-            SensitiveFields.Add(_txtWeight.Entry);
-            SensitiveFields.Add(_txtBarcode.Entry);
-            foreach (var priceField in _prices)
-            {
-                SensitiveFields.Add(priceField.Component);
+                detailsTab.PackStart(_checkDisabled, false, false, 0);
             }
 
-            SensitiveFields.Add(_txtCodeDealer.Entry);
+            return detailsTab;
         }
 
-        protected override void AddValidatableFields()
+        private VBox CreateCompositionTab()
         {
-            if (_modalMode == EntityEditionModalMode.Update)
-            {
-                ValidatableFields.Add(_txtOrder);
-                ValidatableFields.Add(_txtCode);
-            }
-
-            ValidatableFields.Add(_txtDesignation);
-            ValidatableFields.Add(_txtDiscount);
-            ValidatableFields.Add(_txtDefaultQuantity);
-            ValidatableFields.Add(_txtMinimumStock);
-            ValidatableFields.Add(_txtTare);
-            ValidatableFields.Add(_txtWeight);
-            ValidatableFields.Add(_txtBarcode);
-            foreach (var priceField in _prices)
-            {
-                ValidatableFields.Add(priceField);
-            }
+            _compositionTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            _compositionTab.PackStart(_addArticlesBox.Component, true, true, 0);
+            return _compositionTab;
         }
 
-        private void UpdateCompositionTabVisibility()
+        private VBox CreateFinanceDetailsTab()
         {
-            _compositionTab.Visible = _checkIsComposed.Active;
+            var financeDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            if (_checkIsComposed.Active == false)
-            {
-                ValidatableFields.Remove(_addArticlesBox);
-            }
-            else
-            {
-                ValidatableFields.Add(_addArticlesBox);
-            }
+            financeDetailsTab.PackStart(CreatePricesArea(), false, false, 0);
+            financeDetailsTab.PackStart(_checkPVPVariable, false, false, 0);
+            financeDetailsTab.PackStart(_checkPriceWithVat, false, false, 0);
+            financeDetailsTab.PackStart(_txtDiscount.Component, false, false, 0);
+            financeDetailsTab.PackStart(_comboClasses.Component, false, false, 0);
+            financeDetailsTab.PackStart(_comboVatDirectSelling.Component, false, false, 0);
+            financeDetailsTab.PackStart(_comboVatExemptionReasons.Component, false, false, 0);
+
+            return financeDetailsTab;
         }
 
+        private VBox CreateOtherDetailsTab()
+        {
+            var otherDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            otherDetailsTab.PackStart(_txtBarcode.Component, false, false, 0);
+            otherDetailsTab.PackStart(_txtMinimumStock.Component, false, false, 0);
+            otherDetailsTab.PackStart(_txtTare.Component, false, false, 0);
+            otherDetailsTab.PackStart(_txtWeight.Component, false, false, 0);
+            otherDetailsTab.PackStart(_txtDefaultQuantity.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboMeasurementUnits.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboSizeUnits.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboDiscountGroups.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboPrinters.Component, false, false, 0);
+
+            return otherDetailsTab;
+        }
+
+        private VBox CreatePricesArea()
+        {
+            int[] columnsWidths = new int[] { 100, 90, 90, 160 };
+            var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            Label labelEmpty = new Label(string.Empty) { WidthRequest = columnsWidths[0] };
+            Label labelNormal = new Label(GeneralUtils.GetResourceByName("article_normal_price")) { WidthRequest = columnsWidths[1] };
+            Label labelPromotion = new Label(GeneralUtils.GetResourceByName("article_promotion_price")) { WidthRequest = columnsWidths[2] };
+            Label labelUsePromotion = new Label(GeneralUtils.GetResourceByName("article_use_promotion_price")) { WidthRequest = columnsWidths[3] };
+            labelNormal.SetAlignment(0.0F, 0.5F);
+            labelPromotion.SetAlignment(0.0F, 0.5F);
+            labelUsePromotion.SetAlignment(0.0F, 0.5F);
+
+            //Header
+            HBox header = new HBox(false, _boxSpacing);
+            header.PackStart(labelEmpty, true, true, 0);
+            header.PackStart(labelNormal, false, false, 0);
+            header.PackStart(labelPromotion, false, false, 0);
+            header.PackStart(labelUsePromotion, false, false, 0);
+            vbox.PackStart(header, false, false, 0);
+
+            //Prices
+            foreach (var price in _prices)
+            {
+                vbox.PackStart(price.Component, false, false, 0);
+            }
+
+            return vbox;
+        }
+
+        private VBox CreateUniqueArticlesTab()
+        {
+            var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            vbox.PackStart(new UniqueArticleFieldsContainer(_entity.Id).Component, true, true, 0);
+            return vbox;
+        }
     }
 }

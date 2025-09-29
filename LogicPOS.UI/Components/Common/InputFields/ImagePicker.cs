@@ -6,8 +6,11 @@ namespace LogicPOS.UI.Components.InputFields
     public class ImagePicker
     {
         public Label Label { get; private set; }
+       
         public FileChooserButton FileChooserButton { get; private set; } = new FileChooserButton(string.Empty, FileChooserAction.Open) { HeightRequest = 23 };
+        
         public Gtk.Image Preview = new Gtk.Image() { WidthRequest = 37, HeightRequest = 37 };
+       
         public VBox Component { get; private set; }
 
         public ImagePicker(string labelText)
@@ -59,6 +62,12 @@ namespace LogicPOS.UI.Components.InputFields
             var tempFile = System.IO.Path.GetTempFileName() + "." + extension;
             System.IO.File.WriteAllBytes(tempFile, System.Convert.FromBase64String(content));
             FileChooserButton.SetFilename(tempFile);
+            ShowPreview();
+        }
+
+        public void SetImage(string imagePath)
+        {
+            FileChooserButton.SetFilename(imagePath);
             ShowPreview();
         }
 

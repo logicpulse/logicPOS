@@ -124,5 +124,12 @@ namespace LogicPOS.UI.Components.Modals
                 TxtDocumentNumber.Clear();
             }
         }
+    
+       public static void ShowModal(Window parent)
+        {
+            var addStockModal = new AddSimpleStockMovementModal(parent);
+            addStockModal.Run();
+            addStockModal.Destroy();
+        }
     }
 }

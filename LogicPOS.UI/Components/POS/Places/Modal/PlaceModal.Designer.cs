@@ -84,6 +84,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_comboPriceTypes.Component, false, false, 0);
             detailsTab.PackStart(_comboMovementTypes.Component, false, false, 0);
+            detailsTab.PackStart(_imagePicker.Component, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {

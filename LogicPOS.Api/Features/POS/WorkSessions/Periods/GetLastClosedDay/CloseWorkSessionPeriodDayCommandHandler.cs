@@ -1,8 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
-using MediatR;
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +19,6 @@ namespace LogicPOS.Api.Features.WorkSessions.GetLastClosedDay
         {
             return await HandleGetEntityQueryAsync<WorkSessionPeriod>("worksessions/periods/lastday", cancellationToken);
 
-        } 
+        }
     }
 }

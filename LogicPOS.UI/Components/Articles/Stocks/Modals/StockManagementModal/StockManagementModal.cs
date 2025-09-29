@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Settings;
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        public static void RunModal(Window parent)
+        public static void ShowModal(Window parent)
         {
             if (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800)
             {
@@ -30,13 +31,7 @@ namespace LogicPOS.UI.Components.Modals
                 _modalSize=new Size(1200, 700);
             }
 
-            if (false)
-            {
-                var stockManagementModal = new StockManagementModal(parent,_modalSize);
-                stockManagementModal.Run();
-                stockManagementModal.Destroy();
-            }
-            else
+            if (LicensingService.Data.LicenceModuleStocks == false)
             {
                 var messageDialog = new CustomAlert(BackOfficeWindow.Instance)
                     .WithMessageType(MessageType.Warning)
@@ -48,8 +43,17 @@ namespace LogicPOS.UI.Components.Modals
                 if (messageDialog == ResponseType.Ok)
                 {
                     Process.Start("https://logic-pos.com/");
+                    return;
                 }
+
+                AddSimpleStockMovementModal.ShowModal(parent);
+
+                return;   
             }
+
+            var stockManagementModal = new StockManagementModal(parent, _modalSize);
+            stockManagementModal.Run();
+            stockManagementModal.Destroy();
         }
 
     }

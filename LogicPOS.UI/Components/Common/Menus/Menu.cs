@@ -2,13 +2,9 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Common.Menus;
-using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Printing;
 using System.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Window;
 
 namespace LogicPOS.UI.Components.Menus
 {
@@ -113,13 +109,13 @@ namespace LogicPOS.UI.Components.Menus
             var entities = GetPage(CurrentPage);
 
             uint row = 0, column = 0;
-            MenuButton<TEntity> FirstButton=null;
-  
+            MenuButton<TEntity> FirstButton = null;
+
             foreach (var entity in entities)
             {
                 var menuButton = GetOrCreateMenuButtonForEntity(entity);
 
-                if (column == 0 && row == 0  && _toggleMode)
+                if (column == 0 && row == 0 && _toggleMode)
                 {
                     FirstButton = menuButton;
                 }
@@ -145,7 +141,7 @@ namespace LogicPOS.UI.Components.Menus
                 }
 
             }
-            if (SelectFirstOnReload && FirstButton!=null)
+            if (SelectFirstOnReload && FirstButton != null)
             {
                 MenuButton_Clicked(FirstButton.Button, EventArgs.Empty);
             }

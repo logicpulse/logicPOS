@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Windows
         #region Articles 
         private void BtnStock_Clicked(object sender, EventArgs e)
         {
-            StockManagementModal.RunModal(this);
+            StockManagementModal.ShowModal(this);
         }
         #endregion
 

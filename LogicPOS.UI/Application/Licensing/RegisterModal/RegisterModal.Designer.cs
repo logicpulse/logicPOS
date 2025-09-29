@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Licensing
 {
-    internal partial class PosLicenceDialog
+    internal partial class RegisterModal
     {
         private void InitUI()
         {

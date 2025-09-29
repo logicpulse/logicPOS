@@ -4,13 +4,13 @@ using LogicPOS.Api.Features.Terminals.CreateTerminal;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.Api.Features.Terminals.GetTerminalByHardwareId;
 using LogicPOS.Api.Features.Terminals.GetTerminalById;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static LogicPOS.UI.Application.Licensing.LicenseRouter;
 
 namespace LogicPOS.UI.Components.Terminals
 {
@@ -40,11 +40,11 @@ namespace LogicPOS.UI.Components.Terminals
 
         public static ErrorOr<Terminal> InitializeTerminal()
         {
-            var hardwareId = GlobalFramework.LicenceHardwareId;
+            var hardwareId = LicensingService.Data.TerminalHardwareId;
 
             if (string.IsNullOrWhiteSpace(hardwareId))
             {
-                return Error.NotFound(description: "HardwareId não encontrado no GlobalFramework.");
+                return Error.NotFound(description: "HardwareId não encontrado no serviço de licenciamento.");
             }
 
             var getTerminalResult = _mediator.Send(new GetTerminalByHardwareIdQuery(hardwareId)).Result;

@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Common.Menus
             Button = button;
         }
 
-        public static CustomButton CreateButton(string buttonName, string label, string image, Size _buttonSize)
+        public static CustomButton CreateButton(string buttonName, string label, string imagePath, Size _buttonSize)
         {
 
             if (label.Length > MaxCharsPerButtonLabel)
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Common.Menus
                     Name = buttonName,
                     Text = label,
                     FontSize = ButtonFontSize,
-                    Image = image,
+                    Image = imagePath,
                     Overlay = _buttonOverlay,
                     ButtonSize = _buttonSize,
                 });

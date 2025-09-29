@@ -6,7 +6,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentTypeModal : EntityEditionModal<DocumentType>
     {
-        public DocumentTypeModal(EntityEditionModalMode modalMode, DocumentType entity = null) : base(modalMode, entity)
+        public DocumentTypeModal(EntityEditionModalMode modalMode, DocumentType entity = null) : base(EntityEditionModalMode.View, entity)
         {
         }
 

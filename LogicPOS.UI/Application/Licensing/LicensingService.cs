@@ -11,17 +11,26 @@ using LogicPOS.Api.Features.System.Licensing.GetVersion;
 using LogicPOS.Api.Features.System.Licensing.IsLicensed;
 using LogicPOS.Api.Features.System.Licensing.NeedToRegister;
 using LogicPOS.Api.Features.System.Licensing.UpdateCurrentVersion;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows;
 
 namespace LogicPOS.UI.Components.Licensing
 {
     public static class LicensingService
     {
+        public static LicenseData Data { get; private set; } = new LicenseData();
         public static List<string> GetCountries()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicensingCountriesQuery()).Result;
@@ -68,15 +77,17 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value.Version;
         }
 
-        public static byte[] ActivateLicense(ActivateLicenseCommand licenseData)
+        public static ActivateLicenseResponse? ActivateLicense(ActivateLicenseCommand licenseData)
         {
             var result = DependencyInjection.Mediator.Send(licenseData).Result;
+
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
                 return null;
             }
-            return Convert.FromBase64String(result.Value.LicenseData);
+
+            return result.Value;
         }
 
         public static bool IsLicensed()
@@ -98,7 +109,7 @@ namespace LogicPOS.UI.Components.Licensing
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-                return false;
+                return true;
             }
             return result.Value.NeedToRegister;
         }
@@ -178,6 +189,173 @@ namespace LogicPOS.UI.Components.Licensing
             }
 
             return result.Value.Success;
+        }
+
+        public static void LoadLicenseInformation()
+        {
+            if (Data.DtLicenceKeys == null)
+            {
+                Data.DtLicenceKeys = new DataTable("keysLicence");
+                Data.DtLicenceKeys.Columns.Add("name", typeof(string));
+                Data.DtLicenceKeys.Columns.Add("value", typeof(string));
+            }
+            Data.DtLicenceKeys.Rows.Clear();
+            Data.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
+            Data.LicenceVersion = "LOGICPOS_LICENSED";
+            Data.LicenceName = "Nome DEMO";
+            Data.LicenceCompany = "Empresa DEMO";
+            Data.LicenceNif = "NIF DEMO";
+            Data.LicenceAddress = "Morada DEMO";
+            Data.LicenceEmail = "Email DEMO";
+            Data.LicenceTelephone = "Telefone DEMO";
+            Data.LicenceReseller = "LogicPulse";
+            Data.ServerVersion = "1.0";
+            Data.LicenceCountry = 168;
+            Data.LicenceUpdateDate = DateTime.Now.AddDays(-1);
+#if DEBUG
+            Data.LicenceVersion = "LOGICPOS_CORPORATE";
+            Data.LicenceName = "DEBUG";
+            Data.LicenceCompany = "DEBUG";
+            Data.LicenceAddress = "DEBUG";
+            Data.LicenceEmail = "DEBUG";
+            Data.LicenceTelephone = "DEBUG";
+            Data.LicenceModuleStocks = true;
+            Data.LicenceReseller = "Logicpulse";
+            Data.LicenceCountry = 168;
+#endif
+
+            var licenseInfo = GetLicenseInformation();
+            Data.ServerVersion = GetCurrentVersion();
+            Log.Debug("licence info count:" + licenseInfo.Count.ToString());
+            foreach (var kvp in licenseInfo)
+            {
+                string key = kvp.Key;
+                string value = kvp.Value;
+                Log.Debug("Licence Key:" + key + "=" + value);
+                Data.DtLicenceKeys.Rows.Add(key, value);
+                switch (key)
+                {
+                    case "hardwareID":
+                        Data.ApiHardwareId = value;
+                        break;
+                    case "version":
+                        Data.LicenceVersion = value;
+                        break;
+                    case "data":
+                        Data.LicenceDate = value;
+                        break;
+                    case "name":
+                        Data.LicenceName = value;
+                        break;
+                    case "company":
+                        Data.LicenceCompany = value;
+                        break;
+                    case "nif":
+                        Data.LicenceNif = value;
+                        break;
+                    case "adress":
+                        Data.LicenceAddress = value;
+                        break;
+                    case "email":
+                        Data.LicenceEmail = value;
+                        break;
+                    case "telefone":
+                        Data.LicenceTelephone = value;
+                        break;
+                    case "reseller":
+                        Data.LicenceReseller = value;
+                        break;
+                    case "logicpos_Module_Stocks":
+                        Data.LicenceModuleStocks = Convert.ToBoolean(value);
+                        break;
+                    case "all_UpdateExpirationDate":
+                        Data.LicenceUpdateDate = Convert.ToDateTime(value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public static string GetTerminalHardwareID()
+        {
+            string result = string.Empty;
+            try
+            {
+                result = GetHashString(GetMacAddress());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message, ex);
+            }
+
+            return result;
+        }
+
+        public static string GetMacAddress()
+        {
+            string macAddresses = string.Empty;
+
+            foreach (NetworkInterface nic in NetworkInterface.GetAllNetworkInterfaces())
+            {
+                if (nic.OperationalStatus == OperationalStatus.Up)
+                {
+                    macAddresses += nic.GetPhysicalAddress().ToString();
+                    break;
+                }
+            }
+
+            return macAddresses;
+        }
+
+        public static string GetHashString(string inputString)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in GetHashSHA256(inputString))
+            {
+                sb.Append(b.ToString("X2"));
+            }
+
+            return sb.ToString();
+        }
+
+        public static byte[] GetHashSHA256(string inputString)
+        {
+            HashAlgorithm algorithm = SHA256.Create();
+            return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
+        }
+
+        public static bool Initialize()
+        {
+            try
+            {
+                LoadLicenseInformation();
+                Data.TerminalHardwareId = GetTerminalHardwareID();
+                Data.LicenceRegistered = IsLicensed();
+
+                if (Data.IsBlocked)
+                {
+                    CustomAlerts.Error()
+                        .WithTitle("Erro de Licença")
+                        .WithMessage("A licença foi bloqueada. Contacte o suporte técnico.")
+                        .ShowAlert();
+
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error initializing licensing service: " + ex.Message, ex);
+                
+                CustomAlerts.Error()
+                        .WithTitle("Erro de Licença")
+                        .WithMessage("Não foi possível inicializar a licença. Contacte o suporte técnico.")
+                        .ShowAlert();
+
+                return false;
+            }
         }
     }
 }

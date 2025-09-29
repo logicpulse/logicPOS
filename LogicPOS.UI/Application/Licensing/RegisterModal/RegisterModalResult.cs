@@ -2,7 +2,7 @@
 
 namespace LogicPOS.UI.Components.Licensing
 {
-    public struct LicenseUIResult
+    public struct RegisterModalResult
     {
         public ResponseType Response { get; set; }
         public string Name { get; set; }

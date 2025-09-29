@@ -37,6 +37,7 @@ using LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedRepo
 using LogicPOS.Api.Features.Reports.POS.SalesByTable.GetSalesByTableDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalReportPdf;
+using LogicPOS.Api.Features.Reports.SystemAudits.GetSystemAuditsReportPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using MediatR;
@@ -243,6 +244,11 @@ namespace LogicPOS.UI.Services
         public static void ShowStockByArticleGainReport(DateTime startDate, DateTime endDate, Guid articleId = new Guid(), Guid customerId = new Guid())
         {
             ShowReport(new GetStockByArticleGainReportPdfQuery(startDate, endDate, articleId, customerId));
+        }
+
+        public static void ShowSystemAuditsReport(DateTime startDate, DateTime endDate)
+        {
+            ShowReport(new GetSystemAuditsReportPdfQuery(startDate, endDate));
         }
     }
 }

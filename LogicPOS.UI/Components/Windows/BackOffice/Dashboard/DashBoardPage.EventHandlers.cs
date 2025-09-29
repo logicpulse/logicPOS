@@ -146,7 +146,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnArticleStock_Clicked(object sender, EventArgs e)
         {
-            StockManagementModal.RunModal(BackOfficeWindow.Instance);
+            StockManagementModal.ShowModal(BackOfficeWindow.Instance);
         }
 
         private void BtnTables_Clicked(object sender, EventArgs e)

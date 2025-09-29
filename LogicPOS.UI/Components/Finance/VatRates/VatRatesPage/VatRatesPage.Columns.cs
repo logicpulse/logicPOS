@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var vatRate = (VatRate)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = vatRate.Value.ToString();
+                (cell as CellRendererText).Text = vatRate.Value.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("global_vat_rate");

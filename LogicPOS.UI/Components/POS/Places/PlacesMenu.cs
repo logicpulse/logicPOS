@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Settings;
@@ -32,7 +33,18 @@ namespace LogicPOS.UI.Components.Menus
         protected override CustomButton CreateButtonForEntity(Place entity)
         {
             string label = entity.Designation;
-            return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, null, ButtonSize);
+            string imagePath = GetButtonImage(entity);
+            return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, imagePath, ButtonSize);
+        }
+
+        private string GetButtonImage(Place place)
+        {
+            if (string.IsNullOrWhiteSpace(place.ButtonImage) == false)
+            {
+                return ButtonImageCache.GetImagePath(place.Id, place.ImageExtension) ?? ButtonImageCache.AddBase64Image(place.Id, place.ButtonImage, place.ImageExtension);
+            }
+
+            return null;
         }
 
         protected override void LoadEntities()

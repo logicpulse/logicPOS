@@ -6,9 +6,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         private void BtnAddStock_Clicked(object sender, EventArgs e)
         {
-            var addStockModal = new AddSimpleStockMovementModal(WindowSettings.Source);
-            addStockModal.Run();
-            addStockModal.Destroy();
+            AddSimpleStockMovementModal.ShowModal(WindowSettings.Source);
         }
 
         private void BtnWorkSessionPeriods_Clicked(object sender, EventArgs e)

@@ -13,6 +13,6 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<PriceType> _comboPriceTypes;
         private EntityComboBox<MovementType> _comboMovementTypes;
-                
+        private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
     }
 }
