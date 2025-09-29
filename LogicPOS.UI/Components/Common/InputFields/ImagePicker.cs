@@ -97,6 +97,7 @@ namespace LogicPOS.UI.Components.InputFields
             frame.ShadowType = ShadowType.None;
             frame.Add(Preview);
             hbox.PackStart(frame, false, false, 0);
+            hbox.HeightRequest = 23;
 
             vbox.PackStart(hbox, false, false, 0);
 
