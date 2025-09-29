@@ -107,6 +107,22 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCustomer.SelectedEntity = customer;
             CustomerId = customer.Id;
             ShowCustomerData(customer);
+            FreezeEditableFields(customer.IsFinalConsumer);
+        }
+
+        private void FreezeEditableFields(bool freeze = true)
+        {
+            TxtFiscalNumber.BtnKeyboard.Sensitive = TxtFiscalNumber.Entry.Sensitive = !freeze;
+            TxtCardNumber.BtnKeyboard.Sensitive = TxtCardNumber.Entry.Sensitive = !freeze;
+            TxtCustomer.BtnKeyboard.Sensitive = TxtCustomer.Entry.Sensitive = !freeze;
+            TxtAddress.BtnKeyboard.Sensitive = TxtAddress.Entry.Sensitive = !freeze;
+            TxtAddress.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
+            TxtCountry.BtnKeyboard.Sensitive = TxtCountry.Entry.Sensitive = !freeze;
+            TxtCity.BtnKeyboard.Sensitive = TxtCity.Entry.Sensitive = !freeze;
+            TxtNotes.BtnKeyboard.Sensitive = TxtNotes.Entry.Sensitive = !freeze;
+            TxtZipCode.BtnKeyboard.Sensitive = TxtZipCode.Entry.Sensitive = !freeze;
+            TxtPhone.BtnKeyboard.Sensitive = TxtPhone.Entry.Sensitive = !freeze;
+            TxtEmail.BtnKeyboard.Sensitive = TxtEmail.Entry.Sensitive = !freeze;
         }
 
         public void Clear()

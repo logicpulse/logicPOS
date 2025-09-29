@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.InputFields
                        string regex = null,
                        bool includeSelectButton = true,
                        bool includeKeyBoardButton = false,
-                       bool includeClearButton = true,
+                       bool includeClearButton = false,
                        TextBoxStyle style = TextBoxStyle.Bold)
         {
             if (isValidatable && string.IsNullOrEmpty(regex))
