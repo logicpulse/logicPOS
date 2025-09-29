@@ -139,21 +139,7 @@ namespace logicpos
             }
         }
 
-        //Returns a Resized PixBuf from File Path - Usefull for FileChooserButtons
-        public static Gdk.Pixbuf ResizeAndCropFileToPixBuf(string pFilename, Size pSize)
-        {
-            if (pFilename != null && File.Exists(pFilename))
-            {
-                System.Drawing.Image image = System.Drawing.Image.FromFile(pFilename);
-                image = ResizeAndCrop(image, new System.Drawing.Size(pSize.Width, pSize.Height));
-                return ImageToPixbuf(image);
-            }
-            else
-            {
-                return null;
-            }
-        }
-
+      
         //ResizeImage
         public static System.Drawing.Image ResizeImage(System.Drawing.Image pImage, Size pSize)
         {
@@ -214,83 +200,54 @@ namespace logicpos
         //Shared function ResizeAndCrop to reuse both ResizeImage and CropImage
         public static System.Drawing.Image ResizeAndCrop(System.Drawing.Image pImage, Size pSize)
         {
-            //store target resize size
             Size resizeImageSize = new Size();
             int iCropOffsetX, iCropOffsetY;
 
-            //find optimal ResizeSize
             resizeImageSize = ImageFindResizeSize(pImage.Width, pImage.Height, pSize.Width, pSize.Height);
 
-            //ResizeImage
             pImage = ResizeImage(pImage, resizeImageSize);
-            //drawingOverlay.Save(image + ".resized.png");
-            //crop image
+
             iCropOffsetX = (resizeImageSize.Width - pSize.Width) / 2;
             iCropOffsetY = (resizeImageSize.Height - pSize.Height) / 2;
             Rectangle rectCropArea = new Rectangle(iCropOffsetX, iCropOffsetY, pSize.Width, pSize.Height);
             pImage = CropImage(pImage, rectCropArea);
-            //drawingImage.Save(image + ".croped.png");
-
-            //Log.Debug(
-            //  "ResizeAndCrop()" +
-            //  ": resizeImageSize.Width:" + resizeImageSize.Width +
-            //  ", resizeImageSize.Height:" + resizeImageSize.Height +
-            //  ", iCropOffsetX:" + iCropOffsetX +
-            //  ", iCropOffsetY:" + iCropOffsetY +
-            //  ", Final image.Width:" + pImage.Width +
-            //  ", Final image.Height:" + pImage.Height
-            //);
 
             return pImage;
         }
 
         //Find Target Resize size based on Image Size and Target Size, used before Crop
-        public static Size ImageFindResizeSize(int pImageWidth, int pImageHeight, int pTargetImageWidth, int pTargetImageHeight)
+        public static Size ImageFindResizeSize(int originalWidth, int originalHeight, int targetWidth, int targetHeight)
         {
             int targetResizeImageWidth, targetResizeImageHeight, iHelper1, iHelper2, iHelper3;
 
-            if (pImageWidth > pImageHeight)
+            if (originalWidth > originalHeight)
             {
-                iHelper1 = pImageWidth;
-                iHelper2 = pTargetImageHeight;
-                iHelper3 = pImageHeight;
+                iHelper1 = originalWidth;
+                iHelper2 = targetHeight;
+                iHelper3 = originalHeight;
                 targetResizeImageWidth = (int)(iHelper1 * (float)iHelper2 / iHelper3);
-                targetResizeImageHeight = pTargetImageHeight;
-                //required PROTECTION, para nunca calacular abaixo da targetImageWight, senao qnd as imagens sao mais pequenas da problemas
-                if (targetResizeImageWidth < pTargetImageWidth)
+                targetResizeImageHeight = targetHeight;
+                if (targetResizeImageWidth < targetWidth)
                 {
-                    targetResizeImageWidth = pTargetImageWidth;
-                    targetResizeImageHeight = (int)(pImageHeight * (float)pTargetImageWidth / pImageWidth);
+                    targetResizeImageWidth = targetWidth;
+                    targetResizeImageHeight = (int)(originalHeight * (float)targetWidth / originalWidth);
                 }
             }
             else
             {
-                iHelper1 = pImageHeight;
-                iHelper2 = pTargetImageWidth;
-                iHelper3 = pImageWidth;
-                targetResizeImageWidth = pTargetImageWidth;
+                iHelper1 = originalHeight;
+                iHelper2 = targetWidth;
+                iHelper3 = originalWidth;
+                targetResizeImageWidth = targetWidth;
                 targetResizeImageHeight = (int)(iHelper1 * (float)iHelper2 / iHelper3);
                 //required PROTECTION, para nunca calacular abaixo da targetImageHeight, senao qnd as imagens sao mais pequenas da problemas
-                if (targetResizeImageHeight < pTargetImageHeight)
+                if (targetResizeImageHeight < targetHeight)
                 {
-                    targetResizeImageWidth = (int)(pImageWidth * (float)pTargetImageHeight / pImageHeight);
-                    targetResizeImageHeight = pTargetImageHeight;
+                    targetResizeImageWidth = (int)(originalWidth * (float)targetHeight / originalHeight);
+                    targetResizeImageHeight = targetHeight;
                 }
             }
             ;
-
-            //Log.Debug(
-            //  "ImageFindResizeSize()" +
-            //  ": imageWidth=" + pImageWidth +
-            //  ", imageHeight=" + pImageHeight +
-            //  ", targetImageWidth:" + pTargetImageWidth +
-            //  ", targetImageHeight:" + pTargetImageHeight +
-            //  ", targetResizeImageWidth:" + targetResizeImageWidth +
-            //  ", targetResizeImageHeight:" + targetResizeImageHeight +
-            //  ", iHelper1:" + iHelper1 +
-            //  ", iHelper2:" + iHelper2 +
-            //  ", iHelper3:" + iHelper3
-            //);
 
             return new Size(targetResizeImageWidth, targetResizeImageHeight);
         }
@@ -461,7 +418,7 @@ namespace logicpos
                     break;
                 default: break;
             }
-         
+
             LogicPOSApp.DialogPosKeyboard.Text = pInitialValue;
             LogicPOSApp.DialogPosKeyboard.Rule = pRegExRule;
 

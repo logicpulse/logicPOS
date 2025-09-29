@@ -32,14 +32,14 @@ namespace LogicPOS.UI.Buttons
 
             Gdk.Pixbuf pixBuf = Utils.ImageToPixbuf(bitmap);
             Image gtkImage = new Image(pixBuf);
-           
+
             bitmap.Dispose();
             pixBuf.Dispose();
 
             return gtkImage;
         }
 
-        public void  UpdateImage(string imagePath)
+        public void UpdateImage(string imagePath)
         {
             ButtonSettings.Image = imagePath;
             UpdateWidget(ImageButton.CreateWidget(ButtonSettings));
@@ -58,19 +58,17 @@ namespace LogicPOS.UI.Buttons
 
             System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(targetImageSize.Width, targetImageSize.Height);
             System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(bitmap);
-        
+
             graphics.Clear(color);
 
-            if (image != string.Empty)
+            if (!string.IsNullOrEmpty(image) && File.Exists(image))
             {
-                if (File.Exists(image))
+                using (var buttonImage = new System.Drawing.Bitmap(image))
                 {
-
-                    System.Drawing.Image imageButton = new System.Drawing.Bitmap(image);
-
-                    imageButton = Utils.ResizeAndCrop(imageButton, targetImageSize);
-                    System.Drawing.Graphics.FromImage(bitmap).DrawImage(imageButton, 0, 0);
-
+                    using (var resized = Utils.ResizeAndCrop(buttonImage, targetImageSize))
+                    {
+                        graphics.DrawImage(resized, 0, 0);
+                    }
                 }
             }
 

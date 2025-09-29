@@ -1,5 +1,8 @@
 ﻿using Gtk;
+using LogicPOS.UI.Components.Articles;
+using System;
 using System.Drawing;
+using System.IO;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -10,7 +13,8 @@ namespace LogicPOS.UI.Components.InputFields
         public FileChooserButton FileChooserButton { get; private set; } = new FileChooserButton(string.Empty, FileChooserAction.Open) { HeightRequest = 23 };
         
         public Gtk.Image Preview = new Gtk.Image() { WidthRequest = 37, HeightRequest = 37 };
-       
+        public string FileName => FileChooserButton.Filename;
+        public bool HasImage => !string.IsNullOrEmpty(FileName) && File.Exists(FileName);
         public VBox Component { get; private set; }
 
         public ImagePicker(string labelText)
@@ -29,7 +33,18 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void ShowPreview()
         {
-            Preview.Pixbuf = logicpos.Utils.ResizeAndCropFileToPixBuf(FileChooserButton.Filename, new Size(Preview.WidthRequest, Preview.HeightRequest));
+            if(string.IsNullOrEmpty(FileName) || File.Exists(FileName) == false) return;
+            Preview.Pixbuf = ResizeAndCropFileToPixBuf(FileName, new Size(Preview.WidthRequest, Preview.HeightRequest));
+        }
+
+        private static Gdk.Pixbuf ResizeAndCropFileToPixBuf(string pFilename, Size pSize)
+        {
+            using (var original = System.Drawing.Image.FromFile(pFilename))
+            {
+                var clone = new Bitmap(original); 
+                var resized = logicpos.Utils.ResizeAndCrop(clone, new System.Drawing.Size(pSize.Width, pSize.Height));
+                return logicpos.Utils.ImageToPixbuf(resized);
+            }
         }
 
         public string GetBase64Image()
@@ -39,7 +54,7 @@ namespace LogicPOS.UI.Components.InputFields
                 return string.Empty;
             }
 
-            return System.Convert.ToBase64String(System.IO.File.ReadAllBytes(FileChooserButton.Filename));
+            return ButtonImageCache.ImageToResizedBase64Image(FileChooserButton.Filename);
         }
 
         public string GetImageExtension()

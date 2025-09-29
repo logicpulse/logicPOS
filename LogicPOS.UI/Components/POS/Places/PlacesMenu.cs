@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             if (string.IsNullOrWhiteSpace(place.ButtonImage) == false)
             {
-                return ButtonImageCache.GetImagePath(place.Id, place.ImageExtension) ?? ButtonImageCache.AddBase64Image(place.Id, place.ButtonImage, place.ImageExtension);
+                return ButtonImageCache.GetImageLocation(place.Id, place.ImageExtension) ?? ButtonImageCache.AddBase64Image(place.Id, place.ButtonImage, place.ImageExtension);
             }
 
             return null;

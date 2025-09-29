@@ -231,7 +231,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowImage()
         {
-             string imagePath = ButtonImageCache.GetImagePath(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
+             string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
             _imagePicker.SetImage(imagePath);
         }
 
@@ -261,18 +261,32 @@ namespace LogicPOS.UI.Components.Modals
         {
             var result = ExecuteUpdateCommand(CreateUpdateCommand());
 
-            if (result.IsError || _checkIsComposed.Active == false)
+            if (result.IsError)
             {
                 return;
             }
 
-            var updateChildrenCommand = new UpdateArticleChildrenCommand
-            {
-                Id = _entity.Id,
-                Children = _addArticlesBox.GetArticleChildren()
-            };
+            UpdateImageInCache();
 
-            ExecuteUpdateCommand(updateChildrenCommand);
+            if (_checkIsComposed.Active) {
+                var updateChildrenCommand = new UpdateArticleChildrenCommand
+                {
+                    Id = _entity.Id,
+                    Children = _addArticlesBox.GetArticleChildren()
+                };
+
+                ExecuteUpdateCommand(updateChildrenCommand);
+            }   
+        }
+
+        private void UpdateImageInCache()
+        {
+            if (_imagePicker.HasImage == true)
+            {
+                ButtonImageCache.DeleteImage(_entity.Id,_entity.Button.ImageExtension);
+                return;
+            }
+
         }
 
         private IEnumerable<ArticleType> GetTypes() => ExecuteGetEntitiesQuery(new GetAllArticleTypesQuery());

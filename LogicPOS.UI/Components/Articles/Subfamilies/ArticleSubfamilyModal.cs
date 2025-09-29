@@ -83,12 +83,29 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowImage()
         {
-            string imagePath = ButtonImageCache.GetImagePath(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
+            string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
             _imagePicker.SetImage(imagePath);
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override void UpdateEntity()
+        {
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
+            if (result.IsError)
+            {
+                return;
+            }
+            UpdateImageInCache();
+        }
 
+        private void UpdateImageInCache()
+        {
+            if (_imagePicker.HasImage == true)
+            {
+                ButtonImageCache.DeleteImage(_entity.Id, _entity.Button.ImageExtension);
+                return;
+            }
+
+        }
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
         private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
         private IEnumerable<DiscountGroup> GetDiscountGroups() => ExecuteGetEntitiesQuery(new GetAllDiscountGroupsQuery());

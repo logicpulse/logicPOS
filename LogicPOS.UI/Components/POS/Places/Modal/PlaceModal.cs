@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Modals
         }
         private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
 
-        private IEnumerable<MovementType> GetMovementTypes()=>ExecuteGetEntitiesQuery(new GetAllMovementTypesQuery());
+        private IEnumerable<MovementType> GetMovementTypes() => ExecuteGetEntitiesQuery(new GetAllMovementTypesQuery());
 
         protected override void BeforeDesign()
         {
@@ -39,11 +39,26 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowImage()
         {
-            string imagePath = ButtonImageCache.GetImagePath(_entity.Id, _entity.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.ButtonImage, _entity.ImageExtension);
+            string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.ButtonImage, _entity.ImageExtension);
             _imagePicker.SetImage(imagePath);
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override void UpdateEntity()
+        {
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
+            if(result.IsError == false)
+            {
+                DeleteImageInCache();
+            }
+        }
+
+        private void DeleteImageInCache()
+        {
+            if(_imagePicker.HasImage)
+            {
+                ButtonImageCache.DeleteImage(_entity.Id,_entity.ImageExtension);
+            }
+        }
 
         private UpdatePlaceCommand CreateUpdateCommand()
         {
@@ -72,7 +87,7 @@ namespace LogicPOS.UI.Components.Modals
                 ButtonImage = _imagePicker.GetBase64Image(),
             };
         }
-        
+
         protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
 
     }

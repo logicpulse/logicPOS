@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Components.Menus
                 return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, null, ButtonSize);
             }
 
-            var imagePath = ButtonImageCache.GetImagePath(entity.Id, entity.Button.ImageExtension);
+            var imagePath = ButtonImageCache.GetImageLocation(entity.Id, entity.Button.ImageExtension);
             if (imagePath != null)
             {
                 return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, imagePath, ButtonSize);

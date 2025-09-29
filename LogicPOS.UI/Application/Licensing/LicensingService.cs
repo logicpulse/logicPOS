@@ -31,6 +31,7 @@ namespace LogicPOS.UI.Components.Licensing
     public static class LicensingService
     {
         public static LicenseData Data { get; private set; } = new LicenseData();
+        
         public static List<string> GetCountries()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicensingCountriesQuery()).Result;
@@ -333,15 +334,15 @@ namespace LogicPOS.UI.Components.Licensing
                 Data.TerminalHardwareId = GetTerminalHardwareID();
                 Data.LicenceRegistered = IsLicensed();
 
-                if (Data.IsBlocked)
-                {
-                    CustomAlerts.Error()
-                        .WithTitle("Erro de Licença")
-                        .WithMessage("A licença foi bloqueada. Contacte o suporte técnico.")
-                        .ShowAlert();
+                //if (Data.IsBlocked)
+                //{
+                //    CustomAlerts.Error()
+                //        .WithTitle("Erro de Licença")
+                //        .WithMessage("A licença foi bloqueada. Contacte o suporte técnico.")
+                //        .ShowAlert();
 
-                    return false;
-                }
+                //    return false;
+                //}
 
                 return true;
             }
