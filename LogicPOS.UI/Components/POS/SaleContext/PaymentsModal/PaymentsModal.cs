@@ -36,6 +36,7 @@ namespace LogicPOS.UI.Components.POS
         private PaymentMethod _selectedPaymentMethod;
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
         private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
+        private decimal ServicesTotalFinal { get; } = SaleContext.CurrentOrder.ServicesTotalFinal;
         private decimal TotalDelivery { get; set; }
         private decimal TotalChange { get; set; }
         public static int InitialSplittersNumber { get; set; } = 0;
@@ -220,59 +221,6 @@ namespace LogicPOS.UI.Components.POS
             TxtCountry.SelectedEntity = CountriesService.Default;
             TxtNotes.Clear();
             FreezeEditableFields(false);
-        }
-
-        protected bool Validate()
-        {
-            if (AllFieldsAreValid() == false)
-            {
-                ValidationUtilities.ShowValidationErrors(ValidatableFields);
-                return false;
-            }
-
-            if (CompanyDetailsService.CompanyInformation.IsPortugal)
-            {
-                if (DocTypeAnalyzer.IsSimplifiedInvoice() && TotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal)
-                {
-                    string messageFormat = LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_max_value"];
-                    string message = string.Format(messageFormat, $"Total: {TotalFinal:C}\nMáximo: {DocumentRules.Portugal.SimplifiedInvoiceMaxTotal:C}", LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_max_value_mode_paymentdialog"]);
-                    
-                    var response = CustomAlerts.Warning(this)
-                        .WithButtonsType(ButtonsType.YesNo)
-                        .WithMessage(message)
-                        .ShowAlert();
-
-                    if(response != ResponseType.Yes)
-                    {
-                        return false;
-                    }
-
-                    _documentType = "FR";
-                }
-
-                if (GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber && TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal) {
-
-                    string messageFormat = LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer"];
-                    string message = string.Format(messageFormat, 
-                        $"Total: {TotalFinal:C}",
-                         $"Máximo: {DocumentRules.Portugal.FinalConsumerMaxTotal:C}");
-
-                    var response = CustomAlerts.Warning(this)
-                        .WithSize(new Size(550,480))
-                        .WithMessage(message)
-                        .ShowAlert();
-
-                    return false;
-                }
-
-            }
-
-            return true;
-        }
-
-        protected bool AllFieldsAreValid()
-        {
-            return ValidatableFields.All(txt => txt.IsValid());
         }
 
         private DocumentCustomer GetDocumentCustomer()

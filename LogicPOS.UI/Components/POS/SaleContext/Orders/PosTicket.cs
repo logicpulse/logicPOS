@@ -14,5 +14,6 @@ namespace LogicPOS.UI.Components.POS
         }
 
         public decimal TotalFinal => Items.Sum(i => i.TotalFinal);
+        public decimal ServicesTotalFinal => Items.Where(i => i.Article.ClassAcronym == "S").Sum(i => i.TotalFinal);
     }
 }

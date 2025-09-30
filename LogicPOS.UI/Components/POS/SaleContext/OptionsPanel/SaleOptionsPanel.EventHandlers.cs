@@ -220,7 +220,13 @@ namespace LogicPOS.UI.Components.POS
         private void BtnBarcode_Clicked(object sender, EventArgs e)
         {
             string fileWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_barcode.png";
-            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance, DialogFlags.Modal, fileWindowIcon, GeneralUtils.GetResourceByName("global_barcode_articlecode"), string.Empty, RegularExpressions.AlfaNumericExtended, true);
+            logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance,
+                                                                               DialogFlags.Modal,
+                                                                               fileWindowIcon,
+                                                                               GeneralUtils.GetResourceByName("global_barcode_articlecode"),
+                                                                               string.Empty,
+                                                                               RegularExpressions.AlfaNumericExtended,
+                                                                               true);
 
             if (response.ResponseType != ResponseType.Ok)
             {
@@ -239,7 +245,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            SaleContext.ItemsPage.AddItem(new SaleItem(article, SaleContext.CurrentTable.PriceTypeEnum));
+            POSWindow.Instance.MenuArticles.BtnArticle_Clicked(article);
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)

@@ -75,7 +75,6 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-       
 
         private void ProcesPayment()
         {

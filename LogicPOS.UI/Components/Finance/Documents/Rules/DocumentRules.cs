@@ -6,6 +6,7 @@
         {
             public static decimal SimplifiedInvoiceMaxTotal => 1000;
             public static decimal FinalConsumerMaxTotal => 1000;
+            public static decimal SimplifiedInvoiceServicesMaxTotal => 100;
         }
     }
 }

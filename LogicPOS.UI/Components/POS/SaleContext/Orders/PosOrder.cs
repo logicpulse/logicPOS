@@ -54,6 +54,7 @@ namespace LogicPOS.UI.Components.POS
         }
 
         public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal);
+        public decimal ServicesTotalFinal => Tickets.Sum(_ => _.ServicesTotalFinal);
 
         public IEnumerable<DocumentDetailDto> GetDocumentDetails()
         {

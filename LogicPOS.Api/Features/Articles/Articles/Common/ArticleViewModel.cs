@@ -27,6 +27,7 @@ namespace LogicPOS.Api.Features.Articles.Common
         public Guid FamilyId { get; set; }
         public Button Button { get; set; }
         public bool PriceWithVat { get; set; }
+        public string ClassAcronym { get; set; }
 
         public decimal GetPrice(int priceType)
         {

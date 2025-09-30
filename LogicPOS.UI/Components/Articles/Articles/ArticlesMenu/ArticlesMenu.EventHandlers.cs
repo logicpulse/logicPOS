@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
@@ -26,14 +27,17 @@ namespace LogicPOS.UI.Components.Menus
             Refresh();
         }
 
-        private void BtnArticle_Clicked(ArticleViewModel article)
+        public void BtnArticle_Clicked(ArticleViewModel article)
         {
             article = ArticlesService.GetArticleViewModel(article.Id);
             var totalStock = ArticlesService.GetArticleTotalStock(article.Id);
 
             if (totalStock - article.DefaultQuantity <= article.MinimumStock)
             {
-                var message = $"{GeneralUtils.GetResourceByName("window_check_stock_question")}\n\n{GeneralUtils.GetResourceByName("global_article")}: {SelectedEntity.Designation}\n{GeneralUtils.GetResourceByName("global_total_stock")}: {totalStock}\n{GeneralUtils.GetResourceByName("global_minimum_stock")}: {SelectedEntity.MinimumStock.ToString()}";
+                var message = $"{LocalizedString.Instance["window_check_stock_question"]}" +
+                    $"\n\n{LocalizedString.Instance["global_article"]}: {article.Designation}" +
+                    $"\n{LocalizedString.Instance["global_total_stock"]}: {totalStock:0.00}" +
+                    $"\n{LocalizedString.Instance["global_minimum_stock"]}: {article.MinimumStock:0.00}";
 
                 var stockWarningResponse = new CustomAlert(SourceWindow)
                                         .WithMessage(message)
