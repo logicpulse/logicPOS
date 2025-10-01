@@ -51,6 +51,11 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
+            if(_draftId != null)
+            {
+                DocumentsService.DeleteDraft(_draftId.Value);
+            }
+
             DocumentPdfUtils.ViewDocumentPdf(this, id.Value);
         }
 

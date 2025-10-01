@@ -22,6 +22,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
+
+                if (modal.Page.SelectedEntity.IsDraft)
+                {
+                    CustomAlerts.Warning(this.SourceWindow)
+                     .WithTitle("Documento inválido")
+                     .WithMessage("Não é possível selecionar um rascunho.")
+                     .ShowAlert();
+
+                    modal.Destroy();
+                    return;
+                }
+
                 var selectedDocument = modal.Page.SelectedEntity;
                 var docType = GetDocumentTypeFromDocument(selectedDocument);
 
@@ -72,8 +84,22 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
+                if(modal.Page.SelectedEntity.IsActive == false)
+                {
+                    CustomAlerts.Warning(this.SourceWindow)
+                     .WithTitle("Documento inválido")
+                     .WithMessage("Não é possível selecionar um documento que se encontra cancelado/anulado ou em rascunho.")
+                     .ShowAlert();
+
+                    modal.Destroy();
+
+                    return;
+                }
+
                 TxtOriginDocument.Text = modal.Page.SelectedEntity.Number;
                 TxtOriginDocument.SelectedEntity = modal.Page.SelectedEntity;
+
+
                 var fullDocument = DocumentsService.GetDocument(modal.Page.SelectedEntity.Id);
                 OriginDocumentSelected?.Invoke(fullDocument);
             }

@@ -196,8 +196,11 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnNewDocument_Clicked(object sender, EventArgs e)
         {
-            CreateDocumentModal.ShowModal(this);
-            Page.Refresh();
+            var response = CreateDocumentModal.ShowModal(this);
+            if (response == ResponseType.Ok)
+            {
+                Page.Refresh();
+            }
         }
 
         private void BtnCancelDocument_Clicked(object sender, EventArgs e)
@@ -245,7 +248,12 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            CreateDocumentModal.ShowModal(this,Page.SelectedEntity);
+           var response = CreateDocumentModal.ShowModal(this,Page.SelectedEntity);
+
+            if (response == ResponseType.Ok)
+            {
+                Page.Refresh();
+            }
         }
     }
 }

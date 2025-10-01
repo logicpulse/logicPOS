@@ -10,12 +10,14 @@ using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal : Modal
     {
+        private Guid? _draftId = null;
         private bool DraftMode => CheckIsDraft.Active;
 
         private CreateDocumentModal(Window parent) : base(parent: parent,
@@ -29,10 +31,17 @@ namespace LogicPOS.UI.Components.Modals
 
         public void ImportDraftData(DocumentViewModel document)
         {
+            _draftId = document.Id;
             CheckIsDraft.Active = true;
             var fullDocument = DocumentsService.GetDocument(document.Id);
             CustomerTab.ImportDataFromDocument(fullDocument);
             DetailsTab.ImportDataFromDocument(document.Id);
+
+            if (document.TypeAnalyzer.IsGuide())
+            {
+                ShipFromTab.ImportDataFromDocument(fullDocument);
+                ShipToTab.ImportDataFromDocument(fullDocument);
+            }
 
             if (document.TypeAnalyzer.IsGuide())
             {
@@ -48,6 +57,9 @@ namespace LogicPOS.UI.Components.Modals
 
             this.DocumentTab.TxtPaymentCondition.SelectedEntity = document.PaymentCondition;
             this.DocumentTab.TxtPaymentCondition.Text = document.PaymentCondition?.Designation;
+            this.DocumentTab.TxtCurrency.SelectedEntity = document.Currency;
+            this.DocumentTab.TxtCurrency.Text = document.Currency.Designation;
+            this.DocumentTab.TxtNotes.Text = document.Notes;
         }
 
         private void Initialize()
@@ -110,12 +122,12 @@ namespace LogicPOS.UI.Components.Modals
             return query;
         }
 
-        public static void ShowModal(Window parent, DocumentViewModel draft = null)
+        public static ResponseType ShowModal(Window parent, DocumentViewModel draft = null)
         {
             if (FiscalYearService.HasFiscalYear() == false)
             {
                 FiscalYearService.ShowOpenFiscalYearAlert();
-                return;
+                return ResponseType.Cancel;
             }
 
             var modal = new CreateDocumentModal(parent);
@@ -123,8 +135,10 @@ namespace LogicPOS.UI.Components.Modals
             {
                 modal.ImportDraftData(draft);
             }
-            modal.Run();
+
+            ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
+            return response;
         }
 
         private void UpdateTitle()

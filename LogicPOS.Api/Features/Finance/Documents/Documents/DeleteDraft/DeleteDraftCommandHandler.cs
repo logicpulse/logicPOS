@@ -20,10 +20,12 @@ namespace LogicPOS.Api.Features.Documents.DeleteDraft
         public async override Task<ErrorOr<bool>> Handle(DeleteDraftCommand command, CancellationToken cancellationToken = default)
         {
             var result= await HandleDeleteCommandAsync($"documents/draft/{command.Id}", cancellationToken);
+          
             if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
             }
+
             return result;
         }
     }
