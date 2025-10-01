@@ -127,6 +127,14 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Number;
+                
+                if (document.IsDraft)
+                {
+                    (cell as CellRendererText).ForegroundGdk = new Gdk.Color(255, 0, 0);
+                } else
+                {
+                    (cell as CellRendererText).ForegroundGdk = new Gdk.Color(0, 0, 0);
+                }
             }
 
             var title = GeneralUtils.GetResourceByName("global_document_number");

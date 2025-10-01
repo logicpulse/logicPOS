@@ -35,15 +35,18 @@ namespace LogicPOS.UI.Components.Modals
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
 
-            actionAreaButtons.Add(new ActionAreaButton(BtnPayInvoice, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCloneDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnEditDraft, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnDeleteDraft, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancelDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnPayInvoice, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocument, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(BtnCancelDocument, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnOpenDocument, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnClose, ResponseType.Close));
-             
+
             actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnCancel, ResponseType.Cancel));
 

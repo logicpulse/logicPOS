@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPrint;
@@ -92,5 +93,15 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             }
             return document.Value;
         }
+
+        public static void DeleteDraft(Guid draftId)
+        {
+            var result = DependencyInjection.Mediator.Send(new DeleteDraftCommand(draftId)).Result;
+            if (result.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(result);
+            }
+        }
+
     }
 }

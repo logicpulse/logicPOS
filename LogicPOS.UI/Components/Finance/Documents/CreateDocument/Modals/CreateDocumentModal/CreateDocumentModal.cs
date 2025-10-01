@@ -1,32 +1,53 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.CreateDocument;
+using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal : Modal
     {
-        
-        public CreateDocumentModal(Window parent) : base(parent: parent,
+        private bool DraftMode => CheckIsDraft.Active;
+
+        private CreateDocumentModal(Window parent) : base(parent: parent,
                                                          title: LocalizedString.Instance["window_title_dialog_new_finance_document"],
                                                          size: new System.Drawing.Size(790, 546),
                                                          icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
             Initialize();
             Navigator.UpdateUI();
+        }
+
+        public void ImportDraftData(DocumentViewModel document)
+        {
+            CheckIsDraft.Active = true;
+            var fullDocument = DocumentsService.GetDocument(document.Id);
+            CustomerTab.ImportDataFromDocument(fullDocument);
+            DetailsTab.ImportDataFromDocument(document.Id);
+
+            if (document.TypeAnalyzer.IsGuide())
+            {
+                ShipFromTab.ImportDataFromDocument(fullDocument);
+                ShipToTab.ImportDataFromDocument(fullDocument);
+            }
+
+            var documentType = DocumentTypesService.DocumentTypes.Where(docType => docType.Acronym == document.Type).FirstOrDefault()
+                ?? DocumentTypesService.Default;
+
+
+            this.DocumentTab.SelectDocumentType(documentType);
+
+            this.DocumentTab.TxtPaymentCondition.SelectedEntity = document.PaymentCondition;
+            this.DocumentTab.TxtPaymentCondition.Text = document.PaymentCondition?.Designation;
         }
 
         private void Initialize()
@@ -89,7 +110,7 @@ namespace LogicPOS.UI.Components.Modals
             return query;
         }
 
-        public static void ShowModal(Window parent)
+        public static void ShowModal(Window parent, DocumentViewModel draft = null)
         {
             if (FiscalYearService.HasFiscalYear() == false)
             {
@@ -98,6 +119,10 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             var modal = new CreateDocumentModal(parent);
+            if (draft != null)
+            {
+                modal.ImportDraftData(draft);
+            }
             modal.Run();
             modal.Destroy();
         }
@@ -105,7 +130,7 @@ namespace LogicPOS.UI.Components.Modals
         private void UpdateTitle()
         {
             decimal total = DetailsTab.TotalFinal;
-            WindowSettings.Title.Text = $"{LocalizedString.Instance["window_title_dialog_new_finance_document"]} :: {Navigator.CurrentTab.TabName} : {total:C}";
+            WindowSettings.Title.Text = $"{(DraftMode ? "Rascunho" : LocalizedString.Instance["window_title_dialog_new_finance_document"])} :: {Navigator.CurrentTab.TabName} : {total:C}";
         }
 
         private void InitializeNavigator()

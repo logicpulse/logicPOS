@@ -34,5 +34,6 @@ namespace LogicPOS.UI.Components.Modals
 
         private ModalTabsNavigator Navigator { get; set; }
         public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
+
     }
 }

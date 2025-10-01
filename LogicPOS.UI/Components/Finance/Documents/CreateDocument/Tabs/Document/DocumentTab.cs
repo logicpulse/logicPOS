@@ -57,9 +57,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return decimal.Parse(TxtExchangeRate.Text);
         }
 
-        private void SelectDocumentType(DocumentType documentType)
+        public void SelectDocumentType(DocumentType documentType)
         {
             TxtDocumentType.SelectedEntity = documentType;
+            TxtDocumentType.Text = documentType.Designation;
             UpdateValidatableFields();
             DocumentTypeSelected?.Invoke(documentType);
         }

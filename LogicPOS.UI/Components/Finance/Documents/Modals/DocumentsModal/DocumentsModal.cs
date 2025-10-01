@@ -2,7 +2,7 @@
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -57,24 +57,15 @@ namespace LogicPOS.UI.Components.Modals
             BtnClose.Visible = false;
             BtnOk.Visible = true;
             BtnCancel.Visible = true;
-        }
-
-        private void AddButtonsEventHandlers()
-        {
-            BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
-            BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
-            BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
-            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
-            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
-            BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
-            BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
+            BtnCloneDocument.Visible = false;
+            BtnEditDraft.Visible = false;
         }
 
         private static bool CanCancelDocument(DocumentViewModel document)
         {
             bool canCancel = true;
 
-            if (document.IsCancelled || document.HasPassed48Hours)
+            if (document.IsCancellable)
             {
                 canCancel = false;
             }

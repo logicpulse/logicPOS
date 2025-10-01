@@ -27,6 +27,12 @@ namespace LogicPOS.UI.Components.Modals
             BtnPreview.Clicked += BtnPreview_Clicked;
             BtnClear.Clicked += BtnClear_Clicked;
             Navigator.CurrentTabChanged += t => UpdateTitle();
+            CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
+        }
+
+        private void CheckIsDraft_StateChanged(object o, Gtk.StateChangedArgs args)
+        {
+            UpdateTitle();
         }
 
         private void BtnOk_Clicked(object sender, EventArgs e)

@@ -14,6 +14,35 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal
     {
+        private void AddButtonsEventHandlers()
+        {
+            BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
+            BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
+            BtnCancelDocument.Clicked += BtnCancelDocument_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnPayInvoice.Clicked += BtnPayInvoice_Clicked;
+            BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
+            BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
+            BtnEditDraft.Clicked += BtnEditDraft_Clicked;
+            BtnDeleteDraft.Clicked += BtnDeleteDraft_Clicked;
+        }
+
+        private void BtnDeleteDraft_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            if (!Page.SelectedEntity.IsDraft)
+            {
+                return;
+            }
+
+            DocumentsService.DeleteDraft(Page.SelectedEntity.Id);
+            Page.Refresh();
+        }
+
         private void BtnPrintDocumentAs_Clicked(object sender, EventArgs e)
         {
             if (Page.SelectedEntity == null)
@@ -180,19 +209,6 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            if (Page.SelectedEntity.IsDraft)
-            {
-                var deleteResult = DependencyInjection.Mediator.Send(new DeleteDraftCommand(Page.SelectedEntity.Id)).Result;
-                if (deleteResult.IsError)
-                {
-                    ErrorHandlingService.HandleApiError(deleteResult);
-                    return;
-                }
-                Page.Refresh();
-                return;
-
-            }
-
             if (CanCancelDocument(selectedDocument) == false)
             {
                 ShowCannotCancelDocumentMessage(selectedDocument.Number);
@@ -220,6 +236,16 @@ namespace LogicPOS.UI.Components.Modals
                                                      this);
             var response = (ResponseType)modal.Run();
             modal.Destroy();
+        }
+
+        private void BtnEditDraft_Clicked(object sender, EventArgs e)
+        {
+            if(Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            CreateDocumentModal.ShowModal(this,Page.SelectedEntity);
         }
     }
 }

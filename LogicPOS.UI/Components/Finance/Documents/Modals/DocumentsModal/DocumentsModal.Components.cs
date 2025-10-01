@@ -8,16 +8,25 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal
     {
-        
+
         private IconButtonWithText BtnPayInvoice = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                       GeneralUtils.GetResourceByName("global_button_label_pay_invoice"),
                                                                                                       AppSettings.Paths.Images + @"Icons\icon_pos_payment_full.png");
+        private IconButtonWithText BtnEditDraft = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                     "Ed. Rasc.",
+                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_nav_update.png");
+       
+        private IconButtonWithText BtnDeleteDraft = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Red",
+                                                                                                    "Eliminar",
+                                                                                                    AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
+       
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
                                                                                                                        AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_finance_new_document.png");
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "touchButton_Green");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "touchButton_Green");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
+        private IconButtonWithText BtnCloneDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.CloneDocument, "touchButton_Green");
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Cancel);
         private IconButtonWithText BtnPrintDocumentAs { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.PrintAs, "touchButton_Green");
@@ -41,10 +50,15 @@ namespace LogicPOS.UI.Components.Modals
             BtnPayInvoice.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable;
             BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable;
             BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
-
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
+            BtnCloneDocument.Sensitive = documentIsSelected && selectedDocument.IsActive;
+            BtnEditDraft.Sensitive = documentIsSelected && selectedDocument.IsDraft;
+
+            BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && _selectionMode == false;
+            BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && _selectionMode == false;
+            BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && _selectionMode == false; 
         }
 
 
