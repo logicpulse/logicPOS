@@ -1,4 +1,5 @@
 ﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -28,6 +29,24 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnNext { get; set; }
         private TextBox TxtSearch { get; set; }
         public IconButtonWithText BtnFilter { get; set; }
-        
+
+
+        private void UpdateUI()
+        {
+            bool hasFiscalYear = FiscalYearService.HasFiscalYear();
+            var selectedDocument = Page.SelectedEntity;
+            bool documentIsSelected = selectedDocument != null;
+
+            BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
+            BtnPayInvoice.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable;
+            BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable;
+            BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
+
+            BtnPrintDocument.Sensitive = documentIsSelected;
+            BtnPrintDocumentAs.Sensitive = documentIsSelected;
+            BtnSendDocumentEmail.Sensitive = documentIsSelected;
+        }
+
+
     }
 }

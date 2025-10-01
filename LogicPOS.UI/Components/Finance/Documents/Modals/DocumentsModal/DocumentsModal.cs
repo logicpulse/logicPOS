@@ -1,13 +1,12 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
@@ -35,7 +34,8 @@ namespace LogicPOS.UI.Components.Modals
             if (selectionMode)
             {
                 UseSelectionMode();
-            } else
+            }
+            else
             {
                 BtnOk.Visible = false;
                 BtnCancel.Visible = false;
@@ -55,19 +55,8 @@ namespace LogicPOS.UI.Components.Modals
             BtnPrintDocument.Visible = false;
             BtnOpenDocument.Visible = false;
             BtnClose.Visible = false;
-
             BtnOk.Visible = true;
             BtnCancel.Visible = true;
-        }
-
-        private void UpdateUI()
-        {
-            var hasFiscalYear = FiscalYearService.HasFiscalYear();
-
-            BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
-            BtnPayInvoice.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear;
-            BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT");
-            BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU");
         }
 
         private void AddButtonsEventHandlers()
@@ -115,7 +104,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 
@@ -139,7 +128,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnFilter.Clicked += delegate { Page.RunFilter(); };
             BtnPrevious.Clicked += delegate { Page.MoveToPreviousPage(); };
             BtnNext.Clicked += delegate { Page.MoveToNextPage(); };
-            
+            Page.EntitySelected += delegate { UpdateUI(); };
         }
 
         private void UpdateModalTitle()
