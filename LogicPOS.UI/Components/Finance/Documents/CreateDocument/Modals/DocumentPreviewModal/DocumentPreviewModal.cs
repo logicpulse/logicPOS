@@ -7,13 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
+using DocumentDetail = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal
 {
     internal partial class DocumentPreviewModal : Modal
     {
-        public DocumentPreviewModal(Window parent, List<Item> items, decimal customerDiscount):base(parent: parent,
+        public DocumentPreviewModal(Window parent, List<DocumentDetail> items, decimal customerDiscount):base(parent: parent,
                                                  title: GeneralUtils.GetResourceByName("window_title_dialog_documentfinance_preview_totals_mode_preview"),
                                                  size: new Size(700, 360),
                                                  icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")

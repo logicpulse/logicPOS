@@ -3,7 +3,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using System.Collections.Generic;
-using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
+using DocumentDetail = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal
 {
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
         Label labelDiscountTotal = new Label(GeneralUtils.GetResourceByName("global_documentfinance_total_discount"));
         Label LabelTaxTotalFinal = new Label(GeneralUtils.GetResourceByName("global_documentfinance_totaltax"));
         private Label labelFinalTotal = new Label(GeneralUtils.GetResourceByName("global_documentfinance_totalfinal"));
-        private readonly List<Item> _items= new List<Item>();
+        private readonly List<DocumentDetail> _items= new List<DocumentDetail>();
         private readonly decimal _customerDiscount;
         ListStore listModel = new ListStore(typeof(string), typeof(string), typeof(string), typeof(string));
         private Label labelDiscountCustomerValue = new Label();

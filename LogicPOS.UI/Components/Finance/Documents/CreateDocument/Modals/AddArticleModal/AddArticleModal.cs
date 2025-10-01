@@ -1,29 +1,32 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Finance.VatExemptionReasons;
+using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 using System.Linq;
-using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
+using DocumentDetail = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal : Modal
     {
-        private EntityEditionModalMode _mode;
-        public Item Item { get; }
+        private readonly EntityEditionModalMode _mode;
+        public DocumentDetail DocumentDetail { get; }
         private decimal _vatRateValue;
         public AddArticleModal(Window parent,
                                EntityEditionModalMode mode,
-                               Item item = null) : base(parent,
+                               DocumentDetail detail = null) : base(parent,
                                                      GeneralUtils.GetResourceByName("global_insert_articles"),
                                                      new Size(900, 360),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_finance_article.png")
         {
             _mode = mode;
-            Item = item;
+            DocumentDetail = detail;
 
             HandleModalMode();
         }
@@ -32,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (_mode != EntityEditionModalMode.Insert)
             {
-                ShowItemData(Item);
+                ShowItemData(DocumentDetail);
             }
 
             if (_mode == EntityEditionModalMode.View)
@@ -58,20 +61,20 @@ namespace LogicPOS.UI.Components.Modals
             TxtNotes.Component.Sensitive = false;
         }
 
-        private void ShowItemData(Item item)
+        private void ShowItemData(DocumentDetail detail)
         {
-            TxtCode.Text = item.Code;
-            TxtArticle.SelectedEntity = item.Article;
-            TxtArticle.Text = item.Designation;
-            TxtPrice.Text = item.UnitPrice.ToString("F2");
-            TxtQuantity.Text = item.Quantity.ToString("F2");
-            TxtDiscount.Text = item.Discount.ToString("F2");
-            TxtVatExemptionReason.SelectedEntity = item.VatExemptionReason;
-            TxtVatExemptionReason.Text = item.VatExemptionReason?.Designation ?? item.ExemptionReason;
-            TxtTax.SelectedEntity = item.VatRate;
-            TxtTax.Text = item.VatRate?.Designation ?? item.VatDesignation;
-            _vatRateValue = item.Vat;
-            TxtNotes.Text = item.Notes;
+            TxtCode.Text = detail.Code;
+            TxtArticle.SelectedEntity = detail.Article;
+            TxtArticle.Text = detail.Designation;
+            TxtPrice.Text = detail.UnitPrice.ToString("F2");
+            TxtQuantity.Text = detail.Quantity.ToString("F2");
+            TxtDiscount.Text = detail.Discount.ToString("F2");
+            TxtVatExemptionReason.SelectedEntity = detail.VatExemptionReason;
+            TxtVatExemptionReason.Text = detail.VatExemptionReason?.Designation ?? detail.ExemptionReason;
+            TxtTax.SelectedEntity = detail.VatRate;
+            TxtTax.Text = detail.VatRate?.Designation ?? detail.VatDesignation;
+            _vatRateValue = detail.Vat;
+            TxtNotes.Text = detail.Notes;
             UpdateTotals();
             UpdateValidatableFields();
         }
@@ -115,22 +118,29 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void SelectArticle(Article article)
+        private void SelectArticle(ArticleViewModel article)
         {
+            var vatrate = VatRatesService.GetById(article.VatRateId);
+            VatExemptionReason vatExempetionReason = article.VatExemptionReasonId.HasValue ? VatExemptionReasonsService.GetById(article.VatExemptionReasonId.Value) : null;
+            
             TxtArticle.Text = article.Designation;
             TxtArticle.SelectedEntity = article;
             TxtCode.Text = article.Code;
-            TxtPrice.Text = article.Price1.Value.ToString("F2");
-            TxtQuantity.Text = article.DefaultQuantity>0? article.DefaultQuantity.ToString("F2"): 1.ToString("F2");
+            TxtPrice.Text = article.Price1.ToString("F2");
+            TxtQuantity.Text = article.DefaultQuantity > 0 ? article.DefaultQuantity.ToString("F2") : 1.ToString("F2");
             TxtDiscount.Text = article.Discount.ToString("F2");
-            TxtVatExemptionReason.SelectedEntity = article.VatExemptionReason;
-            TxtVatExemptionReason.Text = article?.VatExemptionReason?.Designation;
-            TxtTax.SelectedEntity = article.VatDirectSelling;
-            TxtTax.Text = article.VatDirectSelling?.Designation;
+
+            TxtVatExemptionReason.SelectedEntity = vatExempetionReason;
+            TxtVatExemptionReason.Text = vatExempetionReason?.Designation;
+
+            TxtTax.SelectedEntity = vatrate;
+            TxtTax.Text = vatrate.Designation;
             _vatRateValue = article.VatDirectSelling.Value;
+
             TxtNotes.Text = article.Notes;
-            TxtFamily.Text = article.Subfamily.Family.Designation;
-            TxtSubFamily.Text = article.Subfamily.Designation;
+            TxtFamily.Text = article.Subfamily;
+            TxtSubFamily.Text = article.Subfamily;
+
             UpdateTotals();
             UpdateValidatableFields();
         }
@@ -151,15 +161,15 @@ namespace LogicPOS.UI.Components.Modals
             TxtFamily.Clear();
         }
 
-        public Item GetItem()
+        public DocumentDetail GetDetail()
         {
-            return new Item
+            return new DocumentDetail
             {
-                Order = (TxtArticle.SelectedEntity as Article).Order,
-                Code = (TxtArticle.SelectedEntity as Article).Code,
+                Order = (TxtArticle.SelectedEntity as ArticleViewModel).Order,
+                Code = (TxtArticle.SelectedEntity as ArticleViewModel).Code,
                 Designation = TxtArticle.Text,
-                Article = TxtArticle.SelectedEntity as Article,
-                ArticleId = (TxtArticle.SelectedEntity as Article).Id,
+                Article = TxtArticle.SelectedEntity as ArticleViewModel,
+                ArticleId = (TxtArticle.SelectedEntity as ArticleViewModel).Id,
                 UnitPrice = decimal.Parse(TxtPrice.Text),
                 Quantity = decimal.Parse(TxtQuantity.Text),
                 Discount = decimal.Parse(TxtDiscount.Text),

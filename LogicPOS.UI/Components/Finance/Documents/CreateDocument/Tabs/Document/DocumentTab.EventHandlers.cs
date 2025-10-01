@@ -6,8 +6,10 @@ using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -27,7 +29,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 {
                     CustomAlerts.Warning(this.SourceWindow)
                      .WithTitle("Tipo de documento não encontrado")
-
                      .WithMessage($"O tipo de documento ({selectedDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearService.CurrentFiscalYear.Acronym}).")
                      .ShowAlert();
 
@@ -55,6 +56,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtCurrency.Text = modal.Page.SelectedEntity.Currency.Designation;
 
                 var fullDocument = DocumentsService.GetDocument(modal.Page.SelectedEntity.Id);
+
+                ImportPaymentMethods(fullDocument);
+
                 CopyDocumentSelected?.Invoke(fullDocument);
             }
 
@@ -75,6 +79,19 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
 
             modal.Destroy();
+        }
+
+        private void ImportPaymentMethods(Document document)
+        {
+            if (document.PaymentMethods != null && document.PaymentMethods.Any())
+            {
+                if (CompanyDetailsService.CompanyInformation.IsPortugal)
+                {
+                    var payment = document.PaymentMethods.First();
+                    TxtPaymentMethod.SelectedEntity = payment.PaymentMethod;
+                    TxtPaymentMethod.Text = payment.PaymentMethod.Designation;
+                }
+            }
         }
 
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)

@@ -8,15 +8,17 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class DetailsPage : Page<Item>
+    public partial class DetailsPage : Page<DocumentDetail>
     {
-        public List<Item> Items => _entities;
+        public List<DocumentDetail> Items => _entities;
         public event Action<decimal> OnTotalChanged;
         public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
+        public decimal ServicesTotalFinal => _entities.Where(detail => detail.Article.ClassAcronym == "S").Sum(detail => detail.TotalFinal);
 
         public DetailsPage(Window parent) : base(parent)
         {
         }
+       
         protected override void LoadEntities() { }
 
         public override bool DeleteEntity()
@@ -78,7 +80,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok)
             {
-                var newItem = modal.GetItem();
+                var newItem = modal.GetDetail();
 
                 _entities.Add(newItem);
             }
@@ -88,7 +90,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return (int)response;
         }
 
-        private void UpdateItemData(Guid articleId, Item newData)
+        private void UpdateItemData(Guid articleId, DocumentDetail newData)
         {
             var existingItem = _entities.Find(x => x.ArticleId == articleId);
 
@@ -126,12 +128,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             AddTotalSorting();
             AddTotalWithTaxSorting();
         }
+       
         protected override DeleteCommand GetDeleteCommand() => null;
 
-        public override void UpdateButtonPrevileges()
-        {
-            //these buttons are not used in this page
+        public override void UpdateButtonPrevileges() { }
 
-        }
     }
 }

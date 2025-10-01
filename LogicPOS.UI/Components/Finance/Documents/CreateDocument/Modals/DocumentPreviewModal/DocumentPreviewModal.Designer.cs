@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Color = System.Drawing.Color;
-using Item = LogicPOS.UI.Components.Documents.CreateDocument.Item;
+using Item = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal
 {

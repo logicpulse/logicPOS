@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatExemptionReasons.GetAllVatExemptionReasons;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,6 +22,8 @@ namespace LogicPOS.UI.Components.Finance.VatExemptionReasons
                 return _reasons;
             }
         }
+
+        public static VatExemptionReason GetById(Guid id) => Reasons.Where(x =>  x.Id == id).FirstOrDefault();
 
         private static List<VatExemptionReason> GetAllReasons()
         {

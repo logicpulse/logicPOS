@@ -1,15 +1,16 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common;
 using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public class Item : ApiEntity, IWithCode, IWithDesignation
+    public class DocumentDetail : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
         public string Code { get; set; }
         public string Designation { get; set; }
-        public Article Article { get; set; }
+        public ArticleViewModel Article { get; set; }
         public Guid ArticleId { get; set; }
         public decimal Quantity { get; set; }
         public decimal UnitPrice { get; set; }

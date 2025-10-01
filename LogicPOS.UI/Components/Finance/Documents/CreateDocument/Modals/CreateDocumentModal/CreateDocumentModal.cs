@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -31,18 +32,6 @@ namespace LogicPOS.UI.Components.Modals
         private void Initialize()
         {
             AddEventHandlers();
-        }
-
-        private void AddTabsEventHandlers()
-        {
-            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
-            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
-            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
-            if (SinglePaymentMethod == false)
-            {
-                DetailsTab.Page.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
-            }
-            DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
         }
 
         private AddDocumentCommand CreateAddCommand()
@@ -95,52 +84,10 @@ namespace LogicPOS.UI.Components.Modals
             query.Notes = DocumentTab.TxtNotes.Text;
             query.ExchangeRate = DocumentTab.GetExchangeRate();
             query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
-            query.Details = DetailsTab.GetDocumentDetails(null);
+            query.Details = DetailsTab.GetDocumentDetails();
 
             return query;
         }
-
-        public bool AllTabsAreValid() => GetValidatableTabs().All(tab => tab.IsValid());
-
-        public bool TabsForPreviewAreValid()
-        {
-            return DetailsTab.IsValid();
-        }
-
-        public IEnumerable<IValidatableField> GetValidatableTabs()
-        {
-            var validatableTabs = new List<IValidatableField>
-            {
-                DocumentTab,
-                CustomerTab,
-                DetailsTab
-            };
-
-            var docAnalyzer = DocumentTab.DocumentTypeAnalyzer;
-
-            if (docAnalyzer == null)
-            {
-                return validatableTabs;
-            }
-
-            if(SinglePaymentMethod == false)
-            {
-                if (docAnalyzer.Value.IsInvoiceReceipt() || docAnalyzer.Value.IsSimplifiedInvoice())
-                {
-                    validatableTabs.Add(PaymentMethodsTab);
-                }
-            }
-         
-            if (docAnalyzer.Value.IsGuide())
-            {
-                validatableTabs.Add(ShipToTab);
-                validatableTabs.Add(ShipFromTab);
-            }
-
-            return validatableTabs;
-        }
-
-        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs());
 
         public static void ShowModal(Window parent)
         {
@@ -157,8 +104,60 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle()
         {
-            decimal total = DetailsTab.Page.TotalFinal;
+            decimal total = DetailsTab.TotalFinal;
             WindowSettings.Title.Text = $"{LocalizedString.Instance["window_title_dialog_new_finance_document"]} :: {Navigator.CurrentTab.TabName} : {total:C}";
+        }
+
+        private void InitializeNavigator()
+        {
+            InitializeTabs();
+
+
+            if (SinglePaymentMethod)
+            {
+                Navigator = new ModalTabsNavigator(DocumentTab,
+                                           CustomerTab,
+                                           DetailsTab,
+                                           ShipToTab,
+                                           ShipFromTab);
+                return;
+            }
+
+            Navigator = new ModalTabsNavigator(DocumentTab,
+                                               CustomerTab,
+                                               DetailsTab,
+                                               PaymentMethodsTab,
+                                               ShipToTab,
+                                               ShipFromTab);
+        }
+
+        private void InitializeTabs()
+        {
+            DocumentTab = new DocumentTab(this);
+            CustomerTab = new CustomerTab(this);
+            DetailsTab = new DetailsTab(this);
+            ShipToTab = new DocumentShipToTab(this);
+            ShipFromTab = new ShipFromTab(this);
+            if (SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab = new PaymentMethodsTab(this);
+            }
+            AddTabsEventHandlers();
+        }
+
+        private void ShowTabsForDocumentType(DocumentType documentType)
+        {
+            var analyzer = documentType.Analyzer;
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
+            if (SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
+            }
+        }
+
+        private void EnableTabsForDocumentType(DocumentType documentType)
+        {
+            CustomerTab.Sensitive = documentType.Analyzer.IsCreditNote() == false;
         }
 
     }

@@ -14,58 +14,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal
     {
-        private void InitializeNavigator()
-        {
-            InitializeTabs();
-
-
-            if (SinglePaymentMethod)
-            {
-                Navigator = new ModalTabsNavigator(DocumentTab,
-                                           CustomerTab,
-                                           DetailsTab,
-                                           ShipToTab,
-                                           ShipFromTab);
-                return;
-            }
-
-            Navigator = new ModalTabsNavigator(DocumentTab,
-                                               CustomerTab,
-                                               DetailsTab,
-                                               PaymentMethodsTab,
-                                               ShipToTab,
-                                               ShipFromTab);
-        }
-
-        private void InitializeTabs()
-        {
-            DocumentTab = new DocumentTab(this);
-            CustomerTab = new CustomerTab(this);
-            DetailsTab = new DetailsTab(this);
-            ShipToTab = new DocumentShipToTab(this);
-            ShipFromTab = new ShipFromTab(this);
-            if (SinglePaymentMethod == false)
-            {
-                PaymentMethodsTab = new PaymentMethodsTab(this);
-            }
-            AddTabsEventHandlers();
-        }
-
-        private void ShowTabsForDocumentType(DocumentType documentType)
-        {
-            var analyzer = documentType.Analyzer;
-            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
-            if (SinglePaymentMethod == false)
-            {
-                PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
-            }
-        }
-
-        private void EnableTabsForDocumentType(DocumentType documentType)
-        {
-            CustomerTab.Sensitive = documentType.Analyzer.IsCreditNote() == false;
-        }
-
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons

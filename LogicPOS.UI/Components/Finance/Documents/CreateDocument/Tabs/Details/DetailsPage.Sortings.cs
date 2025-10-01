@@ -6,8 +6,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(7, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -22,8 +22,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -38,8 +38,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -54,8 +54,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -70,8 +70,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {
@@ -86,8 +86,8 @@
         {
             GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
             {
-                var leftItem = (Item)model.GetValue(left, 0);
-                var rightItem = (Item)model.GetValue(right, 0);
+                var leftItem = (DocumentDetail)model.GetValue(left, 0);
+                var rightItem = (DocumentDetail)model.GetValue(right, 0);
 
                 if (leftItem == null || rightItem == null)
                 {

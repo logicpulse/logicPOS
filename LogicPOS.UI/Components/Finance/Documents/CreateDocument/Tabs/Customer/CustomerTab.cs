@@ -76,6 +76,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return TxtCustomer.SelectedEntity as Api.Entities.Customer;
         }
 
+        public string FiscalNumber => TxtFiscalNumber.Text;
         public DocumentCustomer GetDocumentCustomer()
         {
             return new DocumentCustomer

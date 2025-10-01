@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public string Status { get; set; }
         public bool IsCancelled => Status == "A";
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
-        public DateTime? ShipFromAdressDeliveryDate { get; set; }
+        public DateTime? ShipFromAddressDeliveryDate { get; set; }
         public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
         public bool IsDraft { get; set; }
         public decimal TotalFinal { get; set; }

@@ -7,12 +7,7 @@ namespace LogicPOS.Api.Entities
     public class DocumentDetail : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
-        public Article Article { get; set; }
         public Guid ArticleId { get; set; }
-
-        public Document Document { get; set; }
-        public Guid DocumentId { get; set; }
-
         public decimal Quantity { get; set; }
         public string Unit { get; set; }
         public decimal Price { get; set; }

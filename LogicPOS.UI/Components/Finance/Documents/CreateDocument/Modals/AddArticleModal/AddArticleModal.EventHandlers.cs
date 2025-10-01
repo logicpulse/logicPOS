@@ -23,20 +23,20 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_mode == EntityEditionModalMode.Update)
             {
-                Item.Article = TxtArticle.SelectedEntity as Article;
-                Item.ArticleId = (TxtArticle.SelectedEntity as Article)?.Id ?? Item.ArticleId;
-                Item.Code = Item.Article?.Code ?? Item.Code;
-                Item.Designation = TxtArticle?.Text ?? Item.Designation;
-                Item.UnitPrice = decimal.Parse(TxtPrice.Text);
-                Item.Quantity = decimal.Parse(TxtQuantity.Text);
-                Item.Discount = decimal.Parse(TxtDiscount.Text);
-                Item.VatRate = TxtTax.SelectedEntity as VatRate;
-                Item.VatRateId = (TxtTax.SelectedEntity as VatRate)?.Id ?? Item.VatRateId;
-                Item.VatDesignation = TxtTax.Text;
-                Item.Vat = _vatRateValue;
-                Item.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
-                Item.ExemptionReason = Item.VatExemptionReason is null ? TxtVatExemptionReason.Text : Item.VatExemptionReason.Designation;
-                Item.Notes = TxtNotes.Text;
+                DocumentDetail.Article = TxtArticle.SelectedEntity as ArticleViewModel;
+                DocumentDetail.ArticleId = (TxtArticle.SelectedEntity as ArticleViewModel)?.Id ?? DocumentDetail.ArticleId;
+                DocumentDetail.Code = DocumentDetail.Article?.Code ?? DocumentDetail.Code;
+                DocumentDetail.Designation = TxtArticle?.Text ?? DocumentDetail.Designation;
+                DocumentDetail.UnitPrice = decimal.Parse(TxtPrice.Text);
+                DocumentDetail.Quantity = decimal.Parse(TxtQuantity.Text);
+                DocumentDetail.Discount = decimal.Parse(TxtDiscount.Text);
+                DocumentDetail.VatRate = TxtTax.SelectedEntity as VatRate;
+                DocumentDetail.VatRateId = (TxtTax.SelectedEntity as VatRate)?.Id ?? DocumentDetail.VatRateId;
+                DocumentDetail.VatDesignation = TxtTax.Text;
+                DocumentDetail.Vat = _vatRateValue;
+                DocumentDetail.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
+                DocumentDetail.ExemptionReason = DocumentDetail.VatExemptionReason is null ? TxtVatExemptionReason.Text : DocumentDetail.VatExemptionReason.Designation;
+                DocumentDetail.Notes = TxtNotes.Text;
             }
         }
 
@@ -102,16 +102,13 @@ namespace LogicPOS.UI.Components.Modals
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                var article = page.GetSelectedArticle();
-                SelectArticle(article);
+                SelectArticle(page.SelectedEntity);
             }
         }
 
         private void TxtCode_OnCompletionSelected(object obj)
         {
-            ArticleViewModel articleViewModel = obj as ArticleViewModel;
-            var article = ArticlesService.GetArticlebById(articleViewModel.Id);
-            SelectArticle(article);
+            SelectArticle(obj as ArticleViewModel);
         }
 
     }

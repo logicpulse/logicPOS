@@ -10,7 +10,6 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -24,14 +23,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             Design();
         }
 
-      
+
         private DocumentType GetDocumentTypeFromDocument(DocumentViewModel document)
         {
             return DocumentTypesService.DocumentTypes.FirstOrDefault(type => type.Acronym == document.Type);
         }
 
-        public Guid? GetPaymentConditionId () => (TxtPaymentCondition.SelectedEntity as ApiEntity)?.Id;
-      
+        public Guid? GetPaymentConditionId() => (TxtPaymentCondition.SelectedEntity as ApiEntity)?.Id;
+
         public Guid GetCurrencyId()
         {
             return (TxtCurrency.SelectedEntity as ApiEntity).Id;

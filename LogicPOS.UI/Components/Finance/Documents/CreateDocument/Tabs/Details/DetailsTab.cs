@@ -1,8 +1,10 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,6 +13,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     public class DetailsTab : ModalTab
     {
         public DetailsPage Page { get; set; }
+        public decimal TotalFinal => Page.TotalFinal;
+        public decimal ServicesTotalFinal => Page.ServicesTotalFinal;
 
         public DetailsTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"),
@@ -34,13 +38,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             PackStart(Page);
         }
 
-        public void ImportDataFromDocument(Api.Entities.Document document)
+        public void ImportDataFromDocument(Guid documentId)
         {
             Page.Items.Clear();
 
-            foreach (var detail in document.Details)
+            var details = DocumentsService.GetDocumentDetails(documentId);
+
+            foreach (var detail in details)
             {
-                Page.Items.Add(new Item
+                Page.Items.Add(new DocumentDetail
                 {
                     ArticleId = detail.ArticleId,
                     Designation = detail.Designation,
@@ -59,18 +65,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             Page.Refresh();
         }
 
-        public List<DocumentDetail> GetDocumentDetails(int? priceType)
+        public List<Api.Features.Documents.AddDocument.DocumentDetail> GetDocumentDetails(int? priceType = null)
         {
-            var details = Page.Items.Select(item => new DocumentDetail
+            var details = Page.Items.Select(detail => new Api.Features.Documents.AddDocument.DocumentDetail
             {
-                ArticleId = item.ArticleId,
-                Quantity = item.Quantity,
-                UnitPrice = item.UnitPrice,
-                VatRateId = item.VatRateId,
-                VatExemptionId = item.VatExemptionReason?.Id,
-                Discount = item.Discount,
+                ArticleId = detail.ArticleId,
+                Quantity = detail.Quantity,
+                UnitPrice = detail.UnitPrice,
+                VatRateId = detail.VatRateId,
+                VatExemptionId = detail.VatExemptionReason?.Id,
+                Discount = detail.Discount,
                 PriceType = priceType,
-                Notes = item.Notes
+                Notes = detail.Notes
             });
 
             return details.ToList();

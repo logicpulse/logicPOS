@@ -1,17 +1,26 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
-using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
-using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Errors;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class CreateDocumentModal
     {
+        private void AddTabsEventHandlers()
+        {
+            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
+            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
+            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
+            if (SinglePaymentMethod == false)
+            {
+                DetailsTab.Page.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
+            }
+            DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
+        }
+
         private void AddEventHandlers()
         {
             BtnOk.Clicked += BtnOk_Clicked;
@@ -22,9 +31,8 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            if (!AllTabsAreValid())
+            if (Validate() == false)
             {
-                ShowValidationErrors();
                 Run();
                 return;
             }
@@ -71,13 +79,13 @@ namespace LogicPOS.UI.Components.Modals
         private void OnOriginDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            DetailsTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document.Id);
         }
 
         private void OnCopyDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            DetailsTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document.Id);
 
             if (document.TypeAnalyzer.IsGuide())
             {
@@ -85,7 +93,10 @@ namespace LogicPOS.UI.Components.Modals
                 ShipToTab.ImportDataFromDocument(document);
             }
 
-            OnDocumentTypeSelected(document.Series.DocumentType);
+            var documentType = DocumentTypesService.DocumentTypes.Where(docType => docType.Acronym == document.Type).FirstOrDefault()
+                ?? DocumentTypesService.Default;
+
+            OnDocumentTypeSelected(documentType);
         }
 
     }

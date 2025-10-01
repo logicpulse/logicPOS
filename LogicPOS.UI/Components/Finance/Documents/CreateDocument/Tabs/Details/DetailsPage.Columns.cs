@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderTotalWithTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.TotalFinal.ToString("F2");
             }
 
@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderPrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.UnitPrice.ToString("F2");
             }
 
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderDiscount(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.Discount.ToString("F2");
             }
 
@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderTax(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.VatRate?.Designation ?? item.VatDesignation;
             }
 
@@ -74,7 +74,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderQuantity(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.Quantity.ToString("F2");
             }
 
@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             void RenderTotal(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var item = (Item)model.GetValue(iter, 0);
+                var item = (DocumentDetail)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = item.TotalNet.ToString("F2");
             }
 

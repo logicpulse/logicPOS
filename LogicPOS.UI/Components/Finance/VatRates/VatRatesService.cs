@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,17 +23,19 @@ namespace LogicPOS.UI.Components.Finance.VatRates.Service
             }
         }
 
+        public static VatRate GetById(Guid id) => VatRates.Where(x =>  x.Id == id).FirstOrDefault();
+
         private static List<VatRate> GetAll()
         {
-            var getReasons = DependencyInjection.Mediator.Send(new GetAllVatRatesQuery()).Result;
+            var vatRates = DependencyInjection.Mediator.Send(new GetAllVatRatesQuery()).Result;
 
-            if (getReasons.IsError)
+            if (vatRates.IsError)
             {
-                ErrorHandlingService.HandleApiError(getReasons);
+                ErrorHandlingService.HandleApiError(vatRates);
                 return null;
             }
 
-            return getReasons.Value.ToList();
+            return vatRates.Value.ToList();
         }
     }
 }

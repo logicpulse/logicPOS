@@ -61,11 +61,11 @@ namespace LogicPOS.UI.Components.Modals
             _txtEmail.Text = _entity.Email;
             _txtFiscalNumber.Text = _entity.FiscalNumber;
             _txtCardNumber.Text = _entity.CardNumber;
-            _txtCardCredit.Text = _entity.CardCredit.ToString();
+            _txtCardCredit.Text = _entity.CardCredit.ToString("0.00");
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
             _checkSupplier.Active = _entity?.Supplier ?? false;
-            _txtDiscount.Text = _entity.Discount.ToString();
+            _txtDiscount.Text = _entity.Discount.ToString("0.00");
 
         }
 

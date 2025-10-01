@@ -89,7 +89,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 canCancel = false;
             }
-            else if (document.TypeAnalyzer.IsGuide() && document.ShipFromAdressDeliveryDate < DateTime.Now)
+            else if (document.TypeAnalyzer.IsGuide() && document.ShipFromAddressDeliveryDate < DateTime.Now)
             {
                 canCancel = false;
             }

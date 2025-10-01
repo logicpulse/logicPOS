@@ -7,6 +7,7 @@ namespace LogicPOS.Api.Features.Articles.Common
 {
     public class ArticleViewModel : ApiEntity, IWithCode, IWithDesignation
     {
+        public uint Order { get; set; }
         public string Code { get; set; } 
         public bool IsComposed { get; set; }
         public string Family { get; set; } 
@@ -25,6 +26,8 @@ namespace LogicPOS.Api.Features.Articles.Common
         public string Unit { get; set; }
         public Guid SubfamilyId { get; set; }
         public Guid FamilyId { get; set; }
+        public Guid VatRateId { get; set; }
+        public Guid? VatExemptionReasonId { get; set; }
         public Button Button { get; set; }
         public bool PriceWithVat { get; set; }
         public string ClassAcronym { get; set; }
