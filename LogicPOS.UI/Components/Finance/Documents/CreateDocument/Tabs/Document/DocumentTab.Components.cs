@@ -12,7 +12,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public TextBox TxtPaymentMethod { get; set; }
         private bool SinglePaymentMethod => SystemInformationService.SystemInformation.IsPortugal;
         public TextBox TxtCurrency { get; set; }
-        public TextBox TxtExchangeRate { get; private set; }
         public TextBox TxtOriginDocument { get; set; }
         public TextBox TxtCopyDocument { get; set; }
         public TextBox TxtNotes { get; set; }

@@ -46,16 +46,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return (TxtOriginDocument.SelectedEntity as DocumentViewModel)?.Id;
         }
 
-        public decimal GetExchangeRate()
-        {
-            var selectedCurrency = TxtCurrency.SelectedEntity as ApiEntity;
-            if (selectedCurrency.Id == CurrenciesService.Default.Id)
-            {
-                return 1;
-            }
-
-            return decimal.Parse(TxtExchangeRate.Text);
-        }
 
         public void SelectDocumentType(DocumentType documentType)
         {

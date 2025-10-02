@@ -132,16 +132,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtCurrency.Text = page.SelectedEntity.Designation;
                 TxtCurrency.SelectedEntity = page.SelectedEntity;
                 var selectedCurrency = page.SelectedEntity;
-                TxtExchangeRate.Entry.Sensitive = selectedCurrency.Id != CurrenciesService.Default.Id;
-
-                if (selectedCurrency.Id != CurrenciesService.Default.Id)
-                {
-                    TxtExchangeRate.Text = selectedCurrency.ExchangeRate.ToString();
-                }
-                else
-                {
-                    TxtExchangeRate.Text = "1";
-                }
             }
         }
 

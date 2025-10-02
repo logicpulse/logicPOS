@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 verticalLayout.PackStart(TxtPaymentMethod.Component, false, false, 0);
             }
-            verticalLayout.PackStart(TextBox.CreateHbox(TxtCurrency, TxtExchangeRate), false, false, 0);
+            verticalLayout.PackStart(TxtCurrency.Component, false, false, 0);
             verticalLayout.PackStart(TextBox.CreateHbox(TxtOriginDocument, TxtCopyDocument), false, false, 0);
             verticalLayout.PackStart(TxtNotes.Component, false, false, 0);
 

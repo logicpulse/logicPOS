@@ -90,31 +90,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return (int)response;
         }
 
-        private void UpdateItemData(Guid articleId, DocumentDetail newData)
-        {
-            var existingItem = _entities.Find(x => x.ArticleId == articleId);
-
-            existingItem.Order = newData.Order;
-            existingItem.Code = newData.Code;
-            existingItem.Designation = newData.Designation;
-            existingItem.Article = newData.Article;
-            existingItem.ArticleId = newData.ArticleId;
-            existingItem.Quantity = newData.Quantity;
-            existingItem.UnitPrice = newData.UnitPrice;
-            existingItem.Discount = newData.Discount;
-            existingItem.Vat = newData.Vat;
-            existingItem.VatRate = newData.VatRate;
-            existingItem.VatRateId = newData.VatRateId;
-            existingItem.VatDesignation = newData.VatDesignation;
-            existingItem.ExemptionReason = newData.ExemptionReason;
-            existingItem.VatExemptionReason = newData.VatExemptionReason;
-        }
-
-        private bool ItemExists(Guid articleId)
-        {
-            return _entities.Exists(x => x.ArticleId == articleId);
-        }
-
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);

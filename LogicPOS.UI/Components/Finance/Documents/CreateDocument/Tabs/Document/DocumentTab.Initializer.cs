@@ -22,7 +22,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 InitializeTxtPaymnentMethod();
             }
             InitializeTxtCurrency();
-            InitializeTxtExchangeRate();
             InitializeTxtOriginDocument();
             InitializeTxtCopyDocument();
             InitializeTxtNotes();
@@ -87,19 +86,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCurrency.SelectedEntity = CurrenciesService.Default;
 
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
-        }
-
-        private void InitializeTxtExchangeRate()
-        {
-            TxtExchangeRate = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_exchangerate"),
-                                              isRequired: true,
-                                              isValidatable: true,
-                                              regex: RegularExpressions.DecimalNumber,
-                                              includeSelectButton: false,
-                                              includeKeyBoardButton: true);
-            TxtExchangeRate.Text = "1";
-            TxtExchangeRate.Entry.Sensitive = false;
         }
 
         private void InitializeTxtPaymnentCondition()

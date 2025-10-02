@@ -35,5 +35,14 @@ namespace LogicPOS.UI.Components.Modals
         private ModalTabsNavigator Navigator { get; set; }
         public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
 
+        public void UpdateUI()
+        {
+            UpdateTitle();
+
+            BtnClear.Visible = this.Navigator.CurrentTab == this.CustomerTab;
+            BtnPreview.Visible = this.Navigator.CurrentTab == this.DetailsTab && this.DetailsTab.Page.Items.Count > 0;
+            BtnOk.Sensitive = AllTabsAreValid();
+        }
+
     }
 }

@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             Initialize();
             Navigator.UpdateUI();
+            UpdateUI();
         }
 
         public void ImportDraftData(DocumentViewModel document)
@@ -86,7 +87,6 @@ namespace LogicPOS.UI.Components.Modals
             command.ParentId = DocumentTab.GetOriginDocumentId();
             command.CustomerId = CustomerTab.CustomerId;
             command.Notes = DocumentTab.TxtNotes.Text;
-            command.ExchangeRate = DocumentTab.GetExchangeRate();
             command.IsDraft = CheckIsDraft.Active;
 
             var customer = CustomerTab.GetCustomer();
@@ -115,7 +115,6 @@ namespace LogicPOS.UI.Components.Modals
 
             query.CurrencyId = DocumentTab.GetCurrencyId();
             query.Notes = DocumentTab.TxtNotes.Text;
-            query.ExchangeRate = DocumentTab.GetExchangeRate();
             query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             query.Details = DetailsTab.GetDocumentDetails();
 

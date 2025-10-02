@@ -125,7 +125,7 @@ namespace LogicPOS.UI
         {
             if (LicensingService.Initialize() == false)
             {
-                return;
+                //return;
             }
 
             var intializeTerminalResult = TerminalService.InitializeTerminal();
@@ -138,8 +138,8 @@ namespace LogicPOS.UI
 
             if (LicensingService.Data.LicenceRegistered == false)
             {
-                RegisterModal.ShowModal();
-                return;
+                //RegisterModal.ShowModal();
+                //return;
             }
 
             LogicPOSApp app = new LogicPOSApp();

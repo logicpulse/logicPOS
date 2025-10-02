@@ -26,7 +26,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             return TxtPaymentCondition.IsValid() &&
                    TxtCurrency.IsValid() &&
-                   TxtExchangeRate.IsValid() &&
                    TxtOriginDocument.IsValid() &&
                    TxtCopyDocument.IsValid() &&
                    TxtNotes.IsValid();
@@ -39,7 +38,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             if (DocumentTypeAnalyzer.Value.IsGuide())
             {
-                TxtOriginDocument.Require(false);
+                TxtOriginDocument.Require(false,false);
                 TxtPaymentCondition.Require(false, false);
                 if (SinglePaymentMethod)
                 {
