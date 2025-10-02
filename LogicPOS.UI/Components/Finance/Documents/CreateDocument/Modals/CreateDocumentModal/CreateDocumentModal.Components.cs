@@ -41,7 +41,6 @@ namespace LogicPOS.UI.Components.Modals
 
             BtnClear.Visible = this.Navigator.CurrentTab == this.CustomerTab;
             BtnPreview.Visible = this.Navigator.CurrentTab == this.DetailsTab && this.DetailsTab.Page.Items.Count > 0;
-            BtnOk.Sensitive = AllTabsAreValid();
         }
 
     }

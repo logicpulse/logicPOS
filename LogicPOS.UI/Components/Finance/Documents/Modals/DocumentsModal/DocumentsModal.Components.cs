@@ -47,13 +47,13 @@ namespace LogicPOS.UI.Components.Modals
             bool documentIsSelected = selectedDocument != null;
 
             BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
-            BtnPayInvoice.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable;
+            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable;
             BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable;
             BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
-            BtnCloneDocument.Sensitive = documentIsSelected && selectedDocument.IsActive;
+            BtnCloneDocument.Sensitive = BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive;
             BtnEditDraft.Sensitive = documentIsSelected && selectedDocument.IsDraft;
 
             BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && _selectionMode == false;

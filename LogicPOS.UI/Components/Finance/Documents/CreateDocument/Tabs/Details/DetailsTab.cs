@@ -15,7 +15,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public DetailsPage Page { get; set; }
         public decimal TotalFinal => Page.TotalFinal;
         public decimal ServicesTotalFinal => Page.ServicesTotalFinal;
-        public event Action<DocumentDetail> DetailAdded;
 
         public DetailsTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"),

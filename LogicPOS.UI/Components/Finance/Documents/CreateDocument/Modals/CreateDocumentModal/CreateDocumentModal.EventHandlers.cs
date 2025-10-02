@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnPreview.Clicked += BtnPreview_Clicked;
             BtnClear.Clicked += BtnClear_Clicked;
             Navigator.CurrentTabChanged += t => UpdateUI();
+            DetailsTab.Page.OnTotalChanged += t => UpdateUI();
             CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
         }
 

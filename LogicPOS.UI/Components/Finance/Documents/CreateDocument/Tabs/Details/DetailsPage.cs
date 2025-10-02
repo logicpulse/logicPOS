@@ -30,6 +30,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             var result = _entities.Remove(SelectedEntity);
             SelectedEntity = null;
+            OnTotalChanged?.Invoke(TotalFinal);
             return result;
         }
 
@@ -81,7 +82,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (response == ResponseType.Ok)
             {
                 var newItem = modal.GetDetail();
-
                 _entities.Add(newItem);
             }
 
