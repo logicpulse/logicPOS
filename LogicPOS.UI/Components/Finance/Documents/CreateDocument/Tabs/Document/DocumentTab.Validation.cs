@@ -38,7 +38,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             if (DocumentTypeAnalyzer.Value.IsGuide())
             {
-                TxtOriginDocument.Require(false,false);
+                TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(false, false);
                 if (SinglePaymentMethod)
                 {
