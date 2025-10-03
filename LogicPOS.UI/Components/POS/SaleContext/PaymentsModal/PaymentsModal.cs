@@ -1,13 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
-using LogicPOS.Globalization;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
-using LogicPOS.UI.Components.Finance.Documents.Rules;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -16,11 +11,9 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Permissions;
 using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
 
 

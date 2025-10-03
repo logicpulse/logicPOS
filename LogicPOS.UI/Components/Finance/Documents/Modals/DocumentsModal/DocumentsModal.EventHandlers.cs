@@ -190,7 +190,9 @@ namespace LogicPOS.UI.Components.Modals
 
             if (response == ResponseType.Ok)
             {
+                Page.SelectedDocuments.Clear();
                 Page.Refresh();
+                UpdateModalTitle();
             }
         }
 
@@ -225,6 +227,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             UpdateModalTitle();
             UpdateNavigationButtons();
+            
         }
 
         private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
