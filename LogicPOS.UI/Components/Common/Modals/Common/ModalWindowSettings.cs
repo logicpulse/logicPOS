@@ -98,6 +98,7 @@ namespace LogicPOS.UI.Components.Modals.Common
 
             Close.ButtonPressEvent += (o, args) =>
             {
+                modal.Respond(ResponseType.Close);
                 modal.Destroy();
             };
         }

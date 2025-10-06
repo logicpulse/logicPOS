@@ -217,8 +217,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            TxtTotal.Clear();
-            TxtTotalWithTax.Clear();
+            TxtTotal.Text = 0M.ToString("0.00");
+            TxtTotalWithTax.Text = 0M.ToString("0.00"); 
         }
     }
 }

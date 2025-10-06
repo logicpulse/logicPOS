@@ -60,7 +60,8 @@ namespace LogicPOS.UI.Components.Modals
                                               includeSelectButton: false,
                                               includeKeyBoardButton: false);
 
-            TxtTotalWithTax.Entry.IsEditable = false;
+            TxtTotalWithTax.Entry.Sensitive = false;
+            TxtTotalWithTax.Text = 0M.ToString("0.00");
         }
 
         private void InitializeTxtTotal()
@@ -72,7 +73,8 @@ namespace LogicPOS.UI.Components.Modals
                                        includeSelectButton: false,
                                        includeKeyBoardButton: false);
 
-            TxtTotal.Entry.IsEditable = false;
+            TxtTotal.Entry.Sensitive = false;
+            TxtTotal.Text = 0M.ToString("0.00");
         }
 
         private void InitializeTxtDiscount()
@@ -87,7 +89,7 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
 
-            TxtDiscount.Text = "0";
+            TxtDiscount.Text = 0M.ToString("0.00");
 
             ValidatableFields.Add(TxtDiscount);
 
@@ -104,7 +106,7 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: true,
                                        regex: RegularExpressions.Money);
 
-            TxtPrice.Text = "0";
+            TxtPrice.Text = 0M.ToString("0.00");
             ValidatableFields.Add(TxtPrice);
             TxtPrice.Entry.Changed += (sender, args) => UpdateTotals();
         }
@@ -119,7 +121,7 @@ namespace LogicPOS.UI.Components.Modals
                                           includeKeyBoardButton: true,
                                           regex: RegularExpressions.PositiveQuantity);
 
-            TxtQuantity.Text = "1";
+            TxtQuantity.Text = 1M.ToString("0.00");
 
             ValidatableFields.Add(TxtQuantity);
             TxtQuantity.Entry.Changed += (sender, args) => UpdateTotals();
