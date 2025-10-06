@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -57,6 +58,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     Vat = detail.Tax.Percentage,
                     VatDesignation = detail.Tax.Designation,
                     ExemptionReason = detail.VatExemptionReason,
+                    VatExemptionReason = VatExemptionReasonsService.Reasons.Where(r => r.Acronym == detail.VatExemptionCode).FirstOrDefault(),
                     Discount = detail.Discount,
                     Notes = detail.Notes,
                 });

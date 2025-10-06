@@ -6,11 +6,13 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class CustomerTab : ModalTab
     {
+        public event Action<Api.Entities.Customer> CustomerSelected;
 
         public CustomerTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -77,6 +79,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         }
 
         public string FiscalNumber => TxtFiscalNumber.Text;
+        
         public DocumentCustomer GetDocumentCustomer()
         {
             return new DocumentCustomer
@@ -109,6 +112,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             CustomerId = customer.Id;
             ShowCustomerData(customer);
             FreezeEditableFields(customer.IsFinalConsumer);
+            CustomerSelected?.Invoke(customer);
         }
 
         private void FreezeEditableFields(bool freeze = true)

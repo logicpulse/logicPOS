@@ -9,6 +9,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -44,7 +45,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public void ImportDataFromDocument(Document document)
         {
-            var shipAddress = document.ShipToAdress;
+            var shipAddress = document.ShipToAddress;
 
             TxtAddress.Text = shipAddress.AddressDetail;
             TxtRegion.Text = shipAddress.Region;
@@ -59,6 +60,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtDeliveryId.Text = shipAddress.DeliveryID;
             TxtWarehouseId.Text = shipAddress.WarehouseID;
             TxtLocationId.Text = shipAddress.LocationID;
+        }
+
+        public void ImportCustomerShipAddress(Customer customer)
+        {
+            TxtAddress.Text = customer.Address;
+            TxtZipCode.Text = customer.ZipCode;
+            TxtCity.Text = customer.City;
+            TxtRegion.Text = customer.Locality;
+            TxtCountry.SelectedEntity = customer.Country;
+            TxtCountry.Text = customer.Country.Designation;
         }
 
         public ShipAddress GetAddress()

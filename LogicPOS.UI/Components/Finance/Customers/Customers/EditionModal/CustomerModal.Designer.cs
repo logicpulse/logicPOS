@@ -3,10 +3,12 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -28,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var customerTypes = GetCustomerTypes();
             var labelText = GeneralUtils.GetResourceByName("global_customer_types");
-            var currentCustomerType = _entity != null ? _entity.CustomerType : null;
+            var currentCustomerType = _entity != null ? _entity.CustomerType : customerTypes.First();
 
             _comboCustomerTypes = new EntityComboBox<CustomerType>(labelText,
                                                              customerTypes,
@@ -40,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var priceTypes = GetPriceTypes();
             var labelText = GeneralUtils.GetResourceByName("global_price_type");
-            var currentPriceType = _entity != null ? _entity.PriceType : null;
+            var currentPriceType = _entity != null ? _entity.PriceType : priceTypes.First();
 
             _comboPriceTypes = new EntityComboBox<PriceType>(labelText,
                                                              priceTypes,
@@ -52,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var countries = GetCountries();
             var labelText = GeneralUtils.GetResourceByName("global_country");
-            var currentCountry = _entity != null ? _entity.Country : null;
+            var currentCountry = _entity != null ? _entity.Country : CountriesService.Default;
 
             _comboCountries = new EntityComboBox<Country>(labelText,
                                                              countries,

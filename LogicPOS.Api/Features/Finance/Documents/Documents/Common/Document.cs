@@ -10,8 +10,8 @@ namespace LogicPOS.Api.Entities
         public Guid CustomerId { get; set; }
         public string Type { get; set; }
         public string Number { get; set; }
-        public ShipAddress ShipToAdress { get; set; }
-        public ShipAddress ShipFromAdress { get; set; }
+        public ShipAddress ShipToAddress { get; set; }
+        public ShipAddress ShipFromAddress { get; set; }
         public decimal Discount { get; set; }
         public DocumentCustomer Customer { get; set; }
         public List<DocumentPaymentMethod> PaymentMethods { get; set; }

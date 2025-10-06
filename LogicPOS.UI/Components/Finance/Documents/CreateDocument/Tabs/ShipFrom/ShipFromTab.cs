@@ -42,9 +42,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.Text = country.Designation;
             TxtCountry.SelectedEntity = country;
         }
+
         public void ImportDataFromDocument(Document document)
         {
-            var shipAddress = document.ShipFromAdress;
+            var shipAddress = document.ShipFromAddress;
 
             TxtAddress.Text = shipAddress.AddressDetail;
             TxtRegion.Text = shipAddress.Region;

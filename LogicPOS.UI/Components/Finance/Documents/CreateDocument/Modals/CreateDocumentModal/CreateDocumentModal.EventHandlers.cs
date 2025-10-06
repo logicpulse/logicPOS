@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
@@ -19,6 +20,7 @@ namespace LogicPOS.UI.Components.Modals
                 DetailsTab.Page.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
             }
             DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
+            CustomerTab.CustomerSelected += CustomerTab_CustomerSelected;
         }
 
         private void AddEventHandlers()
@@ -109,6 +111,18 @@ namespace LogicPOS.UI.Components.Modals
                 ?? DocumentTypesService.Default;
 
             OnDocumentTypeSelected(documentType);
+        }
+
+        private void CustomerTab_CustomerSelected(Customer customer)
+        {
+            var docTypeAnalyzer = DocumentTab.DocumentTypeAnalyzer;
+
+            if(docTypeAnalyzer == null || docTypeAnalyzer.Value.IsGuide() == false)
+            {
+                return;
+            }
+
+            ShipToTab.ImportCustomerShipAddress(customer);
         }
 
     }
