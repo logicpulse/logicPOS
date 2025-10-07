@@ -26,6 +26,8 @@ namespace LogicPOS.UI.Components.Pages
                 {
                     AddUserProfilePermission(permissionItem);
                 }
+
+                Refresh();
             }
         }
 

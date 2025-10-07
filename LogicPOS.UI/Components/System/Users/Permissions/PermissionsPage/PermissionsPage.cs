@@ -129,6 +129,7 @@ namespace LogicPOS.UI.Components.Pages
                 HandleErrorResult(addResult);
             }
         }
+        
         public override int RunModal(EntityEditionModalMode mode)
         {
             var modal = new UserProfileModal(mode, SelectedEntity);
