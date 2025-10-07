@@ -168,7 +168,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
 
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
-            var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
+            var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
             var selectCustomerModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectCustomerModal.Run();
             selectCustomerModal.Destroy();

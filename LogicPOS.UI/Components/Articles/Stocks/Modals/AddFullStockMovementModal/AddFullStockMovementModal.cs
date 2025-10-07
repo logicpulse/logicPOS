@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectSupplier_Clicked(object sender, EventArgs e)
         {
-            var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
+            var page = new CustomersPage(null, CustomersPage.SupplierSelectionOptions);
             var selectModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();

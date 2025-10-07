@@ -12,20 +12,52 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using MediatR;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class CustomersPage : Page<Customer>
     {
+        private const string ProvidersOnlyOption = "providers-only";
+        private const string CustomersOnlyOption = "customers-only";
+        public static readonly Dictionary<string, string> SupplierSelectionOptions = new Dictionary<string, string> { { "selection-page", "true" }, { ProvidersOnlyOption, "true" } };
+        public static readonly Dictionary<string, string> CustomerSelectionOptions = new Dictionary<string, string> { { "selection-page", "true" }, { CustomersOnlyOption, "true" } };
+
         protected override IRequest<ErrorOr<IEnumerable<Customer>>> GetAllQuery => new GetAllCustomersQuery();
 
         public CustomersPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
         }
 
+        protected override void LoadEntities()
+        {
+            var getEntitiesResult = _mediator.Send(GetAllQuery).Result;
+
+            if (getEntitiesResult.IsError)
+            {
+                HandleErrorResult(getEntitiesResult);
+                return;
+            }
+
+            _entities.Clear();
+
+            var customers = getEntitiesResult.Value;
+
+            if (Options != null && Options.ContainsKey(ProvidersOnlyOption))
+            {
+                customers = customers.Where(c => c.Supplier);
+            }
+            else if (Options != null && Options.ContainsKey(CustomersOnlyOption))
+            {
+                customers = customers.Where(c => c.Supplier == false);
+            }
+
+            _entities.AddRange(customers);
+        }
+
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if(mode == EntityEditionModalMode.Update && SelectedEntity.Id == CustomersService.Default.Id)
+            if (mode == EntityEditionModalMode.Update && SelectedEntity.Id == CustomersService.Default.Id)
             {
                 mode = EntityEditionModalMode.View;
             }
@@ -73,7 +105,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override DeleteCommand GetDeleteCommand()
         {
-            var result= new DeleteCustomerCommand(SelectedEntity.Id);
+            var result = new DeleteCustomerCommand(SelectedEntity.Id);
             return result;
         }
 

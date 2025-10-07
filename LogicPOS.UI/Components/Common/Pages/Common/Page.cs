@@ -190,6 +190,7 @@ namespace LogicPOS.UI.Components.Pages
                 return leftEntity.Designation.CompareTo(rightEntity.Designation);
             });
         }
+       
         protected void AddCodeSorting(int sortColumnId)
         {
             GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
@@ -205,6 +206,7 @@ namespace LogicPOS.UI.Components.Pages
                 return leftEntity.Code.CompareTo(rightEnity.Code);
             });
         }
+        
         protected void AddUpdatedAtSorting(int sortColumnId)
         {
             GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
