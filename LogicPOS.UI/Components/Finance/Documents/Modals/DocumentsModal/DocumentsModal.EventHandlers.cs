@@ -95,12 +95,12 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void OnResponse(ResponseType response)
         {
-            if (_selectionMode && response != ResponseType.Ok)
+            if (_mode == Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection && response != ResponseType.Ok)
             {
                 Page.SelectedEntity = null;
             }
 
-            if (response != ResponseType.Close && _selectionMode == false)
+            if (response != ResponseType.Close && IsNotSelectionMode)
             {
                 Run();
             }

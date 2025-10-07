@@ -102,7 +102,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void TxtSaleDocument_SelectEntityClicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(this, selectionMode: true);
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
             ResponseType response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)

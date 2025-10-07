@@ -15,10 +15,14 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage : Page<DocumentViewModel>
     {
+        private const string UnpaidInvoicesOption = "unpaid-invoices-only";
+        public static readonly Dictionary<string, string> UpaidInvoicesOptions = new Dictionary<string, string> { { "selection-page", "true" }, { UnpaidInvoicesOption, "true" } };
         public DocumentsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             AddEventHandlers();
         }
+
+        private bool IsUnpaidInvoicesMode() => Options != null && Options.ContainsKey(UnpaidInvoicesOption);
 
         public void MoveToNextPage()
         {
@@ -42,6 +46,12 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void LoadEntities()
         {
+            if (IsUnpaidInvoicesMode())
+            {
+                CurrentQuery.PaymentStatus = DocumentPaymentStatusFilter.Unpaid;
+                CurrentQuery.Types = new string[] { "FT" };
+            }
+
             var getDocumentsResult = _mediator.Send(CurrentQuery).Result;
 
             if (getDocumentsResult.IsError)

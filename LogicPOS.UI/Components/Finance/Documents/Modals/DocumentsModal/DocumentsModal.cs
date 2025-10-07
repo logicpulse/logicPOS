@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Documents.Modals.DocumentsModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -21,17 +22,19 @@ namespace LogicPOS.UI.Components.Modals
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
         public DocumentsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
-        private bool _selectionMode;
+        private DocumentsModalMode _mode;
 
-        public DocumentsModal(Window parent,
-                              bool selectionMode = false) : base(parent,
+        public DocumentsModal(Window parent, DocumentsModalMode mode) : base(parent,
                                                     GeneralUtils.GetResourceByName("window_title_select_finance_document"),
                                                     AppSettings.MaxWindowSize,
-                                                    $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}")
+                                                    $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
+                                                    render: false)
         {
-            _selectionMode = selectionMode;
+            _mode = mode;
 
-            if (selectionMode)
+            Render();
+
+            if (_mode == DocumentsModalMode.Selection )
             {
                 UseSelectionMode();
             }
@@ -135,4 +138,5 @@ namespace LogicPOS.UI.Components.Modals
 
         }
     }
+
 }

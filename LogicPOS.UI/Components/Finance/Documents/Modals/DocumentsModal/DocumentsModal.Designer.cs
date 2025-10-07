@@ -78,7 +78,14 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
+            var pageOptions = PageOptions.SelectionPageOptions;
+           
+            if(_mode == Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices)
+            {
+                pageOptions = DocumentsPage.UpaidInvoicesOptions;
+            }
+
+            var page = new DocumentsPage(this, pageOptions);
             page.SetSizeRequest(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
             Fixed fixedContent = new Fixed();
             fixedContent.Put(page, 0, 0);

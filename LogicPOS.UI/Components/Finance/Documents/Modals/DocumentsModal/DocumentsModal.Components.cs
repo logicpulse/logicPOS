@@ -54,13 +54,14 @@ namespace LogicPOS.UI.Components.Modals
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
             BtnEditDraft.Sensitive = documentIsSelected && selectedDocument.IsDraft;
 
-            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && _selectionMode == false;
-            BtnCloneDocument.Sensitive = BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && _selectionMode == false;
-            BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && _selectionMode == false;
-            BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && _selectionMode == false;
-            BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && _selectionMode == false;
+            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsNotSelectionMode;
+            BtnCloneDocument.Sensitive = BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && IsNotSelectionMode;
+            BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && IsNotSelectionMode;
+            BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
+            BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
         }
 
+        private bool IsNotSelectionMode => _mode != Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection;
 
     }
 }

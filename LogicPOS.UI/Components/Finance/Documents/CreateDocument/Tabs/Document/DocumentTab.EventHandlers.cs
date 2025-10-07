@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(SourceWindow, selectionMode: true);
+            var modal = new DocumentsModal(SourceWindow, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
             ResponseType response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
@@ -79,7 +79,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(SourceWindow, selectionMode: true);
+            var modal = new DocumentsModal(SourceWindow, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
             ResponseType response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)

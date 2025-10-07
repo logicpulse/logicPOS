@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(BackOfficeWindow.Instance);
+            var modal = new DocumentsModal(BackOfficeWindow.Instance, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Default);
             modal.Run();
             modal.Destroy();
         }

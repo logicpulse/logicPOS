@@ -41,12 +41,13 @@ namespace LogicPOS.UI.Components.Modals
         private void AddEventHandlers()
         {
             BtnDocuments.Clicked += BtnDocuments_Clicked;
-            BtnReceiptsEmission.Clicked += BtnDocuments_Clicked;
+            BtnReceiptsEmission.Clicked += BtnReceiptsEmission_Clicked;
             BtnCurrentAccount.Clicked += BtnCurrentAccount_Clicked;
             BtnReceipts.Clicked += BtnReceipts_Clicked;
             BtnWorkSessionPeriods.Clicked += BtnWorkSessionPeriods_Clicked;
             BtnAddStock.Clicked += BtnAddStock_Clicked;
         }
 
+      
     }
 }

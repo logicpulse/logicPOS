@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(this);
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Default);
             modal.Run();
             modal.Destroy();
         }

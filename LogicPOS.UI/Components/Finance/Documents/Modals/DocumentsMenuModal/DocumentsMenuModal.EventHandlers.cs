@@ -28,7 +28,14 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(WindowSettings.Source);
+            var modal = new DocumentsModal(WindowSettings.Source, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Default);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void BtnReceiptsEmission_Clicked(object sender, System.EventArgs e)
+        {
+            var modal = new DocumentsModal(WindowSettings.Source, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices);
             modal.Run();
             modal.Destroy();
         }
