@@ -84,7 +84,7 @@ namespace LogicPOS.UI.Components.InputFields
                 return false;
             }
 
-            return Regex.IsMatch(txt.Text, RegularExpressions.Money);
+            return Regex.IsMatch(txt.Text, RegularExpressions.NullableMoney);
         }
 
         public bool IsValid()
