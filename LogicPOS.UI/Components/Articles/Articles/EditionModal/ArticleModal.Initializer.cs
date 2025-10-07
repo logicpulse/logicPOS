@@ -168,10 +168,12 @@ namespace LogicPOS.UI.Components.Modals
             var classes = GetClasses();
             var labelText = GeneralUtils.GetResourceByName("global_article_class");
             var currentClass = _entity != null ? classes.FirstOrDefault(c => c.Id == _entity.ClassId) : null;
+           
             if (_modalMode == EntityEditionModalMode.Insert && classes.Any())
             {
-                currentClass = classes.First();
+                currentClass = classes.FirstOrDefault(c => c.Acronym == "P");
             }
+
             _comboClasses = new EntityComboBox<ArticleClass>(labelText,
                                                              classes,
                                                              currentClass,
