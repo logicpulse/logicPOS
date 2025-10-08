@@ -61,17 +61,6 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        protected void Validate()
-        {
-            if (AllFieldsAreValid())
-            {
-                return;
-            }
-
-            ShowValidationErrors();
-
-            this.Run();
-        }
 
         protected bool AllFieldsAreValid()
         {
@@ -202,18 +191,26 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (AllFieldsAreValid() == false)
             {
-                Validate();
+                ShowValidationErrors();
+                this.Run();
                 return;
             }
+
+            bool result = false;
 
             switch (_modalMode)
             {
                 case EntityEditionModalMode.Insert:
-                    AddEntity();
+                    result = AddEntity();
                     break;
                 case EntityEditionModalMode.Update:
-                    UpdateEntity();
+                    result = UpdateEntity();
                     break;
+            }
+
+            if (result == false)
+            {
+                this.Run();
             }
         }
 
@@ -318,8 +315,8 @@ namespace LogicPOS.UI.Components.Modals
             return result.Value;
         }
 
-        protected abstract void UpdateEntity();
-        protected abstract void AddEntity();
+        protected abstract bool UpdateEntity();
+        protected abstract bool AddEntity();
         protected abstract void AddSensitiveFields();
         protected abstract void AddValidatableFields();
         protected abstract IEnumerable<(VBox Page, string Title)> CreateTabs();

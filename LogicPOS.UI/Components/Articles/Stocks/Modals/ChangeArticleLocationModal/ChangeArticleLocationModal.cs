@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        protected override void AddEntity() { }
+        protected override bool AddEntity() => true;
 
         protected override void ShowEntityData()
         {
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtQuantity.Text = _entity.Quantity.ToString();
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var command = new ChangeArticleLocationCommand()
             {
@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
                 LocationId = _locationField.LocationField.SelectedEntity.Id
             };
 
-            ExecuteUpdateCommand(command);
+           return ExecuteUpdateCommand(command).IsError == false;
         }
     }
 }

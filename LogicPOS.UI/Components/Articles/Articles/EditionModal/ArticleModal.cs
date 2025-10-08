@@ -18,6 +18,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
+using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,14 +177,19 @@ namespace LogicPOS.UI.Components.Modals
             return updateCommand;
         }
 
-        protected override void AddEntity()
+        protected override bool AddEntity()
         {
             var result = ExecuteAddCommand(CreateAddCommand());
             ArticlesService.RefreshArticlesCache();
 
-            if (result.IsError || _checkIsComposed.Active == false)
+            if( result.IsError)
             {
-                return;
+                return false;
+            }
+
+            if (_checkIsComposed.Active == false)
+            {
+                return true;
             }
 
             var addChildrenCommand = new AddArticleChildrenCommand
@@ -193,6 +199,8 @@ namespace LogicPOS.UI.Components.Modals
             };
 
             ExecuteAddCommand(addChildrenCommand);
+
+            return true;
         }
 
         protected override void ShowEntityData()
@@ -257,13 +265,13 @@ namespace LogicPOS.UI.Components.Modals
             _comboVatExemptionReasons.UpdateValidationColors();
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var result = ExecuteUpdateCommand(CreateUpdateCommand());
 
             if (result.IsError)
             {
-                return;
+                return false;
             }
 
             UpdateImageInCache();
@@ -276,7 +284,9 @@ namespace LogicPOS.UI.Components.Modals
                 };
 
                 ExecuteUpdateCommand(updateChildrenCommand);
-            }   
+            } 
+            
+            return true;
         }
 
         private void UpdateImageInCache()

@@ -38,8 +38,8 @@ namespace LogicPOS.UI.Components.Modals
         private readonly CheckButton _checkPriceWithVat = new CheckButton(GeneralUtils.GetResourceByName("global_price_with_vat"));
         private readonly CheckButton _checkPVPVariable = new CheckButton(GeneralUtils.GetResourceByName("global_variable_price"));
         private readonly TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
-        private readonly TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber);
-        private readonly TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber);
+        private readonly TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber).WithText("1");
+        private readonly TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber).WithText("1");
         private readonly TextBox _txtTare = TextBox.Simple("global_tare", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private readonly TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private readonly TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);

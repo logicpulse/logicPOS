@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
         private UpdateTableCommand CreateUpdateCommand()
         {
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
     }
 }

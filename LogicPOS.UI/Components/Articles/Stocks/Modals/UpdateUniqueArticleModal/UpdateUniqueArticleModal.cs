@@ -114,7 +114,7 @@ namespace LogicPOS.UI.Components.Modals
             modal.Destroy();
         }
 
-        protected override void AddEntity() { }
+        protected override bool AddEntity() => true;
 
         protected override void ShowEntityData()
         {
@@ -131,9 +131,9 @@ namespace LogicPOS.UI.Components.Modals
             SerialNumberField.LoadUniqueArticleChildren(_entity.Id);
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
-            ExecuteUpdateCommand(CreateUpdateCommand());
+           return ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
         }
 
         private UpdateUniqueArticleCommand CreateUpdateCommand()

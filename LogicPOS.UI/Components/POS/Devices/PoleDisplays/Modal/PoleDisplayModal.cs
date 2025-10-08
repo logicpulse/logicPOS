@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(UpdatePoleDisplayCommand());
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(UpdatePoleDisplayCommand()).IsError == false;
 
         private AddPoleDisplayCommand CreateAddCommand()
         {
@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
     }
 }

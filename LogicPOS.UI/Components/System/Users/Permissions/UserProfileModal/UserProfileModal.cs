@@ -42,8 +42,8 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
             _checkDisabled.Active = _entity.IsDeleted;
         }
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
     }
 }

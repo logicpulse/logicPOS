@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        protected override void AddEntity()=>ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
 
         private AddWarehouseCommand CreateAddCommand()
@@ -50,25 +50,27 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var result = _mediator.Send(CreateUpdateCommand()).Result;
 
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-                return;
+                return false;
             }
 
-            if(_locationFields.Any(x => x.Location == null))
+            if (_locationFields.Any(x => x.Location == null))
             {
                 AddNewLocations();
             }
 
-            if(_locationFields.Any(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text))
+            if (_locationFields.Any(x => x.Location != null && x.Location.Designation != x.TxtLocation.Text))
             {
                 UpdateLocations();
             }
+
+            return true;
         }
 
         private void UpdateLocations()

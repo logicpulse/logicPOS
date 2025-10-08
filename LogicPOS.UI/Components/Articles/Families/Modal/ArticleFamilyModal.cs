@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
         protected override void ShowEntityData()
         {
@@ -86,14 +86,15 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var result = ExecuteUpdateCommand(CreateUpdateCommand());
             if (result.IsError)
             {
-                return;
+                return false;
             }
             UpdateImageInCache();
+            return true;
         }
 
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());

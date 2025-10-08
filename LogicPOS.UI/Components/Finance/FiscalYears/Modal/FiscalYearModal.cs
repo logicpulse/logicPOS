@@ -64,18 +64,20 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void AddEntity()
+        protected override bool AddEntity()
         {
             var result = _mediator.Send(CreateAddCommand()).Result;
 
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-                return;
+                return false;
             }
+
+            return true;
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
     }
 }

@@ -26,8 +26,8 @@ namespace LogicPOS.UI.Components.Modals
         }
 
 
-        protected override void AddEntity() => throw new NotImplementedException();
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool AddEntity() => throw new NotImplementedException();
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
         protected override void ShowEntityData()
         {

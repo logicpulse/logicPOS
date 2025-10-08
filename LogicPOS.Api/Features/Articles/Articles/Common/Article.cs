@@ -13,6 +13,7 @@ namespace LogicPOS.Api.Entities
 
         #region  Dependencies
         public Guid ClassId { get; set; }
+        public ArticleClass Class { get; set; }
         public ArticleSubfamily Subfamily { get; set; }
         public Guid SubfamilyId { get; set; }
         public ArticleType Type { get; set; }

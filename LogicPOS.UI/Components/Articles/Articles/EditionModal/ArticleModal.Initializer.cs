@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var families = GetFamilies();
             var labelText = GeneralUtils.GetResourceByName("global_families");
-            var currentFamily = _entity != null ? _entity.Subfamily.Family : null;
+            var currentFamily = _entity != null ? _entity.Subfamily.Family : families.FirstOrDefault(f => f.Code == "10");
 
             _comboFamilies = new EntityComboBox<ArticleFamily>(labelText,
                                                                families,
@@ -99,14 +99,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeSubfamiliesComboBox()
         {
-            var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
-            var currentSubfamily = _entity != null ? _entity.Subfamily : null;
-            var subfamilies = Enumerable.Empty<ArticleSubfamily>();
+            var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity.Id);
 
-            if (_entity != null)
-            {
-                subfamilies = GetSubfamilies(currentSubfamily.FamilyId);
-            }
+            var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
+            var currentSubfamily = _entity != null ? _entity.Subfamily : subfamilies.FirstOrDefault(s => s.Code == "10");
 
             _comboSubfamilies = new EntityComboBox<ArticleSubfamily>(labelText,
                                                                      subfamilies,
@@ -129,7 +125,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var vatRates = GetVatRates();
             var labelText = GeneralUtils.GetResourceByName("global_vat_direct_selling");
-            var currentVatRate = _entity != null ? _entity.VatDirectSelling : null;
+            var currentVatRate = _entity != null ? _entity.VatDirectSelling : vatRates.FirstOrDefault(v => v.Code == "10");
 
             _comboVatDirectSelling = new EntityComboBox<VatRate>(labelText,
                                                                  vatRates,
@@ -155,7 +151,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var types = GetTypes();
             var labelText = GeneralUtils.GetResourceByName("global_article_type");
-            var currentType = _entity != null ? _entity.Type : null;
+            var currentType = _entity != null ? _entity.Type : types.FirstOrDefault(t => t.Code == "10");
 
             _comboTypes = new EntityComboBox<ArticleType>(labelText,
                                                            types,
@@ -167,12 +163,8 @@ namespace LogicPOS.UI.Components.Modals
         {
             var classes = GetClasses();
             var labelText = GeneralUtils.GetResourceByName("global_article_class");
-            var currentClass = _entity != null ? classes.FirstOrDefault(c => c.Id == _entity.ClassId) : null;
-           
-            if (_modalMode == EntityEditionModalMode.Insert && classes.Any())
-            {
-                currentClass = classes.FirstOrDefault(c => c.Acronym == "P");
-            }
+            var currentClass = _entity != null ? _entity.Class : classes.FirstOrDefault(c => c.Code == "10");
+
 
             _comboClasses = new EntityComboBox<ArticleClass>(labelText,
                                                              classes,
@@ -184,11 +176,8 @@ namespace LogicPOS.UI.Components.Modals
         {
             var units = GetMeasurementUnits();
             var labelText = GeneralUtils.GetResourceByName("global_unit_measure");
-            var currentUnit = _entity != null ? _entity.MeasurementUnit : null;
-            if (_modalMode == EntityEditionModalMode.Insert && units.Any())
-            {
-                currentUnit = units.First();
-            }
+            var currentUnit = _entity != null ? _entity.MeasurementUnit : units.FirstOrDefault(u => u.Code == "10");
+
 
             _comboMeasurementUnits = new EntityComboBox<MeasurementUnit>(labelText,
                                                                           units,
@@ -200,7 +189,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var units = GetSizeUnits();
             var labelText = GeneralUtils.GetResourceByName("global_unit_size");
-            var currentUnit = _entity != null ? _entity.SizeUnit : null;
+            var currentUnit = _entity != null ? _entity.SizeUnit : units.FirstOrDefault(u => u.Code == "10");
 
             _comboSizeUnits = new EntityComboBox<SizeUnit>(labelText,
                                                            units,

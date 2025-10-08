@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
  
         protected override void ShowEntityData()
         {
@@ -60,7 +60,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text= _entity.Notes;
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
     }
 }

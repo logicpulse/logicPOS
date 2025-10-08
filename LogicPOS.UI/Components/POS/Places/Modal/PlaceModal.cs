@@ -43,13 +43,16 @@ namespace LogicPOS.UI.Components.Modals
             _imagePicker.SetImage(imagePath);
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var result = ExecuteUpdateCommand(CreateUpdateCommand());
             if(result.IsError == false)
             {
                 DeleteImageInCache();
+                return true;
             }
+
+            return false;
         }
 
         private void DeleteImageInCache()
@@ -88,7 +91,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
     }
 }

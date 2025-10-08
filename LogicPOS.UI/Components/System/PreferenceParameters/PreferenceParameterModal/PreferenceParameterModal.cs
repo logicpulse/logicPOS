@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtToken.Entry.Sensitive = false;
         }
 
-        protected override void AddEntity() => throw new InvalidOperationException();
+        protected override bool AddEntity() => throw new InvalidOperationException();
 
         protected override void ShowEntityData()
         {
@@ -24,9 +24,9 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
-            ExecuteUpdateCommand(CreateUpdateCommand());
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
 
             if(_entity.Token == "CULTURE")
             {
@@ -34,6 +34,8 @@ namespace LogicPOS.UI.Components.Modals
                     .WithMessageResource("dialog_message_culture_change")
                     .ShowAlert();
             }
+
+            return result.IsError == false;
         }
         public string LogoGetBase64Image()
         {

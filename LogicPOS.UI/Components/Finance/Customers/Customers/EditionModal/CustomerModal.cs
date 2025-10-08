@@ -98,7 +98,7 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        protected override void UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand());
+        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
         private AddCustomerCommand CreateAddCommand()
         {
@@ -127,7 +127,7 @@ namespace LogicPOS.UI.Components.Modals
             return customer;
         }
 
-        protected override void AddEntity() => ExecuteAddCommand(CreateAddCommand());
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
         private IEnumerable<Country> GetCountries()
         {

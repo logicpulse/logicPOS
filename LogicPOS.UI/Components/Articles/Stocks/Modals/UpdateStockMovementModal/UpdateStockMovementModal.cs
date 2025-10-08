@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        protected override void AddEntity() => throw new System.NotImplementedException();
+        protected override bool AddEntity() => throw new System.NotImplementedException();
         
         protected override void ShowEntityData()
         {
@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private Guid? GetSupplierId() => (TxtSupplier.SelectedEntity == null) ? (Guid?)null : (TxtSupplier.SelectedEntity as ApiEntity).Id;
 
-        protected override void UpdateEntity()
+        protected override bool UpdateEntity()
         {
             var command = new UpdateStockMovementCommand
             {
@@ -50,7 +50,10 @@ namespace LogicPOS.UI.Components.Modals
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
+                return false;
             }
+
+            return true;
         }
         
         private void TxtDate_SelectEntityClicked(object sender, EventArgs e)
