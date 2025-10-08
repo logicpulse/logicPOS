@@ -52,10 +52,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void LoadCurrentArticlesStocks()
         {
-            ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id)).ForEach(ts =>
+            if (Articles.Items.Count() > 0)
             {
-                _articleStocks[ts.ArticleId] =  ts.Quantity; 
-            });
+                ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id)).ForEach(ts =>
+                {
+                    _articleStocks[ts.ArticleId] = ts.Quantity;
+                });
+            }
         }
 
         public Article GetSelectedArticle()
