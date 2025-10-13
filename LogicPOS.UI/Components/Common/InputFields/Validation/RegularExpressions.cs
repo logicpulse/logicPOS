@@ -6,7 +6,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
     public class RegularExpressions
     {
         private static string DecimalSeparator => CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-        public static string Money => $@"^(0|[1-9]\d*)({DecimalSeparator}\d{{1,2}})?$";
+        public static string Money => $@"^(?!(0|0{DecimalSeparator}0+)$)\d+({DecimalSeparator}\d{{1,2}})?$";
         public static string NullableMoney => $@"^\d+({DecimalSeparator}\d{{1,2}})?$";
         public static string DecimalNumber => $@"^\d+(\{DecimalSeparator}\d+)?$";
         public static string Quantity => $@"^(?!-?0({DecimalSeparator}0{{1,}})?$)-?\d+({DecimalSeparator}\d+)?$";
