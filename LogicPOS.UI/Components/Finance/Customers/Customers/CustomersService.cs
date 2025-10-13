@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
@@ -28,6 +29,7 @@ namespace LogicPOS.UI.Components.Finance.Customers
         {
             _customers = GetAllCustomers();
         }
+        
         public static Customer Default
         {
             get
@@ -57,6 +59,19 @@ namespace LogicPOS.UI.Components.Finance.Customers
         public static Customer GetCustomer(Guid id)
         {
             return GetAllCustomers().Where(C => C.Id == id).FirstOrDefault();
+        }
+
+        public static Contributor GetAgtContributorInfo(string nif)
+        {
+            var contributor = DependencyInjection.Mediator.Send(new GetContributorByNifQuery(nif)).Result;
+
+            if (contributor.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(contributor);
+                return null;
+            }
+
+            return contributor.Value;
         }
     }
 }

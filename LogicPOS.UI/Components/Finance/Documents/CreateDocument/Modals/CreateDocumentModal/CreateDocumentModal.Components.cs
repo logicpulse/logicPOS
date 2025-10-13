@@ -35,11 +35,18 @@ namespace LogicPOS.UI.Components.Modals
         private ModalTabsNavigator Navigator { get; set; }
         public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
 
+
+        IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
+                                                                                                      "Agt. Preench.",
+                                                                                                      AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_show_change_user_dialog.png");
+
+
         public void UpdateUI()
         {
             UpdateTitle();
 
             BtnClear.Visible = this.Navigator.CurrentTab == this.CustomerTab;
+            BtnFillCustomerData.Visible = this.Navigator.CurrentTab == this.CustomerTab;
             BtnPreview.Visible = this.Navigator.CurrentTab == this.DetailsTab && this.DetailsTab.Page.Items.Count > 0;
         }
 

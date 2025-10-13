@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void Design()
         {
             var verticalLayout = new VBox(false, 2);
+
             verticalLayout.PackStart(TxtCustomer.Component, false, false, 0);
 
             verticalLayout.PackStart(TextBox.CreateHbox(TxtFiscalNumber,

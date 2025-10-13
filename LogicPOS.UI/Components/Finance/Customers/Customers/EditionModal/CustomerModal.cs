@@ -5,8 +5,12 @@ using LogicPOS.Api.Features.Customers.AddCustomer;
 using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +25,46 @@ namespace LogicPOS.UI.Components.Modals
             {
                 DisableFiscalInformationsEdition();
             }
-  
+
+            BtnFillCustomerData.Visible = false;
+        }
+
+        private void AddFillCustomerDataBtn()
+        {
+            BtnFillCustomerData.Clicked += BtnFillCustomerData_Clicked;
+            this.AddActionWidget(BtnFillCustomerData, Gtk.ResponseType.None);
+            _txtFiscalNumber.Entry.Changed += Entry_Changed;
+        }
+
+        private void Entry_Changed(object sender, EventArgs e)
+        {
+            BtnFillCustomerData.Visible = _txtFiscalNumber.IsValid();
+        }
+
+        private void BtnFillCustomerData_Clicked(object sender, EventArgs e)
+        {
+            if(_txtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(_txtFiscalNumber.Text))
+            {
+                return;
+            }
+
+            var contributor = CustomersService.GetAgtContributorInfo(_txtFiscalNumber.Text);
+
+            if (contributor == null)
+            {
+                CustomAlerts.Warning(this).WithMessage("Não foi possível retornar os dados online do contribuinte.").ShowAlert();
+                return;
+            }
+
+            _txtName.Text = contributor.GetCustomerName() ?? "";
+            _txtLocality.Text = contributor.GetLocality() ?? "";
+            _txtAddress.Text = contributor.GetAddress() ?? "";
+            _txtCity.Text = contributor.GetCity() ?? "";
+            _txtPhone.Text = _txtMobile.Text = contributor.Phone ?? "";
+            _txtEmail.Text = contributor.Email ?? "";
+            _txtPostalCode.Text = contributor.PostalCode ?? "";
+
+            Run();
         }
 
         private void DisableFiscalInformationsEdition()

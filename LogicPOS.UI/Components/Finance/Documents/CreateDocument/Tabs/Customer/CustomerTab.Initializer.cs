@@ -2,6 +2,7 @@
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Linq;
 
@@ -41,6 +42,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.Entry.IsEditable = false;
 
             TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
+            SelectDefaultCountry();
+        }
+
+        private void SelectDefaultCountry()
+        {
+            TxtCountry.SelectedEntity = CountriesService.Default;
+            TxtCountry.Text = CountriesService.Default.Designation;
         }
 
         private void InitializeTxtCity()

@@ -2,6 +2,8 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -142,9 +144,39 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtZipCode.Clear();
             TxtCity.Clear();
             TxtCountry.Clear();
+            SelectDefaultCountry();
             TxtPhone.Clear();
             TxtEmail.Clear();
             TxtNotes.Clear();
+        }
+
+        public void FillWithAgtInfo()
+        {
+            if (TxtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                CustomAlerts.Warning(this.SourceWindow).WithMessage("Informe o NIF").ShowAlert();
+                return;
+            }
+
+            var contributor = CustomersService.GetAgtContributorInfo(TxtFiscalNumber.Text);
+
+            if (contributor == null)
+            {
+                CustomAlerts.Warning(this.SourceWindow).WithMessage("Não foi possível retornar os dados online do contribuinte.").ShowAlert();
+                return;
+            }
+
+            Clear();
+
+             TxtCustomer.Text = contributor.GetCustomerName() ?? "";
+             TxtCustomer.SelectedEntity = null;
+
+             TxtLocality.Text = contributor.GetLocality() ?? "";
+             TxtAddress.Text = contributor.GetAddress() ?? "";
+             TxtCity.Text = contributor.GetCity() ?? "";
+             TxtPhone.Text = contributor.Phone ?? "";
+             TxtEmail.Text = contributor.Email ?? "";
+             TxtZipCode.Text = contributor.PostalCode ?? "";
         }
     }
 }

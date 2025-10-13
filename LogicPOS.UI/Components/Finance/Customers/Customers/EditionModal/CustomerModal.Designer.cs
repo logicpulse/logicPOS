@@ -24,6 +24,11 @@ namespace LogicPOS.UI.Components.Modals
             InitializeCustomerTypesComboBox();
             _txtCardCredit.Text = "0";
             _txtCardCredit.Component.Sensitive = false;
+
+            if(_modalMode == EntityEditionModalMode.Insert && CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                AddFillCustomerDataBtn();
+            }
         }
 
         private void InitializeCustomerTypesComboBox()

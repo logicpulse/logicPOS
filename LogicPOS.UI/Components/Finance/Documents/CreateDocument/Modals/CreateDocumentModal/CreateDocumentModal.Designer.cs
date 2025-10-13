@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
@@ -16,13 +17,17 @@ namespace LogicPOS.UI.Components.Modals
     {
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
             {
-                new ActionAreaButton(BtnClear,  ResponseType.None),
-                new ActionAreaButton(BtnPreview, ResponseType.None),
-                new ActionAreaButton(BtnOk, ResponseType.Ok),
-                new ActionAreaButton(BtnCancel, ResponseType.Cancel)
-            };
+                actionAreaButtons.Add(new ActionAreaButton(BtnFillCustomerData, ResponseType.None));
+            }
+
+            actionAreaButtons.Add(new ActionAreaButton(BtnClear, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnPreview, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancel, ResponseType.Cancel));
 
             return actionAreaButtons;
         }

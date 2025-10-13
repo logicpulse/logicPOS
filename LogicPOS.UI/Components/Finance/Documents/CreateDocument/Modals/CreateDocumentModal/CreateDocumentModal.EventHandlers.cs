@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using System;
+using System.EnterpriseServices;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
@@ -28,9 +29,16 @@ namespace LogicPOS.UI.Components.Modals
             BtnOk.Clicked += BtnOk_Clicked;
             BtnPreview.Clicked += BtnPreview_Clicked;
             BtnClear.Clicked += BtnClear_Clicked;
+            BtnFillCustomerData.Clicked += BtnFillCustomerData_Clicked;
             Navigator.CurrentTabChanged += t => UpdateUI();
             DetailsTab.Page.OnTotalChanged += t => UpdateUI();
             CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
+        }
+
+        private void BtnFillCustomerData_Clicked(object sender, EventArgs e)
+        {
+            CustomerTab.FillWithAgtInfo();
+            Run();
         }
 
         private void CheckIsDraft_StateChanged(object o, Gtk.StateChangedArgs args)
