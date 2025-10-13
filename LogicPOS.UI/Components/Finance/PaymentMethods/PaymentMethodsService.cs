@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -33,6 +34,11 @@ namespace LogicPOS.UI.Components.Finance.PaymentMethods
             }
 
             return paymentMethods.Value.ToList();
+        }
+        
+        public static PaymentMethod GetPaymentMethodById(Guid id)
+        {
+            return PaymentMethods.FirstOrDefault(pm => pm.Id == id);
         }
     }
 }

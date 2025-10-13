@@ -1,8 +1,10 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.CreateDocument.Fields;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -36,6 +38,17 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public override bool IsValid()
         {
             return PaymentMethodsBox.Fields.All(x => x.IsValid());
+        }
+
+        public void ImportDataFromDocument(Document document)
+        {
+            PaymentMethodsBox.Clear();
+
+            foreach (var payment in document.PaymentMethods)
+            {
+                
+                PaymentMethodsBox.AddPaymentMethod(payment.PaymentMethod.Id, payment.Amount);
+            }
         }
     }
 }

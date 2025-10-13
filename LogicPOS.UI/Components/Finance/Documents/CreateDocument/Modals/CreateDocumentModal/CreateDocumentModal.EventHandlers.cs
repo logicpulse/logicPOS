@@ -107,6 +107,11 @@ namespace LogicPOS.UI.Components.Modals
                 ShipToTab.ImportDataFromDocument(document);
             }
 
+            if(document.PaymentMethods != null && document.PaymentMethods.Any() && SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab.ImportDataFromDocument(document);
+            }
+
             var documentType = DocumentTypesService.DocumentTypes.Where(docType => docType.Acronym == document.Type).FirstOrDefault()
                 ?? DocumentTypesService.Default;
 

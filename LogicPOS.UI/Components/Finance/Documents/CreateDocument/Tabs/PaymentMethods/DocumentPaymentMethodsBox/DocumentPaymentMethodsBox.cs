@@ -1,9 +1,13 @@
 ﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.Documents.AddDocument;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using DocumentPaymentMethod = LogicPOS.Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {
@@ -14,7 +18,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
             SourceWindow = sourceWindow;
             LabelTotal = CreateLabel("Total:");
             Component = CreateScrolledWindow();
-            AddDocumentPaymentMethodField();
+            AddPaymentMethod();
         }
 
         private void UpdateTotalLabel()
@@ -39,21 +43,43 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
             UpdateTotalLabel();
         }
 
-        private void AddDocumentPaymentMethodField()
+        public void AddPaymentMethod(Guid? id = null, decimal? amount = null)
         {
             if (Fields.Any() && Fields.Last().TxtPaymentMethod.SelectedEntity == null)
             {
                 return;
             }
 
+            PaymentMethod paymentMethod = null;
+
+            if (id != null)
+            {
+                paymentMethod = PaymentMethodsService.GetPaymentMethodById(id.Value);
+            }
+
             var field = new DocumentPaymentMethodField(SourceWindow);
+            field.TxtAmount.Text = amount?.ToString("0.00") ?? "0.00";
             field.TxtAmount.Entry.Changed += (sender, e) => UpdateTotalLabel();
             field.TxtPaymentMethod.Entry.Changed += (sender, e) => UpdateTotalLabel();
+            field.TxtPaymentMethod.Text = paymentMethod?.Designation;
+            field.TxtPaymentMethod.SelectedEntity = paymentMethod;
             field.OnRemove += BtnRemovePaymentMethod_Clicked;
-            field.OnAdd += () => AddDocumentPaymentMethodField();
+            field.OnAdd += () => AddPaymentMethod();
             Container.PackStart(field.Component, false, false, 0);
             field.Component.ShowAll();
             Fields.Add(field);
+
+            UpdateTotalLabel();
+        }
+
+        public void Clear()
+        {
+            foreach (var field in Fields)
+            {
+                Container.Remove(field.Component);
+            }
+            Fields.Clear();
+            UpdateTotalLabel();
         }
 
         public void UpdateDocumentTotal(decimal total)

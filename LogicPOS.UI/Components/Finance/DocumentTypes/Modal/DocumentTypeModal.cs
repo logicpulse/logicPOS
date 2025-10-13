@@ -10,7 +10,6 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-
         private UpdateDocumentTypeCommand CreateUpdateCommand()
         {
             return new UpdateDocumentTypeCommand
@@ -27,6 +26,7 @@ namespace LogicPOS.UI.Components.Modals
 
 
         protected override bool AddEntity() => throw new NotImplementedException();
+        
         protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
         protected override void ShowEntityData()

@@ -17,6 +17,8 @@ namespace LogicPOS.UI.Components.Pages
     {
         public ArticleClassesPage(Window parent) : base(parent)
         {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
         }
 
       

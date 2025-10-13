@@ -10,6 +10,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         public ArticleClassModal(EntityEditionModalMode modalMode, ArticleClass entity = null) : base(modalMode, entity)
         {
+            _txtAcronym.Entry.Sensitive = false;
         }
 
         private AddArticleClassCommand CreateAddCommand()

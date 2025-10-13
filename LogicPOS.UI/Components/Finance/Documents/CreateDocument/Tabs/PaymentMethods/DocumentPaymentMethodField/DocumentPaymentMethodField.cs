@@ -48,6 +48,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
                 TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void TxtPaymentMethod_Changed(object sender, EventArgs e)
         {
             
