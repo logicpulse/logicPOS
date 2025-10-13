@@ -83,13 +83,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             var families = GetFamilies();
             var labelText = GeneralUtils.GetResourceByName("global_families");
-            var currentFamily = _entity != null ? _entity.Subfamily.Family : families.FirstOrDefault(f => f.Code == "10");
+            var currentFamily = _entity != null ? _entity.Subfamily.Family : families.FirstOrDefault();
 
             _comboFamilies = new EntityComboBox<ArticleFamily>(labelText,
                                                                families,
                                                                currentFamily,
                                                                true);
-
+            _comboFamilies.SelectedEntity = currentFamily;
             _comboFamilies.ComboBox.Changed += (sender, e) =>
             {
                 _comboSubfamilies.Entities = GetSubfamilies(_comboFamilies.SelectedEntity?.Id);
@@ -99,10 +99,11 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeSubfamiliesComboBox()
         {
-            var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity.Id);
 
+            var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity.Id);
+            
             var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
-            var currentSubfamily = _entity != null ? _entity.Subfamily : subfamilies.FirstOrDefault(s => s.Code == "10");
+            var currentSubfamily = _entity != null && subfamilies!=null? _entity.Subfamily : subfamilies.FirstOrDefault();
 
             _comboSubfamilies = new EntityComboBox<ArticleSubfamily>(labelText,
                                                                      subfamilies,
