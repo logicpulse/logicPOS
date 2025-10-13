@@ -38,6 +38,12 @@ namespace LogicPOS.UI.Components.Windows
             modal.Destroy();
         }
 
+        private void BtnReceiptsEmission_Clicked(object sender, System.EventArgs e)
+        {
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices);
+            modal.Run();
+            modal.Destroy();
+        }
         private void BtnReceipts_Clicked(object sender, EventArgs e)
         {
             var modal = new ReceiptsModal(this);

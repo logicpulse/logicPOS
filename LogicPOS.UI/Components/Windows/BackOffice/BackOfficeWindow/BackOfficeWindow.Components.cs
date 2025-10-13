@@ -154,10 +154,12 @@ namespace LogicPOS.UI.Components.Windows
             BtnDocumentsSection.Button.Clicked += delegate { ShowPanel(PanelDocuments); };
             BtnNewDocument.Button.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Button.Clicked += BtnDocuments_Clicked;
-            BtnReceiptsEmission.Button.Clicked += BtnDocuments_Clicked;
+            BtnReceiptsEmission.Button.Clicked += BtnReceiptsEmission_Clicked;
             BtnReceipts.Button.Clicked += BtnReceipts_Clicked;
             BtnCurrentAccount.Button.Clicked += BtnCurrentAccount_Clicked;
         }
+
+       
 
         private void AddReportsSection()
         {
