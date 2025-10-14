@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -90,6 +91,10 @@ namespace LogicPOS.UI.Components.Windows
             Utils.ShowChangeLog(this);
         }
 
+        private void BtnNotifications_Clicked(object sender, EventArgs e)
+        {
+            SystemNotificationsService.ShowNotifications();
+        }
         private void BtnBackupDb_Clicked(object sender, EventArgs e)
         {
             var createBackupResponse = CustomAlerts.Question(this)

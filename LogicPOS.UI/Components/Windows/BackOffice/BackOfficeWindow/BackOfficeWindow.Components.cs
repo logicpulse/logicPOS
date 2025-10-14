@@ -364,6 +364,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnBackup.Button.Clicked += BtnBackupDb_Clicked;
             BtnRestore.Button.Clicked += BtnRestoreDb_Clicked;
             BtnLogout.Button.Clicked += BtnLogout_Clicked;
+            BtnNotifications.Button.Clicked += BtnNotifications_Clicked;
         }
 
         private void AddSections()

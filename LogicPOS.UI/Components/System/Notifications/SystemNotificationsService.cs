@@ -1,4 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.System.Notifications.GetAllSystemNotifications;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Errors;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Services
 {
@@ -8,5 +19,65 @@ namespace LogicPOS.UI.Services
         {
             ["SHOW_PRINTER_UNDEFINED"] = true
         };
+
+        private static List<SystemNotificationViewModel> _systemNotifications;
+
+        public static List<SystemNotificationViewModel> SystemNotifications
+        {
+            get
+            {
+                if (_systemNotifications == null)
+                {
+                    _systemNotifications = GetAllNotifications().ToList();
+                }
+                return _systemNotifications;
+            }
+        }
+
+        public static void ShowNotifications()
+        {
+            if (SystemNotifications.Count() > 0)
+            {
+                foreach (var notification in SystemNotifications.OrderBy(x=>x.CreatedAt))
+                {
+                     var message = string.Format("{1}{0}{0}{2}", Environment.NewLine, notification.CreatedAt, notification.Message);
+                    CustomAlerts.Information()
+                                .WithSize(new Size(700, 480))
+                                .WithTitleResource("window_title_dialog_notification")
+                                .WithButtonsType(ButtonsType.Ok)
+                                .WithMessage(message)
+                                .ShowAlert();
+                    notification.ReadingDate = DateTime.Now;
+                    notification.IsRead = true;
+                    notification.LastReadTerminalId = TerminalService.Terminal.Id;
+                    notification.LastReadUserId = AuthenticationService.User.Id;
+                }
+            }
+            else
+            {
+                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_no_notification"), 5);
+                CustomAlerts.Information()
+                            .WithSize(new Size(700, 480))
+                            .WithTitleResource("window_title_dialog_notification")
+                            .WithButtonsType(ButtonsType.Ok)
+                            .WithMessage(message)
+                            .ShowAlert();
+            }
+        }
+
+        private static IEnumerable<SystemNotificationViewModel> GetAllNotifications()
+        {
+            var query = new GetSystemNotificationsQuery();
+
+            var notifications = DependencyInjection.Mediator.Send(query).Result;
+
+            if (notifications.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(notifications);
+                return new List<SystemNotificationViewModel>();
+            }
+
+            return notifications.Value;
+        }
     }
 }
