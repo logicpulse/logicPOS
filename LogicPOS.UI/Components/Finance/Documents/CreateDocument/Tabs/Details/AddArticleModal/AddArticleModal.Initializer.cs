@@ -168,11 +168,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtFamily = new TextBox(WindowSettings.Source,
                          GeneralUtils.GetResourceByName("global_article_family"),
-                         isRequired: false,
+                         isRequired: true,
                          isValidatable: false,
-                         includeSelectButton: false,
+                         includeSelectButton: true,
                          includeKeyBoardButton: false,
                          includeClearButton: false);
+
+            TxtFamily.SelectEntityClicked += BtnSelectFamily_Clicked;
 
             TxtFamily.Entry.IsEditable = false;
             TxtFamily.Entry.Sensitive = false;
@@ -183,12 +185,14 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtSubFamily = new TextBox(WindowSettings.Source,
                          GeneralUtils.GetResourceByName("global_article_subfamily"),
-                         isRequired: false,
+                         isRequired: true,
                          isValidatable: false,
-                         includeSelectButton: false,
+                         includeSelectButton: true,
                          includeKeyBoardButton: false,
                          includeClearButton: false);
 
+            TxtSubFamily.SelectEntityClicked += BtnSelectSubFamily_Clicked;
+            
             TxtSubFamily.Entry.IsEditable = false;
             TxtSubFamily.Entry.Sensitive = false;
             ValidatableFields.Add(TxtSubFamily);

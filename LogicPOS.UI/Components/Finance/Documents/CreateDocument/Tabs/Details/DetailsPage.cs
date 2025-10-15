@@ -82,7 +82,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (response == ResponseType.Ok)
             {
                 var newItem = modal.GetDetail();
-                _entities.Add(newItem);
+                 _entities.Add(newItem);
             }
 
             modal.Destroy();

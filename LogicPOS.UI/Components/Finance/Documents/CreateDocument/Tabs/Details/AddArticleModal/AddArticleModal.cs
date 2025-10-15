@@ -138,8 +138,11 @@ namespace LogicPOS.UI.Components.Modals
             _vatRateValue = article.VatDirectSelling.Value;
 
             TxtNotes.Text = article.Notes;
-            TxtFamily.Text = article.Subfamily;
+            TxtFamily.Text = article.Family;
             TxtSubFamily.Text = article.Subfamily;
+
+            TxtFamily.BtnSelect.Sensitive = false;
+            TxtSubFamily.BtnSelect.Sensitive = false;
 
             UpdateTotals();
             UpdateValidatableFields();
@@ -159,6 +162,9 @@ namespace LogicPOS.UI.Components.Modals
             TxtNotes.Clear();
             TxtSubFamily.Clear();
             TxtFamily.Clear();
+
+            TxtSubFamily.BtnSelect.Sensitive=true;
+            TxtFamily.BtnSelect.Sensitive = true;
         }
 
         public DocumentDetail GetDetail()

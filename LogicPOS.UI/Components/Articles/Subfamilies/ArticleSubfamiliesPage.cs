@@ -6,19 +6,26 @@ using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleSubfamiliesPage : Page<ArticleSubfamily>
     {
-        public ArticleSubfamiliesPage(Window parent) : base(parent)
+        private GetAllArticleSubfamiliesQuery _getAllQuery = new GetAllArticleSubfamiliesQuery();
+        public static Guid _familyId;
+        public ArticleSubfamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<ArticleSubfamily>>> GetAllQuery => new GetAllArticleSubfamiliesQuery();
+
+        protected override IRequest<ErrorOr<IEnumerable<ArticleSubfamily>>> GetAllQuery => _getAllQuery;
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -34,6 +41,34 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(Columns.CreateDesignationColumn(1));
             GridView.AppendColumn(CreateFamilyColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
+        }
+
+        protected override void LoadEntities()
+        {
+            if (base.Options == PageOptions.SelectionPageOptions)
+            {
+                _getAllQuery = new GetAllArticleSubfamiliesQuery()
+                { FamilyId = _familyId };
+            }
+
+            var getSubfamiliesResult = _mediator.Send(_getAllQuery).Result;
+
+            if (getSubfamiliesResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getSubfamiliesResult,
+                                                    source: SourceWindow);
+                return;
+            }
+
+            var subfamilies = getSubfamiliesResult.Value;
+
+            _entities.Clear();
+            _entities.AddRange(subfamilies);
+
+            if (_entities.Any() == false)
+            {
+                return;
+            }
         }
 
         private TreeViewColumn CreateFamilyColumn()

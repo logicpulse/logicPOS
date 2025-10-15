@@ -1,11 +1,20 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles;
+using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.ArticleClasses;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.ArticlesTypes;
+using LogicPOS.UI.Components.MeasurementUnits;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.SizeUnits;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -19,6 +28,11 @@ namespace LogicPOS.UI.Components.Modals
             if (AllFieldsAreValid() == false)
             {
                 return;
+            }
+            if(AllFieldsAreValid()==true && TxtArticle.SelectedEntity == null)
+            {
+                CreateArticleAndSelect();
+
             }
 
             if (_mode == EntityEditionModalMode.Update)
@@ -38,6 +52,75 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentDetail.ExemptionReason = DocumentDetail.VatExemptionReason is null ? TxtVatExemptionReason.Text : DocumentDetail.VatExemptionReason.Designation;
                 DocumentDetail.Notes = TxtNotes.Text;
             }
+        }
+
+        private void CreateArticleAndSelect()
+        {
+            var newArticle = new AddArticleCommand()
+            {
+                CodeDealer = TxtCode.Text,
+                Designation = TxtArticle.Text,
+                PriceWithVat = true,
+                Discount = decimal.Parse(TxtDiscount.Text),
+                DefaultQuantity = 1,
+                MinimumStock = 0,
+                SubfamilyId = (TxtSubFamily.SelectedEntity as ArticleSubfamily).Id,
+                TypeId = ArticleTypesService.DefaultArticleType.Id,
+                ClassId = ArticleClassesService.DefaultArticleClass.Id,
+                MeasurementUnitId = MeasurementUnitsService.DefaultMeasurementUnit.Id,
+                SizeUnitId = SizeUnitsService.DefaultSizeUnit.Id,
+                VatDirectSellingId = (TxtTax.SelectedEntity as VatRate).Id,
+                VatExemptionReasonId = TxtVatExemptionReason.SelectedEntity == null ? null : (TxtVatExemptionReason.SelectedEntity as VatExemptionReason)?.Id,
+                Notes = TxtNotes.Text,
+
+                Price1 = new ArticlePrice()
+                {
+                    Value = decimal.Parse(TxtPrice.Text),
+                    PromotionValue = 0,
+                    UsePromotion = false,
+                },
+                Price2 = new ArticlePrice()
+                {
+                    Value = 0,
+                    PromotionValue = 0,
+                    UsePromotion = false,
+                },
+                Price3 = new ArticlePrice()
+                {
+                    Value = 0,
+                    PromotionValue = 0,
+                    UsePromotion = false,
+                },
+                Price4 = new ArticlePrice()
+                {
+                    Value = 0,
+                    PromotionValue = 0,
+                    UsePromotion = false,
+                },
+                Price5 = new ArticlePrice()
+                {
+                    Value = 0,
+                    PromotionValue = 0,
+                    UsePromotion = false,
+                }
+            };
+
+            var articleResult = DependencyInjection.Mediator.Send(newArticle).Result;
+
+            if (articleResult.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(articleResult);
+                var article = ArticlesService.Articles.FirstOrDefault(a => a.Designation == TxtArticle.Text);
+                if (article != null)
+                {
+                    SelectArticle(article);
+                }
+                return;
+            }
+
+            ArticlesService.RefreshArticlesCache();
+            var documentDetail = ArticlesService.Articles.FirstOrDefault(a => a.Id == articleResult.Value);
+            SelectArticle(documentDetail);
         }
 
         private void BtnClear_Clicked(object sender, EventArgs e)
@@ -103,6 +186,39 @@ namespace LogicPOS.UI.Components.Modals
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 SelectArticle(page.SelectedEntity);
+            }
+        }
+
+        private void BtnSelectFamily_Clicked(object sender, EventArgs e)
+        {
+            var page = new ArticleFamiliesPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<ArticleFamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtFamily.SelectedEntity= page.SelectedEntity;
+                TxtFamily.Text = page.SelectedEntity.Designation;
+            }
+        }
+
+        private void BtnSelectSubFamily_Clicked(object sender, EventArgs e)
+        {
+            if(TxtFamily.SelectedEntity == null)
+            {
+                return;
+            }
+            ArticleSubfamiliesPage._familyId = (TxtFamily.SelectedEntity as ArticleFamily).Id;
+            var page = new ArticleSubfamiliesPage(null, PageOptions.SelectionPageOptions);
+            var selectModal = new EntitySelectionModal<ArticleSubfamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectModal.Run();
+            selectModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtSubFamily.SelectedEntity = page.SelectedEntity;
+                TxtSubFamily.Text = page.SelectedEntity.Designation;
             }
         }
 
