@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var newArticle = new AddArticleCommand()
             {
-                CodeDealer = TxtCode.Text,
+                Code = TxtCode.Text,
                 Designation = TxtArticle.Text,
                 PriceWithVat = true,
                 Discount = decimal.Parse(TxtDiscount.Text),

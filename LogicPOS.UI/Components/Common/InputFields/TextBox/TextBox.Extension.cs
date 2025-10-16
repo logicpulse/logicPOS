@@ -7,7 +7,7 @@ namespace LogicPOS.UI.Components.InputFields
     public partial class TextBox
     {
         public static TextBox CreateOrderField() => Simple("global_record_order", true, true, "^[0-9]+$");
-        public static TextBox CreateCodeField() => Simple("global_record_code", true, true, RegularExpressions.AlfaNumericArticleCode);
+        public static TextBox CreateCodeField() => Simple("global_record_code", false, true, RegularExpressions.AlfaNumericArticleCode);
         public static TextBox CreateDesignationField() => Simple("global_designation", true);
 
         public static HBox CreateHbox(params TextBox[] textBoxes)

@@ -7,6 +7,7 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
 {
     public class AddArticleCommand : IRequest<ErrorOr<Guid>>
     {
+        public string Code { get; set; }
         public string CodeDealer { get; set; }
         public string Designation { get; set; } 
         public Button Button { get; set; }

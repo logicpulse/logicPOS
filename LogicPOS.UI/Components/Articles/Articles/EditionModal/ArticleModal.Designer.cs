@@ -49,8 +49,8 @@ namespace LogicPOS.UI.Components.Modals
             if (_modalMode != EntityEditionModalMode.Insert)
             {
                 detailsTab.PackStart(_txtOrder.Component, false, false, 0);
-                detailsTab.PackStart(_txtCode.Component, false, false, 0);
             }
+                detailsTab.PackStart(_txtCode.Component, false, false, 0);
 
             detailsTab.PackStart(_txtCodeDealer.Component, false, false, 0);
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);

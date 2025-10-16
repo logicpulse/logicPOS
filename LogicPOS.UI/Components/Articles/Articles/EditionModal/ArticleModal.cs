@@ -40,6 +40,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var addArticleCommand = new AddArticleCommand();
 
+            addArticleCommand.Code= _txtCode.Text;
             addArticleCommand.CodeDealer = _txtCodeDealer.Text;
             addArticleCommand.Designation = _txtDesignation.Text;
             addArticleCommand.Button = GetButton();
@@ -299,7 +300,6 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        private IEnumerable<ArticleType> GetTypes() => ExecuteGetEntitiesQuery(new GetAllArticleTypesQuery());
         private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
         private IEnumerable<ArticleSubfamily> GetSubfamilies(Guid? familyId = null)
         {
@@ -319,9 +319,6 @@ namespace LogicPOS.UI.Components.Modals
         private IEnumerable<VatRate> GetVatRates() => VatRatesService.VatRates;
         private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
         private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
-        private IEnumerable<ArticleClass> GetClasses() => ExecuteGetEntitiesQuery(new GetAllArticleClassesQuery());
-        private IEnumerable<MeasurementUnit> GetMeasurementUnits() => ExecuteGetEntitiesQuery(new GetAllMeasurementUnitsQuery());
-        private IEnumerable<SizeUnit> GetSizeUnits() => ExecuteGetEntitiesQuery(new GetAllSizeUnitsQuery());
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
         private IEnumerable<VatExemptionReason> GetVatExemptionReasons() => VatExemptionReasonsService.Reasons;
     }
