@@ -35,7 +35,10 @@ namespace LogicPOS.UI.Services
                 return _systemNotifications;
             }
         }
-
+        public static void RefreshNotificationsCache()
+        {
+            _systemNotifications = GetAllNotifications().ToList();
+        }
         public static void ShowNotifications()
         {
             if (SystemNotifications.Count() > 0)
@@ -52,6 +55,7 @@ namespace LogicPOS.UI.Services
 
                     var query = new UpdateNotificationCommand()
                     {
+                        Id=notification.Id,
                         ReadingDate = DateTime.Now,
                         IsRead = true,
                         LastReadTerminalId = TerminalService.Terminal.Id,
@@ -65,8 +69,9 @@ namespace LogicPOS.UI.Services
                         ErrorHandlingService.HandleApiError(updateResult);
                         return;
                     }
-
+                    RefreshNotificationsCache();
                 }
+
             }
             else
             {
