@@ -128,7 +128,7 @@ namespace LogicPOS.UI.Components.POS
                                           isValidatable: true,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
-                                          regex: RegularExpressions.DecimalNumber,
+                                          regex: RegularExpressions.DecimalGreaterEqualThanZeroFinancial,
                                           includeClearButton: false);
 
             TxtDiscount.Text = 0.00M.ToString("");

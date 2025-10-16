@@ -1,6 +1,10 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.ArticleClasses;
+using LogicPOS.UI.Components.ArticlesTypes;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.MeasurementUnits;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
+using LogicPOS.UI.Components.SizeUnits;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -150,50 +154,46 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeArticleTypesComboBox()
         {
-            var types = GetTypes();
             var labelText = GeneralUtils.GetResourceByName("global_article_type");
-            var currentType = _entity != null ? _entity.Type : types.FirstOrDefault(t => t.Code == "10");
+            var currentType = _entity != null ? _entity.Type : ArticleTypesService.DefaultArticleType;
 
             _comboTypes = new EntityComboBox<ArticleType>(labelText,
-                                                           types,
+                                                           ArticleTypesService.ArticleTypes,
                                                            currentType,
                                                            true);
         }
 
         private void InitializeArticleClassesComboBox()
         {
-            var classes = GetClasses();
             var labelText = GeneralUtils.GetResourceByName("global_article_class");
-            var currentClass = _entity != null ? _entity.Class : classes.FirstOrDefault(c => c.Code == "10");
+            var currentClass = _entity != null ? _entity.Class : ArticleClassesService.DefaultArticleClass;
 
 
             _comboClasses = new EntityComboBox<ArticleClass>(labelText,
-                                                             classes,
+                                                             ArticleClassesService.ArticleClasses,
                                                              currentClass,
                                                              true);
         }
 
         private void InitializeMeasurementUnitsComboBox()
         {
-            var units = GetMeasurementUnits();
             var labelText = GeneralUtils.GetResourceByName("global_unit_measure");
-            var currentUnit = _entity != null ? _entity.MeasurementUnit : units.FirstOrDefault(u => u.Code == "10");
+            var currentUnit = _entity != null ? _entity.MeasurementUnit : MeasurementUnitsService.DefaultMeasurementUnit;
 
 
             _comboMeasurementUnits = new EntityComboBox<MeasurementUnit>(labelText,
-                                                                          units,
+                                                                          MeasurementUnitsService.MeasurementUnits,
                                                                           currentUnit,
                                                                           true);
         }
 
         private void InitializeSizeUnitsComboBox()
         {
-            var units = GetSizeUnits();
             var labelText = GeneralUtils.GetResourceByName("global_unit_size");
-            var currentUnit = _entity != null ? _entity.SizeUnit : units.FirstOrDefault(u => u.Code == "10");
+            var currentUnit = _entity != null ? _entity.SizeUnit : SizeUnitsService.DefaultSizeUnit;
 
             _comboSizeUnits = new EntityComboBox<SizeUnit>(labelText,
-                                                           units,
+                                                           SizeUnitsService.SizeUnits,
                                                            currentUnit,
                                                            true);
         }

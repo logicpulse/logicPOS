@@ -1,12 +1,14 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.System.Notifications.GetAllSystemNotifications;
+using LogicPOS.Api.Features.System.Notifications.UpdateNotification;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -33,7 +35,10 @@ namespace LogicPOS.UI.Services
                 return _systemNotifications;
             }
         }
-
+        public static void RefreshNotificationsCache()
+        {
+            _systemNotifications = GetAllNotifications().ToList();
+        }
         public static void ShowNotifications()
         {
             if (SystemNotifications.Count() > 0)
@@ -47,11 +52,26 @@ namespace LogicPOS.UI.Services
                                 .WithButtonsType(ButtonsType.Ok)
                                 .WithMessage(message)
                                 .ShowAlert();
-                    notification.ReadingDate = DateTime.Now;
-                    notification.IsRead = true;
-                    notification.LastReadTerminalId = TerminalService.Terminal.Id;
-                    notification.LastReadUserId = AuthenticationService.User.Id;
+
+                    var query = new UpdateNotificationCommand()
+                    {
+                        Id=notification.Id,
+                        ReadingDate = DateTime.Now,
+                        IsRead = true,
+                        LastReadTerminalId = TerminalService.Terminal.Id,
+                        LastReadUserId = AuthenticationService.User.Id
+                    };
+                    
+                    var updateResult= DependencyInjection.Mediator.Send(query).Result;
+
+                    if (updateResult.IsError != false)
+                    {
+                        ErrorHandlingService.HandleApiError(updateResult);
+                        return;
+                    }
+                    RefreshNotificationsCache();
                 }
+
             }
             else
             {
