@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class EditCompanyDetailsModal : Modal
     {
-        public EditCompanyDetailsModal(Window parent) : base(parent,
+        private EditCompanyDetailsModal(Window parent) : base(parent,
             LocalizedString.Instance["window_title_edit_configurationpreferenceparameter"],
             new Size(600, 600),
             AppSettings.Paths.Images + @"Icons\Windows\icon_window_system.png")
@@ -22,11 +22,6 @@ namespace LogicPOS.UI.Components.Modals
             HideCloseButton();
         }
 
-        private void AddEventHandlers()
-        {
-            BtnOk.Clicked += BtnOk_Clicked;
-            BtnDemo.Clicked += BtnDemo_Clicked;
-        }
 
         private void FillWithDemoData()
         {
@@ -90,7 +85,11 @@ namespace LogicPOS.UI.Components.Modals
         public static ResponseType ShowModal(Window parent)
         {
             var modal = new EditCompanyDetailsModal(parent);
-            var response  = (ResponseType)modal.Run();
+            var response = (ResponseType)modal.Run();
+            while (response != ResponseType.Ok)
+            {
+                response = (ResponseType)modal.Run();
+            }
             modal.Destroy();
             return response;
         }

@@ -3,6 +3,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using System.Data.SqlTypes;
 using System.Drawing;
 using System.Xml.Linq;
@@ -15,11 +16,16 @@ namespace LogicPOS.UI.Components.Modals
         {
             AddEventHandlers();
 
-            return new ActionAreaButtons
+            var actionAreaButtons = new ActionAreaButtons();
+
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
             {
-                new ActionAreaButton(BtnDemo, ResponseType.None),
-                new ActionAreaButton(BtnOk, ResponseType.Ok),
-            };
+                actionAreaButtons.Add(new ActionAreaButton(BtnAgtInfo, ResponseType.None));
+            }
+            actionAreaButtons.Add(new ActionAreaButton(BtnDemo, ResponseType.None));
+            actionAreaButtons.Add(new ActionAreaButton(BtnOk, ResponseType.Ok));
+
+            return actionAreaButtons;
         }
 
         protected override Widget CreateBody()
@@ -44,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
             verticalLayout.PackStart(TxtFax.Component, false, false, 0);
             verticalLayout.PackStart(TxtEmail.Component, false, false, 0);
             verticalLayout.PackStart(TxtWebsite.Component, false, false, 0);
-            
+
             var sw = CreateScrolledWindow();
             sw.AddWithViewport(verticalLayout);
 

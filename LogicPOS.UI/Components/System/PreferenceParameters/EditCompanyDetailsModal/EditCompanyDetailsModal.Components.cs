@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Settings;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -8,6 +9,10 @@ namespace LogicPOS.UI.Components.Modals
     {
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnDemo = IconButtonWithText.Create("touchButtonDataDemo_DialogActionArea", "Demo", @"Icons\Dialogs\icon_pos_demo.png");
+        IconButtonWithText BtnAgtInfo = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
+                                                                                                     "Agt. Preench.",
+                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_show_change_user_dialog.png");
+
 
         private TextBox TxtCountry { get; set; }
         private TextBox TxtCurrency { get; set; }

@@ -1,5 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
@@ -9,6 +11,43 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class EditCompanyDetailsModal
     {
+        private void AddEventHandlers()
+        {
+            BtnOk.Clicked += BtnOk_Clicked;
+            BtnDemo.Clicked += BtnDemo_Clicked;
+            BtnAgtInfo.Clicked += BtnAgtInfo_Clicked;
+        }
+
+        private void BtnAgtInfo_Clicked(object sender, EventArgs e)
+        {
+            if (TxtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                CustomAlerts.Warning(this).WithMessage("Informe o NIF").ShowAlert();
+                return;
+            }
+
+            var contributor = CustomersService.GetAgtContributorInfo(TxtFiscalNumber.Text);
+
+            if (contributor == null)
+            {
+                CustomAlerts.Warning(this).WithMessage("Não foi possível retornar os dados online do contribuinte.").ShowAlert();
+                return;
+            }
+
+            TxtCompany.Text = contributor.GetCustomerName() ?? "";
+            TxtBusiness.Text = contributor.CommercialDesignation ?? "";
+            TxtAddress.Text = contributor.GetAddress() ?? "";
+            TxtCity.Text = contributor.GetCity() ?? "";
+            TxtPhone.Text = contributor.Phone ?? "";
+            TxtEmail.Text = contributor.Email ?? "";
+            TxtZipCode.Text = string.IsNullOrWhiteSpace(contributor.PostalCode) ? "00000": contributor.PostalCode;
+            TxtStockCapital.Text = contributor.SocialCapital ?? "";
+            TxtPhone.Text = TxtMobile.Text = contributor.Phone ?? "";
+            TxtEmail.Text = contributor.Email ?? "";
+            TxtWebsite.Text = contributor.WebSite ?? "";
+           
+        }
+
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
