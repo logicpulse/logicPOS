@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
             CheckIsDraft.Active = true;
             var fullDocument = DocumentsService.GetDocument(document.Id);
             CustomerTab.ImportDataFromDocument(fullDocument);
-            DetailsTab.ImportDataFromDocument(document.Id);
+            DetailsTab.ImportDataFromDocument(document.Id, fullDocument.Discount);
 
             if (document.TypeAnalyzer.IsGuide())
             {
@@ -142,7 +142,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle()
         {
-            decimal total = DetailsTab.TotalFinal;
+            decimal total = GetTotalFinal();
             WindowSettings.Title.Text = $"{(DraftMode ? "Rascunho" : LocalizedString.Instance["window_title_dialog_new_finance_document"])} :: {Navigator.CurrentTab.TabName} : {total:C}";
         }
 
@@ -198,5 +198,13 @@ namespace LogicPOS.UI.Components.Modals
             CustomerTab.Sensitive = documentType.Analyzer.IsCreditNote() == false;
         }
 
+        private decimal GetTotalFinal()
+        {
+            decimal discount = 0;
+            decimal.TryParse(CustomerTab.TxtDiscount.Text, out discount);
+            decimal detailsTotal = DetailsTab.TotalFinal;
+            decimal totalAfterDiscount = detailsTotal - (detailsTotal * discount / 100);
+            return totalAfterDiscount;
+        }
     }
 }

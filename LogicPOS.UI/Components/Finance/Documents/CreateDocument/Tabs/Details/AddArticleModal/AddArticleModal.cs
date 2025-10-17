@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates.Service;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -48,6 +49,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtArticle.Component.Sensitive = false;
                 TxtSubFamily.Component.Sensitive= false;
                 TxtFamily.Component.Sensitive = false;
+                TxtCode.Component.Sensitive = false;
             }
         }
 
@@ -61,10 +63,16 @@ namespace LogicPOS.UI.Components.Modals
             TxtTax.Component.Sensitive = false;
             TxtVatExemptionReason.Component.Sensitive = false;
             TxtNotes.Component.Sensitive = false;
+            TxtSubFamily.Component.Sensitive = false;
+            TxtFamily.Component.Sensitive = false;
         }
 
         private void ShowItemData(DocumentDetail detail)
         {
+            if(detail.Article == null)
+            {
+                detail.Article = ArticlesService.GetArticleViewModel(detail.ArticleId);
+            }
             TxtCode.Text = detail.Code;
             TxtArticle.SelectedEntity = detail.Article;
             TxtArticle.Text = detail.Designation;

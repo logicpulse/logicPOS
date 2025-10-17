@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     public partial class CustomerTab : ModalTab
     {
         public event Action<Api.Entities.Customer> CustomerSelected;
+        public event Action<decimal> DiscountChanged;
 
         public CustomerTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
@@ -67,7 +68,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtLocality.Text = document.Customer.Locality;
             TxtZipCode.Text = document.Customer.ZipCode;
             TxtCity.Text = document.Customer.City;
-            TxtDiscount.Text = document.Discount.ToString();
+            TxtDiscount.Text = document.Discount.ToString("0.00");
             TxtPhone.Text = document.Customer.Phone;
             TxtEmail.Text = document.Customer.Email;
 

@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Modals.Common;
@@ -39,7 +40,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             PackStart(Page);
         }
 
-        public void ImportDataFromDocument(Guid documentId)
+        public void ImportDataFromDocument(Guid documentId, decimal globalDiscount)
         {
             Page.Items.Clear();
 
@@ -59,7 +60,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     VatDesignation = detail.Tax.Designation,
                     ExemptionReason = detail.VatExemptionReason,
                     VatExemptionReason = VatExemptionReasonsService.Reasons.Where(r => r.Acronym == detail.VatExemptionCode).FirstOrDefault(),
-                    Discount = detail.Discount,
+                    Discount = detail.Discount - globalDiscount,
                     Notes = detail.Notes,
                 });
             }

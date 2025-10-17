@@ -63,6 +63,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && IsNotSelectionMode;
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
+            BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
         }
 
         private bool IsNotSelectionMode => _mode != Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection;

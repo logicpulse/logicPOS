@@ -227,5 +227,6 @@ namespace LogicPOS.UI.Components.Modals
             SelectArticle(obj as ArticleViewModel);
         }
 
+
     }
 }

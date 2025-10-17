@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
@@ -9,6 +10,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class CustomerTab
     {
+        private void TxtDiscount_Changed(object sender, EventArgs e)
+        {
+            DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text): 0);
+        }
+
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);

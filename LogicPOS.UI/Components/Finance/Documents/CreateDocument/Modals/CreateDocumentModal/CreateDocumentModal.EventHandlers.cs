@@ -18,10 +18,11 @@ namespace LogicPOS.UI.Components.Modals
             DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
             if (SinglePaymentMethod == false)
             {
-                DetailsTab.Page.OnTotalChanged += PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal;
+                DetailsTab.Page.OnTotalChanged += t => PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal(GetTotalFinal());
             }
             DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
             CustomerTab.CustomerSelected += CustomerTab_CustomerSelected;
+            CustomerTab.DiscountChanged += d => UpdateTitle();
         }
 
         private void AddEventHandlers()
@@ -101,13 +102,13 @@ namespace LogicPOS.UI.Components.Modals
         private void OnOriginDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            DetailsTab.ImportDataFromDocument(document.Id);
+            DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
         }
 
         private void OnCopyDocumentSelected(Document document)
         {
             CustomerTab.ImportDataFromDocument(document);
-            DetailsTab.ImportDataFromDocument(document.Id);
+            DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
 
             if (document.TypeAnalyzer.IsGuide())
             {

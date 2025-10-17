@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -111,11 +112,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                           isValidatable: true,
                                           includeSelectButton: false,
                                           includeKeyBoardButton: true,
-                                          regex: RegularExpressions.DecimalNumber);
+                                          regex: RegularExpressions.NullableMoney);
 
             TxtDiscount.IsValidFunction = ValidationFunctions.IsValidDiscount;
             TxtDiscount.WithText("0");
+            TxtDiscount.Entry.Changed += TxtDiscount_Changed;
         }
+
+  
 
         private void InitializeTxtCardNumber()
         {
