@@ -4,6 +4,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
@@ -34,6 +35,11 @@ namespace LogicPOS.UI.Components.Modals
             AddButtonsEventHandlers();
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAgt, ResponseType.Ok));
+            }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnCloneDocument, ResponseType.Ok));

@@ -19,7 +19,11 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnDeleteDraft = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Red",
                                                                                                     "Eliminar",
                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
-       
+
+        private IconButtonWithText BtnSendDocumentToAgt = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                    "Env. AGT",
+                                                                                                    AppSettings.Paths.Images + @"Icons\send_document_to_agt.png");
+
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
                                                                                                                        AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_finance_new_document.png");

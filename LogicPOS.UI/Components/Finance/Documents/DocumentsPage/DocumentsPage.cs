@@ -71,20 +71,6 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(CreateSelectColumn());
-            GridView.AppendColumn(CreateDateColumn());
-            GridView.AppendColumn(CreateNumberColumn());
-            GridView.AppendColumn(CreateStatusColumn());
-            GridView.AppendColumn(CreateEntityColumn());
-            GridView.AppendColumn(CreateFiscalNumberColumn());
-            GridView.AppendColumn(CreateTotalFinalColumn());
-            GridView.AppendColumn(CreateTotalPaidColumn());
-            GridView.AppendColumn(CreateTotalToPayColumn());
-            GridView.AppendColumn(CreateRelatedDocumentsColumn());
-        }
-
         protected override void AddEntitiesToModel(IEnumerable<DocumentViewModel> documents)
         {
             var model = (ListStore)GridViewSettings.Model;

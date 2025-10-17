@@ -1,6 +1,8 @@
-﻿using Gtk;
+﻿using Atk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.VatRates.AddVatRate;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System.Linq;
@@ -9,6 +11,22 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentsPage
     {
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(CreateSelectColumn());
+            GridView.AppendColumn(CreateDateColumn());
+            GridView.AppendColumn(CreateNumberColumn());
+            GridView.AppendColumn(CreateStatusColumn());
+            GridView.AppendColumn(CreateEntityColumn());
+            GridView.AppendColumn(CreateFiscalNumberColumn());
+            GridView.AppendColumn(CreateTotalFinalColumn());
+            GridView.AppendColumn(CreateTotalPaidColumn());
+            GridView.AppendColumn(CreateTotalToPayColumn());
+            GridView.AppendColumn(CreateRelatedDocumentsColumn());
+            GridView.AppendColumn(CreateAgtStatusColumn());
+        }
+
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Model);
@@ -22,6 +40,19 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         #region Creators
+        private TreeViewColumn CreateAgtStatusColumn()
+        {
+            void RenderAgtStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var doc = (DocumentViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = doc.TypeAnalyzer.IsAgtDocument() && !doc.IsDraft ? "Não Submetido" : "N/A";
+            }
+
+            var title = "AGT/Est. Validação";
+            var col = Columns.CreateColumn(title, 11, RenderAgtStatus);
+            return col;
+        }
+
         private TreeViewColumn CreateRelatedDocumentsColumn()
         {
             void RenderRelatedDocuments(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
@@ -31,7 +62,9 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
-            return Columns.CreateColumn(title, 10, RenderRelatedDocuments);
+            var col =  Columns.CreateColumn(title, 10, RenderRelatedDocuments);
+            
+            return col;
         }
 
         private TreeViewColumn CreateTotalToPayColumn()
@@ -91,7 +124,8 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = GeneralUtils.GetResourceByName("global_entity");
-            return Columns.CreateColumn(title, 5, RenderEntity);
+            var col = Columns.CreateColumn(title, 5, RenderEntity);
+            return col;
         }
 
         private TreeViewColumn CreateStatusColumn()

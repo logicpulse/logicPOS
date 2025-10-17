@@ -9,6 +9,7 @@
             Type = type;
         }
 
+        public bool IsAgtDocument() => IsInvoice() || IsInvoiceReceipt() || IsCreditNote() || IsDebitNote();
         public bool IsInvoice() => Type == "FT";
         public bool IsInvoiceReceipt() => Type == "FR";
         public bool IsCreditNote() => Type == "NC";
