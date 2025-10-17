@@ -111,7 +111,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetDefaultCurrency()
         {
-            TxtCurrency.SelectedEntity = Invoices.First().Invoice.Currency;
+            TxtCurrency.SelectedEntity = Invoices.First().Currency;
             TxtCurrency.Text = (TxtCurrency.SelectedEntity as Api.Features.Finance.Documents.Documents.Common.Currency).Designation;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
 {
@@ -18,6 +19,9 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
         public bool IsDraft { get; set; }
         public decimal TotalFinal { get; set; }
+        public decimal TotalPaid { get; set; }
+        public decimal TotalToPay { get; set; }
+        public List<string> RelatedDocuments { get; set; }
         public bool Paid { get; set; }
         public bool IsActive => Status == "N" && IsDraft == false;
         public bool IsCancellable => IsActive && HasPassed48Hours == false;

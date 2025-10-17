@@ -61,17 +61,6 @@ namespace LogicPOS.UI.Components.Finance.Customers
             return GetAllCustomers().Where(C => C.Id == id).FirstOrDefault();
         }
 
-        public static Contributor GetAgtContributorInfo(string nif)
-        {
-            var contributor = DependencyInjection.Mediator.Send(new GetContributorByNifQuery(nif)).Result;
-
-            if (contributor.IsError != false)
-            {
-                ErrorHandlingService.HandleApiError(contributor);
-                return null;
-            }
-
-            return contributor.Value;
-        }
+     
     }
 }

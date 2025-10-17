@@ -1,7 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.GetDocumentsRelations;
-using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Errors;
@@ -46,44 +43,6 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        private void LoadDocumentsTotals()
-        {
-            var query = new GetDocumentsTotalsQuery(_entities.Select(d => d.Id));
-            var result = _mediator.Send(query).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result,
-                                                    source: SourceWindow);
-                return;
-            }
-
-            if (_totals.Count > 0)
-            {
-                _totals.Clear();
-            }
-
-            _totals.AddRange(result.Value);
-        }
-
-        private void LoadDocumentsRelations()
-        {
-            var query = new GetDocumentsRelationsQuery(_entities.Select(x => x.Id));
-            var result = _mediator.Send(query).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
-                return;
-            }
-
-            if (_relations.Count > 0)
-            {
-                _relations.Clear();
-            }
-
-            _relations.AddRange(result.Value);
-        }
 
         public override void UpdateButtonPrevileges()
         {

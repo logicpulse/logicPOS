@@ -26,9 +26,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderRelatedDocuments(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var docId = ((DocumentViewModel)model.GetValue(iter, 0)).Id;
-                var relatedDocuments = _relations.FirstOrDefault(x => x.DocumentId == docId)?.RelatedDocuments;
-                (cell as CellRendererText).Text = string.Join(",", relatedDocuments);
+                var doc = (DocumentViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = string.Join(",", doc.RelatedDocuments);
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
@@ -40,8 +39,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = ((DocumentViewModel)model.GetValue(iter, 0));
-                var totalToPay = _totals.FirstOrDefault(x => x.DocumentId == document.Id)?.TotalToPay ?? document.TotalFinal;
-                (cell as CellRendererText).Text = totalToPay.ToString("0.00");
+                (cell as CellRendererText).Text = document.TotalToPay.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("global_debit");
@@ -52,9 +50,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderTotalPaid(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var documentId = ((DocumentViewModel)model.GetValue(iter, 0)).Id;
-                var totalPaid = _totals.FirstOrDefault(x => x.DocumentId == documentId)?.TotalPaid ?? 0;
-                (cell as CellRendererText).Text = totalPaid.ToString("0.00");
+                var document = ((DocumentViewModel)model.GetValue(iter, 0));
+                (cell as CellRendererText).Text = document.TotalPaid.ToString("0.00");
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_total_credit_rc_nc_based");

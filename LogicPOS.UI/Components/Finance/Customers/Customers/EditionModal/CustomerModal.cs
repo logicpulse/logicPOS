@@ -7,6 +7,7 @@ using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Settings;
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var contributor = CustomersService.GetAgtContributorInfo(_txtFiscalNumber.Text);
+            var contributor = AgtService.GetAgtContributorInfo(_txtFiscalNumber.Text);
 
             if (contributor == null)
             {

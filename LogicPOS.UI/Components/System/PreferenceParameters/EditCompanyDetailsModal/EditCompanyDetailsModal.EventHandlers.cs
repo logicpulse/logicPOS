@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Services;
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var contributor = CustomersService.GetAgtContributorInfo(TxtFiscalNumber.Text);
+            var contributor = AgtService.GetAgtContributorInfo(TxtFiscalNumber.Text);
 
             if (contributor == null)
             {

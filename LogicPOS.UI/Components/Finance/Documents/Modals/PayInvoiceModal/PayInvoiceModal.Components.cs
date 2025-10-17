@@ -1,5 +1,4 @@
-﻿using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+﻿using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -22,8 +21,6 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtDateTime { get; private set; }
         public TextBox TxtNotes { get; private set; }
         private List<IValidatableField> ValidatableFields { get; set; } = new List<IValidatableField>();
-        public List<(DocumentViewModel Invoice, DocumentTotals Totals)> Invoices { get; } = new List<(DocumentViewModel, DocumentTotals)>();
-        private readonly decimal _invoicesTotalFinal;
         private string TitleBase { get; set; }
     }
 }

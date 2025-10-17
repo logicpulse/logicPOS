@@ -184,7 +184,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
 
-            var modal = new PayInvoiceModal(this, Page.GetSelectedDocumentsWithTotals());
+            var modal = new PayInvoiceModal(this, Page.SelectedDocuments);
             var response = (ResponseType)modal.Run();
             modal.Destroy();
 

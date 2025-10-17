@@ -1,7 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Documents.PayDocuments;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Buttons;
@@ -18,10 +16,10 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class PayInvoiceModal : Modal
     {
-        
-
+        public List<DocumentViewModel> Invoices { get; } = new List<DocumentViewModel>();
+        private readonly decimal _invoicesTotalFinal;
         public PayInvoiceModal(Window parent,
-                               IEnumerable<(DocumentViewModel, DocumentTotals)> invoices) : base(parent,
+                               IEnumerable<DocumentViewModel> invoices) : base(parent,
                                                      GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
                                                      new Size(500, 500),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_pay_invoice.png")
@@ -29,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
             TitleBase = WindowSettings.Title.Text;
             Invoices.AddRange(invoices);
             SetDefaultCurrency();
-            _invoicesTotalFinal = Invoices.Sum(x => x.Totals?.TotalToPay ?? x.Invoice.TotalFinal);
+            _invoicesTotalFinal = Invoices.Sum(x => x.TotalToPay);
             TxtTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
             TxtSystemCurrencyTotalPaid.Text = _invoicesTotalFinal.ToString("0.00");
             UpdateTitle();
@@ -73,7 +71,7 @@ namespace LogicPOS.UI.Components.Modals
                 ExchangeRate = decimal.Parse(TxtExchangeRate.Text),
                 CurrencyAmount = decimal.Parse(TxtTotalPaid.Text),
                 Amount = CalculateSystemCurrencyTotalPaid(),
-                Documents = Invoices.Select(x => x.Invoice.Id).ToList()
+                Documents = Invoices.Select(x => x.Id).ToList()
             };
 
             return command;

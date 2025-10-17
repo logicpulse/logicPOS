@@ -1,10 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
-using LogicPOS.Api.Features.Documents.GetDocumentsTotals;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
-using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
@@ -70,9 +67,6 @@ namespace LogicPOS.UI.Components.Pages
             {
                 return;
             }
-
-            LoadDocumentsTotals();
-            LoadDocumentsRelations();
         }
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
@@ -100,11 +94,7 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        public IEnumerable<(DocumentViewModel, DocumentTotals)> GetSelectedDocumentsWithTotals()
-        {
-            return SelectedDocuments.Select(document => (document, _totals.FirstOrDefault(x => x.DocumentId == document.Id)));
-        }
-
+  
         protected override DeleteCommand GetDeleteCommand() => null;
     }
 }

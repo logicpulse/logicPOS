@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
@@ -158,7 +159,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            var contributor = CustomersService.GetAgtContributorInfo(TxtFiscalNumber.Text);
+            var contributor = AgtService.GetAgtContributorInfo(TxtFiscalNumber.Text);
 
             if (contributor == null)
             {

@@ -9,8 +9,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents
         {
             keyedMemoryCache.Remove(key => string.Equals(key, "documents"));
             keyedMemoryCache.Remove(key => key.StartsWith("documents?", StringComparison.OrdinalIgnoreCase));
-            keyedMemoryCache.Remove(key => key.StartsWith("documents/relations", StringComparison.OrdinalIgnoreCase));
-            keyedMemoryCache.Remove(key => key.StartsWith("documents/totals", StringComparison.OrdinalIgnoreCase));
         }
     }
 }
