@@ -46,6 +46,8 @@ namespace LogicPOS.UI.Components.Modals
             if (_mode == EntityEditionModalMode.Update)
             {
                 TxtArticle.Component.Sensitive = false;
+                TxtSubFamily.Component.Sensitive= false;
+                TxtFamily.Component.Sensitive = false;
             }
         }
 
@@ -66,6 +68,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtCode.Text = detail.Code;
             TxtArticle.SelectedEntity = detail.Article;
             TxtArticle.Text = detail.Designation;
+            TxtFamily.Text = detail.Article.Family;
+            TxtSubFamily.Text = detail.Article.Subfamily;
             TxtPrice.Text = detail.UnitPrice.ToString("F2");
             TxtQuantity.Text = detail.Quantity.ToString("F2");
             TxtDiscount.Text = detail.Discount.ToString("F2");
