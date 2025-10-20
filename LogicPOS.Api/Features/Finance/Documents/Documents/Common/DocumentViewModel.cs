@@ -25,9 +25,8 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public bool Paid { get; set; }
         public bool IsActive => Status == "N" && IsDraft == false;
         public bool IsCancellable => IsActive && HasPassed48Hours == false;
-        public bool IsPayable => IsActive && Paid == false && TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsDebitNote();
-
-        public bool IsAgtDocument => TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsInvoiceReceipt() || TypeAnalyzer.IsCreditNote() || TypeAnalyzer.IsDebitNote() && !IsDraft;
+        public bool IsPayable => IsActive && Paid == false && (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsDebitNote());
+        public bool IsAgtDocument => (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsInvoiceReceipt() || TypeAnalyzer.IsCreditNote() || TypeAnalyzer.IsDebitNote()) && IsDraft == false;
     }
 
     public class Customer : ApiEntity 

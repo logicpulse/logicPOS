@@ -39,6 +39,7 @@ namespace LogicPOS.UI.Components.Modals
             if (CompanyDetailsService.CompanyInformation.IsAngola)
             {
                 actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAgt, ResponseType.Ok));
+                actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));
             }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));

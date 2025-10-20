@@ -27,6 +27,29 @@ namespace LogicPOS.UI.Components.Modals
             BtnEditDraft.Clicked += BtnEditDraft_Clicked;
             BtnDeleteDraft.Clicked += BtnDeleteDraft_Clicked;
             BtnSendDocumentToAgt.Clicked += BtnSendDocumentToAgt_Clicked;
+            BtnUpdateAgtValidationStatus.Clicked += BtnUpdateAgtValidationStatus_Clicked;
+        }
+
+        private void BtnUpdateAgtValidationStatus_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            var result = AgtService.UpdateDocumentValidationStatus(Page.SelectedEntity.Id);
+
+            if (result == false)
+            {
+                CustomAlerts.Error(this)
+                .WithMessage($"Não foi possível atualizar o estado de validação do documento {Page.SelectedEntity.Number}.")
+                .ShowAlert();
+                return;
+            }
+
+            CustomAlerts.Information(this)
+               .WithMessage($"O estado de validação do documento {Page.SelectedEntity.Number} foi atualizado.")
+               .ShowAlert();
         }
 
         private void BtnSendDocumentToAgt_Clicked(object sender, EventArgs e)

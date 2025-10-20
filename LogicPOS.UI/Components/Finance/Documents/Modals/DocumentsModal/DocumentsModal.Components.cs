@@ -21,8 +21,13 @@ namespace LogicPOS.UI.Components.Modals
                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
 
         private IconButtonWithText BtnSendDocumentToAgt = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
-                                                                                                    "Env. AGT",
+                                                                                                    "Enviar",
                                                                                                     AppSettings.Paths.Images + @"Icons\send_document_to_agt.png");
+
+        private IconButtonWithText BtnUpdateAgtValidationStatus = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                    "Atua. Estado",
+                                                                                                    AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
+
 
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
@@ -64,6 +69,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
+            BtnUpdateAgtValidationStatus.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
         }
 
         private bool IsNotSelectionMode => _mode != Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection;
