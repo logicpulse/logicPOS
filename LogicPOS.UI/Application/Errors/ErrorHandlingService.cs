@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Errors
 
             if (source == null)
             {
-                source = (POSWindow.HasInstance && POSWindow.Instance.Visible) ? BackOfficeWindow.Instance : null;
+                source = (POSWindow.HasInstance && POSWindow.Instance.Visible) ? POSWindow.Instance : null;
                
                 if (source == null)
                 {

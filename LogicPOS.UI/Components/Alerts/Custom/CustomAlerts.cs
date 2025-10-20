@@ -287,9 +287,8 @@ namespace LogicPOS.UI.Alerts
                                              Error error)
         {
             var errorMessage = new StringBuilder();
-            errorMessage.AppendLine("Code: " + error.Code);
-            errorMessage.AppendLine("Description: " + error.Description);
-
+            errorMessage.AppendLine("Código: " + error.Code);
+            errorMessage.AppendLine("Descrição: " + error.Description);
 
             var metadata = error.Metadata;
 
@@ -297,23 +296,23 @@ namespace LogicPOS.UI.Alerts
             {
                 var problemDetails = (ProblemDetails)metadata["problem"];
 
-                errorMessage.AppendLine("\nProblem Details:");
+                if (problemDetails.Errors != null)
+                {
+                    foreach (var problemDetailsError in problemDetails.Errors)
+                    {
+                        errorMessage.AppendLine("\n# Erro");
+                        errorMessage.AppendLine("Nome: " + problemDetailsError.Name);
+                        errorMessage.AppendLine("Motivo: " + problemDetailsError.Reason);
+                    }
+                }
+
+                errorMessage.AppendLine("\n# Mais detalhes");
                 errorMessage.AppendLine("Title: " + problemDetails.Title);
                 errorMessage.AppendLine($"Detail: {problemDetails.Detail}");
                 errorMessage.AppendLine("Status: " + problemDetails.Status);
                 errorMessage.AppendLine("Type: " + problemDetails.Type);
                 errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
                 errorMessage.AppendLine("Instance: " + problemDetails.Instance);
-
-                if (problemDetails.Errors != null)
-                {
-                    foreach (var problemDetailsError in problemDetails.Errors)
-                    {
-                        errorMessage.AppendLine("\nError:");
-                        errorMessage.AppendLine("Name: " + problemDetailsError.Name);
-                        errorMessage.AppendLine("Reson: " + problemDetailsError.Reason);
-                    }
-                }
             }
 
             var messageDialog = new CustomAlert(sourceWindow)
@@ -321,7 +320,6 @@ namespace LogicPOS.UI.Alerts
                                 .WithMessageType(MessageType.Error)
                                 .WithButtonsType(ButtonsType.Ok)
                                 .WithTitle("Erro")
-
                                 .ShowAlert();
         }
 

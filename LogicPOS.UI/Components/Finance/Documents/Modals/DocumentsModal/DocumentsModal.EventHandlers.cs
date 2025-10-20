@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
@@ -25,6 +26,38 @@ namespace LogicPOS.UI.Components.Modals
             BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
             BtnEditDraft.Clicked += BtnEditDraft_Clicked;
             BtnDeleteDraft.Clicked += BtnDeleteDraft_Clicked;
+            BtnSendDocumentToAgt.Clicked += BtnSendDocumentToAgt_Clicked;
+        }
+
+        private void BtnSendDocumentToAgt_Clicked(object sender, EventArgs e)
+        {
+            if(Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            var advance = CustomAlerts.Question(this)
+                .WithMessage($"Tem a certeza pretende enviar o documento {Page.SelectedEntity.Number} para a AGT? Esta acção não pode ser revertida.")
+                .ShowAlert();
+
+            if(advance != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var result = AgtService.RegisterDocument(Page.SelectedEntity.Id);
+
+            if (result == false)
+            {
+                CustomAlerts.Error(this)
+                .WithMessage($"Não foi possível enviar o documento {Page.SelectedEntity.Number} para a AGT.")
+                .ShowAlert();
+                return;
+            }
+
+            CustomAlerts.Information(this)
+               .WithMessage($"Não foi possível enviar o documento {Page.SelectedEntity.Number} para a AGT.")
+               .ShowAlert();
         }
 
         private void BtnDeleteDraft_Clicked(object sender, EventArgs e)
