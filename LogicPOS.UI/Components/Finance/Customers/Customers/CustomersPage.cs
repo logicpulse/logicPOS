@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if (mode == EntityEditionModalMode.Update && SelectedEntity.Id == CustomersService.Default.Id)
+            if (CustomersService.Default != null && mode == EntityEditionModalMode.Update && SelectedEntity.Id == CustomersService.Default.Id)
             {
                 mode = EntityEditionModalMode.View;
             }

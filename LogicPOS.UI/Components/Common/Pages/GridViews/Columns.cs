@@ -70,7 +70,8 @@ namespace LogicPOS.UI.Components.Pages.GridViews
                                       sortColumnId,
                                       RenderDesignation);
             column.MinWidth = 250;
-            column.MaxWidth = 800;
+            column.MaxWidth = 1500;
+            column.Expand = true;
 
             return column;
         }

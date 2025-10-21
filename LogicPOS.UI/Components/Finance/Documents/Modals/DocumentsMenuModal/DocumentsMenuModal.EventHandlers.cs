@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Gtk;
+using LogicPOS.UI.Components.Pages;
+using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -11,7 +13,9 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnWorkSessionPeriods_Clicked(object sender, EventArgs e)
         {
-
+            var modal = new WorkSessionsModal(WindowSettings.Source);
+            modal.Run();
+            modal.Destroy();
         }
 
         private void BtnReceipts_Clicked(object sender, EventArgs e)

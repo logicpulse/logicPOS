@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.POS
                                         LocalizedString.Instance["global_money"],
                                         true,
                                         true,
-                                        RegularExpressions.Money,
+                                        RegularExpressions.DecimalGreaterEqualThanZeroFinancial,
                                         false,
                                         true);
 

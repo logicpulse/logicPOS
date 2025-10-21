@@ -4,7 +4,7 @@ using System;
 
 namespace LogicPOS.Api.Entities
 {
-    public class WorkSessionPeriod : ApiEntity
+    public class WorkSessionPeriod : ApiEntity, IWithDesignation
     {
         public WorkSessionPeriodType Type { get; set; }
         public WorkSessionPeriodStatus Status { get; set; }
