@@ -1,6 +1,9 @@
-﻿using LogicPOS.Api.Entities;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using System;
@@ -55,8 +58,31 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var command = CreateAddCommand();
-            Guid? id = DocumentsService.IssueDocument(command);
+            var addCommand = CreateAddCommand();
+
+            var previewQuery = new GetDocumentPreviewDataQuery
+            {
+                CurrencyId = addCommand.CurrencyId,
+                Type = addCommand.Type,
+                ShipFromAdress = addCommand.ShipFromAdress,
+                ShipToAdress = addCommand.ShipToAdress,
+                Discount = addCommand.Discount,
+                Notes = addCommand.Notes,
+                Details = addCommand.Details,
+                ExchangeRate = addCommand.ExchangeRate,
+            };
+
+            var confirmModal = new DocumentPreviewModal(this, previewQuery);
+            var confirmation =  (ResponseType)confirmModal.Run();
+            confirmModal.Destroy();
+
+            if(confirmation != ResponseType.Yes)
+            {
+                Run();
+                return;
+            }
+
+            Guid? id = DocumentsService.IssueDocument(addCommand);
             if (id == null)
             {
                 Run();

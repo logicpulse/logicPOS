@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.PDFViewer;
 using System;

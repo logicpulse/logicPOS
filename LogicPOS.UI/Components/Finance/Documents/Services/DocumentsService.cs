@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPrint;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.UI.Errors;
@@ -103,5 +104,16 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             }
         }
 
+        public static Document GetPreviewData(GetDocumentPreviewDataQuery query)
+        {
+            var document = DependencyInjection.Mediator.Send(query).Result;
+            if (document.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(document);
+                return null;
+            }
+
+            return document.Value;
+        }
     }
 }
