@@ -60,26 +60,29 @@ namespace LogicPOS.UI.Components.Modals
 
             var addCommand = CreateAddCommand();
 
-            var previewQuery = new GetDocumentPreviewDataQuery
+            if (DraftMode == false)
             {
-                CurrencyId = addCommand.CurrencyId,
-                Type = addCommand.Type,
-                ShipFromAdress = addCommand.ShipFromAdress,
-                ShipToAdress = addCommand.ShipToAdress,
-                Discount = addCommand.Discount,
-                Notes = addCommand.Notes,
-                Details = addCommand.Details,
-                ExchangeRate = addCommand.ExchangeRate,
-            };
+                var previewQuery = new GetDocumentPreviewDataQuery
+                {
+                    CurrencyId = addCommand.CurrencyId,
+                    Type = addCommand.Type,
+                    ShipFromAdress = addCommand.ShipFromAdress,
+                    ShipToAdress = addCommand.ShipToAdress,
+                    Discount = addCommand.Discount,
+                    Notes = addCommand.Notes,
+                    Details = addCommand.Details,
+                    ExchangeRate = addCommand.ExchangeRate,
+                };
 
-            var confirmModal = new DocumentPreviewModal(this, previewQuery);
-            var confirmation =  (ResponseType)confirmModal.Run();
-            confirmModal.Destroy();
+                var confirmModal = new DocumentPreviewModal(this, previewQuery);
+                var confirmation = (ResponseType)confirmModal.Run();
+                confirmModal.Destroy();
 
-            if(confirmation != ResponseType.Yes)
-            {
-                Run();
-                return;
+                if (confirmation != ResponseType.Yes)
+                {
+                    Run();
+                    return;
+                }
             }
 
             Guid? id = DocumentsService.IssueDocument(addCommand);
