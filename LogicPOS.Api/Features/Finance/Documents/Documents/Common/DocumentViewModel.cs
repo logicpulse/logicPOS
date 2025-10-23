@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Documents.Common;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -14,7 +15,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public string Number { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
-        public bool IsCancelled => Status == "A";
         public AgtInfo AgtInfo { get; set; }
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
         public DateTime? ShipFromAddressDeliveryDate { get; set; }
@@ -64,14 +64,5 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
     public class Currency : ApiEntity
     {
         public string Designation { get; set; }
-    }
-
-    public class AgtInfo
-    {
-        public Guid DocumentId { get; set; }
-        public string RequestId { get; set; }
-        public string ValidationResultCode { get; set; }
-        public string ValidationStatus { get; set; }
-        public string ValidationErrors { get; set; }
     }
 }

@@ -3,7 +3,9 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.VatRates.AddVatRate;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Linq;
 
@@ -24,7 +26,12 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateTotalPaidColumn());
             GridView.AppendColumn(CreateTotalToPayColumn());
             GridView.AppendColumn(CreateRelatedDocumentsColumn());
-            GridView.AppendColumn(CreateAgtStatusColumn());
+
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                GridView.AppendColumn(CreateAgtStatusColumn());
+            }
+           
         }
 
         protected override void InitializeSort()

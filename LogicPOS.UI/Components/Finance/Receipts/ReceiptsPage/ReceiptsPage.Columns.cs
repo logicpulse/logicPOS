@@ -1,12 +1,43 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class ReceiptsPage
     {
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(CreateSelectColumn());
+            GridView.AppendColumn(CreateDateColumn());
+            GridView.AppendColumn(CreateNumberColumn());
+            GridView.AppendColumn(CreateStatusColumn());
+            GridView.AppendColumn(CreateEntityColumn());
+            GridView.AppendColumn(CreateFiscalNumberColumn());
+            GridView.AppendColumn(CreateTotalColumn());
+            GridView.AppendColumn(CreateRelatedReceiptsColumn());
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                GridView.AppendColumn(CreateAgtStatusColumn());
+            }
+        }
+
+        private TreeViewColumn CreateAgtStatusColumn()
+        {
+            void RenderAgtStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var receipt = (ReceiptViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = receipt.GetAgtStatus();
+            }
+
+            var title = "AGT/Est. Validação";
+            var col = Columns.CreateColumn(title, 11, RenderAgtStatus);
+            return col;
+        }
+
         private TreeViewColumn CreateRelatedReceiptsColumn()
         {
             void RenderRelatedReceipts(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)

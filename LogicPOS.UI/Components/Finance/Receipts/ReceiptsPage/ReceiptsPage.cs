@@ -9,6 +9,7 @@ using LogicPOS.UI.Components.Documents;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,18 +50,6 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;
-  
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(CreateSelectColumn());
-            GridView.AppendColumn(CreateDateColumn());
-            GridView.AppendColumn(CreateNumberColumn());
-            GridView.AppendColumn(CreateStatusColumn());
-            GridView.AppendColumn(CreateEntityColumn());
-            GridView.AppendColumn(CreateFiscalNumberColumn());
-            GridView.AppendColumn(CreateTotalColumn());
-            GridView.AppendColumn(CreateRelatedReceiptsColumn());
-        }
         
         protected override void InitializeSort()
         {

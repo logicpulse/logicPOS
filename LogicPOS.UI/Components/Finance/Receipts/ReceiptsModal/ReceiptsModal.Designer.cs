@@ -4,6 +4,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
@@ -28,15 +29,21 @@ namespace LogicPOS.UI.Components.Modals
             InitializeButtons();
             AddButtonsEventHandlers();
 
-            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
+
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
             {
-                new ActionAreaButton(BtnPrintDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok),
-                new ActionAreaButton(BtnCancelDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnOpenDocument, ResponseType.Ok),
-                new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok),
-                new ActionAreaButton(BtnClose, ResponseType.Close),
-            };
+                actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAgt, ResponseType.Ok));
+                actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));
+            }
+
+            actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocumentAs, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnCancelDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnOpenDocument, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentEmail, ResponseType.Ok));
+            actionAreaButtons.Add(new ActionAreaButton(BtnClose, ResponseType.Close));
+            
 
             return actionAreaButtons;
         }

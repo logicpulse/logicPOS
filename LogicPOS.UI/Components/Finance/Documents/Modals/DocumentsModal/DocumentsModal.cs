@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             bool canCancel = true;
 
-            if (document.IsCancellable)
+            if (document.IsCancellable == false)
             {
                 canCancel = false;
             }
