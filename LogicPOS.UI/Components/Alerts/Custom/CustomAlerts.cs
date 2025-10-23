@@ -287,8 +287,6 @@ namespace LogicPOS.UI.Alerts
                                              Error error)
         {
             var errorMessage = new StringBuilder();
-            errorMessage.AppendLine("Código: " + error.Code);
-            errorMessage.AppendLine("Descrição: " + error.Description);
 
             var metadata = error.Metadata;
 
@@ -300,9 +298,8 @@ namespace LogicPOS.UI.Alerts
                 {
                     foreach (var problemDetailsError in problemDetails.Errors)
                     {
-                        errorMessage.AppendLine("\n# Erro");
-                        errorMessage.AppendLine("Nome: " + problemDetailsError.Name);
-                        errorMessage.AppendLine("Motivo: " + problemDetailsError.Reason);
+                        errorMessage.AppendLine($"\n# Erro ({problemDetailsError.Name}):");
+                        errorMessage.AppendLine("Descrição: " + problemDetailsError.Reason);
                     }
                 }
 

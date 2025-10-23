@@ -1,5 +1,7 @@
 ﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Documents.Documents;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -9,13 +11,23 @@ namespace LogicPOS.Api.Features.Finance.Agt.RegisterDocument
 {
     public class RegisterDocumentCommadHandler : RequestHandler<RegisterDocumentCommand, ErrorOr<Guid>>
     {
-        public RegisterDocumentCommadHandler(IHttpClientFactory httpFactory) : base(httpFactory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+
+        public RegisterDocumentCommadHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache = cache;
         }
 
         public override async Task<ErrorOr<Guid>> Handle(RegisterDocumentCommand request, CancellationToken cancellationToken = default)
         {
-            return await HandleAddCommandAsync("agt/documents", request, cancellationToken);
+            var result =  await HandleAddCommandAsync("agt/documents", request, cancellationToken);
+           
+            if (result.IsError == false)
+            {
+                DocumentsCache.Clear(_keyedMemoryCache);
+            }
+
+            return result;
         }
     }
 }

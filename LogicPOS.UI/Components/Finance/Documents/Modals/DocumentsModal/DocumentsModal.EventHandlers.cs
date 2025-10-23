@@ -79,8 +79,10 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             CustomAlerts.Information(this)
-               .WithMessage($"Não foi possível enviar o documento {Page.SelectedEntity.Number} para a AGT.")
+               .WithMessage($"O documento {Page.SelectedEntity.Number} foi enviado à AGT com sucesso.")
                .ShowAlert();
+
+            Page.Refresh();
         }
 
         private void BtnDeleteDraft_Clicked(object sender, EventArgs e)

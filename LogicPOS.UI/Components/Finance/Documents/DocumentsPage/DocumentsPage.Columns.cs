@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderAgtStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var doc = (DocumentViewModel)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = doc.IsAgtDocument ? "Não Submetido" : "N/A";
+                (cell as CellRendererText).Text = doc.GetAgtStatus();
             }
 
             var title = "AGT/Est. Validação";
