@@ -21,6 +21,20 @@ namespace LogicPOS.Api.Features.Articles.Common
         public decimal Price3 { get; set; }
         public decimal Price4 { get; set; }
         public decimal Price5 { get; set; }
+
+        public decimal Price1_PromotionValue { get; set; }
+        public decimal Price2_PromotionValue { get; set; }
+        public decimal Price3_PromotionValue { get; set; }
+        public decimal Price4_PromotionValue { get; set; }
+        public decimal Price5_PromotionValue { get; set; }
+
+        public bool Price1_UsePromotion { get; set; }
+        public bool Price2_UsePromotion { get; set; }
+        public bool Price3_UsePromotion { get; set; }
+        public bool Price4_UsePromotion { get; set; }
+        public bool Price5_UsePromotion { get; set; }
+
+
         public decimal? VatDirectSelling { get; set; }
         public decimal Discount { get; set; }
         public string Unit { get; set; }
@@ -37,15 +51,35 @@ namespace LogicPOS.Api.Features.Articles.Common
             switch (priceType)
             {
                 case 2:
+                    if(Price2_UsePromotion)
+                    {
+                        return Price2_PromotionValue;
+                    }
                     return Price2;
                 case 3:
+                    if (Price3_UsePromotion)
+                    {
+                        return Price3_PromotionValue;
+                    }
                     return Price3;
                 case 4:
+                    if (Price4_UsePromotion)
+                    {
+                        return Price4_PromotionValue;
+                    }
                     return Price4;
                 case 5:
+                    if (Price5_UsePromotion)
+                    {
+                        return Price5_PromotionValue;
+                    }
                     return Price5;
                 default:
-                     return Price1;
+                    if (Price1_UsePromotion)
+                    {
+                        return Price1_PromotionValue;
+                    }
+                        return Price1;
             }
         }
 
