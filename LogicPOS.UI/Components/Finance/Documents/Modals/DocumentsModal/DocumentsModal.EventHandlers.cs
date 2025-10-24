@@ -28,6 +28,17 @@ namespace LogicPOS.UI.Components.Modals
             BtnDeleteDraft.Clicked += BtnDeleteDraft_Clicked;
             BtnSendDocumentToAgt.Clicked += BtnSendDocumentToAgt_Clicked;
             BtnUpdateAgtValidationStatus.Clicked += BtnUpdateAgtValidationStatus_Clicked;
+            BtnViewAgtDocument.Clicked += BtnViewAgtDocument_Clicked;
+        }
+
+        private void BtnViewAgtDocument_Clicked(object sender, EventArgs e)
+        {
+            if (Page.SelectedEntity == null)
+            {
+                return;
+            }
+
+            AgtDocumentInfoModal.Show(Page.SelectedEntity.Id,this);
         }
 
         private void BtnUpdateAgtValidationStatus_Clicked(object sender, EventArgs e)

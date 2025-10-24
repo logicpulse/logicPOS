@@ -28,6 +28,7 @@ namespace LogicPOS.UI.Components.Modals
 
             AddEventHandlers();
         }
+      
         private void InitializeTxtSystemCurrencyTotalPaid()
         {
             TxtSystemCurrencyTotalPaid = new TextBox(this,
@@ -90,6 +91,7 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtTotalPaid.Entry.Changed += TxtTotalPaid_Changed;
         }
+        
         private void InitializeTxtPaymentMethod()
         {
             TxtPaymentMethod = new TextBox(this,
@@ -103,6 +105,7 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;
         }
+        
         private void InitializeTxtCurrency()
         {
             TxtCurrency = new TextBox(this,

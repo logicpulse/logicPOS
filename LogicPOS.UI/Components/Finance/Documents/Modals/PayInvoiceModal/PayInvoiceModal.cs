@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.PayDocuments;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly decimal _invoicesTotalFinal;
         public PayInvoiceModal(Window parent,
                                IEnumerable<DocumentViewModel> invoices) : base(parent,
-                                                     GeneralUtils.GetResourceByName("window_title_dialog_pay_invoices"),
+                                                     LocalizedString.Instance["window_title_dialog_pay_invoices"],
                                                      new Size(500, 500),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_pay_invoice.png")
         {

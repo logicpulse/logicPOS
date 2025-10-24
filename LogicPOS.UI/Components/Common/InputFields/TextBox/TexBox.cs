@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Components.InputFields
         private void InitializeButtons()
         {
             BtnKeyboard = CreateKeyBoardButton();
-            BtnSelect = CreateKeyBoardButton();
+            BtnSelect = CreateSelecEntityButton();
         }
 
 
@@ -144,7 +144,7 @@ namespace LogicPOS.UI.Components.InputFields
 
             if (includeSelectButton)
             {
-                hbox.PackStart(CreateSelecEntityButton(), false, false, 0);
+                hbox.PackStart(BtnSelect, false, false, 0);
             }
 
             if (includeKeyBoardButton)

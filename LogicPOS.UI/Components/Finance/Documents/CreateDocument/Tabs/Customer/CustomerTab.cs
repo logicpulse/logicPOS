@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         }
 
         public string FiscalNumber => TxtFiscalNumber.Text;
-        
+
         public DocumentCustomer GetDocumentCustomer()
         {
             return new DocumentCustomer
@@ -170,15 +170,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             Clear();
 
-             TxtCustomer.Text = contributor.GetCustomerName() ?? "";
-             TxtCustomer.SelectedEntity = null;
-
-             TxtLocality.Text = contributor.GetLocality() ?? "";
-             TxtAddress.Text = contributor.GetAddress() ?? "";
-             TxtCity.Text = contributor.GetCity() ?? "";
-             TxtPhone.Text = contributor.Phone ?? "";
-             TxtEmail.Text = contributor.Email ?? "";
-             TxtZipCode.Text = contributor.PostalCode ?? "";
+            TxtCustomer.Text = contributor.GetCustomerName() ?? "";
+            TxtCustomer.SelectedEntity = null;
+            TxtFiscalNumber.Text = contributor.Nif ?? "";
+            TxtLocality.Text = contributor.GetLocality() ?? "";
+            TxtAddress.Text = contributor.GetAddress() ?? "";
+            TxtCity.Text = contributor.GetCity() ?? "";
+            TxtPhone.Text = contributor.Phone ?? "";
+            TxtEmail.Text = contributor.Email ?? "";
+            TxtZipCode.Text = contributor.PostalCode ?? "";
         }
     }
 }

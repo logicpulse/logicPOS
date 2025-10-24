@@ -5,7 +5,7 @@ using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields;
-using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Linq;
 
@@ -53,8 +53,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                        isValidatable: false,
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true);
-
-            TxtNotes.Entry.IsEditable = true;
         }
 
         private void InitializeTxtCopyDocument()
@@ -84,8 +82,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtCurrency.Text = CurrenciesService.Default.Designation;
             TxtCurrency.SelectedEntity = CurrenciesService.Default;
-
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
+
+            if (SystemInformationService.SystemInformation.IsAngola)
+            {
+                TxtCurrency.BtnSelect.Sensitive = TxtCurrency.Entry.Sensitive = false;
+            }
         }
 
         private void InitializeTxtPaymnentCondition()

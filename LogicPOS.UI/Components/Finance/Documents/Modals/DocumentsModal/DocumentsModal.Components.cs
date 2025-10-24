@@ -28,6 +28,11 @@ namespace LogicPOS.UI.Components.Modals
                                                                                                     "Atua. Estado",
                                                                                                     AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
 
+        private IconButtonWithText BtnViewAgtDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                    "Agt. Info",
+                                                                                                    AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
+
+
 
         private IconButtonWithText BtnNewDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                                        GeneralUtils.GetResourceByName("global_button_label_new_financial_document"),
@@ -56,23 +61,23 @@ namespace LogicPOS.UI.Components.Modals
             bool documentIsSelected = selectedDocument != null;
 
             BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
-            BtnCancelDocument.Sensitive = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable;
             BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
-            BtnEditDraft.Sensitive = documentIsSelected && selectedDocument.IsDraft;
 
-            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsNotSelectionMode;
-            BtnCloneDocument.Sensitive = BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && IsNotSelectionMode;
-            BtnCancelDocument.Visible = documentIsSelected && selectedDocument.IsDraft == false && IsNotSelectionMode;
+            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsInvoicePaymentMode;
+            BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && IsNotSelectionMode;
+            BtnCancelDocument.Visible = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable && IsNotSelectionMode; ;
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
             BtnUpdateAgtValidationStatus.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
+            BtnViewAgtDocument.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode; 
         }
 
         private bool IsNotSelectionMode => _mode != Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection;
+        private bool IsInvoicePaymentMode => _mode == Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices;
 
     }
 }

@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.POS
 
         protected override void OnResponse(ResponseType response)
         {
-            if (response != ResponseType.Ok && response != ResponseType.Cancel)
+            if (response != ResponseType.Ok && response != ResponseType.Cancel && response != ResponseType.Close)
             {
                 Run();
                 return;
