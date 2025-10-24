@@ -98,6 +98,7 @@ namespace LogicPOS.UI.Components.Menus
             if (MenuSubfamilies.SelectedEntity == null)
             {
                 Entities.Clear();
+                CurrentQuery.SubFamilyId = Guid.Empty;
                 return;
             }
 

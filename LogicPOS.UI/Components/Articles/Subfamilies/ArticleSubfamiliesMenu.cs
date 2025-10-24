@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Menus
         private string ButtonName => "buttonSubFamilyId";
         private Size ButtonSize { get; }
 
-        private ArticleFamiliesMenu FamiliesMenu { get; }
+        public ArticleFamiliesMenu FamiliesMenu { get; }
 
         public ArticleSubfamiliesMenu(ArticleFamiliesMenu familiesMenu,
                                       CustomButton btnPrevious,
@@ -46,6 +46,7 @@ namespace LogicPOS.UI.Components.Menus
         private void FamiliesMenu_FamilySelected(ArticleFamily family)
         {
             Refresh();
+
         }
 
         protected override CustomButton CreateButtonForEntity(ArticleSubfamily entity)
@@ -81,7 +82,10 @@ namespace LogicPOS.UI.Components.Menus
             {
                 return;
             }
-
+            if (subfamilies.Value.Count() == 0)
+            {
+                SelectedEntity = null;
+            }
             Entities.AddRange(subfamilies.Value);
         }
 

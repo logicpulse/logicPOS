@@ -17,8 +17,13 @@ namespace LogicPOS.UI.Components.Menus
     {
         private void AddEventHandlers()
         {
+            MenuSubfamilies.FamiliesMenu.OnEntitySelected += OnFamilySelected;
             MenuSubfamilies.OnEntitySelected += OnSubfamilySelected;
             OnEntitySelected += BtnArticle_Clicked;
+        }
+        private void OnFamilySelected(ArticleFamily family)
+        {
+            Refresh();
         }
 
         private void OnSubfamilySelected(ArticleSubfamily subfamily)
