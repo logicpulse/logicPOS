@@ -46,7 +46,6 @@ namespace LogicPOS.UI.Components.Menus
         private void FamiliesMenu_FamilySelected(ArticleFamily family)
         {
             Refresh();
-
         }
 
         protected override CustomButton CreateButtonForEntity(ArticleSubfamily entity)

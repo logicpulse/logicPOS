@@ -1,6 +1,5 @@
 ﻿using Gtk;
 using logicpos.Classes.Logic.Others;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Common.Pagination;
@@ -9,7 +8,6 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Buttons;
 using LogicPOS.UI.Components.Common.Menus;
 using System;
-using System.ComponentModel;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Menus
