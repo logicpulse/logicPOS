@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using MediatR;
 using System.Collections.Generic;
+using Table = LogicPOS.Api.Features.POS.Tables.Common.Table;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -23,7 +24,11 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            var table = TablesService.GetTable(SelectedEntity.Id);
+            Table table = null;
+            if (SelectedEntity != null)
+            {
+                table = TablesService.GetTable(SelectedEntity.Id);
+            }
             var modal = new TableModal(mode, table);
             var response = modal.Run();
             modal.Destroy();
@@ -40,7 +45,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-
             AddCodeSorting(0);
             AddDesignationSorting(2);
             AddPlaceSorting();
