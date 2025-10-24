@@ -25,16 +25,6 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        private void AddButtonsEventHandlers()
-        {
-            BtnOpenDocument.Clicked += BtnOpenDocument_Clicked;
-            BtnPrintDocumentAs.Clicked += BtnPrintDocumentAs_Clicked;
-            BtnCancelDocument.Clicked += BtnCancelReceipt_Clicked;
-            BtnPrintDocument.Clicked += BtnPrintDocument_Clicked;
-            BtnSendDocumentEmail.Clicked += BtnSendDocumentEmail_Clicked;
-        }
-
-
         private void ShowCannotCancelReceiptMessage(string refNo)
         {
             string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), refNo);

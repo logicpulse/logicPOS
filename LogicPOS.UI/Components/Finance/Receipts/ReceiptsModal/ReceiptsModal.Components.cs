@@ -11,6 +11,15 @@ namespace LogicPOS.UI.Components.Modals
         private ReceiptsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment");
 
+        private IconButtonWithText BtnSendDocumentToAgt = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                   "Enviar",
+                                                                                                   AppSettings.Paths.Images + @"Icons\send_document_to_agt.png");
+
+        private IconButtonWithText BtnUpdateAgtValidationStatus = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                    "Atua. Estado",
+                                                                                                    AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
+
+
         private IconButtonWithText BtnPrintDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Print, "touchButton_Green");
         private IconButtonWithText BtnOpenDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument, "touchButton_Green");
         private IconButtonWithText BtnClose { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.Close);
