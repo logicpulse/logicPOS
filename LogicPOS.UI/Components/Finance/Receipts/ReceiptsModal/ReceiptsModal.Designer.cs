@@ -35,6 +35,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAgt, ResponseType.Ok));
                 actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));
+                actionAreaButtons.Add(new ActionAreaButton(BtnViewAgtDocument, ResponseType.Ok));
             }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnPrintDocument, ResponseType.Ok));

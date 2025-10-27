@@ -37,8 +37,8 @@ namespace LogicPOS.UI.Components.Modals
 
 
         IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
-                                                                                                      "Agt. Preench.",
-                                                                                                      AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_show_change_user_dialog.png");
+                                                                                                      "Preencher",
+                                                                                                      AppSettings.Paths.Images + @"Icons\icon_pos_agt_search_customer_data.png");
 
 
         public void UpdateUI()

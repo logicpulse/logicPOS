@@ -22,15 +22,15 @@ namespace LogicPOS.UI.Components.Modals
 
         private IconButtonWithText BtnSendDocumentToAgt = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                     "Enviar",
-                                                                                                    AppSettings.Paths.Images + @"Icons\send_document_to_agt.png");
+                                                                                                    AppSettings.Paths.Images + @"Icons\icon_pos_agt_send.png");
 
         private IconButtonWithText BtnUpdateAgtValidationStatus = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                     "Atua. Estado",
-                                                                                                    AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
+                                                                                                    AppSettings.Paths.Images + @"Icons\icon_pos_agt_update.png");
 
         private IconButtonWithText BtnViewAgtDocument = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                     "Agt. Info",
-                                                                                                    AppSettings.Paths.Images + @"Icons\update_agt_validation_status.png");
+                                                                                                    AppSettings.Paths.Images + @"Icons\icon_pos_agt_info.png");
 
 
 
