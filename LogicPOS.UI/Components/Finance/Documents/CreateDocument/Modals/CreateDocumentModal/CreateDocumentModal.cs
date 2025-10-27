@@ -187,6 +187,10 @@ namespace LogicPOS.UI.Components.Modals
         {
             var analyzer = documentType.Analyzer;
             ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
+            if(analyzer.IsGuide() && CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId!=Guid.Empty)
+            {
+                ShipToTab.GetCustomerAddress((Guid)CustomerTab.CustomerId);
+            }
             if (SinglePaymentMethod == false)
             {
                 PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();

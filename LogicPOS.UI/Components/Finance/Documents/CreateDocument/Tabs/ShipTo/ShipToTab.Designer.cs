@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeKeyBoardButton: false);
 
             TxtDeliveryDate.Entry.IsEditable = true;
-            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            TxtDeliveryDate.Text = DateTime.Now.ToString();
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
         private void InitializeTxtCountry()
@@ -113,7 +113,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtZipCode = new TextBox(SourceWindow,
                                          GeneralUtils.GetResourceByName("global_zipcode"),
-                                         isRequired: true,
+                                         isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);

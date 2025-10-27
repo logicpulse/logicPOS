@@ -1,9 +1,11 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -48,6 +50,20 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (string.IsNullOrEmpty(TxtCountry.Text))
             {
                 TxtCountry.Clear();
+            }
+        }
+
+        public void GetCustomerAddress(Guid customerId)
+        {
+            var customer=CustomersService.Customers.FirstOrDefault(c => c.Id == customerId);
+            if (customer != null)
+            {
+                TxtAddress.Text = customer.Address;
+                TxtCity.Text = customer.City;
+                TxtCountry.Text = customer.Country.Designation;
+                TxtCountry.SelectedEntity = customer.Country;
+                TxtRegion.Text = customer.Locality;
+                TxtZipCode.Text = customer.ZipCode;
             }
         }
 
