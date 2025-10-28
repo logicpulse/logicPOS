@@ -61,7 +61,8 @@ namespace LogicPOS.UI.Components.Pages
 
                 foreach (var monthSale in data.Sales)
                 {
-                    treeStore.AppendValues(new DateTime(year, monthSale.Month, 1), Convert.ToDouble(Math.Round(monthSale.FinalTotal, 2)));
+                    double grossTotal = Convert.ToDouble(monthSale.FinalTotal);
+                    treeStore.AppendValues(new DateTime(year, monthSale.Month, 1), grossTotal);
                 }
 
                 return treeStore;
