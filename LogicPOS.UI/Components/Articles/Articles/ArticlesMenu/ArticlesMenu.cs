@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Components.Menus
         protected override CustomButton CreateButtonForEntity(ArticleViewModel entity)
         {
             string label = string.IsNullOrWhiteSpace(entity.Button?.Label) ? entity.Designation : entity.Button.Label;
- 
+
             if (string.IsNullOrWhiteSpace(entity.Button?.ImageExtension))
             {
                 return MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, null, ButtonSize);
@@ -60,7 +60,7 @@ namespace LogicPOS.UI.Components.Menus
             var button = MenuButton<ArticleViewModel>.CreateButton(ButtonName, label, null, ButtonSize);
             _imageProcessor.ProcessButtonImage(button as ImageButton, () => GetButtonImageFromApi(entity));
 
-            return button; 
+            return button;
         }
 
         private static GetArticlesQuery GetFavoriteQuery()
@@ -73,7 +73,7 @@ namespace LogicPOS.UI.Components.Menus
             };
         }
 
-  
+
         private string GetButtonImageFromApi(ArticleViewModel article)
         {
             string base64Image = ArticlesService.GetArticleImage(article.Id);
@@ -93,19 +93,22 @@ namespace LogicPOS.UI.Components.Menus
             CurrentQuery.Favorite = PresentFavorites ? true : (bool?)null;
             CurrentQuery.PageSize = DefaultPageSize;
 
-            if (MenuSubfamilies.SelectedEntity == null)
+            if (MenuSubfamilies.SelectedEntity == null && !PresentFavorites)
             {
                 Entities.Clear();
                 CurrentQuery.SubFamilyId = Guid.Empty;
                 return;
             }
 
-            CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;
+            if (MenuSubfamilies.SelectedButton != null)
+            {
+                CurrentQuery.SubFamilyId = MenuSubfamilies.SelectedEntity.Id;
+                PresentFavorites = false;
+            }
 
             if (PresentFavorites)
             {
                 CurrentQuery.SubFamilyId = null;
-                PresentFavorites = false;
                 return;
             }
 

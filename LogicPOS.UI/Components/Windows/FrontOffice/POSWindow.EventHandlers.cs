@@ -124,18 +124,14 @@ namespace LogicPOS.UI.Components.Windows
         private void BtnFavorites_Clicked(object sender, EventArgs e)
         {
             if (MenuFamilies.SelectedButton != null &&
-                MenuFamilies.SelectedButton.Sensitive == false)
-            {
-                MenuFamilies.SelectedButton.Sensitive = true;
-            }
-
-            if (MenuSubfamilies.SelectedButton != null &&
-                MenuSubfamilies.SelectedButton.Sensitive == false)
+                MenuFamilies.SelectedButton.Sensitive == false && !MenuArticles.PresentFavorites)
             {
                 MenuSubfamilies.SelectedButton.Sensitive = true;
+                MenuSubfamilies.SelectedButton = null;
             }
 
             MenuArticles.PresentFavorites = true;
+           
             MenuArticles.Refresh();
         }
 
