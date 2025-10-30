@@ -8,12 +8,12 @@ namespace LogicPOS.Api.Features.Articles.Common
     public class ArticleViewModel : ApiEntity, IWithCode, IWithDesignation
     {
         public uint Order { get; set; }
-        public string Code { get; set; } 
+        public string Code { get; set; }
         public bool IsComposed { get; set; }
-        public string Family { get; set; } 
-        public string Subfamily { get; set; } 
-        public string Designation { get; set; } 
-        public string Type { get; set; } 
+        public string Family { get; set; }
+        public string Subfamily { get; set; }
+        public string Designation { get; set; }
+        public string Type { get; set; }
         public decimal DefaultQuantity { get; set; }
         public decimal MinimumStock { get; set; }
         public decimal Price1 { get; set; }
@@ -51,35 +51,15 @@ namespace LogicPOS.Api.Features.Articles.Common
             switch (priceType)
             {
                 case 2:
-                    if(Price2_UsePromotion)
-                    {
-                        return Price2_PromotionValue;
-                    }
-                    return Price2;
+                    return Price2_UsePromotion ? Price2_PromotionValue : Price2;
                 case 3:
-                    if (Price3_UsePromotion)
-                    {
-                        return Price3_PromotionValue;
-                    }
-                    return Price3;
+                    return Price3_UsePromotion ? Price3_PromotionValue : Price3;
                 case 4:
-                    if (Price4_UsePromotion)
-                    {
-                        return Price4_PromotionValue;
-                    }
-                    return Price4;
+                    return Price4_UsePromotion ? Price4_PromotionValue : Price4;
                 case 5:
-                    if (Price5_UsePromotion)
-                    {
-                        return Price5_PromotionValue;
-                    }
-                    return Price5;
+                    return Price5_UsePromotion ? Price5_PromotionValue : Price5;
                 default:
-                    if (Price1_UsePromotion)
-                    {
-                        return Price1_PromotionValue;
-                    }
-                        return Price1;
+                    return Price1_UsePromotion ? Price1_PromotionValue : Price1;
             }
         }
 
@@ -88,19 +68,24 @@ namespace LogicPOS.Api.Features.Articles.Common
             switch (priceType)
             {
                 case 2:
-                    Price2 = price;
+                    Price2_PromotionValue = Price2_UsePromotion ? price : Price2_PromotionValue;
+                    Price2 = Price2_UsePromotion ? Price2 : price;
                     break;
                 case 3:
-                    Price3 = price;
+                    Price3_PromotionValue = Price3_UsePromotion ? price : Price3_PromotionValue;
+                    Price3 = Price3_UsePromotion ? Price3 : price;
                     break;
                 case 4:
-                    Price4 = price;
+                    Price4_PromotionValue = Price4_UsePromotion ? price : Price4_PromotionValue;
+                    Price4 = Price4_UsePromotion ? Price4 : price;
                     break;
                 case 5:
-                    Price5 = price;
+                    Price5_PromotionValue = Price5_UsePromotion ? price : Price5_PromotionValue;
+                    Price5 = Price5_UsePromotion ? Price5 : price;
                     break;
                 default:
-                    Price1 = price;
+                    Price1_PromotionValue = Price1_UsePromotion ? price : Price1_PromotionValue;
+                    Price1 = Price1_UsePromotion ? Price1 : price;
                     break;
             }
         }

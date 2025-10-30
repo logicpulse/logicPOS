@@ -70,7 +70,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
 
             //Delivery Entry
             string initialValue = (pInitialValue > 0) ? pInitialValue.ToString("F2") : string.Empty;
-            _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, RegularExpressions.DecimalNumber, true) { Text = initialValue, Alignment = 0.5F };
+            _entryDeliveryValue = new ValidatableTextBox(parentWindow, KeyboardMode.None, RegularExpressions.Money, true) { Text = initialValue, Alignment = 0.5F };
             _entryDeliveryValue.ModifyFont(Pango.FontDescription.FromString(fontMoneyPadTextEntry));
             //Dialog Validated Equal to Entry, Its the Only Entry in Dialog
             Validated = _entryDeliveryValue.Validated;
