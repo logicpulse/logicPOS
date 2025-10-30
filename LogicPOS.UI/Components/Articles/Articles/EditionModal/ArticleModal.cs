@@ -34,6 +34,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             UpdateCompositionTabVisibility();
             UpdateValidatableFields();
+            HandleMode(modalMode);
+        }
+
+        private void HandleMode(EntityEditionModalMode modalMode)
+        {
+            if(_modalMode == EntityEditionModalMode.Insert)
+            {
+                _txtCode.Text = ArticlesService.GenerateRandomCode();
+            }
         }
 
         private AddArticleCommand CreateAddCommand()

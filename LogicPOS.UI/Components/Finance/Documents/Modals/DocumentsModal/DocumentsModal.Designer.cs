@@ -12,9 +12,9 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal
     {
-       private IconButtonWithText CreateButton(string name,
-                                             string label,
-                                             string icon)
+        private IconButtonWithText CreateButton(string name,
+                                              string label,
+                                              string icon)
         {
             return new IconButtonWithText(
                 new ButtonSettings
@@ -42,9 +42,12 @@ namespace LogicPOS.UI.Components.Modals
                 actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));
                 actionAreaButtons.Add(new ActionAreaButton(BtnViewAgtDocument, ResponseType.Ok));
             }
+            else
+            {
+                actionAreaButtons.Add(new ActionAreaButton(BtnCloneDocument, ResponseType.Ok));
+            }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));
-            actionAreaButtons.Add(new ActionAreaButton(BtnCloneDocument, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnEditDraft, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnDeleteDraft, ResponseType.Ok));
             actionAreaButtons.Add(new ActionAreaButton(BtnCancelDocument, ResponseType.Ok));
@@ -87,8 +90,8 @@ namespace LogicPOS.UI.Components.Modals
         protected override Widget CreateBody()
         {
             var pageOptions = PageOptions.SelectionPageOptions;
-           
-            if(_mode == Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices)
+
+            if (_mode == Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices)
             {
                 pageOptions = DocumentsPage.UpaidInvoicesOptions;
             }

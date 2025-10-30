@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Articles
 {
     public static class ArticlesService
     {
+        private static readonly Random _random = new Random();
         private static List<ArticleViewModel> _articles;
 
         public static List<ArticleViewModel> Articles
@@ -27,11 +28,12 @@ namespace LogicPOS.UI.Components.Articles
             {
                 if (_articles == null)
                 {
-                   _articles = GetAllArticles();
+                    _articles = GetAllArticles();
                 }
                 return _articles;
             }
         }
+
         public static void RefreshArticlesCache()
         {
             _articles = GetAllArticles();
@@ -139,7 +141,7 @@ namespace LogicPOS.UI.Components.Articles
             var ArticleHistories = result.Value;
             return ArticleHistories.Items.ToList();
         }
-       
+
         public static string GetArticleImage(Guid id)
         {
             var result = DependencyInjection.Mediator.Send(new GetArticleImageQuery(id)).Result;
@@ -160,7 +162,7 @@ namespace LogicPOS.UI.Components.Articles
 
         public static decimal GetArticleTotalStock(Guid articleId)
         {
-            
+
             var query = new GetArticlesTotalStocksQuery(new List<Guid> { articleId });
             var result = DependencyInjection.Mediator.Send(query).Result;
 
@@ -172,7 +174,7 @@ namespace LogicPOS.UI.Components.Articles
 
             return result.Value.First().Quantity;
         }
-        
+
         public static List<TotalStock> GetArticlesTotalStocks(IEnumerable<Guid> articleIds)
         {
             var query = new GetArticlesTotalStocksQuery(articleIds);
@@ -183,6 +185,20 @@ namespace LogicPOS.UI.Components.Articles
                 return null;
             }
             return result.Value.ToList();
+        }
+
+        public static string GenerateRandomCode()
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            int length = _random.Next(3, 7); 
+            char[] result = new char[length];
+
+            for (int i = 0; i < length; i++)
+            {
+                result[i] = chars[_random.Next(chars.Length)];
+            }
+
+            return new string(result);
         }
     }
 }
