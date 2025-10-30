@@ -51,10 +51,6 @@ namespace LogicPOS.Api.Features.Common.Requests
             {
                 case HttpStatusCode.OK:
                     return true;
-                case HttpStatusCode.BadRequest:
-                    return false;
-                case HttpStatusCode.NotFound:
-                    return false;
                 default:
                     return false;
             }

@@ -109,6 +109,7 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var result = _mediator.Send(GetDeleteCommand()).Result;
+
             ArticlesService.RefreshArticlesCache();
 
             if (result.IsError)
