@@ -22,11 +22,12 @@ namespace LogicPOS.UI.Components.Modals
             TxtEndDate = new TextBox(this,
                                          GeneralUtils.GetResourceByName("global_date_end"),
                                          isRequired: true,
-                                         isValidatable: false,
+                                         isValidatable: true,
+                                         RegularExpressions.Date,
                                          includeSelectButton: true,
                                          includeKeyBoardButton: false);
 
-            TxtEndDate.Entry.IsEditable = false;
+            TxtEndDate.Entry.IsEditable = true;
             TxtEndDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
             TxtEndDate.Entry.Changed += TxtEndDate_Entry_Changed;
             TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtCustomer = new TextBox(this,
                                        GeneralUtils.GetResourceByName("global_customer"),
-                                       isRequired: false,
+                                       isRequired: true,
                                        isValidatable: false,
                                        includeSelectButton: true,
                                        includeKeyBoardButton: false);
@@ -56,12 +57,14 @@ namespace LogicPOS.UI.Components.Modals
             TxtStartDate = new TextBox(this,
                                       GeneralUtils.GetResourceByName("global_date_start"),
                                       isRequired: true,
-                                      isValidatable: false,
+                                      isValidatable: true,
+                                      RegularExpressions.Date,
                                       includeSelectButton: true,
                                       includeKeyBoardButton: false);
 
-            TxtStartDate.Entry.IsEditable = false;
-            TxtStartDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            TxtStartDate.Entry.IsEditable = true;
+            var firstDayOfMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            TxtStartDate.Text = firstDayOfMonth.ToString("yyyy-MM-dd");
             TxtStartDate.Entry.Changed+=TxtStartDate_Entry_Changed;
             TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
         }

@@ -114,6 +114,8 @@ namespace LogicPOS.UI.Components.POS
         {
             bool hasTicket = SaleContext.ItemsPage.Ticket != null;
             bool hasTicketItems = hasTicket && SaleContext.ItemsPage.Ticket.Items.Count > 0;
+            bool hasOrder = SaleContext.CurrentOrder != null;
+
             BtnIncrease.Sensitive = hasTicketItems;
             BtnPrevious.Sensitive = hasTicketItems;
             BtnNext.Sensitive = hasTicketItems;
@@ -122,14 +124,11 @@ namespace LogicPOS.UI.Components.POS
             BtnQuantity.Sensitive = hasTicketItems;
             BtnWeight.Sensitive = hasTicketItems;
             BtnFinishOrder.Sensitive = hasTicketItems;
-            var hasOrder = SaleContext.CurrentOrder != null;
-            BtnDelete.Sensitive = hasTicketItems ||(hasOrder && SaleContext.CurrentOrder.Id != null);
-        
-            var hasFinshedOrder = hasOrder && SaleContext.CurrentOrder.Id != null;
-            BtnPayments.Sensitive = hasFinshedOrder;
-            
-            BtnListOrder.Sensitive = hasOrder &&!BtnFinishOrder.Sensitive;
-
+            BtnDelete.Sensitive = hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null);
+            BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
+            BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
+            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
+            BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
             UpdatePrivileges();
         }
 

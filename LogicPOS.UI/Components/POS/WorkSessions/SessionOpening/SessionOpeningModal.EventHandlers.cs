@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
@@ -89,6 +90,13 @@ namespace LogicPOS.UI.Components.POS
 
         private void CloseDay()
         {
+            if (AuthenticationService.User.Profile.Order != 40)
+            {
+                SimpleAlerts.Information()
+                            .WithMessage("Usuário sem permissão para Fechar o Dia")
+                            .ShowAlert();
+                return;
+            }
             if (HasOpenTables())
             {
                 return;

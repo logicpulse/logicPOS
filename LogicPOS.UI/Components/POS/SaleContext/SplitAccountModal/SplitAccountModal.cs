@@ -25,14 +25,14 @@ namespace LogicPOS.UI.Components.Modals
         private static int TitleNumber = 2;
 
         public List<SplitAccountCustomerButton> Splitters = new List<SplitAccountCustomerButton>();
-        public SplitAccountModal(Window parent, PosOrder order) : base(parent, "", new Size(610, 460),
+        public SplitAccountModal(Window parent, PosOrder order) : base(parent, "", new Size(600, 460),
                                                                        AppSettings.Paths.Images + @"Icons\Windows\icon_window_split_payments.png")
         {
             _order = order;
             Splitters = new List<SplitAccountCustomerButton>()
                 {
-                    new SplitAccountCustomerButton("splitPaymentButton", AppSettings.Instance.ColorSplitPaymentTouchButtonFilledDataBackground, $"Cliente #{1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count>2? Splitters.Count+1 :2),
-                    new SplitAccountCustomerButton("splitPaymentButton", AppSettings.Instance.ColorSplitPaymentTouchButtonFilledDataBackground, $"Cliente #{2}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count>2? Splitters.Count+1 :2)
+                    new SplitAccountCustomerButton( $"Cliente #{1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count>2? Splitters.Count+1 :2),
+                    new SplitAccountCustomerButton( $"Cliente #{2}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count>2? Splitters.Count+1 :2)
                 };
             TitleNumber = Splitters.Count;
 
@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (Splitters.Count < 12)
             {
-                Splitters.Add(new SplitAccountCustomerButton("splitPaymentButton", AppSettings.Instance.ColorSplitPaymentTouchButtonFilledDataBackground, $"Cliente #{Splitters.Count() + 1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count() + 1));
+                Splitters.Add(new SplitAccountCustomerButton($"Cliente #{Splitters.Count() + 1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count() + 1));
             }
             UpdateSplitters();
         }
@@ -135,10 +135,10 @@ namespace LogicPOS.UI.Components.Modals
             InitializeButtons();
             return new ActionAreaButtons
                 {
-                    new ActionAreaButton(BtnOk, ResponseType.Ok),
-                    new ActionAreaButton(BtnCancel, ResponseType.Cancel),
+                    new ActionAreaButton(BtnAddSplitter, ResponseType.None),
                     new ActionAreaButton(BtnRemoveSplitter, ResponseType.None),
-                    new ActionAreaButton(BtnAddSplitter, ResponseType.None)
+                    new ActionAreaButton(BtnOk, ResponseType.Ok),
+                    new ActionAreaButton(BtnCancel, ResponseType.Cancel)
                  };
         }
 

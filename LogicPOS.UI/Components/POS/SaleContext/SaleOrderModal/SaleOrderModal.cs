@@ -119,7 +119,9 @@ namespace LogicPOS.UI.Components.Modals
             var customer = CustomersService.Default;
             command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 
-            command.CustomerId = customer.Id;
+            if(customer!=null)
+                command.CustomerId = customer.Id;
+
             if (command.CustomerId == null)
             {
                 command.Customer = new DocumentCustomer

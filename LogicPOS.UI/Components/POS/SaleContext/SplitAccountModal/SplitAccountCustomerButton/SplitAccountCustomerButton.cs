@@ -1,4 +1,5 @@
 ﻿using Gtk;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Settings;
@@ -20,17 +21,15 @@ namespace LogicPOS.UI.Buttons
         private readonly Window _window;
         string PaymentDetailsString { get; set; } = "";
         private Label LabelPaymentDetails = new Label();
-        public SplitAccountCustomerButton(String name, Color color, String labelText, String font, Window window, int splittersNumber)
+        public SplitAccountCustomerButton(String labelText, String font, Window window, int splittersNumber)
             : base(new ButtonSettings
             {
-                Name = name,
+                Name = "touchButton_Green",
                 Text = labelText,
                 Font = font,
-                ButtonSize = new Size(0, AppSettings.Instance.IntSplitPaymentTouchButtonSplitPaymentHeight),
-
+                ButtonSize = new Size(0, AppSettings.Instance.IntSplitPaymentTouchButtonSplitPaymentHeight)
             })
         {
-            ButtonSettings.BackgroundColor = color;
             _window = window;
             if (splittersNumber == 0)
             {
@@ -71,11 +70,12 @@ namespace LogicPOS.UI.Buttons
 
         private void SplitAccountCustomerButton_Clicked(object sender, EventArgs e)
         {
-            Customer = CustomersService.Default.Name;
 
             var modal = new PaymentsModal(_window);
+
             modal.SplitAccount(SplittersNumber);
             ResponseType response = (ResponseType)modal.Run();
+            Customer=modal.GetCustomerName();
             if (response == ResponseType.Ok)
             {
                 Paid = true;

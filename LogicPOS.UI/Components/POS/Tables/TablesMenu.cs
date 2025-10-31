@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Services;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Menus
         public PlacesMenu MenuPlaces { get; }
         public TableStatus? LastFilter { get; set; }
         public TableStatus? Filter { get; private set; } = null;
-
+        private MenuMode _mode;
         public TablesMenu(CustomButton btnPrevious,
                           CustomButton btnNext,
                           PlacesMenu palcesMenu,
@@ -25,12 +26,15 @@ namespace LogicPOS.UI.Components.Menus
                                                       btnNext,
                                                       sourceWindow)
         {
-
             MenuPlaces = palcesMenu;
             AddEventHandlers();
             Refresh();
         }
-
+        
+        public void SetSelectionMode()
+        {
+            _mode = MenuMode.Selection;
+        }
         private void AddEventHandlers()
         {
             MenuPlaces.OnEntitySelected += PlacesMenu_PlaceSelected;
@@ -94,6 +98,15 @@ namespace LogicPOS.UI.Components.Menus
             if (MenuPlaces.SelectedEntity != null)
             {
                 entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id);
+            }
+
+            if (_mode==MenuMode.Selection) 
+            {
+                if (MenuPlaces.SelectedEntity != null)
+                {
+                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Status==TableStatus.Free);
+                }
+
             }
 
             if (Filter != null)

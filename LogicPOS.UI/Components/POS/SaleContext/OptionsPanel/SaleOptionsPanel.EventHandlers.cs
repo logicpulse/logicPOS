@@ -2,6 +2,7 @@
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
@@ -138,6 +139,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             SaleContext.ItemsPage.ChangeItemPrice(item, price.Value);
+            UpdateButtonsSensitivity();
         }
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)
@@ -215,6 +217,7 @@ namespace LogicPOS.UI.Components.POS
             var modal = new PaymentsModal(SourceWindow);
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnBarcode_Clicked(object sender, EventArgs e)
@@ -246,6 +249,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             POSWindow.Instance.MenuArticles.BtnArticle_Clicked(article);
+            UpdateButtonsSensitivity();
         }
 
         private void BtnCardCode_Clicked(object sender, EventArgs e)
@@ -258,6 +262,7 @@ namespace LogicPOS.UI.Components.POS
                                         string.Empty,
                                         RegularExpressions.AlfaNumericExtended,
                                         true);
+            UpdateButtonsSensitivity();
         }
 
         private void BtnListOrder_Clicked(object sender, EventArgs e)
@@ -271,29 +276,36 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            GeneralUtils.ShowNotImplementedMessage();
+            var modal = new TablesModal(MenuMode.Selection,POSWindow.Instance);
+            modal.Run();
+            modal.Destroy();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
             GeneralUtils.ShowNotImplementedMessage();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnGifts_Clicked(object sender, EventArgs e)
         {
             GeneralUtils.ShowNotImplementedMessage();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnWeight_Clicked(object sender, EventArgs e)
         {
             GeneralUtils.ShowNotImplementedMessage();
+            UpdateButtonsSensitivity();
         }
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)
         {
-            var modal = new TablesModal(SourceWindow);
+            var modal = new TablesModal(MenuMode.Standard,SourceWindow);
             modal.Run();
             modal.Destroy();
+            UpdateButtonsSensitivity();
         }
 
         private void ItemsPage_TicketOpened(object sender, EventArgs e)
@@ -307,6 +319,7 @@ namespace LogicPOS.UI.Components.POS
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
             PaymentsModal.InitialSplittersNumber = 0;
+            UpdateButtonsSensitivity();
         }
     }
 }

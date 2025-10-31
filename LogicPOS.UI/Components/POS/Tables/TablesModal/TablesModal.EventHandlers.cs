@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Features.POS.Tables.Common;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Services;
 using System;
 
@@ -30,10 +31,18 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
+            if (_mode == MenuMode.Selection)
+            {
+                SaleContext.ChangeOrderTable(MenuTables.SelectedEntity, (Guid)SaleContext.CurrentOrder.Id);
+                MenuTables.UpdateUI();
+                return;
+            }
+
             if (MenuTables.SelectedEntity != null)
             {
                 SaleContext.SetCurrentTable(MenuTables.SelectedEntity);
             }
+
         }
 
         private void MenuTables_TableSelected(TableViewModel table)

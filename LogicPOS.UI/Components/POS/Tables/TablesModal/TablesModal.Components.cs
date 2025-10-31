@@ -1,10 +1,12 @@
 ﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.Menus;
 
 namespace LogicPOS.UI.Components.POS
 {
     public partial class TablesModal
     {
+        private MenuMode _mode;
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnFilterAll { get; set; }

@@ -1,9 +1,12 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -15,15 +18,33 @@ namespace LogicPOS.UI.Components.POS
         private static string MotalTitle => LocalizedString.Instance[$"window_title_dialog_tables_appmode_{AppSettings.Instance.AppOperationModeTheme}"];
         private static string ModalIcon => AppSettings.Instance.OperationMode.IsRetailMode() ? AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png": AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables.png";
 
-        public TablesModal(Window parent) : base(parent,
+        public TablesModal(MenuMode menuMode, Window parent) : base(parent,
                                                  MotalTitle,
                                                  new Size(720, 580),
                                                  ModalIcon)
         {
             BtnViewTables.Visible = false;
+            _mode = menuMode;
+
+            if (_mode == MenuMode.Selection)
+            {
+                InitializeSelectionMode();
+            }
         }
 
-      
+        private void InitializeSelectionMode()
+        {
+            BtnFilterAll.Visible = false;
+            BtnFilterFree.Visible = false;
+            BtnFilterOpen.Visible = false;
+            BtnFilterReserved.Visible = false;
+            BtnReservation.Visible = false;
+            BtnViewOrders.Visible = false;
+            BtnViewTables.Visible = false;
+            MenuTables.SetSelectionMode();
+            MenuTables.ApplyFilter(TableStatus.Free);
+            
+        }
         private void AddEventHandlers()
         {
             BtnOk.Clicked += BtnOk_Clicked;

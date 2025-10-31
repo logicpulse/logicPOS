@@ -52,6 +52,10 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
+        public string GetCustomerName()
+        {
+            return TxtCustomer.Text;
+        }
         public void SplitAccount(int splittersNumber = 2)
         {
             SplitModeInitilizer(splittersNumber);
@@ -67,15 +71,6 @@ namespace LogicPOS.UI.Components.POS
                 InitialSplittersNumber = SplittersNumber;
             }
             _paymentMode = PaymentMode.Splited;
-            TxtCustomer.Component.Sensitive = false;
-            TxtCardNumber.Entry.Sensitive = false;
-            TxtAddress.Entry.Sensitive = false;
-            TxtCity.Entry.Sensitive = false;
-            TxtCountry.Entry.Sensitive = false;
-            TxtFiscalNumber.Entry.Sensitive = false;
-            TxtLocality.Entry.Sensitive = false;
-            TxtZipCode.Entry.Sensitive = false;
-
         }
 
         private void UpdateLabels()
