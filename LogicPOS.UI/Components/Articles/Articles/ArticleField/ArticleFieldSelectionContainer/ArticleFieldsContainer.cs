@@ -43,10 +43,7 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             var field = new ArticleField(article, quantity, isUniqueArticle: _mode == ArticlesBoxMode.StockManagement);
-            var articleDesignations = ArticlesService.Articles.Select(c => (c as object, c.Designation)).ToList();
-            var articleCodes = ArticlesService.Articles.Select(c => (c as object, c.Code)).ToList();
-            field.WithDesignationAutoCompletion(articleDesignations);
-            field.WithCodeAutoCompletion(articleCodes);
+            field.WithAutoCompletion(ArticlesService.AutocompleteLines);
             field.OnRemove += BtnRemoveArticle_Clicked;
             field.OnAdd += () => AddArticle();
 

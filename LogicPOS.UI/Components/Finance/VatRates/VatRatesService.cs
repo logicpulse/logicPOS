@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.VatRates.GetAllVatRate;
 using LogicPOS.UI.Errors;
 using System;
@@ -23,7 +24,13 @@ namespace LogicPOS.UI.Components.Finance.VatRates.Service
             }
         }
 
-        public static VatRate GetById(Guid id) => VatRates.Where(x =>  x.Id == id).FirstOrDefault();
+        public static List<AutoCompleteLine> AutocompleteLines => VatRates.Select(vr => new AutoCompleteLine
+        {
+            Id = vr.Id,
+            Name = vr.Designation
+        }).ToList();
+
+        public static VatRate GetById(Guid id) => VatRates.Where(x => x.Id == id).FirstOrDefault();
 
         private static List<VatRate> GetAll()
         {

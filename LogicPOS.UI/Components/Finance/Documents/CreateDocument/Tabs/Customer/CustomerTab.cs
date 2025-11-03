@@ -65,7 +65,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public void ImportDataFromDocument(Document document)
         {
-
             CustomerId = document.CustomerId;
             TxtCustomer.Text = document.Customer.Name;
             TxtFiscalNumber.Text = document.Customer.FiscalNumber;
@@ -77,7 +76,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPhone.Text = document.Customer.Phone;
             TxtEmail.Text = document.Customer.Email;
 
-            var country = CountriesService.GetCountry(document.Customer.CountryId);
+            var country = CountriesService.GetById(document.Customer.CountryId);
             TxtCountry.Text = country?.Designation;
             TxtCountry.SelectedEntity = country;
         }

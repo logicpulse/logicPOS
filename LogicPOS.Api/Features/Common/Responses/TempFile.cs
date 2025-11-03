@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.Api.Features.Common.Requests
+﻿namespace LogicPOS.Api.Features.Common.Responses
 {
     public struct TempFile
     {

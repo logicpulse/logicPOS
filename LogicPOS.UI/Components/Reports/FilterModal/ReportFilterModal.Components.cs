@@ -1,10 +1,5 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
-using LogicPOS.UI.Buttons;
+﻿using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
-using System.Collections.Generic;
-using Customer = LogicPOS.Api.Features.Finance.Customers.Customers.Common.Customer;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -22,11 +17,6 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
-        private List<Warehouse> _warehousesForCompletion;
-        public List<Warehouse> WarehousesForCompletion => _warehousesForCompletion ?? InitializeWarehousesForCompletion();
-        private List<ArticleHistory> _articleHistoriesForCompletion;
-        public List<ArticleHistory> ArticleHistoriesForCompletion => _articleHistoriesForCompletion ?? InitializeWarehouseArticlesForCompletion();
-
 
     }
 }

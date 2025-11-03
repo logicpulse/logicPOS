@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
+using System;
 
 namespace LogicPOS.UI.Components.InputFields
 {

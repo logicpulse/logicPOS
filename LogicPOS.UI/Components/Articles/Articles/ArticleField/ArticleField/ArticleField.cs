@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
 using System;
@@ -132,13 +133,19 @@ namespace LogicPOS.UI.Components.InputFields
             }
         }
 
-        public ArticleField WithDesignationAutoCompletion(List<(object Entity, string Text)> completionSource)
+        public ArticleField WithAutoCompletion(IEnumerable<AutoCompleteLine> lines)
+        {
+            WithDesignationAutoCompletion(lines);
+            WithCodeAutoCompletion(lines);
+            return this;
+        }
+        private void WithDesignationAutoCompletion(IEnumerable<AutoCompleteLine> lines)
         {
             TxtDesignation.Completion = new EntryCompletion();
-            var listStore = new ListStore(typeof(object), typeof(string));
-            foreach (var item in completionSource)
+            var listStore = new ListStore(typeof(Guid), typeof(string));
+            foreach (var item in lines)
             {
-                listStore.AppendValues(item.Entity, item.Text);
+                listStore.AppendValues(item.Id, item.Name);
             }
             TxtDesignation.Completion.Model = listStore;
             TxtDesignation.Completion.TextColumn = 1;
@@ -154,16 +161,15 @@ namespace LogicPOS.UI.Components.InputFields
             };
 
             TxtDesignation.Completion.MatchSelected += Completion_MatchSelected;
-            return this;
         }
 
-        public ArticleField WithCodeAutoCompletion(List<(object Entity, string Text)> completionSource)
+        private void WithCodeAutoCompletion(IEnumerable<AutoCompleteLine> lines)
         {
             TxtCode.Completion = new EntryCompletion();
-            var listStore = new ListStore(typeof(object), typeof(string));
-            foreach (var item in completionSource)
+            var listStore = new ListStore(typeof(Guid), typeof(string));
+            foreach (var item in lines)
             {
-                listStore.AppendValues(item.Entity, item.Text);
+                listStore.AppendValues(item.Id, item.Code);
             }
             TxtCode.Completion.Model = listStore;
             TxtCode.Completion.TextColumn = 1;
@@ -179,15 +185,15 @@ namespace LogicPOS.UI.Components.InputFields
             };
 
             TxtCode.Completion.MatchSelected += Completion_MatchSelected;
-            return this;
         }
 
         [GLib.ConnectBefore]
         private void Completion_MatchSelected(object o, MatchSelectedArgs args)
         {
-            object entity = args.Model.GetValue(args.Iter, 0);
+            Guid id = (Guid)args.Model.GetValue(args.Iter, 0);
+            var entity = ArticlesService.GetArticlebById(id);
             SelectedEntity = entity;
-            Article = ArticlesService.GetArticlebById((entity as ArticleViewModel).Id);
+            Article = entity;
             ShowEntity();
             UpdateValidationColors();
             OnCompletionSelected?.Invoke(entity);

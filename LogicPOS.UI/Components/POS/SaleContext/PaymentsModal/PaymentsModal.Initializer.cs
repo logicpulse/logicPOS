@@ -159,8 +159,7 @@ namespace LogicPOS.UI.Components.POS
                                               includeClearButton: false);
 
             ValidatableFields.Add(TxtFiscalNumber);
-            var customers = CustomersService.Customers.Select(c => (c as object, c.FiscalNumber)).ToList();
-            TxtFiscalNumber.WithAutoCompletion(customers);
+            TxtFiscalNumber.WithAutoCompletion(CustomersService.FiscalNumberAutocompleteLines, id => CustomersService.GetById(id));
             TxtFiscalNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtFiscalNumber.Entry.Changed += TxtFiscalNumber_Changed;
         }
@@ -179,8 +178,7 @@ namespace LogicPOS.UI.Components.POS
             ValidatableFields.Add(TxtCustomer);
 
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
-            var customers = CustomersService.Customers.Select(c => (c as object, c.Name)).ToList();
-            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.WithAutoCompletion(CustomersService.AutocompleteLines, id => CustomersService.GetById(id));
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
         }

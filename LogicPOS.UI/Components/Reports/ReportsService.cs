@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
 using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf;

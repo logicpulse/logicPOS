@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void CreateArticleAndSelect()
         {
-            var newArticle = new AddArticleCommand()
+            var addArticleCommand = new AddArticleCommand()
             {
                 Code = TxtCode.Text,
                 Designation = TxtArticle.Text,
@@ -105,21 +105,16 @@ namespace LogicPOS.UI.Components.Modals
                 }
             };
 
-            var articleResult = DependencyInjection.Mediator.Send(newArticle).Result;
+            var articleResult = DependencyInjection.Mediator.Send(addArticleCommand).Result;
 
-            if (articleResult.IsError != false)
+            if (articleResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(articleResult);
-                var article = ArticlesService.Articles.FirstOrDefault(a => a.Designation == TxtArticle.Text);
-                if (article != null)
-                {
-                    SelectArticle(article);
-                }
                 return;
             }
 
             ArticlesService.RefreshArticlesCache();
-            var documentDetail = ArticlesService.Articles.FirstOrDefault(a => a.Id == articleResult.Value);
+            var documentDetail = ArticlesService.GetArticleViewModel(articleResult.Value);
             SelectArticle(documentDetail);
         }
 
@@ -222,9 +217,9 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void TxtCode_OnCompletionSelected(object obj)
+        private void ArticleAutocompleteLine_Selected(object article)
         {
-            SelectArticle(obj as ArticleViewModel);
+            SelectArticle(article as ArticleViewModel);
         }
 
 

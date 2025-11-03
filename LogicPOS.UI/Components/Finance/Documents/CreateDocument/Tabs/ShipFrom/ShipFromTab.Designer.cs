@@ -91,14 +91,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtCountry.Entry.IsEditable = true;
             var country = CountriesService.Default;
-            var countries = CountriesService.Countries.Select(c => (c as object, c.Designation)).ToList();
+      
             if (country != null) 
             { 
                 TxtCountry.Text = country.Designation;
                 TxtCountry.SelectedEntity = country;
              }
 
-            TxtCountry.WithAutoCompletion(countries);
+            TxtCountry.WithAutoCompletion(CountriesService.AutocompleteLines,id => CountriesService.GetById(id));
             TxtCountry.OnCompletionSelected += c => SelectCountry(c as Country);
             TxtCountry.Entry.Changed += TxtCoutry_Changed;
             TxtCountry.SelectEntityClicked += TxtCountry_SelectEntityClicked;

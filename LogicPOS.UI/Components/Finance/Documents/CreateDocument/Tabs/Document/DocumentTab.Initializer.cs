@@ -39,8 +39,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                                includeKeyBoardButton: false);
 
             TxtPaymentMethod.Entry.IsEditable = true;
-            var paymentMethods = PaymentMethodsService.PaymentMethods.Select(p => (p as object, p.Designation)).ToList();
-            TxtPaymentMethod.WithAutoCompletion(paymentMethods);
+            TxtPaymentMethod.WithAutoCompletion(PaymentMethodsService.AutocompleteLines, id => PaymentMethodsService.GetBydId(id));
             TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;
         }
@@ -100,8 +99,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                                    includeKeyBoardButton: false);
 
             TxtPaymentCondition.Entry.IsEditable = true;
-            var paymentConditions = PaymentConditionsService.PaymentConditions.Select(d => (d as object, d.Designation)).ToList();
-            TxtPaymentCondition.WithAutoCompletion(paymentConditions);
+            TxtPaymentCondition.WithAutoCompletion(PaymentConditionsService.AutocompleteLines,id => PaymentConditionsService.GetById(id));
             TxtPaymentCondition.OnCompletionSelected += p => SelectPaymentCondition(p as PaymentCondition);
             TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
@@ -119,8 +117,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtDocumentType.SelectedEntity = DocumentTypesService.Default;
             TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType).Designation;
             TxtDocumentType.Entry.IsEditable = true;
-            var documentTypes = DocumentTypesService.DocumentTypes.Select(d => (d as object, d.Designation)).ToList();
-            TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.WithAutoCompletion(DocumentTypesService.AutocompleteLines, id => DocumentTypesService.GetById(id));
             TxtDocumentType.OnCompletionSelected += d => SelectDocumentType(d as DocumentType);
             TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;

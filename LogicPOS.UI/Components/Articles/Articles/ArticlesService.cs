@@ -1,6 +1,7 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
+using LogicPOS.Api.Features.Articles.Articles.GetAutoCompleteLines;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.GetArticleByCode;
 using LogicPOS.Api.Features.Articles.GetArticleById;
@@ -9,6 +10,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
 using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Errors;
 using MediatR;
 using System;
@@ -20,40 +22,43 @@ namespace LogicPOS.UI.Components.Articles
     public static class ArticlesService
     {
         private static readonly Random _random = new Random();
-        private static List<ArticleViewModel> _articles;
+        private static List<AutoCompleteLine> _autocompleteLines;
 
-        public static List<ArticleViewModel> Articles
+        public static List<AutoCompleteLine> AutocompleteLines
         {
             get
             {
-                if (_articles == null)
+                if (_autocompleteLines == null)
                 {
-                    _articles = GetAllArticles();
+                    _autocompleteLines = GetAutocompleteLines();
                 }
-                return _articles;
+                return _autocompleteLines;
             }
         }
 
+        public static List<AutoCompleteLine> CodeAutocompleteLines => AutocompleteLines.Select(line => new AutoCompleteLine
+        {
+            Id = line.Id,
+            Name = line.Code
+        }).ToList();
+
         public static void RefreshArticlesCache()
         {
-            _articles = GetAllArticles();
+            _autocompleteLines = GetAutocompleteLines();
         }
 
-        private static List<ArticleViewModel> GetAllArticles()
+        private static List<AutoCompleteLine> GetAutocompleteLines()
         {
-            var query = new GetArticlesQuery
-            {
-                PageSize = 1000000 // High page size to retrieve all articles
-            };
-            var articles = DependencyInjection.Mediator.Send(query).Result;
+           
+            var articles = DependencyInjection.Mediator.Send(new GetAutoCompleteLinesQuery()).Result;
 
             if (articles.IsError != false)
             {
                 ErrorHandlingService.HandleApiError(articles);
-                return new List<ArticleViewModel>();
+                return new List<AutoCompleteLine>();
             }
 
-            return articles.Value.Items.ToList();
+            return articles.Value.ToList();
         }
 
         public static PaginatedResult<ArticleViewModel> GetArticles(GetArticlesQuery query)

@@ -47,8 +47,7 @@ namespace LogicPOS.UI.Components.Documents
                                           includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-            var customers = CustomersService.Customers.Select(c=>(c as object, c.Name)).ToList();
-            TxtCustomer.WithAutoCompletion(customers);
+            TxtCustomer.WithAutoCompletion(CustomersService.AutocompleteLines,id => CustomersService.GetById(id));
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
@@ -64,8 +63,7 @@ namespace LogicPOS.UI.Components.Documents
                                               includeKeyBoardButton: false);
 
             TxtDocumentType.Entry.IsEditable = true;
-            var documentTypes = DocumentTypesService.DocumentTypes.Select(d => (d as object, d.Designation)).ToList();
-            TxtDocumentType.WithAutoCompletion(documentTypes);
+            TxtDocumentType.WithAutoCompletion(DocumentTypesService.AutocompleteLines, id => DocumentTypesService.GetById(id));
             TxtDocumentType.OnCompletionSelected += d => SelectDocumentType(d as DocumentType);
             TxtDocumentType.Entry.Changed += TxtDocumentType_Changed;
             TxtDocumentType.SelectEntityClicked += BtnSelectDocumentType_Clicked;
@@ -81,8 +79,7 @@ namespace LogicPOS.UI.Components.Documents
                                                    includeKeyBoardButton: false);
 
             TxtPaymentCondition.Entry.IsEditable = true;
-            var paymentConditions = PaymentConditionsService.PaymentConditions.Select(p => (p as object, p.Designation)).ToList();
-            TxtPaymentCondition.WithAutoCompletion(paymentConditions);
+            TxtPaymentCondition.WithAutoCompletion(PaymentConditionsService.AutocompleteLines, id => PaymentConditionsService.GetById(id));
             TxtPaymentCondition.OnCompletionSelected += p => SelectPaymentCondition(p as PaymentCondition);
             TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
@@ -98,8 +95,7 @@ namespace LogicPOS.UI.Components.Documents
                                                includeKeyBoardButton: false);
 
             TxtPaymentMethod.Entry.IsEditable = true;
-            var paymentMethods = PaymentMethodsService.PaymentMethods.Select(p => (p as object, p.Designation)).ToList();
-            TxtPaymentMethod.WithAutoCompletion(paymentMethods);
+            TxtPaymentMethod.WithAutoCompletion(PaymentMethodsService.AutocompleteLines, id => PaymentMethodsService.GetBydId(id));
             TxtPaymentMethod.OnCompletionSelected += p => SelectPaymentMethod(p as PaymentMethod);
             TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;

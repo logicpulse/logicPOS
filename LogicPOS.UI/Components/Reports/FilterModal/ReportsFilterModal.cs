@@ -1,10 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Articles;
-using LogicPOS.UI.Components.Articles.Stocks.Warehouses.Service;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
@@ -79,17 +75,6 @@ namespace LogicPOS.UI.Components.Modals
 
         public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
 
-        public List<Warehouse> InitializeWarehousesForCompletion()
-        {
-            _warehousesForCompletion = WarehousesService.GetAllWarehouses();
-            return _warehousesForCompletion;
-        }
-
-        public List<ArticleHistory> InitializeWarehouseArticlesForCompletion()
-        {
-            _articleHistoriesForCompletion = ArticlesService.GetAllArticleHistories();
-            return _articleHistoriesForCompletion;
-        }
 
     }
 }

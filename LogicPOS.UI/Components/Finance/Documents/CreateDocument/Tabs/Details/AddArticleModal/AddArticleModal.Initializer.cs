@@ -140,10 +140,8 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtArticle.SelectEntityClicked += BtnSelectArticle_Clicked;
             ValidatableFields.Add(TxtArticle);
-
-            var articles = ArticlesService.Articles.Select(a => (a as object, a.Designation)).ToList();
-            TxtArticle.WithAutoCompletion(articles);
-            TxtArticle.OnCompletionSelected += TxtCode_OnCompletionSelected;
+            TxtArticle.WithAutoCompletion(ArticlesService.AutocompleteLines, id => ArticlesService.GetArticleViewModel(id));
+            TxtArticle.OnCompletionSelected += ArticleAutocompleteLine_Selected;
             TxtArticle.Entry.Changed += TxtArticle_Changed;
         }
 
@@ -158,9 +156,8 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtCode.Entry.WidthRequest = 120;
 
-            var articles = ArticlesService.Articles.Select(a => (a as object, a.Code)).ToList();
-            TxtCode.WithAutoCompletion(articles);
-            TxtCode.OnCompletionSelected += TxtCode_OnCompletionSelected;
+            TxtCode.WithAutoCompletion(ArticlesService.CodeAutocompleteLines, id => ArticlesService.GetArticleViewModel(id));
+            TxtCode.OnCompletionSelected += ArticleAutocompleteLine_Selected;
             TxtCode.Entry.Changed += TxtCode_Changed;
         }
 

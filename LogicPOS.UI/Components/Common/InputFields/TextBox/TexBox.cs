@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
@@ -13,6 +14,8 @@ namespace LogicPOS.UI.Components.InputFields
 {
     public partial class TextBox : IValidatableField
     {
+        public delegate object CompletionSelectedHandler(Guid entityId);
+        private CompletionSelectedHandler _completionSelectedHandlerMethod;
         public Window SourceWindow { get; private set; }
         public Entry Entry { get; private set; } = new Entry();
         public string Text { get => Entry.Text; set => Entry.Text = value; }
@@ -164,8 +167,10 @@ namespace LogicPOS.UI.Components.InputFields
                 return verticalLayout;
             }
 
-            var eventBox = new EventBox();
-            eventBox.Add(verticalLayout);
+            var eventBox = new EventBox
+            {
+                verticalLayout
+            };
             eventBox.BorderWidth = 2;
 
             if (_style == TextBoxStyle.Bold)
@@ -263,13 +268,13 @@ namespace LogicPOS.UI.Components.InputFields
             return this;
         }
 
-        public TextBox WithAutoCompletion(List<(object Entity, string Text)> completionSource)
+        public TextBox WithAutoCompletion(List<AutoCompleteLine> lines, CompletionSelectedHandler selectHandler)
         {
             Entry.Completion = new EntryCompletion();
-            var listStore = new ListStore(typeof(object), typeof(string));
-            foreach (var item in completionSource)
+            var listStore = new ListStore(typeof(Guid), typeof(string));
+            foreach (var item in lines)
             {
-                listStore.AppendValues(item.Entity, item.Text);
+                listStore.AppendValues(item.Id,item.Name);
             }
             Entry.Completion.Model = listStore;
             Entry.Completion.TextColumn = 1;
@@ -283,7 +288,7 @@ namespace LogicPOS.UI.Components.InputFields
                 string value = (string)comp.Model.GetValue(iter, 1);
                 return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
             };
-
+            _completionSelectedHandlerMethod = selectHandler;
             Entry.Completion.MatchSelected += Completion_MatchSelected;
             return this;
         }
@@ -291,7 +296,8 @@ namespace LogicPOS.UI.Components.InputFields
         [GLib.ConnectBefore]
         private void Completion_MatchSelected(object o, MatchSelectedArgs args)
         {
-            object entity = args.Model.GetValue(args.Iter, 0);
+            Guid entityId = (Guid)args.Model.GetValue(args.Iter, 0);
+            var entity = _completionSelectedHandlerMethod(entityId);
             SelectedEntity = entity;
             OnCompletionSelected?.Invoke(entity);
         }

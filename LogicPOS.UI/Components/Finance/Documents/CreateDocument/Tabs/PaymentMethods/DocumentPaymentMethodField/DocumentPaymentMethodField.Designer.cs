@@ -57,8 +57,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
                                                includeKeyBoardButton: false);
 
             TxtPaymentMethod.Entry.IsEditable = true;
-            var paymentMethods = PaymentMethodsService.PaymentMethods.Select(p => (p as object, p.Designation)).ToList();
-            TxtPaymentMethod.WithAutoCompletion(paymentMethods);
+            TxtPaymentMethod.WithAutoCompletion(PaymentMethodsService.AutocompleteLines, id => PaymentMethodsService.GetBydId(id));
             TxtPaymentMethod.OnCompletionSelected += p => SelectPaymentMethod( p as PaymentMethod);
             TxtPaymentMethod.Entry.Changed += TxtPaymentMethod_Changed;
             TxtPaymentMethod.SelectEntityClicked += BtnSelectPaymentMethod_Clicked;

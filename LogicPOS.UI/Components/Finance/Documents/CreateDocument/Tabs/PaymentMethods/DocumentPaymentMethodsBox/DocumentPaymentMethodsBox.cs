@@ -54,7 +54,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 
             if (id != null)
             {
-                paymentMethod = PaymentMethodsService.GetPaymentMethodById(id.Value);
+                paymentMethod = PaymentMethodsService.GetBydId(id.Value);
             }
 
             var field = new DocumentPaymentMethodField(SourceWindow);

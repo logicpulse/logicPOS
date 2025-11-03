@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Features.Customers.GetAllCustomers;
+﻿using LogicPOS.Api.Features.Common.Responses;
+using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
@@ -12,6 +13,7 @@ namespace LogicPOS.UI.Components.Finance.Customers
     {
         private static List<Customer> _customers;
         private static Customer _default;
+
         public static List<Customer> Customers
         {
             get
@@ -23,6 +25,18 @@ namespace LogicPOS.UI.Components.Finance.Customers
                 return _customers;
             }
         }
+
+       public static List<AutoCompleteLine> AutocompleteLines => Customers.Select(c => new AutoCompleteLine
+        {
+            Id = c.Id,
+            Name = c.Name
+        }).ToList();
+
+        public static List<AutoCompleteLine> FiscalNumberAutocompleteLines => Customers.Select(c => new AutoCompleteLine
+        {
+            Id = c.Id,
+            Name = c.FiscalNumber
+        }).ToList();
 
         public static void RefreshCustomersCache()
         {
@@ -55,10 +69,11 @@ namespace LogicPOS.UI.Components.Finance.Customers
             return customers.Value.ToList();
         }
 
-        public static Customer GetCustomer(Guid id)
+        public static Customer GetById(Guid id)
         {
             return GetAllCustomers().Where(C => C.Id == id).FirstOrDefault();
         }
 
+        
     }
 }

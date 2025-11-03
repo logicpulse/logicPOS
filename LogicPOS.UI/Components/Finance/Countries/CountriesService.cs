@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
@@ -48,7 +49,13 @@ namespace LogicPOS.UI.Services
             return countriesResult.Value.ToList();
         }
 
-        public static Country GetCountry(Guid id)
+        public static List<AutoCompleteLine> AutocompleteLines => Countries.Select(c => new AutoCompleteLine
+        {
+            Id = c.Id,
+            Name = c.Designation
+        }).ToList();
+
+        public static Country GetById(Guid id)
         {
             return Countries.FirstOrDefault(c => c.Id == id);
         }

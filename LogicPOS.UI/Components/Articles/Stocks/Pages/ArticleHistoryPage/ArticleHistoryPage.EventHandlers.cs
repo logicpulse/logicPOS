@@ -1,6 +1,6 @@
 ﻿using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
-using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;

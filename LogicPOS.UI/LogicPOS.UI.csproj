@@ -182,10 +182,6 @@
       <Project>{b9e8d813-d694-4a7f-955e-ccc4b10f3774}</Project>
       <Name>LogicPOS.Globalization</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LogicPOS.Plugin\LogicPOS.Plugin.csproj">
-      <Project>{50C2F757-8478-4FD3-8B35-89BC12E7ACA0}</Project>
-      <Name>LogicPOS.Plugin</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ErrorOr">

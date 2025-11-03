@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Errors;
 using System;
@@ -17,13 +18,19 @@ namespace LogicPOS.UI.Components.Finance.PaymentMethods
             {
                 if (_paymentMethods == null)
                 {
-                    _paymentMethods = GetAllPaymentMethods();
+                    _paymentMethods = GetAll();
                 }
                 return _paymentMethods;
             }
         }
 
-        private static List<PaymentMethod> GetAllPaymentMethods()
+        public static List<AutoCompleteLine> AutocompleteLines => PaymentMethods.Select(pm => new AutoCompleteLine
+        {
+            Id = pm.Id,
+            Name = pm.Designation
+        }).ToList();
+
+        private static List<PaymentMethod> GetAll()
         {
             var paymentMethods = DependencyInjection.Mediator.Send(new GetAllPaymentMethodsQuery()).Result;
 
@@ -36,7 +43,7 @@ namespace LogicPOS.UI.Components.Finance.PaymentMethods
             return paymentMethods.Value.ToList();
         }
         
-        public static PaymentMethod GetPaymentMethodById(Guid id)
+        public static PaymentMethod GetBydId(Guid id)
         {
             return PaymentMethods.FirstOrDefault(pm => pm.Id == id);
         }

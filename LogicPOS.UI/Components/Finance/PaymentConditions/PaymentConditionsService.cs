@@ -1,6 +1,8 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,14 +18,20 @@ namespace LogicPOS.UI.Components.Finance.PaymentConditions
             {
                 if(_paymentConditins == null)
                 {
-                    _paymentConditins = GetAllPaymentConditions();
+                    _paymentConditins = GetAll();
                 }
 
                 return _paymentConditins;
             }
         }
 
-        private static List<PaymentCondition> GetAllPaymentConditions()
+        public static List<AutoCompleteLine> AutocompleteLines => PaymentConditions.Select(pc => new AutoCompleteLine
+        {
+            Id = pc.Id,
+            Name = pc.Designation
+        }).ToList();
+
+        private static List<PaymentCondition> GetAll()
         {
             var paymentConditions = DependencyInjection.Mediator.Send(new GetAllPaymentConditionsQuery()).Result;
 
@@ -35,5 +43,10 @@ namespace LogicPOS.UI.Components.Finance.PaymentConditions
 
             return paymentConditions.Value.ToList();
         }
+        
+        public static PaymentCondition GetById(Guid id) => 
+            PaymentConditions.FirstOrDefault(pc => pc.Id == id);
+
+
     }
 }

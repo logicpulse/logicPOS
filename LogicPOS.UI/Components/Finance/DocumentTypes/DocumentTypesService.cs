@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.UI.Errors;
 using System.Collections.Generic;
@@ -29,14 +30,20 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
             {
                 if (_documentTypes == null)
                 {
-                    _documentTypes = GetAllDocumentTypes();
+                    _documentTypes = GetAll();
                 }
 
                 return _documentTypes;
             }
         }
 
-        private static List<DocumentType> GetAllDocumentTypes()
+        public static List<AutoCompleteLine> AutocompleteLines => DocumentTypes.Select(pc => new AutoCompleteLine
+        {
+            Id = pc.Id,
+            Name = pc.Designation
+        }).ToList();
+
+        private static List<DocumentType> GetAll()
         {
             var documentTypes = DependencyInjection.Mediator.Send(new GetAllDocumentTypesQuery()).Result;
 
@@ -49,6 +56,9 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
             return documentTypes.Value.ToList();
         }
     
-
+        public static DocumentType GetById(System.Guid id)
+        {
+            return DocumentTypes.FirstOrDefault(dt => dt.Id == id);
+        }
     }
 }

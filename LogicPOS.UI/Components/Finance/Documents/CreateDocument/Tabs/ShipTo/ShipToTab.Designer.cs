@@ -92,7 +92,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtCountry.Text = country.Designation;
                 TxtCountry.SelectedEntity = country;
             }
-            TxtCountry.WithAutoCompletion(countries);
+            TxtCountry.WithAutoCompletion(CountriesService.AutocompleteLines, id => CountriesService.GetById(id));
             TxtCountry.OnCompletionSelected += c => SelectCountry(c as Country);
             TxtCountry.Entry.Changed += TxtCoutry_Changed;
             TxtCountry.SelectEntityClicked += TxtCountry_SelectEntityClicked;

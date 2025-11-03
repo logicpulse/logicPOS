@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Reports.Common;
 using MediatR;
 using System;

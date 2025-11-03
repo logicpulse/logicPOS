@@ -43,9 +43,6 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: false);
 
             TxtTerminal.Entry.IsEditable = true;
-            var terminals = TerminalService.Terminals.Select(c => (c as object, c.Designation)).ToList();
-            TxtTerminal.WithAutoCompletion(terminals);
-            TxtTerminal.OnCompletionSelected += c => SelectCustomer(c as Terminal);
             TxtTerminal.Entry.Changed += TxtTerminal_Changed;
             TxtTerminal.SelectEntityClicked += BtnSelectTerminal_Clicked;
 
