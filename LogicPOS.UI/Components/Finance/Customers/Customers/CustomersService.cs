@@ -1,6 +1,5 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Customers.GetAllCustomers;
-using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
+﻿using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
@@ -29,12 +28,12 @@ namespace LogicPOS.UI.Components.Finance.Customers
         {
             _customers = GetAllCustomers();
         }
-        
+
         public static Customer Default
         {
             get
             {
-                if(_default == null)
+                if (_default == null)
                 {
                     _default = Customers.FirstOrDefault(x => x.Name.ToLower() == GeneralUtils.GetResourceByName("global_final_consumer").ToLower());
                 }
@@ -61,6 +60,5 @@ namespace LogicPOS.UI.Components.Finance.Customers
             return GetAllCustomers().Where(C => C.Id == id).FirstOrDefault();
         }
 
-     
     }
 }

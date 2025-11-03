@@ -4,7 +4,7 @@ using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using System.Collections.Generic;
-using Customer = LogicPOS.Api.Entities.Customer;
+using Customer = LogicPOS.Api.Features.Finance.Customers.Customers.Common.Customer;
 
 namespace LogicPOS.UI.Components.Modals
 {

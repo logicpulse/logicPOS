@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.PDFViewer;

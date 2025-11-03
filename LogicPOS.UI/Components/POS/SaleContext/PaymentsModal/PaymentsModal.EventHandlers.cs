@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Documents.Services;
@@ -198,7 +199,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
-            var selectCountryModal = new EntitySelectionModal<Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectCountryModal.Run();
             selectCountryModal.Destroy();
 

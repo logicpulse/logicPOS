@@ -10,7 +10,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
-using Customer = LogicPOS.Api.Entities.Customer;
+using Customer = LogicPOS.Api.Features.Finance.Customers.Customers.Common.Customer;
 
 namespace LogicPOS.UI.Components.Modals
 {

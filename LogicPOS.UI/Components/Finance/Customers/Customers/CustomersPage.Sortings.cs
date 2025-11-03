@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 
 namespace LogicPOS.UI.Components.Pages
 {

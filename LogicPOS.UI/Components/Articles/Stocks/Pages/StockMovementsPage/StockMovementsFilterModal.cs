@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles.Stocks.Pages.StockMovementsPage;

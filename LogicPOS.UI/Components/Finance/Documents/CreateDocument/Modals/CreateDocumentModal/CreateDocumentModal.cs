@@ -98,7 +98,7 @@ namespace LogicPOS.UI.Components.Modals
 
             command.Customer = CustomerTab.GetDocumentCustomer();
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
-            command.Details = DetailsTab.GetDocumentDetails(customer?.PriceType?.EnumValue);
+            command.Details = DetailsTab.GetDocumentDetails();
 
             if (analyzer.IsGuide())
             {

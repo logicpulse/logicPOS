@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;

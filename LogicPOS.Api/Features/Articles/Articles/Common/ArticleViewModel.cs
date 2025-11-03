@@ -22,17 +22,17 @@ namespace LogicPOS.Api.Features.Articles.Common
         public decimal Price4 { get; set; }
         public decimal Price5 { get; set; }
 
-        public decimal Price1_PromotionValue { get; set; }
-        public decimal Price2_PromotionValue { get; set; }
-        public decimal Price3_PromotionValue { get; set; }
-        public decimal Price4_PromotionValue { get; set; }
-        public decimal Price5_PromotionValue { get; set; }
+        public decimal Price1PromotionValue { get; set; }
+        public decimal Price2PromotionValue { get; set; }
+        public decimal Price3PromotionValue { get; set; }
+        public decimal Price4PromotionValue { get; set; }
+        public decimal Price5PromotionValue { get; set; }
 
-        public bool Price1_UsePromotion { get; set; }
-        public bool Price2_UsePromotion { get; set; }
-        public bool Price3_UsePromotion { get; set; }
-        public bool Price4_UsePromotion { get; set; }
-        public bool Price5_UsePromotion { get; set; }
+        public bool Price1UsePromotion { get; set; }
+        public bool Price2UsePromotion { get; set; }
+        public bool Price3UsePromotion { get; set; }
+        public bool Price4UsePromotion { get; set; }
+        public bool Price5UsePromotion { get; set; }
 
 
         public decimal? VatDirectSelling { get; set; }
@@ -51,15 +51,15 @@ namespace LogicPOS.Api.Features.Articles.Common
             switch (priceType)
             {
                 case 2:
-                    return Price2_UsePromotion ? Price2_PromotionValue : Price2;
+                    return Price2UsePromotion ? Price2PromotionValue : Price2;
                 case 3:
-                    return Price3_UsePromotion ? Price3_PromotionValue : Price3;
+                    return Price3UsePromotion ? Price3PromotionValue : Price3;
                 case 4:
-                    return Price4_UsePromotion ? Price4_PromotionValue : Price4;
+                    return Price4UsePromotion ? Price4PromotionValue : Price4;
                 case 5:
-                    return Price5_UsePromotion ? Price5_PromotionValue : Price5;
+                    return Price5UsePromotion ? Price5PromotionValue : Price5;
                 default:
-                    return Price1_UsePromotion ? Price1_PromotionValue : Price1;
+                    return Price1UsePromotion ? Price1PromotionValue : Price1;
             }
         }
 
@@ -68,24 +68,24 @@ namespace LogicPOS.Api.Features.Articles.Common
             switch (priceType)
             {
                 case 2:
-                    Price2_PromotionValue = Price2_UsePromotion ? price : Price2_PromotionValue;
-                    Price2 = Price2_UsePromotion ? Price2 : price;
+                    Price2PromotionValue = Price2UsePromotion ? price : Price2PromotionValue;
+                    Price2 = Price2UsePromotion ? Price2 : price;
                     break;
                 case 3:
-                    Price3_PromotionValue = Price3_UsePromotion ? price : Price3_PromotionValue;
-                    Price3 = Price3_UsePromotion ? Price3 : price;
+                    Price3PromotionValue = Price3UsePromotion ? price : Price3PromotionValue;
+                    Price3 = Price3UsePromotion ? Price3 : price;
                     break;
                 case 4:
-                    Price4_PromotionValue = Price4_UsePromotion ? price : Price4_PromotionValue;
-                    Price4 = Price4_UsePromotion ? Price4 : price;
+                    Price4PromotionValue = Price4UsePromotion ? price : Price4PromotionValue;
+                    Price4 = Price4UsePromotion ? Price4 : price;
                     break;
                 case 5:
-                    Price5_PromotionValue = Price5_UsePromotion ? price : Price5_PromotionValue;
-                    Price5 = Price5_UsePromotion ? Price5 : price;
+                    Price5PromotionValue = Price5UsePromotion ? price : Price5PromotionValue;
+                    Price5 = Price5UsePromotion ? Price5 : price;
                     break;
                 default:
-                    Price1_PromotionValue = Price1_UsePromotion ? price : Price1_PromotionValue;
-                    Price1 = Price1_UsePromotion ? Price1 : price;
+                    Price1PromotionValue = Price1UsePromotion ? price : Price1PromotionValue;
+                    Price1 = Price1UsePromotion ? Price1 : price;
                     break;
             }
         }

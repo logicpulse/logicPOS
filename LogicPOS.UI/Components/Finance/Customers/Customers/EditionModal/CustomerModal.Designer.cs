@@ -1,6 +1,7 @@
 ﻿
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtCardCredit.Text = "0";
             _txtCardCredit.Component.Sensitive = false;
 
-            if(_modalMode == EntityEditionModalMode.Insert && CompanyDetailsService.CompanyInformation.IsAngola)
+            if (_modalMode == EntityEditionModalMode.Insert && CompanyDetailsService.CompanyInformation.IsAngola)
             {
                 AddFillCustomerDataBtn();
             }
@@ -35,7 +36,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             var customerTypes = GetCustomerTypes();
             var labelText = GeneralUtils.GetResourceByName("global_customer_types");
-            var currentCustomerType = _entity != null ? _entity.CustomerType : customerTypes.First();
+            var currentCustomerType = _entity != null ? 
+                new CustomerType { Id = _entity.CustomerType.Id, Designation = _entity.CustomerType.Designation } : 
+                customerTypes.First();
 
             _comboCustomerTypes = new EntityComboBox<CustomerType>(labelText,
                                                              customerTypes,
@@ -47,7 +50,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             var priceTypes = GetPriceTypes();
             var labelText = GeneralUtils.GetResourceByName("global_price_type");
-            var currentPriceType = _entity != null ? _entity.PriceType : priceTypes.First();
+            var currentPriceType = _entity != null ? 
+                new PriceType { Id = _entity.PriceType.Id, Designation = _entity.PriceType.Designation } : 
+                priceTypes.First();
 
             _comboPriceTypes = new EntityComboBox<PriceType>(labelText,
                                                              priceTypes,
@@ -57,12 +62,13 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeCountriesComboBox()
         {
-            var countries = GetCountries();
             var labelText = GeneralUtils.GetResourceByName("global_country");
-            var currentCountry = _entity != null ? _entity.Country : CountriesService.Default;
+            var currentCountry = _entity != null ?
+                new Country { Id = _entity.Country.Id, Designation = _entity.Country.Designation } :
+                CountriesService.Default;
 
             _comboCountries = new EntityComboBox<Country>(labelText,
-                                                             countries,
+                                                             CountriesService.Countries,
                                                              currentCountry,
                                                              true);
         }
@@ -161,7 +167,7 @@ namespace LogicPOS.UI.Components.Modals
             var contactsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
             contactsTab.PackStart(_txtCardNumber.Component, false, false, 0);
-            contactsTab.PackStart(_txtCardCredit.Component, false, false,0);
+            contactsTab.PackStart(_txtCardCredit.Component, false, false, 0);
             contactsTab.PackStart(_txtBirthDate.Component, false, false, 0);
 
             return contactsTab;

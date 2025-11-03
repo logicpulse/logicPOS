@@ -1,5 +1,5 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using MediatR;
 using System.Collections.Generic;
 

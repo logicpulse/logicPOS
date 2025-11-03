@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;

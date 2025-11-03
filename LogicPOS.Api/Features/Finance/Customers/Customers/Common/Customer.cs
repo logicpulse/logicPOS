@@ -1,22 +1,16 @@
-﻿using LogicPOS.Api.Features.Common;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using System;
 
-namespace LogicPOS.Api.Entities
+namespace LogicPOS.Api.Features.Finance.Customers.Customers.Common
 {
     public class Customer : ApiEntity, IWithCode, IWithName
     {
         #region  Relations
-        public CustomerType CustomerType { get; set; }
-        public Guid CustomerTypeId { get; set; }
-
-        public DiscountGroup DiscountGroup { get; set; }
-        public Guid? DiscountGroupId { get; set; }
-
-        public PriceType PriceType { get; set; }
-        public Guid PriceTypeId { get; set; }
-
+        public RelatedEntity CustomerType { get; set; }
+        public RelatedEntity PriceType { get; set; }
         public Country Country { get; set; }
-        public Guid CountryId { get; set; }
+        public RelatedEntity? DiscountGroup { get; set; }
         #endregion
 
         public uint Order { get; set; }
@@ -28,16 +22,26 @@ namespace LogicPOS.Api.Entities
         public string City { get; set; }
         public DateTime? BirthDate { get; set; }
         public string Phone { get; set; }
-        public string Fax { get; set; }
         public string MobilePhone { get; set; }
         public string Email { get; set; }
-        public string WebSite { get; set; }
         public string FiscalNumber { get; set; } 
         public string CardNumber { get; set; }
         public decimal Discount { get; set; }
         public decimal CardCredit { get; set; }
         public bool Supplier { get; set; }
-
         public bool IsFinalConsumer => Name == "Consumidor Final";
+    }
+
+    public struct RelatedEntity 
+    {
+        public Guid Id { get; set; }
+        public string Designation { get; set; }
+    }
+
+    public struct Country 
+    {
+        public Guid Id { get; set; }
+        public string Designation { get; set; }
+        public string Code2 { get; set; }
     }
 }

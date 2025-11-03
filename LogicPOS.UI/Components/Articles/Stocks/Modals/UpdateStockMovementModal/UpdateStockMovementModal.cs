@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.StockManagement.UpdateStockMovement;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Pages;
@@ -10,6 +9,7 @@ using System.IO;
 using LogicPOS.Api.Extensions;
 using LogicPOS.UI.Errors;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 
 namespace LogicPOS.UI.Components.Modals
 {

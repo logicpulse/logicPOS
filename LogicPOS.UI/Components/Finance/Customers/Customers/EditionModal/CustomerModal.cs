@@ -1,20 +1,16 @@
 ﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
-using LogicPOS.Api.Features.Countries.GetAllCountries;
 using LogicPOS.Api.Features.Customers.AddCustomer;
 using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Errors;
-using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -22,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         public CustomerModal(EntityEditionModalMode modalMode, Customer entity = null) : base(modalMode, entity)
         {
-            if(modalMode == EntityEditionModalMode.Update)
+            if (modalMode == EntityEditionModalMode.Update)
             {
                 DisableFiscalInformationsEdition();
             }
@@ -44,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnFillCustomerData_Clicked(object sender, EventArgs e)
         {
-            if(_txtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(_txtFiscalNumber.Text))
+            if (_txtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(_txtFiscalNumber.Text))
             {
                 return;
             }
@@ -70,7 +66,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void DisableFiscalInformationsEdition()
         {
-            if(CustomerHasDocumentsAssociated())
+            if (CustomerHasDocumentsAssociated())
             {
                 _txtFiscalNumber.Component.Sensitive = false;
                 _comboCountries.Component.Sensitive = false;
@@ -83,7 +79,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(result,source:this);
+                ErrorHandlingService.HandleApiError(result, source: this);
                 return true;
             }
 
@@ -124,7 +120,7 @@ namespace LogicPOS.UI.Components.Modals
                 NewPriceTypeId = _comboPriceTypes.SelectedEntity.Id,
                 NewCustomerTypeId = _comboCustomerTypes.SelectedEntity?.Id,
                 NewCountryId = _comboCountries.SelectedEntity?.Id,
-                NewBirthDate =  string.IsNullOrWhiteSpace(_txtBirthDate.Text) ? (DateTime?)null : DateTime.Parse(_txtBirthDate.Text),
+                NewBirthDate = string.IsNullOrWhiteSpace(_txtBirthDate.Text) ? (DateTime?)null : DateTime.Parse(_txtBirthDate.Text),
                 NewAddress = _txtAddress.Text,
                 NewLocality = _txtLocality.Text,
                 NewZipCode = _txtPostalCode.Text,
@@ -146,7 +142,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private AddCustomerCommand CreateAddCommand()
         {
-            var customer= new AddCustomerCommand
+            var customer = new AddCustomerCommand
             {
                 Name = _txtName.Text,
                 PriceTypeId = _comboPriceTypes.SelectedEntity.Id,
@@ -173,21 +169,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
-        private IEnumerable<Country> GetCountries()
-        {
-            var getCountriesResult = _mediator.Send(new GetAllCountriesQuery()).Result;
-
-            if (getCountriesResult.IsError)
-            {
-                return Enumerable.Empty<Country>();
-            }
-
-            return getCountriesResult.Value;
-        }
-
         private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
 
-        private IEnumerable<CustomerType> GetCustomerTypes()=>ExecuteGetEntitiesQuery(new GetAllCustomerTypesQuery());
+        private IEnumerable<CustomerType> GetCustomerTypes() => ExecuteGetEntitiesQuery(new GetAllCustomerTypesQuery());
 
     }
 }

@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class CustomerTab : ModalTab
     {
-        public event Action<Api.Entities.Customer> CustomerSelected;
+        public event Action<Api.Features.Finance.Customers.Customers.Common.Customer> CustomerSelected;
         public event Action<decimal> DiscountChanged;
 
         public CustomerTab(Window parent) : base(parent: parent,
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtNotes();
         }
 
-        public void ShowCustomerData(Api.Entities.Customer customer)
+        public void ShowCustomerData(Api.Features.Finance.Customers.Customers.Common.Customer customer)
         {
             TxtFiscalNumber.Text = customer.FiscalNumber;
             TxtCardNumber.Text = customer.CardNumber;
@@ -52,7 +52,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtCountry.Text = customer.Country.Designation;
-            TxtCountry.SelectedEntity = customer.Country;
+            TxtCountry.SelectedEntity = new Country
+            {
+                Id = customer.Country.Id,
+                Designation = customer.Country.Designation,
+                Code2 = customer.Country.Code2
+            };
             TxtPhone.Text = customer.Phone;
             TxtEmail.Text = customer.Email;
             TxtNotes.Text = customer.Notes;
@@ -77,9 +82,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.SelectedEntity = country;
         }
 
-        public Api.Entities.Customer GetCustomer()
+        public Api.Features.Finance.Customers.Customers.Common.Customer GetCustomer()
         {
-            return TxtCustomer.SelectedEntity as Api.Entities.Customer;
+            return TxtCustomer.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Customer;
         }
 
         public string FiscalNumber => TxtFiscalNumber.Text;
@@ -109,7 +114,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                    TxtCountry.IsValid();
         }
 
-        private void SelectCustomer(Api.Entities.Customer customer)
+        private void SelectCustomer(Api.Features.Finance.Customers.Customers.Common.Customer customer)
         {
             TxtCustomer.Text = customer.Name;
             TxtCustomer.SelectedEntity = customer;

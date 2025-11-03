@@ -1,9 +1,9 @@
 ﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Customers.DeleteCustomer;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;

@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             Page.Refresh();
         }
 
-        public List<Api.Features.Documents.AddDocument.DocumentDetail> GetDocumentDetails(int? priceType = null)
+        public List<Api.Features.Documents.AddDocument.DocumentDetail> GetDocumentDetails()
         {
             var details = Page.Items.Select(detail => new Api.Features.Documents.AddDocument.DocumentDetail
             {
@@ -78,7 +78,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 VatRateId = detail.VatRateId,
                 VatExemptionId = detail.VatExemptionReason?.Id,
                 Discount = detail.Discount,
-                PriceType = priceType,
                 Notes = detail.Notes
             });
 

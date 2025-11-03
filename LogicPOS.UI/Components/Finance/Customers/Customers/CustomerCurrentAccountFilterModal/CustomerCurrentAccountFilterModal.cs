@@ -1,6 +1,6 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;

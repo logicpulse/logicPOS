@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtLocationId();
         }
 
-        private void SelectCountry(Country country)
+        private void SelectCountry(Api.Entities.Country country)
         {
             TxtCountry.Text = country.Designation;
             TxtCountry.SelectedEntity = country;
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 LocationID = TxtLocationId.Text,
                 AddressDetail = TxtAddress.Text,
                 PostalCode = TxtZipCode.Text,
-                Country = (TxtCountry.SelectedEntity as Country).Code2,
+                Country = (TxtCountry.SelectedEntity as Api.Entities.Country).Code2,
                 City = TxtCity.Text,
                 Region = TxtRegion.Text
             };

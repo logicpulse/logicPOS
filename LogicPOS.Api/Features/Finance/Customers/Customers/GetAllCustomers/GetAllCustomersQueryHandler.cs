@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
 using System.Net.Http;

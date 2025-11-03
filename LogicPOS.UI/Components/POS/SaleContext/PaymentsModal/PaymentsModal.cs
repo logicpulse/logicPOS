@@ -2,6 +2,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -213,7 +214,7 @@ namespace LogicPOS.UI.Components.POS
 
         private DocumentCustomer GetDocumentCustomer()
         {
-            var country = TxtCountry.SelectedEntity as Country;
+            var country = TxtCountry.SelectedEntity as Api.Entities.Country;
 
             return new DocumentCustomer
             {
