@@ -1,6 +1,8 @@
-﻿using LogicPOS.Api.Features.Common.Responses;
+﻿using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Customers.Customers.ExportCustomersToExcel;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
@@ -74,6 +76,15 @@ namespace LogicPOS.UI.Components.Finance.Customers
             return GetAllCustomers().Where(C => C.Id == id).FirstOrDefault();
         }
 
-        
+        public static string ExportCustomersToExcel()
+        {
+            var result = DependencyInjection.Mediator.Send(new ExportCustomersToExcelQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value.Path;
+        }
     }
 }

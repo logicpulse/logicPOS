@@ -23,6 +23,11 @@ namespace LogicPOS.Api.Features.Common.Requests
 
                 var fileContent = await response.Content.ReadAsByteArrayAsync();
                 var filePath = Path.GetTempFileName();
+
+                if (fileName != null && Path.HasExtension(fileName)){
+                    filePath = Path.ChangeExtension(filePath,Path.GetExtension(fileName));
+                }
+
                 File.WriteAllBytes(filePath, fileContent);
 
                 var tempFile = new TempFile

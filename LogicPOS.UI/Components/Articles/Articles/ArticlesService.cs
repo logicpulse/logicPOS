@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
 using LogicPOS.Api.Features.Articles.Articles.GetAutoCompleteLines;
@@ -12,7 +13,6 @@ using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticl
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Errors;
-using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Components.Articles
 
         private static List<AutoCompleteLine> GetAutocompleteLines()
         {
-           
+
             var articles = DependencyInjection.Mediator.Send(new GetAutoCompleteLinesQuery()).Result;
 
             if (articles.IsError != false)
@@ -167,7 +167,6 @@ namespace LogicPOS.UI.Components.Articles
 
         public static decimal GetArticleTotalStock(Guid articleId)
         {
-
             var query = new GetArticlesTotalStocksQuery(new List<Guid> { articleId });
             var result = DependencyInjection.Mediator.Send(query).Result;
 
@@ -195,7 +194,7 @@ namespace LogicPOS.UI.Components.Articles
         public static string GenerateRandomCode()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            int length = _random.Next(3, 7); 
+            int length = _random.Next(3, 7);
             char[] result = new char[length];
 
             for (int i = 0; i < length; i++)
@@ -204,6 +203,17 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             return new string(result);
+        }
+
+        public static string ExportArticlesToExcel()
+        {
+            var result = DependencyInjection.Mediator.Send(new ExportArticlesToExcelQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value.Path;
         }
     }
 }

@@ -6,6 +6,8 @@ using LogicPOS.Api.Features.Finance.Saft.GetSaft;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
@@ -206,8 +208,36 @@ namespace LogicPOS.UI.Components.Windows
             ExportSaftByPeriod(startDate, endDate);
         }
 
+        private void BtnExportArticles_Clicked(object sender, System.EventArgs e)
+        {
+            var filePath = ArticlesService.ExportArticlesToExcel();
+            OpenExcelFile(filePath);
+        }
+
+        private void BtnExportCustomers_Clicked(object sender, System.EventArgs e)
+        {
+            var filePath = CustomersService.ExportCustomersToExcel();
+            OpenExcelFile(filePath);
+        }
+
         #endregion
 
+        private void OpenExcelFile(string filePath)
+        {
+            if (filePath == null)
+            {
+                return;
+            }
+
+            try
+            {
+                System.Diagnostics.Process.Start("excel.exe", filePath);
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error(this).WithMessage($"Não foi possível abrir o Excel.\n\nMais detalhes:\n\n {ex.Message}").ShowAlert();
+            }
+        }
 
         private void BtnExit_Clicked(object sender, EventArgs args)
         {

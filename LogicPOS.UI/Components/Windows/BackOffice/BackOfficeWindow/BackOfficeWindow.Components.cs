@@ -345,6 +345,8 @@ namespace LogicPOS.UI.Components.Windows
             BtnExportYearlySaft.Button.Clicked += BtnExportYearlySaft_Clicked;
             BtnExportLastMonthSaft.Button.Clicked += BtnExportLastMonthSaft_Clicked;
             BtnExportCustomSaft.Button.Clicked += BtnExportCustomSaft_Clicked;
+            BtnExportArticles.Button.Clicked += BtnExportArticles_Clicked;
+            BtnExportCustomers.Button.Clicked += BtnExportCustomers_Clicked;
         }
 
         private void AddSystemSection()
