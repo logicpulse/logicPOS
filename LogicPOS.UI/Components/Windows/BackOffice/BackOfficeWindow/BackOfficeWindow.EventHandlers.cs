@@ -16,6 +16,7 @@ using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 
@@ -231,7 +232,12 @@ namespace LogicPOS.UI.Components.Windows
 
             try
             {
-                System.Diagnostics.Process.Start("excel.exe", filePath);
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = filePath
+                };
+
+                Process.Start(startInfo);
             }
             catch (Exception ex)
             {

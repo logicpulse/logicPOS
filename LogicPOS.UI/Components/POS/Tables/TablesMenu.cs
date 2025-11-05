@@ -40,6 +40,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             _mode = MenuMode.SelectOther;
         }
+      
         private void AddEventHandlers()
         {
             MenuPlaces.OnEntitySelected += PlacesMenu_PlaceSelected;

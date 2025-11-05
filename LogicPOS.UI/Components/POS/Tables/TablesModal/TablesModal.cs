@@ -2,13 +2,9 @@
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application.Enums;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Common.Menus;
-using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.POS
@@ -16,7 +12,7 @@ namespace LogicPOS.UI.Components.POS
     public partial class TablesModal : Modal
     {
         private static string MotalTitle => LocalizedString.Instance[$"window_title_dialog_tables_appmode_{AppSettings.Instance.AppOperationModeTheme}"];
-        private static string ModalIcon => AppSettings.Instance.OperationMode.IsRetailMode() ? AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png": AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables.png";
+        private static string ModalIcon => AppSettings.Instance.OperationMode.IsRetailMode() ? AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables_retail.png" : AppSettings.Paths.Images + @"Icons\Windows\icon_window_tables.png";
 
         public TablesModal(MenuMode menuMode, Window parent) : base(parent,
                                                  MotalTitle,

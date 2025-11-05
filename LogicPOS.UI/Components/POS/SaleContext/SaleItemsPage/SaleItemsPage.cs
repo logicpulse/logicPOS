@@ -13,8 +13,8 @@ namespace LogicPOS.UI.Components.POS
     public partial class SaleItemsPage : Box
     {
         public event EventHandler TicketOpened;
-
-        public dynamic Theme { get; }
+        public SaleItem SelectedItem { get; private set; }
+        public PosTicket Ticket { get; set; }
 
         public SaleItemsPage(Window parent,
                              dynamic theme)
@@ -106,13 +106,15 @@ namespace LogicPOS.UI.Components.POS
 
         private void GridView_RowActivated(object o, RowActivatedArgs args)
         {
+
             var alert = CustomAlerts.Question(POSWindow.Instance)
                                     .WithMessage($"Deseja mudar o artigo:  {SelectedItem.Article.Designation} \n" +
                                                             $"Quantidade: {SelectedItem.Quantity:N2} \n" +
                                                             $"Total Final: {SelectedItem.TotalFinal:N2}\n" +
                                                             $" para outra mesa?")
                                     .ShowAlert();
-            if (alert!= ResponseType.Yes)
+
+            if (alert != ResponseType.Yes)
             {
                 return;
             }
