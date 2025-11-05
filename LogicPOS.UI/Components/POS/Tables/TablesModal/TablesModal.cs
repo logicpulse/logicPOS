@@ -26,9 +26,15 @@ namespace LogicPOS.UI.Components.POS
             BtnViewTables.Visible = false;
             _mode = menuMode;
 
-            if (_mode == MenuMode.Selection)
+            if (_mode == MenuMode.SelectFree)
             {
                 InitializeSelectionMode();
+                MenuTables.SetSelectFreeMode();
+            }
+            if (_mode == MenuMode.SelectOther)
+            {
+                InitializeSelectionMode();
+                MenuTables.SetSelectOtherMode();
             }
         }
 
@@ -41,9 +47,7 @@ namespace LogicPOS.UI.Components.POS
             BtnReservation.Visible = false;
             BtnViewOrders.Visible = false;
             BtnViewTables.Visible = false;
-            MenuTables.SetSelectionMode();
             MenuTables.ApplyFilter(TableStatus.Free);
-            
         }
         private void AddEventHandlers()
         {
@@ -73,3 +77,4 @@ namespace LogicPOS.UI.Components.POS
         }
     }
 }
+;

@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Orders.CloseOrder;
 using LogicPOS.Api.Features.Orders.CreateOrder;
 using LogicPOS.Api.Features.Orders.GetAllOrders;
 using LogicPOS.Api.Features.Orders.ReduceItems;
+using LogicPOS.Api.Features.Orders.RemoveTicketItem;
 using LogicPOS.Api.Features.Orders.SplitTicket;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using LogicPOS.Api.Features.POS.Orders.Orders.DeleteOrder;
@@ -136,6 +137,32 @@ namespace LogicPOS.UI.Services
 
             return true;
         }
+
+        public static bool MoveTicketItem(Guid orderId, Guid tableId,SaleItem item)
+        {
+            var command = new MoveTicketItemCommand();
+           
+            var removeItem= new ReduceOrderItemDto
+            {
+                ArticleId = item.Article.Id,
+                Quantity = item.Quantity,
+                UnitPrice = item.UnitPrice
+            };
+            command.TableId= tableId;
+            command.OrderId = orderId;
+            command.Item = removeItem;
+
+            var removeResult = DependencyInjection.Mediator.Send(command).Result;
+
+            if (removeResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(removeResult);
+                return false;
+            }
+
+            return true;
+        }
+
 
         public static bool SplitTicket(Guid orderId, IEnumerable<SaleItem> items, int splittersNumber)
         {

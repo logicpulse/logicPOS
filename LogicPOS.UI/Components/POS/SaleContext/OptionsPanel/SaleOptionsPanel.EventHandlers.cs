@@ -276,7 +276,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            var modal = new TablesModal(MenuMode.Selection,POSWindow.Instance);
+            var modal = new TablesModal(MenuMode.SelectFree,POSWindow.Instance);
             modal.Run();
             modal.Destroy();
             UpdateButtonsSensitivity();

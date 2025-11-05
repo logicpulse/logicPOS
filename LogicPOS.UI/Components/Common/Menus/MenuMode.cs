@@ -9,6 +9,8 @@ namespace LogicPOS.UI.Components.Common.Menus
     public enum MenuMode
     {
         Standard=1,
-        Selection=2
+        SelectFree=2,
+        SelectOther= 3
+
     }
 }

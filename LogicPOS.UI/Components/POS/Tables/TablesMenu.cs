@@ -31,9 +31,14 @@ namespace LogicPOS.UI.Components.Menus
             Refresh();
         }
         
-        public void SetSelectionMode()
+        public void SetSelectFreeMode()
         {
-            _mode = MenuMode.Selection;
+            _mode = MenuMode.SelectFree;
+        }
+
+        public void SetSelectOtherMode()
+        {
+            _mode = MenuMode.SelectOther;
         }
         private void AddEventHandlers()
         {
@@ -100,11 +105,20 @@ namespace LogicPOS.UI.Components.Menus
                 entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id);
             }
 
-            if (_mode==MenuMode.Selection) 
+            if (_mode==MenuMode.SelectFree) 
             {
                 if (MenuPlaces.SelectedEntity != null)
                 {
                     entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Status==TableStatus.Free);
+                }
+
+            }
+
+            if (_mode == MenuMode.SelectOther)
+            {
+                if (MenuPlaces.SelectedEntity != null)
+                {
+                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Id != SaleContext.CurrentTable.Id);
                 }
 
             }

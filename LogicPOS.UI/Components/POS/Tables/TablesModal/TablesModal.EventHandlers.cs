@@ -1,5 +1,7 @@
-﻿using LogicPOS.Api.Features.POS.Tables.Common;
+﻿using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.Common.Menus;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using System;
 
@@ -31,9 +33,17 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            if (_mode == MenuMode.Selection)
+            if (_mode == MenuMode.SelectOther)
             {
-                SaleContext.ChangeOrderTable(MenuTables.SelectedEntity, (Guid)SaleContext.CurrentOrder.Id);
+                var table = SaleContext.CurrentTable;
+                OrdersService.MoveTicketItem(SaleContext.CurrentOrder.Id.Value, MenuTables.SelectedEntity.Id, SaleContext.ItemsPage.SelectedItem);
+                SaleContext.SetCurrentTable(table);
+                return;
+            }
+
+            if (_mode == MenuMode.SelectFree)
+            {
+                SaleContext.ChangeOrderTable(MenuTables.SelectedEntity, SaleContext.CurrentOrder.Id.Value);
                 MenuTables.UpdateUI();
                 return;
             }

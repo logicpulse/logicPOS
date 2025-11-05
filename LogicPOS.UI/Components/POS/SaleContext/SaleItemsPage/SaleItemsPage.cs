@@ -1,6 +1,9 @@
 ﻿using Gtk;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,11 +101,26 @@ namespace LogicPOS.UI.Components.POS
             GridView.RowActivated += GridView_RowActivated;
             GridView.Vadjustment.ValueChanged += delegate { };
             GridView.Vadjustment.Changed += delegate { };
+           
         }
 
         private void GridView_RowActivated(object o, RowActivatedArgs args)
         {
+            var alert = CustomAlerts.Question(POSWindow.Instance)
+                                    .WithMessage($"Deseja mudar o artigo:  {SelectedItem.Article.Designation} \n" +
+                                                            $"Quantidade: {SelectedItem.Quantity:N2} \n" +
+                                                            $"Total Final: {SelectedItem.TotalFinal:N2}\n" +
+                                                            $" para outra mesa?")
+                                    .ShowAlert();
+            if (alert!= ResponseType.Yes)
+            {
+                return;
+            }
 
+            var modal= new TablesModal(MenuMode.SelectOther, POSWindow.Instance);
+            modal.Run();
+            modal.Destroy();
+            return;
         }
 
         public void Next()

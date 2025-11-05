@@ -37,7 +37,13 @@ namespace LogicPOS.UI.Components.POS
             CurrentTable = table;
             TablesService.FreeTable(CurrentOrder.Table);
 
-            var getResult = DependencyInjection.Mediator.Send(new ChangeOrderTableCommand() { OrderId=(Guid)CurrentOrder.Id, NewTableId=table.Id}).Result;
+            var command = new ChangeOrderTableCommand()
+            {
+                OrderId = CurrentOrder.Id.Value,
+                NewTableId = table.Id
+            };
+
+            var getResult = DependencyInjection.Mediator.Send(command).Result;
 
             if (getResult.IsError)
             {
