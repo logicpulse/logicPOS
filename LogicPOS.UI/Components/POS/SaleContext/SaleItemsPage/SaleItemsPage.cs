@@ -2,6 +2,7 @@
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.GridViews;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using System;
@@ -110,6 +111,12 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
+
+            if (!AuthenticationService.UserHasPermission("WORKSESSION_ORDER_MOVE"))
+            {
+                return;
+            }
+
             var confirmation = CustomAlerts.Question(POSWindow.Instance)
                                     .WithMessage($"Deseja mudar o artigo:  {SelectedItem.Article.Designation} \n" +
                                                             $"Quantidade: {SelectedItem.Quantity:N2} \n" +

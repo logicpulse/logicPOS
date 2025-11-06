@@ -1,6 +1,7 @@
 ﻿using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Components.Modals
             var selectedDocument = Page.SelectedEntity;
             bool documentIsSelected = selectedDocument != null;
 
-            BtnNewDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU") && hasFiscalYear;
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE") && hasFiscalYear;
             BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;

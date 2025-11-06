@@ -10,10 +10,12 @@ using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using MediatR;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.ApplicationServices;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -137,6 +139,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 HandleErrorResult(deleteResult);
             }
+            Users.AuthenticationService.RefreshPermissions();
         }
 
         private void AddUserProfilePermission(PermissionItem permissionItem)
@@ -158,6 +161,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 HandleErrorResult(addResult);
             }
+            Users.AuthenticationService.RefreshPermissions();
         }
         
         public override int RunModal(EntityEditionModalMode mode)

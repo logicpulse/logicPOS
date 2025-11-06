@@ -120,28 +120,21 @@ namespace LogicPOS.UI.Components.POS
             BtnPrevious.Sensitive = hasTicketItems;
             BtnNext.Sensitive = hasTicketItems;
             BtnDecrease.Sensitive = hasTicketItems;
-            BtnPrice.Sensitive = hasTicketItems;
+            BtnPrice.Sensitive = hasTicketItems && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
             BtnQuantity.Sensitive = hasTicketItems;
             BtnWeight.Sensitive = hasTicketItems;
             BtnFinishOrder.Sensitive = hasTicketItems;
-            BtnDelete.Sensitive = hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null);
-            BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
-            BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
-            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
-            BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !BtnFinishOrder.Sensitive;
-            UpdatePrivileges();
+            BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
+            BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
+            BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_PAYMENT");
+            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_PAYMENT");
+            BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_MOVE");
         }
 
         public void UpdateUI()
         {
             Sensitive = WorkSessionsService.TerminalIsOpen();
             UpdateButtonsSensitivity();
-        }
-
-        public void UpdatePrivileges()
-        {
-            BtnPrice.Sensitive = BtnPrice.Sensitive && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
-            BtnDelete.Sensitive = BtnDelete.Sensitive && AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
         }
     }
 }

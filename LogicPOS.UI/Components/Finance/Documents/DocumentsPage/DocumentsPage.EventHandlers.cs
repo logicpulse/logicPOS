@@ -46,8 +46,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            //no implementation needed for this page, this page has no same buttons.  
-
+            
         }
     }
 }

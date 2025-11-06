@@ -90,13 +90,6 @@ namespace LogicPOS.UI.Components.POS
 
         private void CloseDay()
         {
-            if (AuthenticationService.User.Profile.Order != 40)
-            {
-                SimpleAlerts.Information()
-                            .WithMessage("Usuário sem permissão para Fechar o Dia")
-                            .ShowAlert();
-                return;
-            }
             if (HasOpenTables())
             {
                 return;
@@ -268,11 +261,20 @@ namespace LogicPOS.UI.Components.POS
             if (WorkSessionsService.DayIsOpen())
             {
                 BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
-                BtnSessionOpening.Sensitive = true;
+                if(WorkSessionsService.TerminalIsOpen())
+                {
+                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_TERMINAL_CLOSE");
+                }
+                else
+                {
+                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_TERMINAL_OPEN");
+                }
+                BtnDayOpening.Sensitive= AuthenticationService.UserHasPermission("WORKSESSION_DAY_CLOSE");
             }
             else
             {
                 BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
+                BtnDayOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_DAY_OPEN");
                 BtnSessionOpening.Sensitive = false;
             }
         }

@@ -55,7 +55,10 @@ namespace LogicPOS.UI.Components.Users
             var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
             return loginResult;
         }
-
+        public static void RefreshPermissions()
+        {
+            LoadPermissions();
+        }
         private static void LoadPermissions()
         {
             Permissions.Clear();

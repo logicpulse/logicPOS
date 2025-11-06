@@ -159,6 +159,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_ACCESS");
             BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_ALL");
             BtnReports.Sensitive = AuthenticationService.UserHasPermission("REPORT_ACCESS");
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
         }
     }
 }

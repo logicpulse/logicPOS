@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Windows
             DashBoardPage.Instance?.UpdatePrivileges();
 
             #region Documents
-            BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSNEW_MENU");
+            BtnNewDocument.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE"); ;
             BtnDocuments.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSLISTALL_MENU");
             BtnReceiptsEmission.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU");
             BtnReceipts.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAYMENTS_MENU");
