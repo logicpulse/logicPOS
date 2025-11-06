@@ -229,7 +229,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             GridViewSettings.Filter.Refilter();
             this.Navigator.Update();
-            
         }
 
         protected abstract void AddColumns();

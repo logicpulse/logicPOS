@@ -33,35 +33,5 @@ namespace LogicPOS.UI.Components.Pages
 
             horizontalBox.Add(scrolledWindowPermissionItem);
         }
-
-        private void InitializePermissionItemsGrid()
-        {
-            _gridPermissionItems = new TreeView();
-            _gridPermissionItems.Model = new ListStore(typeof(PermissionItem), typeof(bool));
-
-            TreeViewColumn itemDesignationColumn = CreatePermissiontemColumn();
-            _gridPermissionItems.AppendColumn(itemDesignationColumn);
-
-            TreeViewColumn grantedColumn = CreateGrantedColumn();
-            _gridPermissionItems.AppendColumn(grantedColumn);
-        }
-
-        private void InitializeUserProfilesGridView()
-        {
-            GridViewSettings.Model = new ListStore(typeof(UserProfile));
-
-            InitializeGridViewModel();
-
-            GridView = new TreeView();
-            GridView.Model = GridViewSettings.Sort;
-            GridView.EnableSearch = true;
-            GridView.SearchColumn = 1;
-
-            GridView.RulesHint = true;
-            GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
-
-            AddColumns();
-            AddGridViewEventHandlers();
-        }
     }
 }

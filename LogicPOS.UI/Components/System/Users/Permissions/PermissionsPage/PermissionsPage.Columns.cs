@@ -48,5 +48,77 @@ namespace LogicPOS.UI.Components.Pages
             return grantedColumn;
         }
 
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
+        }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+        }
+
+        private void InitializePermissionItemsGrid()
+        {
+            InitializePermissionItemsGridFilter();
+
+            _gridPermissionItems = new TreeView();
+            _gridPermissionItems.Model = PermissionItemsGridViewSettings.Filter;
+            _gridPermissionItems.EnableSearch = true;
+            _gridPermissionItems.SearchColumn = 0;
+
+            TreeViewColumn itemDesignationColumn = CreatePermissiontemColumn();
+            _gridPermissionItems.AppendColumn(itemDesignationColumn);
+
+            TreeViewColumn grantedColumn = CreateGrantedColumn();
+            _gridPermissionItems.AppendColumn(grantedColumn);
+        }
+
+        private void InitializePermissionItemsGridFilter()
+        {
+            PermissionItemsGridViewSettings.Filter = new TreeModelFilter(PermissionItemsGridViewSettings.Model, null);
+            PermissionItemsGridViewSettings.Filter.VisibleFunc = (model, iterator) =>
+            {
+                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    return true;
+                }
+
+                var entity = model.GetValue(iterator, 0) as PermissionItem;
+
+                if (entity != null)
+                {
+                    if (entity.Designation.ToLower().Contains(search))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+        }
+
+        private void InitializeUserProfilesGridView()
+        {
+            GridViewSettings.Model = new ListStore(typeof(UserProfile));
+
+            InitializeGridViewModel();
+
+            GridView = new TreeView();
+            GridView.Model = GridViewSettings.Sort;
+            GridView.EnableSearch = true;
+            GridView.SearchColumn = 1;
+
+            GridView.RulesHint = true;
+            GridView.ModifyBase(StateType.Active, new Gdk.Color(215, 215, 215));
+
+            AddColumns();
+            AddGridViewEventHandlers();
+        }
     }
 }

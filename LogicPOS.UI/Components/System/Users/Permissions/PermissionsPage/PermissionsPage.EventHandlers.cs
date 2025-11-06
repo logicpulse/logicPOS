@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
@@ -8,16 +9,24 @@ namespace LogicPOS.UI.Components.Pages
     {
         private void CheckBox_Clicked(object o, ToggledArgs args)
         {
-            TreeIter iterator;
             var path = new TreePath(args.Path);
 
-            if (_gridPermissionItems.Model.GetIter(out iterator, path))
+            if (!PermissionItemsGridViewSettings.Filter.GetIter(out TreeIter filterIter, path))
             {
-                var currentValue = (bool)_gridPermissionItems.Model.GetValue(iterator, 1);
-                _gridPermissionItems.Model.SetValue(iterator, 1, !currentValue);
+                return;
+            }
 
-                var permissionItem = _gridPermissionItems.Model.GetValue(iterator, 0) as PermissionItem;
+            TreeIter childIter = PermissionItemsGridViewSettings.Filter.ConvertIterToChildIter(filterIter);
 
+            var model = PermissionItemsGridViewSettings.Model; 
+
+            var currentValue = (bool)model.GetValue(childIter, 1);
+            model.SetValue(childIter, 1, !currentValue);
+
+            var permissionItem = model.GetValue(childIter, 0) as PermissionItem;
+
+            if (permissionItem != null)
+            {
                 if (currentValue)
                 {
                     DeleteUserProfilePermission(permissionItem);
@@ -26,9 +35,12 @@ namespace LogicPOS.UI.Components.Pages
                 {
                     AddUserProfilePermission(permissionItem);
                 }
-
-                Refresh();
             }
+
+            LoadEntities();
+            ClearPermissionitemsGridView();
+            AddPermissionItemsToModel();
+            ShowUserProfilePermissions(SelectedEntity);
         }
 
         protected override void GridViewRow_Changed(object sender, EventArgs e)
@@ -43,6 +55,11 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_EDIT");
             Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_DELETE");
             Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_VIEW");
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return null;
         }
 
     }

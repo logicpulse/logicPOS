@@ -20,6 +20,10 @@ namespace LogicPOS.UI.Components.Pages
     public partial class PermissionsPage : Page<UserProfile>
     {
         private TreeView _gridPermissionItems;
+        private GridViewSettings PermissionItemsGridViewSettings { get; } = new GridViewSettings
+        {
+            Model = new ListStore(typeof(PermissionItem), typeof(bool))
+        };
         private List<PermissionProfile> _permissionProfiles = new List<PermissionProfile>();
         private List<PermissionItem> _permissionItems = new List<PermissionItem>();
         protected override IRequest<ErrorOr<IEnumerable<UserProfile>>> GetAllQuery => new GetAllUserProfilesQuery();
@@ -31,8 +35,34 @@ namespace LogicPOS.UI.Components.Pages
         protected override void LoadEntities()
         {
             base.LoadEntities();
-            LoadPermissionItems();
+            if (_permissionItems.Count == 0)
+            {
+                LoadPermissionItems();
+            }
             LoadPermissionProfiles();
+        }
+
+        public override void Refresh()
+        {
+            LoadEntities();
+
+            ClearGridViewModel();
+            ClearPermissionitemsGridView();
+
+            AddEntitiesToModel(_entities);
+        }
+
+
+        public override void Search(string searchText)
+        {
+           PermissionItemsGridViewSettings.Filter.Refilter();
+            this.Navigator.Update();
+        }
+
+        private void ClearPermissionitemsGridView()
+        {
+            var model = (ListStore)PermissionItemsGridViewSettings.Model;
+            model.Clear();
         }
 
         private void LoadPermissionItems()
@@ -65,13 +95,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void AddPermissionItemsToModel()
         {
-            var model = (ListStore)_gridPermissionItems.Model;
+            var model = (ListStore)PermissionItemsGridViewSettings.Model;
             _permissionItems.ForEach(item => model.AppendValues(item, false));
         }
 
         public void ShowUserProfilePermissions(UserProfile userProfile)
         {
-            var permissionItems = (ListStore)_gridPermissionItems.Model;
+            var permissionItems = (ListStore)PermissionItemsGridViewSettings.Model;
 
             permissionItems.Foreach((model, path, iterator) =>
             {
@@ -138,6 +168,12 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
+        protected override void InitializeFilter()
+        {
+            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
+            GridViewSettings.Filter.VisibleFunc = (model, iterator) => true;
+        }
+
         protected override void InitializeGridView()
         {
             InitializeUserProfilesGridView();
@@ -150,24 +186,6 @@ namespace LogicPOS.UI.Components.Pages
             AddPermissionItemsToModel();
         }
 
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-
-            AddCodeSorting(0);
-            AddDesignationSorting(1);
-        }
-
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-        }
-
-        protected override DeleteCommand GetDeleteCommand()
-        {
-            return null;
-        }
 
         #region Singleton
         private static PermissionsPage _instance;

@@ -36,6 +36,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
+       
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
