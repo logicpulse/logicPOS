@@ -34,6 +34,11 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
+        public TableViewModel GetSelectedTable()
+        {
+            return MenuTables.SelectedEntity;
+        }
+
         private void InitializeSelectionMode()
         {
             BtnFilterAll.Visible = false;

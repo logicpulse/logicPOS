@@ -63,11 +63,11 @@ namespace LogicPOS.UI.Components.POS
         {
             if (SystemInformationService.SystemInformation.IsPortugal)
             {
-                return  OrdersService.DeleteOrder(SaleContext.CurrentOrder.Id.Value);
+                return OrdersService.DeleteOrder(SaleContext.CurrentOrder.Id.Value);
 
             }
 
-            DeleteOrderModal modal = new DeleteOrderModal(SaleContext.CurrentOrder.Id.Value,POSWindow.Instance);
+            DeleteOrderModal modal = new DeleteOrderModal(SaleContext.CurrentOrder.Id.Value, POSWindow.Instance);
 
             ResponseType deleteModalResponse = (ResponseType)modal.Run();
             modal.Destroy();
@@ -276,9 +276,18 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnChangeTable_Clicked(object sender, EventArgs e)
         {
-            var modal = new TablesModal(MenuMode.SelectFree,POSWindow.Instance);
-            modal.Run();
+            var modal = new TablesModal(MenuMode.SelectFree, POSWindow.Instance);
+            var response = (ResponseType)modal.Run();
             modal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                var selectedTable = modal.GetSelectedTable();
+                SaleContext.ChangeOrderTable(selectedTable, SaleContext.CurrentOrder.Id.Value);
+                
+                return;
+            }
+
             UpdateButtonsSensitivity();
         }
 
@@ -302,7 +311,7 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)
         {
-            var modal = new TablesModal(MenuMode.Standard,SourceWindow);
+            var modal = new TablesModal(MenuMode.Standard, SourceWindow);
             modal.Run();
             modal.Destroy();
             UpdateButtonsSensitivity();

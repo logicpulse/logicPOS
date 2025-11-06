@@ -101,27 +101,38 @@ namespace LogicPOS.UI.Components.POS
             GridView.RowActivated += GridView_RowActivated;
             GridView.Vadjustment.ValueChanged += delegate { };
             GridView.Vadjustment.Changed += delegate { };
-           
+
         }
 
         private void GridView_RowActivated(object o, RowActivatedArgs args)
         {
-
-            var alert = CustomAlerts.Question(POSWindow.Instance)
+            if (Ticket != null)
+            {
+                return;
+            }
+            var confirmation = CustomAlerts.Question(POSWindow.Instance)
                                     .WithMessage($"Deseja mudar o artigo:  {SelectedItem.Article.Designation} \n" +
                                                             $"Quantidade: {SelectedItem.Quantity:N2} \n" +
                                                             $"Total Final: {SelectedItem.TotalFinal:N2}\n" +
                                                             $" para outra mesa?")
                                     .ShowAlert();
 
-            if (alert != ResponseType.Yes)
+            if (confirmation != ResponseType.Yes)
             {
                 return;
             }
 
-            var modal= new TablesModal(MenuMode.SelectOther, POSWindow.Instance);
-            modal.Run();
+            var modal = new TablesModal(MenuMode.SelectOther, POSWindow.Instance);
+            var response = (ResponseType)modal.Run();
             modal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                var selectedTable = modal.GetSelectedTable();
+                var table = SaleContext.CurrentTable;
+                OrdersService.MoveTicketItem(SaleContext.CurrentOrder.Id.Value, selectedTable.Id, SaleContext.ItemsPage.SelectedItem);
+                SaleContext.SetCurrentTable(table);
+            }
             return;
         }
 
@@ -257,8 +268,8 @@ namespace LogicPOS.UI.Components.POS
         private void SelectItem(SaleItem item)
         {
             var index = Ticket?.Items?.IndexOf(item);
-           
-            if(index == null)
+
+            if (index == null)
             {
                 return;
             }

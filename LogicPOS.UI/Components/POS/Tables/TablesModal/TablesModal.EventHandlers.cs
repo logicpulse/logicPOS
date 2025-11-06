@@ -33,26 +33,10 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            if (_mode == MenuMode.SelectOther)
-            {
-                var table = SaleContext.CurrentTable;
-                OrdersService.MoveTicketItem(SaleContext.CurrentOrder.Id.Value, MenuTables.SelectedEntity.Id, SaleContext.ItemsPage.SelectedItem);
-                SaleContext.SetCurrentTable(table);
-                return;
-            }
-
-            if (_mode == MenuMode.SelectFree)
-            {
-                SaleContext.ChangeOrderTable(MenuTables.SelectedEntity, SaleContext.CurrentOrder.Id.Value);
-                MenuTables.UpdateUI();
-                return;
-            }
-
-            if (MenuTables.SelectedEntity != null)
+            if (MenuTables.SelectedEntity != null && _mode==MenuMode.Standard)
             {
                 SaleContext.SetCurrentTable(MenuTables.SelectedEntity);
             }
-
         }
 
         private void MenuTables_TableSelected(TableViewModel table)
