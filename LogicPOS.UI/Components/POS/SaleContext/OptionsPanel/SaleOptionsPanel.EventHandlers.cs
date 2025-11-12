@@ -293,7 +293,13 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnListMode_Clicked(object sender, EventArgs e)
         {
-            GeneralUtils.ShowNotImplementedMessage();
+            if(SaleContext.ItemsPage.TicketMode)
+            {
+                SaleContext.ItemsPage.PresentOrderItems();
+                UpdateButtonsSensitivity();
+                return;
+            }
+            SaleContext.ItemsPage.PresentTicketItems();
             UpdateButtonsSensitivity();
         }
 

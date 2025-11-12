@@ -74,8 +74,8 @@ namespace LogicPOS.UI.Components.Menus
             }
 
             var saleItem = new SaleItem(article, priceType);
-
             SaleContext.ItemsPage.AddItem(saleItem);
+            SaleContext.ItemsPage.PresentTicketItems();
             POSWindow.Instance.SaleOptionsPanel.UpdateButtonsSensitivity();
         }
 

@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.POS
         public event EventHandler TicketOpened;
         public SaleItem SelectedItem { get; private set; }
         public PosTicket Ticket { get; set; }
+        public bool TicketMode { get; private set; }
 
         public SaleItemsPage(Window parent,
                              dynamic theme)
@@ -52,17 +53,18 @@ namespace LogicPOS.UI.Components.POS
 
         public void PresentOrderItems()
         {
+            TicketMode = false;
             var orderItems = SaleContext.CurrentOrder.GetOrderItems();
 
+            Clear();
+            SetOrderModeBackGround();
             if (orderItems.Any() == false)
             {
-                SetTicketModeBackGround();
+                UpdateLabelTotalValue();
                 return;
             }
-
-            SetOrderModeBackGround();
             var model = (ListStore)GridViewSettings.Model;
-
+            model.Clear();
             orderItems.ForEach(entity => model.AppendValues(entity));
 
             UpdateLabelTotalValue();
@@ -70,18 +72,24 @@ namespace LogicPOS.UI.Components.POS
 
         public void PresentTicketItems()
         {
+            TicketMode = true;
+            SetTicketModeBackGround();
+            Clear();
             if (Ticket == null)
             {
+                UpdateLabelTotalValue();
                 return;
             }
 
             var model = (ListStore)GridViewSettings.Model;
             Ticket.Items.ForEach(entity => model.AppendValues(entity));
+            SelectItem(Ticket.Items.Last());
+            UpdateLabelTotalValue();
         }
 
         public void UpdateLabelTotalValue()
         {
-            var total = Ticket?.TotalFinal ?? SaleContext.CurrentOrder?.TotalFinal ?? 0;
+            var total = (TicketMode) ? Ticket?.TotalFinal ?? 0 : SaleContext.CurrentOrder?.TotalFinal ?? 0;
             LabelTotalValue.Text = total.ToString("C");
         }
 
@@ -93,7 +101,8 @@ namespace LogicPOS.UI.Components.POS
             {
                 GridViewSettings.Path = model.GetPath(GridViewSettings.Iterator);
                 SelectedItem = (SaleItem)model.GetValue(GridViewSettings.Iterator, 0);
-            };
+            }
+            ;
         }
 
         protected virtual void AddGridViewEventHandlers()
@@ -250,8 +259,7 @@ namespace LogicPOS.UI.Components.POS
         public void FinishTicket()
         {
             Clear(true);
-            SetOrderModeBackGround();
-            PresentOrderItems();
+            SaleContext.SetCurrentTable(SaleContext.CurrentTable);
             UpdateLabelTotalValue();
             POSWindow.Instance.UpdateUI();
         }
@@ -262,7 +270,7 @@ namespace LogicPOS.UI.Components.POS
             {
                 return;
             }
-
+            Clear();
             var model = (ListStore)GridViewSettings.Model;
             model.AppendValues(Ticket.Items.Last());
         }

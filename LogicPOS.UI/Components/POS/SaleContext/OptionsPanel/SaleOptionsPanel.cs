@@ -115,15 +115,15 @@ namespace LogicPOS.UI.Components.POS
             bool hasTicket = SaleContext.ItemsPage.Ticket != null;
             bool hasTicketItems = hasTicket && SaleContext.ItemsPage.Ticket.Items.Count > 0;
             bool hasOrder = SaleContext.CurrentOrder != null;
-
-            BtnIncrease.Sensitive = hasTicketItems;
-            BtnPrevious.Sensitive = hasTicketItems;
-            BtnNext.Sensitive = hasTicketItems;
-            BtnDecrease.Sensitive = hasTicketItems;
-            BtnPrice.Sensitive = hasTicketItems && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
-            BtnQuantity.Sensitive = hasTicketItems;
-            BtnWeight.Sensitive = hasTicketItems;
-            BtnFinishOrder.Sensitive = hasTicketItems;
+            bool presentTicketMode = SaleContext.ItemsPage.TicketMode;
+            BtnIncrease.Sensitive = hasTicketItems && presentTicketMode;
+            BtnPrevious.Sensitive = hasTicketItems && presentTicketMode;
+            BtnNext.Sensitive = hasTicketItems && presentTicketMode;
+            BtnDecrease.Sensitive = hasTicketItems && presentTicketMode;
+            BtnPrice.Sensitive = hasTicketItems && presentTicketMode && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
+            BtnQuantity.Sensitive = hasTicketItems && presentTicketMode;
+            BtnWeight.Sensitive = hasTicketItems && presentTicketMode;
+            BtnFinishOrder.Sensitive = hasTicketItems && presentTicketMode;
             BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
             BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
             BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_PAYMENT");

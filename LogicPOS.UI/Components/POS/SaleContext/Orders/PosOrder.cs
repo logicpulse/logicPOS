@@ -28,7 +28,10 @@ namespace LogicPOS.UI.Components.POS
         public List<SaleItem> GetOrderItems()
         {
             var orderItems = new List<SaleItem>();
-
+            if (SaleContext.HasOpenTicket())
+            {
+                Tickets.Remove(SaleContext.ItemsPage.Ticket);
+            }
             var ticketsItems = Tickets.SelectMany(t => t.Items);
 
             return SaleItem.Compact(ticketsItems).ToList();
