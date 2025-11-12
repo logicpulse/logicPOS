@@ -2,7 +2,7 @@
 
 namespace LogicPOS.Api.Errors
 {
-    public class ProblemDetails
+    public struct ProblemDetails
     {
         public string Type { get; set; }
         public string Title { get; set; }
@@ -10,6 +10,6 @@ namespace LogicPOS.Api.Errors
         public string TraceId { get; set; }
         public string Detail { get; set; }
         public string Instance {  get; set; }
-        public List<ProblemDetailsError> Errors { get; set; } = new List<ProblemDetailsError>(); 
+        public List<ProblemDetailsError> Errors { get; set; }
     }
 }

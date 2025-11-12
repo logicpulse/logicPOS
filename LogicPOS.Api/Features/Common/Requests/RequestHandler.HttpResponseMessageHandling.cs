@@ -28,6 +28,21 @@ namespace LogicPOS.Api.Features.Common.Requests
 
         private async Task<Error> GetProblemDetailsFromResponseAsync(HttpResponseMessage httpResponse)
         {
+            if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                var internalServerError = await httpResponse.Content.ReadFromJsonAsync<InternalServerError>();
+                var problem  = new ProblemDetails
+                {
+                    Type = internalServerError.Status,
+                    Title = "Erro interno do servidor",
+                    Status = (int)httpResponse.StatusCode,
+                    Detail = internalServerError.Reason,
+                    Instance = "Consultar equipa técnica",
+                    TraceId = "Consultar equipa técnica"
+                };
+                return Error.Custom(internalServerError.Code, internalServerError.Status, internalServerError.Reason, new Dictionary<string, object> { { "problem", problem } });
+            }
+
             var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.Validation(metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }

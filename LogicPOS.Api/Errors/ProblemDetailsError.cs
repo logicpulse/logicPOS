@@ -1,6 +1,6 @@
 ﻿namespace LogicPOS.Api.Errors
 {
-    public class ProblemDetailsError
+    public struct ProblemDetailsError
     {
         public string Name { get; set; }
         public string Reason { get; set; }
