@@ -1,5 +1,6 @@
 ﻿using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.FiscalYears;
@@ -13,8 +14,30 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
     {
+        private const int ActivityTimerDefault = 30;
+        private static int _activityTimer = ActivityTimerDefault;
+        
+        private bool UpdateClock()
+        {
+            if (Visible == false)
+            {
+                return true;
+            }
+
+            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]) + $"<{_activityTimer}>";
+            
+            if(--_activityTimer <= 0)
+            {
+                _activityTimer = 30;
+                BtnLogOut_Clicked(this, EventArgs.Empty);
+            }
+
+            return true;
+        }
+
         private void AddEventHandlers()
         {
+
             WindowStateEvent += Window_StateEvent;
             this.KeyReleaseEvent += Window_KeyReleaseEvent;
             this.Shown += POSWindow_Shown;
@@ -22,16 +45,23 @@ namespace LogicPOS.UI.Components.Windows
             BtnQuit.Clicked += BtnQuit_Clicked;
             BtnBackOffice.Clicked += BtnBackOffice_Clicked;
             BtnReports.Clicked += BtnReports_Clicked;
-            BtnShowSystemDialog.Clicked += delegate { throw new NotImplementedException(); };
             BtnLogOut.Clicked += BtnLogOut_Clicked;
             BtnChangeUser.Clicked += BtnChangeUser_Clicked;
             BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Clicked += BtnDocuments_Clicked;
+            this.MotionNotifyEvent += POSWindow_MotionNotifyEvent;
+
+        }
+
+        private void POSWindow_MotionNotifyEvent(object o, MotionNotifyEventArgs args)
+        {
+            _activityTimer = ActivityTimerDefault;
         }
 
         private void POSWindow_Shown(object sender, EventArgs e)
         {
+            _activityTimer = ActivityTimerDefault;
             UpdateUI();
         }
 

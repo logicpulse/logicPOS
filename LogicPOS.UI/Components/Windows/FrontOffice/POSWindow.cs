@@ -15,15 +15,12 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using System.Linq;
 using Image = Gtk.Image;
 
 namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow : POSBaseWindow
     {
-        public string ClockTimeFormat => GeneralUtils.GetResourceByName("frontoffice_datetime_format_status_bar");
-
         private POSWindow(string backgroundImage)
             : base(backgroundImage)
         {
@@ -45,6 +42,10 @@ namespace LogicPOS.UI.Components.Windows
             AddEventHandlers();
             InitializeBarcodeReader();
             UpdateUI();
+
+            this.AddEvents((int)(Gdk.EventMask.PointerMotionMask |
+            Gdk.EventMask.ButtonPressMask |
+            Gdk.EventMask.ButtonReleaseMask));
         }
 
         private void InitializeBarcodeReader()
@@ -159,7 +160,7 @@ namespace LogicPOS.UI.Components.Windows
             LabelTerminalInfo.SetAlignment(labelTerminalInfoAlignmentX, 0.5F);
 
             //EventBoxStatusBar1:LabelClock
-            LabelClock = new Label(DateTime.Now.ToString(ClockTimeFormat));
+            LabelClock = new Label(DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]));
             LabelClock.ModifyFont(labelClockFont);
             LabelClock.ModifyFg(StateType.Normal, labelClockFontColor);
             LabelClock.SetAlignment(labelClockAlignmentX, 0.5F);
@@ -674,17 +675,6 @@ namespace LogicPOS.UI.Components.Windows
             GLib.Timeout.Add(1000, new GLib.TimeoutHandler(UpdateClock));
         }
 
-        private bool UpdateClock()
-        {
-            if (Visible == false)
-            {
-                return true;
-            }
-
-            LabelClock.Text = DateTime.Now.ToString(ClockTimeFormat);
-
-            return true;
-        }
 
         #region Static
         private static POSWindow _instance;
