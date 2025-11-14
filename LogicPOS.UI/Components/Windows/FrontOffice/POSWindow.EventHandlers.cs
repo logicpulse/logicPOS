@@ -14,9 +14,10 @@ namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
     {
-        private const int ActivityTimerDefault = 30;
+        private const int ActivityTimerDefault = 40;
         private static int _activityTimer = ActivityTimerDefault;
-        
+        private static bool _controlActivity = false;
+
         private bool UpdateClock()
         {
             if (Visible == false)
@@ -24,13 +25,16 @@ namespace LogicPOS.UI.Components.Windows
                 return true;
             }
 
-            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]) + $"<{_activityTimer}>";
-            
-            if(--_activityTimer <= 0)
+            if (_controlActivity)
             {
-                _activityTimer = 30;
-                BtnLogOut_Clicked(this, EventArgs.Empty);
+                if (_activityTimer-- <= 0)
+                {
+                    _activityTimer = ActivityTimerDefault;
+                    BtnLogOut_Clicked(this, EventArgs.Empty);
+                }
             }
+
+            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]) + $"<{_activityTimer}>";
 
             return true;
         }
@@ -51,8 +55,22 @@ namespace LogicPOS.UI.Components.Windows
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Clicked += BtnDocuments_Clicked;
             this.MotionNotifyEvent += POSWindow_MotionNotifyEvent;
-
+            this.FocusInEvent += POSWindow_FocusInEvent;
+            this.FocusOutEvent += POSWindow_FocusOutEvent;
         }
+
+        private void POSWindow_FocusInEvent(object o, FocusInEventArgs args)
+        {
+            _controlActivity = true;
+            _activityTimer = ActivityTimerDefault;
+        }
+
+        private void POSWindow_FocusOutEvent(object o, FocusOutEventArgs args)
+        {
+            _controlActivity = false;
+        }
+
+     
 
         private void POSWindow_MotionNotifyEvent(object o, MotionNotifyEventArgs args)
         {
@@ -161,7 +179,7 @@ namespace LogicPOS.UI.Components.Windows
             }
 
             MenuArticles.PresentFavorites = true;
-           
+
             MenuArticles.Refresh();
         }
 
