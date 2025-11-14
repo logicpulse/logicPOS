@@ -16,7 +16,33 @@ namespace LogicPOS.UI.Components.Windows
     {
         private const int ActivityTimerDefault = 40;
         private static int _activityTimer = ActivityTimerDefault;
-        private static bool _controlActivity = false;
+        private static bool _controlActivity = true;
+
+        private void ResetActivityTimer()
+        {
+            _activityTimer = ActivityTimerDefault;
+        }
+
+        private void HookWidgetAndChildren(Widget widget)
+        {
+            widget.ButtonPressEvent += (o, args) => ResetActivityTimer();
+            widget.KeyPressEvent += (o, args) => ResetActivityTimer();
+            widget.FocusInEvent += (o, args) => ResetActivityTimer();
+            widget.MotionNotifyEvent += (o, args) => ResetActivityTimer();
+
+            if (widget is Button btn)
+            {
+                btn.Clicked += (o, args) => ResetActivityTimer();
+            }
+
+            if (widget is Container container)
+            {
+                foreach (Widget child in container.Children)
+                {
+                    HookWidgetAndChildren(child);
+                }
+            }
+        }
 
         private bool UpdateClock()
         {
@@ -41,7 +67,6 @@ namespace LogicPOS.UI.Components.Windows
 
         private void AddEventHandlers()
         {
-
             WindowStateEvent += Window_StateEvent;
             this.KeyReleaseEvent += Window_KeyReleaseEvent;
             this.Shown += POSWindow_Shown;
@@ -54,27 +79,11 @@ namespace LogicPOS.UI.Components.Windows
             BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Clicked += BtnDocuments_Clicked;
-            this.MotionNotifyEvent += POSWindow_MotionNotifyEvent;
-            this.FocusInEvent += POSWindow_FocusInEvent;
-            this.FocusOutEvent += POSWindow_FocusOutEvent;
-        }
 
-        private void POSWindow_FocusInEvent(object o, FocusInEventArgs args)
-        {
-            _controlActivity = true;
-            _activityTimer = ActivityTimerDefault;
-        }
+            HookWidgetAndChildren(this);
 
-        private void POSWindow_FocusOutEvent(object o, FocusOutEventArgs args)
-        {
-            _controlActivity = false;
-        }
-
-     
-
-        private void POSWindow_MotionNotifyEvent(object o, MotionNotifyEventArgs args)
-        {
-            _activityTimer = ActivityTimerDefault;
+            this.FocusInEvent += (s,e) => _controlActivity = true; 
+            this.FocusOutEvent += (s,e) => _controlActivity = false;
         }
 
         private void POSWindow_Shown(object sender, EventArgs e)
