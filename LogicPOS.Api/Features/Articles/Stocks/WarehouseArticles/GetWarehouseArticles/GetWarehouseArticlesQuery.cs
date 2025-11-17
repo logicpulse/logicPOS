@@ -1,5 +1,4 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
+﻿using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using System;
 using System.Text;
@@ -14,7 +13,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles
         {
             if (ArticleId.HasValue)
             {
-                urlQueryBuilder.Append($"articleId={ArticleId}");
+                urlQueryBuilder.Append($"&articleId={ArticleId}");
             }
         }
     }
