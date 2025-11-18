@@ -51,7 +51,8 @@ namespace LogicPOS.UI.Components.Finance.Agt
                                        isValidatable: false,
                                        includeSelectButton: false,
                                        includeKeyBoardButton: false);
-            TxtValidationErrors.Entry.Sensitive = false;
+
+            TxtValidationErrors.Entry.IsEditable = false;
         }
 
         private void InitializeTxtValidationStatus()
