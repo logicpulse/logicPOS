@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentSeriesPage : Page<DocumentSeries>
     {
-        protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetAllDocumentSeriesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetActiveDocumentSeriesQuery();
         public DocumentSeriesPage(Window parent) : base(parent)
         {
             Navigator.BtnInsert.Visible = false;

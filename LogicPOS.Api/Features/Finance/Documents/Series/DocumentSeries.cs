@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using System;
 
 namespace LogicPOS.Api.Entities

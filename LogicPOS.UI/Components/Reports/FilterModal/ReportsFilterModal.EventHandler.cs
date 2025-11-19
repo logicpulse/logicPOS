@@ -5,6 +5,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;

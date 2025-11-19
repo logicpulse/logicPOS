@@ -7,21 +7,21 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes
+namespace LogicPOS.Api.Features.Finance.Documents.Types.GetActiveDocumentTypes
 {
-    public class GetAllDocumentTypesQueryHandler :
-        RequestHandler<GetAllDocumentTypesQuery, ErrorOr<IEnumerable<DocumentType>>>
+    public class GetActiveDocumentTypesQueryHandler :
+        RequestHandler<GetActiveDocumentTypesQuery, ErrorOr<IEnumerable<DocumentType>>>
     {
-        public GetAllDocumentTypesQueryHandler(IHttpClientFactory httpClientFactory, IMemoryCache cache) : base(httpClientFactory, cache)
+        public GetActiveDocumentTypesQueryHandler(IHttpClientFactory httpClientFactory, IMemoryCache cache) : base(httpClientFactory, cache)
         {
 
         }
 
-        public override async Task<ErrorOr<IEnumerable<DocumentType>>> Handle(GetAllDocumentTypesQuery query,
+        public override async Task<ErrorOr<IEnumerable<DocumentType>>> Handle(GetActiveDocumentTypesQuery query,
                                                                         CancellationToken cancellationToken = default)
         {
             var cacheOptions = GetCacheOptions();
-            var result = await HandleGetListQueryAsync<DocumentType>("documents/types", cancellationToken, cacheOptions);
+            var result = await HandleGetListQueryAsync<DocumentType>("documents/types/active", cancellationToken, cacheOptions);
 
             return result;
         }

@@ -68,8 +68,6 @@ namespace LogicPOS.UI.Printing.Tickets
 
             //Add Columns
             string fieldName = string.Empty;
-            string fieldType;
-            string fieldValue;
 
             foreach (TicketColumn column in _columnsProperties)
             {

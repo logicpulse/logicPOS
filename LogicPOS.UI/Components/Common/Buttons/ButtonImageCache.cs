@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -35,7 +36,7 @@ namespace LogicPOS.UI.Components.Articles
             }
             catch (Exception ex)
             {
-
+                Log.Error("ButtonImageCache", "AddBase64Image", $"Failed to save image for ID {id}: {ex.Message}");
                 return null;
             }
 

@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Modals.Common;
@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private DocumentType GetDocumentTypeFromDocument(DocumentViewModel document)
         {
-            return DocumentTypesService.DocumentTypes.FirstOrDefault(type => type.Acronym == document.Type);
+            return DocumentTypesService.GetActive().FirstOrDefault(type => type.Acronym == document.Type);
         }
 
         public Guid? GetPaymentConditionId() => (TxtPaymentCondition.SelectedEntity as ApiEntity)?.Id;

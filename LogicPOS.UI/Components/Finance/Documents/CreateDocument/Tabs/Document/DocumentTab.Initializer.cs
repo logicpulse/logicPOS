@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.DocumentTypes;

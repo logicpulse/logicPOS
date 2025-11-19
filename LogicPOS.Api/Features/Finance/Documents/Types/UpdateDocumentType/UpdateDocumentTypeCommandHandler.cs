@@ -1,7 +1,7 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
-using LogicPOS.Api.Features.Finance.DocumentTypes;
+using LogicPOS.Api.Features.Finance.Documents.Types;
 using MediatR;
 using System.Net.Http;
 using System.Threading;

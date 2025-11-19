@@ -1,5 +1,5 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.DocumentTypes.UpdateDocumentType;
+﻿using LogicPOS.Api.Features.DocumentTypes.UpdateDocumentType;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using System;
 
 namespace LogicPOS.UI.Components.Modals

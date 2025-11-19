@@ -32,14 +32,12 @@ namespace LogicPOS.UI.Settings
 
         #region Properties
         public Size AppScreenSize { get; set; }
-
         public int AppScreen { get; set; }
-
         public bool AppThemeCalcDynamicSize { get; set; }
-
         public string AppOperationModeToken { get; set; }
         public string CustomCultureResourceDefinition { get; set; }
-        public string CultureFinancialRules { get; set; }
+
+        public int? InactivityTimeout { get; set;  }
 
         public bool UseImageOverlay { get; set; }
         public bool AppShowMinimize { get; set; }
@@ -50,19 +48,11 @@ namespace LogicPOS.UI.Settings
         public int PosBaseButtonMaxCharsPerLabel { get; set; }
         public string DateTimeFormatStatusBar { get; set; }
 
-        public string PathAssets { get; set; }
         public string PathImages { get; set; }
         public string PathThemes { get; set; }
-        public string PathSounds { get; set; }
-        public string PathResources { get; set; }
-        public string PathReports { get; set; }
-        public string PathTickets { get; set; }
         public string PathKeyboards { get; set; }
         public string PathTemp { get; set; }
-        public string PathCache { get; set; }
-        public string PathDocuments { get; set; }
-        public string PathPlugins { get; set; }
-        public string PathCertificates { get; set; }
+
 
         public decimal DecimalMoneyButtonL1Value { get; set; }
         public decimal DecimalMoneyButtonL2Value { get; set; }
@@ -202,9 +192,6 @@ namespace LogicPOS.UI.Settings
         public Size SizePagesPadNavigatorButton { get; set; }
         public Size SizePagesPadNavigatorButtonIcon { get; set; }
 
-        public bool UsePDFviewer { get; set; }
-        public bool PrintTicket { get; set; }
-
         public Size SizeStartupWindowObjectsTablePadUserMarginLeftTop { get; set; }
         public Size SizeStartupWindowObjectsTablePadUserButton { get; set; }
         public Size SizeStartupWindowObjectsTablePadUserTablePadUserButtonPrev { get; set; }
@@ -213,9 +200,6 @@ namespace LogicPOS.UI.Settings
         public Size SizeStartupWindowObjectsLabelVersion { get; set; }
         public Size SizeStartupWindowObjectsLabelVersionSizeMarginRightBottom { get; set; }
 
-        public bool PosPaymentsDialogUseCurrentAccount { get; set; }
-        public string ClientSettingsProviderServiceUri { get; set; }
-        public string AppHardwareId { get; set; }
         public string FontPosBackOfficeParentLowRes { get; set; }
         public string FontPosBackOfficeChildLowRes { get; set; }
         #endregion

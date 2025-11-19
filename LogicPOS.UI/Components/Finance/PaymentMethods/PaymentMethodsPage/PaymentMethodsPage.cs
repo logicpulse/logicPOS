@@ -2,6 +2,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Finance.Agt.ListSeries;
 using LogicPOS.Api.Features.PaymentMethods.DeletePaymentMethod;
 using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
 using LogicPOS.UI.Components.Modals;

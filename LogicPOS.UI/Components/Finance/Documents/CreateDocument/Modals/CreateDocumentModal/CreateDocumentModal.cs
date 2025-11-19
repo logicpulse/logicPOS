@@ -1,8 +1,8 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Finance.Documents.Services;
@@ -50,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
                 ShipToTab.ImportDataFromDocument(fullDocument);
             }
 
-            var documentType = DocumentTypesService.DocumentTypes.Where(docType => docType.Acronym == document.Type).FirstOrDefault()
+            var documentType = DocumentTypesService.GetActive().Where(docType => docType.Acronym == document.Type).FirstOrDefault()
                 ?? DocumentTypesService.Default;
 
 

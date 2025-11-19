@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 
 namespace LogicPOS.UI.Components.Pages
 {

@@ -8,19 +8,21 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Settings;
 using System;
 
 namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
     {
-        private const int ActivityTimerDefault = 40;
-        private static int _activityTimer = ActivityTimerDefault;
+        private static int _activityTimer = InactityTimeout;
         private static bool _controlActivity = true;
+        private static bool UseInactityTimeout => AppSettings.Instance.InactivityTimeout.HasValue && AppSettings.Instance.InactivityTimeout.Value > 0;
+        private static int InactityTimeout => AppSettings.Instance.InactivityTimeout ?? 0;
 
         private void ResetActivityTimer()
         {
-            _activityTimer = ActivityTimerDefault;
+            _activityTimer = InactityTimeout;
         }
 
         private void HookWidgetAndChildren(Widget widget)
@@ -51,16 +53,21 @@ namespace LogicPOS.UI.Components.Windows
                 return true;
             }
 
-            if (_controlActivity)
+            if (UseInactityTimeout && _controlActivity)
             {
                 if (_activityTimer-- <= 0)
                 {
-                    _activityTimer = ActivityTimerDefault;
+                    ResetActivityTimer();
                     BtnLogOut_Clicked(this, EventArgs.Empty);
                 }
             }
 
-            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]) + $"<{_activityTimer}>";
+            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]);
+            
+            if (UseInactityTimeout)
+            {
+                LabelClock.Text += $"<{_activityTimer}>";
+            }
 
             return true;
         }
@@ -80,7 +87,10 @@ namespace LogicPOS.UI.Components.Windows
             BtnNewDocument.Clicked += BtnNewDocument_Clicked;
             BtnDocuments.Clicked += BtnDocuments_Clicked;
 
-            HookWidgetAndChildren(this);
+            if (UseInactityTimeout)
+            {
+                HookWidgetAndChildren(this);
+            }
 
             this.FocusInEvent += (s,e) => _controlActivity = true; 
             this.FocusOutEvent += (s,e) => _controlActivity = false;
@@ -88,7 +98,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void POSWindow_Shown(object sender, EventArgs e)
         {
-            _activityTimer = ActivityTimerDefault;
+            ResetActivityTimer();
             UpdateUI();
         }
 

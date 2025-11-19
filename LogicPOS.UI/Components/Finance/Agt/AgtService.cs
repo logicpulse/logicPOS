@@ -1,10 +1,13 @@
 ﻿using LogicPOS.Api.Features.Finance.Agt.Common;
 using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
+using LogicPOS.Api.Features.Finance.Agt.ListSeries;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocument;
 using LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus;
 using LogicPOS.UI.Errors;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Finance.Agt
 {
@@ -50,7 +53,18 @@ namespace LogicPOS.UI.Components.Finance.Agt
 
             return true;
         }
-        
+
+        public static List<AgtSeriesInfo> ListOnlineSeries()
+        {
+            var result = DependencyInjection.Mediator.Send(new ListAgtSeriesQuery()).Result;
+            if (result.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value.ToList();
+        }
+
         public static AgtDocument GetAgtDocument(Guid documentId)
         {
             var result = DependencyInjection.Mediator.Send(new GetAgtDocumentByIdQuery(documentId)).Result;

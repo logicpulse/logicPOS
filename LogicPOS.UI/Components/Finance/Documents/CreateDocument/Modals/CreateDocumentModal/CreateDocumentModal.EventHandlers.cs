@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
@@ -151,7 +152,7 @@ namespace LogicPOS.UI.Components.Modals
                 PaymentMethodsTab.ImportDataFromDocument(document);
             }
 
-            var documentType = DocumentTypesService.DocumentTypes.Where(docType => docType.Acronym == document.Type).FirstOrDefault()
+            var documentType = DocumentTypesService.GetActive().Where(docType => docType.Acronym == document.Type).FirstOrDefault()
                 ?? DocumentTypesService.Default;
 
             OnDocumentTypeSelected(documentType);

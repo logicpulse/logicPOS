@@ -34,6 +34,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateValueColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
+       
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
@@ -43,6 +44,7 @@ namespace LogicPOS.UI.Components.Pages
             AddValueSorting();
             AddUpdatedAtSorting(3);
         }
+        
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteVatRateCommand(SelectedEntity.Id);

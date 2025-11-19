@@ -1,7 +1,8 @@
-﻿using LogicPOS.Api.Features.Common;
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents;
 
-namespace LogicPOS.Api.Entities
+namespace LogicPOS.Api.Features.Finance.Documents.Types.Common
 {
     public class DocumentType : ApiEntity, IWithCode, IWithDesignation
     {

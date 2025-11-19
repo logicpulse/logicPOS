@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.DocumentTypes;

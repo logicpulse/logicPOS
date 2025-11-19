@@ -2,6 +2,7 @@
 using LogicPOS.Api.Features.Documents.Series.AddDocumentSerie;
 using LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using System.Collections.Generic;
 

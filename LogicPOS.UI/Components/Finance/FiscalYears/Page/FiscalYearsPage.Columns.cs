@@ -6,8 +6,7 @@ using LogicPOS.Utility;
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class FiscalYearsPage
-    {
-       
+    { 
         private TreeViewColumn CreateAcronymColumn()
         {
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)

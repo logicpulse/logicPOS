@@ -2,6 +2,7 @@
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Services;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Windows
@@ -51,6 +52,15 @@ namespace LogicPOS.UI.Components.Windows
         public XAccordionChildButton BtnVatExemptionReasons { get; } = new XAccordionChildButton(LocalizedString.Instance["global_vat_exemption_reason"]);
         public XAccordionChildButton BtnPaymentConditions { get; } = new XAccordionChildButton(LocalizedString.Instance["global_payment_conditions"]);
         public XAccordionChildButton BtnPaymentMethods { get; } = new XAccordionChildButton(LocalizedString.Instance["global_payment_methods"]);
+        #endregion
+
+        #region AGT
+        public XAccordionParentButton BtnAgtSection = new XAccordionParentButton("AGT",
+                                                                                    "Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png");
+        public VBox PanelAgt = new VBox(false, 2);
+        public XAccordionChildButton BtnAgtSeries { get; } = new XAccordionChildButton("Séries");
+        public XAccordionChildButton BtnAgtDocuments { get; } = new XAccordionChildButton("Documentos");
+
         #endregion
 
         #region Customers
@@ -159,8 +169,6 @@ namespace LogicPOS.UI.Components.Windows
             BtnCurrentAccount.Button.Clicked += BtnCurrentAccount_Clicked;
         }
 
-       
-
         private void AddReportsSection()
         {
             PanelButtons.PackStart(BtnReportsSection.Button, false, false, 0);
@@ -219,6 +227,19 @@ namespace LogicPOS.UI.Components.Windows
             BtnVatExemptionReasons.Button.Clicked += delegate { ShowPage(VatExemptionReasonsPage.Instance, LocalizedString.Instance["global_vat_exemption_reason"]); };
             BtnPaymentConditions.Button.Clicked += delegate { ShowPage(PaymentConditionsPage.Instance, LocalizedString.Instance["global_payment_conditions"]); };
             BtnPaymentMethods.Button.Clicked += delegate { ShowPage(PaymentMethodsPage.Instance, LocalizedString.Instance["global_payment_methods"]); };
+        }
+
+        private void AddAgtSection()
+        {
+            PanelButtons.PackStart(BtnAgtSection.Button, false, false, 0);
+            PanelButtons.PackStart(PanelAgt, false, false, 0);
+            {
+                PanelAgt.PackStart(BtnAgtSeries.Button, false, false, 0);
+                PanelAgt.PackStart(BtnAgtDocuments.Button, false, false, 0);
+            }
+
+            BtnAgtSection.Button.Clicked += delegate { ShowPanel(PanelAgt); };
+            BtnAgtSeries.Button.Clicked += delegate { ShowPage(AgtSeriesPage.Instance, "AGT | Séries"); };
         }
 
         private void AddCustomersSection()
@@ -375,6 +396,10 @@ namespace LogicPOS.UI.Components.Windows
             AddReportsSection();
             AddArticlesSection();
             AddFiscalSection();
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                AddAgtSection();
+            }
             AddCustomersSection();
             AddUsersSection();
             AddDevicesSection();
@@ -399,6 +424,10 @@ namespace LogicPOS.UI.Components.Windows
             Panels.Add(PanelReports);
             Panels.Add(PanelArticles);
             Panels.Add(PanelFiscal);
+            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            {
+                Panels.Add(PanelAgt);
+            }
             Panels.Add(PanelCustomers);
             Panels.Add(PanelUsers);
             Panels.Add(PanelDevices);

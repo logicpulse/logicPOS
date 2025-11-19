@@ -1,5 +1,5 @@
 ﻿using Gtk;
-using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 
