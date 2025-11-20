@@ -1,13 +1,9 @@
-﻿using Atk;
-using Gtk;
-using LogicPOS.Api.Entities;
+﻿using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
-using LogicPOS.Api.Features.VatRates.AddVatRate;
-using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -27,11 +23,11 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateTotalToPayColumn());
             GridView.AppendColumn(CreateRelatedDocumentsColumn());
 
-            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            if (CompanyDetailsService.CompanyInformation.IsAngola && AppSettings.Instance.UseAgtFe)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
             }
-           
+
         }
 
         protected override void InitializeSort()
@@ -69,8 +65,8 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
-            var col =  Columns.CreateColumn(title, 10, RenderRelatedDocuments);
-            
+            var col = Columns.CreateColumn(title, 10, RenderRelatedDocuments);
+
             return col;
         }
 
@@ -174,11 +170,12 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.Number;
-                
+
                 if (document.IsDraft)
                 {
                     (cell as CellRendererText).ForegroundGdk = new Gdk.Color(255, 0, 0);
-                } else
+                }
+                else
                 {
                     (cell as CellRendererText).ForegroundGdk = new Gdk.Color(0, 0, 0);
                 }

@@ -38,6 +38,7 @@ namespace LogicPOS.UI.Settings
         public string CustomCultureResourceDefinition { get; set; }
 
         public int? InactivityTimeout { get; set;  }
+        public bool UseAgtFe { get; set; }
 
         public bool UseImageOverlay { get; set; }
         public bool AppShowMinimize { get; set; }

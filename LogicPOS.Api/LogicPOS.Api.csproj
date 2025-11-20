@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Reports\POS\SystemAuditPdf\**" />
+    <EmbeddedResource Remove="Features\Reports\POS\SystemAuditPdf\**" />
+    <None Remove="Features\Reports\POS\SystemAuditPdf\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="ErrorOr" Version="2.0.1" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.7" />
@@ -21,10 +27,6 @@
     <None Update="apisettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Features\Reports\POS\SystemAuditPdf\" />
   </ItemGroup>
 
 </Project>
