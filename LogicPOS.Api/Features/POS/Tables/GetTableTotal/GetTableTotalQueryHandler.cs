@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Tables.GetTableTotal
         public async override Task<ErrorOr<decimal>> Handle(GetTableTotalQuery query,
                                                             CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<decimal>($"tables/{query.TableId}/total",cancellationToken);
+            return await HandleGetQueryAsync<decimal>($"tables/{query.TableId}/total",cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -13,7 +13,7 @@ namespace LogicPOS.Api.Features.System.Licensing.GetHardwareId
         }
         public override async Task<ErrorOr<GetHardwareIdResponse>> Handle(GetHardwareIdQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<GetHardwareIdResponse>("licensing/hardware-id", ct);
+            return await HandleGetQueryAsync<GetHardwareIdResponse>("licensing/hardware-id", ct);
         }
     }
    

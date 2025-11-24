@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using Microsoft.Extensions.Caching.Memory;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Company.GetCompanyCurreny
         public async override Task<ErrorOr<Currency>> Handle(GetCompanyCurrencyQuery request, CancellationToken cancellationToken = default)
         {
             var cacheOptions = GetCacheOptions();
-            return await HandleGetEntityQueryAsync<Currency>("company/currency", cancellationToken, cacheOptions);
+            return await HandleGetQueryAsync<Currency>("company/currency", cancellationToken, cacheOptions);
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()

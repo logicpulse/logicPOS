@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails
 
         public async override Task<ErrorOr<IEnumerable<DocumentDetail>>> Handle(GetDocumentDetailsQuery query, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<IEnumerable<DocumentDetail>>($"documents/{query.DocumentId}/details", ct);
+            return await HandleGetQueryAsync<IEnumerable<DocumentDetail>>($"documents/{query.DocumentId}/details", ct);
         }
     }
 }

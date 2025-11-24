@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Agt.ListSeries;
 using LogicPOS.UI.Components.Pages.GridViews;
 
@@ -117,7 +117,6 @@ namespace LogicPOS.UI.Components.Pages
             var title = "Tipo de Adesão";
             return Columns.CreateColumn(title, 7, RenderYear);
         }
-
 
         protected override void InitializeSort()
         {

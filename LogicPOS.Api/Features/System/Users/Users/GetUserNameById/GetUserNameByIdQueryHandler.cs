@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Users.GetUserNameById
 
         public async override Task<ErrorOr<string>> Handle(GetUserNameByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<string>($"users/{query.Id}/name", cancellationToken);
+            return await HandleGetQueryAsync<string>($"users/{query.Id}/name", cancellationToken);
         }
     }
 }

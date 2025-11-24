@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
         {
             var cacheOptions = GetCacheOptions();
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<DocumentViewModel>>($"documents{urlQuery}", cancellationToken, cacheOptions);
+            return await HandleGetQueryAsync<PaginatedResult<DocumentViewModel>>($"documents{urlQuery}", cancellationToken, cacheOptions);
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()

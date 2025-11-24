@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.WorkSessions.Periods.DayIsOpen
 
         public override async Task<ErrorOr<bool>> Handle(DayIsOpenQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<bool>("worksessions/periods/day-is-open", cancellationToken);
+            return await HandleGetQueryAsync<bool>("worksessions/periods/day-is-open", cancellationToken);
         }
     }
 }

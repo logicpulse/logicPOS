@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Customers.HasDocumentsAssociated
 
         public async override Task<ErrorOr<bool>> Handle(CustomerHasDocumentsAssociatedQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<bool>($"customers/{query.Id}/has-documents-associated", cancellationToken);
+            return await HandleGetQueryAsync<bool>($"customers/{query.Id}/has-documents-associated", cancellationToken);
         }
     }
 }

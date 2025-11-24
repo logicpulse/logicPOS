@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories
         public override async Task<ErrorOr<PaginatedResult<ArticleHistory>>> Handle(GetArticlesHistoriesQuery query,
                                                                           CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<PaginatedResult<ArticleHistory>>($"articles/stocks/histories{query.GetUrlQuery()}", cancellationToken);
+            return await HandleGetQueryAsync<PaginatedResult<ArticleHistory>>($"articles/stocks/histories{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }

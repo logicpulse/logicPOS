@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.WorkSessions;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticleById
 
         public async override Task<ErrorOr<WorkSessionPeriod>> Handle(GetLastWorkSessionByTerminalIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<WorkSessionPeriod>($"worksession/period/terminal/{query.TerminalId}", cancellationToken);
+            return await HandleGetQueryAsync<WorkSessionPeriod>($"worksession/period/terminal/{query.TerminalId}", cancellationToken);
         }
     }
 }

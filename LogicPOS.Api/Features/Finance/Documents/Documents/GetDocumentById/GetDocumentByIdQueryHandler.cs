@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocumentById
 
         public override async Task<ErrorOr<Document>> Handle(GetDocumentByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<Document>($"documents/{query.Id}", cancellationToken);
+            return await HandleGetQueryAsync<Document>($"documents/{query.Id}", cancellationToken);
         }
     }
 }

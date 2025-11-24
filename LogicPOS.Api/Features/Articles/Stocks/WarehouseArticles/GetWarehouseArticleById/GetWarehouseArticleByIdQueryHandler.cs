@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseAr
 
         public async override Task<ErrorOr<WarehouseArticle>> Handle(GetWarehouseArticleByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<WarehouseArticle>($"articles/warehouse-articles/{query.Id}", cancellationToken);
+            return await HandleGetQueryAsync<WarehouseArticle>($"articles/warehouse-articles/{query.Id}", cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData
 
         public override async Task<ErrorOr<DayReportData>> Handle(GetDayReportDataQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<DayReportData>($"worksessions/days/{request.DayId}/report", ct);
+            return await HandleGetQueryAsync<DayReportData>($"worksessions/days/{request.DayId}/report", ct);
         }
     }
 }

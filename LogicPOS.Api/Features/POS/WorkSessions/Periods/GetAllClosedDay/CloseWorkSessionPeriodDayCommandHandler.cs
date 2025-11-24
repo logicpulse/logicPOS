@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Collections;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.WorkSessions.GetAllClosedDays
 
         public override async Task<ErrorOr<IEnumerable<WorkSessionPeriod>>> Handle(GetAllClosedDaysQuery command, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<IEnumerable<WorkSessionPeriod>>("worksessions/periods/alldays", cancellationToken);
+            return await HandleGetQueryAsync<IEnumerable<WorkSessionPeriod>>("worksessions/periods/alldays", cancellationToken);
 
         }
     }

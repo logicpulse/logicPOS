@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Articles.Articles.GetArticleImage
 
         public async override Task<ErrorOr<string>> Handle(GetArticleImageQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<string>($"articles/{query.Id}/image", cancellationToken);
+            return await HandleGetQueryAsync<string>($"articles/{query.Id}/image", cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using System.Net.Http;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.POS.Orders.Orders.GetOrderById
 
         public override async Task<ErrorOr<Order>> Handle(GetOrderByIdQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<Order>($"orders/{request.Id}", ct);
+            return await HandleGetQueryAsync<Order>($"orders/{request.Id}", ct);
         }
     }
 }

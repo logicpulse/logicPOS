@@ -1,7 +1,8 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Errors;
 using MediatR;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -22,25 +23,33 @@ namespace LogicPOS.Api.Features.Common.Requests
                 case HttpStatusCode.NoContent:
                     return default(T);
                 default:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
             }
         }
 
-        private async Task<Error> GetProblemDetailsFromResponseAsync(HttpResponseMessage httpResponse)
+        private async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
             {
                 var internalServerError = await httpResponse.Content.ReadFromJsonAsync<InternalServerError>();
-                var problem  = new ProblemDetails
+                var problem = new ProblemDetails
                 {
-                    Type = internalServerError.Status,
+                    Type = internalServerError.Status.ToString(),
                     Title = "Erro interno do servidor",
                     Status = (int)httpResponse.StatusCode,
-                    Detail = internalServerError.Reason,
-                    Instance = "Consultar equipa técnica",
-                    TraceId = "Consultar equipa técnica"
+                    Detail = internalServerError.Detail,
+                    Instance = internalServerError.Instance,
+                    TraceId = internalServerError.TraceId,
+                    Errors = internalServerError.Errors.Select(x => new ProblemDetailsError
+                    {
+                        Name = x.Name,
+                        Reason = x.Reason
+                    }).ToList()
                 };
-                return Error.Custom(internalServerError.Code, internalServerError.Status, internalServerError.Reason, new Dictionary<string, object> { { "problem", problem } });
+                return Error.Custom(internalServerError.Status,
+                                    httpResponse.StatusCode.ToString(),
+                                    internalServerError.Detail,
+                                    new Dictionary<string, object> { { "problem", problem } });
             }
 
             var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
@@ -56,7 +65,7 @@ namespace LogicPOS.Api.Features.Common.Requests
                 case HttpStatusCode.NoContent:
                     return Result.Success;
                 default:
-                    return await GetProblemDetailsFromResponseAsync(httpResponse);
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
             }
         }
 

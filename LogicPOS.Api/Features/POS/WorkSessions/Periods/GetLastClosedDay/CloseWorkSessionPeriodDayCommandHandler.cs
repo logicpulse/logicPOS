@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.WorkSessions.GetLastClosedDay
 
         public override async Task<ErrorOr<WorkSessionPeriod>> Handle(GetLastClosedDayQuery command, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<WorkSessionPeriod>("worksessions/periods/lastday", cancellationToken);
+            return await HandleGetQueryAsync<WorkSessionPeriod>("worksessions/periods/lastday", cancellationToken);
 
         }
     }

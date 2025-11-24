@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingMo
 
         public override async Task<ErrorOr<DocumentPrintingModel>> Handle(GetDocumentPrintingModelQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<DocumentPrintingModel>($"documents/{request.Id}/printing-model", ct);
+            return await HandleGetQueryAsync<DocumentPrintingModel>($"documents/{request.Id}/printing-model", ct);
         }
     }
 }

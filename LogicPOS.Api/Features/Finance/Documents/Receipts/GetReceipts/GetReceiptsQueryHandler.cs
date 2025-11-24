@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Receipts.GetReceipts
         {
             var cacheOptions = GetCacheOptions();
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<ReceiptViewModel>>($"receipts{urlQuery}", cancellationToken,cacheOptions);
+            return await HandleGetQueryAsync<PaginatedResult<ReceiptViewModel>>($"receipts{urlQuery}", cancellationToken,cacheOptions);
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()

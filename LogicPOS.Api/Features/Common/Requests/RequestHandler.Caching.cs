@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Errors;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
@@ -19,10 +19,10 @@ namespace LogicPOS.Api.Features.Common.Requests
                                                                                              CancellationToken cancellationToken = default,
                                                                                              MemoryCacheEntryOptions cacheOptions = null)
         {
-            return await HandleGetEntityQueryAsync<IEnumerable<TEntity>>(endpoint, cancellationToken, cacheOptions);
+            return await HandleGetQueryAsync<IEnumerable<TEntity>>(endpoint, cancellationToken, cacheOptions);
         }
 
-        protected async Task<ErrorOr<TEntity>> HandleGetEntityQueryAsync<TEntity>(string endpoint,
+        protected async Task<ErrorOr<TEntity>> HandleGetQueryAsync<TEntity>(string endpoint,
                                                                                   CancellationToken cancellationToken = default,
                                                                                   MemoryCacheEntryOptions cacheOptions = null)
         {
@@ -44,7 +44,7 @@ namespace LogicPOS.Api.Features.Common.Requests
 
                 if (response.IsSuccessStatusCode == false)
                 {
-                    return await GetProblemDetailsFromResponseAsync(response);
+                    return await HandleNotSuccessfulHttpResponseAsync(response);
                 }
 
                 entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);

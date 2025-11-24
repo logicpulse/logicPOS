@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Printers.PrinterAssociations.GetEntityAssociated
 
         public async override Task<ErrorOr<Printer>> Handle(GetEntityAssociatedPrinterByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<Printer>($"printers/associations/{query.Id}", cancellationToken);
+            return await HandleGetQueryAsync<Printer>($"printers/associations/{query.Id}", cancellationToken);
         }
     }
 }

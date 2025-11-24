@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Company.GetCompanyInformations
 
         public async override Task<ErrorOr<CompanyInformation>> Handle(GetCompanyInformationsQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<CompanyInformation>("company/info", cancellationToken);
+            return await HandleGetQueryAsync<CompanyInformation>("company/info", cancellationToken);
         }
     }
 }

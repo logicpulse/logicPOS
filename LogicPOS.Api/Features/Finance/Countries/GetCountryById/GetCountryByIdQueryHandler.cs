@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Countries.GetCountryById
 
         public async override Task<ErrorOr<Country>> Handle(GetCountryByIdQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<Country>($"countries/{query.Id}", cancellationToken);
+            return await HandleGetQueryAsync<Country>($"countries/{query.Id}", cancellationToken);
         }
     }
 }

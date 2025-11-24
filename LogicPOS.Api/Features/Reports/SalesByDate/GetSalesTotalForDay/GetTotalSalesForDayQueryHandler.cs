@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Reports.SalesByDate.GetSalesTotalForDay
 
         public override async Task<ErrorOr<TotalSalesForDay>> Handle(GetSalesTotalForDayQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<TotalSalesForDay>($"reports/sales-for-day{request.GetUrlQuery()}", ct);
+            return await HandleGetQueryAsync<TotalSalesForDay>($"reports/sales-for-day{request.GetUrlQuery()}", ct);
         }
     }
 }

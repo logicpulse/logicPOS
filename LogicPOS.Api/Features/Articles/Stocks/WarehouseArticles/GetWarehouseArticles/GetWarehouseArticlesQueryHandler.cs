@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles
                                                                                       CancellationToken cancellationToken = default)
         {
             var urlQuery = query.GetUrlQuery();
-            return await HandleGetEntityQueryAsync<PaginatedResult<WarehouseArticleViewModel>>($"articles/warehouse-articles{urlQuery}", cancellationToken);
+            return await HandleGetQueryAsync<PaginatedResult<WarehouseArticleViewModel>>($"articles/warehouse-articles{urlQuery}", cancellationToken);
         }
     }
 }

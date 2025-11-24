@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -13,7 +13,7 @@ namespace LogicPOS.Api.Features.System.Licensing.NeedToRegister
         }
         public override async Task<ErrorOr<NeedToRegisterResponse>> Handle(NeedToRegisterQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<NeedToRegisterResponse>("licensing/need-to-register", ct);
+            return await HandleGetQueryAsync<NeedToRegisterResponse>("licensing/need-to-register", ct);
         }
     }
 

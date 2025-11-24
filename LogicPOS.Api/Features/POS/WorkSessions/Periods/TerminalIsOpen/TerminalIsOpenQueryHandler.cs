@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.WorkSessions.Periods.TerminalIsOpen
 
         public async override Task<ErrorOr<bool>> Handle(TerminalIsOpenQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<bool>($"worksessions/periods/terminal-is-open?terminalId={request.TerminalId}", cancellationToken);
+            return await HandleGetQueryAsync<bool>($"worksessions/periods/terminal-is-open?terminalId={request.TerminalId}", cancellationToken);
         }
     }
 }

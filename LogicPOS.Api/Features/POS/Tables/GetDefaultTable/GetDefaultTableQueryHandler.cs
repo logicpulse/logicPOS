@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Tables.GetDefaultTable
 
         public override async Task<ErrorOr<TableViewModel>> Handle(GetDefaultTableQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<TableViewModel>($"tables/default{query.GetUrlQuery()}", cancellationToken);
+            return await HandleGetQueryAsync<TableViewModel>($"tables/default{query.GetUrlQuery()}", cancellationToken);
         }
     }
 }

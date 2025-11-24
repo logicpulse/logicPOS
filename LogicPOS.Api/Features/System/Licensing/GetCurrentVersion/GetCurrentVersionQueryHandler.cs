@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -13,7 +13,7 @@ namespace LogicPOS.Api.Features.System.Licensing.GetCurrentVersion
         }
         public override async Task<ErrorOr<GetCurrentVersionResponse>> Handle(GetCurrentVersionQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<GetCurrentVersionResponse>("licensing/current-version", ct);
+            return await HandleGetQueryAsync<GetCurrentVersionResponse>("licensing/current-version", ct);
         }
     }
 }

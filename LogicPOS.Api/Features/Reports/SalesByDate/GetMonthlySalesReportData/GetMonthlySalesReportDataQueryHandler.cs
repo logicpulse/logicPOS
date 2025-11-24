@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Common.Requests;
 using Microsoft.Extensions.Caching.Memory;
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Reports.SalesByDate.GetMonthlySalesReportData
         public override async Task<ErrorOr<MonthlySalesReportData>> Handle(GetMonthlySalesReportDataQuery request, CancellationToken ct = default)
         {
             var cacheOptions = GetCacheOptions();
-            return await HandleGetEntityQueryAsync<MonthlySalesReportData>($"reports/monthly-sales{request.GetUrlQuery()}", ct, cacheOptions);
+            return await HandleGetQueryAsync<MonthlySalesReportData>($"reports/monthly-sales{request.GetUrlQuery()}", ct, cacheOptions);
         }
 
         private MemoryCacheEntryOptions GetCacheOptions()

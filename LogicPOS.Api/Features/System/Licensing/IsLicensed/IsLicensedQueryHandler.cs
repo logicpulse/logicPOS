@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.System.Licensing.IsLicensed
 
         public override async Task<ErrorOr<IsLicensedResponse>> Handle(IsLicensedQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<IsLicensedResponse>("licensing/is-licensed", cancellationToken);
+            return await HandleGetQueryAsync<IsLicensedResponse>("licensing/is-licensed", cancellationToken);
         }
     }
 }

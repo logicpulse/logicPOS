@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.Api.Features.Common.Requests;
@@ -21,7 +21,7 @@ namespace LogicPOS.Api.Features.Articles.GetArticles
         {
             var cacheOptions = GetCacheOptions();
             string endpoint = $"articles{request.GetUrlQuery()}";
-            return await HandleGetEntityQueryAsync<PaginatedResult<ArticleViewModel>>(endpoint, cancellationToken, cacheOptions);
+            return await HandleGetQueryAsync<PaginatedResult<ArticleViewModel>>(endpoint, cancellationToken, cacheOptions);
         }
         private MemoryCacheEntryOptions GetCacheOptions()
         {

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.System.GetSystemInformations
 
         public override async Task<ErrorOr<SystemInformation>> Handle(GetSystemInformationsQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetEntityQueryAsync<SystemInformation>("system/information", cancellationToken);
+            return await HandleGetQueryAsync<SystemInformation>("system/information", cancellationToken);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel
 
         public async override Task<ErrorOr<ArticleViewModel>> Handle(GetArticleViewModelQuery query, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<ArticleViewModel>($"articles/{query.Id}/view", ct);
+            return await HandleGetQueryAsync<ArticleViewModel>($"articles/{query.Id}/view", ct);
         }
     }
 }

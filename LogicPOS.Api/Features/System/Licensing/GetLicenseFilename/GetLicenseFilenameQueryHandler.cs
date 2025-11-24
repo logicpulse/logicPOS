@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
 using System.Threading;
@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.System.Licensing.GetLicenseFilename
 
         public override async Task<ErrorOr<GetLicenseFilenameResponse>> Handle(GetLicenseFilenameQuery request, CancellationToken ct = default)
         {
-            return await HandleGetEntityQueryAsync<GetLicenseFilenameResponse>("licensing/filename", ct);
+            return await HandleGetQueryAsync<GetLicenseFilenameResponse>("licensing/filename", ct);
         }
     }
 }

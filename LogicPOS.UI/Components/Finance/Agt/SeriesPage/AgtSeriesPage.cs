@@ -1,7 +1,8 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Agt.ListSeries;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Modals;
 using MediatR;
 using System.Collections.Generic;
@@ -19,7 +20,15 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override IRequest<ErrorOr<IEnumerable<AgtSeriesInfo>>> GetAllQuery => new ListAgtSeriesQuery();
 
-        public override int RunModal(EntityEditionModalMode mode) => 0;
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            if(SelectedEntity != null)
+            {
+                SeriesInfoModal.Show(SelectedEntity, this.SourceWindow);
+            }
+
+            return 0;
+        }
 
         public override void UpdateButtonPrevileges() { }
 
