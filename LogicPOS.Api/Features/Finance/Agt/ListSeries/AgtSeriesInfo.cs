@@ -1,8 +1,6 @@
-﻿using LogicPOS.Api.Features.Common;
-
 namespace LogicPOS.Api.Features.Finance.Agt.ListSeries
 {
-    public class AgtSeriesInfo : ApiEntity
+    public class AgtSeriesInfo
     {
         public string Code { get; set; }
         public string Year { get; set; }

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
@@ -8,7 +8,7 @@ using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    internal class PageNavigator<Tentity> : Box where Tentity : ApiEntity
+    internal class PageNavigator<Tentity> : Box where Tentity : class 
     {
         private readonly Page<Tentity> _page;
 

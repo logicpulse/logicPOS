@@ -14,7 +14,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public abstract class Page<TEntity> : Box where TEntity : ApiEntity
+    public abstract class Page<TEntity> : Box where TEntity : class
     {
         protected readonly ISender _mediator = DependencyInjection.Mediator;
         protected readonly List<TEntity> _entities = new List<TEntity>();

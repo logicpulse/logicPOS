@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages;
@@ -241,6 +241,7 @@ namespace LogicPOS.UI.Components.Windows
 
             BtnAgtSection.Button.Clicked += delegate { ShowPanel(PanelAgt); };
             BtnAgtSeries.Button.Clicked += delegate { ShowPage(AgtSeriesPage.Instance, "AGT | Séries"); };
+            BtnAgtDocuments.Button.Clicked += delegate { ShowPage(AgtDocumentsPage.Instance, "AGT | Documentos"); };
         }
 
         private void AddCustomersSection()
