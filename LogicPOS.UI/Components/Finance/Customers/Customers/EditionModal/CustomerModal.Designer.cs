@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(400, 566);
         public override string ModalTitleResourceName => "window_title_edit_customer";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeCountriesComboBox();
             InitializePriceTypesComboBox();
@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtCardCredit.Text = "0";
             _txtCardCredit.Component.Sensitive = false;
 
-            if (_modalMode == EntityEditionModalMode.Insert && CompanyDetailsService.CompanyInformation.IsAngola)
+            if (_modalMode == EntityEditionModalMode.Insert && SystemInformationService.SystemInformation.IsAngola)
             {
                 AddFillCustomerDataBtn();
             }

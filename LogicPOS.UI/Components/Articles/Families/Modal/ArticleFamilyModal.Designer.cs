@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Modals
         public override string ModalTitleResourceName => "window_title_edit_articlefamily";
 
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeCommissionGroupsComboBox();
             InitializePrintersComboBox();

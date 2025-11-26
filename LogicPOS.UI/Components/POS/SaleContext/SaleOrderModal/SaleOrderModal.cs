@@ -103,7 +103,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnTableConsult_Clicked(object sender, EventArgs e)
         {
 
-            var command = new AddDocumentCommand();
+            var command = new IssueDocumentCommand();
             var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
 
             if (details == null || details.Count == 0)

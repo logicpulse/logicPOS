@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -13,22 +14,37 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 650);
         public override string ModalTitleResourceName => "dialog_edit_DocumentFinanceSeries_tab1_label";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeFiscalYearsComboBox();
             InitializeDocumentTypesComboBox();
+
+            if(_modalMode == EntityEditionModalMode.Insert)
+            {
+                _txtNextNumber.Text = "1";
+                _txtNextNumber.Entry.Sensitive = false;
+
+                _txtNumberRangeBegin.Text = "1";
+                _txtNumberRangeBegin.Entry.Sensitive = false;
+
+                _txtNumberRangeEnd.Text = "2147483647";
+                _txtNumberRangeEnd.Entry.Sensitive = false;
+            }
         }
 
         private void InitializeFiscalYearsComboBox()
         {
-            var fiscalYears = GetFiscalYears();
+            var currentFiscalYear = FiscalYearsService.CurrentFiscalYear;
+            var fiscalYears = new List<FiscalYear> { currentFiscalYear  };
             var labelText = GeneralUtils.GetResourceByName("global_fiscal_year");
-            var currentFiscalYear = _entity != null ? _entity.FiscalYear : null;
+            var defaultFiscalYear = _entity != null ? _entity.FiscalYear : currentFiscalYear;
 
             _comboFiscalYears = new EntityComboBox<FiscalYear>(labelText,
                                                              fiscalYears,
-                                                             currentFiscalYear,
+                                                             defaultFiscalYear,
                                                              true);
+
+            _comboFiscalYears.ComboBox.Sensitive = false; 
         }
 
         private void InitializeDocumentTypesComboBox()
@@ -41,8 +57,18 @@ namespace LogicPOS.UI.Components.Modals
                                                              documentTypes,
                                                              currentDocumentType,
                                                              true);
+
+            _comboDocumentTypes.ComboBox.Changed += ComboBox_Changed;
         }
 
+        private void ComboBox_Changed(object sender, System.EventArgs e)
+        {
+            var selectedFiscalYear = _comboFiscalYears.SelectedEntity;
+            var selectedDocType = _comboDocumentTypes.SelectedEntity;
+
+            _txtDesignation.Text = $"{selectedDocType?.Designation} {selectedDocType?.Acronym} {selectedFiscalYear.Acronym}";
+            _txtAcronym.Text = $"{selectedDocType?.Acronym} {selectedFiscalYear.Acronym}"; 
+        }
 
         protected override void AddSensitiveFields()
         {

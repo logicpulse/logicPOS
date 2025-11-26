@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private IEnumerable<MovementType> GetMovementTypes() => ExecuteGetEntitiesQuery(new GetAllMovementTypesQuery());
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializePriceTypesComboBox();
             InitializeMovementTypesComboBox();

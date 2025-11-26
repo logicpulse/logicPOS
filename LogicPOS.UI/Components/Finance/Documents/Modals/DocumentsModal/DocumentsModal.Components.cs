@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateUI()
         {
-            bool hasFiscalYear = FiscalYearService.HasFiscalYear();
+            bool hasFiscalYear = FiscalYearsService.HasFiscalYear();
             var selectedDocument = Page.SelectedEntity;
             bool documentIsSelected = selectedDocument != null;
 

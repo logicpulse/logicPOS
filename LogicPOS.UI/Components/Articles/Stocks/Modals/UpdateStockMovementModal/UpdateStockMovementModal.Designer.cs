@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price", true, true, RegularExpressions.Money);
         #endregion
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeComponents();
         }

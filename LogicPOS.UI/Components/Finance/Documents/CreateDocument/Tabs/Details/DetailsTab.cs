@@ -1,5 +1,4 @@
 ﻿using Gtk;
-using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
@@ -68,7 +67,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             Page.Refresh();
         }
 
-        public List<Api.Features.Documents.AddDocument.DocumentDetail> GetDocumentDetails()
+        public List<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail> GetDocumentDetails()
         {
             var details = Page.Items.Select(detail => new Api.Features.Documents.AddDocument.DocumentDetail
             {

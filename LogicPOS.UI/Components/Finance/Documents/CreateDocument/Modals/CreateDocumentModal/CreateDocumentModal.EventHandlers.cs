@@ -68,8 +68,8 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     CurrencyId = addCommand.CurrencyId,
                     Type = addCommand.Type,
-                    ShipFromAdress = addCommand.ShipFromAdress,
-                    ShipToAdress = addCommand.ShipToAdress,
+                    ShipFromAdress = addCommand.ShipFromAddress,
+                    ShipToAdress = addCommand.ShipToAddress,
                     Discount = addCommand.Discount,
                     Notes = addCommand.Notes,
                     Details = addCommand.Details,

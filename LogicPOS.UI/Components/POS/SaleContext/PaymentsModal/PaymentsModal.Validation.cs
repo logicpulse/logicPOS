@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.POS
                 return false;
             }
 
-            if (CompanyDetailsService.CompanyInformation.IsPortugal)
+            if (SystemInformationService.SystemInformation.IsPortugal)
             {
 
                 if (DocTypeAnalyzer.IsSimplifiedInvoice() && (TotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal || ServicesTotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal))

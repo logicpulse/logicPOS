@@ -1,8 +1,13 @@
-﻿using LogicPOS.Api.Entities;
+﻿using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
-using LogicPOS.Api.Features.FiscalYears.UpdateFiscalYear;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.DocumentSeries;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using System;
+using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -38,21 +43,6 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        private UpdateFiscalYearCommand CreateUpdateCommand()
-        {
-            return new UpdateFiscalYearCommand
-            {
-                Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewAcronym = _txtAcronym.Text,
-                NewSeriesForEachTerminal = false,
-                NewNotes = _txtNotes.Value.Text,
-                IsDeleted = _checkDisabled.Active
-            };
-        }
-
         protected override void ShowEntityData()
         {
             _txtOrder.Text = _entity.Order.ToString();
@@ -74,10 +64,28 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
+            if (AskForDefaultSeriesCreation())
+            {
+                DocumentSeriesService.CreateDefaultSeriesForFiscalYear(FiscalYearsService.CurrentFiscalYear.Id);
+            }
+
             return true;
         }
 
-        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
+        private bool AskForDefaultSeriesCreation()
+        {
+            string messageRosource = SystemInformationService.SystemInformation.IsPortugal ?
+                "dialog_message_series_create_document_type_series_pt" :
+                "dialog_message_series_create_document_type_series";
+            ResponseType responseType = CustomAlerts.Question(this)
+                .WithTitleResource("window_title_series_create_series")
+                .WithMessageResource(messageRosource)
+                .WithSize(new Size(600, 400))
+                .ShowAlert();
+            return responseType == ResponseType.Yes;
+        }
+
+        protected override bool UpdateEntity() => false;
 
     }
 }

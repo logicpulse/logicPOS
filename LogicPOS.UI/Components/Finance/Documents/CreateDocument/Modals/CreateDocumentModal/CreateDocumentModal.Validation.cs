@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if (CompanyDetailsService.CompanyInformation.IsPortugal)
+            if (SystemInformationService.SystemInformation.IsPortugal)
             {
                 var docTypeAnalyzer = new DocumentTypeAnalyzer(DocumentTab.GetDocumentType().Acronym);
 

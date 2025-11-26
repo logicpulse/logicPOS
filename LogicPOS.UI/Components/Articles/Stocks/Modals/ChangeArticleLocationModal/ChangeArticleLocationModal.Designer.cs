@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         private WarehouseSelectionField _locationField;
         #endregion
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             var warehouseArticle = ArticlesService.GetWarehouseArticleById(_entity.Id);
             _locationField = new WarehouseSelectionField(warehouseArticle);

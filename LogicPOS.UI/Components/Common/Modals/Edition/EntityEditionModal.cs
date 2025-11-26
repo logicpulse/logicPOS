@@ -49,14 +49,14 @@ namespace LogicPOS.UI.Components.Modals
                 _entity = entity;
             }
 
-            BeforeDesign();
+            Initialize();
             Design();
             HandleModalMode();
             AddValidatableFields();
             ShowAll();
         }
 
-        protected virtual void BeforeDesign()
+        protected virtual void Initialize()
         {
 
         }

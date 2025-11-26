@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogicPOS.Api.Features.Documents.Documents.AddDocument
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
 {
     public class DocumentPaymentMethod
     {

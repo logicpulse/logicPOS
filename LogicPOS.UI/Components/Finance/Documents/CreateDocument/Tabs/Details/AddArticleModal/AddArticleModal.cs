@@ -3,7 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
-using LogicPOS.UI.Components.Finance.VatRates.Service;
+using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;

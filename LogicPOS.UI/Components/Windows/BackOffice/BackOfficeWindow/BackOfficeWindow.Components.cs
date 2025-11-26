@@ -398,7 +398,7 @@ namespace LogicPOS.UI.Components.Windows
             AddReportsSection();
             AddArticlesSection();
             AddFiscalSection();
-            if (CompanyDetailsService.CompanyInformation.IsAngola && AppSettings.Instance.UseAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
             {
                 AddAgtSection();
             }
@@ -426,7 +426,7 @@ namespace LogicPOS.UI.Components.Windows
             Panels.Add(PanelReports);
             Panels.Add(PanelArticles);
             Panels.Add(PanelFiscal);
-            if (CompanyDetailsService.CompanyInformation.IsAngola && AppSettings.Instance.UseAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
             {
                 Panels.Add(PanelAgt);
             }

@@ -1,7 +1,7 @@
 ﻿using Gtk;
-using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.CreateDocument;
@@ -68,9 +68,9 @@ namespace LogicPOS.UI.Components.Modals
             AddEventHandlers();
         }
 
-        private AddDocumentCommand CreateAddCommand()
+        private IssueDocumentCommand CreateAddCommand()
         {
-            var command = new AddDocumentCommand();
+            var command = new IssueDocumentCommand();
 
             var documentType = DocumentTab.GetDocumentType();
 
@@ -102,8 +102,8 @@ namespace LogicPOS.UI.Components.Modals
 
             if (analyzer.IsGuide())
             {
-                command.ShipToAdress = ShipToTab.GetAddress();
-                command.ShipFromAdress = ShipFromTab.GetAddress();
+                command.ShipToAddress = ShipToTab.GetAddress();
+                command.ShipFromAddress = ShipFromTab.GetAddress();
             }
 
             return command;
@@ -123,9 +123,9 @@ namespace LogicPOS.UI.Components.Modals
 
         public static ResponseType ShowModal(Window parent, DocumentViewModel draft = null)
         {
-            if (FiscalYearService.HasFiscalYear() == false)
+            if (FiscalYearsService.HasFiscalYear() == false)
             {
-                FiscalYearService.ShowOpenFiscalYearAlert();
+                FiscalYearsService.ShowOpenFiscalYearAlert();
                 return ResponseType.Cancel;
             }
 

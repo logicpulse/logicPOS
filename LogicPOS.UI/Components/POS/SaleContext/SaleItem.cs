@@ -3,7 +3,7 @@ using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
+using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
 
 
 namespace LogicPOS.UI.Components.POS

@@ -16,7 +16,7 @@ using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
-using LogicPOS.UI.Components.Finance.VatRates.Service;
+using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Errors;
 using System;

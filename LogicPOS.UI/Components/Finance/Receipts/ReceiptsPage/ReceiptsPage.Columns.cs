@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(CreateTotalColumn());
             GridView.AppendColumn(CreateRelatedReceiptsColumn());
-            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            if (SystemInformationService.SystemInformation.IsAngola)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
             }

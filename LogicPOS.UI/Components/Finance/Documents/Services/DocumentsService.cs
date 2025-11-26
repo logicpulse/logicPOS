@@ -1,9 +1,9 @@
 ﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPrint;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.UI.Errors;
@@ -28,7 +28,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             return document.Value;
         }
 
-        public static Guid? IssueDocument(AddDocumentCommand command)
+        public static Guid? IssueDocument(IssueDocumentCommand command)
         {
             var document = DependencyInjection.Mediator.Send(command).Result;
             if (document.IsError != false)
@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             return document.Value;
         }
 
-        public static InvoicePrintingData? IssueDocumentForPrinting(AddDocumentCommand command)
+        public static InvoicePrintingData? IssueDocumentForPrinting(IssueDocumentCommand command)
         {
             var documentId = IssueDocument(command);
             if (documentId == null)

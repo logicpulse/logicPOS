@@ -6,7 +6,7 @@ using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
-using LogicPOS.UI.Components.Finance.VatRates.Service;
+using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;

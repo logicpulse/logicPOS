@@ -3,7 +3,6 @@ using LogicPOS.Api.Features.Documents.Series.AddDocumentSerie;
 using LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
-using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Modals
@@ -12,9 +11,9 @@ namespace LogicPOS.UI.Components.Modals
     {
         public DocumentSerieModal(EntityEditionModalMode modalMode, DocumentSeries entity = null) : base(modalMode, entity)
         {
+
         }
 
-        private IEnumerable<FiscalYear> GetFiscalYears() => ExecuteGetEntitiesQuery(new GetAllFiscalYearsQuery());
         private IEnumerable<DocumentType> GetDocumentTypes() => ExecuteGetEntitiesQuery(new GetAllDocumentTypesQuery());
 
         private AddDocumentSerieCommand CreateAddCommand()
@@ -54,6 +53,7 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
+
         protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
 
         protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;

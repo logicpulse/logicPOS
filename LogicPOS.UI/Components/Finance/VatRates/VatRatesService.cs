@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LogicPOS.UI.Components.Finance.VatRates.Service
+namespace LogicPOS.UI.Components.Finance.VatRates
 {
     public static class VatRatesService
     {

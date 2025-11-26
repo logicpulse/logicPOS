@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 450);
         public override string ModalTitleResourceName => "dialog_edit_DialogConfigurationPrinters_tab1_label";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializePrinterTypesComboBox();
             _comboDesignation = CreatePrinterDesignationCombobox();

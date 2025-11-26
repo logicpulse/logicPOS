@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
@@ -61,7 +62,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPaymentCondition.SelectedEntity = paymentCondition;
         }
 
-        public IEnumerable<Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod> GetPaymentMethods()
+        public IEnumerable<DocumentPaymentMethod> GetPaymentMethods()
         {
             yield return new Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod
             {

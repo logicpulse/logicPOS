@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 500);
         public override string ModalTitleResourceName => "window_title_edit_configurationpreferenceparameter";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             if (_modalMode != EntityEditionModalMode.Insert)
             {

@@ -1,6 +1,6 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Features.Common.Responses;
-using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using MediatR;
 using System;
 using System.Collections.Generic;

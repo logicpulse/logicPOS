@@ -1,8 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
-using LogicPOS.Api.Features.Documents.AddDocument;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -15,7 +15,7 @@ using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
+using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -238,7 +238,7 @@ namespace LogicPOS.UI.Components.POS
 
         private static string GetDefaultDocumentType()
         {
-            return CompanyDetailsService.CompanyInformation.IsPortugal ? "FS" : "FR";
+            return SystemInformationService.SystemInformation.IsPortugal ? "FS" : "FR";
         }
 
         private IEnumerable<DocumentDetailDto> GetDocumentDetails()
@@ -251,9 +251,9 @@ namespace LogicPOS.UI.Components.POS
             return SaleItem.GetOrderDetailsFromSaleItems(_partialPaymentItems);
         }
 
-        private IEnumerable<Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod> GetPaymentMethodsDtos()
+        private IEnumerable<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod> GetPaymentMethodsDtos()
         {
-            var paymentMethods = new List<Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod>();
+            var paymentMethods = new List<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod>();
 
             if (PaymentMethod == null)
             {
@@ -270,9 +270,9 @@ namespace LogicPOS.UI.Components.POS
 
         }
 
-        private AddDocumentCommand CreateAddDocumentCommand()
+        private IssueDocumentCommand CreateAddDocumentCommand()
         {
-            var command = new AddDocumentCommand();
+            var command = new IssueDocumentCommand();
 
             command.Type = GetDocumentType();
             command.PaymentMethods = GetPaymentMethodsDtos();

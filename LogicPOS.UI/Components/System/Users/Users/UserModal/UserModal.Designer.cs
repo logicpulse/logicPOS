@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 495);
         public override string ModalTitleResourceName => "window_title_edit_user";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeProfilesComboBox();
             InitializeCommissionGroupsComboBox();

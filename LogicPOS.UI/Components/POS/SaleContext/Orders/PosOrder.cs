@@ -4,7 +4,7 @@ using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentDetailDto = LogicPOS.Api.Features.Documents.AddDocument.DocumentDetail;
+using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
 
 
 namespace LogicPOS.UI.Components.POS

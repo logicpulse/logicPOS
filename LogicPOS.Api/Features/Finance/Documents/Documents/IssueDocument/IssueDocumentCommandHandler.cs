@@ -7,19 +7,19 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Documents.AddDocument
+namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
 {
-    public class AddDocumentCommandHandler :
-        RequestHandler<AddDocumentCommand, ErrorOr<Guid>>
+    public class IssueDocumentCommandHandler :
+        RequestHandler<IssueDocumentCommand, ErrorOr<Guid>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
 
-        public AddDocumentCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
+        public IssueDocumentCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Guid>> Handle(AddDocumentCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Guid>> Handle(IssueDocumentCommand command, CancellationToken cancellationToken = default)
         {
             var result =  await HandleAddCommandAsync("documents",command, cancellationToken);
 

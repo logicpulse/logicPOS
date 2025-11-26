@@ -4,28 +4,36 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.FiscalYears
 {
-    public static class FiscalYearService
+    public static class FiscalYearsService
     {
-        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
-        public static FiscalYear CurrentFiscalYear { get; private set; }
-
-        public static void Initialize()
+        private static FiscalYear _currentFiscalYear;
+        public static FiscalYear CurrentFiscalYear
         {
-            var getFiscalYear = _mediator.Send(new GetCurrentFiscalYearQuery()).Result;
+            get
+            {
+                if (_currentFiscalYear == null)
+                {
+                    _currentFiscalYear = GetCurrentFiscalYear();
+                }
+                return _currentFiscalYear;
+            }
+        }
+
+        private static FiscalYear GetCurrentFiscalYear()
+        {
+            var getFiscalYear = DependencyInjection.Mediator.Send(new GetCurrentFiscalYearQuery()).Result;
 
             if (getFiscalYear.IsError)
             {
                 ErrorHandlingService.HandleApiError(getFiscalYear);
-                return;
+                return null;
             }
 
-            CurrentFiscalYear = getFiscalYear.Value;
+            return getFiscalYear.Value;
         }
 
         public static void ShowOpenFiscalYearAlert()
@@ -37,17 +45,7 @@ namespace LogicPOS.UI.Components.FiscalYears
                        .ShowAlert();
         }
 
-        public static bool HasFiscalYear()
-        {
-            if (CurrentFiscalYear != null)
-            {
-                return true;
-            }
-
-            Initialize();
-
-            return CurrentFiscalYear != null;
-        }
+        public static bool HasFiscalYear() => CurrentFiscalYear != null;
     }
 
 }

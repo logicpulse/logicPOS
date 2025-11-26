@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.FiscalYears.AddFiscalYear
 
         public override async Task<ErrorOr<Guid>> Handle(AddFiscalYearCommand command, CancellationToken cancellationToken = default)
         {
-            var result = await HandleAddCommandAsync("fiscalyears", command, cancellationToken);
+            var result = await HandleAddCommandAsync("fiscal-years", command, cancellationToken);
 
             if (result.IsError == false)
             {

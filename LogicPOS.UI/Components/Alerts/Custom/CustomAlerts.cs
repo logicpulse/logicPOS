@@ -286,6 +286,7 @@ namespace LogicPOS.UI.Alerts
         public static void ShowApiErrorAlert(Window sourceWindow,
                                              Error error)
         {
+
             var errorMessage = new StringBuilder();
 
             var metadata = error.Metadata;
@@ -311,13 +312,17 @@ namespace LogicPOS.UI.Alerts
                 errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
                 errorMessage.AppendLine("Instance: " + problemDetails.Instance);
             }
+            else
+            {
+                errorMessage.AppendLine(error.Description);
+            }
 
-            var messageDialog = new CustomAlert(sourceWindow)
-                                .WithMessage(errorMessage.ToString())
-                                .WithMessageType(MessageType.Error)
-                                .WithButtonsType(ButtonsType.Ok)
-                                .WithTitle("Erro")
-                                .ShowAlert();
+            new CustomAlert(sourceWindow)
+                           .WithMessage(errorMessage.ToString())
+                           .WithMessageType(MessageType.Error)
+                           .WithButtonsType(ButtonsType.Ok)
+                           .WithTitle("Erro")
+                           .ShowAlert();
         }
 
 

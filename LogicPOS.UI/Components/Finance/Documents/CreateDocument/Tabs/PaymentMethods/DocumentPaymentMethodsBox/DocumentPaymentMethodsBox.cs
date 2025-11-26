@@ -1,13 +1,12 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Documents.Documents.AddDocument;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentPaymentMethod = LogicPOS.Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod;
+using DocumentPaymentMethod = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {

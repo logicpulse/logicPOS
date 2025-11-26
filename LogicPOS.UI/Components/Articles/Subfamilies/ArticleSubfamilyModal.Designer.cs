@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<Api.Entities.Printer> _comboPrinters;
         #endregion
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializeCommissionGroupsComboBox();
             InitializeFamiliesComboBox();

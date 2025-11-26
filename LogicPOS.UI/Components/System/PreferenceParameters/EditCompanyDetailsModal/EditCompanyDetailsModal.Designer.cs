@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var actionAreaButtons = new ActionAreaButtons();
 
-            if (CompanyDetailsService.CompanyInformation.IsAngola)
+            if (SystemInformationService.SystemInformation.IsAngola)
             {
                 actionAreaButtons.Add(new ActionAreaButton(BtnAgtInfo, ResponseType.None));
             }

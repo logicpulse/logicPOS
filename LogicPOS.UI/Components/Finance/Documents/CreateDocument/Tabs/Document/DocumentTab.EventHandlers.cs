@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 {
                     CustomAlerts.Warning(this.SourceWindow)
                      .WithTitle("Tipo de documento não encontrado")
-                     .WithMessage($"O tipo de documento ({selectedDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearService.CurrentFiscalYear.Acronym}).")
+                     .WithMessage($"O tipo de documento ({selectedDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearsService.CurrentFiscalYear.Acronym}).")
                      .ShowAlert();
 
                     docType = SelectDocumentType();
@@ -112,7 +112,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             if (document.PaymentMethods != null && document.PaymentMethods.Any())
             {
-                if (CompanyDetailsService.CompanyInformation.IsPortugal)
+                if (SystemInformationService.SystemInformation.IsPortugal)
                 {
                     var payment = document.PaymentMethods.First();
                     TxtPaymentMethod.SelectedEntity = payment.PaymentMethod;

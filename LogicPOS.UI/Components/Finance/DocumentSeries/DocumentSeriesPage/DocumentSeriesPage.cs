@@ -16,7 +16,6 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetActiveDocumentSeriesQuery();
         public DocumentSeriesPage(Window parent) : base(parent)
         {
-            Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
         }

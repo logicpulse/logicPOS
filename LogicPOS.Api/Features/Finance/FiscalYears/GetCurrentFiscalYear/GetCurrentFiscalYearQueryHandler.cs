@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear
 
         public async override Task<ErrorOr<FiscalYear>> Handle(GetCurrentFiscalYearQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetQueryAsync<FiscalYear>($"fiscalyears/current", cancellationToken);
+            return await HandleGetQueryAsync<FiscalYear>($"fiscal-years/current", cancellationToken);
         }
     }
 }

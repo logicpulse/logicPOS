@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewDa
         public ShipAddress ShipFromAdress { get; set; }
         public decimal Discount { get; set; }
         public string Notes { get; set; }
-        public List<Features.Documents.AddDocument.DocumentDetail> Details { get; set; }
+        public List<IssueDocument.DocumentDetail> Details { get; set; }
         public decimal? ExchangeRate { get; set; }
     }
 }

@@ -16,7 +16,6 @@
         public string TicketFinalLine1 { get; set; }
         public string TicketFinalLine2 { get; set; }
         public bool IsPortugal => CountryCode2.ToLower() == "pt";
-        public bool IsAngola => CountryCode2.ToLower() == "ao";
     }
 
 }

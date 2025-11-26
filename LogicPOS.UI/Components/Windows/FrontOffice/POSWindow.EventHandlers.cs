@@ -158,9 +158,9 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
         {
-            if (FiscalYearService.HasFiscalYear() == false)
+            if (FiscalYearsService.HasFiscalYear() == false)
             {
-                FiscalYearService.ShowOpenFiscalYearAlert();
+                FiscalYearsService.ShowOpenFiscalYearAlert();
                 return;
             }
 

@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
         public override Size ModalSize => new Size(500, 550);
         public override string ModalTitleResourceName => "dialog_edit_ConfigurationPlaceTerminal_tab1_label";
 
-        protected override void BeforeDesign()
+        protected override void Initialize()
         {
             InitializePlacesComboBox();
             InitializePoleDisplaysComboBox();

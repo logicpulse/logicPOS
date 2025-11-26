@@ -57,6 +57,7 @@ namespace LogicPOS.UI.Components.Pages
             modal.Destroy();
             return response;
         }
+        
         protected override void AddColumns()
         {
             GridView.AppendColumn(Columns.CreateCodeColumn(0));
@@ -65,6 +66,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateYearColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
         }
+       
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
@@ -75,6 +77,7 @@ namespace LogicPOS.UI.Components.Pages
             AddYearSorting();
             AddUpdatedAtSorting(3);
         }
+      
         protected override DeleteCommand GetDeleteCommand() => null;
 
         public override void UpdateButtonPrevileges()
