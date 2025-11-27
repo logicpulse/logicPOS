@@ -1,5 +1,4 @@
-﻿using Gtk;
-using LogicPOS.UI.Components.Articles;
+using Gtk;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Modals.Common;
@@ -69,7 +68,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         public List<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail> GetDocumentDetails()
         {
-            var details = Page.Items.Select(detail => new Api.Features.Documents.AddDocument.DocumentDetail
+            var details = Page.Items.Select(detail => new Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail
             {
                 ArticleId = detail.ArticleId,
                 Quantity = detail.Quantity,

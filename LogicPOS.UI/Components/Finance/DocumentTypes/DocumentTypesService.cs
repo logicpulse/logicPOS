@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common.Responses;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.GetActiveDocumentTypes;
@@ -10,12 +10,12 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
 {
     public static class DocumentTypesService
     {
-        public static List<AutoCompleteLine> AutocompleteLines => GetActive()?.Select(pc => new AutoCompleteLine
+        public static List<AutoCompleteLine> AutocompleteLines => GetActive()?.Where(dc => dc.SaftDocumentType != SaftDocumentType.Payments).Select(pc => new AutoCompleteLine
         {
             Id = pc.Id,
             Name = pc.Designation
         }).ToList();
-
+ 
         public static DocumentType Default => GetActive()?.OrderBy(dt => dt.Order).FirstOrDefault();
 
         public static List<DocumentType> GetAll()

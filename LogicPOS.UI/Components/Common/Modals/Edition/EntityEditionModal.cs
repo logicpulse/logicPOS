@@ -1,8 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -16,7 +15,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using Unit = MediatR.Unit;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -85,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
             VBox.PackStart(CreateNoteBook(), true, true, 0);
 
             AddStatusBar();
-            
+
             AddActionButtons();
         }
 
@@ -154,7 +152,8 @@ namespace LogicPOS.UI.Components.Modals
                 sizeBaseDialogActionAreaButton.Height -= 10;
                 sizeBaseDialogActionAreaButtonIcon.Width -= 10;
                 sizeBaseDialogActionAreaButtonIcon.Height -= 10;
-            };
+            }
+            ;
 
             var buttonOkSettings = new ButtonSettings
             {

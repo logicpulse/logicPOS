@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using LogicPOS.Utility;
 using System;
@@ -23,7 +24,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 Run();
             }
 

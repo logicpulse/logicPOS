@@ -3,6 +3,7 @@ using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Agt.ListSeries;
 using LogicPOS.UI.Components.Finance.Agt;
+using LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal;
 using LogicPOS.UI.Components.Modals;
 using MediatR;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ namespace LogicPOS.UI.Components.Pages
     {
         public AgtSeriesPage(Window parent) : base(parent)
         {
-            Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
         }
@@ -22,12 +22,16 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if(SelectedEntity != null)
+            if(SelectedEntity != null && mode != EntityEditionModalMode.Insert)
             {
                 SeriesInfoModal.Show(SelectedEntity, this.SourceWindow);
+                return 0;
             }
 
-            return 0;
+            var modal = new RequestSeriesModal();
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
         }
 
         public override void UpdateButtonPrevileges() { }

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Database;
@@ -184,7 +184,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (getSaft.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, getSaft.FirstError);
+                ErrorHandlingService.HandleApiError(getSaft, source: this);
                 return;
             }
 

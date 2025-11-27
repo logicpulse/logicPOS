@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
@@ -6,8 +6,12 @@ using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
 using MediatR;
+using System.Collections;
 using System.Collections.Generic;
+using System.EnterpriseServices;
+using System.Linq;
 
 
 namespace LogicPOS.UI.Components.Pages
@@ -21,7 +25,26 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnUpdate.Visible = false;
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<DocumentType>>> GetAllQuery => new GetAllDocumentTypesQuery();
+        protected override void LoadEntities()
+        {
+            var result = _mediator.Send(new GetAllDocumentTypesQuery()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result,
+                                                    source: SourceWindow);
+                return;
+            }
+            var entities = result.Value;
+
+            if (IsSelectionPage())
+            {
+                entities = result.Value.Where(dc => dc.SaftDocumentType != SaftDocumentType.Payments);
+            }
+
+            _entities.Clear();
+            _entities.AddRange(entities);
+        }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -43,8 +66,6 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateAcronymColumn());
             GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
         }
-
-       
 
         protected override void InitializeSort()
         {

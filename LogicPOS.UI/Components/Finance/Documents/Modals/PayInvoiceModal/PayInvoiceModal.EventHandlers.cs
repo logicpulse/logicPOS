@@ -1,9 +1,10 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 

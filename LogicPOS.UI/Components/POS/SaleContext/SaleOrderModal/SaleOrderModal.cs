@@ -1,6 +1,6 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Documents;
-using LogicPOS.Api.Features.Documents.AddDocument;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -11,7 +11,6 @@ using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
-using MediatR;
 using System;
 using System.Drawing;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
                                                    new Size(500, 220),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_orders.png")
         {
-           
+
         }
 
         private void InitializeButtons()
@@ -67,7 +66,7 @@ namespace LogicPOS.UI.Components.Modals
                     new ActionAreaButton(BtnTableConsult, ResponseType.None)
                  };
         }
-        
+
         protected override Widget CreateBody()
         {
             HBox hbox = new HBox(false, 0);
@@ -75,10 +74,10 @@ namespace LogicPOS.UI.Components.Modals
             hbox.PackStart(BtnTableConsult, true, true, 0);
             return hbox;
         }
-       
+
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
-            if (SaleContext.CurrentOrder.Tickets.Count() == 0 || SaleContext.CurrentOrder.Tickets==null)
+            if (SaleContext.CurrentOrder.Tickets.Count() == 0 || SaleContext.CurrentOrder.Tickets == null)
             {
                 SimpleAlerts.Information()
                             .WithTitle("Mesa vazia")
@@ -119,7 +118,7 @@ namespace LogicPOS.UI.Components.Modals
             var customer = CustomersService.Default;
             command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
 
-            if(customer!=null)
+            if (customer != null)
                 command.CustomerId = customer.Id;
 
             if (command.CustomerId == null)
@@ -135,11 +134,11 @@ namespace LogicPOS.UI.Components.Modals
             command.Details = details;
 
             var printingData = DocumentsService.IssueDocumentForPrinting(command);
-           
+
             if (printingData == null)
             {
                 return;
-            }  
+            }
 
             ThermalPrintingService.PrintInvoice(printingData.Value);
 

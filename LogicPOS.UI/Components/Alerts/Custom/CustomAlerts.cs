@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Errors;
 using LogicPOS.Globalization;
@@ -190,89 +190,6 @@ namespace LogicPOS.UI.Alerts
                 .ShowAlert();
         }
 
-        public static bool ShowMinimumStockAlert(Window parentWindow,
-                                                 Guid pArticleOid,
-                                                 decimal pNewQuantity,
-                                                 out bool showMessage)
-        {
-            showMessage = false;
-            //Size size = new Size(500, 350);
-            //fin_article article = (fin_article)XPOSettings.Session.GetObjectByKey(typeof(fin_article), pArticleOid);
-            //decimal articleStock;
-
-            //string stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", article.Oid);
-            //articleStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
-
-            //string childStockMessage = Environment.NewLine + Environment.NewLine + "Stock de artigos associados: " + Environment.NewLine;
-            ////Composite article Messages
-            //int childStockAlertCount = 0;
-            //if (article.IsComposed)
-            //{
-            //    foreach (fin_articlecomposition item in article.ArticleComposition)
-            //    {
-            //        fin_article child = item.ArticleChild;
-            //        decimal childStock = 0;
-
-            //        stockQuery = string.Format("SELECT SUM(Quantity) as Result FROM fin_articlestock WHERE Article = '{0}' AND (Disabled = 0 OR Disabled is NULL) GROUP BY Article;", item.ArticleChild.Oid);
-            //        childStock = Convert.ToDecimal(XPOSettings.Session.ExecuteScalar(stockQuery));
-
-            //        var childStockAfterChanged = childStock - (pNewQuantity * item.Quantity);
-            //        if (childStockAfterChanged <= child.MinimumStock)
-            //        {
-            //            childStockMessage += Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + child.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(childStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(child.MinimumStock), "0.00") + Environment.NewLine;
-            //            childStockAlertCount++;
-            //        }
-            //    }
-            //}
-            //var stockQuantityAfterChanged = articleStock - pNewQuantity;
-            ////Mensagem de stock apenas para artigos da classe Produtos
-            //if ((stockQuantityAfterChanged <= article.MinimumStock || childStockAlertCount > 0) && article.Class.Oid == Guid.Parse("6924945d-f99e-476b-9c4d-78fb9e2b30a3"))
-            //{
-            //    if (article.IsComposed)
-            //    {
-            //        size = new Size(650, 480);
-
-            //        var response = Question()
-            //            .WithTitleResource("global_stock_movements")
-            //            .WithMessage(GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00") + childStockMessage)
-            //            .WithSize(size)
-            //            .ShowAlert();
-
-            //        if (response == ResponseType.Yes)
-            //        {
-            //            showMessage = true;
-            //            return true;
-            //        }
-            //        else
-            //        {
-            //            showMessage = true;
-            //            return false;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var response = Question()
-            //            .WithSize(size)
-            //            .WithTitle(GeneralUtils.GetResourceByName("global_stock_movements"))
-            //            .WithMessage(GeneralUtils.GetResourceByName("window_check_stock_question") + Environment.NewLine + Environment.NewLine + GeneralUtils.GetResourceByName("global_article") + ": " + article.Designation + Environment.NewLine + GeneralUtils.GetResourceByName("global_total_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(articleStock), "0.00") + Environment.NewLine + GeneralUtils.GetResourceByName("global_minimum_stock") + ": " + DataConversionUtils.DecimalToString(Convert.ToDecimal(article.MinimumStock), "0.00"))
-            //            .ShowAlert();
-
-            //        if (response == ResponseType.Yes)
-            //        {
-            //            showMessage = true;
-            //            return true;
-            //        }
-            //        else
-            //        {
-            //            showMessage = true;
-            //            return false;
-            //        }
-            //    }
-            //}
-            //showMessage = false;
-            return false;
-        }
-
 
         public static void ShowContactSupportErrorAlert(Window parentWindow, string additionalInformation = "")
         {
@@ -283,47 +200,7 @@ namespace LogicPOS.UI.Alerts
                 .ShowAlert();
         }
 
-        public static void ShowApiErrorAlert(Window sourceWindow,
-                                             Error error)
-        {
-
-            var errorMessage = new StringBuilder();
-
-            var metadata = error.Metadata;
-
-            if (metadata != null)
-            {
-                var problemDetails = (ProblemDetails)metadata["problem"];
-
-                if (problemDetails.Errors != null)
-                {
-                    foreach (var problemDetailsError in problemDetails.Errors)
-                    {
-                        errorMessage.AppendLine($"\n# Erro ({problemDetailsError.Name}):");
-                        errorMessage.AppendLine("Descrição: " + problemDetailsError.Reason);
-                    }
-                }
-
-                errorMessage.AppendLine("\n# Mais detalhes");
-                errorMessage.AppendLine("Title: " + problemDetails.Title);
-                errorMessage.AppendLine($"Detail: {problemDetails.Detail}");
-                errorMessage.AppendLine("Status: " + problemDetails.Status);
-                errorMessage.AppendLine("Type: " + problemDetails.Type);
-                errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
-                errorMessage.AppendLine("Instance: " + problemDetails.Instance);
-            }
-            else
-            {
-                errorMessage.AppendLine(error.Description);
-            }
-
-            new CustomAlert(sourceWindow)
-                           .WithMessage(errorMessage.ToString())
-                           .WithMessageType(MessageType.Error)
-                           .WithButtonsType(ButtonsType.Ok)
-                           .WithTitle("Erro")
-                           .ShowAlert();
-        }
+  
 
 
         public static bool ShowQuitConfirmationAlert(Window parentWindow)

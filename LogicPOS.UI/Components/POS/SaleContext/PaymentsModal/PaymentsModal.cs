@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -260,7 +260,7 @@ namespace LogicPOS.UI.Components.POS
                 return null;
             }
 
-            paymentMethods.Add(new Api.Features.Documents.Documents.AddDocument.DocumentPaymentMethod
+            paymentMethods.Add(new Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod
             {
                 PaymentMethodId = PaymentMethod.Id,
                 Amount = TotalFinal

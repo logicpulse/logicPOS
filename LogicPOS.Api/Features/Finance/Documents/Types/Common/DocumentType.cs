@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents;
 
@@ -13,6 +13,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Types.Common
         public int PrintCopies { get; set; }
         public bool PrintRequestConfirmation { get; set; }
         public bool PrintOpenDrawer { get; set; }
+        public SaftDocumentType SaftDocumentType { get; set; }
 
         public DocumentTypeAnalyzer Analyzer => new DocumentTypeAnalyzer(Acronym);
     }

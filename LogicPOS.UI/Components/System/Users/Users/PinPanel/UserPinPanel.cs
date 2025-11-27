@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
@@ -374,7 +374,7 @@ namespace LogicPOS.UI.Components
 
             if (changePasswordResult.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(SourceWindow, changePasswordResult.FirstError);
+                ErrorHandlingService.HandleApiError(changePasswordResult, source: SourceWindow);
                 return false;
             }
 

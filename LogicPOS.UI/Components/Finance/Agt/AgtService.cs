@@ -1,8 +1,9 @@
-﻿using LogicPOS.Api.Features.Finance.Agt.Common;
+using LogicPOS.Api.Features.Finance.Agt.Common;
 using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.Api.Features.Finance.Agt.ListSeries;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocument;
+using LogicPOS.Api.Features.Finance.Agt.RequestSeries;
 using LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus;
 using LogicPOS.UI.Errors;
 using System;
@@ -11,7 +12,7 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Finance.Agt
 {
-    public class AgtService
+    public static class AgtService
     {
         public static Contributor GetAgtContributorInfo(string nif)
         {
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return true;
         }
 
-        public static List<AgtSeriesInfo> ListOnlineSeries()
+        public static List<Api.Features.Finance.Agt.ListSeries.AgtSeriesInfo> ListOnlineSeries()
         {
             var result = DependencyInjection.Mediator.Send(new ListAgtSeriesQuery()).Result;
             if (result.IsError != false)
@@ -70,6 +71,20 @@ namespace LogicPOS.UI.Components.Finance.Agt
             var result = DependencyInjection.Mediator.Send(new GetAgtDocumentByIdQuery(documentId)).Result;
 
             if (result.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+        public static string[] EligibleDocumentTypes { get; } = new string[] { "FT", "FR", "RG", "NC", "ND" };
+
+        public static Api.Features.Finance.Agt.RequestSeries.AgtSeriesInfo? RequestSeries(RequestSeriesCommand command)
+        {
+            var result = DependencyInjection.Mediator.Send(command).Result;
+            if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
                 return null;

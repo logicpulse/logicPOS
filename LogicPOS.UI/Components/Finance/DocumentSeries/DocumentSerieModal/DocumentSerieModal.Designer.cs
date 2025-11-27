@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
@@ -49,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeDocumentTypesComboBox()
         {
-            var documentTypes = GetDocumentTypes ();
+            var documentTypes = DocumentTypesService.GetAll();
             var labelText = GeneralUtils.GetResourceByName("global_documentfinance_type");
             var currentDocumentType = _entity != null ? _entity.DocumentType : null;
 

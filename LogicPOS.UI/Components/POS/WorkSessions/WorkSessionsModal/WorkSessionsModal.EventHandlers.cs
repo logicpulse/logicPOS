@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetAllReportsDataDay;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
 using Serilog;
 using System;
@@ -49,7 +50,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if(result.IsError)
                 {
-                    CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                    ErrorHandlingService.HandleApiError(result);
                     return;
                 }
 

@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Series.AddDocumentSerie;
 using LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
@@ -13,8 +13,6 @@ namespace LogicPOS.UI.Components.Modals
         {
 
         }
-
-        private IEnumerable<DocumentType> GetDocumentTypes() => ExecuteGetEntitiesQuery(new GetAllDocumentTypesQuery());
 
         private AddDocumentSerieCommand CreateAddCommand()
         {

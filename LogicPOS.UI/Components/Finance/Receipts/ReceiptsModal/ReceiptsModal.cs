@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Receipts.CancelReceipt;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
@@ -74,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (result.IsError)
             {
-                CustomAlerts.ShowApiErrorAlert(this, result.FirstError);
+                ErrorHandlingService.HandleApiError(result);
                 return;
             }
 
