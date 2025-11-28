@@ -1,7 +1,8 @@
 using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Finance.Agt.ListInvoices;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineDocuments;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Modals;
 using MediatR;
 using System;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class AgtDocumentsPage : Page<AgtInvoice>
+    public partial class AgtDocumentsPage : Page<OnlineDocument>
     {
         public AgtDocumentsPage(Window parent) : base(parent)
         {
@@ -18,12 +19,18 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnUpdate.Visible = false;
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<AgtInvoice>>> GetAllQuery =>
-            new ListInvoicesQuery(DateTime.Today.AddDays(-90), DateTime.Today);
+        protected override IRequest<ErrorOr<IEnumerable<OnlineDocument>>> GetAllQuery =>
+            new ListOnlineDocumentsQuery(DateTime.Today.AddDays(-90), DateTime.Today);
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            // No modal implemented for AGT invoices yet
+            if (SelectedEntity == null)
+            {
+                return 0;
+            }
+
+            AgtOnlineDocumentInfoModal.Show(SelectedEntity.Number, SourceWindow);
+
             return 0;
         }
 
@@ -42,11 +49,11 @@ namespace LogicPOS.UI.Components.Pages
                     return true;
                 }
 
-                var entity = model.GetValue(iterator, 0) as AgtInvoice;
+                var entity = model.GetValue(iterator, 0) as OnlineDocument;
 
                 return entity != null && (
-                    (!string.IsNullOrEmpty(entity.DocumentNumber) && entity.DocumentNumber.ToLower().Contains(search)) ||
-                    (!string.IsNullOrEmpty(entity.DocumentType) && entity.DocumentType.ToLower().Contains(search))
+                    (!string.IsNullOrEmpty(entity.Number) && entity.Number.ToLower().Contains(search)) ||
+                    (!string.IsNullOrEmpty(entity.Type) && entity.Type.ToLower().Contains(search))
                 );
             };
         }

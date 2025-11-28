@@ -1,6 +1,6 @@
-namespace LogicPOS.Api.Features.Finance.Agt.ListSeries
+namespace LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries
 {
-    public class AgtSeriesInfo
+    public class OnlineSeriesInfo
     {
         public string Code { get; set; }
         public string Year { get; set; }

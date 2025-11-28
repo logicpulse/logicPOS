@@ -1,7 +1,8 @@
 using LogicPOS.Api.Features.Finance.Agt.Common;
 using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
-using LogicPOS.Api.Features.Finance.Agt.ListSeries;
+using LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocument;
 using LogicPOS.Api.Features.Finance.Agt.RequestSeries;
 using LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus;
@@ -55,9 +56,9 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return true;
         }
 
-        public static List<Api.Features.Finance.Agt.ListSeries.AgtSeriesInfo> ListOnlineSeries()
+        public static List<OnlineSeriesInfo> ListOnlineSeries()
         {
-            var result = DependencyInjection.Mediator.Send(new ListAgtSeriesQuery()).Result;
+            var result = DependencyInjection.Mediator.Send(new ListOnlineSeriesQuery()).Result;
             if (result.IsError != false)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -90,6 +91,17 @@ namespace LogicPOS.UI.Components.Finance.Agt
                 return null;
             }
 
+            return result.Value;
+        }
+        
+        public static OnlineDocument? GetOnlineDocument(string documentNumber)
+        {
+            var result = DependencyInjection.Mediator.Send(new GetOnlineDocumentQuery(documentNumber)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
             return result.Value;
         }
     }

@@ -1,5 +1,5 @@
 using Gtk;
-using LogicPOS.Api.Features.Finance.Agt.ListSeries;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Pages.GridViews;
 
 namespace LogicPOS.UI.Components.Pages
@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderCode(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.Code;
             }
 
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderDocType(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.DocumentType;
             }
 
@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.Status;
             }
 
@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderYear(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.Year;
             }
 
@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderYear(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.SeriesCreationDate;
             }
 
@@ -82,7 +82,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderYear(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.InvoicingMethod;
             }
 
@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderYear(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.JoiningDate;
                 column.Alignment = 1;
                 cell.Xalign = 1;
@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void RenderYear(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var series = (AgtSeriesInfo)model.GetValue(iter, 0);
+                var series = (OnlineSeriesInfo)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = series.JoiningType;
                 column.Alignment = 1;
                 cell.Xalign = 1;

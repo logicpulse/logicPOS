@@ -1,5 +1,5 @@
 using Gtk;
-using LogicPOS.Api.Features.Finance.Agt.ListSeries;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using System;
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
     public partial class SeriesInfoModal : Modal
     {
 
-        public SeriesInfoModal(AgtSeriesInfo seriesInfo, Window parent) : base(parent,
+        public SeriesInfoModal(OnlineSeriesInfo seriesInfo, Window parent) : base(parent,
                                                      "Série Documental (AGT)",
                                                      new Size(550, 620),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             ShowData(seriesInfo);
         }
 
-        private void ShowData(AgtSeriesInfo seriesInfo)
+        private void ShowData(OnlineSeriesInfo seriesInfo)
         {
             TxtCode.Text = seriesInfo?.Code ?? "";
             TxtYear.Text = seriesInfo?.Year ?? "";
@@ -34,7 +34,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             TxtJoiningType.Text = seriesInfo?.JoiningType ?? "";
         }
 
-        public static void Show(AgtSeriesInfo seriesInfo, Window parent)
+        public static void Show(OnlineSeriesInfo seriesInfo, Window parent)
         {
             var modal = new SeriesInfoModal(seriesInfo, parent);
             modal.Run();

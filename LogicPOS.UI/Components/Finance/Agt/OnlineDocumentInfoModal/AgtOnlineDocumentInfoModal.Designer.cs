@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace LogicPOS.UI.Components.Finance.Agt
 {
-    public  partial class AgtDocumentInfoModal 
+    public  partial class AgtOnlineDocumentInfoModal 
     {
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
@@ -22,15 +22,13 @@ namespace LogicPOS.UI.Components.Finance.Agt
             Initialize();
 
             var body = new VBox(false, 2);
-            body.PackStart(TextBox.CreateHbox(TxtRequestId, TxtSubmissionDate), false, false, 0);
+            body.PackStart(TextBox.CreateHbox(TxtDocumentType, TxtDate), false, false, 0);
             body.PackStart(TxtDocumentNumber.Component, false, false, 0);
-            body.PackStart(TxtSubmissionErrorCode.Component, false, false, 0);
-            body.PackStart(TxtSubmissionErrorDescription.Component, false, false, 0);
-            body.PackStart(TxtHttpStatusCode.Component, false, false, 0);
-            body.PackStart(TxtValidationResultCode.Component, false, false, 0);
-            body.PackStart(TxtValidationStatus.Component, false, false, 0);
-            body.PackStart(TxtValidationErrors.Component, false, false, 0);
-
+            body.PackStart(TxtStatus.Component, false, false, 0);
+            body.PackStart(TxtCustomerNif.Component, false, false, 0);
+            body.PackStart(TxtTaxPayable.Component, false, false, 0);
+            body.PackStart(TxtNetTotal.Component, false, false, 0);
+            body.PackStart(TxtGrossTotal.Component, false, false, 0);
             return body;
         }
     }

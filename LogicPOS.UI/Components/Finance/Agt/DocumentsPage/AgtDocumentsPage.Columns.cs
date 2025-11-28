@@ -1,5 +1,5 @@
 using Gtk;
-using LogicPOS.Api.Features.Finance.Agt.ListInvoices;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineDocuments;
 using LogicPOS.UI.Components.Pages.GridViews;
 
 namespace LogicPOS.UI.Components.Pages
@@ -19,8 +19,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void Render(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var inv = (AgtInvoice)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = inv.DocumentNumber;
+                var inv = (OnlineDocument)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = inv.Number;
             }
 
             var title = "Número";
@@ -31,8 +31,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void Render(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var inv = (AgtInvoice)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = inv.DocumentType;
+                var inv = (OnlineDocument)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = inv.Type;
             }
 
             var title = "Tipo";
@@ -43,8 +43,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void Render(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var inv = (AgtInvoice)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = inv.DocumentDate;
+                var inv = (OnlineDocument)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = inv.Date;
             }
 
             var title = "Data";
@@ -55,8 +55,8 @@ namespace LogicPOS.UI.Components.Pages
         {
             void Render(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var inv = (AgtInvoice)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = inv.DocumentStatus;
+                var inv = (OnlineDocument)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = inv.Status;
             }
 
             var title = "Estado";
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             void Render(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
-                var inv = (AgtInvoice)model.GetValue(iter, 0);
+                var inv = (OnlineDocument)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = inv.NetTotal;
                 column.Alignment = 1;
                 cell.Xalign = 1;

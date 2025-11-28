@@ -1,7 +1,7 @@
 using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Finance.Agt.ListSeries;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal;
 using LogicPOS.UI.Components.Modals;
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class AgtSeriesPage : Page<AgtSeriesInfo>
+    public partial class AgtSeriesPage : Page<OnlineSeriesInfo>
     {
         public AgtSeriesPage(Window parent) : base(parent)
         {
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnUpdate.Visible = false;
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<AgtSeriesInfo>>> GetAllQuery => new ListAgtSeriesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<OnlineSeriesInfo>>> GetAllQuery => new ListOnlineSeriesQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -49,7 +49,7 @@ namespace LogicPOS.UI.Components.Pages
                     return true;
                 }
 
-                var entity = model.GetValue(iterator, 0) as AgtSeriesInfo;
+                var entity = model.GetValue(iterator, 0) as OnlineSeriesInfo;
 
                 return entity != null && entity.Code.ToLower().Contains(search);
             };

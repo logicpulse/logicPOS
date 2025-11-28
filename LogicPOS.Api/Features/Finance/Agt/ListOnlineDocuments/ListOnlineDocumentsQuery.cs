@@ -3,14 +3,14 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 
-namespace LogicPOS.Api.Features.Finance.Agt.ListInvoices
+namespace LogicPOS.Api.Features.Finance.Agt.ListOnlineDocuments
 {
-    public class ListInvoicesQuery : IRequest<ErrorOr<IEnumerable<AgtInvoice>>>
+    public class ListOnlineDocumentsQuery : IRequest<ErrorOr<IEnumerable<OnlineDocument>>>
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
 
-        public ListInvoicesQuery(DateTime startDate, DateTime endDate)
+        public ListOnlineDocumentsQuery(DateTime startDate, DateTime endDate)
         {
             StartDate = startDate;
             EndDate = endDate;
