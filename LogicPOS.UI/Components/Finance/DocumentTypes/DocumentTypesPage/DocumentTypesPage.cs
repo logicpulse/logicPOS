@@ -3,14 +3,12 @@ using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.GetActiveDocumentTypes;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
-using MediatR;
-using System.Collections;
 using System.Collections.Generic;
-using System.EnterpriseServices;
 using System.Linq;
 
 
@@ -25,9 +23,18 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnUpdate.Visible = false;
         }
 
+        public static readonly Dictionary<string, string> ActiveTypesOnlyOptions = 
+            new Dictionary<string, string> { 
+                { "selection-page", "true" }, 
+                { "active-types-only", "true" }};
+
+        private bool HasActiveTypesOnlyOption => Options != null &&  Options.ContainsKey("active-types-only");
+
         protected override void LoadEntities()
         {
-            var result = _mediator.Send(new GetAllDocumentTypesQuery()).Result;
+            ErrorOr<IEnumerable<DocumentType>> result;
+
+            result = HasActiveTypesOnlyOption ? _mediator.Send(new GetActiveDocumentTypesQuery()).Result : _mediator.Send(new GetAllDocumentTypesQuery()).Result;
 
             if (result.IsError)
             {

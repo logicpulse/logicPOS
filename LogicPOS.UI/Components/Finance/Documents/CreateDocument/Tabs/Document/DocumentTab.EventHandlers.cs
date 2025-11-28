@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Alerts;
@@ -206,7 +206,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private DocumentType SelectDocumentType()
         {
-            var page = new DocumentTypesPage(this.SourceWindow, PageOptions.SelectionPageOptions);
+            var page = new DocumentTypesPage(this.SourceWindow, DocumentTypesPage.ActiveTypesOnlyOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();

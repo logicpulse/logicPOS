@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Finance.Currencies;
@@ -116,7 +116,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeKeyBoardButton: false);
 
             TxtDocumentType.SelectedEntity = DocumentTypesService.Default;
-            TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType).Designation;
+            TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType)?.Designation;
             TxtDocumentType.Entry.IsEditable = true;
             TxtDocumentType.WithAutoCompletion(DocumentTypesService.AutocompleteLines, id => DocumentTypesService.GetById(id));
             TxtDocumentType.OnCompletionSelected += d => SelectDocumentType(d as DocumentType);

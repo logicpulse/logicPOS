@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
@@ -36,6 +36,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void UpdateValidatableFields()
         {
+            if(DocumentTypeAnalyzer == null)
+            {
+                return;
+            }
+
             if (DocumentTypeAnalyzer.Value.IsGuide())
             {
                 TxtOriginDocument.Require(false);
