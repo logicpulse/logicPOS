@@ -34,6 +34,12 @@ namespace LogicPOS.UI.Components.Finance.Customers
             Name = c.Name
         }).ToList();
 
+        public static List<AutoCompleteLine> SuppliersAutocompleteLines => Customers.Where(x=>x.Supplier).Select(c => new AutoCompleteLine
+        {
+            Id = c.Id,
+            Name = c.Name
+        }).ToList();
+
         public static List<AutoCompleteLine> FiscalNumberAutocompleteLines => Customers.Select(c => new AutoCompleteLine
         {
             Id = c.Id,

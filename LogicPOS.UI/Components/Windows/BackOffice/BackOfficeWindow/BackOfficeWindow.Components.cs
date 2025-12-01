@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Windows
 
         #region AGT
         public XAccordionParentButton BtnAgtSection = new XAccordionParentButton("AGT",
-                                                                                    "Assets/Images/Icons/Accordion/pos_backoffice_informacao_fiscal.png");
+                                                                                    "Assets/Images/Icons/Accordion/pos_backoffice_agt.png");
         public VBox PanelAgt = new VBox(false, 2);
         public XAccordionChildButton BtnAgtSeries { get; } = new XAccordionChildButton("Séries");
         public XAccordionChildButton BtnAgtDocuments { get; } = new XAccordionChildButton("Documentos");

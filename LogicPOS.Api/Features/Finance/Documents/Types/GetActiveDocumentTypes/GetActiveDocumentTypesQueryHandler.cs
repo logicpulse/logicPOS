@@ -21,7 +21,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Types.GetActiveDocumentTypes
                                                                         CancellationToken cancellationToken = default)
         {
             var cacheOptions = GetCacheOptions();
-            var result = await HandleGetListQueryAsync<DocumentType>("documents/types/active", cancellationToken, cacheOptions);
+            var result = await HandleGetListQueryAsync<DocumentType>("documents/types/active", cancellationToken);
 
             return result;
         }

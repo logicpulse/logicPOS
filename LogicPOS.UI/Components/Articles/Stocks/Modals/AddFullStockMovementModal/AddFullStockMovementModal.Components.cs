@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
                                           style: TextBoxStyle.Lite);
 
             TxtSupplier.Entry.IsEditable = true;
-            TxtSupplier.WithAutoCompletion(CustomersService.AutocompleteLines,id => CustomersService.GetById(id));
+            TxtSupplier.WithAutoCompletion(CustomersService.SuppliersAutocompleteLines,id => CustomersService.GetById(id));
             TxtSupplier.OnCompletionSelected += s => SelectSupplier(s as Customer);
             TxtSupplier.SelectEntityClicked += BtnSelectSupplier_Clicked;
             TxtSupplier.Entry.Changed += TxtSupplier_Changed;
