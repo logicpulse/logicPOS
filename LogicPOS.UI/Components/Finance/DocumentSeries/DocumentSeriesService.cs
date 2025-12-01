@@ -1,4 +1,6 @@
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
+using LogicPOS.Api.Features.Finance.Documents.Series.CreateAgtSeries;
 using LogicPOS.Api.Features.Finance.Documents.Series.CreateDefaultSeries;
 using LogicPOS.UI.Errors;
 using System;
@@ -21,16 +23,18 @@ namespace LogicPOS.UI.Components.Finance.DocumentSeries
             return true;
         }
 
-        public static bool HasActiveSeries()
+        public static bool CreateAgtSeries(CreateAgtSeriesCommand command)
         {
-            var series = DependencyInjection.Mediator.Send(new GetActiveDocumentSeriesQuery()).Result;
-            if (series.IsError)
+            var result = DependencyInjection.Mediator.Send(command).Result;
+
+            if (result.IsError)
             {
-                ErrorHandlingService.HandleApiError(series);
+                ErrorHandlingService.HandleApiError(result);
                 return false;
             }
 
-            return series.Value.Any();
+            return true;
         }
+
     }
 }

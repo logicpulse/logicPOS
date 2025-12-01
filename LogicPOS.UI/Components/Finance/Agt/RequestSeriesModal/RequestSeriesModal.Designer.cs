@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
 
         protected override void AddSensitiveFields()
         {
-            SensitiveFields.Add(_txtYear.Entry);
+            SensitiveFields.Add(_comboFiscalYears.ComboBox);
             SensitiveFields.Add(_comboDocumentTypes.ComboBox);
             SensitiveFields.Add(_txtEstablishmentNumber.Entry);
             SensitiveFields.Add(_checkContingencyIndicator);
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
 
         protected override void AddValidatableFields()
         {
-            ValidatableFields.Add(_txtYear);
+            ValidatableFields.Add(_comboFiscalYears);
             ValidatableFields.Add(_comboDocumentTypes);
             ValidatableFields.Add(_txtEstablishmentNumber);
         }
@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            tab1.PackStart(_txtYear.Component, false, false, 0);
+            tab1.PackStart(_comboFiscalYears.Component, false, false, 0);
             tab1.PackStart(_comboDocumentTypes.Component, false, false, 0);
             tab1.PackStart(_txtEstablishmentNumber.Component, false, false, 0);
             tab1.PackStart(_checkContingencyIndicator, false, false, 0);

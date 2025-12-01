@@ -1,9 +1,6 @@
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents.Series.AddDocumentSerie;
 using LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie;
-using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
-using LogicPOS.Api.Features.Finance.Documents.Types.Common;
-using System.Collections.Generic;
+using LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -14,9 +11,9 @@ namespace LogicPOS.UI.Components.Modals
 
         }
 
-        private AddDocumentSerieCommand CreateAddCommand()
+        private CreateDocumentSeriesCommand CreateAddCommand()
         {
-            return new AddDocumentSerieCommand
+            return new CreateDocumentSeriesCommand
             {
                 Designation = _txtDesignation.Text,
                 NextNumber = int.Parse(_txtNextNumber.Text),

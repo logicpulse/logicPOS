@@ -1,6 +1,8 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Agt.RequestSeries;
+using LogicPOS.Api.Features.Finance.Documents.Series.CreateAgtSeries;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.DocumentSeries;
 using LogicPOS.UI.Components.Modals;
 
 namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
@@ -25,27 +27,26 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
             }
 
             var command = CreateAddCommand();
-            var series = AgtService.RequestSeries(command);
+            var result = DocumentSeriesService.CreateAgtSeries(command);
 
-            if (series != null)
+            if (result)
             {
                 CustomAlerts.Information(this)
                     .WithTitle("Solicitar Série")
-                    .WithMessage($"Série solicitada com sucesso." +
-                    $"\nCódigo da Série: {series.Value.Code}" +
-                    $"\nQuantity de Documentos: {series.Value.Quantity}")
+                    .WithMessage($"Série solicitada com sucesso.")
                     .ShowAlert();
             }
 
-            return series != null;
+            return result;
         }
 
-        private RequestSeriesCommand CreateAddCommand() => new RequestSeriesCommand
+        private CreateAgtSeriesCommand CreateAddCommand() => new CreateAgtSeriesCommand
         {
-            Year = int.Parse(_txtYear.Text),
+            Designation = $"{_comboDocumentTypes.SelectedEntity?.Designation} {_comboDocumentTypes.SelectedEntity?.Acronym} {_comboFiscalYears.SelectedEntity?.Acronym}",
+            FiscalYearId = _comboFiscalYears.SelectedEntity.Id,
             EstablishmentNumber = _txtEstablishmentNumber.Text,
             SeriesContingencyIndicator = _checkContingencyIndicator.Active ? "C" : "N",
-            DocumentType = _comboDocumentTypes.SelectedEntity.Acronym
+            DocumentTypeId = _comboDocumentTypes.SelectedEntity.Id
         };
 
         protected override void ShowEntityData() { }

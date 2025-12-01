@@ -1,10 +1,10 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 
-namespace LogicPOS.Api.Features.Documents.Series.AddDocumentSerie
+namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries
 {
-    public class AddDocumentSerieCommand : IRequest<ErrorOr<Guid>>
+    public class CreateDocumentSeriesCommand : IRequest<ErrorOr<Guid>>
     {
         public string Designation { get; set; }
         public int NextNumber { get; set; }

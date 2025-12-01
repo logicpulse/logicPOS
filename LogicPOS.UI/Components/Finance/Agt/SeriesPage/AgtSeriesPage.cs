@@ -5,6 +5,8 @@ using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using MediatR;
 using System.Collections.Generic;
 

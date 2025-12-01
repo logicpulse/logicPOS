@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -6,6 +6,8 @@ using LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using MediatR;
 using System.Collections.Generic;
 
@@ -18,6 +20,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
+            Navigator.BtnInsert.Visible = !(SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe);
         }
 
         public override int RunModal(EntityEditionModalMode mode)

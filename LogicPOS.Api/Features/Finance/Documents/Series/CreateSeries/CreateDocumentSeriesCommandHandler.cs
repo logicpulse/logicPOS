@@ -7,19 +7,19 @@ using System.Threading.Tasks;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Finance.Documents.Types;
 
-namespace LogicPOS.Api.Features.Documents.Series.AddDocumentSerie
+namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries
 {
-    public class AddDocumentSerieCommandHandler : 
-        RequestHandler<AddDocumentSerieCommand, ErrorOr<Guid>>
+    public class CreateDocumentSeriesCommandHandler : 
+        RequestHandler<CreateDocumentSeriesCommand, ErrorOr<Guid>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
 
-        public AddDocumentSerieCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
+        public CreateDocumentSeriesCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Guid>> Handle(AddDocumentSerieCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Guid>> Handle(CreateDocumentSeriesCommand command, CancellationToken cancellationToken = default)
         {
             var result = await HandleAddCommandAsync("documents/series", command, cancellationToken);
 
