@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
 using LogicPOS.UI.Alerts;
@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.Finance.DocumentSeries;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -62,6 +63,12 @@ namespace LogicPOS.UI.Components.Modals
             {
                 ErrorHandlingService.HandleApiError(result);
                 return false;
+            }
+
+            if(SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
+            {
+                //Don't create document type series automatically in Angola with AGT FE
+                return true;
             }
 
             if (AskForDefaultSeriesCreation())
