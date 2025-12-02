@@ -53,6 +53,7 @@ namespace LogicPOS.UI.Components.Modals
             CustomAlerts.Information(this)
                .WithMessage($"O estado de validação do documento {Page.SelectedEntity.RefNo} foi atualizado.")
                .ShowAlert();
+            Page.Refresh();
         }
 
         private void BtnSendDocumentToAgt_Clicked(object sender, EventArgs e)

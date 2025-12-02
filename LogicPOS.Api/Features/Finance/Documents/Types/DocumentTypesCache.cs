@@ -7,9 +7,9 @@ namespace LogicPOS.Api.Features.Finance.Documents.Types
     {
         public static void Clear(IKeyedMemoryCache keyedMemoryCache)
         {
-            keyedMemoryCache.Remove(key => string.Equals(key, "document/types"));
-            keyedMemoryCache.Remove(key => string.Equals(key, "document/types/active"));
-            keyedMemoryCache.Remove(key => key.StartsWith("document/types?", StringComparison.OrdinalIgnoreCase));
+            keyedMemoryCache.Remove(key => string.Equals(key, "documents/types"));
+            keyedMemoryCache.Remove(key => string.Equals(key, "documents/types/active"));
+            keyedMemoryCache.Remove(key => key.StartsWith("documents/types?", StringComparison.OrdinalIgnoreCase));
         }
     }
 }

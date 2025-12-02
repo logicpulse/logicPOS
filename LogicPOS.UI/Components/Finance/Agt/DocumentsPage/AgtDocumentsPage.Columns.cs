@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineDocuments;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Pages.GridViews;
 
 namespace LogicPOS.UI.Components.Pages
@@ -13,6 +14,86 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateDocumentDateColumn());
             GridView.AppendColumn(CreateDocumentStatusColumn());
             GridView.AppendColumn(CreateNetTotalColumn());
+        }
+
+        private void AddDocumentNumberSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(0, (model, left, right) =>
+            {
+                var a = (OnlineDocument)model.GetValue(left, 0);
+                var b = (OnlineDocument)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Number.CompareTo(b.Number);
+            });
+        }
+
+        private void AddDocumentTypeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
+            {
+                var a = (OnlineDocument)model.GetValue(left, 0);
+                var b = (OnlineDocument)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Type.CompareTo(b.Type);
+            });
+        }
+
+        private void AddDocumentDateSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var a = (OnlineDocument)model.GetValue(left, 0);
+                var b = (OnlineDocument)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Date.CompareTo(b.Date);
+            });
+        }
+
+        private void AddDocumentStatusSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
+            {
+                var a = (OnlineDocument)model.GetValue(left, 0);
+                var b = (OnlineDocument)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Status.CompareTo(b.Status);
+            });
+        }
+
+        private void AddDocumentTotalSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
+            {
+                var a = (OnlineDocument)model.GetValue(left, 0);
+                var b = (OnlineDocument)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.NetTotal.CompareTo(b.NetTotal);
+            });
         }
 
         private TreeViewColumn CreateDocumentNumberColumn()
@@ -80,6 +161,11 @@ namespace LogicPOS.UI.Components.Pages
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+            AddDocumentNumberSorting();
+            AddDocumentTypeSorting();
+            AddDocumentDateSorting();
+            AddDocumentStatusSorting();
+            AddDocumentTotalSorting();
         }
     }
 }

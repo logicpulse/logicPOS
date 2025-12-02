@@ -25,6 +25,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus
             if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
+                ReceiptsCache.Clear(_keyedMemoryCache);
             }
 
             return result;

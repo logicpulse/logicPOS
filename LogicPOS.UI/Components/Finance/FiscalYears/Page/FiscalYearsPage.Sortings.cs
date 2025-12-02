@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void AddYearSorting()
         {
-            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
             {
                 var leftFiscalYear = (FiscalYear)model.GetValue(left, 0);
                 var rightFiscalYear = (FiscalYear)model.GetValue(right, 0);

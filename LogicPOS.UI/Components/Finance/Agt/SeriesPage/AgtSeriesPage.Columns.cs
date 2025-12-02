@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 
 namespace LogicPOS.UI.Components.Pages
@@ -17,6 +18,121 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateJoiningDateColumn());
             GridView.AppendColumn(CreateJoiningTypeColumn());
         }
+
+
+        private void AddDocumentTypeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(1, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.DocumentType.CompareTo(b.DocumentType);
+            });
+        }
+
+
+        private void AddStatusSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Status.CompareTo(b.Status);
+            });
+        }
+
+        private void AddYearSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(3, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.Year.CompareTo(b.Year);
+            });
+        }
+
+        private void AddSeriesCreationDateSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(4, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.SeriesCreationDate.CompareTo(b.SeriesCreationDate);
+            });
+        }
+
+        private void AddInvoicingMethodSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(5, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.InvoicingMethod.CompareTo(b.InvoicingMethod);
+            });
+        }
+
+        private void AddJoiningDateSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(6, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.JoiningDate.CompareTo(b.JoiningDate);
+            });
+        }
+
+        private void AddJoiningTypeSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(7, (model, left, right) =>
+            {
+                var a = (OnlineSeriesInfo)model.GetValue(left, 0);
+                var b = (OnlineSeriesInfo)model.GetValue(right, 0);
+
+                if (a == null || b == null)
+                {
+                    return 0;
+                }
+
+                return a.JoiningType.CompareTo(b.JoiningType);
+            });
+        }
+
 
         private TreeViewColumn CreateCodeColumn()
         {
@@ -131,6 +247,13 @@ namespace LogicPOS.UI.Components.Pages
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+            AddDocumentTypeSorting();
+            AddStatusSorting();
+            AddYearSorting();
+            AddSeriesCreationDateSorting();
+            AddInvoicingMethodSorting();
+            AddJoiningDateSorting();
+            AddJoiningTypeSorting();
         }
     }
 }

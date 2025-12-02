@@ -75,7 +75,7 @@ namespace LogicPOS.UI.Components.Pages
             AddDesignationSorting(1);
             AddAcronymSorting();
             AddYearSorting();
-            AddUpdatedAtSorting(3);
+            AddUpdatedAtSorting(4);
         }
       
         protected override DeleteCommand GetDeleteCommand() => null;
