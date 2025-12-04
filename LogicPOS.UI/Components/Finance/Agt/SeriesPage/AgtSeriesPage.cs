@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using MediatR;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -18,8 +19,10 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
+            Navigator.SearchBox.BtnFilter.Visible = false;
+            Navigator.SearchBox.BtnMore.Visible = false;
+            
         }
-
         protected override IRequest<ErrorOr<IEnumerable<OnlineSeriesInfo>>> GetAllQuery => new ListOnlineSeriesQuery();
 
         public override int RunModal(EntityEditionModalMode mode)
@@ -35,7 +38,6 @@ namespace LogicPOS.UI.Components.Pages
             modal.Destroy();
             return response;
         }
-
         public override void UpdateButtonPrevileges() { }
 
         protected override DeleteCommand GetDeleteCommand() => null;

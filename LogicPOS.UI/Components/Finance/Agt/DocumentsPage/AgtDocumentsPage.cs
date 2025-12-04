@@ -12,15 +12,36 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class AgtDocumentsPage : Page<OnlineDocument>
     {
+        
+        ListOnlineDocumentsQuery CurrentQuery = GetDefaultQuery();
         public AgtDocumentsPage(Window parent) : base(parent)
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
+            AddEventsHandler();
         }
 
-        protected override IRequest<ErrorOr<IEnumerable<OnlineDocument>>> GetAllQuery =>
-            new ListOnlineDocumentsQuery(DateTime.Today.AddDays(-90), DateTime.Today);
+        private void AddEventsHandler()
+        {
+            PageChanged += OnPageChanged;
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
+            Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
+        }
+
+        private void BtnFilter_Clicked(object sender, EventArgs e)
+        {
+            RunFilter();
+        }
+
+        private void BtnMore_Clicked(object sender, EventArgs e)
+        {
+            CurrentQuery.StartDate = CurrentQuery.StartDate.AddDays(-20);
+            Refresh();
+        }
+
+        protected override IRequest<ErrorOr<IEnumerable<OnlineDocument>>> GetAllQuery => CurrentQuery;
+            
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -30,7 +51,6 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             AgtOnlineDocumentInfoModal.Show(SelectedEntity.Number, SourceWindow);
-
             return 0;
         }
 
@@ -50,7 +70,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
 
                 var entity = model.GetValue(iterator, 0) as OnlineDocument;
-
+               
                 return entity != null && (
                     (!string.IsNullOrEmpty(entity.Number) && entity.Number.ToLower().Contains(search)) ||
                     (!string.IsNullOrEmpty(entity.Type) && entity.Type.ToLower().Contains(search))
