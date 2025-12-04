@@ -1,6 +1,5 @@
 using Gtk;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 
 namespace LogicPOS.UI.Components.Pages

@@ -1,18 +1,19 @@
 ﻿using Gtk;
-using LogicPOS.Api.Features.Finance.Agt.ListOnlineDocuments;
+using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Modals;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    public partial class AgtDocumentsPage
+    public partial class AgtSeriesPage
     {
-        private AgtDocumentsFilterModal _filterModal = null;
+        private AgtSeriesFilterModal _filterModal = null;
         public event EventHandler PageChanged;
 
-        private static ListOnlineDocumentsQuery GetDefaultQuery()
+        private static ListOnlineSeriesQuery GetDefaultQuery()
         {
-            var query = new ListOnlineDocumentsQuery(DateTime.Today.AddDays(-90), DateTime.Today);
+            var query = new ListOnlineSeriesQuery();
+
             return query;
         }
 
@@ -25,11 +26,11 @@ namespace LogicPOS.UI.Components.Pages
         {
             if(_filterModal == null)
             {
-                _filterModal = new AgtDocumentsFilterModal(SourceWindow);
+                _filterModal = new AgtSeriesFilterModal(SourceWindow);
             }
 
             var response = (ResponseType)_filterModal.Run();
-            var query = _filterModal.GetOnlineDocumentsQuery();
+            var query = _filterModal.GetOnlineSeriesQuery();
 
             _filterModal.Hide();
 

@@ -5,8 +5,6 @@ using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -15,15 +13,22 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class AgtSeriesPage : Page<OnlineSeriesInfo>
     {
+        ListOnlineSeriesQuery CurrentQuery = GetDefaultQuery();
         public AgtSeriesPage(Window parent) : base(parent)
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
-            Navigator.SearchBox.BtnFilter.Visible = false;
-            Navigator.SearchBox.BtnMore.Visible = false;
-            
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
+            PageChanged += OnPageChanged;
+
         }
-        protected override IRequest<ErrorOr<IEnumerable<OnlineSeriesInfo>>> GetAllQuery => new ListOnlineSeriesQuery();
+
+        private void BtnFilter_Clicked(object sender, EventArgs e)
+        {
+            RunFilter();
+        }
+
+        protected override IRequest<ErrorOr<IEnumerable<OnlineSeriesInfo>>> GetAllQuery => CurrentQuery;
 
         public override int RunModal(EntityEditionModalMode mode)
         {
