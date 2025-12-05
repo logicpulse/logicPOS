@@ -1,12 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
-using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -17,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         public AgtSeriesFilterModal(Window parent) :
             base(parent,
-                LocalizedString.Instance["window_title_dialog_filter"],
+                "Filtrar Séries Online - AGT",
                 new Size(540, 468),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {

@@ -21,6 +21,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
             Navigator.BtnInsert.Visible = !(SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe);
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

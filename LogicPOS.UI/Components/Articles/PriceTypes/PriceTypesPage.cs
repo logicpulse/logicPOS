@@ -15,6 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PriceTypesPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PriceType>>> GetAllQuery => new GetAllPriceTypesQuery();

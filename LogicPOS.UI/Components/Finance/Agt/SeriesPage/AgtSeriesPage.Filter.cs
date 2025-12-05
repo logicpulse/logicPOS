@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.Pages
 
             var response = (ResponseType)_filterModal.Run();
             var query = _filterModal.GetOnlineSeriesQuery();
-
+            _filterModal.Clear();
             _filterModal.Hide();
 
             if (response != ResponseType.Ok)

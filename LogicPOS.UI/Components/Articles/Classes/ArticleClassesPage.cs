@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
+            DisableFilterButton();
         }
 
       

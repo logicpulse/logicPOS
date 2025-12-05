@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public WorkSessionsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode) => (int)ResponseType.None;

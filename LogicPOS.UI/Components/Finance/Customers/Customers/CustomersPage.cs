@@ -27,6 +27,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public CustomersPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            DisableFilterButton();
         }
 
         protected override void LoadEntities()

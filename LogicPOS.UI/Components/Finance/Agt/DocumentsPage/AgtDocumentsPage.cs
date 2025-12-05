@@ -12,14 +12,21 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class AgtDocumentsPage : Page<OnlineDocument>
     {
-        
+
         ListOnlineDocumentsQuery CurrentQuery = GetDefaultQuery();
         public AgtDocumentsPage(Window parent) : base(parent)
+        {
+
+            DisableFilterButton();
+            AddEventsHandler();
+        }
+        protected override void DisableFilterButton()
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
-            AddEventsHandler();
+
+            Navigator.BtnApply.Visible = false;
         }
 
         private void AddEventsHandler()
@@ -41,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected override IRequest<ErrorOr<IEnumerable<OnlineDocument>>> GetAllQuery => CurrentQuery;
-            
+
 
         public override int RunModal(EntityEditionModalMode mode)
         {
@@ -70,7 +77,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
 
                 var entity = model.GetValue(iterator, 0) as OnlineDocument;
-               
+
                 return entity != null && (
                     (!string.IsNullOrEmpty(entity.Number) && entity.Number.ToLower().Contains(search)) ||
                     (!string.IsNullOrEmpty(entity.Type) && entity.Type.ToLower().Contains(search))

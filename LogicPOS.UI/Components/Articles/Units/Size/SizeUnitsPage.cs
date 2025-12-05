@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public SizeUnitsPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
 

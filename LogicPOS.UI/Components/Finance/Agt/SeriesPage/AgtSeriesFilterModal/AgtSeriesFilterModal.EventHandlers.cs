@@ -16,20 +16,23 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
                 return;
             }
-
-
         }
 
         private void BtnClear_Clicked(object sender, EventArgs e)
+        {
+            Clear();
+
+        }
+
+        public void Clear()
         {
             TxtDocumentType.Clear();
             TxtYear.Clear();
             TxtCode.Clear();
             TxtEstablishmentNumber.Clear();
             TxtStatus.Clear();
-
         }
-     
+
         private void BtnSelectDocumentType_Clicked(object sender, EventArgs e)
         {
 

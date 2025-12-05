@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public TablesPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<TableViewModel>>> GetAllQuery => new GetTablesQuery();

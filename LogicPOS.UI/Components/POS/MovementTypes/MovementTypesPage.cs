@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<MovementType>>> GetAllQuery => new GetAllMovementTypesQuery();
         public MovementTypesPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

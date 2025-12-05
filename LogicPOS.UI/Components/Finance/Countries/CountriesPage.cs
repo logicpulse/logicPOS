@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public CountriesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
+            DisableFilterButton();
         }
 
         protected override void AddColumns()

@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PaymentMethod>>> GetAllQuery => new GetAllPaymentMethodsQuery();

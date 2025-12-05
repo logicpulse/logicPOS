@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PlacesPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Place>>> GetAllQuery => new GetAllPlacesQuery();

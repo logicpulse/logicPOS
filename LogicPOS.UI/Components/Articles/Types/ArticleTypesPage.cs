@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<ArticleType>>> GetAllQuery => new GetAllArticleTypesQuery();
         public ArticleTypesPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

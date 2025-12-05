@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<VatExemptionReason>>> GetAllQuery => new GetAllVatExemptionReasonsQuery();
         public VatExemptionReasonsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

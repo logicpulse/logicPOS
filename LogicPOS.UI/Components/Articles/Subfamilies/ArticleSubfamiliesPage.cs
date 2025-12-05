@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
         public static Guid _familyId;
         public ArticleSubfamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-            
+            DisableFilterButton();
         }
 
 

@@ -23,6 +23,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnUpdate.Visible = false;
             Navigator.BtnDelete.Visible = false;
+            DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

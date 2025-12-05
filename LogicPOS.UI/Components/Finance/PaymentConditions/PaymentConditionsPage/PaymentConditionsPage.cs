@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PaymentConditionsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            DisableFilterButton();
         }
         protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 

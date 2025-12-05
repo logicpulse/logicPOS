@@ -95,6 +95,13 @@ namespace LogicPOS.UI.Components.Pages
             return result.Value;
         }
 
+        protected virtual void DisableFilterButton()
+        {
+            Navigator.BtnApply.Visible = false;
+            Navigator.SearchBox.BtnFilter.Visible = false;
+            Navigator.SearchBox.BtnMore.Visible = false;
+        }
+
         protected virtual void LoadEntities()
         {
             var getEntitiesResult = _mediator.Send(GetAllQuery).Result;

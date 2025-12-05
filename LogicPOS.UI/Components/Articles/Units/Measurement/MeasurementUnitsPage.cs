@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public MeasurementUnitsPage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();

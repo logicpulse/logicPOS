@@ -18,11 +18,15 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
+            Navigator.BtnApply.Visible = false;
+            Navigator.SearchBox.BtnMore.Visible = false;
+            AddEventHandlers();
+        }
+        private void AddEventHandlers()
+        {
             Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
             PageChanged += OnPageChanged;
-
         }
-
         private void BtnFilter_Clicked(object sender, EventArgs e)
         {
             RunFilter();

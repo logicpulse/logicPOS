@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public ArticleFamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
+            DisableFilterButton();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<ArticleFamily>>> GetAllQuery => new GetAllArticleFamiliesQuery();

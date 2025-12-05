@@ -46,9 +46,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtEstablishmentNumber = new TextBox(this,
                                            "Nº de Estabelecimento",
                                            isRequired: false,
-                                           isValidatable: true,
-                                           regex: RegularExpressions.Integer,
-                                           includeSelectButton: true,
+                                           isValidatable: false,
+                                           includeSelectButton: false,
                                            includeKeyBoardButton: true);
 
         }
@@ -59,8 +58,8 @@ namespace LogicPOS.UI.Components.Modals
                                  GeneralUtils.GetResourceByName("global_year"),
                                  isRequired: false,
                                  isValidatable: true,
-                                 regex: RegularExpressions.Integer,
-                                 includeSelectButton: true,
+                                 regex: RegularExpressions.DateYear,
+                                 includeSelectButton: false,
                                  includeKeyBoardButton: true);
 
         }
@@ -71,8 +70,8 @@ namespace LogicPOS.UI.Components.Modals
                                  GeneralUtils.GetResourceByName("global_article_code"),
                                  isRequired: false,
                                  isValidatable: true,
-                                 regex: RegularExpressions.AlfaNumeric,
-                                 includeSelectButton: true,
+                                 regex:RegularExpressions.AlfaNumeric,
+                                 includeSelectButton: false,
                                  includeKeyBoardButton: true);
 
         }
@@ -84,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
                                  isRequired: false,
                                  isValidatable: true,
                                  regex: RegularExpressions.AlfaAcronym1Char,
-                                 includeSelectButton: true,
+                                 includeSelectButton: false,
                                  includeKeyBoardButton: true);
 
         }

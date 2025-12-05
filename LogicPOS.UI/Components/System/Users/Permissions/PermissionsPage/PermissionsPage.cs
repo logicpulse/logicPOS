@@ -1,7 +1,6 @@
 ﻿using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.AddPermissionProfile;
 using LogicPOS.Api.Features.Users.Permissions.Profiles.DeletePermissionProfile;
@@ -9,13 +8,10 @@ using LogicPOS.Api.Features.Users.Permissions.Profiles.GetAllPermissionProfiles;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
-using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using MediatR;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.ApplicationServices;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -32,6 +28,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public PermissionsPage(Window parentWindow) : base(parentWindow)
         {
+            DisableFilterButton();
         }
 
         protected override void LoadEntities()

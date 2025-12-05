@@ -25,6 +25,7 @@ namespace LogicPOS.UI.Components.Pages
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             AddEventHandlers();
+            DisableFilterButton();
         }
 
         protected override void LoadEntities()

@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public CustomerTypePage(Window parent) : base(parent)
         {
+            DisableFilterButton();
         }
 
         protected override void AddColumns()
