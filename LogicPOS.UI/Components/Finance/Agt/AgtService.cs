@@ -4,7 +4,9 @@ using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocument;
+using LogicPOS.Api.Features.Finance.Agt.RegisterDocuments;
 using LogicPOS.Api.Features.Finance.Agt.RequestSeries;
+using LogicPOS.Api.Features.Finance.Agt.UpdateDocumentsValidationStatus;
 using LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus;
 using LogicPOS.UI.Errors;
 using System;
@@ -42,9 +44,37 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return true;
         }
 
+        public static bool RegisterDocuments(IEnumerable<Guid> documents)
+        {
+            var command = new RegisterDocumentsCommand(documents);
+            var result = DependencyInjection.Mediator.Send(command).Result;
+
+            if (result.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool UpdateDocumentValidationStatus(Guid documentId)
         {
             var command = new UpdateDocumentValidationStatusCommand(documentId);
+            var result = DependencyInjection.Mediator.Send(command).Result;
+
+            if (result.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool UpdateDocumentsValidationStatus(IEnumerable<Guid> documents)
+        {
+            var command = new UpdateDocumentsValidationStatusCommand(documents);
             var result = DependencyInjection.Mediator.Send(command).Result;
 
             if (result.IsError != false)
@@ -80,7 +110,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return result.Value;
         }
 
-        public static string[] EligibleDocumentTypes { get; } = new string[] { "FT", "FR", "RG", "NC", "ND" };
+        public static string[] EligibleDocumentTypes { get; } = new string[] { "FT", "FR", "RG", "NC", "ND","RC" };
 
         public static Api.Features.Finance.Agt.RequestSeries.AgtSeriesInfo? RequestSeries(RequestSeriesCommand command)
         {
