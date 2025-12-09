@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
@@ -45,8 +45,8 @@ namespace LogicPOS.UI.Components.Pages
                 search = search.Trim();
                 var parameter = (PreferenceParameter)model.GetValue(iterator, 0);
 
-                var designation = parameter.ResourceStringValue;
-                if (designation.ToLower().Contains(search))
+                var designation = parameter?.ResourceStringValue;
+                if (designation != null && designation.ToLower().Contains(search))
                 {
                     return true;
                 }
