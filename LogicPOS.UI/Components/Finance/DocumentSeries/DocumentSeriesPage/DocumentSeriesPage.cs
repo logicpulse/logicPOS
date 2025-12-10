@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if (mode == EntityEditionModalMode.Update)
+            if (mode == EntityEditionModalMode.Update && CountriesService.Default.Code2!="PT")
             {
                 mode = EntityEditionModalMode.View;
             }

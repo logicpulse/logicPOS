@@ -1,6 +1,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -8,6 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentSerieModal
     {
+        private IconButtonWithText _btnATSeriesComunicate;
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtNextNumber = TextBox.Simple("global_documentfinanceseries_NextDocumentNumber", true, true, @"^[1-9][0-9]*$");
         private TextBox _txtNumberRangeBegin = TextBox.Simple("global_documentfinanceseries_DocumentNumberRangeBegin", true, true, @"^0|[1-9][0-9]*$");

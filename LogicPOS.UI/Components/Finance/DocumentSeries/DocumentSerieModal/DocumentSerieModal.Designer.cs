@@ -1,26 +1,34 @@
 using Gtk;
+using logicpos;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using Pango;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Management.Instrumentation;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentSerieModal
     {
         public override Size ModalSize => new Size(500, 650);
+        
         public override string ModalTitleResourceName => "dialog_edit_DocumentFinanceSeries_tab1_label";
 
         protected override void Initialize()
         {
             InitializeFiscalYearsComboBox();
             InitializeDocumentTypesComboBox();
+            InitializeBtnATSeriesComunicate();
+            _txtATDocCodeValidationSerie.Entry.Sensitive = true;
 
-            if(_modalMode == EntityEditionModalMode.Insert)
+            if (_modalMode == EntityEditionModalMode.Insert)
             {
                 _txtNextNumber.Text = "1";
                 _txtNextNumber.Entry.Sensitive = false;
@@ -31,6 +39,14 @@ namespace LogicPOS.UI.Components.Modals
                 _txtNumberRangeEnd.Text = "2147483647";
                 _txtNumberRangeEnd.Entry.Sensitive = false;
             }
+        }
+
+        private void InitializeBtnATSeriesComunicate()
+        {
+            _btnATSeriesComunicate = CreateIconButton("touchButton_Green", 
+                                                       GeneralUtils.GetResourceByName("label_communicate_series"),
+                                                       AppSettings.Paths.Images + @"Icons\icon_pos_nav_new.png");
+           
         }
 
         private void InitializeFiscalYearsComboBox()
@@ -119,10 +135,30 @@ namespace LogicPOS.UI.Components.Modals
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
         }
 
+        private IconButtonWithText CreateIconButton(string name, string text, string icon)
+        {
+            Size buttonSize = new Size( 0, AppSettings.Instance.IntSplitPaymentTouchButtonSplitPaymentHeight-15);
+            Size buttonIconSize = ExpressionEvaluatorExtended.SizePosToolbarButtonIconSizeDefault;
+
+            return new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = name,
+                    BackgroundColor = System.Drawing.Color.Transparent,
+                    Text = text,
+                    Icon = icon,
+                    IconSize = buttonIconSize,
+                    ButtonSize = buttonSize,
+                    LeftImage = true,
+                    FontColor = System.Drawing.Color.White
+
+                })
+            { Sensitive = true };
+        }
+
         private VBox CreateDetailsTab()
         {
             var tab1 = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
-
             if (_modalMode != EntityEditionModalMode.Insert)
             {
                 _comboFiscalYears.ComboBox.Sensitive = false;
@@ -131,9 +167,9 @@ namespace LogicPOS.UI.Components.Modals
                 _txtNextNumber.Entry.Sensitive = false;
                 _txtNumberRangeBegin.Entry.Sensitive = false;
                 _txtNumberRangeEnd.Entry.Sensitive = false;
-                _txtATDocCodeValidationSerie.Entry.Sensitive = false;
-
-            }
+                _txtATDocCodeValidationSerie.Component.Sensitive = false;
+             }
+            _txtATDocCodeValidationSerie.Component.Sensitive = true;
             tab1.PackStart(_comboFiscalYears.Component,false, false, 0);
             tab1.PackStart(_comboDocumentTypes.Component, false, false, 0);
             tab1.PackStart(_txtDesignation.Component, false, false, 0);
@@ -142,6 +178,7 @@ namespace LogicPOS.UI.Components.Modals
             tab1.PackStart(_txtNumberRangeEnd.Component, false, false, 0);
             tab1.PackStart(_txtAcronym.Component, false, false, 0);
             tab1.PackStart(_txtATDocCodeValidationSerie.Component, false, false, 0);
+            tab1.PackStart(_btnATSeriesComunicate, false, false, 0);
 
             if (_modalMode != EntityEditionModalMode.Insert)
             {
