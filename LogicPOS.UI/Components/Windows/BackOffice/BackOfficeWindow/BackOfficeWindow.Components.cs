@@ -357,9 +357,15 @@ namespace LogicPOS.UI.Components.Windows
             PanelButtons.PackStart(BtnExportSection.Button, false, false, 0);
             PanelButtons.PackStart(PanelExport, false, false, 0);
             {
-                PanelExport.PackStart(BtnExportYearlySaft.Button, false, false, 0);
-                PanelExport.PackStart(BtnExportLastMonthSaft.Button, false, false, 0);
-                PanelExport.PackStart(BtnExportCustomSaft.Button, false, false, 0);
+                bool useAngolaAgtFe = SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe;
+                
+                if (useAngolaAgtFe == false)
+                {
+                    PanelExport.PackStart(BtnExportYearlySaft.Button, false, false, 0);
+                    PanelExport.PackStart(BtnExportLastMonthSaft.Button, false, false, 0);
+                    PanelExport.PackStart(BtnExportCustomSaft.Button, false, false, 0);
+                }
+
                 PanelExport.PackStart(BtnExportArticles.Button, false, false, 0);
                 PanelExport.PackStart(BtnExportCustomers.Button, false, false, 0);
             }
