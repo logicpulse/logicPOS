@@ -49,15 +49,5 @@ namespace LogicPOS.Plugin.Abstractions
             int width,
             int height);
 
-        string GenHardwareID(GenHardwareIDQuery genHardwareID);
-    }
-
-    public class GenHardwareIDQuery
-    {
-        public string CpuId { get; set; }
-        public string MotherboardSerial { get; set; }
-        public string DiskSerial { get; set; }
-        public string MachineGuid { get; set; }
-        public string SystemUuid { get; set; }
     }
 }
