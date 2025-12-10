@@ -31,7 +31,9 @@ namespace logicpos.Classes.Logic.License
 
                 byte[] registredLicence = new byte[0];
 
-                HardwareId = LicenseSettings.LicenseHardwareId;
+                //HardwareId = LicenseSettings.LicenseHardwareId;
+                HardwareId = GetTerminalHardwareID();
+
                 bool hasLicense = false;
 
                 if (LicenseSettings.LicenseInformations.Count > 0)
@@ -160,6 +162,23 @@ namespace logicpos.Classes.Logic.License
             BinaryWriter bw = new BinaryWriter(fs);
             bw.Write(buff);
             bw.Close();
+        }
+
+        public string GetTerminalHardwareID()
+        {
+            string result = string.Empty;
+
+            //int p = (int)Environment.OSVersion.Platform;
+
+            try
+            {
+                result = PluginSettings.LicenceManager.GenHardwareID(HardwareIdClientParts.GetHardwareParts());
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return result;
         }
     }
 }

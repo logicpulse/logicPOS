@@ -142,6 +142,7 @@
     <Compile Include="Classes\Enums\SaveSystemProtectionMode.cs" />
     <Compile Include="Classes\Enums\Tickets\TicketType.cs" />
     <Compile Include="Classes\Enums\Widgets\MoneyPadMode.cs" />
+    <Compile Include="Classes\Logic\License\HardwareIdClientParts.cs" />
     <Compile Include="Components\KeyBoard\NumPadPin\NumberPadPinMode.cs" />
     <Compile Include="Classes\Enums\Xml\ReplaceType.cs" />
     <Compile Include="Classes\Formatters\DateFormatter.cs" />
