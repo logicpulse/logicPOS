@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -110,14 +111,23 @@ namespace LogicPOS.UI.Components.Licensing
                             .WithTitleResource("global_error")
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
                             .ShowAlert();
-                Run();
-                return;
+
+                var temp = CreateActivateLicenseCommand();
+                string jsonText = JsonConvert.SerializeObject(temp, Formatting.Indented);
+                File.WriteAllText(LicensingService.OFFLINE_ACTIVATION_FILE, jsonText);
+
+                Destroy();
+
+                Environment.Exit(0);
             }
 
             var activateCommand = CreateActivateLicenseCommand();
+            
+            
             var activateResult = LicensingService.ActivateLicense(activateCommand);
 
-            if (activateResult == null || activateResult.Value.Success == false) {
+            if (activateResult == null || activateResult.Value.Success == false)
+            {
 
                 CustomAlerts.Error(this)
                        .WithMessage("Erro ao activar licença. Tenta novamente")
@@ -138,6 +148,8 @@ namespace LogicPOS.UI.Components.Licensing
             Environment.Exit(0);
         }
 
+
+
         private ActivateLicenseCommand CreateActivateLicenseCommand()
         {
             ActivateLicenseCommand activateLicenseCommand = new ActivateLicenseCommand();
@@ -147,7 +159,7 @@ namespace LogicPOS.UI.Components.Licensing
             activateLicenseCommand.Address = EntryBoxAddress.EntryValidation.Text;
             activateLicenseCommand.Email = EntryBoxEmail.EntryValidation.Text;
             activateLicenseCommand.Phone = EntryBoxPhone.EntryValidation.Text;
-            activateLicenseCommand.HardwareId = _entryBoxHardwareId.EntryValidation.Text;
+            activateLicenseCommand.HardwareId = LicensingService.Data.ApiHardwareId;
             activateLicenseCommand.AssemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             activateLicenseCommand.IdCountry = Countries.IndexOf(ComboBoxCountry.Value) + 1;
             activateLicenseCommand.SoftwareKey = _entryBoxSoftwareKey.EntryValidation.Text;

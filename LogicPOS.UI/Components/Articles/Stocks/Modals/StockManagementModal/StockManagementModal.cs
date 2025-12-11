@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
                 _modalSize=new Size(1200, 700);
             }
 
-            if (LicensingService.Data.LicenceModuleStocks == false && false)
+            if (LicensingService.Data.LicenceModuleStocks == false)
             {
                 var messageDialog = new CustomAlert(BackOfficeWindow.Instance)
                     .WithMessageType(MessageType.Warning)

@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Application.Licensing
         public string LicenceEmail { get; set; }
         public string LicenceTelephone { get; set; }
         public bool LicenceModuleStocks { get; set; }
+        public int NumberDevices { get; set; }
         public int LicenceCountry { get; set; }
         public bool LicenceRegistered { get; set; }
         public string LicenceReseller { get; set; }
@@ -25,5 +26,6 @@ namespace LogicPOS.UI.Application.Licensing
         public bool AppUseBackOfficeMode { get; set; }
         public bool IsBlocked => LicenceVersion == "LOGICPOS_BLOCK";
         public bool IsUnlicensed => LicenceVersion == "LOGICPOS_UNLICENSED";
+
     }
 }

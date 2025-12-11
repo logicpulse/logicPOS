@@ -3,11 +3,8 @@ using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Application.Utils;
 using LogicPOS.UI.Components.Licensing;
-using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
 using Serilog;
 using System;
@@ -125,21 +122,26 @@ namespace LogicPOS.UI
         {
             if (LicensingService.Initialize() == false)
             {
-                //return;
-            }
-
-            var intializeTerminalResult = TerminalService.InitializeTerminal();
-
-            if (intializeTerminalResult.IsError)
-            {
-                ErrorHandlingService.HandleApiError(intializeTerminalResult, true);
                 return;
             }
 
             if (LicensingService.Data.LicenceRegistered == false)
             {
-                //RegisterModal.ShowModal();
-                //return;
+                if (LicensingService.ConnectToWs())
+                {
+                    var result = LicensingService.ActivateFromFile();
+                    if (result == false)
+                    {
+                        RegisterModal.ShowModal();
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(LicensingService.OFFLINE_ACTIVATION_FILE))
+                    {
+                        RegisterModal.ShowModal();
+                    }
+                }
             }
 
             LogicPOSApp app = new LogicPOSApp();

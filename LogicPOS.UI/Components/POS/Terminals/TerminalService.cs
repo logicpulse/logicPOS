@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Terminals
 {
     public static class TerminalService
     {
+        private const string TERMINAL_HARDWAREID_FILE = "terminal.id";
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public static Terminal Terminal { get; private set; }
         public static List<Terminal> _terminals;
@@ -38,9 +39,29 @@ namespace LogicPOS.UI.Components.Terminals
             return _mediator.Send(command).Result;
         }
 
+        private static bool HardwareIdFileExists()
+        {
+            return System.IO.File.Exists(TERMINAL_HARDWAREID_FILE);
+        }
+
+        private static string GetHardwareIdFromFile()
+        {
+            return System.IO.File.ReadAllText(TERMINAL_HARDWAREID_FILE);
+        }
+
+        private static void CreateHardwareIdFile(string hardwareId)
+        {
+            System.IO.File.WriteAllText(TERMINAL_HARDWAREID_FILE, hardwareId);
+        }
+
         public static ErrorOr<Terminal> InitializeTerminal()
         {
-            var hardwareId = LicensingService.Data.TerminalHardwareId;
+            if (!HardwareIdFileExists())
+            {
+                CreateHardwareIdFile(Guid.NewGuid().ToString().ToUpper());
+            }
+
+            var hardwareId = GetHardwareIdFromFile();
 
             if (string.IsNullOrWhiteSpace(hardwareId))
             {
@@ -54,9 +75,9 @@ namespace LogicPOS.UI.Components.Terminals
                 return getTerminalResult.Errors;
             }
 
-            var terminal = getTerminalResult.Value;
+            Terminal = getTerminalResult.Value;
 
-            if (terminal == null)
+            if (Terminal == null && LicensingService.Data.NumberDevices >= Terminals.Count())
             {
                 var createTerminalResult = CreateTerminal(hardwareId);
 
@@ -72,10 +93,9 @@ namespace LogicPOS.UI.Components.Terminals
                     return getCreatedTerminal.FirstError;
                 }
 
-                terminal = getCreatedTerminal.Value;
+                Terminal = getCreatedTerminal.Value;
             }
 
-            Terminal = terminal;
             return Terminal;
         }
         public static List<Terminal> GetAllTerminals()

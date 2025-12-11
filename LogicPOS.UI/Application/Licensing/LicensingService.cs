@@ -13,25 +13,27 @@ using LogicPOS.Api.Features.System.Licensing.NeedToRegister;
 using LogicPOS.Api.Features.System.Licensing.UpdateCurrentVersion;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Licensing;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
-using MediatR;
-using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
-using System.Windows;
 
 namespace LogicPOS.UI.Components.Licensing
 {
     public static class LicensingService
     {
+        public static string OFFLINE_ACTIVATION_FILE => "OfflineActivation.json";
+
         public static LicenseData Data { get; private set; } = new LicenseData();
-        
+
         public static List<string> GetCountries()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicensingCountriesQuery()).Result;
@@ -115,6 +117,25 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value.NeedToRegister;
         }
 
+        public static bool ActivateFromFile()
+        {
+            if (!File.Exists(LicensingService.OFFLINE_ACTIVATION_FILE))
+            {
+                return false;
+            }
+            var jsonText = File.ReadAllText(OFFLINE_ACTIVATION_FILE);
+            var activationCommand = JsonConvert.DeserializeObject<ActivateLicenseCommand>(jsonText);
+
+            var result = DependencyInjection.Mediator.Send(activationCommand).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+            File.Delete(OFFLINE_ACTIVATION_FILE);
+            return true;
+        }
+
         public static byte[] GetLicense(string hardwareId, string version)
         {
             var result = DependencyInjection.Mediator.Send(new GetLicenseQuery() { HardwareId = hardwareId, Version = version }).Result;
@@ -139,7 +160,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             return result.Value.Result;
         }
-        
+
         public static Dictionary<string, string> GetLicenseInformation()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicenseInformationQuery()).Result;
@@ -150,7 +171,7 @@ namespace LogicPOS.UI.Components.Licensing
             }
             return result.Value.LicenseInformation;
         }
-        
+
         public static string GetLicenseFilename()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicenseFilenameQuery()).Result;
@@ -164,7 +185,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             return result.Value.Filename;
         }
-        
+
         public static bool ConnectToWs()
         {
             var result = DependencyInjection.Mediator.Send(new ConnectToWsQuery()).Result;
@@ -178,7 +199,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             return result.Value.Connected;
         }
-        
+
         public static bool AddMessage(AddMessageCommand command)
         {
             var result = DependencyInjection.Mediator.Send(command).Result;
@@ -272,6 +293,9 @@ namespace LogicPOS.UI.Components.Licensing
                     case "all_UpdateExpirationDate":
                         Data.LicenceUpdateDate = Convert.ToDateTime(value);
                         break;
+                    case "all_NumberDevices":
+                        Data.NumberDevices = Convert.ToInt16(value);
+                        break;
                     default:
                         break;
                 }
@@ -283,7 +307,7 @@ namespace LogicPOS.UI.Components.Licensing
             string result = string.Empty;
             try
             {
-                result = GetHashString(GetMacAddress());
+                result = TerminalService.InitializeTerminal().Value.HardwareId;// GetHashString(GetMacAddress());
             }
             catch (Exception ex)
             {
@@ -334,22 +358,12 @@ namespace LogicPOS.UI.Components.Licensing
                 Data.TerminalHardwareId = GetTerminalHardwareID();
                 Data.LicenceRegistered = IsLicensed();
 
-                //if (Data.IsBlocked)
-                //{
-                //    CustomAlerts.Error()
-                //        .WithTitle("Erro de Licença")
-                //        .WithMessage("A licença foi bloqueada. Contacte o suporte técnico.")
-                //        .ShowAlert();
-
-                //    return false;
-                //}
-
                 return true;
             }
             catch (Exception ex)
             {
                 Log.Error("Error initializing licensing service: " + ex.Message, ex);
-                
+
                 CustomAlerts.Error()
                         .WithTitle("Erro de Licença")
                         .WithMessage("Não foi possível inicializar a licença. Contacte o suporte técnico.")
