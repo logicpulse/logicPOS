@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.Terminals
 
             Terminal = getTerminalResult.Value;
 
-            if (Terminal == null)
+            if (Terminal == null && LicensingService.Data.LicenceRegistered)
             {
                 if (LicensingService.Data.NumberDevices >= Terminals.Count())
                 {
@@ -97,6 +97,25 @@ namespace LogicPOS.UI.Components.Terminals
                     return Error.Conflict(description: "Limite de Terminais/dispositivos atingido.\n\n" +
                                                        "Entre em contacto com o Suporte Técnico");
                 }
+            }
+
+            if (Terminal == null)
+            {
+                var createTerminalResult = CreateTerminal(hardwareId);
+
+                if (createTerminalResult.IsError)
+                {
+                    return createTerminalResult.Errors;
+                }
+
+                var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
+
+                if (getCreatedTerminal.IsError)
+                {
+                    return getCreatedTerminal.FirstError;
+                }
+
+                Terminal = getCreatedTerminal.Value;
             }
 
             return Terminal;

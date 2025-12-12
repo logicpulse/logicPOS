@@ -117,7 +117,7 @@ namespace LogicPOS.UI.Components.Licensing
                 File.WriteAllText(LicensingService.OFFLINE_ACTIVATION_FILE, jsonText);
 
                 Destroy();
-
+                Environment.Exit(0);
             }
 
             var activateCommand = CreateActivateLicenseCommand();
