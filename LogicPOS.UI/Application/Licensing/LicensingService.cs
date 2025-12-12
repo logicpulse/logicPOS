@@ -119,7 +119,7 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static bool ActivateFromFile()
         {
-            if (!File.Exists(LicensingService.OFFLINE_ACTIVATION_FILE))
+            if (!File.Exists(OFFLINE_ACTIVATION_FILE))
             {
                 return false;
             }
@@ -307,7 +307,7 @@ namespace LogicPOS.UI.Components.Licensing
             string result = string.Empty;
             try
             {
-                result = TerminalService.InitializeTerminal().Value.HardwareId;// GetHashString(GetMacAddress());
+                result = TerminalService.GetTerminalHardwareId();
             }
             catch (Exception ex)
             {

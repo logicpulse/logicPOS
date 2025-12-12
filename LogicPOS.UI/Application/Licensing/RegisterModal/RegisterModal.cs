@@ -118,7 +118,6 @@ namespace LogicPOS.UI.Components.Licensing
 
                 Destroy();
 
-                Environment.Exit(0);
             }
 
             var activateCommand = CreateActivateLicenseCommand();

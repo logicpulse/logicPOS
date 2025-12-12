@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Terminals
             return _mediator.Send(command).Result;
         }
 
-        private static bool HardwareIdFileExists()
+        public static bool HardwareIdFileExists()
         {
             return System.IO.File.Exists(TERMINAL_HARDWAREID_FILE);
         }
@@ -56,12 +56,7 @@ namespace LogicPOS.UI.Components.Terminals
 
         public static ErrorOr<Terminal> InitializeTerminal()
         {
-            if (!HardwareIdFileExists())
-            {
-                CreateHardwareIdFile(Guid.NewGuid().ToString().ToUpper());
-            }
-
-            var hardwareId = GetHardwareIdFromFile();
+            string hardwareId = GetTerminalHardwareId();
 
             if (string.IsNullOrWhiteSpace(hardwareId))
             {
@@ -77,27 +72,47 @@ namespace LogicPOS.UI.Components.Terminals
 
             Terminal = getTerminalResult.Value;
 
-            if (Terminal == null && LicensingService.Data.NumberDevices >= Terminals.Count())
+            if (Terminal == null)
             {
-                var createTerminalResult = CreateTerminal(hardwareId);
-
-                if (createTerminalResult.IsError)
+                if (LicensingService.Data.NumberDevices >= Terminals.Count())
                 {
-                    return createTerminalResult.Errors;
+                    var createTerminalResult = CreateTerminal(hardwareId);
+
+                    if (createTerminalResult.IsError)
+                    {
+                        return createTerminalResult.Errors;
+                    }
+
+                    var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
+
+                    if (getCreatedTerminal.IsError)
+                    {
+                        return getCreatedTerminal.FirstError;
+                    }
+
+                    Terminal = getCreatedTerminal.Value;
                 }
-
-                var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
-
-                if (getCreatedTerminal.IsError)
+                else
                 {
-                    return getCreatedTerminal.FirstError;
+                    return Error.Conflict(description: "Limite de Terminais/dispositivos atingido.\n\n" +
+                                                       "Entre em contacto com o Suporte Técnico");
                 }
-
-                Terminal = getCreatedTerminal.Value;
             }
 
             return Terminal;
         }
+
+        public static string GetTerminalHardwareId()
+        {
+            if (!HardwareIdFileExists())
+            {
+                CreateHardwareIdFile(Guid.NewGuid().ToString().ToUpper());
+            }
+
+            var hardwareId = GetHardwareIdFromFile();
+            return hardwareId;
+        }
+
         public static List<Terminal> GetAllTerminals()
         {
             var terminals = _mediator.Send(new GetAllTerminalsQuery()).Result;

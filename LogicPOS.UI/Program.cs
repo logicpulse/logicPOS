@@ -5,6 +5,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Utils;
 using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Services;
 using Serilog;
 using System;
@@ -122,6 +123,16 @@ namespace LogicPOS.UI
         {
             if (LicensingService.Initialize() == false)
             {
+                return;
+            }
+
+            var terminalResult = TerminalService.InitializeTerminal();
+            if(terminalResult.IsError)
+            {
+                SimpleAlerts.Error()
+                            .WithTitle("Erro ao inicializar terminal")
+                            .WithMessage(string.Join(Environment.NewLine, terminalResult.FirstError.Description))
+                            .ShowAlert();
                 return;
             }
 
