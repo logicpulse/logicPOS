@@ -53,7 +53,7 @@ namespace LogicPOS.UI
             {
                 Log.Information("First launch detected, starting migrator...");
                 MigratorUtility.LaunchMigrator();
-                DisableFirstLaunch();
+                
             }
 
             using (var singleProgramInstance = new SingleProgramInstance())
@@ -92,19 +92,7 @@ namespace LogicPOS.UI
 
         private static bool IsFirstLaunch()
         {
-            return File.Exists("_booted.pos") == false;
-        }
-
-        private static void DisableFirstLaunch()
-        {
-            try
-            {
-                File.CreateText("_booted.pos").Close();
-            }
-            catch (Exception ex)
-            {
-                Log.Error("Error disabling first launch: " + ex.Message, ex);
-            }
+            return File.Exists("terminal.id") == false;
         }
 
         private static void Quit()

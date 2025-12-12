@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Pages
     internal partial class DashBoardPage : Box
     {
         private readonly Window _parentWindow;
-
+        private decimal YearTotal;
         public DashBoardPage(Window parentWindow)
         {
             _parentWindow = parentWindow;

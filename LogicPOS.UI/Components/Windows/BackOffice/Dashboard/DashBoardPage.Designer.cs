@@ -40,11 +40,17 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        private void ShowTotals()
+        private void ShowTotals(decimal? yearTotal=null)
         {
-           var dayTotalSales = DashboardDataService.GetTotalSalesForDay(DateTime.Now);
-
-            LabelTotals.Text = $"{dayTotalSales.DayTotal:F2}\n\n{dayTotalSales.MonthTotal:F2}\n\n{dayTotalSales.YearTotal:F2} ";
+            var dayTotalSales = DashboardDataService.GetTotalSalesForDay(DateTime.Now);
+            if (yearTotal == null)
+            {
+                LabelTotals.Text = $"{dayTotalSales.DayTotal:F2}\n\n{dayTotalSales.MonthTotal:F2}\n\n{dayTotalSales.YearTotal:F2} ";
+            }
+            else
+            {
+                LabelTotals.Text = $"{dayTotalSales.DayTotal:F2}\n\n{dayTotalSales.MonthTotal:F2}\n\n{yearTotal:F2} ";
+            }
         }
 
 

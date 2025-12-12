@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
 using LogicPOS.UI.Services;
 using MediatR;
 using System;
@@ -200,7 +201,15 @@ namespace LogicPOS.UI.Components.Pages
         private void ComboSalesYear_Changed(object sender, EventArgs e)
         {
             DrawGraph(int.Parse(ComboSalesYear.ActiveText));
+
+            ShowTotals(GetYearTotal());
         }
 
+        private decimal GetYearTotal()
+        {
+            var date = new DateTime(int.Parse(ComboSalesYear.ActiveText), 12, 31);
+            var dayTotalSales = DashboardDataService.GetTotalSalesForDay(date);
+            return dayTotalSales.YearTotal;
+        }
     }
 }
