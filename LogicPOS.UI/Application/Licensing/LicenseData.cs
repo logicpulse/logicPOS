@@ -27,5 +27,6 @@ namespace LogicPOS.UI.Application.Licensing
         public bool IsBlocked => LicenceVersion == "LOGICPOS_BLOCK";
         public bool IsUnlicensed => LicenceVersion == "LOGICPOS_UNLICENSED";
 
+        public bool ModuleAgtFe { get; set; }
     }
 }

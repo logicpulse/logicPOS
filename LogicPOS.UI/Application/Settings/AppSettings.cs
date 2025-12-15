@@ -36,10 +36,7 @@ namespace LogicPOS.UI.Settings
         public bool AppThemeCalcDynamicSize { get; set; }
         public string AppOperationModeToken { get; set; }
         public string CustomCultureResourceDefinition { get; set; }
-
         public int? InactivityTimeout { get; set;  }
-        public bool UseAgtFe { get; set; }
-
         public bool UseImageOverlay { get; set; }
         public bool AppShowMinimize { get; set; }
         public bool SendDocumentsATinRealTime { get; set; }

@@ -290,6 +290,10 @@ namespace LogicPOS.UI.Components.Licensing
                     case "logicpos_Module_Stocks":
                         Data.LicenceModuleStocks = Convert.ToBoolean(value);
                         break;
+
+                    case "logicpos_Module_Fe":
+                        Data.ModuleAgtFe = Convert.ToBoolean(value);
+                        break;
                     case "all_UpdateExpirationDate":
                         Data.LicenceUpdateDate = Convert.ToDateTime(value);
                         break;

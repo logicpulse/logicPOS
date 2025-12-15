@@ -31,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
 
             ActionAreaButtons actionAreaButtons = new ActionAreaButtons();
 
-            if (SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe)
             {
                 actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAgt, ResponseType.Ok));
                 actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));

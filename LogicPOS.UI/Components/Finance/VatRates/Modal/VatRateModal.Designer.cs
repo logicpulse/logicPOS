@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class VatRateModal
     {
-        public override Size ModalSize => new Size(500, 550);
+        public override Size ModalSize => new Size(500, 570);
         public override string ModalTitleResourceName => "dialog_edit_configurationvatrate_tab1_label";
 
         protected override void AddSensitiveFields()
