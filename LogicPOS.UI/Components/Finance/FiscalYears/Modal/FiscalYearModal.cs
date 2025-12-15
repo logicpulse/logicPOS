@@ -1,9 +1,11 @@
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.FiscalYears.AddFiscalYear;
+using LogicPOS.Api.Features.Finance.FiscalYears.CreateFiscalYear;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.DocumentSeries;
 using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -32,9 +34,9 @@ namespace LogicPOS.UI.Components.Modals
             _txtAcronym.Text = $"{currentYear}A1";
         }
 
-        private AddFiscalYearCommand CreateAddCommand()
+        private CreateFiscalYearCommand CreateAddCommand()
         {
-            return new AddFiscalYearCommand
+            return new CreateFiscalYearCommand
             {
                 Designation = _txtDesignation.Text,
                 Year = DateTime.Now.Year,
@@ -57,6 +59,25 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override bool AddEntity()
         {
+            if (FiscalYearsService.HasActiveFiscalYear())
+            {
+                ResponseType dialog1Response = CustomAlerts.Question(BackOfficeWindow.Instance)
+                                                           .WithSize(new Size(600, 400))
+                                                           .WithTitle(LocalizedString.Instance["window_title_series_fiscal_year_close_current"])
+                                                           .WithMessage(string.Format(LocalizedString.Instance["dialog_message_series_fiscal_year_close_current"], FiscalYearsService.CurrentFiscalYear.Designation))
+                                                           .ShowAlert();
+
+                if (dialog1Response != ResponseType.Yes)
+                {
+                    return false;
+                }
+
+                if (FiscalYearsService.CloseCurrentFiscalYear() == false)
+                {
+                    return false;
+                }
+            }
+
             var result = _mediator.Send(CreateAddCommand()).Result;
 
             if (result.IsError)
@@ -65,9 +86,8 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if(SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && AppSettings.Instance.UseAgtFe)
             {
-                //Don't create document type series automatically in Angola with AGT FE
                 return true;
             }
 

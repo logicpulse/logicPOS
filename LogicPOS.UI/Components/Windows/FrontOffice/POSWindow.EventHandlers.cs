@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
@@ -158,7 +158,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnCashDrawer_Clicked(object sender, EventArgs e)
         {
-            if (FiscalYearsService.HasFiscalYear() == false)
+            if (FiscalYearsService.HasActiveFiscalYear() == false)
             {
                 FiscalYearsService.ShowOpenFiscalYearAlert();
                 return;

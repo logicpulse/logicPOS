@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Errors;
 using MediatR;
 using System;
@@ -57,6 +57,21 @@ namespace LogicPOS.Api.Features.Common.Requests
             {
                 var response = await _httpClient.PostAsJsonAsync(endpoint, command, cancellationToken);
                 return await HandlePostHttpResponseAsync<T>(response);
+            }
+            catch (HttpRequestException)
+            {
+                return ApiErrors.APICommunication;
+            }
+        }
+
+        protected async Task<ErrorOr<T>> HandleUpdateCommandAsync<T>(string endpoint,
+                                                                     TRequest command,
+                                                                     CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync(endpoint, command, cancellationToken);
+                return await HandlePutHttpResponseAsync<T>(response);
             }
             catch (HttpRequestException)
             {

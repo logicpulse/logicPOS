@@ -27,13 +27,13 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        private UpdateDocumentSerieCommand CreateUpdateCommand()
+        private UpdateDocumentSeriesCommand CreateUpdateCommand()
         {
-            return new UpdateDocumentSerieCommand
+            return new UpdateDocumentSeriesCommand
             {
                 Id = _entity.Id,
-                NewDesignation = _txtDesignation.Text,
-                NewNotes = _txtNotes.Value.Text
+                Designation = _txtDesignation.Text,
+                AtValidationCode = _txtATDocCodeValidationSerie.Text
             };
         }
 
@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtNumberRangeBegin.Text = _entity.NumberRangeBegin.ToString();
             _txtNumberRangeEnd.Text = _entity.NumberRangeEnd.ToString();
             _txtAcronym.Text = _entity.Acronym;
-            _txtATDocCodeValidationSerie.Text = _entity.ATDocCodeValidationSerie;
+            _txtATDocCodeValidationSerie.Text = _entity.ATDocCodeValidationSeries;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }

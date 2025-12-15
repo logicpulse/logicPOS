@@ -1,12 +1,12 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LogicPOS.Api.Features.FiscalYears.AddFiscalYear
+namespace LogicPOS.Api.Features.Finance.FiscalYears.CreateFiscalYear
 {
-    public class AddFiscalYearCommand : IRequest<ErrorOr<Guid>>
+    public class CreateFiscalYearCommand : IRequest<ErrorOr<Guid>>
     {
         public string Designation {  get; set; }
         public int Year { get; set; }

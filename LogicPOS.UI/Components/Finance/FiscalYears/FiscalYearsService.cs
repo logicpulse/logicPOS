@@ -1,9 +1,11 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.FiscalYears.CloseFiscalYear;
 using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.FiscalYears
@@ -36,6 +38,26 @@ namespace LogicPOS.UI.Components.FiscalYears
             return getFiscalYear.Value;
         }
 
+        public static bool CloseCurrentFiscalYear()
+        {
+            if (HasActiveFiscalYear() == false)
+            {
+                return false;
+            }
+
+            var result = DependencyInjection.Mediator.Send(new CloseFiscalYearCommand(CurrentFiscalYear.Id)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            _currentFiscalYear = null;
+
+            return true;
+        }
+       
         public static void ShowOpenFiscalYearAlert()
         {
             CustomAlerts.Warning(POSWindow.Instance)
@@ -45,7 +67,7 @@ namespace LogicPOS.UI.Components.FiscalYears
                        .ShowAlert();
         }
 
-        public static bool HasFiscalYear() => CurrentFiscalYear != null;
+        public static bool HasActiveFiscalYear() => CurrentFiscalYear != null;
     }
 
 }

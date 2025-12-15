@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System.Net.Http;
@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie
 {
-    public class UpdateDocumentSerieCommandHandler :
-        RequestHandler<UpdateDocumentSerieCommand, ErrorOr<Success>>
+    public class UpdateDocumentSeriesCommandHandler :
+        RequestHandler<UpdateDocumentSeriesCommand, ErrorOr<Success>>
     {
-        public UpdateDocumentSerieCommandHandler(IHttpClientFactory factory) : base(factory)
+        public UpdateDocumentSeriesCommandHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public override async Task<ErrorOr<Success>> Handle(UpdateDocumentSerieCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Success>> Handle(UpdateDocumentSeriesCommand command, CancellationToken cancellationToken = default)
         {
             return await HandleUpdateCommandAsync($"documents/series/{command.Id}", command, cancellationToken);
         }

@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Users;
@@ -57,7 +57,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateUI()
         {
-            bool hasFiscalYear = FiscalYearsService.HasFiscalYear();
+            bool hasFiscalYear = FiscalYearsService.HasActiveFiscalYear();
             var selectedDocument = Page.SelectedEntity;
             bool documentIsSelected = selectedDocument != null;
 

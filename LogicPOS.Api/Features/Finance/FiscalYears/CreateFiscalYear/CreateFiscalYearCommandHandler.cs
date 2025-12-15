@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Finance.Documents.Types;
@@ -7,18 +7,18 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.FiscalYears.AddFiscalYear
+namespace LogicPOS.Api.Features.Finance.FiscalYears.CreateFiscalYear
 {
-    public class AddFiscalYearCommandHandler : RequestHandler<AddFiscalYearCommand, ErrorOr<Guid>>
+    public class CreateFiscalYearCommandHandler : RequestHandler<CreateFiscalYearCommand, ErrorOr<Guid>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
 
-        public AddFiscalYearCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
+        public CreateFiscalYearCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Guid>> Handle(AddFiscalYearCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<Guid>> Handle(CreateFiscalYearCommand command, CancellationToken cancellationToken = default)
         {
             var result = await HandleAddCommandAsync("fiscal-years", command, cancellationToken);
 

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
@@ -123,7 +123,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public static ResponseType ShowModal(Window parent, DocumentViewModel draft = null)
         {
-            if (FiscalYearsService.HasFiscalYear() == false)
+            if (FiscalYearsService.HasActiveFiscalYear() == false)
             {
                 FiscalYearsService.ShowOpenFiscalYearAlert();
                 return ResponseType.Cancel;

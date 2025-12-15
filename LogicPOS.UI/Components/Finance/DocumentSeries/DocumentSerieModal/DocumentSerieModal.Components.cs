@@ -1,9 +1,9 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
-using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -18,7 +18,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtATDocCodeValidationSerie = TextBox.Simple("global_at_atdoccodeid");
         private EntityComboBox<FiscalYear> _comboFiscalYears;
         private EntityComboBox<DocumentType> _comboDocumentTypes;
-
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
+        private CheckButton _checkDisabled = new CheckButton(LocalizedString.Instance["global_record_disabled"]);
     }
 }

@@ -27,11 +27,26 @@ namespace LogicPOS.Api.Features.Common.Requests
             }
         }
 
+        protected async Task<ErrorOr<T>> HandlePutHttpResponseAsync<T>(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>();
+                    return response;
+                case HttpStatusCode.NoContent:
+                    return default(T);
+                default:
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
+            }
+        }
+
         private async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
             return Error.Unexpected(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
+
 
         private async Task<ErrorOr<Success>> HandleNoContentHttpResponseAsync(HttpResponseMessage httpResponse)
         {

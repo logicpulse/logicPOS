@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -31,25 +31,6 @@ namespace LogicPOS.UI.Components.Pages
             if (mode == EntityEditionModalMode.Update)
             {
                 mode = EntityEditionModalMode.View;
-            }
-
-            if (mode == EntityEditionModalMode.Insert)
-            {
-                var currentFiscalYear = _entities.FirstOrDefault(f => f.IsDeleted == false);
-
-                if (currentFiscalYear != null)
-                {
-                    ResponseType dialog1Response = CustomAlerts.Question(BackOfficeWindow.Instance)
-                                                               .WithSize(new Size(600, 400))
-                                                               .WithTitle(LocalizedString.Instance["window_title_series_fiscal_year_close_current"])
-                                                               .WithMessage(string.Format(LocalizedString.Instance["dialog_message_series_fiscal_year_close_current"], currentFiscalYear.Designation))
-                                                               .ShowAlert();
-
-                    if (dialog1Response == ResponseType.No)
-                    {
-                        return (int)ResponseType.No;
-                    }
-                }
             }
 
             var modal = new FiscalYearModal(modalMode: mode,
