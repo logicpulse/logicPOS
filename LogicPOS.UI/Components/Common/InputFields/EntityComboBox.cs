@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -91,6 +91,11 @@ namespace LogicPOS.UI.Components.InputFields
 
             foreach (var entity in Entities)
             {
+                if (entity == null)
+                {
+                    continue;
+                }
+
                 var iterator = _listStore.AppendValues(entity.Designation, entity);
 
                 if (SelectedEntity != null && entity.Id == SelectedEntity.Id)

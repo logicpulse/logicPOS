@@ -10,8 +10,8 @@ namespace LogicPOS.UI.Components.Modals
             var selectedFiscalYear = _comboFiscalYears.SelectedEntity;
             var selectedDocType = _comboDocumentTypes.SelectedEntity;
 
-            _txtDesignation.Text = $"{selectedDocType?.Designation} {selectedDocType?.Acronym} {selectedFiscalYear.Acronym}";
-            _txtAcronym.Text = $"{selectedDocType?.Acronym} {selectedFiscalYear.Acronym}";
+            _txtDesignation.Text = $"{selectedDocType?.Designation} {selectedDocType?.Acronym} {selectedFiscalYear?.Acronym}";
+            _txtAcronym.Text = $"{selectedDocType?.Acronym} {selectedFiscalYear?.Acronym}";
         }
 
         private void BtnATSeriesComunicate_Clicked(object sender, System.EventArgs e)

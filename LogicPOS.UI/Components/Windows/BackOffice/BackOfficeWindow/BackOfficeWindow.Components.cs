@@ -222,7 +222,7 @@ namespace LogicPOS.UI.Components.Windows
 
             BtnFiscalSection.Button.Clicked += delegate { ShowPanel(PanelFiscal); };
             BtnFiscalYears.Button.Clicked += delegate { ShowPage(FiscalYearsPage.Instance, LocalizedString.Instance["global_documentfinance_years"]); };
-            BtnDocumentSeries.Button.Clicked += delegate { ShowPage(DocumentSeriesPage.Instance, LocalizedString.Instance["global_documentfinance_series"]); };
+            BtnDocumentSeries.Button.Clicked += BtnDocumentSeries_Clicked;
             BtnDocumentTypes.Button.Clicked += delegate { ShowPage(DocumentTypesPage.Instance, LocalizedString.Instance["global_documentfinance_type"]); };
             BtnVatRates.Button.Clicked += delegate { ShowPage(VatRatesPage.Instance, LocalizedString.Instance["global_vat_rates"]); };
             BtnVatExemptionReasons.Button.Clicked += delegate { ShowPage(VatExemptionReasonsPage.Instance, LocalizedString.Instance["global_vat_exemption_reason"]); };

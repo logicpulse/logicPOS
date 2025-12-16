@@ -3,11 +3,13 @@ using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Features.Database;
 using LogicPOS.Api.Features.Finance.Saft.GetSaft;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
@@ -222,6 +224,17 @@ namespace LogicPOS.UI.Components.Windows
         }
 
         #endregion
+
+        private void BtnDocumentSeries_Clicked(object sender, System.EventArgs e)
+        {
+            if(FiscalYearsService.HasActiveFiscalYear() == false)
+            {
+                FiscalYearsService.ShowOpenFiscalYearAlert();
+                return;
+            }
+
+            ShowPage(DocumentSeriesPage.Instance, LocalizedString.Instance["global_documentfinance_series"]);
+        }
 
         private void OpenExcelFile(string filePath)
         {

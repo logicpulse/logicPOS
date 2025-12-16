@@ -3,6 +3,7 @@ using LogicPOS.Api.Errors;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
@@ -19,7 +20,14 @@ namespace LogicPOS.Api.Features.Common.Requests
                                                                                              CancellationToken cancellationToken = default,
                                                                                              MemoryCacheEntryOptions cacheOptions = null)
         {
-            return await HandleGetQueryAsync<IEnumerable<TEntity>>(endpoint, cancellationToken, cacheOptions);
+            var result = await HandleGetQueryAsync<IEnumerable<TEntity>>(endpoint, cancellationToken, cacheOptions);
+            
+            if(result.IsError == false && result.Value == null)
+            {
+                return Enumerable.Empty<TEntity>().ToList();
+            }
+
+            return result;
         }
 
         protected async Task<ErrorOr<TEntity>> HandleGetQueryAsync<TEntity>(string endpoint,
@@ -37,7 +45,7 @@ namespace LogicPOS.Api.Features.Common.Requests
             {
                 var response = await _httpClient.GetAsync(endpoint, cancellationToken);
 
-                if (response.StatusCode == HttpStatusCode.NotFound)
+                if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.NoContent)
                 {
                     return default(TEntity);
                 }

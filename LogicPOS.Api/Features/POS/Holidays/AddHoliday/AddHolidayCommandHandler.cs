@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common.Requests;
 using System;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Holidays.AddHoliday
             AddHolidayCommand command,
             CancellationToken cancellationToken = default)
         {
-          return await HandleAddCommandAsync("holidays", command, cancellationToken);
+            return await HandleAddCommandAsync("holidays", command, cancellationToken);
         }
     }
 }
