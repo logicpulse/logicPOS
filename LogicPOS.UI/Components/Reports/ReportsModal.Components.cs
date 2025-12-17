@@ -64,6 +64,7 @@ namespace LogicPOS.UI.Components.Modals
         private VBox PanelAuxiliaryTablesReports = new VBox(false, 2);
         private XAccordionChildButton BtnArticlesReports = new XAccordionChildButton(LocalizedString.Instance["report_list_family_subfamily_articles"]);
         private XAccordionChildButton BtnCustomersReports = new XAccordionChildButton(LocalizedString.Instance["report_list_customers"]);
+        private XAccordionChildButton BtnSuppliersReports = new XAccordionChildButton("Fornecedores");
         #endregion
 
         #region Other Tables Reports

@@ -70,10 +70,9 @@ namespace LogicPOS.UI.Components.Modals
             BtnArticleTotalSoldReport.Button.Clicked += BtnArticleTotalSoldReport_Clicked;
             BtnDeletedOrdersReport.Button.Clicked += BtnDeletedOrdersReport_Clicked;
             BtnAuditReport.Button.Clicked += BtnAuditReport_Clicked;
-            
+            BtnSuppliersReports.Button.Clicked += BtnSuppliersReport_Clicked;
+
         }
-
-
 
         public static void ShowModal(Window parent)
         {

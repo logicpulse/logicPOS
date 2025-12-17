@@ -61,6 +61,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 PanelAuxiliaryTablesReports.PackStart(BtnArticlesReports.Button, false, false, 0);
                 PanelAuxiliaryTablesReports.PackStart(BtnCustomersReports.Button, false, false, 0);
+                PanelAuxiliaryTablesReports.PackStart(BtnSuppliersReports.Button, false, false, 0);
             }
             container.PackStart(PanelAuxiliaryTablesReports, false, false, 0);
             BtnAuxiliaryTablesReports.Button.Clicked += (sender, e) => ShowPanel(PanelAuxiliaryTablesReports);

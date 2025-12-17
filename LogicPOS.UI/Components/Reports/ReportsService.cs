@@ -31,6 +31,7 @@ using LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockBySupplierReportPdfReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockMovementReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockReportPdf;
+using LogicPOS.Api.Features.Reports.GetSuppliersReportPdf;
 using LogicPOS.Api.Features.Reports.POS.DeletedOrders.GetDeletedOrdersReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedReportPdf;
@@ -214,6 +215,11 @@ namespace LogicPOS.UI.Services
         public static void ShowCustomersReport()
         {
             ShowReport(new GetCustomerReportPdfQuery());
+        }
+
+        public static void ShowSuppliersReport()
+        {
+            ShowReport(new GetSuppliersReportPdfQuery());
         }
 
         public static void ShowCommissionsReport(DateTime startDate, DateTime endDate)

@@ -842,5 +842,10 @@ namespace LogicPOS.UI.Components.Modals
         {
             SystemAuditFilterModal.ShowModal(this);
         }
+
+        private void BtnSuppliersReport_Clicked(object sender, EventArgs e)
+        {
+            ReportsService.ShowSuppliersReport();
+        }
     }
 }
