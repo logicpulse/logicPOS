@@ -170,7 +170,7 @@ namespace LogicPOS.UI.Components.Licensing
         {
             RegisterModalResult result = new RegisterModalResult();
 
-            string hardwareId = TerminalService.Terminal.HardwareId;
+            string hardwareId = LicensingService.Data.ApiHardwareId;
 
             RegisterModal modal = new RegisterModal(new Window(string.Empty), DialogFlags.DestroyWithParent, hardwareId);
 
