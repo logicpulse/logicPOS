@@ -1,11 +1,10 @@
-﻿using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
+using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
 using LogicPOS.Api.Features.System.Licensing.AddMessage;
 using LogicPOS.Api.Features.System.Licensing.ConnectToWs;
 using LogicPOS.Api.Features.System.Licensing.GetCountries;
 using LogicPOS.Api.Features.System.Licensing.GetCurrentVersion;
 using LogicPOS.Api.Features.System.Licensing.GetHardwareId;
 using LogicPOS.Api.Features.System.Licensing.GetLicense;
-using LogicPOS.Api.Features.System.Licensing.GetLicenseFilename;
 using LogicPOS.Api.Features.System.Licensing.GetLicenseInformation;
 using LogicPOS.Api.Features.System.Licensing.GetVersion;
 using LogicPOS.Api.Features.System.Licensing.IsLicensed;
@@ -172,19 +171,6 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value.LicenseInformation;
         }
 
-        public static string GetLicenseFilename()
-        {
-            var result = DependencyInjection.Mediator.Send(new GetLicenseFilenameQuery()).Result;
-
-            if (result.IsError)
-            {
-
-                ErrorHandlingService.HandleApiError(result);
-                return null;
-            }
-
-            return result.Value.Filename;
-        }
 
         public static bool ConnectToWs()
         {
