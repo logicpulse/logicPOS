@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
             {
                 return true;
             }

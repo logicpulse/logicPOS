@@ -2,18 +2,14 @@
 using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Newtonsoft.Json;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Licensing
 {
@@ -158,7 +154,7 @@ namespace LogicPOS.UI.Components.Licensing
             activateLicenseCommand.Address = EntryBoxAddress.EntryValidation.Text;
             activateLicenseCommand.Email = EntryBoxEmail.EntryValidation.Text;
             activateLicenseCommand.Phone = EntryBoxPhone.EntryValidation.Text;
-            activateLicenseCommand.HardwareId = LicensingService.Data.ApiHardwareId;
+            activateLicenseCommand.HardwareId = LicensingService.Data.HardwareId;
             activateLicenseCommand.AssemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             activateLicenseCommand.IdCountry = Countries.IndexOf(ComboBoxCountry.Value) + 1;
             activateLicenseCommand.SoftwareKey = _entryBoxSoftwareKey.EntryValidation.Text;
@@ -170,7 +166,7 @@ namespace LogicPOS.UI.Components.Licensing
         {
             RegisterModalResult result = new RegisterModalResult();
 
-            string hardwareId = LicensingService.Data.ApiHardwareId;
+            string hardwareId = LicensingService.Data.HardwareId;
 
             RegisterModal modal = new RegisterModal(new Window(string.Empty), DialogFlags.DestroyWithParent, hardwareId);
 

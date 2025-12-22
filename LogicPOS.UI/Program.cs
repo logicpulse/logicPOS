@@ -124,7 +124,7 @@ namespace LogicPOS.UI
                 return;
             }
 
-            if (LicensingService.Data.LicenceRegistered == false)
+            if (LicensingService.Data.IsLicensed == false)
             {
                 if (LicensingService.ConnectToWs())
                 {

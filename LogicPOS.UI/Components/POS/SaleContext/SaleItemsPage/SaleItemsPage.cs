@@ -83,7 +83,11 @@ namespace LogicPOS.UI.Components.POS
 
             var model = (ListStore)GridViewSettings.Model;
             Ticket.Items.ForEach(entity => model.AppendValues(entity));
+            if (Ticket.Items.Any())
+            {
             SelectItem(Ticket.Items.Last());
+
+            }
             UpdateLabelTotalValue();
         }
 

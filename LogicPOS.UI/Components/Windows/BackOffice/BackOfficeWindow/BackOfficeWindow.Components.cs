@@ -357,7 +357,7 @@ namespace LogicPOS.UI.Components.Windows
             PanelButtons.PackStart(BtnExportSection.Button, false, false, 0);
             PanelButtons.PackStart(PanelExport, false, false, 0);
             {
-                bool useAngolaAgtFe = SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe;
+                bool useAngolaAgtFe = SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule;
                 
                 if (useAngolaAgtFe == false)
                 {
@@ -404,7 +404,7 @@ namespace LogicPOS.UI.Components.Windows
             AddReportsSection();
             AddArticlesSection();
             AddFiscalSection();
-            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
             {
                 AddAgtSection();
             }
@@ -432,7 +432,7 @@ namespace LogicPOS.UI.Components.Windows
             Panels.Add(PanelReports);
             Panels.Add(PanelArticles);
             Panels.Add(PanelFiscal);
-            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe)
+            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
             {
                 Panels.Add(PanelAgt);
             }

@@ -72,9 +72,9 @@ namespace LogicPOS.UI.Components.Terminals
 
             Terminal = getTerminalResult.Value;
 
-            if (Terminal == null && LicensingService.Data.LicenceRegistered)
+            if (Terminal == null && LicensingService.Data.IsValid)
             {
-                if (LicensingService.Data.NumberDevices >= Terminals.Count())
+                if (LicensingService.Data.AllNumberOfDevices >= Terminals.Count())
                 {
                     var createTerminalResult = CreateTerminal(hardwareId);
 

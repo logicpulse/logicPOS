@@ -1,9 +1,10 @@
 ﻿using ErrorOr;
 using MediatR;
+using LogicPOS.Api.Entities;
 
 namespace LogicPOS.Api.Features.System.Licensing.GetLicenseInformation
 {
-    public class GetLicenseInformationQuery : IRequest<ErrorOr<GetLicenseInformationResponse>>
+    public class GetLicenseDataQuery : IRequest<ErrorOr<GetLicenseDataResponse>>
     {
 
     }

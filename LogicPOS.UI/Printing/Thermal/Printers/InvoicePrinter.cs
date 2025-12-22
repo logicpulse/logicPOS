@@ -5,11 +5,20 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using QRCoder;
+using QrCodes;
+using QrCodes.Renderers;
+using QrCodes.Renderers.Abstractions;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
@@ -238,13 +247,16 @@ namespace LogicPOS.UI.Printing
 
             if (_data.CompanyInformations.IsPortugal && !string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
-                _printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
+                //_printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
+                _printer.Image(GetQRCode(_data.Document.Number));
                 _printer.NormalLineHeight();
                 _printer.NewLine();
             }
             else
             {
-                _printer.QrCode(_data.Document.Number, QrCodeSize.Size2);
+
+                //_printer.QrCode(_data.Document.Number, QrCodeSize.Size2);
+                _printer.Image(GetQRCode(_data.Document.Number));
                 _printer.NormalLineHeight();
                 _printer.NewLine();
             }
@@ -259,7 +271,31 @@ namespace LogicPOS.UI.Printing
             _printer.Clear();
 
         }
+        static Bitmap GetQRCode(string text)
+        {
+            var url = new PayloadGenerator.Url("");
+            var qrCode = QrCodeGenerator.Generate(plainText: new Url($"{text}").ToString(), eccLevel: ErrorCorrectionLevel.Medium);
+            var renderer = new SkiaSharpRenderer();
 
+            byte[] logo = Convert.FromBase64String(PreferenceParametersService.GetPreferenceParameterValue("TICKET_FILENAME_LOGO"));
+
+            var settings = new RendererSettings
+            {
+                PixelsPerModule = 100,
+                DrawQuietZones = true,
+                IconBytes = logo,
+                IconBackgroundColor = System.Drawing.Color.White,
+                IconSizePercent = 20,
+            };
+            SKBitmap qrBitmap = SKBitmap.Decode(renderer.RenderToBytes(qrCode, settings));
+
+            var img = SKImage.FromBitmap(qrBitmap);
+            var png = img.Encode(SKEncodedImageFormat.Jpeg, 100);
+            var bytes=png.ToArray();
+            var ms= new MemoryStream(bytes);
+            Bitmap bitmap = new Bitmap(ms);
+            return bitmap;
+        }
     }
 
     public struct InvoicePrintingData

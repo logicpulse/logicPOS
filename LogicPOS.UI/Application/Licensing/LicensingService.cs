@@ -1,24 +1,21 @@
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
 using LogicPOS.Api.Features.System.Licensing.AddMessage;
 using LogicPOS.Api.Features.System.Licensing.ConnectToWs;
 using LogicPOS.Api.Features.System.Licensing.GetCountries;
 using LogicPOS.Api.Features.System.Licensing.GetCurrentVersion;
 using LogicPOS.Api.Features.System.Licensing.GetHardwareId;
-using LogicPOS.Api.Features.System.Licensing.GetLicense;
 using LogicPOS.Api.Features.System.Licensing.GetLicenseInformation;
 using LogicPOS.Api.Features.System.Licensing.GetVersion;
 using LogicPOS.Api.Features.System.Licensing.IsLicensed;
 using LogicPOS.Api.Features.System.Licensing.NeedToRegister;
-using LogicPOS.Api.Features.System.Licensing.UpdateCurrentVersion;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using Newtonsoft.Json;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -135,40 +132,16 @@ namespace LogicPOS.UI.Components.Licensing
             return true;
         }
 
-        public static byte[] GetLicense(string hardwareId, string version)
+
+        public static LicenseData GetLicenseInformation()
         {
-            var result = DependencyInjection.Mediator.Send(new GetLicenseQuery() { HardwareId = hardwareId, Version = version }).Result;
+            var result = DependencyInjection.Mediator.Send(new GetLicenseDataQuery()).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
                 return null;
             }
-            return result.Value.LicenceData;
-        }
-
-        public static int UpdateCurrentVersion(UpdateCurrentVersionCommand command)
-        {
-            var result = DependencyInjection.Mediator.Send(command).Result;
-
-            if (result.IsError)
-            {
-
-                ErrorHandlingService.HandleApiError(result);
-                return 0;
-            }
-
-            return result.Value.Result;
-        }
-
-        public static Dictionary<string, string> GetLicenseInformation()
-        {
-            var result = DependencyInjection.Mediator.Send(new GetLicenseInformationQuery()).Result;
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return null;
-            }
-            return result.Value.LicenseInformation;
+            return result.Value.Data;
         }
 
 
@@ -201,96 +174,32 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static void LoadLicenseInformation()
         {
-            if (Data.DtLicenceKeys == null)
-            {
-                Data.DtLicenceKeys = new DataTable("keysLicence");
-                Data.DtLicenceKeys.Columns.Add("name", typeof(string));
-                Data.DtLicenceKeys.Columns.Add("value", typeof(string));
-            }
-            Data.DtLicenceKeys.Rows.Clear();
-            Data.LicenceDate = DateTime.Now.ToString("dd/MM/yyyy");
-            Data.LicenceVersion = "LOGICPOS_LICENSED";
-            Data.LicenceName = "Nome DEMO";
-            Data.LicenceCompany = "Empresa DEMO";
-            Data.LicenceNif = "NIF DEMO";
-            Data.LicenceAddress = "Morada DEMO";
-            Data.LicenceEmail = "Email DEMO";
-            Data.LicenceTelephone = "Telefone DEMO";
-            Data.LicenceReseller = "LogicPulse";
-            Data.ServerVersion = "1.0";
-            Data.LicenceCountry = 168;
-            Data.LicenceUpdateDate = DateTime.Now.AddDays(-1);
+            Data.Date = DateTime.Now;
+            Data.Version = "LOGICPOS_LICENSED";
+            Data.Name = "Nome DEMO";
+            Data.Company = "Empresa DEMO";
+            Data.Nif = "NIF DEMO";
+            Data.Address = "Morada DEMO";
+            Data.Email = "Email DEMO";
+            Data.Phone = "Telefone DEMO";
+            Data.Reseller = "LogicPulse";
+            Data.AllUpdateExpirationDate = DateTime.Now.AddDays(-1);
 #if DEBUG
-            Data.LicenceVersion = "LOGICPOS_CORPORATE";
-            Data.LicenceName = "DEBUG";
-            Data.LicenceCompany = "DEBUG";
-            Data.LicenceAddress = "DEBUG";
-            Data.LicenceEmail = "DEBUG";
-            Data.LicenceTelephone = "DEBUG";
-            Data.LicenceModuleStocks = true;
-            Data.LicenceReseller = "Logicpulse";
-            Data.LicenceCountry = 168;
+            Data.Version = "LOGICPOS_CORPORATE";
+            Data.Name = "DEBUG";
+            Data.Company = "DEBUG";
+            Data.Address = "DEBUG";
+            Data.Email = "DEBUG";
+            Data.Phone = "DEBUG";
+            Data.StocksModule = true;
+            Data.Reseller = "Logicpulse";
 #endif
 
-            var licenseInfo = GetLicenseInformation();
-            Data.ServerVersion = GetCurrentVersion();
-            Log.Debug("licence info count:" + licenseInfo.Count.ToString());
-            foreach (var kvp in licenseInfo)
-            {
-                string key = kvp.Key;
-                string value = kvp.Value;
-                Log.Debug("Licence Key:" + key + "=" + value);
-                Data.DtLicenceKeys.Rows.Add(key, value);
-                switch (key)
-                {
-                    case "hardwareID":
-                        Data.ApiHardwareId = value;
-                        break;
-                    case "version":
-                        Data.LicenceVersion = value;
-                        break;
-                    case "data":
-                        Data.LicenceDate = value;
-                        break;
-                    case "name":
-                        Data.LicenceName = value;
-                        break;
-                    case "company":
-                        Data.LicenceCompany = value;
-                        break;
-                    case "nif":
-                        Data.LicenceNif = value;
-                        break;
-                    case "adress":
-                        Data.LicenceAddress = value;
-                        break;
-                    case "email":
-                        Data.LicenceEmail = value;
-                        break;
-                    case "telefone":
-                        Data.LicenceTelephone = value;
-                        break;
-                    case "reseller":
-                        Data.LicenceReseller = value;
-                        break;
-                    case "logicpos_Module_Stocks":
-                        Data.LicenceModuleStocks = Convert.ToBoolean(value);
-                        break;
+            Data = GetLicenseInformation();
+            Data.Version = GetCurrentVersion();
 
-                    case "logicpos_Module_Fe":
-                        Data.ModuleAgtFe = Convert.ToBoolean(value);
-                        break;
-                    case "all_UpdateExpirationDate":
-                        Data.LicenceUpdateDate = Convert.ToDateTime(value);
-                        break;
-                    case "all_NumberDevices":
-                        Data.NumberDevices = Convert.ToInt16(value);
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
+
 
         public static string GetTerminalHardwareID()
         {
@@ -346,7 +255,7 @@ namespace LogicPOS.UI.Components.Licensing
             {
                 LoadLicenseInformation();
                 Data.TerminalHardwareId = GetTerminalHardwareID();
-                Data.LicenceRegistered = IsLicensed();
+                Data.IsValid = IsLicensed();
 
                 return true;
             }

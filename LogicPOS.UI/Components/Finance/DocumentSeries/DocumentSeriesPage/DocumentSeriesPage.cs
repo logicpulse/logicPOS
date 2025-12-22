@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
-            Navigator.BtnInsert.Visible = !(SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.ModuleAgtFe);
+            Navigator.BtnInsert.Visible = !(SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule);
             DisableFilterButton();
         }
 
