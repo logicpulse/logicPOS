@@ -181,7 +181,7 @@ namespace LogicPOS.UI.Components.Modals
             if (SystemInformationService.SystemInformation.IsPortugal)
             {
                 tab1.PackStart(_txtATDocCodeValidationSerie.Component, false, false, 0);
-                if (string.IsNullOrWhiteSpace(_entity.ATDocCodeValidationSeries) && _modalMode == EntityEditionModalMode.Update)
+                if (_modalMode == EntityEditionModalMode.Update && string.IsNullOrWhiteSpace(_entity.ATDocCodeValidationSeries))
                 {
                     tab1.PackStart(_btnATSeriesComunicate, false, false, 0);
                 }
