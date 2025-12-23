@@ -174,30 +174,7 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static void LoadLicenseInformation()
         {
-            Data.Date = DateTime.Now;
-            Data.Version = "LOGICPOS_LICENSED";
-            Data.Name = "Nome DEMO";
-            Data.Company = "Empresa DEMO";
-            Data.Nif = "NIF DEMO";
-            Data.Address = "Morada DEMO";
-            Data.Email = "Email DEMO";
-            Data.Phone = "Telefone DEMO";
-            Data.Reseller = "LogicPulse";
-            Data.AllUpdateExpirationDate = DateTime.Now.AddDays(-1);
-#if DEBUG
-            Data.Version = "LOGICPOS_CORPORATE";
-            Data.Name = "DEBUG";
-            Data.Company = "DEBUG";
-            Data.Address = "DEBUG";
-            Data.Email = "DEBUG";
-            Data.Phone = "DEBUG";
-            Data.StocksModule = true;
-            Data.Reseller = "Logicpulse";
-#endif
-
             Data = GetLicenseInformation();
-            Data.Version = GetCurrentVersion();
-
         }
 
 
