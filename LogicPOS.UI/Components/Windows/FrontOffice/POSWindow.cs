@@ -5,6 +5,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
@@ -227,10 +228,17 @@ namespace LogicPOS.UI.Components.Windows
             LabelCurrentTable.ModifyFg(StateType.Normal, labelCurrentTableFontColor);
             LabelCurrentTable.SetAlignment(labelCurrentTableAlignmentX, 0.5F);
 
+            var labelRegister = new Label();
+            labelRegister.Text = "Sistema não registrado";
+            labelRegister.ModifyFg(StateType.Normal, new Gdk.Color(255,99,71));
+            labelRegister.ModifyFont(Pango.FontDescription.FromString("Bold 18"));
+            labelRegister.SetAlignment(30, 7);
+
             //Pack
             VBox vboxCurrentTable = new VBox(false, 1);
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
             vboxCurrentTable.PackStart(LabelCurrentTable);
+            if (LicensingService.NeedToRegister())*/ vboxCurrentTable.PackStart(labelRegister);
 
             if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
             {

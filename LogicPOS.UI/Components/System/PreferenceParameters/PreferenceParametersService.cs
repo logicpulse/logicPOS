@@ -56,6 +56,7 @@ namespace LogicPOS.UI.Services
         public static bool ServiceAtSendDocuments => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS"));
         public static bool ServiceAtSendDocumentsWaybill => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS_WAYBILL"));
         public static string SystemCurrency => GetPreferenceParameterValue("SYSTEM_CURRENCY");
+        public static string AgtLogo => GetPreferenceParameterValue("AGT_FE_QRCODE_LOGO");
 
     }
 }

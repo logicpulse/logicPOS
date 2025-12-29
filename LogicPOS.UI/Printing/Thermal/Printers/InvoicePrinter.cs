@@ -7,7 +7,6 @@ using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using QRCoder;
 using QrCodes;
 using QrCodes.Renderers;
 using QrCodes.Renderers.Abstractions;
@@ -17,7 +16,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Security.Policy;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
@@ -48,8 +46,8 @@ namespace LogicPOS.UI.Printing
                 columns.Add(new TicketColumn("Price", GeneralUtils.GetResourceByName("global_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             }
             columns.Add(new TicketColumn("Discount", GeneralUtils.GetResourceByName("global_discount_acronym") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            //columns.Add(new TicketColumn("TotalNet", CultureResources.GetCustomResources(LogicPOS.Settings.CultureSettings.CurrentCultureName, "global_totalnet_acronym, 9, TicketColumnsAlign.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("TotalFinal", GeneralUtils.GetResourceByName("global_total_per_item"), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));//Dynamic
+            columns.Add(new TicketColumn("TotalNet", GeneralUtils.GetResourceByName("global_totalnet_acronym"), 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            columns.Add(new TicketColumn("TotalFinal", GeneralUtils.GetResourceByName("global_total_per_item"), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
 
             TicketTable ticketTable = new TicketTable(columns, 48);
             string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
@@ -248,7 +246,7 @@ namespace LogicPOS.UI.Printing
             if (_data.CompanyInformations.IsPortugal && !string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
                 //_printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
-                _printer.Image(GetQRCode(_data.Document.Number));
+                _printer.Image(GetQRCode(_data.Document.ATQRCode));
                 _printer.NormalLineHeight();
                 _printer.NewLine();
             }
@@ -262,7 +260,7 @@ namespace LogicPOS.UI.Printing
             }
 
             PrintFooter();
-            if (_data.Document.Type.ToUpper()=="FR" || _data.Document.Type.ToUpper() == "FS" || _data.Document.Type.ToUpper() == "VD")
+            if (_data.Document.Type.ToUpper() == "FR" || _data.Document.Type.ToUpper() == "FS" || _data.Document.Type.ToUpper() == "VD")
             {
                 AuthenticationService.HardwareOpenDrawer();
             }
@@ -273,28 +271,49 @@ namespace LogicPOS.UI.Printing
         }
         static Bitmap GetQRCode(string text)
         {
-            var url = new PayloadGenerator.Url("");
-            var qrCode = QrCodeGenerator.Generate(plainText: new Url($"{text}").ToString(), eccLevel: ErrorCorrectionLevel.Medium);
+            var qrCode = QrCodeGenerator.Generate(plainText: new Url(text).ToString(),
+                                                  eccLevel: ErrorCorrectionLevel.Medium,
+                                                  forceUtf8: true,
+                                                  utf8Bom: true,
+                                                  eciMode: ExtendedChannelInterpolationMode.Utf8);
+
             var renderer = new SkiaSharpRenderer();
 
-            byte[] logo = Convert.FromBase64String(PreferenceParametersService.GetPreferenceParameterValue("TICKET_FILENAME_LOGO"));
+
 
             var settings = new RendererSettings
             {
                 PixelsPerModule = 100,
                 DrawQuietZones = true,
-                IconBytes = logo,
-                IconBackgroundColor = System.Drawing.Color.White,
-                IconSizePercent = 20,
-            };
-            SKBitmap qrBitmap = SKBitmap.Decode(renderer.RenderToBytes(qrCode, settings));
+                IconBorderWidth = 100,
+                IconSizePercent = 25,
+                QuietZoneStyle = QuietZoneStyle.Dotted,
+                FileFormat = FileFormat.Png
 
-            var img = SKImage.FromBitmap(qrBitmap);
-            var png = img.Encode(SKEncodedImageFormat.Jpeg, 100);
-            var bytes=png.ToArray();
-            var ms= new MemoryStream(bytes);
-            Bitmap bitmap = new Bitmap(ms);
-            return bitmap;
+            };
+
+            if (!string.IsNullOrEmpty(PreferenceParametersService.AgtLogo) && IsBase64String(PreferenceParametersService.AgtLogo) && CompanyDetailsService.CompanyInformation.CountryCode2.ToUpper()=="AO")
+            {
+                settings.IconBytes = Convert.FromBase64String(PreferenceParametersService.AgtLogo);
+            }
+
+            var qrBytes = renderer.RenderToBytes(qrCode, settings);
+
+            var bitmap = SKBitmap.Decode(qrBytes);
+            if (bitmap == null)
+            {
+                return null;
+            }
+
+            var img = SKImage.FromBitmap(bitmap);
+            var png = img.Encode(SKEncodedImageFormat.Png, 100);
+            var bytes = png.ToArray();
+
+            var ms = new MemoryStream(bytes);
+            Bitmap bitmapOriginal = new Bitmap(ms);
+
+            var bitmapFinal = new Bitmap(bitmapOriginal, 350, 350);
+            return bitmapFinal;
         }
     }
 
