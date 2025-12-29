@@ -238,7 +238,7 @@ namespace LogicPOS.UI.Components.Windows
             VBox vboxCurrentTable = new VBox(false, 1);
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
             vboxCurrentTable.PackStart(LabelCurrentTable);
-            if (LicensingService.NeedToRegister())*/ vboxCurrentTable.PackStart(labelRegister);
+            if (LicensingService.NeedToRegister()) vboxCurrentTable.PackStart(labelRegister);
 
             if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
             {
