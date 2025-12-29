@@ -45,7 +45,7 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public bool IsBase64String(string base64)
+        public static bool IsBase64String(string base64)
         {
 
             base64 = base64.Trim();

@@ -5,6 +5,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Extensions;
@@ -133,11 +134,19 @@ namespace LogicPOS.UI.Components.Windows
             LabelDateTime.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             LabelDateTime.SetAlignment(1.0F, 0.5F);
 
+            var labelRegister = new Label();
+            labelRegister.Text = "Sistema não registrado";
+            labelRegister.ModifyFg(StateType.Normal, new Gdk.Color(255, 99, 71));
+            labelRegister.ModifyFont(Pango.FontDescription.FromString("Bold 18"));
+            labelRegister.SetAlignment(20, 7);
+
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
+            if(LicensingService.NeedToRegister())StatusBar.PackStart(labelRegister, false, false, 10);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
+
 
 
             //TODO:THEME
