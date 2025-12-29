@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Documents.Common;
 using System;
@@ -23,20 +23,23 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public decimal TotalFinal { get; set; }
         public decimal TotalPaid { get; set; }
         public decimal TotalToPay { get; set; }
+        public string AtDocCodeId { get; set; }
+        public bool AtResendDocument { get; set; }
         public List<string> RelatedDocuments { get; set; }
         public bool Paid { get; set; }
         public bool IsActive => Status == "N" && IsDraft == false;
         public bool IsCancellable => IsActive && HasPassed48Hours == false;
         public bool IsPayable => IsActive && Paid == false && (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsDebitNote());
         public bool IsAgtDocument => (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsInvoiceReceipt() || TypeAnalyzer.IsCreditNote() || TypeAnalyzer.IsDebitNote()) && IsDraft == false;
+        public bool IsAtDocument => TypeAnalyzer.IsGuide() && IsDraft == false;
         public string GetAgtStatus()
         {
-            if(IsAgtDocument == false)
+            if (IsAgtDocument == false)
             {
                 return "N/A";
             }
 
-            if(AgtInfo == null || string.IsNullOrWhiteSpace(AgtInfo.RequestId))
+            if (AgtInfo == null || string.IsNullOrWhiteSpace(AgtInfo.RequestId))
             {
                 return "Não submetido";
             }
@@ -47,6 +50,17 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
             }
 
             return $"Submetido ({AgtInfo.ValidationStatus})";
+        }
+
+        public string GetAtStatus()
+        {
+            if (TypeAnalyzer.IsGuide() == false)
+            {
+                return "N/A";
+
+            }
+
+            return (AtResendDocument == false || string.IsNullOrWhiteSpace(AtDocCodeId) == false) ? $"Comunicado ({AtDocCodeId})" : "Não comunicado";
         }
     }
 

@@ -25,6 +25,10 @@ namespace LogicPOS.UI.Components.Modals
                                                                                                     "Enviar",
                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_agt_send.png");
 
+        private IconButtonWithText BtnSendDocumentToAt = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
+                                                                                                   "Comunicar",
+                                                                                                   AppSettings.Paths.Images + @"Icons\pos_at_icon.png");
+
         private IconButtonWithText BtnUpdateAgtValidationStatus = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_Green",
                                                                                                     "Atua. Estado",
                                                                                                     AppSettings.Paths.Images + @"Icons\icon_pos_agt_update.png");
@@ -73,6 +77,7 @@ namespace LogicPOS.UI.Components.Modals
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
+            BtnSendDocumentToAt.Visible = documentIsSelected && selectedDocument.IsAtDocument && selectedDocument.AtResendDocument && IsNotSelectionMode;
             BtnUpdateAgtValidationStatus.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
             BtnViewAgtDocument.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode; 
         }

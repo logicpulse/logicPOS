@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
@@ -42,9 +42,9 @@ namespace LogicPOS.UI.Components.Modals
                 actionAreaButtons.Add(new ActionAreaButton(BtnUpdateAgtValidationStatus, ResponseType.Ok));
                 actionAreaButtons.Add(new ActionAreaButton(BtnViewAgtDocument, ResponseType.Ok));
             }
-            else
+            else if(SystemInformationService.SystemInformation.IsPortugal)
             {
-                actionAreaButtons.Add(new ActionAreaButton(BtnCloneDocument, ResponseType.Ok));
+                actionAreaButtons.Add(new ActionAreaButton(BtnSendDocumentToAt, ResponseType.Ok));
             }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnNewDocument, ResponseType.Ok));

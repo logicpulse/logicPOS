@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
@@ -26,8 +26,10 @@ namespace LogicPOS.UI.Components.Pages
             if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
+            } else if (SystemInformationService.SystemInformation.IsPortugal)
+            {
+                GridView.AppendColumn(CreateAtStatusColumn());
             }
-
         }
 
         protected override void InitializeSort()
@@ -52,6 +54,19 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = "AGT/Est. Validação";
+            var col = Columns.CreateColumn(title, 11, RenderAgtStatus);
+            return col;
+        }
+
+        private TreeViewColumn CreateAtStatusColumn()
+        {
+            void RenderAgtStatus(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var doc = (DocumentViewModel)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = doc.GetAtStatus();
+            }
+
+            var title = "AT";
             var col = Columns.CreateColumn(title, 11, RenderAgtStatus);
             return col;
         }

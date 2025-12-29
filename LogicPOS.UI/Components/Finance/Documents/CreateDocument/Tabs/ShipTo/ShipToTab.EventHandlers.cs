@@ -20,13 +20,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok)
             {
-                
-                if (dateTimePicker.Calendar.Date == DateTime.Now.Date)
-                {
-                    TxtDeliveryDate.Text = DateTime.Now.ToLocalTime().ToString();
-                    return;
-                }
-                TxtDeliveryDate.Text = dateTimePicker.Calendar.Date.ToLocalTime().ToString();
+                TxtDeliveryDate.Text = dateTimePicker.GetDateTime().ToString("yyyy-MM-ddTHH:mm:ss");
             }
         }
 

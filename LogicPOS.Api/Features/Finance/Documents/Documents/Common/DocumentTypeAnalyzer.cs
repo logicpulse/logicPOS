@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.Api.Features.Documents
+namespace LogicPOS.Api.Features.Documents
 {
     public struct DocumentTypeAnalyzer
     {

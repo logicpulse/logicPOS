@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Errors
             if (source == null)
             {
                 source = (POSWindow.HasInstance && POSWindow.Instance.Visible) ? POSWindow.Instance : null;
-               
+
                 if (source == null)
                 {
                     source = BackOfficeWindow.HasInstance ? BackOfficeWindow.Instance : null;
@@ -55,12 +55,8 @@ namespace LogicPOS.UI.Errors
                 }
 
                 errorMessage.AppendLine("\n# Mais detalhes");
-                errorMessage.AppendLine("Title: " + problemDetails.Title);
-                errorMessage.AppendLine($"Detail: {problemDetails.Detail}");
-                errorMessage.AppendLine("Status: " + problemDetails.Status);
-                errorMessage.AppendLine("Type: " + problemDetails.Type);
-                errorMessage.AppendLine("TraceId: " + problemDetails.TraceId);
-                errorMessage.AppendLine("Instance: " + problemDetails.Instance);
+                errorMessage.AppendLine("Título: " + problemDetails.Title);
+                errorMessage.AppendLine($"Detalhe: {problemDetails.Detail}");
             }
             else
             {
