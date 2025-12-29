@@ -174,7 +174,7 @@ namespace LogicPOS.UI.Components.Modals
             DocumentTab = new DocumentTab(this);
             CustomerTab = new CustomerTab(this);
             DetailsTab = new DetailsTab(this);
-            ShipToTab = new DocumentShipToTab(this);
+            ShipToTab = new ShipToTab(this);
             ShipFromTab = new ShipFromTab(this);
             if (SinglePaymentMethod == false)
             {

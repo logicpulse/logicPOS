@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
                 Acronym = _txtAcronym.Text,
                 DocumentTypeId = _comboDocumentTypes.SelectedEntity.Id,
                 FiscalYearId = _comboFiscalYears.SelectedEntity.Id,
-                ATDocCodeValidationSerie = _txtATDocCodeValidationSerie.Text,
+                AtValidationCode = _txtATDocCodeValidationSerie.Text,
                 Notes = _txtNotes.Value.Text
             };
         }

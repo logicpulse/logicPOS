@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
         private DocumentTab DocumentTab { get; set; }
         private CustomerTab CustomerTab { get; set; }
         private DetailsTab DetailsTab { get; set; }
-        private DocumentShipToTab ShipToTab { get; set; }
+        private ShipToTab ShipToTab { get; set; }
         private ShipFromTab ShipFromTab { get; set; }
         private PaymentMethodsTab PaymentMethodsTab { get; set; }
         private bool SinglePaymentMethod => SystemInformationService.SystemInformation.IsPortugal;

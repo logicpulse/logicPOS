@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
@@ -17,9 +17,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok)
             {
-                TxtDeliveryDate.Text = dateTimePicker.Calendar.Date.ToString();
+                TxtDeliveryDate.Text = dateTimePicker.GetDateTime().ToString("yyyy-MM-ddTHH:mm:ss");
             }
         }
+
         private void TxtCountry_SelectEntityClicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);

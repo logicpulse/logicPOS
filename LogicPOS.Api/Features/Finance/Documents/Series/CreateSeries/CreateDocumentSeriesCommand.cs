@@ -13,7 +13,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries
         public string Acronym { get; set; }
         public Guid DocumentTypeId { get; set; }
         public Guid FiscalYearId { get; set; }
-        public string ATDocCodeValidationSerie { get; set; }
+        public string AtValidationCode { get; set; }
         public string Notes { get; set; }
     }
 }

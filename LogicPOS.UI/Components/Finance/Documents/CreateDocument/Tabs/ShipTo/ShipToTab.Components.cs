@@ -1,10 +1,10 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class DocumentShipToTab
+    public partial class ShipToTab
     {
         private TextBox TxtAddress { get; set; }
         private TextBox TxtRegion { get; set; }

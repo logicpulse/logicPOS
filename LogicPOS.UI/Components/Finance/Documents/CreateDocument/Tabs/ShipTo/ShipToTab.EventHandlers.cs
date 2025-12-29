@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class DocumentShipToTab
+    public partial class ShipToTab
     {
 
         private void TxtDeliveryDate_SelectEntityClicked(object sender, EventArgs e)

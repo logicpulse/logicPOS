@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.UI.Components.Modals.Common;
@@ -7,6 +7,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                                  .Select(c => c.Code2)
                                                  .FirstOrDefault() ?? shipAddress.Country;
 
-            TxtDeliveryDate.Text = shipAddress.DeliveryDate.ToString();
+            TxtDeliveryDate.Text = shipAddress.DeliveryDate.HasValue ? shipAddress.DeliveryDate.Value.ToString("yyyy-MM-ddTHH:mm:ss") : "";
             TxtDeliveryId.Text = shipAddress.DeliveryID;
             TxtWarehouseId.Text = shipAddress.WarehouseID;
             TxtLocationId.Text = shipAddress.LocationID;
@@ -67,7 +68,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return new ShipAddress
             {
                 DeliveryID = TxtDeliveryId.Text,
-                DeliveryDate = DateTime.Parse(TxtDeliveryDate.Text),
+                DeliveryDate = DateTime.ParseExact(TxtDeliveryDate.Text, "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture),
                 WarehouseID = TxtWarehouseId.Text,
                 LocationID = TxtLocationId.Text,
                 AddressDetail = TxtAddress.Text,

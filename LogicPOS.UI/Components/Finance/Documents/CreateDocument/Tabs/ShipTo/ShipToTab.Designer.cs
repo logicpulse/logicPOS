@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
-    public partial class DocumentShipToTab
+    public partial class ShipToTab
     {
         private void Design()
         {
@@ -65,14 +66,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtDeliveryDate()
         {
             TxtDeliveryDate = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_ship_to_delivery_date"),
-                                              isRequired: true,
-                                              isValidatable: false,
-                                              includeSelectButton: true,
-                                              includeKeyBoardButton: false);
+                                             GeneralUtils.GetResourceByName("global_ship_to_delivery_date"),
+                                             isRequired: true,
+                                             isValidatable: true,
+                                             RegularExpressions.DateTime,
+                                             includeSelectButton: true,
+                                             includeKeyBoardButton: false);
 
             TxtDeliveryDate.Entry.IsEditable = true;
-            TxtDeliveryDate.Text = DateTime.Now.ToString();
+            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
         private void InitializeTxtCountry()
@@ -113,11 +115,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtZipCode = new TextBox(SourceWindow,
                                          GeneralUtils.GetResourceByName("global_zipcode"),
-                                         isRequired: false,
-                                         isValidatable: false,
+                                         isRequired: SystemInformationService.SystemInformation.IsPortugal,
+                                         isValidatable: true,
+                                         regex: RegularExpressions.PostalCode,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
-            TxtZipCode.Text = GeneralUtils.GetResourceByName("1000-000");
+
+            TxtZipCode.Text = "0000-000";
         }
 
         private void InitializeTxtRegion()

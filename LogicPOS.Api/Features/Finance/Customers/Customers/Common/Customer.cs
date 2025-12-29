@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using System;
 
@@ -38,7 +38,7 @@ namespace LogicPOS.Api.Features.Finance.Customers.Customers.Common
         public string Designation { get; set; }
     }
 
-    public struct Country 
+    public class Country 
     {
         public Guid Id { get; set; }
         public string Designation { get; set; }

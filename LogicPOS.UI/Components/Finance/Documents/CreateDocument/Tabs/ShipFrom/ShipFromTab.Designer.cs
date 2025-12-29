@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
@@ -70,12 +71,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtDeliveryDate = new TextBox(SourceWindow,
                                               GeneralUtils.GetResourceByName("global_ship_from_delivery_date"),
                                               isRequired: true,
-                                              isValidatable: false,
+                                              isValidatable: true,
+                                              RegularExpressions.DateTime,
                                               includeSelectButton: true,
                                               includeKeyBoardButton: false);
 
             TxtDeliveryDate.Entry.IsEditable = true;
-            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-dd");
+            TxtDeliveryDate.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
             TxtDeliveryDate.SelectEntityClicked += TxtDeliveryDate_SelectEntityClicked;
         }
@@ -103,6 +105,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.Entry.Changed += TxtCoutry_Changed;
             TxtCountry.SelectEntityClicked += TxtCountry_SelectEntityClicked;
         }
+        
         private void InitializeTxtCity()
         {
             TxtCity = new TextBox(SourceWindow,
@@ -119,11 +122,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             TxtZipCode = new TextBox(SourceWindow,
                                          GeneralUtils.GetResourceByName("global_zipcode"),
-                                         isRequired: false,
-                                         isValidatable: false,
+                                         isRequired: SystemInformationService.SystemInformation.IsPortugal,
+                                         isValidatable: true,
+                                         regex: RegularExpressions.PostalCode,
                                          includeSelectButton: false,
                                          includeKeyBoardButton: true);
-
+            TxtZipCode.Text = CompanyDetailsService.CompanyInformation.PostalCode;
         }
 
         private void InitializeTxtRegion()

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
@@ -40,13 +40,13 @@ namespace LogicPOS.UI.Components.Modals
             return box;
         }
 
-        public string GetFormattedDateTime()
+        public DateTime GetDateTime()
         {
             var dateTime = Calendar.Date.Date;
             dateTime = dateTime.AddHours(DateTime.Now.Hour);
             dateTime = dateTime.AddMinutes(DateTime.Now.Minute);
             dateTime = dateTime.AddSeconds(DateTime.Now.Second);
-            return dateTime.ToString("yyyy-MM-dd HH:mm:ss");
+            return dateTime;
         }
     }
 }
