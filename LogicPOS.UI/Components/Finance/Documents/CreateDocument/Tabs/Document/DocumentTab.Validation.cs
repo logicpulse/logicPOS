@@ -89,7 +89,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            if (DocumentTypeAnalyzer.Value.IsCreditNote() ||  DocumentTypeAnalyzer.Value.IsDebitNote())
+            if (DocumentTypeAnalyzer.Value.IsDebitNote())
+            {
+                TxtOriginDocument.Require(false);
+                TxtPaymentCondition.Require(false, false);
+                if (SinglePaymentMethod)
+                {
+                    TxtPaymentMethod.Require(false, false);
+                }
+                TxtNotes.Require(false);
+            }
+
+            if (DocumentTypeAnalyzer.Value.IsCreditNote())
             {
                 TxtOriginDocument.Require(true);
                 TxtPaymentCondition.Require(false, false);

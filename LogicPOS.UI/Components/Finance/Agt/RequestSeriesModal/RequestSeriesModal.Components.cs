@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
         {
             InitializeDocumentTypesComboBox();
             InitializeFiscalYearsComboBox();
-            _txtEstablishmentNumber.Text = "123";
+            _txtEstablishmentNumber.Text = "SEDE";
             _checkContingencyIndicator.Toggled += delegate
             {
                 _checkContingencyIndicator.Label = _checkContingencyIndicator.Active ? "Série de Contingência (C)" : "Série de Contingência (N)";
