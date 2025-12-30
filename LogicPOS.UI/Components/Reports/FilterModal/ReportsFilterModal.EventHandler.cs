@@ -35,7 +35,9 @@ namespace LogicPOS.UI.Components.Modals
             TxtCustomer.Clear();
             TxtWarehouse.Clear();
             TxtVatRate.Clear();
-
+            TxtFamily.Clear();
+            TxtSubfamily.Clear();
+            TxtArticle.Clear();
         }
 
         private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
@@ -161,7 +163,6 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectSubfamily_Clicked(object sender, System.EventArgs e)
         {
-            ArticleSubfamiliesPage.FamilyId = Guid.Empty;
             if (TxtFamily.SelectedEntity != null)
             {
                 ArticleSubfamiliesPage.FamilyId=(TxtFamily.SelectedEntity as ArticleFamily).Id;
@@ -176,6 +177,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtSubfamily.Text = page.SelectedEntity.Designation;
                 TxtSubfamily.SelectedEntity = page.SelectedEntity;
             }
+            ArticleSubfamiliesPage.FamilyId = Guid.Empty;
         }
         private void BtnSelectArticle_Clicked(object sender, System.EventArgs e)
         {

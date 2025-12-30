@@ -12,6 +12,7 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Printing.Thermal.Printers;
 using Serilog;
 using System;
+using static LogicPOS.UI.Printing.InvoicePrinter;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing

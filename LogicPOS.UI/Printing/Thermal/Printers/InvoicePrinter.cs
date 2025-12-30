@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Security.Policy;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
@@ -46,7 +45,7 @@ namespace LogicPOS.UI.Printing
                 columns.Add(new TicketColumn("Price", GeneralUtils.GetResourceByName("global_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             }
             columns.Add(new TicketColumn("Discount", GeneralUtils.GetResourceByName("global_discount_acronym") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("TotalNet", GeneralUtils.GetResourceByName("global_totalnet_acronym"), 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            //columns.Add(new TicketColumn("TotalNet", GeneralUtils.GetResourceByName("global_totalnet_acronym"), 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             columns.Add(new TicketColumn("TotalFinal", GeneralUtils.GetResourceByName("global_total_per_item"), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
 
             TicketTable ticketTable = new TicketTable(columns, 48);
@@ -240,20 +239,15 @@ namespace LogicPOS.UI.Printing
             {
                 _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_non_invoice_footer_at"));
             }
-            _printer.Separator(' ');
-            _printer.SetLineHeight(100);
 
-            if (_data.CompanyInformations.IsPortugal && !string.IsNullOrEmpty(_data.Document.ATQRCode))
+            if (!string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
-                //_printer.QrCode(_data.Document.ATQRCode, QrCodeSize.Size2);
                 _printer.Image(GetQRCode(_data.Document.ATQRCode));
                 _printer.NormalLineHeight();
-                _printer.NewLine();
+                if (_data.CompanyInformations.IsPortugal) _printer.Append($"ATCUD\n {_data.Document.ATCUD}");
             }
             else
             {
-
-                //_printer.QrCode(_data.Document.Number, QrCodeSize.Size2);
                 _printer.Image(GetQRCode(_data.Document.Number));
                 _printer.NormalLineHeight();
                 _printer.NewLine();
@@ -271,7 +265,7 @@ namespace LogicPOS.UI.Printing
         }
         static Bitmap GetQRCode(string text)
         {
-            var qrCode = QrCodeGenerator.Generate(plainText: new Url(text).ToString(),
+            var qrCode = QrCodeGenerator.Generate(plainText: text,
                                                   eccLevel: ErrorCorrectionLevel.Medium,
                                                   forceUtf8: true,
                                                   utf8Bom: true,
@@ -279,20 +273,17 @@ namespace LogicPOS.UI.Printing
 
             var renderer = new SkiaSharpRenderer();
 
-
-
             var settings = new RendererSettings
             {
-                PixelsPerModule = 100,
+                PixelsPerModule = 30,
                 DrawQuietZones = true,
                 IconBorderWidth = 100,
-                IconSizePercent = 25,
-                QuietZoneStyle = QuietZoneStyle.Dotted,
-                FileFormat = FileFormat.Png
-
+                IconSizePercent = 30,
+                FileFormat = FileFormat.Png,
+                PixelSizeFactor = 0
             };
 
-            if (!string.IsNullOrEmpty(PreferenceParametersService.AgtLogo) && IsBase64String(PreferenceParametersService.AgtLogo) && CompanyDetailsService.CompanyInformation.CountryCode2.ToUpper()=="AO")
+            if (!string.IsNullOrEmpty(PreferenceParametersService.AgtLogo) && IsBase64String(PreferenceParametersService.AgtLogo) && CompanyDetailsService.CompanyInformation.CountryCode2.ToUpper() == "AO")
             {
                 settings.IconBytes = Convert.FromBase64String(PreferenceParametersService.AgtLogo);
             }
@@ -313,14 +304,24 @@ namespace LogicPOS.UI.Printing
             Bitmap bitmapOriginal = new Bitmap(ms);
 
             var bitmapFinal = new Bitmap(bitmapOriginal, 350, 350);
-            return bitmapFinal;
+            return ResizeQrToPrint(bitmapFinal, 200);
         }
-    }
 
-    public struct InvoicePrintingData
-    {
-        public Guid DocumentId { get; set; }
-        public DocumentPrintingModel Document { get; set; }
-        public CompanyInformation CompanyInformations { get; set; }
+        static Bitmap ResizeQrToPrint(Bitmap originalImage, int horizontalPadding)
+        {
+            int newWidth = originalImage.Width + horizontalPadding * 2;
+            Bitmap resizedImage = new Bitmap(newWidth, originalImage.Height - 2);
+            Graphics g = Graphics.FromImage(resizedImage);
+            g.Clear(Color.White);
+            g.DrawImage(originalImage, horizontalPadding, 0);
+            return resizedImage;
+        }
+
+        public struct InvoicePrintingData
+        {
+            public Guid DocumentId { get; set; }
+            public DocumentPrintingModel Document { get; set; }
+            public CompanyInformation CompanyInformations { get; set; }
+        }
     }
 }
