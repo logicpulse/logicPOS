@@ -186,9 +186,9 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetSalesByFamilyDetailedReportPdfQuery(startDate, endDate));
         }
 
-        public static void ShowSalesBySubfamilyDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesBySubfamilyDetailsReport(GetSalesBySubFamilyDetailedReportPdfQuery query)
         {
-            ShowReport(new GetSalesBySubFamilyDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(query);
         }
 
         public static void ShowSalesByPlaceDetailsReport(DateTime startDate, DateTime endDate)

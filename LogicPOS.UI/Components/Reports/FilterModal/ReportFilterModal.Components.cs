@@ -10,6 +10,8 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtCustomer { get; set; }
         public TextBox TxtWarehouse { get; set; }
+        public TextBox TxtFamily{ get; set; }
+        public TextBox TxtSubfamily{ get; set; }
         public TextBox TxtArticle { get; set; }
         public TextBox TxtVatRate { get; set; }
         public TextBox TxtSerialNumber { get; set; }

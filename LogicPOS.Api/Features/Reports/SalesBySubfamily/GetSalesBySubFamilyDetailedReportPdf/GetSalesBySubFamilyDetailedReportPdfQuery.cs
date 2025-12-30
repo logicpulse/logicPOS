@@ -1,6 +1,4 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Features.Reports.Common;
-using MediatR;
+﻿using LogicPOS.Api.Features.Reports.Common;
 using System;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf
@@ -9,6 +7,11 @@ namespace LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf
     {
         public GetSalesBySubFamilyDetailedReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate)
         {
+
         }
+
+        public string FamilyCode { get; set; }
+        public string SubfamilyCode { get; set; }
+        public string ArticleCode { get; set; }
     }
 }

@@ -16,7 +16,8 @@ namespace LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf
 
         public async override Task<ErrorOr<TempFile>> Handle(GetSalesBySubFamilyDetailedReportPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/sales-by-subfamily/detailed/pdf{query.GetUrlQuery()}");
+            return await HandleGetFileQueryAsync($"reports/sales-by-subfamily/detailed/pdf{query.GetUrlQuery()}" +
+                                                $"&familycode={query.FamilyCode}&subfamilycode={query.SubfamilyCode}&articlecode={query.ArticleCode}");
         }
     }
 }

@@ -35,6 +35,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtCustomer.Clear();
             TxtWarehouse.Clear();
             TxtVatRate.Clear();
+
         }
 
         private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
@@ -144,6 +145,38 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
+        private void BtnSelectFamily_Clicked(object sender, System.EventArgs e)
+        {
+            var page = new ArticleFamiliesPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<ArticleFamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtFamily.Text = page.SelectedEntity.Designation;
+                TxtFamily.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void BtnSelectSubfamily_Clicked(object sender, System.EventArgs e)
+        {
+            ArticleSubfamiliesPage.FamilyId = Guid.Empty;
+            if (TxtFamily.SelectedEntity != null)
+            {
+                ArticleSubfamiliesPage.FamilyId=(TxtFamily.SelectedEntity as ArticleFamily).Id;
+            }
+            var page = new ArticleSubfamiliesPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<ArticleSubfamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtSubfamily.Text = page.SelectedEntity.Designation;
+                TxtSubfamily.SelectedEntity = page.SelectedEntity;
+            }
+        }
         private void BtnSelectArticle_Clicked(object sender, System.EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);

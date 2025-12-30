@@ -67,6 +67,8 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtArticle.Component, false, false, 0);
             vbox.PackStart(TxtSerialNumber.Component, false, false, 0);
             vbox.PackStart(TxtDocumentNumber.Component, false, false, 0);
+            vbox.PackStart(TxtSubfamily.Component, false, false, 0);
+            vbox.PackStart(TxtFamily.Component, false, false, 0);
 
             return vbox;
         }

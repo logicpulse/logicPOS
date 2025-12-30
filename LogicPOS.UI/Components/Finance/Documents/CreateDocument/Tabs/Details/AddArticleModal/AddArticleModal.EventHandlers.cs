@@ -204,7 +204,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 return;
             }
-            ArticleSubfamiliesPage._familyId = (TxtFamily.SelectedEntity as ArticleFamily).Id;
+            ArticleSubfamiliesPage.FamilyId = (TxtFamily.SelectedEntity as ArticleFamily).Id;
             var page = new ArticleSubfamiliesPage(null, PageOptions.SelectionPageOptions);
             var selectModal = new EntitySelectionModal<ArticleSubfamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectModal.Run();

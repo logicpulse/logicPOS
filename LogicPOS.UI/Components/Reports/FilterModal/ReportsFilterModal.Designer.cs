@@ -29,6 +29,8 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtWarehouse();
             InitializeTxtVatRate();
             InitializeTxtArticle();
+            InitializeTxtSubfamily();
+            InitializeTxtFamily();
             InitializeTxtSerialNumber();
             InitializeTxtDocumentNumber();
         }
@@ -122,6 +124,28 @@ namespace LogicPOS.UI.Components.Modals
             TxtEndDate.SelectEntityClicked += TxtEndDate_SelectEntityClicked;
         }
 
+        private void InitializeTxtFamily()
+        {
+            TxtFamily= new TextBox(this,
+                                    GeneralUtils.GetResourceByName("global_families"),
+                                    isRequired: false,
+                                    isValidatable: false,
+                                    includeSelectButton: true,
+                                    includeKeyBoardButton: false);
+
+            TxtFamily.SelectEntityClicked += BtnSelectFamily_Clicked;
+        }
+        private void InitializeTxtSubfamily()
+        {
+            TxtSubfamily= new TextBox(this,
+                                    GeneralUtils.GetResourceByName("global_subfamilies"),
+                                    isRequired: false,
+                                    isValidatable: false,
+                                    includeSelectButton: true,
+                                    includeKeyBoardButton: false);
+
+            TxtSubfamily.SelectEntityClicked += BtnSelectSubfamily_Clicked;
+        }
         private void InitializeTxtArticle()
         {
             TxtArticle = new TextBox(this,

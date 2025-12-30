@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
     public class ArticleSubfamiliesPage : Page<ArticleSubfamily>
     {
         private GetAllArticleSubfamiliesQuery _getAllQuery = new GetAllArticleSubfamiliesQuery();
-        public static Guid _familyId;
+        public static Guid FamilyId;
         public ArticleSubfamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             DisableFilterButton();
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
             if (base.Options == PageOptions.SelectionPageOptions)
             {
                 _getAllQuery = new GetAllArticleSubfamiliesQuery()
-                { FamilyId = _familyId };
+                { FamilyId = FamilyId };
             }
 
             var getSubfamiliesResult = _mediator.Send(_getAllQuery).Result;

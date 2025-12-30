@@ -1,6 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf;
 using LogicPOS.UI.Services;
 using System;
 
@@ -11,13 +13,13 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnCompanyBillingReport_Clicked(object sender, EventArgs e)
         {
             var modal = new ReportsFilterModal(this);
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
 
@@ -533,18 +535,35 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Sensitive = true;
+            modal.TxtArticle.Component.Visible = true;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+
 
             var response = (ResponseType)modal.Run();
+            var query = new GetSalesBySubFamilyDetailedReportPdfQuery(modal.StartDate, modal.EndDate);
+
+            if(modal.TxtFamily.SelectedEntity != null)
+            {
+                query.FamilyCode= (modal.TxtFamily.SelectedEntity as ArticleFamily).Code;
+            }
+            if (modal.TxtSubfamily.SelectedEntity != null)
+            {
+                query.SubfamilyCode = (modal.TxtSubfamily.SelectedEntity as ArticleSubfamily).Code;
+            }
+            if (modal.TxtArticle.SelectedEntity != null)
+            {
+                query.ArticleCode = (modal.TxtArticle.SelectedEntity as ArticleViewModel).Code;
+            }
+
             if (response == ResponseType.Ok)
             {
-                ReportsService.ShowSalesBySubfamilyDetailsReport(modal.StartDate, modal.EndDate);
+                ReportsService.ShowSalesBySubfamilyDetailsReport(query);
 
             }
             modal.Destroy();
