@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
@@ -174,15 +174,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             Clear();
 
-            TxtCustomer.Text = contributor.GetCustomerName() ?? "";
+            TxtCustomer.Text = contributor.Name ?? "";
             TxtCustomer.SelectedEntity = null;
             TxtFiscalNumber.Text = contributor.Nif ?? "";
-            TxtLocality.Text = contributor.GetLocality() ?? "";
-            TxtAddress.Text = contributor.GetAddress() ?? "";
-            TxtCity.Text = contributor.GetCity() ?? "";
-            TxtPhone.Text = contributor.Phone ?? "";
-            TxtEmail.Text = contributor.Email ?? "";
-            TxtZipCode.Text = contributor.PostalCode ?? "";
         }
     }
 }

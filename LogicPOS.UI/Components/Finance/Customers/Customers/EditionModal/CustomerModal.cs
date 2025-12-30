@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
 using LogicPOS.Api.Features.Customers.AddCustomer;
 using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
@@ -53,13 +53,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            _txtName.Text = contributor.GetCustomerName() ?? "";
-            _txtLocality.Text = contributor.GetLocality() ?? "";
-            _txtAddress.Text = contributor.GetAddress() ?? "";
-            _txtCity.Text = contributor.GetCity() ?? "";
-            _txtPhone.Text = _txtMobile.Text = contributor.Phone ?? "";
-            _txtEmail.Text = contributor.Email ?? "";
-            _txtPostalCode.Text = contributor.PostalCode ?? "";
+            _txtName.Text = contributor.Name ?? "";
 
             Run();
         }

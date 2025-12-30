@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Agt;
@@ -35,18 +35,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            TxtCompany.Text = contributor.GetCustomerName() ?? "";
-            TxtBusiness.Text = contributor.CommercialDesignation ?? "";
-            TxtAddress.Text = contributor.GetAddress() ?? "";
-            TxtCity.Text = contributor.GetCity() ?? "";
-            TxtPhone.Text = contributor.Phone ?? "";
-            TxtEmail.Text = contributor.Email ?? "";
-            TxtZipCode.Text = string.IsNullOrWhiteSpace(contributor.PostalCode) ? "00000": contributor.PostalCode;
-            TxtStockCapital.Text = contributor.SocialCapital ?? "";
-            TxtPhone.Text = TxtMobile.Text = contributor.Phone ?? "";
-            TxtEmail.Text = contributor.Email ?? "";
-            TxtWebsite.Text = contributor.WebSite ?? "";
-           
+            TxtCompany.Text = contributor.Name ?? "";
+            TxtBusiness.Text = contributor.Name ?? "";
         }
 
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
