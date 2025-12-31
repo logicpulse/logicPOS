@@ -37,7 +37,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (Options!=null && Options.Count != 0)
             {
-                Navigator.Visible = false;
                 GridView.AppendColumn(CreateSelectColumn());
                 GridView.AppendColumn(Columns.CreateCodeColumn(1));
                 GridView.AppendColumn(Columns.CreateDesignationColumn(2));
