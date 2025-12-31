@@ -8,7 +8,6 @@ using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
 using System;
 using System.Drawing;
 
@@ -28,10 +27,22 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeForInsert()
         {
-            string currentYear = DateTime.Now.Year.ToString();
-            _txtYear.Text = currentYear;
-            _txtDesignation.Text = $"Ano {currentYear}";
-            _txtAcronym.Text = $"{currentYear}A1";
+            var relevantData = FiscalYearsService.GetCreationRelevantData();
+
+            if (relevantData.HasValue)
+            {
+                _txtYear.Text = relevantData.Value.CurrentYear.ToString();
+                int currentYearCount = relevantData.Value.CurrentYearCount;
+                _txtDesignation.Text = $"Ano {relevantData.Value.CurrentYear} {currentYearCount+1}";
+                _txtAcronym.Text = $"{relevantData.Value.CurrentYear}A{currentYearCount+1}";
+            }
+            else
+            {
+                string currentYear = DateTime.Now.Year.ToString();
+                _txtYear.Text = currentYear;
+                _txtDesignation.Text = $"Ano {currentYear}";
+                _txtAcronym.Text = $"{currentYear}A1";
+            }
         }
 
         private CreateFiscalYearCommand CreateAddCommand()
@@ -41,7 +52,7 @@ namespace LogicPOS.UI.Components.Modals
                 Designation = _txtDesignation.Text,
                 Year = DateTime.Now.Year,
                 Acronym = _txtAcronym.Text,
-                SeriesForEachTerminal = false,
+                SeriesForEachTerminal = _checkSeriesForEachTerminal.Active,
                 Notes = _txtNotes.Value.Text
             };
         }
@@ -55,6 +66,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtAcronym.Text = _entity.Acronym;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
+            _checkSeriesForEachTerminal.Active = _entity.SeriesForEachTerminal;
         }
 
         protected override bool AddEntity()

@@ -1,5 +1,6 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.FiscalYears.CloseFiscalYear;
+using LogicPOS.Api.Features.Finance.FiscalYears.GetFiscalYearCreationData;
 using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
@@ -65,6 +66,19 @@ namespace LogicPOS.UI.Components.FiscalYears
                        .WithTitleResource("global_warning")
                        .WithMessage(GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"))
                        .ShowAlert();
+        }
+
+        public static FiscalYearCreationData? GetCreationRelevantData()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetFiscalYearCreationDataQuery()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
         }
 
         public static bool HasActiveFiscalYear() => CurrentFiscalYear != null;

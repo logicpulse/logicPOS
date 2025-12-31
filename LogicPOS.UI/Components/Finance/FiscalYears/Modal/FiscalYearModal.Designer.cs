@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class FiscalYearModal
     {
-        public override Size ModalSize => new Size(500, 300);
+        public override Size ModalSize => new Size(500, 330);
         public override string ModalTitleResourceName => "global_fiscal_year";
         protected override void AddSensitiveFields()
         {
@@ -51,6 +51,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtYear.Component, false, false, 0);
             detailsTab.PackStart(_txtAcronym.Component, false, false, 0);
+            detailsTab.PackStart(_checkSeriesForEachTerminal,false,false, 0);
             return detailsTab;
         }
     }
