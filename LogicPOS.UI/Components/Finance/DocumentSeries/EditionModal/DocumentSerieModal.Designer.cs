@@ -29,12 +29,6 @@ namespace LogicPOS.UI.Components.Modals
             InitializeDocumentTypesComboBox();
             InitializeBtnATSeriesComunicate();
 
-            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
-            var terminalIds = page.SelectedTerminals;
-            selectDocumentTypeModal.Destroy();
-
             if (_modalMode == EntityEditionModalMode.Insert)
             {
                 AddDefaultInsertData();

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Collections.Generic;
@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Documents.Series.GetAllDocumentSeries
 
         public override async Task<ErrorOr<IEnumerable<DocumentSeries>>> Handle(GetActiveDocumentSeriesQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetListQueryAsync<DocumentSeries>("documents/series/active",cancellationToken);
+            return await HandleGetListQueryAsync<DocumentSeries>($"documents/series/active{request.GetUrlQuery()}",cancellationToken);
         }
     }
 }

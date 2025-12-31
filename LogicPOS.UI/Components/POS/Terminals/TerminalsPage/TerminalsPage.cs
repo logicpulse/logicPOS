@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -7,21 +7,23 @@ using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class TerminalsPage : Page<Terminal>
     {
-        public List<Terminal> SelectedTerminals;
+        public List<Terminal> SelectedTerminals { get; private set;  } = new List<Terminal>();
         protected override IRequest<ErrorOr<IEnumerable<Terminal>>> GetAllQuery => new GetAllTerminalsQuery();
         public TerminalsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
-            
+
             DisableFilterButton();
         }
 
@@ -35,7 +37,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void AddColumns()
         {
-            if (Options!=null && Options.Count != 0)
+            if (Options != null && Options.Count != 0)
             {
                 GridView.AppendColumn(CreateSelectColumn());
                 GridView.AppendColumn(Columns.CreateCodeColumn(1));
@@ -51,6 +53,7 @@ namespace LogicPOS.UI.Components.Pages
                 GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
             }
         }
+        
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
@@ -63,7 +66,6 @@ namespace LogicPOS.UI.Components.Pages
 
         private TreeViewColumn CreateSelectColumn()
         {
-            SelectedTerminals= new List<Terminal>();
             TreeViewColumn selectColumn = new TreeViewColumn();
 
             var selectCellRenderer = new CellRendererToggle();
@@ -109,6 +111,18 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_DELETE");
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_EDIT");
         }
+       
+
+        public static List<Guid> SelectTerminals()
+        {
+            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            var terminalIds = page.SelectedTerminals.Select(t => t.Id).ToList();
+            selectDocumentTypeModal.Destroy();
+            return terminalIds;
+        }
+
         #region Singleton
         private static TerminalsPage _instance;
 

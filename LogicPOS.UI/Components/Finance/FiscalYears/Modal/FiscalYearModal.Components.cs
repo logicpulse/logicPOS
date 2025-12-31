@@ -1,5 +1,7 @@
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
@@ -16,7 +18,7 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void Initialize()
         {
-            if(_modalMode != EntityEditionModalMode.Insert)
+            if (_modalMode != EntityEditionModalMode.Insert || (SystemInformationService.UseAgtFe))
             {
                 _checkSeriesForEachTerminal.Sensitive = false;
             }

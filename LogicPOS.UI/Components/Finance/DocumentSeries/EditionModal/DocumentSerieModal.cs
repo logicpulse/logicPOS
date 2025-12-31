@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.Series.UpdateDocumentSerie;
 using LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries;
+using LogicPOS.UI.Components.Pages;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -49,7 +50,22 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
 
-        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+        protected override bool AddEntity()
+        {
+            var command = CreateAddCommand();
+
+            if (_comboFiscalYears.SelectedEntity.SeriesForEachTerminal)
+            {
+                command.Terminals = TerminalsPage.SelectTerminals();
+
+                if (command.Terminals.Count == 0)
+                {
+                    return false;
+                }
+            }
+
+            return ExecuteAddCommand(command).IsError == false;
+        }
 
         protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 

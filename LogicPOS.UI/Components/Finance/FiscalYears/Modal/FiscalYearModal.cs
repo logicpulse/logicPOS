@@ -1,17 +1,19 @@
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.FiscalYears.CreateFiscalYear;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.DocumentSeries;
 using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
@@ -37,8 +39,8 @@ namespace LogicPOS.UI.Components.Modals
             {
                 _txtYear.Text = relevantData.Value.CurrentYear.ToString();
                 int currentYearCount = relevantData.Value.CurrentYearCount;
-                _txtDesignation.Text = $"Ano {relevantData.Value.CurrentYear} {currentYearCount+1}";
-                _txtAcronym.Text = $"{relevantData.Value.CurrentYear}A{currentYearCount+1}";
+                _txtDesignation.Text = $"Ano {relevantData.Value.CurrentYear} {currentYearCount + 1}";
+                _txtAcronym.Text = $"{relevantData.Value.CurrentYear}A{currentYearCount + 1}";
             }
             else
             {
@@ -94,7 +96,6 @@ namespace LogicPOS.UI.Components.Modals
                 }
             }
 
-
             var result = _mediator.Send(CreateAddCommand()).Result;
 
             if (result.IsError)
@@ -103,20 +104,29 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
+            if (SystemInformationService.UseAgtFe)
             {
                 return true;
             }
 
             if (AskForDefaultSeriesCreation())
             {
-                var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
-                var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-                ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
-                var terminalIds = page.SelectedTerminals.Select(x => x.Id).ToList();
-                selectDocumentTypeModal.Destroy();
+                List<Guid> terminals = null;
+                if (_checkSeriesForEachTerminal.Active)
+                {
+                    terminals = TerminalsPage.SelectTerminals();
+                }
 
-                DocumentSeriesService.CreateDefaultSeriesForFiscalYear(FiscalYearsService.CurrentFiscalYear.Id);
+                if (_checkSeriesForEachTerminal.Active && (terminals == null || terminals.Count == 0))
+                {
+                    CustomAlerts.Warning(this)
+                                .WithMessage("O ano fiscal aberto requer séries para cada terminal, mas nenhum terminal foi selecionado: nenhuma série será criada.")
+                                .ShowAlert();
+
+                    return true;
+                }
+
+                DocumentSeriesService.CreateDefaultSeriesForFiscalYear(FiscalYearsService.CurrentFiscalYear.Id, terminals);
             }
 
             return true;
@@ -136,6 +146,5 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         protected override bool UpdateEntity() => false;
-
     }
 }

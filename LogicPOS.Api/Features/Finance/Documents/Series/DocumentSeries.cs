@@ -1,5 +1,6 @@
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using System;
 
 namespace LogicPOS.Api.Entities
 {
@@ -14,5 +15,7 @@ namespace LogicPOS.Api.Entities
         public DocumentType DocumentType { get; set; }
         public FiscalYear FiscalYear { get; set; }
         public string ATDocCodeValidationSeries { get; set; }
+        public Guid? TerminalId { get; set; }
+        public Terminal Terminal { get; set; }
     }
 }

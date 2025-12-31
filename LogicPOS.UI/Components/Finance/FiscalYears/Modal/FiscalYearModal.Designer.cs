@@ -1,8 +1,11 @@
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -51,7 +54,8 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtDesignation.Component, false, false, 0);
             detailsTab.PackStart(_txtYear.Component, false, false, 0);
             detailsTab.PackStart(_txtAcronym.Component, false, false, 0);
-            detailsTab.PackStart(_checkSeriesForEachTerminal,false,false, 0);
+            detailsTab.PackStart(_checkSeriesForEachTerminal, false, false, 0);
+            
             return detailsTab;
         }
     }

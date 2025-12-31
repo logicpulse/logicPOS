@@ -1,6 +1,7 @@
 using ErrorOr;
 using MediatR;
 using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries
 {
@@ -15,5 +16,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateSeries
         public Guid FiscalYearId { get; set; }
         public string AtValidationCode { get; set; }
         public string Notes { get; set; }
+        public List<Guid> Terminals { get; set; }
     }
 }

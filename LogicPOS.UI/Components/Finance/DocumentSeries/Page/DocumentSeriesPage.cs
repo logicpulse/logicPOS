@@ -7,7 +7,6 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
 using MediatR;
 using System.Collections.Generic;
 
@@ -15,18 +14,18 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentSeriesPage : Page<DocumentSeries>
     {
-        protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetActiveDocumentSeriesQuery();
+        protected override IRequest<ErrorOr<IEnumerable<DocumentSeries>>> GetAllQuery => new GetActiveDocumentSeriesQuery { AllTerminals = true };
         public DocumentSeriesPage(Window parent) : base(parent)
         {
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
-            Navigator.BtnInsert.Visible = !(SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule);
+            Navigator.BtnInsert.Visible = !(SystemInformationService.UseAgtFe);
             DisableFilterButton();
         }
 
         public override int RunModal(EntityEditionModalMode mode)
         {
-            if (mode == EntityEditionModalMode.Update && CountriesService.Default.Code2!="PT")
+            if (mode == EntityEditionModalMode.Update && CountriesService.Default.Code2 != "PT")
             {
                 mode = EntityEditionModalMode.View;
             }
@@ -37,14 +36,7 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(CreateFiscalYearColumn());
-            GridView.AppendColumn(CreateDocumentTypeColumn());
-            GridView.AppendColumn(Columns.CreateDesignationColumn(3));
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
-        }
+  
         protected override void InitializeSort()
         {
             GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
@@ -56,7 +48,7 @@ namespace LogicPOS.UI.Components.Pages
             AddUpdatedAtSorting(4);
         }
 
-       
+
         protected override DeleteCommand GetDeleteCommand()
         {
             return null;
@@ -65,7 +57,7 @@ namespace LogicPOS.UI.Components.Pages
         public override void UpdateButtonPrevileges()
         {
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT");
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW"); 
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW");
         }
 
         #region Singleton

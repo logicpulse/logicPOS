@@ -4,15 +4,16 @@ using LogicPOS.Api.Features.Finance.Documents.Series.CreateAgtSeries;
 using LogicPOS.Api.Features.Finance.Documents.Series.CreateDefaultSeries;
 using LogicPOS.UI.Errors;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Finance.DocumentSeries
 {
     public static class DocumentSeriesService
     {
-        public static bool CreateDefaultSeriesForFiscalYear(Guid fiscalYearId)
+        public static bool CreateDefaultSeriesForFiscalYear(Guid fiscalYearId, IEnumerable<Guid> terminals = null)
         {
-            var result = DependencyInjection.Mediator.Send(new CreateDefaultSeriesCommand(fiscalYearId)).Result;
+            var result = DependencyInjection.Mediator.Send(new CreateDefaultSeriesCommand { FiscalYearId = fiscalYearId, Terminals = terminals }).Result;
 
             if (result.IsError)
             {

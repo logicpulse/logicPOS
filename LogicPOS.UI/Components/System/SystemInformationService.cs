@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Features.System.GetSystemInformations;
+using LogicPOS.Api.Features.System.GetSystemInformations;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Errors;
 
 namespace LogicPOS.UI.Services
@@ -38,5 +39,7 @@ namespace LogicPOS.UI.Services
 
             return result.Value;
         }
+
+        public static bool UseAgtFe => SystemInformation.IsAngola && LicensingService.Data.AgtFeModule;
     }
 }

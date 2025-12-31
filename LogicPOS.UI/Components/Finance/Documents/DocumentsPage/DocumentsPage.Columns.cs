@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateTotalToPayColumn());
             GridView.AppendColumn(CreateRelatedDocumentsColumn());
 
-            if (SystemInformationService.SystemInformation.IsAngola && Licensing.LicensingService.Data.AgtFeModule)
+            if (SystemInformationService.UseAgtFe)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
             } else if (SystemInformationService.SystemInformation.IsPortugal)
