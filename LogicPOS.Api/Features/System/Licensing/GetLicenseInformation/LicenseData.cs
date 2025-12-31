@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Entities
         public string Phone { get; set; }
         public string Reseller { get; set; }
         public bool StocksModule { get; set; }
-        public bool AgtFeModule => false;
+        public bool AgtFeModule { get; set; }
         public DateTime? AllUpdateExpirationDate { get; set; }
         public int? AllNumberOfDevices { get; set; }
         public bool HasExpired { get; set; }
