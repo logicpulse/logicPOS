@@ -6,6 +6,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -27,6 +28,12 @@ namespace LogicPOS.UI.Components.Modals
             InitializeFiscalYearsComboBox();
             InitializeDocumentTypesComboBox();
             InitializeBtnATSeriesComunicate();
+
+            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            var terminalIds = page.SelectedTerminals;
+            selectDocumentTypeModal.Destroy();
 
             if (_modalMode == EntityEditionModalMode.Insert)
             {

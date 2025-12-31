@@ -1,15 +1,19 @@
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.FiscalYears.CreateFiscalYear;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.DocumentSeries;
 using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -84,11 +88,12 @@ namespace LogicPOS.UI.Components.Modals
                     return false;
                 }
 
-                if (FiscalYearsService.CloseCurrentFiscalYear() == false)
+                if (true && FiscalYearsService.CloseCurrentFiscalYear() == false)
                 {
                     return false;
                 }
             }
+
 
             var result = _mediator.Send(CreateAddCommand()).Result;
 
@@ -105,6 +110,12 @@ namespace LogicPOS.UI.Components.Modals
 
             if (AskForDefaultSeriesCreation())
             {
+                var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+                var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+                ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+                var terminalIds = page.SelectedTerminals.Select(x => x.Id).ToList();
+                selectDocumentTypeModal.Destroy();
+
                 DocumentSeriesService.CreateDefaultSeriesForFiscalYear(FiscalYearsService.CurrentFiscalYear.Id);
             }
 
