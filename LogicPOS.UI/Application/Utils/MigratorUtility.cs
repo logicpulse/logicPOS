@@ -1,11 +1,11 @@
-﻿using System.IO;
+using System.IO;
 using System.Windows;
 
 namespace LogicPOS.UI.Application.Utils
 {
     public static class MigratorUtility
     {
-        private const string MigratorExecutablePath = "migrator\\win-x64\\lpmigrator.exe";
+        private const string MigratorExecutablePath = "migrator\\lpmigrator.exe";
         public static bool MigratorExists => File.Exists(MigratorExecutablePath);
 
         public static void LaunchMigrator()
