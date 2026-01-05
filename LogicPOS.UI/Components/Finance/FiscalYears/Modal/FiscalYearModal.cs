@@ -90,7 +90,7 @@ namespace LogicPOS.UI.Components.Modals
                     return false;
                 }
 
-                if (true && FiscalYearsService.CloseCurrentFiscalYear() == false)
+                if (FiscalYearsService.CloseCurrentFiscalYear() == false)
                 {
                     return false;
                 }
