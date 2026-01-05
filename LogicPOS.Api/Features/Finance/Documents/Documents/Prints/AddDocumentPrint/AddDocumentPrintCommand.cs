@@ -11,13 +11,15 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPr
         public bool SecondPrint { get; set; }
         public Guid? DocumentId { get; set; }
         public Guid? ReceiptId { get; set; }
+        public bool IsThermalPrint { get; set; }
 
-        public AddDocumentPrintCommand(Guid? documentId, string copies, bool secondPrint, string reason = null)
+        public AddDocumentPrintCommand(Guid? documentId, string copies, bool secondPrint, string reason = null, bool isThermalPrint = false)
         {
             Copies = copies;
             Reason = reason;
             SecondPrint = secondPrint;
             DocumentId = documentId;
+            IsThermalPrint = isThermalPrint;
         }
     }
 }

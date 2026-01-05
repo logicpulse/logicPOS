@@ -75,9 +75,9 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             };
         }
 
-        public static void RegisterPrint(Guid? documentId, IEnumerable<int> copies, bool secondPrint, string reason = null)
+        public static void RegisterPrint(Guid? documentId, IEnumerable<int> copies, bool secondPrint, string reason = null, bool isThermal=false)
         {
-            var command = new AddDocumentPrintCommand(documentId, string.Join(",", copies), secondPrint, reason);
+            var command = new AddDocumentPrintCommand(documentId, string.Join(",", copies), secondPrint, reason, isThermal);
             var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError != false)
             {

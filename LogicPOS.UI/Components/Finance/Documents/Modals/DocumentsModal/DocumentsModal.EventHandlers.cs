@@ -1,12 +1,10 @@
 using Gtk;
-using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Errors;
+using LogicPOS.UI.Printing;
 using Serilog;
 using System;
 using System.Linq;
@@ -67,6 +65,13 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
+            var printer = TerminalService.Terminal.Printer ?? TerminalService.Terminal.ThermalPrinter;
+            bool canPrint = CheckPrinterCompatibility(printer);
+            if (!canPrint)
+            {
+                return;
+            }
+
             var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
 
             if (tempFile == null)
@@ -94,6 +99,14 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (Page.SelectedEntity != null)
             {
+                if (ThermalPrintingService.WasPrintedByThermalPrinter(Page.SelectedEntity.Id))
+                {
+                       CustomAlerts.Warning(this)
+                                    .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                                    .ShowAlert();
+                        return ;
+                    
+                }
                 DocumentPdfUtils.ViewDocumentPdf(this, Page.SelectedEntity.Id);
             }
         }
@@ -120,7 +133,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var printer = TerminalService.Terminal.Printer;
+            var printer = TerminalService.Terminal.Printer ?? TerminalService.Terminal.ThermalPrinter;
 
             if (printer == null)
             {
@@ -141,6 +154,11 @@ namespace LogicPOS.UI.Components.Modals
             {
                 return;
             }
+            bool canPrint = CheckPrinterCompatibility(printer);
+            if (!canPrint)
+            {
+                return;
+            }
 
             var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
 
@@ -152,7 +170,7 @@ namespace LogicPOS.UI.Components.Modals
             try
             {
                 PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
-                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason);
+                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason, printer.Type.ThermalPrinter);
             }
             catch (Exception ex)
             {
@@ -161,8 +179,34 @@ namespace LogicPOS.UI.Components.Modals
                             .WithMessage("Ocorreu um erro ao tentar imprimir o documento.")
                             .ShowAlert();
             }
-        }
 
+            
+        }
+        private bool CheckPrinterCompatibility(Api.Entities.Printer printer)
+        {
+            if (ThermalPrintingService.WasPrintedByThermalPrinter(Page.SelectedEntity.Id))
+            {
+                if (!printer.Type.ThermalPrinter)
+                {
+                    CustomAlerts.Warning(this)
+                                .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                                .ShowAlert();
+                    return false;
+                }
+            }
+            else
+            {
+                if (printer.Type.ThermalPrinter)
+                {
+                    CustomAlerts.Warning(this)
+                                .WithMessage("O documento que tentou imprimir não foi Criado em uma impressora Térmica.")
+                                .ShowAlert();
+                    return false;
+                }
+            }
+
+            return true;
+        }
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)
         {
             if (Page.SelectedDocuments.Count == 0)
@@ -232,7 +276,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             UpdateModalTitle();
             UpdateNavigationButtons();
-            
+
         }
 
         private void BtnSendDocumentEmail_Clicked(object sender, EventArgs e)
@@ -251,12 +295,12 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnEditDraft_Clicked(object sender, EventArgs e)
         {
-            if(Page.SelectedEntity == null)
+            if (Page.SelectedEntity == null)
             {
                 return;
             }
 
-           var response = CreateDocumentModal.ShowModal(this,Page.SelectedEntity);
+            var response = CreateDocumentModal.ShowModal(this, Page.SelectedEntity);
 
             if (response == ResponseType.Ok)
             {

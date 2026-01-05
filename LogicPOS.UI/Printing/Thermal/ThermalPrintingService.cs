@@ -1,14 +1,9 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Entities.Enums;
-using LogicPOS.Api.Features.Company;
-using LogicPOS.Api.Features.Documents.GetDocumentById;
+﻿using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.POS;
-using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing.Thermal.Printers;
 using Serilog;
 using System;
@@ -203,6 +198,18 @@ namespace LogicPOS.UI.Printing
 
                 Log.Error(ex, "Error printing ticket");
             }
+        }
+
+        public static bool WasPrintedByThermalPrinter(Guid id)
+        {
+            GetDocumentPrintQuery query = new GetDocumentPrintQuery(id);
+            var result =DependencyInjection.Mediator.Send(query).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+            return result.Value.IsThermalPrint;
         }
     }
 }
