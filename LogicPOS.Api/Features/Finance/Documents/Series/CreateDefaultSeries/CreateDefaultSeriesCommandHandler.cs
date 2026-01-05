@@ -1,6 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
+using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
-using System;
+using LogicPOS.Api.Features.Finance.Documents.Types;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,8 +10,11 @@ namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateDefaultSeries
 {
     public class CreateDefaultSeriesCommandHandler : RequestHandler<CreateDefaultSeriesCommand, ErrorOr<Success>>
     {
-        public CreateDefaultSeriesCommandHandler(IHttpClientFactory httpFactory) : base(httpFactory)
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+
+        public CreateDefaultSeriesCommandHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
         {
+            _keyedMemoryCache = cache;
         }
 
         public override async Task<ErrorOr<Success>> Handle(CreateDefaultSeriesCommand request, CancellationToken cancellationToken = default)
@@ -20,6 +24,8 @@ namespace LogicPOS.Api.Features.Finance.Documents.Series.CreateDefaultSeries
             {
                 return result.Errors;
             }
+
+            DocumentTypesCache.Clear(_keyedMemoryCache);
 
             return Result.Success;
         }
