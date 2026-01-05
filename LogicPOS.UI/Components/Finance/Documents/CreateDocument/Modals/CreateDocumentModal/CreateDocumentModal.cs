@@ -125,7 +125,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (FiscalYearsService.HasActiveFiscalYear() == false)
             {
-                FiscalYearsService.ShowOpenFiscalYearAlert();
+                FiscalYearsService.ShowOpenFiscalYearAlert(parent);
                 return ResponseType.Cancel;
             }
 

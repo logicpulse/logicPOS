@@ -229,7 +229,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             if(FiscalYearsService.HasActiveFiscalYear() == false)
             {
-                FiscalYearsService.ShowOpenFiscalYearAlert();
+                FiscalYearsService.ShowOpenFiscalYearAlert(this);
                 return;
             }
 

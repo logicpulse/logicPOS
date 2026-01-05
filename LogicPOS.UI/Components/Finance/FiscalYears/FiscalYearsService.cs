@@ -59,9 +59,9 @@ namespace LogicPOS.UI.Components.FiscalYears
             return true;
         }
        
-        public static void ShowOpenFiscalYearAlert()
+        public static void ShowOpenFiscalYearAlert(Gtk.Window parent)
         {
-            CustomAlerts.Warning(POSWindow.Instance)
+            CustomAlerts.Warning(parent)
                        .WithSize(new Size(600, 400))
                        .WithTitleResource("global_warning")
                        .WithMessage(GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"))
