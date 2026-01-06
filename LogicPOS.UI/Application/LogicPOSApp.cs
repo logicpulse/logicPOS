@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
@@ -33,6 +33,7 @@ namespace LogicPOS.UI.Application
         {
             try
             {
+                Log.Information("Configuring LogicPOS UI...");
                 InitializeScreenSize();
                 InitializeExpressionEvaluator();
                 InitializeTheme();
@@ -103,6 +104,7 @@ namespace LogicPOS.UI.Application
         {
             try
             {
+                Log.Information("Parsing theme from {File}", AppSettings.Instance.ThemeFilePath);
                 Theme = XmlToObjectParser.ParseFromFile(AppSettings.Instance.ThemeFilePath);
             }
             catch (Exception ex)

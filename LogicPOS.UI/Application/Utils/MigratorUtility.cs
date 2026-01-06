@@ -1,3 +1,4 @@
+using Serilog;
 using System.IO;
 using System.Windows;
 
@@ -13,18 +14,20 @@ namespace LogicPOS.UI.Application.Utils
             var response = MessageBox.Show("Deseja migrar os dados da versão anterior?", "LogicPOS", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (response != MessageBoxResult.Yes)
             {
+                Log.Information("User declined to run the migrator.");
                 return;
             }
 
             if (MigratorExists == false)
             {
-                Serilog.Log.Warning("Migrator executable not found at path: {Path}", MigratorExecutablePath);
+                Log.Warning("Migrator executable not found at path: {Path}", MigratorExecutablePath);
                 MessageBox.Show("Aplicação de migração não encontrada.", "LogicPOS", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             try
             {
+                Log.Information("Launching migrator from path: {Path}", MigratorExecutablePath);
                 var processInfo = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = MigratorExecutablePath,

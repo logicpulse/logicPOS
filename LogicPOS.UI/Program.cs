@@ -24,6 +24,7 @@ namespace LogicPOS.UI
 
         public static void InitializeGtk()
         {
+            Log.Information("Initializing GTK...");
             Gtk.Application.Init();
             GtkThemeStyle.ParseTheme();
         }
@@ -48,18 +49,19 @@ namespace LogicPOS.UI
         public static void Main(string[] args)
         {
             ConfigureLogging();
+            Log.Information("Initializing application...");
 
             if (IsFirstLaunch())
             {
                 Log.Information("First launch detected, starting migrator...");
                 MigratorUtility.LaunchMigrator();
-                
             }
 
             using (var singleProgramInstance = new SingleProgramInstance())
             {
                 if (singleProgramInstance.IsSingleInstance == false)
                 {
+                    Log.Warning("Another instance is already running, exiting application.");
                     SimpleAlerts.ShowInstanceAlreadyRunningAlert();
                     return;
                 }
@@ -68,12 +70,14 @@ namespace LogicPOS.UI
 
                 if (DependencyInjection.Initialize() == false)
                 {
+                    Log.Error("Failed to initialize dependency injection.");
                     Quit();
                     return;
                 }
 
                 if (InitializeCulture() == false)
                 {
+                    Log.Error("Failed to initialize culture.");
                     Quit();
                     return;
                 }
@@ -87,6 +91,7 @@ namespace LogicPOS.UI
                 StartApp();
             }
 
+            Log.Information("Application exiting.");
             Log.CloseAndFlush();
         }
 
@@ -109,6 +114,7 @@ namespace LogicPOS.UI
 
         private static void StartApp()
         {
+            Log.Information("Starting application...");
             if (LicensingService.Initialize() == false)
             {
                 return;
@@ -117,6 +123,7 @@ namespace LogicPOS.UI
             var terminalResult = TerminalService.InitializeTerminal();
             if(terminalResult.IsError)
             {
+                Log.Error("Failed to initialize terminal: {Error}", string.Join(Environment.NewLine, terminalResult.FirstError.Description));
                 SimpleAlerts.Error()
                             .WithTitle("Erro ao inicializar terminal")
                             .WithMessage(string.Join(Environment.NewLine, terminalResult.FirstError.Description))
@@ -126,6 +133,7 @@ namespace LogicPOS.UI
 
             if (LicensingService.Data.IsLicensed == false)
             {
+                Log.Warning("System no lincesed, showing registration modal...");
                 if (LicensingService.ConnectToWs())
                 {
                     var result = LicensingService.ActivateFromFile();
@@ -136,6 +144,7 @@ namespace LogicPOS.UI
                 }
                 else
                 {
+                    Log.Warning("No internet connection detected, checking for offline activation file...");
                     if (!File.Exists(LicensingService.OFFLINE_ACTIVATION_FILE))
                     {
                         RegisterModal.ShowModal();
@@ -167,8 +176,8 @@ namespace LogicPOS.UI
             catch
             {
                 SimpleAlerts.Error()
-                            .WithTitle("Erro ao obter informações do sistema")
-                            .WithMessage("Erro ao obter informações do sistema")
+                            .WithTitle("Erro ao obter informaÃ§Ãµes do sistema")
+                            .WithMessage("Erro ao obter informaÃ§Ãµes do sistema")
                             .ShowAlert();
                 return false;
             }
