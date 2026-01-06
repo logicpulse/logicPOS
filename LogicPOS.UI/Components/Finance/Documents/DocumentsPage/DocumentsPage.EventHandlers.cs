@@ -1,7 +1,9 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Printing;
 using System;
 using System.Linq;
 
@@ -19,6 +21,14 @@ namespace LogicPOS.UI.Components.Pages
 
         private void OnSelectedEntityConfirmed(DocumentViewModel document)
         {
+            if (ThermalPrintingService.WasPrintedByThermalPrinter(SelectedEntity.Id))
+            {
+                CustomAlerts.Warning()
+                             .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                             .ShowAlert();
+                return;
+
+            }
             DocumentPdfUtils.ViewDocumentPdf(SourceWindow, document.Id);
         }
 
