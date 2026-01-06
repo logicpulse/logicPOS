@@ -209,6 +209,10 @@ namespace LogicPOS.UI.Printing
                 ErrorHandlingService.HandleApiError(result);
                 return false;
             }
+            if (result.Value == null)
+            {
+                return false;
+            }
             return result.Value.IsThermalPrint;
         }
     }

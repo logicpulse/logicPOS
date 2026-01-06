@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
@@ -72,7 +73,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (ThermalPrintingService.PrintInvoice(printingData.Value))
             {
-                DocumentsService.RegisterPrint(printingData.Value.DocumentId, new List<int> { 1 }, false);
+                DocumentsService.RegisterPrint(printingData.Value.DocumentId, new List<int> { 1 }, false,null,true);
             }
         }
 
