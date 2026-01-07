@@ -5,9 +5,11 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Services.Description;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -18,7 +20,7 @@ namespace LogicPOS.UI.Components.InputFields
             var fileChooserAction = FileChooserAction.Open;
             FileChooserButton = new FileChooserButton(string.Empty, fileChooserAction) { HeightRequest = 23 };
 
-            FileChooserButton.SetFilename(_entity.Value);
+            FileChooserButton.SetFilename(Base64ToFileName(_entity.Value));
 
             if (_entity.Token == "TICKET_FILENAME_LOGO")
             {
@@ -36,7 +38,18 @@ namespace LogicPOS.UI.Components.InputFields
 
             InitializeFileChooserButtonComponent();
         }
-
+        private string Base64ToFileName(string base64)
+        {
+            if (!string.IsNullOrEmpty(base64)&&!base64.Contains("."))
+            { 
+            byte[] imageBytes = Convert.FromBase64String(base64);
+            string tempFile = Path.Combine(Path.GetTempPath(),
+                                           $"ConvertedTempFileLogo.png");
+            File.WriteAllBytes(tempFile, imageBytes);
+            return tempFile;
+            }
+            return base64;
+        }
         private void SelectFile()
         {
 
@@ -55,6 +68,7 @@ namespace LogicPOS.UI.Components.InputFields
         {
             var hBox = new HBox();
             InitializeRemoveFileButton();
+
             hBox.PackStart(FileChooserButton, true, true, 0);
             hBox.PackStart(RemoveFileButton, false, false, 0);
             var box = FieldComponent as VBox;
