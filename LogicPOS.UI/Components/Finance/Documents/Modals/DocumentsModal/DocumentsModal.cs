@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Documents.CancelDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 canCancel = false;
             }
-            else if (document.TypeAnalyzer.IsGuide() && document.ShipFromAddressDeliveryDate < DateTime.Now)
+            else if (document.TypeAnalyzer.IsWayBill() && document.ShipFromAddressDeliveryDate < DateTime.Now)
             {
                 canCancel = false;
             }

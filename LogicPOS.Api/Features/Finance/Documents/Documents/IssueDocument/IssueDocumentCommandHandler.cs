@@ -1,7 +1,6 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
 {
     public class IssueDocumentCommandHandler :
-        RequestHandler<IssueDocumentCommand, ErrorOr<Guid>>
+        RequestHandler<IssueDocumentCommand, ErrorOr<IssueDocumentResponse>>
     {
         private readonly IKeyedMemoryCache _keyedMemoryCache;
 
@@ -18,11 +17,11 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
             _keyedMemoryCache = cache;
         }
 
-        public override async Task<ErrorOr<Guid>> Handle(IssueDocumentCommand command, CancellationToken cancellationToken = default)
+        public override async Task<ErrorOr<IssueDocumentResponse>> Handle(IssueDocumentCommand command, CancellationToken cancellationToken = default)
         {
-            var result =  await HandleAddCommandAsync("documents",command, cancellationToken);
+            var result = await HandlePostCommandAsync<IssueDocumentResponse>("documents", command, cancellationToken);
 
-            if(result.IsError == false)
+            if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
             }

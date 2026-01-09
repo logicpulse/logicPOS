@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Documents;
 using MediatR;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
 {
-    public class IssueDocumentCommand : IRequest<ErrorOr<Guid>>
+    public class IssueDocumentCommand : IRequest<ErrorOr<IssueDocumentResponse>>
     {
         public IEnumerable<DocumentPaymentMethod> PaymentMethods { get; set; }
         public Guid? PaymentConditionId { get; set; }

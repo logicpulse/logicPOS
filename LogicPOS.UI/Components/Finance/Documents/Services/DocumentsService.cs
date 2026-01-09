@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.DeleteDraft;
 using LogicPOS.Api.Features.Documents.GetDocumentById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails;
@@ -29,7 +29,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             return document.Value;
         }
 
-        public static Guid? IssueDocument(IssueDocumentCommand command)
+        public static IssueDocumentResponse? IssueDocument(IssueDocumentCommand command)
         {
             var document = DependencyInjection.Mediator.Send(command).Result;
             if (document.IsError != false)
@@ -54,13 +54,13 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
 
         public static InvoicePrintingData? IssueDocumentForPrinting(IssueDocumentCommand command)
         {
-            var documentId = IssueDocument(command);
-            if (documentId == null)
+            var issueDocumentReponse = IssueDocument(command);
+            if (issueDocumentReponse == null)
             {
                 return null;
             }
 
-            var document = GetPrintingModel(documentId.Value);
+            var document = GetPrintingModel(issueDocumentReponse.Value.Id);
 
             if (document == null)
             {
@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
 
             return new InvoicePrintingData
             {
-                DocumentId = documentId.Value,
+                DocumentId = issueDocumentReponse.Value.Id,
                 Document = document,
                 CompanyInformations = CompanyDetailsService.CompanyInformation
             };

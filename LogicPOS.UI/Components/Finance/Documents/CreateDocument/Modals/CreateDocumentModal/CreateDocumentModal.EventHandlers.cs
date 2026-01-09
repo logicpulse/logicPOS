@@ -1,13 +1,17 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.At;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
+using LogicPOS.UI.Services;
 using System;
 using System.EnterpriseServices;
 using System.Linq;
@@ -87,19 +91,34 @@ namespace LogicPOS.UI.Components.Modals
                 }
             }
 
-            Guid? id = DocumentsService.IssueDocument(addCommand);
-            if (id == null)
+            IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(addCommand);
+            if (issueDocumentResponse == null)
             {
                 Run();
                 return;
             }
 
-            if(_draftId != null)
+            if (_draftId != null)
             {
                 DocumentsService.DeleteDraft(_draftId.Value);
             }
 
-            DocumentPdfUtils.ViewDocumentPdf(this, id.Value);
+
+            bool requireAtRegistration = AtService.DocumentTypeRequiresAtRegistration(addCommand.Type);
+
+            if (SystemInformationService.SystemInformation.IsPortugal && requireAtRegistration && issueDocumentResponse.Value.HasAtRegistration == false)
+            {
+                bool advance = CustomAlerts.Question(this)
+                     .WithMessage("Não foi possível registar o documento na AT. Deseja abrir o documento para impressão mesmo assim?")
+                     .ShowAlert() == ResponseType.Yes;
+
+                if (advance == false)
+                {
+                    return;
+                }
+            }
+
+            DocumentPdfUtils.ViewDocumentPdf(this, issueDocumentResponse.Value.Id);
         }
 
         private void BtnClear_Clicked(object sender, EventArgs e)
@@ -141,13 +160,13 @@ namespace LogicPOS.UI.Components.Modals
             CustomerTab.ImportDataFromDocument(document);
             DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
 
-            if (document.TypeAnalyzer.IsGuide())
+            if (document.TypeAnalyzer.IsWayBill())
             {
                 ShipFromTab.ImportDataFromDocument(document);
                 ShipToTab.ImportDataFromDocument(document);
             }
 
-            if(document.PaymentMethods != null && document.PaymentMethods.Any() && SinglePaymentMethod == false)
+            if (document.PaymentMethods != null && document.PaymentMethods.Any() && SinglePaymentMethod == false)
             {
                 PaymentMethodsTab.ImportDataFromDocument(document);
             }
@@ -162,7 +181,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var docTypeAnalyzer = DocumentTab.DocumentTypeAnalyzer;
 
-            if(docTypeAnalyzer == null || docTypeAnalyzer.Value.IsGuide() == false)
+            if (docTypeAnalyzer == null || docTypeAnalyzer.Value.IsWayBill() == false)
             {
                 return;
             }

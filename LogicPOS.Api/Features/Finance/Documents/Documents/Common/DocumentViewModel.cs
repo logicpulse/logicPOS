@@ -31,7 +31,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public bool IsCancellable => IsActive && HasPassed48Hours == false;
         public bool IsPayable => IsActive && Paid == false && (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsDebitNote());
         public bool IsAgtDocument => (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsInvoiceReceipt() || TypeAnalyzer.IsCreditNote() || TypeAnalyzer.IsDebitNote()) && IsDraft == false;
-        public bool IsAtDocument => TypeAnalyzer.IsGuide() && IsDraft == false;
+        public bool IsAtDocument => TypeAnalyzer.IsWayBill() && IsDraft == false;
         public string GetAgtStatus()
         {
             if (IsAgtDocument == false)
@@ -54,7 +54,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
 
         public string GetAtStatus()
         {
-            if (TypeAnalyzer.IsGuide() == false)
+            if (TypeAnalyzer.IsWayBill() == false)
             {
                 return "N/A";
 

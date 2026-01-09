@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Components.Modals
                 }
             }
 
-            if (docAnalyzer.Value.IsGuide())
+            if (docAnalyzer.Value.IsWayBill())
             {
                 validatableTabs.Add(ShipToTab);
                 validatableTabs.Add(ShipFromTab);

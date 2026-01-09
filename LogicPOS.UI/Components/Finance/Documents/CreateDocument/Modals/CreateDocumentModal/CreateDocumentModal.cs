@@ -38,13 +38,13 @@ namespace LogicPOS.UI.Components.Modals
             CustomerTab.ImportDataFromDocument(fullDocument);
             DetailsTab.ImportDataFromDocument(document.Id, fullDocument.Discount);
 
-            if (document.TypeAnalyzer.IsGuide())
+            if (document.TypeAnalyzer.IsWayBill())
             {
                 ShipFromTab.ImportDataFromDocument(fullDocument);
                 ShipToTab.ImportDataFromDocument(fullDocument);
             }
 
-            if (document.TypeAnalyzer.IsGuide())
+            if (document.TypeAnalyzer.IsWayBill())
             {
                 ShipFromTab.ImportDataFromDocument(fullDocument);
                 ShipToTab.ImportDataFromDocument(fullDocument);
@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Modals
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = DetailsTab.GetDocumentDetails();
 
-            if (analyzer.IsGuide())
+            if (analyzer.IsWayBill())
             {
                 command.ShipToAddress = ShipToTab.GetAddress();
                 command.ShipFromAddress = ShipFromTab.GetAddress();
@@ -186,8 +186,8 @@ namespace LogicPOS.UI.Components.Modals
         private void ShowTabsForDocumentType(DocumentType documentType)
         {
             var analyzer = documentType.Analyzer;
-            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsGuide();
-            if(analyzer.IsGuide() && CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId!=Guid.Empty)
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsWayBill();
+            if(analyzer.IsWayBill() && CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId!=Guid.Empty)
             {
                 ShipToTab.GetCustomerAddress((Guid)CustomerTab.CustomerId);
             }

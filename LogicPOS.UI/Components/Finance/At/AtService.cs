@@ -1,3 +1,4 @@
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.At.RegisterDocument;
 using LogicPOS.Api.Features.Finance.At.RegisterSeries;
 using LogicPOS.UI.Errors;
@@ -33,6 +34,12 @@ namespace LogicPOS.UI.Components.Finance.At
             }
 
             return result.Value;
+        }
+        
+        public static bool DocumentTypeRequiresAtRegistration(string documentType)
+        {
+            var analyzer = new DocumentTypeAnalyzer(documentType);
+            return analyzer.IsWayBill();
         }
     }
 }

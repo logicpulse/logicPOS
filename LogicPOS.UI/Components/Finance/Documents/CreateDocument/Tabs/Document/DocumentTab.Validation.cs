@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            if (DocumentTypeAnalyzer.Value.IsGuide())
+            if (DocumentTypeAnalyzer.Value.IsWayBill())
             {
                 TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(false, false);
