@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -51,7 +51,7 @@ namespace LogicPOS.UI.Components.POS
                    
                     string message = GetInvalidSimplifiedInvoiceMessage();
                     var response = CustomAlerts.Warning(this)
-                        .WithSize(new System.Drawing.Size(550,440))
+                        .WithSize(new global::System.Drawing.Size(550,440))
                         .WithButtonsType(ButtonsType.YesNo)
                         .WithMessage(message)
                         .ShowAlert();
@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.POS
 
                     string message = GetInvalidTotalForFinalConsumerMessage();
                     var response = CustomAlerts.Warning(this)
-                        .WithSize(new System.Drawing.Size(550, 480))
+                        .WithSize(new global::System.Drawing.Size(550, 480))
                         .WithMessage(message)
                         .ShowAlert();
 

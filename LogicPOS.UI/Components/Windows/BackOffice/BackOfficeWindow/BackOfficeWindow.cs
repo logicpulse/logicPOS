@@ -1,4 +1,4 @@
-﻿using logicpos;
+using logicpos;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Terminals;
@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.Windows
             }
         }
 
-        public static System.Drawing.Size ScreenSize { get; set; } = ScreenSizeUtil.GetScreenSize();
+        public static global::System.Drawing.Size ScreenSize { get; set; } = ScreenSizeUtil.GetScreenSize();
 
         public static void ShowBackOffice()
         {

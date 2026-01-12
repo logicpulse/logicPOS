@@ -133,7 +133,7 @@ namespace LogicPOS.UI.Components.Modals
             string fileImageAppIcon = string.Format("{0}{1}", AppSettings.Paths.Images, AppSettings.AppIcon);
             if (File.Exists(fileImageAppIcon))
             {
-                Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
+                Icon = Utils.ImageToPixbuf(global::System.Drawing.Image.FromFile(fileImageAppIcon));
             }
         }
 

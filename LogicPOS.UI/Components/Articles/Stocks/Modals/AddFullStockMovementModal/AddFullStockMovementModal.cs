@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -96,7 +96,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            TxtDocumnetNumber.Text = System.IO.Path.GetFileNameWithoutExtension(path);
+            TxtDocumnetNumber.Text = global::System.IO.Path.GetFileNameWithoutExtension(path);
             TxtDocumnetNumber.SelectedEntity = Convert.ToBase64String(File.ReadAllBytes(path));
         }
 

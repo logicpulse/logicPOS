@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.UpdateStockMovement;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Pages;
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         {
         }
 
-        protected override bool AddEntity() => throw new System.NotImplementedException();
+        protected override bool AddEntity() => throw new global::System.NotImplementedException();
         
         protected override void ShowEntityData()
         {
@@ -91,7 +91,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            TxtDocumnetNumber.Text = System.IO.Path.GetFileNameWithoutExtension(path);
+            TxtDocumnetNumber.Text = global::System.IO.Path.GetFileNameWithoutExtension(path);
             TxtDocumnetNumber.SelectedEntity = Convert.ToBase64String(File.ReadAllBytes(path));
         }
     }

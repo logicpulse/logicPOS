@@ -1,16 +1,17 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.InputFields
 {
     public partial class ArticleField
     {
-        private void BtnSelect_Clicked(object sender, System.EventArgs e)
+        private void BtnSelect_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
             var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
@@ -77,13 +77,16 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 
         private void ButtonKeyOK_Clicked(object sender, EventArgs e)
         {
-            bool result = _pinPanel.ProcessPassword(_user.Id, _pinPanel.TxtPin.Text);
-            if (result)
+            bool result = _pinPanel.ProcessPassword(_user, _pinPanel.TxtPin.Text);
+            
+            if (!result)
             {
-                var jwt = _pinPanel.JwtToken;
-                AuthenticationService.LoginUser(_user, jwt);
-                Respond(ResponseType.Ok);
+                return;
             }
+
+            var jwt = _pinPanel.JwtToken;
+            AuthenticationService.LoginUser(_user, jwt);
+            Respond(ResponseType.Ok);
         }
     }
 }

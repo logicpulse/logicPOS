@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private CreateDocumentModal(Window parent) : base(parent: parent,
                                                          title: LocalizedString.Instance["window_title_dialog_new_finance_document"],
-                                                         size: new System.Drawing.Size(790, 546),
+                                                         size: new global::System.Drawing.Size(790, 546),
                                                          icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
             Initialize();

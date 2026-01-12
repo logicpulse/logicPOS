@@ -1,4 +1,4 @@
-﻿
+
 
 using Gtk;
 using LogicPOS.Api.Entities;
@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtArticle.Clear();
         }
 
-        private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectDocumentType_Clicked(object sender, EventArgs e)
         {
             var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -133,7 +133,7 @@ namespace LogicPOS.UI.Components.Modals
             dateTimePicker.Destroy();
         }
 
-        private void BtnSelectCustomer_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -147,7 +147,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void BtnSelectFamily_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectFamily_Clicked(object sender, EventArgs e)
         {
             var page = new ArticleFamiliesPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<ArticleFamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -161,7 +161,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void BtnSelectSubfamily_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectSubfamily_Clicked(object sender, EventArgs e)
         {
             if (TxtFamily.SelectedEntity != null)
             {
@@ -179,7 +179,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             ArticleSubfamiliesPage.FamilyId = Guid.Empty;
         }
-        private void BtnSelectArticle_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectArticle_Clicked(object sender,  EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -193,7 +193,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void BtnSelectSerialNumber_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectSerialNumber_Clicked(object sender, EventArgs e)
         {
             var page = new ArticleHistoryPage(null, PageOptions.SelectionPageOptions);
             var selectDocumentTypeModal = new EntitySelectionModal<ArticleHistory>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
@@ -207,7 +207,7 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-        private void BtnSelectDocumentNumber_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectDocumentNumber_Clicked(object sender, EventArgs e)
         {
             var page = new DocumentsPage(this, PageOptions.SelectionPageOptions);
             var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));

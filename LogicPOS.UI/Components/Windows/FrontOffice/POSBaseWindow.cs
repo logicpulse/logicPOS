@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             string appIconFileLocation = GetAppIconFileLocation();
 
-            if (File.Exists(appIconFileLocation)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(appIconFileLocation));
+            if (File.Exists(appIconFileLocation)) Icon = Utils.ImageToPixbuf(global::System.Drawing.Image.FromFile(appIconFileLocation));
         }
 
         private void ConfigureScreen(

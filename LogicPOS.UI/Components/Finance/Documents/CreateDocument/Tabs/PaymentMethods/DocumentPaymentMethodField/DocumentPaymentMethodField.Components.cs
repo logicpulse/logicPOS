@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using System;
@@ -15,6 +15,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         public string FieldName => TxtPaymentMethod.Label.Text;
 
         public event Action<DocumentPaymentMethodField> OnRemove;
-        public event System.Action OnAdd;
+        public event global::System.Action OnAdd;
     }
 }

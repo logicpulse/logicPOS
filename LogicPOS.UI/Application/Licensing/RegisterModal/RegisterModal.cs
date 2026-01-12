@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Licensing
                     : base(parent, flags)
         {
             string windowTitle = LocalizedString.Instance["window_title_license"];
-            System.Drawing.Size windowSize = new System.Drawing.Size(890, 650);
+            global::System.Drawing.Size windowSize = new global::System.Drawing.Size(890, 650);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_license.png";
 
             if (string.IsNullOrWhiteSpace(hardwareId))
@@ -103,7 +103,7 @@ namespace LogicPOS.UI.Components.Licensing
             if (LicensingService.ConnectToWs() == false)
             {
                 CustomAlerts.Error(this)
-                            .WithSize(new System.Drawing.Size(600, 300))
+                            .WithSize(new global::System.Drawing.Size(600, 300))
                             .WithTitleResource("global_error")
                             .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
                             .ShowAlert();
@@ -133,7 +133,7 @@ namespace LogicPOS.UI.Components.Licensing
             }
 
             CustomAlerts.Information(this)
-                        .WithSize(new System.Drawing.Size(600, 300))
+                        .WithSize(new global::System.Drawing.Size(600, 300))
                         .WithTitleResource("global_information")
                         .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
                         .ShowAlert();
@@ -155,7 +155,7 @@ namespace LogicPOS.UI.Components.Licensing
             activateLicenseCommand.Email = EntryBoxEmail.EntryValidation.Text;
             activateLicenseCommand.Phone = EntryBoxPhone.EntryValidation.Text;
             activateLicenseCommand.HardwareId = LicensingService.Data.HardwareId;
-            activateLicenseCommand.AssemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            activateLicenseCommand.AssemblyVersion = global::System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             activateLicenseCommand.IdCountry = Countries.IndexOf(ComboBoxCountry.Value) + 1;
             activateLicenseCommand.SoftwareKey = _entryBoxSoftwareKey.EntryValidation.Text;
 

@@ -1,17 +1,18 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Warehouses.Locations.DeleteWarehouseLocation;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles.Stocks.Warehouses.Service;
 using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Errors;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class WarehouseModal
     {
-        private void Button_AddLocation_Clicked(object sender, System.EventArgs e)
+        private void Button_AddLocation_Clicked(object sender, EventArgs e)
         {
             AddLocationField();
         }

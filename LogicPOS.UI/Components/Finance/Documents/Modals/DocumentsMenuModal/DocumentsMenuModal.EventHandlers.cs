@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Pages;
 using System;
 
@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
             modal.Destroy();
         }
 
-        private void BtnReceiptsEmission_Clicked(object sender, System.EventArgs e)
+        private void BtnReceiptsEmission_Clicked(object sender, EventArgs e)
         {
             var modal = new DocumentsModal(WindowSettings.Source, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices);
             modal.Run();

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using System;
@@ -217,7 +217,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             WindowSettings.Mask.TransientFor = parent;
             WindowSettings.Mask.SetSizeRequest(10, 10);
             WindowSettings.Mask.Move(-100, -100);
-            WindowSettings.Mask.ModifyBg(StateType.Normal, System.Drawing.Color.Black.ToGdkColor());
+            WindowSettings.Mask.ModifyBg(StateType.Normal, global::System.Drawing.Color.Black.ToGdkColor());
 
             //Prevent click outside Dialog
             WindowSettings.Mask.Opacity = 0.35F;//0.55F | 0.75F

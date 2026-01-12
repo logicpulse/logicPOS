@@ -144,13 +144,13 @@ namespace LogicPOS.UI.Components.Modals
                 new ButtonSettings
                 {
                     Name = name,
-                    BackgroundColor = System.Drawing.Color.Transparent,
+                    BackgroundColor = global::System.Drawing.Color.Transparent,
                     Text = text,
                     Icon = icon,
                     IconSize = buttonIconSize,
                     ButtonSize = buttonSize,
                     LeftImage = true,
-                    FontColor = System.Drawing.Color.White
+                    FontColor = global::System.Drawing.Color.White
 
                 })
             { Sensitive = true };

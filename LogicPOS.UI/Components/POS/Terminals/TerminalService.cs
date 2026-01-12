@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Terminals.CreateTerminal;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Terminals
@@ -41,17 +42,17 @@ namespace LogicPOS.UI.Components.Terminals
 
         public static bool HardwareIdFileExists()
         {
-            return System.IO.File.Exists(TERMINAL_HARDWAREID_FILE);
+            return File.Exists(TERMINAL_HARDWAREID_FILE);
         }
 
         private static string GetHardwareIdFromFile()
         {
-            return System.IO.File.ReadAllText(TERMINAL_HARDWAREID_FILE);
+            return File.ReadAllText(TERMINAL_HARDWAREID_FILE);
         }
 
         private static void CreateHardwareIdFile(string hardwareId)
         {
-            System.IO.File.WriteAllText(TERMINAL_HARDWAREID_FILE, hardwareId);
+            File.WriteAllText(TERMINAL_HARDWAREID_FILE, hardwareId);
         }
 
         public static ErrorOr<Terminal> InitializeTerminal()

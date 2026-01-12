@@ -150,7 +150,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
         }
 
-        private void BtnSelectDocumentType_Clicked(object sender, System.EventArgs e)
+        private void BtnSelectDocumentType_Clicked(object sender, EventArgs e)
         {
             var docType = SelectDocumentType();
 

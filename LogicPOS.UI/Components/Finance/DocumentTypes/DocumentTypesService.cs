@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.DocumentTypes.GetAllDocumentTypes;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.GetActiveDocumentTypes;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
             return documentTypes.Value.ToList();
         }
 
-        public static DocumentType GetById(System.Guid id)
+        public static DocumentType GetById(Guid id)
         {
             return GetAll().FirstOrDefault(dt => dt.Id == id);
         }

@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.Windows
             modal.Destroy();
         }
 
-        private void BtnReceiptsEmission_Clicked(object sender, System.EventArgs e)
+        private void BtnReceiptsEmission_Clicked(object sender, EventArgs e)
         {
             var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices);
             modal.Run();
@@ -211,13 +211,13 @@ namespace LogicPOS.UI.Components.Windows
             ExportSaftByPeriod(startDate, endDate);
         }
 
-        private void BtnExportArticles_Clicked(object sender, System.EventArgs e)
+        private void BtnExportArticles_Clicked(object sender, EventArgs e)
         {
             var filePath = ArticlesService.ExportArticlesToExcel();
             OpenExcelFile(filePath);
         }
 
-        private void BtnExportCustomers_Clicked(object sender, System.EventArgs e)
+        private void BtnExportCustomers_Clicked(object sender, EventArgs e)
         {
             var filePath = CustomersService.ExportCustomersToExcel();
             OpenExcelFile(filePath);
@@ -225,7 +225,7 @@ namespace LogicPOS.UI.Components.Windows
 
         #endregion
 
-        private void BtnDocumentSeries_Clicked(object sender, System.EventArgs e)
+        private void BtnDocumentSeries_Clicked(object sender, EventArgs e)
         {
             if(FiscalYearsService.HasActiveFiscalYear() == false)
             {
@@ -291,7 +291,7 @@ namespace LogicPOS.UI.Components.Windows
 
                 if (responseType == ResponseType.Yes)
                 {
-                    System.Diagnostics.Process.Start(lPathToUpdater);
+                    global::System.Diagnostics.Process.Start(lPathToUpdater);
                     Gtk.Application.Quit();
                 }
             }

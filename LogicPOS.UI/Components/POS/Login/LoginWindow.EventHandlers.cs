@@ -1,8 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
@@ -26,7 +25,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            if (!PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text))
+            if (!PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text))
             {
                 return;
             }
@@ -40,7 +39,7 @@ namespace LogicPOS.UI.Components.Windows
             PinPanel.Mode = NumberPadPinMode.PasswordReset;
             PinPanel.TxtPin.Text = currentPin;
 
-            PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text);
+            PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text);
         }
 
         private void ProcessLogin()
@@ -64,7 +63,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             if (args.Event.Key.ToString().Equals("Return"))
             {
-                PinPanel.ProcessPassword(MenuUsers.SelectedEntity.Id, PinPanel.TxtPin.Text);
+                PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text);
             }
         }
 

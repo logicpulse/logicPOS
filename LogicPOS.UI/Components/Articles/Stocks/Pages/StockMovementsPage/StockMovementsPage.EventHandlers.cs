@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
+using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
@@ -23,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (SelectedEntity.Quantity > 0 && SelectedEntity.HasExternalDocument)
             {
-                var filePath = System.IO.Path.GetTempFileName();
+                var filePath = global::System.IO.Path.GetTempFileName();
                 var result = _mediator.Send(new GetStockMovementByIdQuery(SelectedEntity.Id)).Result;
 
                 if (result.IsError)
@@ -32,7 +32,7 @@ namespace LogicPOS.UI.Components.Pages
                     return;
                 }
 
-                System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
+                global::System.IO.File.WriteAllBytes(filePath, Convert.FromBase64String(result.Value.ExternalDocument));
                 LogicPOSPDFViewer.ShowPDF(filePath, $"Document_Externo_{result.Value.DocumentNumber}");
                 return;
             }

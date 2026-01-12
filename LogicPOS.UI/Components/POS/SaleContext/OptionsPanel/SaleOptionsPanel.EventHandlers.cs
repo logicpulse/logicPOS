@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Articles;
@@ -328,7 +328,7 @@ namespace LogicPOS.UI.Components.POS
             UpdateButtonsSensitivity();
         }
 
-        private void BtnSplitAccount_Clicked(object sender, System.EventArgs e)
+        private void BtnSplitAccount_Clicked(object sender, EventArgs e)
         {
             var modal = new SplitAccountModal(SourceWindow, SaleContext.CurrentOrder);
             ResponseType response = (ResponseType)modal.Run();

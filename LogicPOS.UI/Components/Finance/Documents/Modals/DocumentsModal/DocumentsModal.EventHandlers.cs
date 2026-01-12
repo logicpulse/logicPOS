@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
 
             try
             {
-                if (PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path) == System.Windows.Forms.DialogResult.OK)
+                if (PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path) == global::System.Windows.Forms.DialogResult.OK)
                 {
                     DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason);
                 }

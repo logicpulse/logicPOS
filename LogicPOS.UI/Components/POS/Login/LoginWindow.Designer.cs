@@ -1,4 +1,4 @@
-﻿using Gdk;
+using Gdk;
 using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
@@ -31,32 +31,32 @@ namespace LogicPOS.UI.Components.Windows
                 //Globals
                 Title = Convert.ToString(theme.Globals.Name);
                 //Objects:LabelVersion
-                System.Drawing.Point labelVersionPosition = Utils.StringToPosition(theme.Objects.LabelVersion.Position);
+                global::System.Drawing.Point labelVersionPosition = Utils.StringToPosition(theme.Objects.LabelVersion.Position);
                 string labelVersionFont = theme.Objects.LabelVersion.Font;
                 Color labelVersionFontColor = (theme.Objects.LabelVersion.FontColor as string).StringToGdkColor();
                 //Objects:NumberPadPin
-                System.Drawing.Point numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
-                System.Drawing.Size numberPadPinButtonSize = (theme.Objects.NumberPadPin.ButtonSize as string).ToSize();
-                System.Drawing.Color numberPadPinFontColor = (theme.Objects.NumberPadPin.FontColor as string).StringToColor();
+                global::System.Drawing.Point numberPadPinPosition = Utils.StringToPosition(theme.Objects.NumberPadPin.Position);
+                global::System.Drawing.Size numberPadPinButtonSize = (theme.Objects.NumberPadPin.ButtonSize as string).ToSize();
+                global::System.Drawing.Color numberPadPinFontColor = (theme.Objects.NumberPadPin.FontColor as string).StringToColor();
                 uint numberPadPinRowSpacingSystemButtons = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingSystemButtons);
                 uint numberPadPinRowSpacingLabelStatus = Convert.ToUInt16(theme.Objects.NumberPadPin.RowSpacingLabelStatus);
                 //Objects:NumberPadPin:LabelStatus
-                System.Drawing.Color numberPadPinLabelStatusFontColor = (theme.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
+                global::System.Drawing.Color numberPadPinLabelStatusFontColor = (theme.Objects.NumberPadPin.LabelStatus.FontColor as string).StringToColor();
                 //Objects:NumberPadPin:Size (EventBox)
-                System.Drawing.Size numberPadPinSize = (theme.Objects.NumberPadPin.Size as string).ToSize();
+                global::System.Drawing.Size numberPadPinSize = (theme.Objects.NumberPadPin.Size as string).ToSize();
 
 
                 //Objects:TablePadUserButtonPrev
-                System.Drawing.Point tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
-                System.Drawing.Size tablePadUserButtonPrevSize = (theme.Objects.TablePadUser.TablePadUserButtonPrev.Size as string).ToSize();
+                global::System.Drawing.Point tablePadUserButtonPrevPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonPrev.Position);
+                global::System.Drawing.Size tablePadUserButtonPrevSize = (theme.Objects.TablePadUser.TablePadUserButtonPrev.Size as string).ToSize();
                 string tablePadUserButtonPrevImageFileName = theme.Objects.TablePadUser.TablePadUserButtonPrev.ImageFileName;
                 //Objects:TablePadUserButtonNext
-                System.Drawing.Point tablePadUserButtonNextPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonNext.Position);
-                System.Drawing.Size tablePadUserButtonNextSize = (theme.Objects.TablePadUser.TablePadUserButtonNext.Size as string).ToSize();
+                global::System.Drawing.Point tablePadUserButtonNextPosition = Utils.StringToPosition(theme.Objects.TablePadUser.TablePadUserButtonNext.Position);
+                global::System.Drawing.Size tablePadUserButtonNextSize = (theme.Objects.TablePadUser.TablePadUserButtonNext.Size as string).ToSize();
                 string tablePadUserButtonNextImageFileName = theme.Objects.TablePadUser.TablePadUserButtonNext.ImageFileName;
                 //Objects:TablePadUser
-                System.Drawing.Point tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
-                System.Drawing.Size tablePadUserButtonSize = (theme.Objects.TablePadUser.ButtonSize as string).ToSize();
+                global::System.Drawing.Point tablePadUserPosition = Utils.StringToPosition(theme.Objects.TablePadUser.Position);
+                global::System.Drawing.Size tablePadUserButtonSize = (theme.Objects.TablePadUser.ButtonSize as string).ToSize();
                 TableConfig tablePadUserTableConfig = Utils.StringToTableConfig(theme.Objects.TablePadUser.TableConfig);
                 bool showUsersMenu = Convert.ToBoolean(theme.Objects.TablePadUser.Visible);
 
@@ -102,8 +102,8 @@ namespace LogicPOS.UI.Components.Windows
                     {
                         Name = "buttonPosScrollers",
                         Icon = tablePadUserButtonPrevImageFileName,
-                        IconSize = new System.Drawing.Size(tablePadUserButtonPrevSize.Width - 2, tablePadUserButtonPrevSize.Height - 2),
-                        ButtonSize = new System.Drawing.Size(tablePadUserButtonPrevSize.Width, tablePadUserButtonPrevSize.Height)
+                        IconSize = new global::System.Drawing.Size(tablePadUserButtonPrevSize.Width - 2, tablePadUserButtonPrevSize.Height - 2),
+                        ButtonSize = new global::System.Drawing.Size(tablePadUserButtonPrevSize.Width, tablePadUserButtonPrevSize.Height)
                     });
 
                 tablePadUserButtonPrev.Relief = ReliefStyle.None;
@@ -116,9 +116,9 @@ namespace LogicPOS.UI.Components.Windows
                     {
                         Name = "buttonPosScrollers",
                         Icon = tablePadUserButtonNextImageFileName,
-                        IconSize = new System.Drawing.Size(tablePadUserButtonNextSize.Width - 2,
+                        IconSize = new global::System.Drawing.Size(tablePadUserButtonNextSize.Width - 2,
                                                            tablePadUserButtonNextSize.Height - 2),
-                        ButtonSize = new System.Drawing.Size(tablePadUserButtonNextSize.Width,
+                        ButtonSize = new global::System.Drawing.Size(tablePadUserButtonNextSize.Width,
                                                              tablePadUserButtonNextSize.Height)
                     });
 

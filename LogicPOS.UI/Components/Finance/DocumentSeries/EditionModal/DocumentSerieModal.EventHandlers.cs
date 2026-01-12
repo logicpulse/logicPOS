@@ -1,11 +1,12 @@
 using LogicPOS.Api.Features.Finance.At.RegisterSeries;
 using LogicPOS.UI.Components.Finance.At;
+using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentSerieModal
     {
-        private void ComboBox_Changed(object sender, System.EventArgs e)
+        private void ComboBox_Changed(object sender, EventArgs e)
         {
             var selectedFiscalYear = _comboFiscalYears.SelectedEntity;
             var selectedDocType = _comboDocumentTypes.SelectedEntity;
@@ -14,7 +15,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtAcronym.Text = $"{selectedDocType?.Acronym} {selectedFiscalYear?.Acronym}";
         }
 
-        private void BtnATSeriesComunicate_Clicked(object sender, System.EventArgs e)
+        private void BtnATSeriesComunicate_Clicked(object sender, EventArgs e)
         {
             if(_entity == null || string.IsNullOrWhiteSpace(_txtATDocCodeValidationSerie.Text) == false)
             {

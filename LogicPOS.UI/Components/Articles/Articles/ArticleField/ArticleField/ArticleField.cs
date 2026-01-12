@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.InputFields
         public Article Article { get; set; }
         public string FieldName => Label.Text;
         public event Action<ArticleField, Article> OnRemove;
-        public event System.Action OnAdd;
+        public event global::System.Action OnAdd;
         private readonly bool _isUniqueArticle;
         public object SelectedEntity { get; set; }
         public ArticleField(Article article = null,

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Articles;
 using System;
 using System.Drawing;
@@ -39,10 +39,10 @@ namespace LogicPOS.UI.Components.InputFields
 
         private static Gdk.Pixbuf ResizeAndCropFileToPixBuf(string pFilename, Size pSize)
         {
-            using (var original = System.Drawing.Image.FromFile(pFilename))
+            using (var original = global::System.Drawing.Image.FromFile(pFilename))
             {
                 var clone = new Bitmap(original); 
-                var resized = logicpos.Utils.ResizeAndCrop(clone, new System.Drawing.Size(pSize.Width, pSize.Height));
+                var resized = logicpos.Utils.ResizeAndCrop(clone, new global::System.Drawing.Size(pSize.Width, pSize.Height));
                 return logicpos.Utils.ImageToPixbuf(resized);
             }
         }
@@ -64,7 +64,7 @@ namespace LogicPOS.UI.Components.InputFields
                 return string.Empty;
             }
 
-            return System.IO.Path.GetExtension(FileChooserButton.Filename).Trim('.');
+            return global::System.IO.Path.GetExtension(FileChooserButton.Filename).Trim('.');
         }
 
         public void SetBase64Image(string content, string extension)
@@ -74,8 +74,8 @@ namespace LogicPOS.UI.Components.InputFields
                 return;
             }
 
-            var tempFile = System.IO.Path.GetTempFileName() + "." + extension;
-            System.IO.File.WriteAllBytes(tempFile, System.Convert.FromBase64String(content));
+            var tempFile = global::System.IO.Path.GetTempFileName() + "." + extension;
+            global::System.IO.File.WriteAllBytes(tempFile, global::System.Convert.FromBase64String(content));
             FileChooserButton.SetFilename(tempFile);
             ShowPreview();
         }

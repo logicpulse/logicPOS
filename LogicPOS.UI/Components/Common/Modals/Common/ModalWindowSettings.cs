@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
+using System.Drawing;
 using System.IO;
 
 namespace LogicPOS.UI.Components.Modals.Common
@@ -9,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals.Common
     public class ModalWindowSettings
     {
         public string Icon { get; set; }
-        public System.Drawing.Size Size { get; set; }
+        public Size Size { get; set; }
         public EventBox Close { get; set; }
         public EventBox Minimize { get; set; }
         public Widget Body { get; set; } = new Fixed();
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Components.Modals.Common
             fontDescription.Size = 18;
 
             Title.SetAlignment(0, 0.5F);
-            Title.ModifyFg(StateType.Normal, System.Drawing.Color.White.ToGdkColor());
+            Title.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
             Title.ModifyFont(fontDescription);
         }
 

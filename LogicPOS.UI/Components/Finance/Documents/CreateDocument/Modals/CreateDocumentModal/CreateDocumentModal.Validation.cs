@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
 
                     string message = GetInvalidSimplifiedInvoiceMessage();
                     var response = CustomAlerts.Warning(this)
-                        .WithSize(new System.Drawing.Size(550, 440))
+                        .WithSize(new global::System.Drawing.Size(550, 440))
                         .WithMessage(message)
                         .ShowAlert();
 
@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
 
                     string message = GetInvalidTotalForFinalConsumerMessage();
                     var response = CustomAlerts.Warning(this)
-                        .WithSize(new System.Drawing.Size(550, 480))
+                        .WithSize(new global::System.Drawing.Size(550, 480))
                         .WithMessage(message)
                         .ShowAlert();
 

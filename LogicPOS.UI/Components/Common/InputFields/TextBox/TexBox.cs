@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.Api.Features.Common.Responses;
@@ -97,7 +97,7 @@ namespace LogicPOS.UI.Components.InputFields
             {
                 if (IsValidatable)
                 {
-                    var isValid = System.Text.RegularExpressions.Regex.IsMatch(Entry.Text, Regex);
+                    var isValid = global::System.Text.RegularExpressions.Regex.IsMatch(Entry.Text, Regex);
                     if (!isValid)
                     {
                         return false;

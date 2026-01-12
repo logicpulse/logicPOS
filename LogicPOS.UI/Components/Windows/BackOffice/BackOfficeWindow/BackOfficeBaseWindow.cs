@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -13,7 +13,10 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Pango;
 using System;
+using System.Drawing;
 using System.IO;
+using Color = System.Drawing.Color;
+using Image = Gtk.Image;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -31,7 +34,7 @@ namespace LogicPOS.UI.Components.Windows
         protected string DateTimeFormat { get; set; }
         protected Image Logo { get; set; } = new Image();
         protected Label Reseller { get; set; }
-        public System.Drawing.Size ButtonSize = new System.Drawing.Size(200, 38);
+        public Size ButtonSize = new Size(200, 38);
         public IconButtonWithText BtnDashboard { get; set; }
         public IconButtonWithText BtnExit { get; set; }
         public IconButtonWithText BtnPOS { get; set; }
@@ -57,10 +60,10 @@ namespace LogicPOS.UI.Components.Windows
         {
             BackOfficeWindow.ScreenSize = ScreenSizeUtil.GetScreenSize();
             uint borderWidth = 5;
-            System.Drawing.Size sizeIconDashboard = new System.Drawing.Size(30, 30);
-            System.Drawing.Size sizeIcon = new System.Drawing.Size(20, 20);
-            System.Drawing.Size sizeIconQuit = new System.Drawing.Size(20, 20);
-            System.Drawing.Size sizeButton = new System.Drawing.Size(20, 20);
+            Size sizeIconDashboard = new Size(30, 30);
+            Size sizeIcon = new Size(20, 20);
+            Size sizeIconQuit = new Size(20, 20);
+            Size sizeButton = new Size(20, 20);
 
             string fontPosBackOfficeParent = AppSettings.Instance.FontPosBackOfficeParent;
             string fontDescriptionParentLowRes = AppSettings.Instance.FontPosBackOfficeParentLowRes;
@@ -68,11 +71,11 @@ namespace LogicPOS.UI.Components.Windows
 
             if (BackOfficeWindow.ScreenSize.Height <= 800)
             {
-                ButtonSize = new System.Drawing.Size(200, 38);
-                sizeIcon = new System.Drawing.Size(20, 20);
-                sizeButton = new System.Drawing.Size(15, 15);
-                sizeIconQuit = new System.Drawing.Size(20, 20);
-                sizeIconDashboard = new System.Drawing.Size(20, 20);
+                ButtonSize = new Size(200, 38);
+                sizeIcon = new Size(20, 20);
+                sizeButton = new Size(15, 15);
+                sizeIconQuit = new Size(20, 20);
+                sizeIconDashboard = new Size(20, 20);
                 fontDescription = fontDescriptionParentLowRes;
             }
 
@@ -83,12 +86,12 @@ namespace LogicPOS.UI.Components.Windows
             string fileImageBackOfficeLogo = AppSettings.Paths.GetThemeFileLocation(AppSettings.Instance.FileImageBackOfficeLogo);
 
             //Colors
-            System.Drawing.Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
-            System.Drawing.Color colorBackOfficeStatusBarBackground = AppSettings.Instance.ColorBackOfficeStatusBarBackground;
-            System.Drawing.Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.ColorBackOfficeAccordionFixBackground;
-            System.Drawing.Color colorBackOfficeStatusBarFont = AppSettings.Instance.ColorBackOfficeStatusBarFont;
-            System.Drawing.Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.ColorBackOfficeStatusBarBottomBackground;
-            System.Drawing.Color colorLabelReseller = System.Drawing.Color.White;
+            Color colorBackOfficeContentBackground = AppSettings.Instance.ColorBackOfficeContentBackground;
+            Color colorBackOfficeStatusBarBackground = AppSettings.Instance.ColorBackOfficeStatusBarBackground;
+            Color colorBackOfficeAccordionFixBackground = AppSettings.Instance.ColorBackOfficeAccordionFixBackground;
+            Color colorBackOfficeStatusBarFont = AppSettings.Instance.ColorBackOfficeStatusBarFont;
+            Color colorBackOfficeStatusBarBottomBackground = AppSettings.Instance.ColorBackOfficeStatusBarBottomBackground;
+            Color colorLabelReseller = Color.White;
             ModifyBg(StateType.Normal, colorBackOfficeContentBackground.ToGdkColor());
 
             SetWindowIcon();
@@ -359,7 +362,7 @@ namespace LogicPOS.UI.Components.Windows
         private void SetWindowIcon()
         {
             string fileImageAppIcon = $"{AppSettings.Paths.Images}{AppSettings.AppIcon}";
-            if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(System.Drawing.Image.FromFile(fileImageAppIcon));
+            if (File.Exists(fileImageAppIcon)) Icon = Utils.ImageToPixbuf(global::System.Drawing.Image.FromFile(fileImageAppIcon));
         }
 
         private void OnCloseWindow(object o, DeleteEventArgs args)

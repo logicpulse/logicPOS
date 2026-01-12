@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -7,6 +7,7 @@ using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
@@ -73,9 +74,9 @@ namespace LogicPOS.UI.Components.Modals
             return vbox;
         }
 
-        public DateTime StartDate => DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        public DateTime StartDate => DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
-        public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+        public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
 
     }

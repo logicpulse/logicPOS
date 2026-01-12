@@ -1,14 +1,14 @@
 using Gtk;
-using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
+using System;
 
 namespace LogicPOS.UI.Components.Pages
 {
-    internal class PageNavigator<Tentity> : Box where Tentity : class 
+    internal class PageNavigator<Tentity> : Box where Tentity : class
     {
         private readonly Page<Tentity> _page;
 
@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Pages
 
             SearchBox.TxtSearch.EntryValidation.Changed += delegate
             {
-               _page.Search(SearchBox.TxtSearch.EntryValidation.Text);
+                _page.Search(SearchBox.TxtSearch.EntryValidation.Text);
             };
         }
 
@@ -132,16 +132,16 @@ namespace LogicPOS.UI.Components.Pages
             BtnRefresh.Clicked += delegate { _page.Refresh(); };
         }
 
-        private void BtnUpdate_Clicked(object sender, System.EventArgs e)
+        private void BtnUpdate_Clicked(object sender, EventArgs e)
         {
-            if(_page.SelectedEntity == null)
+            if (_page.SelectedEntity == null)
             {
                 return;
             }
             RunPageEntityModal(EntityEditionModalMode.Update);
         }
 
-        private void BtnView_Clicked(object sender, System.EventArgs e)
+        private void BtnView_Clicked(object sender, EventArgs e)
         {
             if (_page.SelectedEntity == null)
             {
@@ -151,7 +151,7 @@ namespace LogicPOS.UI.Components.Pages
             _page.RunModal(EntityEditionModalMode.View);
         }
 
-        private void BtnDelete_Clicked(object sender, System.EventArgs e)
+        private void BtnDelete_Clicked(object sender, EventArgs e)
         {
             var response = CustomAlerts.ShowDeleteConfirmationAlert(_page.SourceWindow);
 
@@ -173,7 +173,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 _page.Refresh();
             }
-        }   
+        }
 
         public virtual void UpdateButtonsSensitivity()
         {

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
@@ -20,7 +20,7 @@ namespace LogicPOS.UI.Components.Pages
     internal partial class DashBoardPage
     {
         private string DashboardBackgroundImagePath => $"{AppSettings.Paths.Themes}Default/Backgrounds/Windows/LogicPOS_WorkFlow_{AppSettings.Culture.CurrentCultureName}.png";
-        private System.Drawing.Image GetDashboardBackgroundImage() => System.Drawing.Image.FromFile(DashboardBackgroundImagePath);
+        private global::System.Drawing.Image GetDashboardBackgroundImage() => global::System.Drawing.Image.FromFile(DashboardBackgroundImagePath);
         private Gdk.Pixbuf GetDashboardBackgroundPixbuf() => logicpos.Utils.ImageToPixbuf(GetDashboardBackgroundImage());
 
         private Gtk.Style GetDashboardBackgroundStyle()

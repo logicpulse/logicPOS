@@ -2,14 +2,17 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Enums.Widgets;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Users.ResetPassword;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.System.Users.Users.AccessKeyModal;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
@@ -212,34 +215,34 @@ namespace LogicPOS.UI.Components
 
         }
 
-        public bool ProcessPassword(Guid userId, string password)
+        public bool ProcessPassword(User user, string password)
         {
             TxtPin.GrabFocus();
 
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    return PasswordIsValid(userId, password);
+                    return PasswordIsValid(user, password);
                 case NumberPadPinMode.PasswordOld:
-                    ProcessOldPassword(userId, password);
+                    ProcessOldPassword(user, password);
                     break;
                 case NumberPadPinMode.PasswordNew:
                     ProcessNewPassword(password);
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    ProcessNewPasswordConfirmation(userId, password);
+                    ProcessNewPasswordConfirmation(user.Id, password);
                     break;
                 case NumberPadPinMode.PasswordReset:
-                    ProcessPasswordReset(userId, password);
+                    ProcessPasswordReset(user, password);
                     break;
             }
 
             return false;
         }
 
-        private void ProcessPasswordReset(Guid userId, string password)
+        private void ProcessPasswordReset(User user, string password)
         {
-            if (PasswordIsValid(userId, password) == false)
+            if (PasswordIsValid(user, password) == false)
             {
                 _mode = NumberPadPinMode.Password;
                 return;
@@ -291,18 +294,18 @@ namespace LogicPOS.UI.Components
             }
         }
 
-        private void ProcessOldPassword(Guid userId, string password)
+        private void ProcessOldPassword(User user, string password)
         {
-            if (PasswordIsValid(userId, password))
+            if (PasswordIsValid(user, password))
             {
                 _oldPassword = password;
                 Mode = NumberPadPinMode.PasswordNew;
             }
         }
 
-        public bool PasswordIsValid(Guid userId, string password)
+        public bool PasswordIsValid(User user, string password)
         {
-            var loginResult = AuthenticationService.Authenticate(userId, password);
+            var loginResult = AuthenticationService.Authenticate(user.Id, password);
 
             if (loginResult.IsError)
             {
@@ -324,6 +327,16 @@ namespace LogicPOS.UI.Components
             _entryPinShowStatus = false;
             JwtToken = loginResult.Value;
             Mode = NumberPadPinMode.Password;
+
+
+            if (user.ProfileId == Guid.Parse("1626e21f-75e6-429e-b0ac-edb755e733c2") && SystemInformationService.SystemInformation.IsAngola)
+            {
+                var accessKeyModal = new AccessKeyModal(SourceWindow);
+                ResponseType response = (ResponseType)accessKeyModal.Run();
+                accessKeyModal.Destroy();
+                return response == ResponseType.Ok;
+            }
+
             return true;
         }
 

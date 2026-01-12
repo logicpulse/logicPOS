@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
@@ -13,8 +13,8 @@ namespace LogicPOS.UI.Components.Warehouses
 
         public TextBox TxtLocation { get; } = TextBox.Simple("global_ConfigurationDevice_PlaceTerminal", isRequired: true);
 
-        public event System.Action<WarehouseLocationField, WarehouseLocation> BtnRemoveClicked;
-        public event System.Action<WarehouseLocation> BtnSetDefaultClicked;
+        public event global::System.Action<WarehouseLocationField, WarehouseLocation> BtnRemoveClicked;
+        public event global::System.Action<WarehouseLocation> BtnSetDefaultClicked;
 
         private readonly IconButton BtnRemove = new IconButton(new ButtonSettings
         {
