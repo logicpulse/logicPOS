@@ -16,7 +16,6 @@ using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
 

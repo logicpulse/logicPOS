@@ -202,7 +202,7 @@ namespace LogicPOS.UI.Printing
 
         public static bool WasPrintedByThermalPrinter(Guid id)
         {
-            GetDocumentThermalPrintingQuery query = new GetDocumentThermalPrintingQuery(id);
+            GetDocumentPrinterTypeQuery query = new GetDocumentPrinterTypeQuery(id);
             var result =DependencyInjection.Mediator.Send(query).Result;
             if (result.IsError)
             {

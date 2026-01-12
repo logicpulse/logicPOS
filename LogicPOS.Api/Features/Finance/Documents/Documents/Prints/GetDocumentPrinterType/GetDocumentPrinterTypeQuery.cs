@@ -5,11 +5,11 @@ using System;
 
 namespace LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint
 {
-    public class GetDocumentThermalPrintingQuery : IRequest<ErrorOr<bool>>
+    public class GetDocumentPrinterTypeQuery : IRequest<ErrorOr<bool>>
     {
         public Guid DocumentId { get; set; }
 
-        public GetDocumentThermalPrintingQuery(Guid id)
+        public GetDocumentPrinterTypeQuery(Guid id)
         {
             DocumentId = id;
         }

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint
 {
-    public class GetDocumentThermalPrintingQueryHandler : RequestHandler<GetDocumentThermalPrintingQuery, ErrorOr<bool>>
+    public class GetDocumentPrinterTypeQueryHandler : RequestHandler<GetDocumentPrinterTypeQuery, ErrorOr<bool>>
     {
-        public GetDocumentThermalPrintingQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetDocumentPrinterTypeQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public async override Task<ErrorOr<bool>> Handle(GetDocumentThermalPrintingQuery query, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<bool>> Handle(GetDocumentPrinterTypeQuery query, CancellationToken cancellationToken = default)
         {
             return await HandleGetQueryAsync<bool>($"documents/prints/{query.DocumentId}", cancellationToken);
         }
