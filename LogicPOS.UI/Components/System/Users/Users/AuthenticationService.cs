@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Authentication;
 using LogicPOS.Api.Features.Authentication.Login;
@@ -38,6 +38,7 @@ namespace LogicPOS.UI.Components.Users
             printer.PrintDocument();
             printer.Clear();
         }
+       
         public static bool UserHasPermission(string permission)
         {
             return Permissions.Contains(permission);
@@ -55,10 +56,12 @@ namespace LogicPOS.UI.Components.Users
             var loginResult = _mediator.Send(new LoginQuery(TerminalService.Terminal.Id, userId, password)).Result;
             return loginResult;
         }
+        
         public static void RefreshPermissions()
         {
             LoadPermissions();
         }
+       
         private static void LoadPermissions()
         {
             Permissions.Clear();

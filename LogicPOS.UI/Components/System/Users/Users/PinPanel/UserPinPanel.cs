@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components
 
             TxtPin = new ValidatableTextBox(parentWindow,
                                               KeyboardMode.None,
-                                              RegularExpressions.LoginPin,
+                                              RegularExpressions.LoginPassword,
                                               true)
 
             {
@@ -211,7 +211,6 @@ namespace LogicPOS.UI.Components
             AddEventHandlers();
 
         }
-
 
         public bool ProcessPassword(Guid userId, string password)
         {
