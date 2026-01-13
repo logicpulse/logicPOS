@@ -1,6 +1,5 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
@@ -18,7 +17,7 @@ namespace LogicPOS.UI.Components.Pages
             GridView.AppendColumn(CreateEntityColumn());
             GridView.AppendColumn(CreateFiscalNumberColumn());
             GridView.AppendColumn(CreateTotalColumn());
-            GridView.AppendColumn(CreateRelatedReceiptsColumn());
+            GridView.AppendColumn(CreateRelatedDocumentsColumn());
             if (SystemInformationService.SystemInformation.IsAngola)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
@@ -38,16 +37,16 @@ namespace LogicPOS.UI.Components.Pages
             return col;
         }
 
-        private TreeViewColumn CreateRelatedReceiptsColumn()
+        private TreeViewColumn CreateRelatedDocumentsColumn()
         {
-            void RenderRelatedReceipts(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            void RenderRelatedDocuments(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var receipt = ((ReceiptViewModel)model.GetValue(iter, 0));
-                (cell as CellRendererText).Text = receipt.Notes;
+                (cell as CellRendererText).Text = string.Join(",", receipt.RelatedDocuments);
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
-            return Columns.CreateColumn(title, 8, RenderRelatedReceipts);
+            return Columns.CreateColumn(title, 8, RenderRelatedDocuments);
         }
 
         private TreeViewColumn CreateTotalColumn()

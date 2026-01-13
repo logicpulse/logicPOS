@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Finance.Documents.Documents;
@@ -26,6 +26,7 @@ namespace LogicPOS.Api.Features.Documents.PayDocuments
             if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
+                ReceiptsCache.Clear(_keyedMemoryCache);
             }
 
             return result;
