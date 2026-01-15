@@ -1,4 +1,4 @@
-﻿using LogicPOS.Globalization;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Modals.Common;
 using System;
@@ -18,6 +18,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             InitializeTxtValidationResultCode();
             InitializeTxtValidationStatus();
             InitializeTxtValidationErrors();
+            BtnCorrectDocument.Clicked += BtnCorrectDocument_Clicked;
         }
 
         private void InititalizeTxtSubmissionDate()

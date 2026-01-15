@@ -1,6 +1,8 @@
-﻿using Gtk;
+using Gtk;
+using LogicPOS.Api.Features.Finance.Agt.Common;
 using LogicPOS.Api.Features.Finance.Agt.CorrectDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -13,6 +15,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
 {
     public partial class AgtDocumentInfoModal : Modal
     {
+        private AgtDocument _agtDocument;
         public AgtDocumentInfoModal(Guid documentId, Window parent) : base(parent,
                                                      "Informação Do Documento (AGT)",
                                                      new Size(550, 620),
@@ -21,39 +24,68 @@ namespace LogicPOS.UI.Components.Finance.Agt
             ShowData(documentId);
         }
 
+        private void BtnCorrectDocument_Clicked(object sender, EventArgs e)
+        {
+            if(_agtDocument == null)
+            {
+                CustomAlerts.Error(this).WithMessage("Este documento foi enviado à AGT").ShowAlert();
+                Run();
+                return;
+            }
+
+            var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+            var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType selectionResponse = (ResponseType)selectDocumentModal.Run();
+            var correctDocumentId = page.SelectedEntity.Id;
+            selectDocumentModal.Destroy();
+
+            if (selectionResponse != ResponseType.Ok)
+            {
+                Run();
+                return;
+            }
+
+            bool advance = CustomAlerts.Question(this).WithMessage($"Enviar o documento {page.SelectedEntity.Number} para corrigir {_agtDocument?.Number}? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
+
+            if (!advance)
+            {
+                Run();
+                return;
+            }
+
+            var correctDocumentResult = AgtService.CorrectDocument(correctDocumentId, _agtDocument.DocumentId);
+
+            if (correctDocumentResult)
+            {
+                CustomAlerts.Information(this).WithMessage($"Correção do documento {_agtDocument.Number} submetida com sucesso.").ShowAlert();
+            }
+            else
+            {
+                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao submeter a correção do documento {_agtDocument.Number}.").ShowAlert();
+            }
+
+            Run();
+        }
+
         private void ShowData(Guid documentId)
         {
-
-            var agtDocument = AgtService.GetAgtDocument(documentId);
-            TxtSubmissionDate.Text = agtDocument?.CreatedAt.ToString("g") ?? "Não submetido";
-            TxtRequestId.Text = agtDocument?.RequestId ?? "Não submetido";
-            TxtDocumentNumber.Text = agtDocument?.Number ?? "Não submetido";
-            TxtSubmissionErrorCode.Text = agtDocument?.SubmissionErrorCode ?? "-";
-            TxtSubmissionErrorDescription.Text = agtDocument?.SubmissionErrorDescription ?? "-";
-            TxtHttpStatusCode.Text = agtDocument?.HttpStatusCode?.ToString() ?? "-";
-            TxtValidationResultCode.Text = agtDocument?.ValidationResultCode ?? "Não validado";
-            TxtValidationStatus.Text = agtDocument?.ValidationStatus ?? "Não validado";
-            TxtValidationErrors.Text = agtDocument?.ValidationErrors ?? "-";
+            _agtDocument = AgtService.GetAgtDocument(documentId);
+            TxtSubmissionDate.Text = _agtDocument?.CreatedAt.ToString("g") ?? "Não submetido";
+            TxtRequestId.Text = _agtDocument?.RequestId ?? "Não submetido";
+            TxtDocumentNumber.Text = _agtDocument?.Number ?? "Não submetido";
+            TxtSubmissionErrorCode.Text = _agtDocument?.SubmissionErrorCode ?? "-";
+            TxtSubmissionErrorDescription.Text = _agtDocument?.SubmissionErrorDescription ?? "-";
+            TxtHttpStatusCode.Text = _agtDocument?.HttpStatusCode?.ToString() ?? "-";
+            TxtValidationResultCode.Text = _agtDocument?.ValidationResultCode ?? "Não validado";
+            TxtValidationStatus.Text = _agtDocument?.ValidationStatus ?? "Não validado";
+            TxtValidationErrors.Text = _agtDocument?.ValidationErrors ?? "-";
         }
 
         public static void Show(Guid documentId, Window parent)
         {
             var modal = new AgtDocumentInfoModal(documentId, parent);
-            var response=(ResponseType)modal.Run();
+            var response = (ResponseType)modal.Run();
             modal.Destroy();
-            if(response== ResponseType.Accept)
-            {
-                var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
-                var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-                ResponseType selectionResponse = (ResponseType)selectDocumentModal.Run();
-                var selectedDocumentId= (page.SelectedEntity as DocumentViewModel).Id;
-                selectDocumentModal.Destroy();
-                if(selectionResponse!= ResponseType.Ok)
-                {
-                    return;
-                }
-                AgtService.CorrectDocument(selectedDocumentId, documentId);
-            }
         }
 
     }
