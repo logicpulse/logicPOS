@@ -283,8 +283,6 @@ namespace LogicPOS.UI.Components.Windows
         {
             string appVersion = AppSettings.ProductVersion.Replace("v", "");
 
-            bool needToUpdate = false;
-
             return; //tchial0 -> Disable update check
             /*
             if (GeneralSettings.ServerVersion != null)

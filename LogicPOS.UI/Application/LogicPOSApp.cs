@@ -27,7 +27,6 @@ namespace LogicPOS.UI.Application
         public static UsbDisplayDevice UsbDisplay { get; set; }
         public static InputReader BarCodeReader { get; set; }
         public static WeighingBalance WeighingBalance { get; set; }
-        private static bool _needToUpdate = false;
 
         public void Start()
         {

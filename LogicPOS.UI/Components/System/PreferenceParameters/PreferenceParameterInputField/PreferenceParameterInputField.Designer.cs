@@ -1,4 +1,6 @@
 ﻿using Gtk;
+using logicpos;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -10,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Services.Description;
+using Image = System.Drawing.Image;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -20,7 +23,11 @@ namespace LogicPOS.UI.Components.InputFields
             var fileChooserAction = FileChooserAction.Open;
             FileChooserButton = new FileChooserButton(string.Empty, fileChooserAction) { HeightRequest = 23 };
 
+            if (!string.IsNullOrEmpty(_entity.Value))
+            {
+
             FileChooserButton.SetFilename(Base64ToFileName(_entity.Value));
+            }
 
             if (_entity.Token == "TICKET_FILENAME_LOGO")
             {
@@ -29,6 +36,11 @@ namespace LogicPOS.UI.Components.InputFields
             else
             {
                 FileChooserButton.Filter = GetFileFilterImages();
+            }
+
+            if (File.Exists(FileChooserButton.Filename))
+            {
+                UpdatePreviewImage();
             }
 
             FileChooserButton.FileSet += (sender, e) =>
@@ -42,26 +54,42 @@ namespace LogicPOS.UI.Components.InputFields
         {
             if (!string.IsNullOrEmpty(base64)&&!base64.Contains("."))
             { 
-            byte[] imageBytes = Convert.FromBase64String(base64);
-            string tempFile = Path.Combine(Path.GetTempPath(),
-                                           $"ConvertedTempFileLogo.png");
-            File.WriteAllBytes(tempFile, imageBytes);
-            return tempFile;
+                byte[] imageBytes = Convert.FromBase64String(base64);
+                string tempFile = Path.Combine(Path.GetTempPath(), $"ConvertedTempFileLogo.png");
+                File.WriteAllBytes(tempFile, imageBytes);
+                return tempFile;
             }
             return base64;
         }
         private void SelectFile()
         {
-
-            if (FileChooserButton.Filename!=null) 
+            if (!string.IsNullOrEmpty(FileChooserButton.Filename))
             {
                 TextBox.Text = FileChooserButton.Filename;
                 FileChooserButton.SetFilename(FileChooserButton.Filename);
+                if (File.Exists(FileChooserButton.Filename))
+                {
+                    UpdatePreviewImage();
+                }
             }
             else
             {
                 TextBox.Text = FileChooserButton.Filename;
             };
+        }
+        private static Gdk.Pixbuf ResizeFileToPixBuf(string pFilename, Size pSize)
+        {
+            
+            using (var original = global::System.Drawing.Image.FromFile(pFilename))
+            {
+                var clone = new Bitmap(original);
+                var resized = logicpos.Utils.ResizeImage(clone, new global::System.Drawing.Size(pSize.Width, pSize.Height));
+                return logicpos.Utils.ImageToPixbuf(resized);
+            }
+        }
+        private void UpdatePreviewImage()
+        {
+            PreviewImage.Pixbuf = ResizeFileToPixBuf(FileChooserButton.Filename, new Size(34,34));
         }
 
         private void InitializeFileChooserButtonComponent()
@@ -71,6 +99,7 @@ namespace LogicPOS.UI.Components.InputFields
 
             hBox.PackStart(FileChooserButton, true, true, 0);
             hBox.PackStart(RemoveFileButton, false, false, 0);
+            hBox.PackStart(PreviewImage,false, false,2);
             var box = FieldComponent as VBox;
             box.PackStart(Label, false, false, 0);
             box.PackStart(hBox, false, false, 0);

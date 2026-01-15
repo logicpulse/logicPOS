@@ -1,6 +1,11 @@
 ﻿using Gtk;
+using LogicPOS.Api.Features.Finance.Agt.CorrectDocument;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Drawing;
 
@@ -34,8 +39,21 @@ namespace LogicPOS.UI.Components.Finance.Agt
         public static void Show(Guid documentId, Window parent)
         {
             var modal = new AgtDocumentInfoModal(documentId, parent);
-            modal.Run();
+            var response=(ResponseType)modal.Run();
             modal.Destroy();
+            if(response== ResponseType.Accept)
+            {
+                var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
+                var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+                ResponseType selectionResponse = (ResponseType)selectDocumentModal.Run();
+                var selectedDocumentId= (page.SelectedEntity as DocumentViewModel).Id;
+                selectDocumentModal.Destroy();
+                if(selectionResponse!= ResponseType.Ok)
+                {
+                    return;
+                }
+                AgtService.CorrectDocument(selectedDocumentId, documentId);
+            }
         }
 
     }

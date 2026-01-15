@@ -19,8 +19,8 @@ namespace LogicPOS.UI.Components.Pages
                     if(string.IsNullOrEmpty(parameter.Value) || parameter.Value.Contains("."))
                     {
 
-                    (cell as CellRendererText).Text = parameter.Value;
-                        return;
+                        (cell as CellRendererText).Text = parameter.Value;
+                         return;
                     }
                     (cell as CellRendererText).Text = "ConvertedTempFileLogo.png";
                 }

@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -100,8 +101,14 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void RemoveFileButton_Clicked(object sender, EventArgs e)
         {
-            TextBox.Text = " ";
-            FileChooserButton.SetFilename(" ");
+            if (string.IsNullOrEmpty(FileChooserButton.Filename))
+            {
+                return;
+            }
+            TextBox.Text = string.Empty;
+            if(FileChooserButton.Filename.StartsWith(Path.GetTempPath())) File.Delete(FileChooserButton.Filename);
+            FileChooserButton.UnselectFilename(FileChooserButton.Filename);
+            PreviewImage.Pixbuf = null;
         }
 
     }

@@ -14,5 +14,6 @@ namespace LogicPOS.UI.Components.InputFields
         public Widget FieldComponent { get; set; } = new VBox(false, 2);
         public Label Label { get; private set; }
         public Button RemoveFileButton { get; private set; }
+        public Gtk.Image PreviewImage { get; set; } = new Image() { HeightRequest = 35, WidthRequest = 35 };
     }
 }

@@ -2,7 +2,6 @@ using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
@@ -116,10 +115,10 @@ namespace LogicPOS.UI.Components.Pages
         public static List<Guid> SelectTerminals()
         {
             var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
-            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectTerminalModal.Run();
             var terminalIds = page.SelectedTerminals.Select(t => t.Id).ToList();
-            selectDocumentTypeModal.Destroy();
+            selectTerminalModal.Destroy();
             return terminalIds;
         }
 

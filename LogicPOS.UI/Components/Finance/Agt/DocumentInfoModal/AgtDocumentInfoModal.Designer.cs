@@ -13,6 +13,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
         {
             return new ActionAreaButtons
             {
+                new ActionAreaButton(BtnCorrectDocument, ResponseType.Accept),
                 new ActionAreaButton(BtnClose, ResponseType.Close)
             };
         }

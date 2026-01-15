@@ -1,4 +1,5 @@
 using LogicPOS.Api.Features.Finance.Agt.Common;
+using LogicPOS.Api.Features.Finance.Agt.CorrectDocument;
 using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument;
@@ -131,6 +132,18 @@ namespace LogicPOS.UI.Components.Finance.Agt
             {
                 ErrorHandlingService.HandleApiError(result);
                 return null;
+            }
+            return result.Value;
+        }
+
+        public static Guid CorrectDocument(Guid correctDocumentId, Guid rejectedDocumentId)
+        {
+            var command = new CorrectDocumentCommand(correctDocumentId, rejectedDocumentId);
+            var result = DependencyInjection.Mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return Guid.Empty;
             }
             return result.Value;
         }
