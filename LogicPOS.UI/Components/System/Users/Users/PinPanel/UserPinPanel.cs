@@ -327,15 +327,6 @@ namespace LogicPOS.UI.Components
             JwtToken = loginResult.Value;
             Mode = NumberPadPinMode.Password;
 
-
-            if (user.ProfileId == Guid.Parse("1626e21f-75e6-429e-b0ac-edb755e733c2") && SystemInformationService.SystemInformation.IsAngola)
-            {
-                var accessKeyModal = new AccessKeyModal(SourceWindow);
-                ResponseType response = (ResponseType)accessKeyModal.Run();
-                accessKeyModal.Destroy();
-                return response == ResponseType.Ok;
-            }
-
             return true;
         }
 
