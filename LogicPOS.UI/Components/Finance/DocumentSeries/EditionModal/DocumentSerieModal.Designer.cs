@@ -3,6 +3,7 @@ using logicpos;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.InputFields;
@@ -13,6 +14,7 @@ using LogicPOS.Utility;
 using Pango;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Management.Instrumentation;
 
 namespace LogicPOS.UI.Components.Modals
@@ -73,9 +75,22 @@ namespace LogicPOS.UI.Components.Modals
             _comboFiscalYears.ComboBox.Sensitive = false;
         }
 
-        private void InitializeDocumentTypesComboBox()
+        private List<DocumentType> GetDocumentTypes()
         {
             var documentTypes = DocumentTypesService.GetAll();
+            
+            if (SystemInformationService.UseAgtFe)
+            {
+                string[] agtEligibleDocumentTypes = AgtService.EligibleDocumentTypes;
+                documentTypes.RemoveAll(dt => agtEligibleDocumentTypes.Contains(dt.Acronym));
+            }
+
+            return documentTypes;
+        }
+
+        private void InitializeDocumentTypesComboBox()
+        {
+            var documentTypes = GetDocumentTypes();
             var labelText = GeneralUtils.GetResourceByName("global_documentfinance_type");
             var currentDocumentType = _entity != null ? _entity.DocumentType : null;
 
