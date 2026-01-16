@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
@@ -62,6 +62,12 @@ namespace LogicPOS.UI.Components.Pages
                 foreach (var monthSale in data.Sales)
                 {
                     double grossTotal = Convert.ToDouble(monthSale.FinalTotal);
+                   
+                    if(grossTotal < 0)
+                    {
+                        grossTotal = 0;
+                    }
+
                     treeStore.AppendValues(new DateTime(year, monthSale.Month, 1), grossTotal);
                 }
 
