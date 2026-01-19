@@ -25,11 +25,10 @@ namespace LogicPOS.UI.Components.Finance.Agt
             var body = new VBox(false, 2);
             body.PackStart(TextBox.CreateHbox(TxtRequestId, TxtSubmissionDate), false, false, 0);
             body.PackStart(TxtDocumentNumber.Component, false, false, 0);
-            body.PackStart(TxtSubmissionErrorCode.Component, false, false, 0);
+            body.PackStart(TextBox.CreateHbox(TxtSubmissionErrorCode, TxtValidationStatus), false, false, 0);
             body.PackStart(TxtSubmissionErrorDescription.Component, false, false, 0);
-            body.PackStart(TxtHttpStatusCode.Component, false, false, 0);
-            body.PackStart(TxtValidationResultCode.Component, false, false, 0);
-            body.PackStart(TxtValidationStatus.Component, false, false, 0);
+            body.PackStart(TextBox.CreateHbox(TxtHttpStatusCode, TxtValidationResultCode), false, false, 0);
+            body.PackStart(TxtRejectedDocumentNumber.Component, false, false, 0);
             body.PackStart(TxtValidationErrors.Component, false, false, 0);
 
             return body;

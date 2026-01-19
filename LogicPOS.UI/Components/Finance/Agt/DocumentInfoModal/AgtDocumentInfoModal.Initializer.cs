@@ -18,7 +18,20 @@ namespace LogicPOS.UI.Components.Finance.Agt
             InitializeTxtValidationResultCode();
             InitializeTxtValidationStatus();
             InitializeTxtValidationErrors();
+            InitializeTxtRejectedDocumentNumber();
             BtnCorrectDocument.Clicked += BtnCorrectDocument_Clicked;
+        }
+
+        private void InitializeTxtRejectedDocumentNumber()
+        {
+            TxtRejectedDocumentNumber = new TextBox(this,
+                                      "Documento a Retificar",
+                                      isRequired: false,
+                                      isValidatable: false,
+                                      includeSelectButton: false,
+                                      includeKeyBoardButton: false);
+
+            TxtRejectedDocumentNumber.Entry.Sensitive = false;
         }
 
         private void InititalizeTxtSubmissionDate()

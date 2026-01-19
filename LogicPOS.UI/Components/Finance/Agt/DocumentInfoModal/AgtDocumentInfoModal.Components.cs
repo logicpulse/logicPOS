@@ -1,4 +1,4 @@
-﻿using logicpos;
+using logicpos;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Modals.Common;
@@ -32,5 +32,6 @@ namespace LogicPOS.UI.Components.Finance.Agt
         public TextBox TxtValidationResultCode { get; private set; }
         public TextBox TxtValidationStatus { get; private set; }
         public TextBox TxtValidationErrors { get; private set; }
+        public TextBox TxtRejectedDocumentNumber { get; private set; }
     }
 }

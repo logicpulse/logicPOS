@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
@@ -25,12 +25,14 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnViewAgtDocument_Clicked(object sender, EventArgs e)
         {
-            if (Page.SelectedEntity == null)
+            if (Page.SelectedEntity == null || Page.SelectedEntity.AgtInfo?.Number == null)
             {
                 return;
             }
 
-            AgtDocumentInfoModal.Show(Page.SelectedEntity.Id, this);
+            var agtDocument = AgtService.GetAgtDocument(Page.SelectedEntity.Id);
+
+            AgtDocumentInfoModal.Show(agtDocument, this);
         }
 
         private void BtnUpdateAgtValidationStatus_Clicked(object sender, EventArgs e)

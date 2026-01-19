@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common;
 using System;
 
 namespace LogicPOS.Api.Features.Finance.Agt.Common
@@ -15,5 +15,6 @@ namespace LogicPOS.Api.Features.Finance.Agt.Common
         public string ValidationResultCode { get; set; }
         public string ValidationStatus { get; set; }
         public string ValidationErrors { get; set; }
+        public string RejectedDocumentNumber { get; set; }
     }
 }
