@@ -36,8 +36,8 @@ namespace LogicPOS.UI.Components.Modals
         public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
 
 
-        IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
-                                                                                                      "Preencher",
+        IconButtonWithText BtnAgtNifInfo = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
+                                                                                                      "Validar",
                                                                                                       AppSettings.Paths.Images + @"Icons\icon_pos_agt_search_customer_data.png");
 
 
@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Modals
             UpdateTitle();
 
             BtnClear.Visible = this.Navigator.CurrentTab == this.CustomerTab;
-            BtnFillCustomerData.Visible = this.Navigator.CurrentTab == this.CustomerTab;
+            BtnAgtNifInfo.Visible = this.Navigator.CurrentTab == this.CustomerTab;
             BtnPreview.Visible = this.Navigator.CurrentTab == this.DetailsTab && this.DetailsTab.Page.Items.Count > 0;
         }
 

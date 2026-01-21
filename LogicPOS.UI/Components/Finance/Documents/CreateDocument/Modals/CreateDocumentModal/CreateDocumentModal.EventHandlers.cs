@@ -1,6 +1,5 @@
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
@@ -13,7 +12,6 @@ using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Services;
 using System;
-using System.EnterpriseServices;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
@@ -39,15 +37,15 @@ namespace LogicPOS.UI.Components.Modals
             BtnOk.Clicked += BtnOk_Clicked;
             BtnPreview.Clicked += BtnPreview_Clicked;
             BtnClear.Clicked += BtnClear_Clicked;
-            BtnFillCustomerData.Clicked += BtnFillCustomerData_Clicked;
+            BtnAgtNifInfo.Clicked += BtnAgtNifInfo_Clicked;
             Navigator.CurrentTabChanged += t => UpdateUI();
             DetailsTab.Page.OnTotalChanged += t => UpdateUI();
             CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
         }
 
-        private void BtnFillCustomerData_Clicked(object sender, EventArgs e)
+        private void BtnAgtNifInfo_Clicked(object sender, EventArgs e)
         {
-            CustomerTab.FillWithAgtInfo();
+            CustomerTab.ShowAgtNifInfo();
             Run();
         }
 

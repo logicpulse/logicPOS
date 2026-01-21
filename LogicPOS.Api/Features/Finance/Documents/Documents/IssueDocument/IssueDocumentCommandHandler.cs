@@ -1,6 +1,7 @@
 using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Customers.Customers;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
             if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
+                CustomersCache.Clear(_keyedMemoryCache);
             }
 
             return result;

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (SystemInformationService.SystemInformation.IsAngola)
             {
-                actionAreaButtons.Add(new ActionAreaButton(BtnFillCustomerData, ResponseType.None));
+                actionAreaButtons.Add(new ActionAreaButton(BtnAgtNifInfo, ResponseType.None));
             }
 
             actionAreaButtons.Add(new ActionAreaButton(BtnClear, ResponseType.None));

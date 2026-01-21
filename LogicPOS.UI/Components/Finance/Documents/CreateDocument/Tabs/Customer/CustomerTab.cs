@@ -156,7 +156,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtNotes.Clear();
         }
 
-        public void FillWithAgtInfo()
+        public void ShowAgtNifInfo()
         {
             if (TxtFiscalNumber.IsValid() == false || string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
             {
@@ -172,11 +172,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
-            Clear();
+            CustomAlerts.Information(this.SourceWindow)
+                        .WithTitle("AGT > Informação do Contribuinte")
+                        .WithMessage($"Nome: {contributor.Name}\nTipo: {contributor.Type}\nRegime IVA: {contributor.IvaRegime}\nEstado: {contributor.Status}")
+                        .ShowAlert();
 
-            TxtCustomer.Text = contributor.Name ?? "";
-            TxtCustomer.SelectedEntity = null;
-            TxtFiscalNumber.Text = contributor.Nif ?? "";
         }
     }
 }

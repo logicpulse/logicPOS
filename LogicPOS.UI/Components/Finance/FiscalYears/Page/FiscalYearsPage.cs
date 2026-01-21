@@ -3,15 +3,10 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.FiscalYears.GetAllFiscalYears;
-using LogicPOS.Globalization;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.UI.Components.Windows;
 using MediatR;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -39,27 +34,7 @@ namespace LogicPOS.UI.Components.Pages
             modal.Destroy();
             return response;
         }
-        
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(CreateAcronymColumn());
-            GridView.AppendColumn(CreateYearColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
-        }
-       
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
 
-            AddCodeSorting(0);
-            AddDesignationSorting(1);
-            AddAcronymSorting();
-            AddYearSorting();
-            AddUpdatedAtSorting(4);
-        }
-      
         protected override DeleteCommand GetDeleteCommand() => null;
 
         public override void UpdateButtonPrevileges()
