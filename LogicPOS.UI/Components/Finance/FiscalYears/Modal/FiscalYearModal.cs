@@ -49,6 +49,8 @@ namespace LogicPOS.UI.Components.Modals
                 _txtDesignation.Text = $"Ano {currentYear}";
                 _txtAcronym.Text = $"{currentYear}A1";
             }
+
+            _checkSeriesForEachTerminal.Active = SystemInformationService.SystemInformation.IsPortugal;
         }
 
         private CreateFiscalYearCommand CreateAddCommand()

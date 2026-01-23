@@ -1,6 +1,5 @@
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
-using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 
