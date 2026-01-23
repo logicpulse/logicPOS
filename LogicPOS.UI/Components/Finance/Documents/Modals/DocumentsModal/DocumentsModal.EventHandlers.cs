@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Printing;
@@ -285,7 +286,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => d.Id),
+            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => (d.Id,d.Number)),
+                                                     Page.SelectedEntity.Customer.FiscalNumber,
                                                      false,
                                                      this);
             var response = (ResponseType)modal.Run();

@@ -206,7 +206,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var modal = new SendDocumentByEmailModal(Page.SelectedReceipts.Select(d => d.Id),
+            var modal = new SendDocumentByEmailModal(Page.SelectedReceipts.Select(d =>( d.Id,d.RefNo)),
+                                                     Page.SelectedEntity.CustomerFiscalNumber,
                                                      true,
                                                      this);
 

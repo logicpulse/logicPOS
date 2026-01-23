@@ -1,8 +1,9 @@
-﻿using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
+using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.ExportCustomersToExcel;
+using LogicPOS.Api.Features.Finance.Customers.Customers.GetCustomer;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
@@ -28,13 +29,13 @@ namespace LogicPOS.UI.Components.Finance.Customers
             }
         }
 
-       public static List<AutoCompleteLine> AutocompleteLines => Customers.Select(c => new AutoCompleteLine
+        public static List<AutoCompleteLine> AutocompleteLines => Customers.Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.Name
         }).ToList();
 
-        public static List<AutoCompleteLine> SuppliersAutocompleteLines => Customers.Where(x=>x.Supplier).Select(c => new AutoCompleteLine
+        public static List<AutoCompleteLine> SuppliersAutocompleteLines => Customers.Where(x => x.Supplier).Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.Name
@@ -45,6 +46,18 @@ namespace LogicPOS.UI.Components.Finance.Customers
             Id = c.Id,
             Name = c.FiscalNumber
         }).ToList();
+
+        public static Customer GetByFiscalNumber(string fiscalNumber)
+        {
+            GetCustomerQuery query = new GetCustomerQuery(fiscalNumber);
+            var customerResult = DependencyInjection.Mediator.Send(query).Result;
+            if (customerResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(customerResult);
+                return null;
+            }
+            return customerResult.Value;
+        }
 
         public static void RefreshCustomersCache()
         {
@@ -92,5 +105,6 @@ namespace LogicPOS.UI.Components.Finance.Customers
             }
             return result.Value.Path;
         }
+
     }
 }

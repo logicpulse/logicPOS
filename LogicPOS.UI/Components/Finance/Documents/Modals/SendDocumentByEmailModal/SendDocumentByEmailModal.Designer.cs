@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets.Entrys;
 using LogicPOS.Globalization;
@@ -16,19 +16,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class SendDocumentByEmailModal
     {
-        private void Initialize()
-        {
-            InitializeTxtSubject();
-            InitializeTxtTo();
-            InitializeTxtCc();
-            InitializeTxtBcc();
-            InitializeTxtBody();
-
-            ValidatableFields.Add(TxtSubject);
-            ValidatableFields.Add(TxtTo);
-            ValidatableFields.Add(TxtCc);
-            ValidatableFields.Add(TxtBcc);
-        }
         protected override ActionAreaButtons CreateActionAreaButtons()
         {
             return new ActionAreaButtons
@@ -38,60 +25,17 @@ namespace LogicPOS.UI.Components.Modals
             };
         }
 
-        private void InitializeTxtBody()
+        protected override Widget CreateBody()
         {
-            TxtBody = new EntryBoxValidationMultiLine(this,
-                                                      LocalizedString.Instance["global_email_body"],
-                                                      KeyboardMode.AlfaNumeric,
-                                                      string.Empty,
-                                                      false);
+            Initialize();
+            VBox verticalLayout = new VBox(false, 0);
+            verticalLayout.PackStart(TxtSubject.Component, false, false, 0);
+            verticalLayout.PackStart(TxtTo.Component, false, false, 0);
+            verticalLayout.PackStart(TxtCc.Component, false, false, 0);
+            verticalLayout.PackStart(TxtBcc.Component, false, false, 0);
+            verticalLayout.PackStart(TxtBody, true, true, 0);
 
-            TxtBody.EntryMultiline.Value.Text = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_BODY");
+            return verticalLayout;
         }
-
-        private void InitializeTxtSubject()
-        {
-            TxtSubject = new TextBox(this,
-                                        LocalizedString.Instance["global_email_subject"],
-                                        true,
-                                        includeSelectButton: false,
-                                        includeKeyBoardButton: true);
-
-            TxtSubject.Text = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_SUBJECT");
-        }
-
-        private void InitializeTxtTo()
-        {
-            TxtTo = new TextBox(this,
-                                    LocalizedString.Instance["global_email_to"],
-                                    true,
-                                    true,
-                                    RegularExpressions.Email,
-                                    includeSelectButton: false,
-                                    includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtCc()
-        {
-            TxtCc = new TextBox(sourceWindow: this,
-                                    labelText: LocalizedString.Instance["global_email_cc"],
-                                    isRequired: false,
-                                    isValidatable: true,
-                                    RegularExpressions.Email,
-                                    includeSelectButton: false,
-                                    includeKeyBoardButton: true);
-        }
-
-        private void InitializeTxtBcc()
-        {
-            TxtBcc = new TextBox(sourceWindow: this,
-                                     labelText: LocalizedString.Instance["global_email_bcc"],
-                                     isRequired: false,
-                                     isValidatable: true,
-                                     RegularExpressions.Email,
-                                     includeSelectButton: false,
-                                     includeKeyBoardButton: true);
-        }
-
     }
 }
