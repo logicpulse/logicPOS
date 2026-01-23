@@ -1,4 +1,5 @@
 using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
@@ -99,13 +100,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (Page.SelectedEntity != null)
             {
-                if (ThermalPrintingService.WasPrintedByThermalPrinter(Page.SelectedEntity.Id))
+                if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id))
                 {
-                       CustomAlerts.Warning(this)
-                                    .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
-                                    .ShowAlert();
-                        return ;
-                    
+                    CustomAlerts.Warning(this)
+                                 .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                                 .ShowAlert();
+                    return;
+
                 }
                 DocumentPdfUtils.ViewDocumentPdf(this, Page.SelectedEntity.Id);
             }
@@ -180,33 +181,31 @@ namespace LogicPOS.UI.Components.Modals
                             .ShowAlert();
             }
 
-            
+
         }
+
         private bool CheckPrinterCompatibility(Api.Entities.Printer printer)
         {
-            if (ThermalPrintingService.WasPrintedByThermalPrinter(Page.SelectedEntity.Id))
+
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && !printer.Type.ThermalPrinter)
             {
-                if (!printer.Type.ThermalPrinter)
-                {
-                    CustomAlerts.Warning(this)
-                                .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
-                                .ShowAlert();
-                    return false;
-                }
+                CustomAlerts.Warning(this)
+                            .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                            .ShowAlert();
+                return false;
             }
-            else
+
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) == false && printer.Type.ThermalPrinter)
             {
-                if (printer.Type.ThermalPrinter)
-                {
-                    CustomAlerts.Warning(this)
-                                .WithMessage("O documento que tentou imprimir não foi Criado em uma impressora Térmica.")
-                                .ShowAlert();
-                    return false;
-                }
+                CustomAlerts.Warning(this)
+                            .WithMessage("O documento que tentou imprimir não foi Criado em uma impressora Térmica.")
+                            .ShowAlert();
+                return false;
             }
 
             return true;
         }
+
         private void BtnPayInvoice_Clicked(object sender, EventArgs e)
         {
             if (Page.SelectedDocuments.Count == 0)

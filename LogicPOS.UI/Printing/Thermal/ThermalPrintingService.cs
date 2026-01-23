@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.UI.Alerts;
@@ -27,8 +27,6 @@ namespace LogicPOS.UI.Printing
                 return _printer;
             }
         }
-        
-      
 
         public static void PrintTicket(TicketPrintingData data)
         {
@@ -36,7 +34,7 @@ namespace LogicPOS.UI.Printing
             {
                 if (Printer != null)
                 {
-                    new PosTicketPrinter(Printer,data).Print();
+                    new PosTicketPrinter(Printer, data).Print();
                 }
             }
             catch (Exception ex)
@@ -90,7 +88,7 @@ namespace LogicPOS.UI.Printing
                 Log.Error(ex, "Error printing...");
             }
         }
- 
+
         public static void PrintCashDrawerOpen(decimal totalAmountInCashDrawer, decimal movementAmount = 0, string movementDescription = "")
         {
             if (!TerminalService.HasThermalPrinter)
@@ -200,14 +198,14 @@ namespace LogicPOS.UI.Printing
             }
         }
 
-        public static bool WasPrintedByThermalPrinter(Guid id)
+        public static bool DocumentWasPrintedByThermalPrinter(Guid documentId)
         {
-            GetDocumentPrinterTypeQuery query = new GetDocumentPrinterTypeQuery(id);
-            var result =DependencyInjection.Mediator.Send(query).Result;
+            GetDocumentPrinterTypeQuery query = new GetDocumentPrinterTypeQuery(documentId);
+            var result = DependencyInjection.Mediator.Send(query).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
-                
+
             }
             return result.Value;
         }
