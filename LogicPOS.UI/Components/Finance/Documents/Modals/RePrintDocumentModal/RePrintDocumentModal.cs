@@ -1,8 +1,9 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -56,7 +57,6 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (BtnOriginal.Active)
                 {
-                    CheckButtonOnly(BtnOriginal);
                     Copies.Clear();
                     Copies.Add(1);
                 }
@@ -64,8 +64,6 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     Copies.Remove(1);
                 }
-
-                TxtMotive.Component.Sensitive = BtnOriginal.Active && !CheckSecondCopy.Active;
             };
 
             BtnCopy2.Toggled += (sender, args) =>
@@ -102,7 +100,23 @@ namespace LogicPOS.UI.Components.Modals
                     Copies.Remove(4);
                 }
             };
+
+            CheckSecondCopy.Clicked += CheckSecondCopy_Clicked;
+
         }
 
+        private void CheckSecondCopy_Clicked(object sender, EventArgs e)
+        {
+            if(CheckSecondCopy.Active)
+            {
+                TxtMotive.Component.Sensitive = false;
+            }
+            else
+            {
+                TxtMotive.Component.Sensitive = true;
+                BtnOriginal.Active = true;
+                CheckButtonOnly(BtnOriginal);
+            }
+        }
     }
 }

@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtMotive = new TextBox(WindowSettings.Source,
                                        GeneralUtils.GetResourceByName("global_reprint_original_motive"),
                                        isRequired: false,
-                                       isValidatable: false,
+                                       isValidatable:true,
+                                       regex: "^(?!\\s)[A-Za-z0-9 ]+$",
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true);
 
