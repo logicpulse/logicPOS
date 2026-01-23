@@ -66,14 +66,14 @@ namespace LogicPOS.UI.Components.Modals
             bool documentIsSelected = selectedDocument != null;
 
             BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE") && hasFiscalYear;
-            BtnOpenDocument.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && hasFiscalYear && documentIsSelected;
+            BtnOpenDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSSHOW_MENU") && documentIsSelected;
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
 
             BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTSPAY_MENU") && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsInvoicePaymentMode;
             BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && IsNotSelectionMode;
-            BtnCancelDocument.Visible = Users.AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable && IsNotSelectionMode; ;
+            BtnCancelDocument.Visible = AuthenticationService.UserHasPermission("FINANCE_DOCUMENT_CANCEL_DOCUMENT") && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable && IsNotSelectionMode; ;
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;
