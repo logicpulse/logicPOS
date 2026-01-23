@@ -1,6 +1,4 @@
-﻿﻿using System.Windows.Forms;
-using System.Reflection;
-using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace LogicPOS.UI.PDFViewer
 {
@@ -12,6 +10,7 @@ namespace LogicPOS.UI.PDFViewer
         private LogicPOSPDFViewer(string pdfLocation, string saveDefaultName)
         {
             InitializeComponent();
+            this.TopMost = false;
             _pdfLocation = pdfLocation;
             _saveDefaultName = saveDefaultName;
         }
@@ -68,7 +67,7 @@ namespace LogicPOS.UI.PDFViewer
 
         private ToolStripButton CloneButton(ToolStripButton originalButton)
         {
-           
+
             var clonedButton = new ToolStripButton
             {
                 Name = originalButton.Name,
