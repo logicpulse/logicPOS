@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
@@ -8,7 +9,6 @@ using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                                    includeKeyBoardButton: false);
 
             TxtPaymentCondition.Entry.IsEditable = true;
-            TxtPaymentCondition.WithAutoCompletion(PaymentConditionsService.AutocompleteLines,id => PaymentConditionsService.GetById(id));
+            TxtPaymentCondition.WithAutoCompletion(PaymentConditionsService.AutocompleteLines, id => PaymentConditionsService.GetById(id));
             TxtPaymentCondition.OnCompletionSelected += p => SelectPaymentCondition(p as PaymentCondition);
             TxtPaymentCondition.Entry.Changed += TxtPaymentCondition_Changed;
             TxtPaymentCondition.SelectEntityClicked += BtnSelectPaymentCondition_Clicked;
@@ -116,6 +116,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               includeKeyBoardButton: false);
 
             TxtDocumentType.SelectedEntity = DocumentTypesService.Default;
+
+            if (TxtDocumentType.SelectedEntity == null)
+            {
+                CustomAlerts.Warning(SourceWindow)
+                    .WithMessage("Nenhuma série activa para este terminal foi encontrada.")
+                    .ShowAlert();
+            }
+
             TxtDocumentType.Text = (TxtDocumentType.SelectedEntity as DocumentType)?.Designation;
             TxtDocumentType.Entry.IsEditable = true;
             TxtDocumentType.WithAutoCompletion(DocumentTypesService.AutocompleteLines, id => DocumentTypesService.GetById(id));
