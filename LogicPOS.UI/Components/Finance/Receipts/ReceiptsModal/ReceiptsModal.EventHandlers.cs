@@ -3,7 +3,9 @@ using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Agt;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
+using Serilog;
 using System;
 using System.Linq;
 
@@ -163,7 +165,17 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+            try
+            {
+                PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error printing document {DocumentId}", Page.SelectedEntity.Id);
+                CustomAlerts.Error(this)
+                            .WithMessage($"Ocorreu um erro ao tentar imprimir o documento. {ex.Message}")
+                            .ShowAlert();
+            }
         }
       
         protected override void OnResponse(ResponseType response)

@@ -178,10 +178,9 @@ namespace LogicPOS.UI.Components.Modals
             {
                 Log.Error(ex, "Error printing document {DocumentId}", Page.SelectedEntity.Id);
                 CustomAlerts.Error(this)
-                            .WithMessage("Ocorreu um erro ao tentar imprimir o documento.")
+                            .WithMessage($"Ocorreu um erro ao tentar imprimir o documento. {ex.Message}")
                             .ShowAlert();
             }
-
 
         }
 
