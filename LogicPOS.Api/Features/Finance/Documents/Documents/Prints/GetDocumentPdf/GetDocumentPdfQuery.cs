@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Responses;
 using MediatR;
 using System;
@@ -8,18 +8,20 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPd
 {
     public class GetDocumentPdfQuery : IRequest<ErrorOr<TempFile>>
     {
-        public GetDocumentPdfQuery(Guid id , IEnumerable<int> copies = null) {
+        public GetDocumentPdfQuery(Guid id, bool isSecondCopy, IEnumerable<int> copies = null)
+        {
             Id = id;
-            
-            if(copies == null)
+
+            if (copies == null)
             {
                 copies = new int[] { 1 };
             }
 
-            Copies = string.Join(",",copies);
+            Copies = string.Join(",", copies);
+            IsSecondCopy = isSecondCopy;
         }
 
-        public GetDocumentPdfQuery(string number, IEnumerable<int> copies = null)
+        public GetDocumentPdfQuery(string number, bool isSecondCopy, IEnumerable<int> copies = null)
         {
             Number = number;
             if (copies == null)
@@ -27,21 +29,23 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPd
                 copies = new int[] { 1 };
             }
             Copies = string.Join(",", copies);
+            IsSecondCopy = isSecondCopy;
         }
 
         public string Number { get; set; }
         public string Copies { get; set; }
         public Guid? Id { get; set; }
+        public bool IsSecondCopy { get; set; }
 
         public string GetUrlQuery()
         {
             if (Id.HasValue)
             {
-                return $"?id={Id}&copies={Copies}";
+                return $"?id={Id}&copies={Copies}&issecondcopy={IsSecondCopy}";
             }
             else
             {
-                return $"?number={Number}&copies={Copies}";
+                return $"?number={Number}&copies={Copies}&issecondcopy={IsSecondCopy}";
             }
         }
     }

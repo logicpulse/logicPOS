@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Common.Responses;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf
 
         public override async Task<ErrorOr<TempFile>> Handle(GetReceiptPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"receipts/{query.Id}/pdf?copyNumber={query.CopyNumber}");
+            return await HandleGetFileQueryAsync($"receipts/{query.Id}/pdf?copyNumber={query.CopyNumber}&issecondcopy={query.IsSecondCopy}");
         }
     }
 }
