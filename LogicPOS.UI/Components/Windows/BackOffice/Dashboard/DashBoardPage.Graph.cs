@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
 using Medsphere.Widgets;
 using Serilog;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -32,7 +33,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 GraphComponent.Remove(item);
             }
-           
+
             DateTimeAxis dateTimeAxis = new DateTimeAxis(0, AxisLocation.Bottom);
 
             dateTimeAxis.Padding = 5;
@@ -62,13 +63,23 @@ namespace LogicPOS.UI.Components.Pages
                 foreach (var monthSale in data.Sales)
                 {
                     double grossTotal = Convert.ToDouble(monthSale.FinalTotal);
-                   
-                    if(grossTotal < 0)
+
+                    if (grossTotal < 0)
                     {
                         grossTotal = 0;
                     }
 
                     treeStore.AppendValues(new DateTime(year, monthSale.Month, 1), grossTotal);
+                }
+                for (int month = 1; month <= 12; month++)
+                {
+                    double grossTotal = Convert.ToDouble(data.Sales.Where(x => x.Month == month).Select(m => m.FinalTotal).FirstOrDefault());
+                    if (grossTotal < 0)
+                    {
+                        grossTotal = 0;
+                    }
+                    treeStore.AppendValues(new DateTime(year, month, 1), grossTotal);
+
                 }
 
                 return treeStore;
