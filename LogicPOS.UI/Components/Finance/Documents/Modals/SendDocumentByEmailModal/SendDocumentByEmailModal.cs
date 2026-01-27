@@ -42,9 +42,10 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtTo.Text = _customer?.Email;
             string bodyTemplate = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_BODY");
+            bool useHtmlBody = PreferenceParametersService.GetPreferenceParameterValue("SEND_MAIL_FINANCE_DOCUMENTS_HTML_BODY").ToLower() == "true";
             var companyInformation = CompanyDetailsService.CompanyInformation;
 
-            bodyTemplate = bodyTemplate.Replace("${DOCUMENT_LIST}", string.Join(",", _documents.Select(d => d.Number)));
+            bodyTemplate = bodyTemplate.Replace("${DOCUMENT_LIST}", string.Join(useHtmlBody ? ";<br/>":";\n", _documents.Select(d => d.Number)));
             bodyTemplate = bodyTemplate.Replace("${COMPANY_NAME}", companyInformation.Name);
             bodyTemplate = bodyTemplate.Replace("${COMPANY_BUSINESS_NAME}", companyInformation.BusinessName);
             bodyTemplate = bodyTemplate.Replace("${COMPANY_WEBSITE}", companyInformation.Website);

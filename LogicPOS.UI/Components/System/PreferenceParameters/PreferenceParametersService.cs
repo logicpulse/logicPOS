@@ -1,10 +1,6 @@
-﻿using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Company;
-using LogicPOS.Api.Features.Company.GetCompanyInformations;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.GetAllPreferenceParameters;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,12 +10,12 @@ namespace LogicPOS.UI.Services
     public static class PreferenceParametersService
     {
         private static IEnumerable<PreferenceParameter> _preferenceParameters;
-       
+
         public static string GetPreferenceParameterValue(string token)
         {
             if (_preferenceParameters == null)
             {
-                LoadPreferenceParameters(); 
+                LoadPreferenceParameters();
             }
 
             var preferenceParameter = _preferenceParameters.FirstOrDefault(p => p.Token == token);
@@ -31,13 +27,13 @@ namespace LogicPOS.UI.Services
         {
             var mediator = DependencyInjection.Mediator;
             var preferenceParameters = mediator.Send(new GetAllPreferenceParametersQuery()).Result;
-           
+
             if (preferenceParameters.IsError)
             {
                 ErrorHandlingService.HandleApiError(preferenceParameters);
                 return;
             }
-             
+
             _preferenceParameters = preferenceParameters.Value;
         }
 
