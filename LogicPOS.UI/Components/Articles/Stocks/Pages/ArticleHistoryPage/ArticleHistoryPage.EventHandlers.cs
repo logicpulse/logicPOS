@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.SaleDocument)).Result;
+            var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.SaleDocument, false)).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result, source: SourceWindow);

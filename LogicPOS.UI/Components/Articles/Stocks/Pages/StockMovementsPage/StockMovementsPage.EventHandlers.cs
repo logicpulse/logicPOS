@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (SelectedEntity.Quantity < 0 && SelectedEntity.DocumentNumber != null)
             {
-                var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.DocumentNumber)).Result;
+                var result = _mediator.Send(new GetDocumentPdfQuery(SelectedEntity.DocumentNumber,  false)).Result;
 
                 if (result.IsError)
                 {

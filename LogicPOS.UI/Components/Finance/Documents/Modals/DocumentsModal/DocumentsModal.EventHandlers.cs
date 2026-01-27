@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
             ResponseType reponse = (ResponseType)modal.Run();
             var copies = modal.Copies;
-            bool secondPrint = modal.SecondPrint;
+            bool isSecondCopy = modal.SecondPrint;
             string reason = modal.Reason;
             modal.Destroy();
 
@@ -68,13 +68,22 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             var printer = TerminalService.Terminal.Printer ?? TerminalService.Terminal.ThermalPrinter;
+
+            if (printer == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage("Não foi possível encontrar a impressora configurada para o terminal.")
+                            .ShowAlert();
+                return;
+            }
+
             bool canPrint = CheckPrinterCompatibility(printer);
             if (!canPrint)
             {
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
 
             if (tempFile == null)
             {
@@ -85,7 +94,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (PdfPrinter.PrintWithNativeDialog(tempFile.Value.Path) == global::System.Windows.Forms.DialogResult.OK)
                 {
-                    DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason);
+                    DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason);
                 }
             }
             catch (Exception ex)
@@ -148,7 +157,7 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
             ResponseType reponse = (ResponseType)modal.Run();
             var copies = modal.Copies;
-            bool secondPrint = modal.SecondPrint;
+            bool isSecondCopy = modal.SecondPrint;
             string reason = modal.Reason;
             modal.Destroy();
 
@@ -162,7 +171,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies);
+            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
 
             if (tempFile == null)
             {
@@ -172,7 +181,7 @@ namespace LogicPOS.UI.Components.Modals
             try
             {
                 PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
-                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, secondPrint, reason, printer.Type.ThermalPrinter);
+                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason, printer.Type.ThermalPrinter);
             }
             catch (Exception ex)
             {

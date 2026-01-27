@@ -3,7 +3,6 @@ using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Agt;
-using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
 using Serilog;
 using System;
@@ -103,16 +102,18 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.RefNo);
             ResponseType reponse = (ResponseType)modal.Run();
             var copyNumber = modal.Copies;
+            var isSecondCopy = modal.SecondPrint;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
             {
                 return;
             }
+            var copy= copyNumber.Select(c => (uint)c);
 
             if (Page.SelectedEntity != null)
             {
-                var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, 1);
+                var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, 1, isSecondCopy);
 
                 if (tempFile == null)
                 {
@@ -151,6 +152,7 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new RePrintDocumentModal(this, Page.SelectedEntity.RefNo);
             ResponseType reponse = (ResponseType)modal.Run();
             var copies = modal.Copies;
+            var isSecondCopy = modal.SecondPrint;
             modal.Destroy();
 
             if (reponse != ResponseType.Ok)
@@ -158,7 +160,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, 1);
+            var tempFile = DocumentPdfUtils.GetReceiptPdfFileLocation(Page.SelectedEntity.Id, (uint)copies.First(), isSecondCopy);
 
             if (tempFile == null)
             {

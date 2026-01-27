@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common.Responses;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
@@ -11,10 +11,10 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 {
     public static class DocumentPdfUtils
     {
-        public static TempFile? GetDocumentPdfFileLocation(Guid documentId, IEnumerable<int> copies)
+        public static TempFile? GetDocumentPdfFileLocation(Guid documentId, IEnumerable<int> copies, bool isSecondCopy)
         {
             var mediator = DependencyInjection.Mediator;
-            var command = new GetDocumentPdfQuery(documentId, copies);
+            var command = new GetDocumentPdfQuery(documentId, isSecondCopy, copies);
             var result = mediator.Send(command).Result;
 
             if (result.IsError)
@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static void ViewDocumentPdf(Gtk.Window source, Guid documentId)
         {
-            var tempFile = GetDocumentPdfFileLocation(documentId, new int[] { 1 });
+            var tempFile = GetDocumentPdfFileLocation(documentId, new int[] { 1 }, false);
 
             if (tempFile == null)
             {
@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Documents.Utilities
 
         public static void ViewReceiptPdf(Gtk.Window source, Guid documentId)
         {
-            var tempFile = GetReceiptPdfFileLocation(documentId, 1);
+            var tempFile = GetReceiptPdfFileLocation(documentId,1, false);
 
             if (tempFile == null)
             {
@@ -49,10 +49,10 @@ namespace LogicPOS.UI.Components.Documents.Utilities
             LogicPOSPDFViewer.ShowPDF(tempFile.Value.Path, tempFile.Value.Name);
         }
 
-        public static TempFile? GetReceiptPdfFileLocation(Guid documentId, uint copyNumber)
+        public static TempFile? GetReceiptPdfFileLocation(Guid documentId, uint copyNumber, bool isSecondCopy)
         {
             var mediator = DependencyInjection.Mediator;
-            var command = new GetReceiptPdfQuery(documentId, copyNumber);
+            var command = new GetReceiptPdfQuery(documentId, isSecondCopy, copyNumber);
             var result = mediator.Send(command).Result;
 
             if (result.IsError)

@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Modals
@@ -18,6 +19,14 @@ namespace LogicPOS.UI.Components.Modals
         {
             _documentNumber = documentNumber;
             SetTitle();
+            InitializeDefaultCopyNumber();
+        }
+
+        private void InitializeDefaultCopyNumber()
+        {
+            CheckSecondCopy.Active = true;
+            BtnOriginal.Active = true;
+            Copies = new List<int>() { 1};
         }
 
         private void SetTitle()
@@ -64,18 +73,21 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     Copies.Remove(1);
                 }
+                UpdateBtnOkSensitive();
             };
 
             BtnCopy2.Toggled += (sender, args) =>
+            {
+                if (BtnCopy2.Active)
                 {
-                    if (BtnCopy2.Active)
-                    {
-                        Copies.Add(2);
-                    } else
-                    {
-                        Copies.Remove(2);
-                    }
-                };
+                    Copies.Add(2);
+                }
+                else
+                {
+                    Copies.Remove(2);
+                }
+                UpdateBtnOkSensitive();
+            };
 
             BtnCopy3.Toggled += (sender, args) =>
             {
@@ -87,6 +99,7 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     Copies.Remove(3);
                 }
+                UpdateBtnOkSensitive();
             };
 
             BtnCopy4.Toggled += (sender, args) =>
@@ -99,17 +112,31 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     Copies.Remove(4);
                 }
+                UpdateBtnOkSensitive();
             };
 
             CheckSecondCopy.Clicked += CheckSecondCopy_Clicked;
 
         }
 
+        private void UpdateBtnOkSensitive()
+        {
+            BtnOk.Sensitive = (CheckSecondCopy.Active && Copies.Count > 0) || (BtnOriginal.Active && string.IsNullOrWhiteSpace(TxtMotive.Text));
+        }
+
         private void CheckSecondCopy_Clicked(object sender, EventArgs e)
         {
-            if(CheckSecondCopy.Active)
+            if (CheckSecondCopy.Active)
             {
                 TxtMotive.Component.Sensitive = false;
+
+                    if (Copies.Count == 0)
+                    {
+                        Copies.Add(1);
+                        BtnOriginal.Active = true;
+                    }
+                
+                UpdateBtnOkSensitive();
             }
             else
             {
