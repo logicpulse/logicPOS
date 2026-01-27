@@ -35,7 +35,8 @@ namespace LogicPOS.UI.Components.POS
             return message;
         }
 
-        protected bool Validate()
+        protected bool 
+            Validate()
         {
             if (AllFieldsAreValid() == false)
             {

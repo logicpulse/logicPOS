@@ -1,6 +1,7 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Services;
 using System;
 using System.IO;
 
@@ -27,7 +28,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override bool UpdateEntity()
         {
             var result = ExecuteUpdateCommand(CreateUpdateCommand());
-
+            PreferenceParametersService.RefreshPreferenceParameters();
             if(_entity.Token == "CULTURE")
             {
                 CustomAlerts.Warning(this)

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.POS;
@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Buttons
             modal.SplitAccount(SplittersNumber);
             ResponseType response = (ResponseType)modal.Run();
             Customer=modal.GetCustomerName();
-            if (response == ResponseType.Ok)
+            if (response == ResponseType.Ok && modal.IsValid)
             {
                 Paid = true;
                 Total = SaleContext.CurrentOrder.TotalFinal;

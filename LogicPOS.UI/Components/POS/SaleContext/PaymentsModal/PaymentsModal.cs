@@ -3,6 +3,8 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
+using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
@@ -12,6 +14,7 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -26,6 +29,7 @@ namespace LogicPOS.UI.Components.POS
         private string _documentType = GetDefaultDocumentType();
         private PaymentMode _paymentMode = PaymentMode.Full;
         private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
+        public bool IsValid;
         public PaymentMethod PaymentMethod => _selectedPaymentMethod;
         private PaymentMethod _selectedPaymentMethod;
         private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
@@ -72,6 +76,7 @@ namespace LogicPOS.UI.Components.POS
                 InitialSplittersNumber = SplittersNumber;
             }
             _paymentMode = PaymentMode.Splited;
+            BtnPartialPayment.Visible = false;
         }
 
         private void UpdateLabels()
@@ -285,7 +290,20 @@ namespace LogicPOS.UI.Components.POS
             }
             command.Discount = decimal.Parse(TxtDiscount.Text);
 
-            if (_paymentMode == PaymentMode.Splited)
+            var getCurrentFiscalYearResult = DependencyInjection.Mediator.Send(new GetCurrentFiscalYearQuery()).Result;
+            var hasValidFiscalYear = getCurrentFiscalYearResult.Value != null && getCurrentFiscalYearResult.Value.Year== DateTime.Now.Year;
+
+            if (!hasValidFiscalYear)
+            {
+                CustomAlerts.Information()
+                            .WithMessage($"{DateTime.Now.Year} não é um ano fiscal ativo no sistema")
+                            .ShowAlert();
+
+                IsValid = false;
+                return null;
+            }
+
+            if (_paymentMode == PaymentMode.Splited && IsValid)
             {
                 if (InitialSplittersNumber == SplittersNumber)
                 {

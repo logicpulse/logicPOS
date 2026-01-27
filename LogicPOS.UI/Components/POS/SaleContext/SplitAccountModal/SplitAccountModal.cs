@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.POS;
@@ -56,6 +56,9 @@ namespace LogicPOS.UI.Components.Modals
                 splitter.Clicked += Splitter_Clicked;
                 _vbox.PackStart(splitter, false, true, 5);
             }
+
+            BtnAddSplitter.Sensitive = !(Splitters.Count == PreferenceParametersService.MaxAccountSplitterNumber);
+            BtnRemoveSplitter.Sensitive = !(Splitters.Count == 2);
             UpdateTitle(_order);
 
         }
@@ -94,7 +97,7 @@ namespace LogicPOS.UI.Components.Modals
             SplitAccountCustomerButton.SplittersNumber = Splitters.Count();
             UpdateSplitters();
         }
-        
+
         private void Splitter_Clicked(object sender, EventArgs e)
         {
             if (Splitters.Any(x => x.Paid))
@@ -103,10 +106,10 @@ namespace LogicPOS.UI.Components.Modals
                 BtnRemoveSplitter.Sensitive = false;
             }
         }
-        
+
         private void BtnAddSplitter_Clicked(object sender, EventArgs e)
         {
-            if (Splitters.Count < 12)
+            if (Splitters.Count < PreferenceParametersService.MaxAccountSplitterNumber)
             {
                 Splitters.Add(new SplitAccountCustomerButton($"Cliente #{Splitters.Count() + 1}", AppSettings.Instance.FontSplitPaymentTouchButtonSplitPayment, this, Splitters.Count() + 1));
             }
@@ -148,7 +151,7 @@ namespace LogicPOS.UI.Components.Modals
             ScrolledWindow.AddWithViewport(_vbox);
             return ScrolledWindow;
         }
-       
+
         protected override void OnResponse(ResponseType response)
         {
             if (response != ResponseType.Ok && response != ResponseType.Cancel && response != ResponseType.Close)

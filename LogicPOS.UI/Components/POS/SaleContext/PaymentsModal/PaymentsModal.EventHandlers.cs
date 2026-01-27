@@ -8,8 +8,6 @@ using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
-using LogicPOS.UI.Components.Terminals;
-using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -59,7 +57,13 @@ namespace LogicPOS.UI.Components.POS
             }
 
 
+            IsValid = Validate();
             var addDocumentCommand = CreateAddDocumentCommand();
+            if (addDocumentCommand == null)
+            {
+                Run();
+                return;
+            }
             var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand);
 
             if (printingData == null)
@@ -67,7 +71,6 @@ namespace LogicPOS.UI.Components.POS
                 Run();
                 return;
             }
-
             ProcesPayment();
 
 
