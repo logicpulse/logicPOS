@@ -10,19 +10,34 @@ namespace LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLa
     public class GenerateBarcodeLabelPdfQuery : IRequest<ErrorOr<TempFile>>
     {
         public List<Guid> Ids { get; set; }
+        public List<string> SerialNumbers { get; set; }
 
         public GenerateBarcodeLabelPdfQuery(List<Guid> ids) => Ids = ids;
+        public GenerateBarcodeLabelPdfQuery(List<string> serialNumbers) => SerialNumbers = serialNumbers;
 
 
-        public string GetUrlQuery()
+        public string GetIdsUrlQuery()
         {
             StringBuilder builder = new StringBuilder("?");
             for (int i = 0; i < Ids.Count; i++)
             {
-                builder.Append($"ids={Ids[i]}" + (i == Ids.Count - 1 ? "" : "&"));
+                builder.Append($"Ids={Ids[i]}" + (i == Ids.Count - 1 ? "" : "&"));
             }
 
             return builder.ToString();
         }
+
+        public string GetSerialNumbersUrlQuery()
+        {
+            StringBuilder builder = new StringBuilder("?");
+            for (int i = 0; i < SerialNumbers.Count; i++)
+            {
+                builder.Append($"SerialNumbers={SerialNumbers[i]}" + (i == SerialNumbers.Count - 1 ? "" : "&"));
+            }
+
+            return builder.ToString();
+        }
+
+        public string GetUrlQuery() => Ids != null ? GetIdsUrlQuery() : GetSerialNumbersUrlQuery();
     }
 }

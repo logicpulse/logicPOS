@@ -1,6 +1,7 @@
 using Gtk;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
+using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -8,6 +9,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.PDFViewer;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using MediatR;
@@ -44,13 +46,35 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var result = _mediator.Send(CreateCommand()).Result;
+            var command = CreateCommand();
+
+            var result = _mediator.Send(command).Result;
 
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
                 Run();
             }
+
+            var serialNumbers = command.Items
+                .Where(x => string.IsNullOrWhiteSpace(x.SerialNumber) == false).Select(x => x.SerialNumber)
+                .Distinct()
+                .ToList();
+
+            if (serialNumbers.Count == 0)
+            {
+                return;
+            }
+
+             var labelsResult = _mediator.Send(new GenerateBarcodeLabelPdfQuery(serialNumbers)).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return;
+            }
+
+            LogicPOSPDFViewer.ShowPDF(labelsResult.Value.Path, labelsResult.Value.Name);
         }
 
         private void TxtDate_SelectEntityClicked(object sender, EventArgs e)
