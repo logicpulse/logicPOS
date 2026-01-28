@@ -1,8 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Finance.Documents.Documents;
-using MediatR;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,6 +25,7 @@ namespace LogicPOS.Api.Features.Documents.Receipts.CancelReceipt
             if (result.IsError == false)
             {
                 ReceiptsCache.Clear(_keyedMemoryCache);
+                DocumentsCache.Clear(_keyedMemoryCache);
             }
             return result;
         }
