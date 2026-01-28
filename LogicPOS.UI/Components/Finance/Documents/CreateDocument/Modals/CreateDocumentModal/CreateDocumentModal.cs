@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Documents.CreateDocument;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
@@ -183,22 +184,34 @@ namespace LogicPOS.UI.Components.Modals
             AddTabsEventHandlers();
         }
 
-        private void ShowTabsForDocumentType(DocumentType documentType)
+        private void UpdateTabsForDocumentType(DocumentType documentType)
         {
             var analyzer = documentType.Analyzer;
-            ShipToTab.ShowTab = ShipFromTab.ShowTab = analyzer.IsWayBill();
-            if(analyzer.IsWayBill() && CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId!=Guid.Empty)
+            bool isTransportDocument = analyzer.IsWayBill(); 
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = isTransportDocument;
+            bool customerIsSelected = CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId != Guid.Empty;
+            Api.Features.Finance.Customers.Customers.Common.Customer customer = null;
+            
+            if (customerIsSelected)
             {
-                ShipToTab.GetCustomerAddress((Guid)CustomerTab.CustomerId);
+                customer = CustomersService.Customers.FirstOrDefault(c => c.Id == CustomerTab.CustomerId.Value);
             }
+
+            if (isTransportDocument && customerIsSelected)
+            {
+                ShipToTab.LoadCustomerAddress(customer);
+            }
+
             if (SinglePaymentMethod == false)
             {
                 PaymentMethodsTab.ShowTab = analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice();
             }
-        }
 
-        private void EnableTabsForDocumentType(DocumentType documentType)
-        {
+            if (customerIsSelected)
+            {
+                CustomerTab.SelectCustomer(customer);
+            }
+
             CustomerTab.Sensitive = documentType.Analyzer.IsCreditNote() == false;
         }
 

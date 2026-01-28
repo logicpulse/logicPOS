@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
@@ -12,13 +12,8 @@ namespace LogicPOS.UI.Components.Pages
     public partial class ArticleHistoryPage : Page<ArticleHistory>
     {
         public GetArticlesHistoriesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
-        public PaginatedResult<ArticleHistory> Histories { get; private set; }
-        private IconButtonWithText BtnPrintSerialNumber { get; set; } = IconButtonWithText.Create("buttonUserId",
-                                                                                                  "Cod.Barras",
-                                                                                                  @"Icons/Dialogs/icon_pos_dialog_action_print.png");
-        private IconButtonWithText BtnOpenExternalDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
-        private IconButtonWithText BtnOpenSaleDocument { get; set; } = ActionAreaButton.FactoryGetDialogButtonTypeDocuments(DialogButtonType.OpenDocument);
-       
+      
+      
         public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             RemoveForbiddenButtons();
@@ -44,7 +39,7 @@ namespace LogicPOS.UI.Components.Pages
 
         private void AddPrintSerialNumberButton()
         {
-            BtnPrintSerialNumber.Clicked += BtnPrintSerialNumber_Clicked;
+            BtnPrintSerialNumber.Clicked += BtnPrintBarcodeLabel_Clicked;
             Navigator.RightButtons.Add(BtnPrintSerialNumber);
         }
 
@@ -87,22 +82,6 @@ namespace LogicPOS.UI.Components.Pages
             int response = modal.Run();
             modal.Destroy();
             return response;
-        }
-
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(CreateDesignationColumn());
-            GridView.AppendColumn(CreateSerialNumberColumn());
-            GridView.AppendColumn(CreateStatusColumn());
-            GridView.AppendColumn(CreateIsComposedColumn());
-            GridView.AppendColumn(CreatePurchaseDateColumn());
-            GridView.AppendColumn(CreateProviderColumn());
-            GridView.AppendColumn(CreatePurchasePriceColumn());
-            GridView.AppendColumn(CreateOriginDocumentColumn());
-            GridView.AppendColumn(CreateSaleDocumentColumn());
-            GridView.AppendColumn(CreateWarehouseColumn());
-            GridView.AppendColumn(CreateLocationColumn());
-            GridView.AppendColumn(CreateUpdatedAtColumn());
         }
 
         protected override DeleteCommand GetDeleteCommand() => null;

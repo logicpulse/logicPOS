@@ -142,8 +142,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void OnDocumentTypeSelected(DocumentType documentType)
         {
-            ShowTabsForDocumentType(documentType);
-            EnableTabsForDocumentType(documentType);
+            UpdateTabsForDocumentType(documentType);
             Navigator.UpdateUI();
         }
 

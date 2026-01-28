@@ -1,10 +1,14 @@
-using LogicPOS.Api.Features.Articles.StockManagement.GetArticleSerialNumberPdf;
+using Gtk;
+using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
+using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -32,6 +36,7 @@ namespace LogicPOS.UI.Components.Pages
             Histories = paginatedResult.Value;
             AddEntitiesToModel(Histories.Items);
         }
+        
         private void BtnOpenSaleDocument_Clicked(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(SelectedEntity.SaleDocument))
@@ -76,14 +81,15 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        private void BtnPrintSerialNumber_Clicked(object sender, EventArgs e)
+        private void BtnPrintBarcodeLabel_Clicked(object sender, EventArgs e)
         {
-            if (SelectedEntity == null || string.IsNullOrWhiteSpace(SelectedEntity.SerialNumber))
+            if (SelectedHistories.Count == 0)
             {
                 return;
             }
 
-            var result = _mediator.Send(new GetArticleSerialNumberPdfQuery(SelectedEntity.Id)).Result;
+            var ids = SelectedHistories.Select(x => x.Id).ToList();
+            var result = _mediator.Send(new GenerateBarcodeLabelPdfQuery(ids)).Result;
 
             if (result.IsError)
             {
@@ -100,5 +106,21 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLEWAREHOUSE_EDIT");
         }
 
+        private void CheckBox_Clicked(object o, ToggledArgs args)
+        {
+            if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
+            {
+                var history = (ArticleHistory)GridView.Model.GetValue(iterator, 0);
+
+                if (SelectedHistories.Contains(history))
+                {
+                    SelectedHistories.Remove(history);
+                }
+                else
+                {
+                    SelectedHistories.Add(history);
+                }
+            }
+        }
     }
 }

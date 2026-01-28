@@ -47,18 +47,19 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
         }
 
-        public void GetCustomerAddress(Guid customerId)
+        public void LoadCustomerAddress(Api.Features.Finance.Customers.Customers.Common.Customer customer)
         {
-            var customer=CustomersService.Customers.FirstOrDefault(c => c.Id == customerId);
-            if (customer != null)
+            if(customer == null)
             {
-                TxtAddress.Text = customer.Address;
-                TxtCity.Text = customer.City;
-                TxtCountry.Text = customer.Country.Designation;
-                TxtCountry.SelectedEntity = customer.Country;
-                TxtRegion.Text = customer.Locality;
-                TxtZipCode.Text = customer.ZipCode;
+                return;
             }
+
+            TxtAddress.Text = customer.Address ;
+            TxtCity.Text = customer.City;
+            TxtCountry.Text = customer.Country.Designation;
+            TxtCountry.SelectedEntity = customer.Country;
+            TxtRegion.Text = customer.Locality;
+            TxtZipCode.Text = customer.ZipCode;
         }
 
     }

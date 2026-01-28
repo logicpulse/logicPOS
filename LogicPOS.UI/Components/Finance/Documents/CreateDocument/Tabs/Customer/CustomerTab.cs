@@ -113,7 +113,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                    TxtCountry.IsValid();
         }
 
-        private void SelectCustomer(Api.Features.Finance.Customers.Customers.Common.Customer customer)
+        public void SelectCustomer(Api.Features.Finance.Customers.Customers.Common.Customer customer)
         {
             TxtCustomer.Text = customer.Name;
             TxtCustomer.SelectedEntity = customer;
@@ -123,7 +123,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             CustomerSelected?.Invoke(customer);
         }
 
-        private void FreezeEditableFields(bool freeze = true)
+        public void FreezeEditableFields(bool freeze = true)
         {
             TxtFiscalNumber.BtnKeyboard.Sensitive = TxtFiscalNumber.Entry.Sensitive = !freeze;
             TxtCardNumber.BtnKeyboard.Sensitive = TxtCardNumber.Entry.Sensitive = !freeze;

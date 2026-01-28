@@ -15,14 +15,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     public partial class ShipFromTab : ModalTab
     {
         public ShipFromTab(Window parent) : base(parent,
-                                                               GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"),
-                                                               AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
-                                                               false)
+                                                 GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page5"),
+                                                 AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_5_waybill_from.png",
+                                                 false)
         {
             Initialize();
             Design();
         }
-
 
 
         private void Initialize()
@@ -37,7 +36,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             InitializeTxtWarehouseId();
             InitializeTxtLocationId();
         }
-
+        
         private void SelectCountry(Country country)
         {
             TxtCountry.Text = country.Designation;

@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Extensions;
@@ -10,6 +11,24 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class ArticleHistoryPage
     {
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(CreateSelectColumn());
+            GridView.AppendColumn(CreateDesignationColumn());
+            GridView.AppendColumn(CreateSerialNumberColumn());
+            GridView.AppendColumn(CreateStatusColumn());
+            GridView.AppendColumn(CreateIsComposedColumn());
+            GridView.AppendColumn(CreatePurchaseDateColumn());
+            GridView.AppendColumn(CreateProviderColumn());
+            GridView.AppendColumn(CreatePurchasePriceColumn());
+            GridView.AppendColumn(CreateOriginDocumentColumn());
+            GridView.AppendColumn(CreateSaleDocumentColumn());
+            GridView.AppendColumn(CreateWarehouseColumn());
+            GridView.AppendColumn(CreateLocationColumn());
+            GridView.AppendColumn(CreateUpdatedAtColumn());
+        }
+
         #region Creators
         private TreeViewColumn CreateDesignationColumn()
         {
@@ -143,6 +162,27 @@ namespace LogicPOS.UI.Components.Pages
             var title = LocalizedString.Instance["global_record_date_updated"];
             return Columns.CreateColumn(title, 12, RenderUpdatedAt);
         }
+
+        private TreeViewColumn CreateSelectColumn()
+        {
+            TreeViewColumn selectColumn = new TreeViewColumn();
+
+            var selectCellRenderer = new CellRendererToggle();
+            selectColumn.PackStart(selectCellRenderer, true);
+
+            selectCellRenderer.Toggled += CheckBox_Clicked;
+
+            void RenderSelect(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var history = (ArticleHistory)model.GetValue(iter, 0);
+                (cell as CellRendererToggle).Active = SelectedHistories.Contains(history);
+            }
+
+            selectColumn.SetCellDataFunc(selectCellRenderer, RenderSelect);
+
+            return selectColumn;
+        }
+
         #endregion
 
         #region Sorting

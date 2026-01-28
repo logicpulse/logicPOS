@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
@@ -41,7 +41,6 @@ namespace LogicPOS.UI.Components.Pages
         protected Color _colorBaseDialogDefaultButtonBackground = ("156, 191, 42").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonFont = ("0, 0, 0").StringToColor();
         protected Color _colorBaseDialogActionAreaButtonBackground = AppSettings.Instance.ColorBaseDialogActionAreaButtonBackground;
-        //protected String _fontBaseDialogButton = SharedUtils.OSSlash(LogicPOS.Settings.AppSettings.Instance.FontBaseDialogButton"]);
         protected string _fontBaseDialogActionAreaButton = AppSettings.Instance.FontBaseDialogActionAreaButton;
         protected string _fileActionDefault = AppSettings.Paths.Images + @"Icons\icon_pos_default.png";
         protected string _fileActionOK = AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_action_ok.png";

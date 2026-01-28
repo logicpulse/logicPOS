@@ -1,10 +1,9 @@
-﻿using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
