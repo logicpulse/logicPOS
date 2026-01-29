@@ -121,7 +121,7 @@ namespace LogicPOS.UI
             }
 
             var terminalResult = TerminalService.InitializeTerminal();
-            if(terminalResult.IsError)
+            if (terminalResult.IsError)
             {
                 Log.Error("Failed to initialize terminal: {Error}", string.Join(Environment.NewLine, terminalResult.FirstError.Description));
                 SimpleAlerts.Error()
@@ -187,9 +187,13 @@ namespace LogicPOS.UI
         {
             Log.Logger = new LoggerConfiguration()
                               .Enrich.FromLogContext()
-                              .WriteTo.File("Logs/log.txt",
-                                            rollingInterval: RollingInterval.Year,
-                                            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}")
+                              .WriteTo.File(
+                                  path: "Logs/log.txt",
+                                  rollingInterval: RollingInterval.Day,
+                                  retainedFileCountLimit: 7,
+                                  outputTemplate:
+                                  "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz}] [{Level:u3}] ({SourceContext}) {Message:lj}{NewLine}{Exception}"
+                                  )
                               .CreateLogger();
         }
     }
