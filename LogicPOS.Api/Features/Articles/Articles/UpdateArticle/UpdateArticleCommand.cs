@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.ValueObjects;
 using MediatR;
 using System;
@@ -43,5 +43,6 @@ namespace LogicPOS.Api.Features.Articles.UpdateArticle
         public bool UniqueArticles { get; set; } 
         public string NewNotes { get; set; }
         public bool IsDeleted { get; set; }
+        public string BarcodeLabelPrintModel { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.ValueObjects;
 using MediatR;
 using System;
@@ -40,5 +40,6 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public bool IsComposed { get; set; } 
         public bool UniqueArticles { get; set; } 
         public string Notes { get; set; }
+        public string BarcodeLabelPrintModel { get; set; }
     }
 }
