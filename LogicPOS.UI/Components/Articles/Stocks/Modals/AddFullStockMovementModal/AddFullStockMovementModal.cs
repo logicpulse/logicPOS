@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-             var labelsResult = _mediator.Send(new GenerateBarcodeLabelPdfQuery(serialNumbers, BarcodeLabelPrintModel.Large)).Result;
+             var labelsResult = _mediator.Send(new GenerateBarcodeLabelPdfQuery(serialNumbers)).Result;
 
             if (result.IsError)
             {

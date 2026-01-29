@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
@@ -108,6 +108,7 @@ namespace LogicPOS.UI.Components.Modals
             otherDetailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
             otherDetailsTab.PackStart(_comboDiscountGroups.Component, false, false, 0);
             otherDetailsTab.PackStart(_comboPrinters.Component, false, false, 0);
+            otherDetailsTab.PackStart(_comboPrintModels.Component, false, false, 0);
 
             return otherDetailsTab;
         }

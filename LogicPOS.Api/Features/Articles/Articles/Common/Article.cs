@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Articles;
+using LogicPOS.Api.Features.Articles;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.ValueObjects;
 using System;
@@ -46,6 +46,7 @@ namespace LogicPOS.Api.Entities
         public bool UseWeighingBalance { get; set; }
         public bool IsComposed { get; set; }
         public bool UniqueArticles { get; set; }
+        public string BarcodeLabelPrintModel { get; set; }
         #endregion
     }
 }

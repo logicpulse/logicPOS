@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.ValueObjects;
 using System;
@@ -45,7 +45,7 @@ namespace LogicPOS.Api.Features.Articles.Common
         public Button Button { get; set; }
         public bool PriceWithVat { get; set; }
         public string ClassAcronym { get; set; }
-
+        public string BarcodeLabelPrintModel { get; set; }
         public decimal GetPrice(int priceType)
         {
             switch (priceType)

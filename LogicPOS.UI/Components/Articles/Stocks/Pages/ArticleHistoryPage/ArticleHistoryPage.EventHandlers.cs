@@ -89,7 +89,7 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var ids = SelectedHistories.Select(x => x.Id).ToList();
-            var result = _mediator.Send(new GenerateBarcodeLabelPdfQuery(ids, BarcodeLabelPrintModel.Large)).Result;
+            var result = _mediator.Send(new GenerateBarcodeLabelPdfQuery(ids)).Result;
 
             if (result.IsError)
             {

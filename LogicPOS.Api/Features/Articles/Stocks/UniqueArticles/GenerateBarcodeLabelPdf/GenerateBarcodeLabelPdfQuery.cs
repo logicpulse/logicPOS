@@ -11,17 +11,14 @@ namespace LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLa
     {
         public List<Guid> Ids { get; set; }
         public List<string> SerialNumbers { get; set; }
-        public BarcodeLabelPrintModel PrintModel { get; set; }
 
-        public GenerateBarcodeLabelPdfQuery(List<Guid> ids, BarcodeLabelPrintModel printModel)
+        public GenerateBarcodeLabelPdfQuery(List<Guid> ids)
         {
             Ids = ids;
-            PrintModel = printModel;
         }
-        public GenerateBarcodeLabelPdfQuery(List<string> serialNumbers, BarcodeLabelPrintModel printModel)
+        public GenerateBarcodeLabelPdfQuery(List<string> serialNumbers)
         {
             SerialNumbers = serialNumbers;
-            PrintModel = printModel;
         }
 
 

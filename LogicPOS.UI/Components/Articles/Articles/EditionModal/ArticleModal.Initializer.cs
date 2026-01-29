@@ -1,14 +1,17 @@
-﻿using LogicPOS.Api.Entities;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
 using LogicPOS.UI.Components.ArticleClasses;
+using LogicPOS.UI.Components.Articles.Articles.EditionModal;
 using LogicPOS.UI.Components.ArticlesTypes;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.MeasurementUnits;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.SizeUnits;
 using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -28,6 +31,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeArticleClassesComboBox();
             InitializeArticleTypesComboBox();
             InitializePrinterComboBox();
+            InitializeBarcodeLabelPrintModelsComboBox();
         }
 
         private void InitializeArticlePriceFields()
@@ -102,9 +106,9 @@ namespace LogicPOS.UI.Components.Modals
         {
 
             var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity.Id);
-            
+
             var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
-            var currentSubfamily = _entity != null && subfamilies!=null? _entity.Subfamily : subfamilies.FirstOrDefault();
+            var currentSubfamily = _entity != null && subfamilies != null ? _entity.Subfamily : subfamilies.FirstOrDefault();
 
             _comboSubfamilies = new EntityComboBox<ArticleSubfamily>(labelText,
                                                                      subfamilies,
@@ -201,11 +205,21 @@ namespace LogicPOS.UI.Components.Modals
             var labelText = GeneralUtils.GetResourceByName("global_printers");
             var currentPrinter = _entity != null ? PrinterAssociationService.GetPrinter(_entity.Id) : null;
 
-            _comboPrinters = new EntityComboBox<Printer>(labelText,
+            _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
                                                          printers,
                                                          currentPrinter,
                                                          false);
         }
 
+        private void InitializeBarcodeLabelPrintModelsComboBox()
+        {
+            var models = BarcodeLabelPrintModel.DefaultModels;
+            var labelText = Globalization.LocalizedString.Instance["global_ConfigurationPrintersBarCodeTemplates"];
+            var currentModel = _entity != null ? models.Where(m => m.Model.ToLower() == _entity.BarcodeLabelPrintModel).FirstOrDefault() : models.First();
+            _comboPrintModels = new EntityComboBox<BarcodeLabelPrintModel>(labelText,
+                                                         models,
+                                                         currentModel,
+                                                         false);
+        }
     }
 }

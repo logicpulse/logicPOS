@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Articles.Articles.EditionModal;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
@@ -29,6 +30,7 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<MeasurementUnit> _comboMeasurementUnits;
 
         private EntityComboBox<Printer> _comboPrinters;
+        private EntityComboBox<BarcodeLabelPrintModel> _comboPrintModels;
         private EntityComboBox<SizeUnit> _comboSizeUnits;
         private EntityComboBox<VatExemptionReason> _comboVatExemptionReasons;
         private readonly CheckButton _checkIsComposed = new CheckButton(GeneralUtils.GetResourceByName("global_composite_article"));

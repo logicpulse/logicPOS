@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -24,5 +24,6 @@ namespace LogicPOS.UI.Components.Modals
                 _checkPriceWithVat.Active = false;
             }
         }
+
     }
 }

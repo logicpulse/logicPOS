@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
@@ -73,6 +73,7 @@ namespace LogicPOS.UI.Components.Modals
             addArticleCommand.VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
             addArticleCommand.VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id;
             addArticleCommand.IsComposed = _checkIsComposed.Active;
+            addArticleCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity.Model;
             addArticleCommand.UniqueArticles = _checkUniqueArticles.Active;
             addArticleCommand.Notes = _txtNotes.Value.Text;
 
@@ -147,6 +148,7 @@ namespace LogicPOS.UI.Components.Modals
             updateCommand.NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
             updateCommand.NewVatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty;
             updateCommand.IsComposed = _checkIsComposed.Active;
+            updateCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity.Model;
             updateCommand.UniqueArticles = _checkUniqueArticles.Active;
             updateCommand.NewNotes = _txtNotes.Value.Text;
             updateCommand.IsDeleted = _checkDisabled.Active;
@@ -237,7 +239,6 @@ namespace LogicPOS.UI.Components.Modals
             _txtDefaultQuantity.Text = _entity.DefaultQuantity.ToString("F2");
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
-
             if (_entity.IsComposed)
             {
                 var children = ExecuteGetEntitiesQuery(new GetArticleChildrenQuery(_entity.Id));
