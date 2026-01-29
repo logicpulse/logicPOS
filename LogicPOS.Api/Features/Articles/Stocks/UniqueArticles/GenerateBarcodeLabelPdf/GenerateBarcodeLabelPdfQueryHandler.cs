@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLa
         public override async Task<ErrorOr<TempFile>> Handle(GenerateBarcodeLabelPdfQuery request,
                                                            CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"articles/uniques/labels{request.GetUrlQuery()}");
+            return await HandleGetFileQueryAsync($"articles/uniques/labels{request.GetUrlQuery()}&printmodel={request.PrintModel}");
         }
     }
 }
