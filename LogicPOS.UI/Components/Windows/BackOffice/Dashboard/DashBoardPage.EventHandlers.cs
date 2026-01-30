@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
@@ -47,9 +47,9 @@ namespace LogicPOS.UI.Components.Pages
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(BackOfficeWindow.Instance, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Default);
-            modal.Run();
-            modal.Destroy();
+            var documentsMenu = new DocumentsMenuModal(BackOfficeWindow.Instance);
+            documentsMenu.Run();
+            documentsMenu.Destroy();
         }
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
