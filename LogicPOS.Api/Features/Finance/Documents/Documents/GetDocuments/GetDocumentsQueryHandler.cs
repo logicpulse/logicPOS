@@ -24,7 +24,7 @@ namespace LogicPOS.Api.Features.Documents.GetDocuments
 
         private MemoryCacheEntryOptions GetCacheOptions()
         {
-            return new MemoryCacheEntryOptions().SetAbsoluteExpiration(global::System.TimeSpan.FromMinutes(5));
+            return new MemoryCacheEntryOptions().SetAbsoluteExpiration(global::System.TimeSpan.FromMinutes(10));
         }
     }
 }

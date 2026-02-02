@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.UI.Components.Documents;
@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             var query = new GetReceiptsQuery
             {
-                StartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1),
+                StartDate = DateTime.Now.AddMonths(-3),
                 EndDate = DateTime.Now,
             };
 

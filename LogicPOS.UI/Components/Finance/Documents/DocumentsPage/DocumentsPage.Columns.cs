@@ -91,6 +91,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = ((DocumentViewModel)model.GetValue(iter, 0));
                 (cell as CellRendererText).Text = document.TotalToPay.ToString("0.00");
+                cell.Xalign = 1;
             }
 
             var title = GeneralUtils.GetResourceByName("global_debit");
@@ -103,6 +104,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = ((DocumentViewModel)model.GetValue(iter, 0));
                 (cell as CellRendererText).Text = document.TotalPaid.ToString("0.00");
+                cell.Xalign = 1;
             }
 
             var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_total_credit_rc_nc_based");
@@ -115,6 +117,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = (DocumentViewModel)model.GetValue(iter, 0);
                 (cell as CellRendererText).Text = document.TotalFinal.ToString("0.00");
+                cell.Xalign = 1;
             }
 
             var title = GeneralUtils.GetResourceByName("global_total_final");

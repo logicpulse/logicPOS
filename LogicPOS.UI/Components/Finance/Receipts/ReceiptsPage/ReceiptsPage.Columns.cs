@@ -55,6 +55,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var receipt = ((ReceiptViewModel)model.GetValue(iter, 0));
                 (cell as CellRendererText).Text = receipt.Amount.ToString("0.00");
+                cell.Xalign = 1;
             }
 
             var title = GeneralUtils.GetResourceByName("global_total");
