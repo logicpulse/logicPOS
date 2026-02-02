@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common;
 using System;
@@ -25,6 +25,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
         public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100;
         public decimal VatPrice => TotalNet * Vat / 100;
-
+        public string SerialNumber { get; set; }
     }
 }

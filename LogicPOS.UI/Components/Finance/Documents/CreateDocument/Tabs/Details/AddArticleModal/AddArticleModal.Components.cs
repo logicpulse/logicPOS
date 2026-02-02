@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -12,6 +12,7 @@ namespace LogicPOS.UI.Components.Modals
         public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        public TextBox TxtSerialNumber { get; set; }
         public TextBox TxtCode { get; set; }
         public TextBox TxtArticle { get; set; }
         public TextBox TxtQuantity { get; set; }

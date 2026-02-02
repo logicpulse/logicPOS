@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.Details;
 using System;
 
@@ -26,6 +26,7 @@ namespace LogicPOS.Api.Entities
         public string Warehouse { get; set; }
         public string Code { get; set; }
         public string Designation { get; set; }
+        public string SerialNumber { get; set;  }
 
     }
 }

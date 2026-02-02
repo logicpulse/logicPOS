@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.Licensing;
 
 
 namespace LogicPOS.UI.Components.Modals
@@ -23,10 +24,14 @@ namespace LogicPOS.UI.Components.Modals
 
             var vbox = new VBox(false, 2);
 
-            var boxArticle = new HBox(false,2);
-            boxArticle.PackStart(TxtCode.Component, false, true,0);
-            boxArticle.PackStart(TxtArticle.Component,false,true,0);
-            boxArticle.PackStart(TextBox.CreateHbox(TxtFamily, TxtSubFamily),true, true, 0);
+            var boxArticle = new HBox(false, 2);
+            if (TxtSerialNumber != null)
+            {
+                boxArticle.PackStart(TxtSerialNumber.Component, false, true, 0);
+            }
+            boxArticle.PackStart(TxtCode.Component, false, true, 0);
+            boxArticle.PackStart(TxtArticle.Component, false, true, 0);
+            boxArticle.PackStart(TextBox.CreateHbox(TxtFamily, TxtSubFamily), true, true, 0);
 
             vbox.PackStart(boxArticle, false, false, 0);
             vbox.PackStart(TextBox.CreateHbox(TxtPrice,

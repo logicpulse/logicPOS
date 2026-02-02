@@ -1,9 +1,12 @@
 using Gtk;
+using LogicPOS.Api.Features.Common.Caching;
+using LogicPOS.Api.Features.Finance.Documents.Documents;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Terminals;
+using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.Linq;
@@ -22,6 +25,13 @@ namespace LogicPOS.UI.Components.Modals
             BtnSendDocumentToAgt.Clicked += BtnSendDocumentToAgt_Clicked;
             BtnUpdateAgtValidationStatus.Clicked += BtnUpdateAgtValidationStatus_Clicked;
             BtnViewAgtDocument.Clicked += BtnViewAgtDocument_Clicked;
+            BtnRefresh.Clicked += BtnRefresh_Clicked;
+        }
+
+        private void BtnRefresh_Clicked(object sender, EventArgs e)
+        {
+            ReceiptsCache.Clear(DependencyInjection.Services.GetRequiredService<IKeyedMemoryCache>());
+            Page.Refresh();
         }
 
         private void BtnViewAgtDocument_Clicked(object sender, EventArgs e)

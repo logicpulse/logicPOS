@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Settings;
@@ -37,5 +37,6 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnNext { get; set; }
         private TextBox TxtSearch { get; set; }
         public IconButtonWithText BtnFilter { get; set; }
+        public IconButtonWithText BtnRefresh { get; set; }
     }
 }

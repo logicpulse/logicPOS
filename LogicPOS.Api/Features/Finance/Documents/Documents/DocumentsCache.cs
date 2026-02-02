@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Common.Caching;
+using LogicPOS.Api.Features.Common.Caching;
 using System;
 
 namespace LogicPOS.Api.Features.Finance.Documents.Documents

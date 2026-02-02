@@ -1,13 +1,36 @@
-﻿using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.Utility;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal
     {
+        private void Initialize()
+        {
+            InitializeTxtCode();
+            InitializeTxtArticle();
+            if (LicensingService.Data.StocksModule)
+            {
+                InitializeTxtSerialNumber();
+            }
+            InitializeTxtQuantity();
+            InitializeTxtPrice();
+            InitializeTxtDiscount();
+            InitializeTxtTotal();
+            InitializeTxtTotalWithTax();
+            InitializeTxtTax();
+            InitializeTxtVatExemptionReason();
+            InitializeTxtNotes();
+            InitializeTxtFamily();
+            InitializeTxtSubFamily();
+            AddEventHandlers();
+        }
+
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
@@ -159,6 +182,23 @@ namespace LogicPOS.UI.Components.Modals
             TxtCode.WithAutoCompletion(ArticlesService.CodeAutocompleteLines, id => ArticlesService.GetArticleViewModel(id));
             TxtCode.OnCompletionSelected += ArticleAutocompleteLine_Selected;
             TxtCode.Entry.Changed += TxtCode_Changed;
+        }
+
+        private void InitializeTxtSerialNumber()
+        {
+            TxtSerialNumber = new TextBox(WindowSettings.Source,
+                                  GeneralUtils.GetResourceByName("global_serial_number"),
+                                  isRequired: false,
+                                  isValidatable: false,
+                                  includeSelectButton: false,
+                                  includeKeyBoardButton: false);
+
+            TxtSerialNumber.Entry.WidthRequest = 120;
+
+            var autoCompleteLines = ArticlesService.GetUniqueArticlesAutocompleteLines();
+            TxtSerialNumber.WithAutoCompletion(autoCompleteLines, id => ArticlesService.GetArticleViewModel(id));
+            TxtSerialNumber.OnCompletionSelected += SerialNumberAutocompleteLine_Selected;
+            TxtSerialNumber.Entry.Changed += TxtSerialNumber_Changed;
         }
 
         private void InitializeTxtFamily()

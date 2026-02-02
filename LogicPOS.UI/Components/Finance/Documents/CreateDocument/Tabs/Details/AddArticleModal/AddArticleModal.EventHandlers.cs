@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles;
 using LogicPOS.Api.Features.Articles.AddArticle;
@@ -51,6 +51,7 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentDetail.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
                 DocumentDetail.ExemptionReason = DocumentDetail.VatExemptionReason is null ? TxtVatExemptionReason.Text : DocumentDetail.VatExemptionReason.Designation;
                 DocumentDetail.Notes = TxtNotes.Text;
+                DocumentDetail.SerialNumber = TxtSerialNumber.Text;
             }
         }
 
@@ -181,6 +182,8 @@ namespace LogicPOS.UI.Components.Modals
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
                 SelectArticle(page.SelectedEntity);
+                TxtSerialNumber.Clear();
+                TxtQuantity.Component.Sensitive = true;
             }
         }
 
@@ -220,6 +223,23 @@ namespace LogicPOS.UI.Components.Modals
         private void ArticleAutocompleteLine_Selected(object article)
         {
             SelectArticle(article as ArticleViewModel);
+            TxtSerialNumber.Clear();
+            TxtQuantity.Component.Sensitive = true;
+        }
+
+        private void TxtSerialNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void SerialNumberAutocompleteLine_Selected(object article)
+        {
+            SelectArticle(article as ArticleViewModel);
+            TxtQuantity.Text = "1";
+            TxtQuantity.Component.Sensitive = false;
         }
 
 

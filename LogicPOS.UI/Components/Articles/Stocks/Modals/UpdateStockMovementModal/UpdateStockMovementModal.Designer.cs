@@ -1,4 +1,4 @@
-﻿
+
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox TxtDate { get; set; }
         private TextBox TxtDocumnetNumber { get; set; }
         private TextBox TxtQuantity { get; set; } = TextBox.Simple("global_quantity", true, true, RegularExpressions.Quantity);
-        private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price", true, true, RegularExpressions.Money);
+        private TextBox TxtPrice { get; set; } = TextBox.Simple("global_price", true, true, RegularExpressions.NullableMoney);
         #endregion
 
         protected override void Initialize()

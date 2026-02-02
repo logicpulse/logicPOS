@@ -81,6 +81,7 @@ namespace LogicPOS.UI.Components.Modals
             box.PackStart(BtnFilter, false, false, 0);
             box.PackStart(BtnPrevious, false, false, 0);
             box.PackStart(BtnNext, false, false, 0);
+            box.PackStart(BtnRefresh, false, false, 0);
 
             TxtSearch.Entry.Changed += delegate { Page.Navigator.SearchBox.TxtSearch.EntryValidation.Text = TxtSearch.Text; };
 
@@ -121,6 +122,9 @@ namespace LogicPOS.UI.Components.Modals
             BtnFilter = CreateButton("touchButtonSearchAdvanced_DialogActionArea",
                                     LocalizedString.Instance["global_button_label_filter"],
                                     @"Icons\icon_pos_filter.png");
+            BtnRefresh = CreateButton("touchButtonSearchAdvanced_DialogActionArea",
+                                    "Actualizar",
+                                   @"Icons\icon_pos_nav_refresh.png");
         }
     }
 }

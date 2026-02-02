@@ -60,6 +60,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                     VatExemptionReason = VatExemptionReasonsService.Reasons.Where(r => r.Acronym == detail.VatExemptionCode).FirstOrDefault(),
                     Discount = detail.Discount - globalDiscount,
                     Notes = detail.Notes,
+                    SerialNumber = detail.SerialNumber
                 });
             }
 
@@ -76,7 +77,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 VatRateId = detail.VatRateId,
                 VatExemptionId = detail.VatExemptionReason?.Id,
                 Discount = detail.Discount,
-                Notes = detail.Notes
+                Notes = detail.Notes,
+                SerialNumber = detail.SerialNumber,
             });
 
             return details.ToList();

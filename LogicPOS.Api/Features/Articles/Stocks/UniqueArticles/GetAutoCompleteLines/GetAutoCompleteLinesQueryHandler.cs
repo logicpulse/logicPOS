@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.Articles.Articles.GetAutoCompleteLines
+namespace LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GetAutoCompleteLines
 {
     public class GetAutoCompleteLinesQueryHandler : RequestHandler<GetAutoCompleteLinesQuery, ErrorOr<IEnumerable<AutoCompleteLine>>>
     {
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Articles.Articles.GetAutoCompleteLines
 
         public override async Task<ErrorOr<IEnumerable<AutoCompleteLine>>> Handle(GetAutoCompleteLinesQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetListQueryAsync<AutoCompleteLine>("articles/autocomplete-lines", cancellationToken);  
+            return await HandleGetListQueryAsync<AutoCompleteLine>("articles/uniques/autocomplete-lines", cancellationToken);  
         }
     }
 

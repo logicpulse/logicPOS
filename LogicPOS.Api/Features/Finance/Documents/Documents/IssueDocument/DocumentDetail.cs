@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
 {
@@ -12,5 +12,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
         public decimal? Discount { get; set; }
         public int? PriceType { get; set; }
         public string Notes { get; set; }
+        public string SerialNumber { get; set; }
     }
 }

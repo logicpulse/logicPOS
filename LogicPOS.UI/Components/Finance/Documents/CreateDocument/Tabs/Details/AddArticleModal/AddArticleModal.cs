@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
@@ -50,6 +50,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtSubFamily.Component.Sensitive= false;
                 TxtFamily.Component.Sensitive = false;
                 TxtCode.Component.Sensitive = false;
+                TxtSerialNumber.Component.Sensitive = false;
             }
         }
 
@@ -65,6 +66,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtNotes.Component.Sensitive = false;
             TxtSubFamily.Component.Sensitive = false;
             TxtFamily.Component.Sensitive = false;
+            TxtSerialNumber.Component.Sensitive = false;
         }
 
         private void ShowItemData(DocumentDetail detail)
@@ -87,25 +89,9 @@ namespace LogicPOS.UI.Components.Modals
             TxtTax.Text = detail.VatRate?.Designation ?? detail.VatDesignation;
             _vatRateValue = detail.Vat;
             TxtNotes.Text = detail.Notes;
+            TxtSerialNumber.Text = detail.SerialNumber;
             UpdateTotals();
             UpdateValidatableFields();
-        }
-
-        private void Initialize()
-        {
-            InitializeTxtCode();
-            InitializeTxtArticle();
-            InitializeTxtQuantity();
-            InitializeTxtPrice();
-            InitializeTxtDiscount();
-            InitializeTxtTotal();
-            InitializeTxtTotalWithTax();
-            InitializeTxtTax();
-            InitializeTxtVatExemptionReason();
-            InitializeTxtNotes();
-            InitializeTxtFamily();
-            InitializeTxtSubFamily();
-            AddEventHandlers();
         }
 
         private void AddEventHandlers()
@@ -162,6 +148,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void Clear()
         {
+            TxtSerialNumber.Clear();
             TxtCode.Clear();
             TxtArticle.Clear();
             TxtPrice.Text = "0";
@@ -174,9 +161,9 @@ namespace LogicPOS.UI.Components.Modals
             TxtNotes.Clear();
             TxtSubFamily.Clear();
             TxtFamily.Clear();
-
             TxtSubFamily.BtnSelect.Sensitive=true;
             TxtFamily.BtnSelect.Sensitive = true;
+            TxtQuantity.Component.Sensitive = true;
         }
 
         public DocumentDetail GetDetail()
@@ -193,6 +180,7 @@ namespace LogicPOS.UI.Components.Modals
                 Discount = decimal.Parse(TxtDiscount.Text),
                 VatRate = TxtTax.SelectedEntity as VatRate,
                 VatDesignation = TxtTax.Text,
+                SerialNumber = TxtSerialNumber.Text,
                 Vat = _vatRateValue,
                 VatRateId = (TxtTax.SelectedEntity as VatRate).Id,
                 VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,

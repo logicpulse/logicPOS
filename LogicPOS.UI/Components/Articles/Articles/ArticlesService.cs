@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
@@ -42,6 +42,7 @@ namespace LogicPOS.UI.Components.Articles
             Name = line.Code
         }).ToList();
 
+
         public static void RefreshArticlesCache()
         {
             _autocompleteLines = GetAutocompleteLines();
@@ -59,6 +60,24 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             return articles.Value.ToList();
+        }
+
+        public static List<AutoCompleteLine> GetUniqueArticlesAutocompleteLines()
+        {
+            var articles = DependencyInjection.Mediator.Send(new LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GetAutoCompleteLines.GetAutoCompleteLinesQuery()).Result;
+
+            if (articles.IsError != false)
+            {
+                ErrorHandlingService.HandleApiError(articles);
+                return new List<AutoCompleteLine>();
+            }
+
+            return articles.Value.Select(line => new AutoCompleteLine
+            {
+                Id = line.Id,
+                Code = line.Code,
+                Name = line.Code
+            }).ToList();
         }
 
         public static PaginatedResult<ArticleViewModel> GetArticles(GetArticlesQuery query)
@@ -133,18 +152,6 @@ namespace LogicPOS.UI.Components.Articles
             }
 
             return result.Value;
-        }
-
-        public static List<ArticleHistory> GetAllArticleHistories()
-        {
-            var result = DependencyInjection.Mediator.Send(new GetArticlesHistoriesQuery() { PageSize = 100000 }).Result;
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return null;
-            }
-            var ArticleHistories = result.Value;
-            return ArticleHistories.Items.ToList();
         }
 
         public static string GetArticleImage(Guid id)

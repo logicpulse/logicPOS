@@ -25,7 +25,7 @@ namespace LogicPOS.Api.Features.Receipts.GetReceipts
 
         private MemoryCacheEntryOptions GetCacheOptions()
         {
-            return new MemoryCacheEntryOptions().SetPriority(CacheItemPriority.NeverRemove);
+            return new MemoryCacheEntryOptions().SetAbsoluteExpiration(global::System.TimeSpan.FromMinutes(5));
         }
     }
 }
