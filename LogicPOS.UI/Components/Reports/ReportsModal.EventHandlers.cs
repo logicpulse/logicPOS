@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -20,6 +20,8 @@ namespace LogicPOS.UI.Components.Modals
             modal.TxtSerialNumber.Component.Visible = false;
             modal.TxtVatRate.Component.Visible = false;
             modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
 
@@ -39,13 +41,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible= false;
+            modal.TxtCustomer.Component.Visible= false;
+            modal.TxtDocumentNumber.Component.Visible= false;
+            modal.TxtDocumentType.Component.Visible= false;
+            modal.TxtSerialNumber.Component.Visible= false;
+            modal.TxtVatRate.Component.Visible= false;
+            modal.TxtWarehouse.Component.Visible= false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
 
@@ -60,13 +64,16 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
@@ -79,13 +86,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -99,13 +108,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -119,13 +130,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -139,13 +152,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -160,13 +175,15 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new ReportsFilterModal(this);
 
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -180,14 +197,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -201,14 +219,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -222,13 +241,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -242,13 +263,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = true;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -270,13 +293,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = true;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -298,14 +323,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
-
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -320,14 +346,17 @@ namespace LogicPOS.UI.Components.Modals
             var modal = new ReportsFilterModal(this);
 
             modal.TxtCustomer.IsRequired = true;
+            modal.TxtCustomer.IsValidatable = true;
             modal.TxtCustomer.Regex = @"^[0-9a-zA-Z\s]+$";
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
-
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+            
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
@@ -344,14 +373,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -366,14 +396,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -388,13 +419,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -409,13 +442,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -430,13 +465,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -451,13 +488,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -472,13 +511,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -493,13 +534,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -514,13 +557,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -535,8 +580,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = true;
-            modal.TxtArticle.Component.Visible = true;
             modal.TxtCustomer.Component.Visible = false;
             modal.TxtDocumentNumber.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
@@ -573,13 +616,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -594,13 +639,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -615,12 +662,14 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -673,13 +722,15 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -695,10 +746,12 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -745,12 +798,14 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -771,11 +826,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -796,11 +853,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new ReportsFilterModal(this);
 
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -840,13 +899,16 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnDeletedOrdersReport_Clicked(object sender, EventArgs e)
         {
             var modal = new ReportsFilterModal(this);
-            modal.TxtArticle.Component.Sensitive = false;
-            modal.TxtCustomer.Component.Sensitive = false;
-            modal.TxtDocumentNumber.Component.Sensitive = false;
-            modal.TxtDocumentType.Component.Sensitive = false;
-            modal.TxtSerialNumber.Component.Sensitive = false;
-            modal.TxtVatRate.Component.Sensitive = false;
-            modal.TxtWarehouse.Component.Sensitive = false;
+
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
 
             var response = (ResponseType)modal.Run();
 

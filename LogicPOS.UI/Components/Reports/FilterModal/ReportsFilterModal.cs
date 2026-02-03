@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         public ReportsFilterModal(Window parent) :
           base(parent,
               LocalizedString.Instance["window_title_dialog_report_filter"],
-              new Size(540, 678),
+              new Size(500, 509),
               AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
         }
