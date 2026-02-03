@@ -1,7 +1,12 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
@@ -190,7 +195,7 @@ namespace LogicPOS.UI.Components.Modals
                                   GeneralUtils.GetResourceByName("global_serial_number"),
                                   isRequired: false,
                                   isValidatable: false,
-                                  includeSelectButton: false,
+                                  includeSelectButton: true,
                                   includeKeyBoardButton: false);
 
             TxtSerialNumber.Entry.WidthRequest = 120;
@@ -199,7 +204,10 @@ namespace LogicPOS.UI.Components.Modals
             TxtSerialNumber.WithAutoCompletion(autoCompleteLines, id => ArticlesService.GetArticleViewModel(id));
             TxtSerialNumber.OnCompletionSelected += SerialNumberAutocompleteLine_Selected;
             TxtSerialNumber.Entry.Changed += TxtSerialNumber_Changed;
+            TxtSerialNumber.SelectEntityClicked += TxtSerialNumber_SelectEntityClicked;
         }
+
+    
 
         private void InitializeTxtFamily()
         {

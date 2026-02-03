@@ -18,64 +18,74 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         private void BtnSelectCopyDocument_Clicked(object sender, EventArgs e)
         {
-            var modal = new DocumentsModal(SourceWindow, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
-            ResponseType response = (ResponseType)modal.Run();
+            var selectCopyDocumentModal = new DocumentsModal(SourceWindow, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
+            ResponseType response = (ResponseType)selectCopyDocumentModal.Run();
 
-            if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
+            if (response != ResponseType.Ok || selectCopyDocumentModal.Page.SelectedEntity == null)
             {
+                selectCopyDocumentModal.Destroy();
+                return;
+            }
 
-                if (modal.Page.SelectedEntity.IsDraft)
-                {
-                    CustomAlerts.Warning(this.SourceWindow)
-                     .WithTitle("Documento inválido")
-                     .WithMessage("Não é possível selecionar um rascunho.")
-                     .ShowAlert();
+            var copyDocument = selectCopyDocumentModal.Page.SelectedEntity;
 
-                    modal.Destroy();
-                    return;
-                }
+            if (copyDocument.IsDraft)
+            {
+                CustomAlerts.Warning(this.SourceWindow)
+                 .WithTitle("Documento inválido")
+                 .WithMessage("Não é possível selecionar um rascunho.")
+                 .ShowAlert();
 
-                var selectedDocument = modal.Page.SelectedEntity;
-                var docType = GetDocumentTypeFromDocument(selectedDocument);
+                selectCopyDocumentModal.Destroy();
+                return;
+            }
+
+            var docType = GetDocumentTypeFromDocument(copyDocument);
+
+            if (docType == null)
+            {
+                CustomAlerts.Warning(this.SourceWindow)
+                 .WithTitle("Tipo de documento não encontrado")
+                 .WithMessage($"O tipo de documento ({copyDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearsService.CurrentFiscalYear.Acronym}).")
+                 .ShowAlert();
+
+                docType = SelectDocumentType();
 
                 if (docType == null)
                 {
-                    CustomAlerts.Warning(this.SourceWindow)
-                     .WithTitle("Tipo de documento não encontrado")
-                     .WithMessage($"O tipo de documento ({selectedDocument.Type}) não foi encontrado nas séries do ano fiscal actual ({FiscalYearsService.CurrentFiscalYear.Acronym}).")
-                     .ShowAlert();
-
-                    docType = SelectDocumentType();
-
-                    if (docType == null)
-                    {
-                        modal.Destroy();
-                        return;
-                    }
+                    selectCopyDocumentModal.Destroy();
+                    return;
                 }
-
-                TxtDocumentType.SelectedEntity = docType;
-                TxtDocumentType.Text = docType.Designation;
-
-                UpdateValidatableFields();
-
-                TxtCopyDocument.Text = modal.Page.SelectedEntity.Number;
-                TxtCopyDocument.SelectedEntity = modal.Page.SelectedEntity;
-
-                TxtPaymentCondition.SelectedEntity = modal.Page.SelectedEntity.PaymentCondition;
-                TxtPaymentCondition.Text = modal.Page.SelectedEntity.PaymentCondition?.Designation;
-
-                TxtCurrency.SelectedEntity = modal.Page.SelectedEntity.Currency;
-                TxtCurrency.Text = modal.Page.SelectedEntity.Currency.Designation;
-
-                var fullDocument = DocumentsService.GetDocument(modal.Page.SelectedEntity.Id);
-
-                ImportPaymentMethods(fullDocument);
-
-                CopyDocumentSelected?.Invoke(fullDocument);
             }
 
-            modal.Destroy();
+            ImportCopyDocument(copyDocument, docType);
+
+            var fullDocument = DocumentsService.GetDocument(copyDocument.Id);
+
+            ImportPaymentMethods(fullDocument);
+
+            CopyDocumentSelected?.Invoke(fullDocument);
+
+            selectCopyDocumentModal.Destroy();
+
+        }
+
+        private void ImportCopyDocument(Api.Features.Finance.Documents.Documents.Common.DocumentViewModel copyDocument, DocumentType docType)
+        {
+            TxtDocumentType.SelectedEntity = docType;
+            TxtDocumentType.Text = docType.Designation;
+
+            UpdateValidatableFields();
+
+            TxtCopyDocument.Text = copyDocument.Number;
+            TxtCopyDocument.SelectedEntity = copyDocument;
+
+            TxtPaymentCondition.SelectedEntity = copyDocument.PaymentCondition;
+            TxtPaymentCondition.Text = copyDocument.PaymentCondition?.Designation;
+
+            TxtCurrency.SelectedEntity = copyDocument.Currency;
+            TxtCurrency.Text = copyDocument.Currency.Designation;
+            TxtNotes.Text = copyDocument.Notes;
         }
 
         private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
@@ -85,7 +95,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
             {
-                if(modal.Page.SelectedEntity.IsActive == false)
+                if (modal.Page.SelectedEntity.IsActive == false)
                 {
                     CustomAlerts.Warning(this.SourceWindow)
                      .WithTitle("Documento inválido")

@@ -47,7 +47,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             return (TxtOriginDocument.SelectedEntity as DocumentViewModel)?.Id;
         }
 
-
         public void SelectDocumentType(DocumentType documentType)
         {
             TxtDocumentType.SelectedEntity = documentType;

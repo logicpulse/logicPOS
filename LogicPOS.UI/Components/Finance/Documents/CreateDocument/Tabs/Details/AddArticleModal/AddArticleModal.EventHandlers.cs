@@ -3,6 +3,8 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.ArticleClasses;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.ArticlesTypes;
@@ -242,6 +244,20 @@ namespace LogicPOS.UI.Components.Modals
             TxtQuantity.Component.Sensitive = false;
         }
 
+        private void TxtSerialNumber_SelectEntityClicked(object sender, EventArgs e)
+        {
+            var page = new WarehouseArticlesPage(null, PageOptions.SelectionPageOptions);
+            var selectArticleModal = new EntitySelectionModal<WarehouseArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectArticleModal.Run();
+            selectArticleModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null && page.SelectedEntity.SerialNumber != null)
+            {
+                TxtSerialNumber.Text = page.SelectedEntity.SerialNumber;
+                var article = ArticlesService.GetArticleViewModel(page.SelectedEntity.ArticleId);
+                SelectArticle(article);
+            }
+        }
 
     }
 }
