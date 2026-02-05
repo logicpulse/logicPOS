@@ -150,6 +150,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             CustomerTab.ImportDataFromDocument(document);
             DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
+            if((DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsTransportGuide() ||
+               (DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsDeliveryNote())
+            {
+                ShipToTab.ImportCustomerShipAddress(document.Customer);
+            }
         }
 
         private void OnCopyDocumentSelected(Document document)

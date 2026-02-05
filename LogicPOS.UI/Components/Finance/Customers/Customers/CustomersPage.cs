@@ -1,5 +1,6 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Customers.DeleteCustomer;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
@@ -118,6 +119,39 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_VIEW");
         }
 
+        protected override void InitializeFilter()
+        {
+            GridViewSettings.Filter = new TreeModelFilter(GridViewSettings.Model, null);
+            GridViewSettings.Filter.VisibleFunc = (model, iterator) =>
+            {
+                var search = Navigator.SearchBox.SearchText.Trim().ToLower();
+                if (string.IsNullOrWhiteSpace(search))
+                {
+                    return true;
+                }
+
+                var customer = model.GetValue(iterator, 0) as Customer;
+
+                if (customer != null)
+                {
+                    if (customer != null && customer.Name.ToLower().Contains(search))
+                    {
+                        return true;
+                    }
+                }
+
+                if (customer != null)
+                {
+                    if (customer != null && customer.FiscalNumber.ToLower().Contains(search))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+        }
+       
         #region Singleton
         private static CustomersPage _instance;
 

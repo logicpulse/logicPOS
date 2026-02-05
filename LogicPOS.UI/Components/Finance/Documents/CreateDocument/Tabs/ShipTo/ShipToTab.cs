@@ -71,6 +71,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.Text = customer.Country.Designation;
         }
 
+        public void ImportCustomerShipAddress(DocumentCustomer customer)
+        {
+            TxtAddress.Text = customer.Address;
+            TxtZipCode.Text = customer.ZipCode;
+            TxtCity.Text = customer.City;
+            TxtRegion.Text = customer.Locality;
+            TxtCountry.SelectedEntity = customer.Country;
+            TxtCountry.Text = CountriesService.Countries.Where(c => c.Code2 == customer.Country).Select(x=>x.Designation).FirstOrDefault();
+        }
+
         public ShipAddress GetAddress()
         {
             string countryCode2;
