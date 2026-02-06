@@ -19,10 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             InitializeTxtCode();
             InitializeTxtArticle();
-            if (LicensingService.Data.StocksModule)
-            {
-                InitializeTxtSerialNumber();
-            }
+            InitializeTxtSerialNumber();
             InitializeTxtQuantity();
             InitializeTxtPrice();
             InitializeTxtDiscount();
@@ -207,7 +204,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtSerialNumber.SelectEntityClicked += TxtSerialNumber_SelectEntityClicked;
         }
 
-    
+
 
         private void InitializeTxtFamily()
         {
@@ -237,7 +234,7 @@ namespace LogicPOS.UI.Components.Modals
                          includeClearButton: false);
 
             TxtSubFamily.SelectEntityClicked += BtnSelectSubFamily_Clicked;
-            
+
             TxtSubFamily.Entry.IsEditable = false;
             TxtSubFamily.Entry.Sensitive = false;
             ValidatableFields.Add(TxtSubFamily);

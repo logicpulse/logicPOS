@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
@@ -46,6 +46,7 @@ namespace LogicPOS.UI.Components.Pages
             if (IsUnpaidInvoicesMode())
             {
                 CurrentQuery.PaymentStatus = DocumentPaymentStatusFilter.Unpaid;
+                CurrentQuery.Status = 'N';
                 CurrentQuery.Types = new string[] { "FT" };
             }
 
