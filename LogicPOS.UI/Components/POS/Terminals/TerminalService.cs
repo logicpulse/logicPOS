@@ -6,6 +6,8 @@ using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.Api.Features.Terminals.GetTerminalByHardwareId;
 using LogicPOS.Api.Features.Terminals.GetTerminalById;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
@@ -130,23 +132,47 @@ namespace LogicPOS.UI.Components.Terminals
         {
             if (!HardwareIdFileExists())
             {
+                var terminals = GetAllTerminals();
+                if (terminals == null || !terminals.Any())
+                {
+                    string newHardwareId = Guid.NewGuid().ToString().ToUpper();
+                    CreateHardwareIdFile(newHardwareId);
+                    return newHardwareId;
+                }
 
-                CreateHardwareIdFile(Guid.NewGuid().ToString().ToUpper());
+                string existingHardwareId = SelectCurrentTermialHardwareId();
+                
+                if(!string.IsNullOrWhiteSpace(existingHardwareId))
+                {
+                    CreateHardwareIdFile(existingHardwareId);
+                    return existingHardwareId;
+                }
             }
 
-            var hardwareId = GetHardwareIdFromFile();
+            string hardwareId = GetHardwareIdFromFile();
             return hardwareId;
         }
 
-        //private static string SelectTerminals()
-        //{
-        //    var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
-        //    var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
-        //    ResponseType response = (ResponseType)selectTerminalModal.Run();
-        //    var terminalIds = page.SelectedTerminals.Select(t => t.Id).ToList();
-        //    selectTerminalModal.Destroy();
-        //    return terminalIds;
-        //}
+        private static string SelectCurrentTermialHardwareId()
+        {
+            LogicPOSApp.ConfigureUI();
+            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectTerminalModal.Run();
+            string hardwareId = selectTerminalModal.Page.SelectedEntity?.HardwareId;
+            selectTerminalModal.Destroy();
+
+            if (response != ResponseType.Ok)
+            {
+                CustomAlerts.Warning()
+                            .WithMessage("Nenhum terminal selecionado")
+                            .ShowAlert();
+
+                Program.Quit();
+            }
+
+            return hardwareId;
+        }
 
         public static List<Terminal> GetAllTerminals()
         {

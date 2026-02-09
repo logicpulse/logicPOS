@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Application
 {
     internal class LogicPOSApp
     {
+        public static bool  _uiIsConfigured = false;
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }
         public static PosKeyboardDialog DialogPosKeyboard { get; set; }
@@ -32,10 +33,7 @@ namespace LogicPOS.UI.Application
         {
             try
             {
-                Log.Information("Configuring LogicPOS UI...");
-                InitializeScreenSize();
-                InitializeExpressionEvaluator();
-                InitializeTheme();
+                ConfigureUI();
                 InitializeTerminalDevices();
                 DialogThreadNotify?.WakeupMain();
                 LoginWindow.Instance.ShowAll();
@@ -52,7 +50,21 @@ namespace LogicPOS.UI.Application
             }
         }
 
-        private static void CloseDevices()
+        public static void ConfigureUI()
+        {
+            if(_uiIsConfigured)
+            {
+                return;
+            }
+
+            Log.Information("Configuring LogicPOS UI...");
+            InitializeScreenSize();
+            InitializeExpressionEvaluator();
+            InitializeTheme();
+            _uiIsConfigured = true;
+        }
+
+        public static void CloseDevices()
         {
             if (UsbDisplay != null)
             {
@@ -64,7 +76,7 @@ namespace LogicPOS.UI.Application
                 WeighingBalance.ClosePort();
             }
         }
-
+     
         private static void InitializeTerminalDevices()
         {
             if (TerminalService.Terminal.PoleDisplay != null)
@@ -98,7 +110,7 @@ namespace LogicPOS.UI.Application
 
             }
         }
-
+   
         private static void InitializeTheme()
         {
             try
@@ -113,7 +125,7 @@ namespace LogicPOS.UI.Application
                 CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message, LoginWindow.Instance);
             }
         }
-
+     
         private static void InitializeExpressionEvaluator()
         {
             ExpressionEvaluator.EvaluateFunction += ExpressionEvaluatorExtended.ExpressionEvaluator_EvaluateFunction;

@@ -113,7 +113,6 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_EDIT");
         }
        
-
         public static List<Guid> SelectTerminals(Window sourceWindow)
         {
             var page = new TerminalsPage(sourceWindow, PageOptions.SelectionPageOptions);

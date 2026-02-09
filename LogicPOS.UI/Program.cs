@@ -100,7 +100,7 @@ namespace LogicPOS.UI
             return File.Exists("terminal.id") == false;
         }
 
-        private static void Quit()
+        public static void Quit()
         {
             Gtk.Application.Quit();
             Environment.Exit(0);
