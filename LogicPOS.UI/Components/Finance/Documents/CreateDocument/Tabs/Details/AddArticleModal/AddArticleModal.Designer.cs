@@ -25,7 +25,7 @@ namespace LogicPOS.UI.Components.Modals
             var vbox = new VBox(false, 2);
 
             var boxArticle = new HBox(false, 2);
-            if (LicensingService.Data.AgtFeModule)
+            if (LicensingService.Data.StocksModule)
             {
                 boxArticle.PackStart(TxtSerialNumber.Component, false, true, 0);
             }

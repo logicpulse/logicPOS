@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
             yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
             yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
 
-            if (_entity != null  && LicensingService.Data.AgtFeModule)
+            if (_entity != null  && LicensingService.Data.StocksModule)
             {
                 yield return (CreateUniqueArticlesTab(), GeneralUtils.GetResourceByName("global_serial_number"));
             }
