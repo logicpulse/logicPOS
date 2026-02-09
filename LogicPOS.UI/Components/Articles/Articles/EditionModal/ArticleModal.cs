@@ -148,7 +148,7 @@ namespace LogicPOS.UI.Components.Modals
             updateCommand.NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
             updateCommand.NewVatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty;
             updateCommand.IsComposed = _checkIsComposed.Active;
-            updateCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity.Model;
+            updateCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity?.Model;
             updateCommand.UniqueArticles = _checkUniqueArticles.Active;
             updateCommand.NewNotes = _txtNotes.Value.Text;
             updateCommand.IsDeleted = _checkDisabled.Active;

@@ -17,31 +17,19 @@ namespace LogicPOS.UI.Components.Finance.Customers
         private static List<Customer> _customers;
         private static Customer _default;
 
-        public static List<Customer> Customers
-        {
-            get
-            {
-                if (_customers == null)
-                {
-                    _customers = GetAllCustomers();
-                }
-                return _customers;
-            }
-        }
-
-        public static List<AutoCompleteLine> AutocompleteLines => Customers.Select(c => new AutoCompleteLine
+        public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.Name
         }).ToList();
 
-        public static List<AutoCompleteLine> SuppliersAutocompleteLines => Customers.Where(x => x.Supplier).Select(c => new AutoCompleteLine
+        public static List<AutoCompleteLine> SuppliersAutocompleteLines => GetAllCustomers().Where(x => x.Supplier).Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.Name
         }).ToList();
 
-        public static List<AutoCompleteLine> FiscalNumberAutocompleteLines => Customers.Select(c => new AutoCompleteLine
+        public static List<AutoCompleteLine> FiscalNumberAutocompleteLines => GetAllCustomers().Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.FiscalNumber
@@ -70,14 +58,14 @@ namespace LogicPOS.UI.Components.Finance.Customers
             {
                 if (_default == null)
                 {
-                    _default = Customers.FirstOrDefault(x => x.Name.ToLower() == GeneralUtils.GetResourceByName("global_final_consumer").ToLower());
+                    _default = GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == GeneralUtils.GetResourceByName("global_final_consumer").ToLower());
                 }
 
                 return _default;
             }
         }
 
-        private static List<Customer> GetAllCustomers()
+        public static List<Customer> GetAllCustomers()
         {
             var customers = DependencyInjection.Mediator.Send(new GetAllCustomersQuery()).Result;
 

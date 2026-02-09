@@ -194,7 +194,7 @@ namespace LogicPOS.UI.Components.Modals
             
             if (customerIsSelected)
             {
-                customer = CustomersService.Customers.FirstOrDefault(c => c.Id == CustomerTab.CustomerId.Value);
+                customer = CustomersService.GetAllCustomers().FirstOrDefault(c => c.Id == CustomerTab.CustomerId.Value);
             }
 
             if (isTransportDocument && customerIsSelected)

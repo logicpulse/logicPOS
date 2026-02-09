@@ -3,6 +3,7 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
@@ -18,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public List<Terminal> SelectedTerminals { get; private set;  } = new List<Terminal>();
         protected override IRequest<ErrorOr<IEnumerable<Terminal>>> GetAllQuery => new GetAllTerminalsQuery();
+       
         public TerminalsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             Navigator.BtnInsert.Visible = false;
@@ -112,10 +114,10 @@ namespace LogicPOS.UI.Components.Pages
         }
        
 
-        public static List<Guid> SelectTerminals()
+        public static List<Guid> SelectTerminals(Window sourceWindow)
         {
-            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
-            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var page = new TerminalsPage(sourceWindow, PageOptions.SelectionPageOptions);
+            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectTerminalModal.Run();
             var terminalIds = page.SelectedTerminals.Select(t => t.Id).ToList();
             selectTerminalModal.Destroy();

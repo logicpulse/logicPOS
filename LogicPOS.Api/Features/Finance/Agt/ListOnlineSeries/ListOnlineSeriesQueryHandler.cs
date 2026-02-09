@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries
         public override async Task<ErrorOr<IEnumerable<OnlineSeriesInfo>>> Handle(ListOnlineSeriesQuery query,
                                                                      CancellationToken cancellationToken = default)
         {
-            var result = await HandleGetListQueryAsync<OnlineSeriesInfo>("agt/online/documents/series"+query.GetUrlQuery(), cancellationToken);
+            var result = await HandleGetListQueryAsync<OnlineSeriesInfo>("agt/fe/online/documents/series"+query.GetUrlQuery(), cancellationToken);
             return result;
         }
     }

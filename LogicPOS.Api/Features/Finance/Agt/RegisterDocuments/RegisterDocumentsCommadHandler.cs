@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.RegisterDocuments
         public override async Task<ErrorOr<Success>> Handle(RegisterDocumentsCommand request, CancellationToken cancellationToken = default)
         {
 
-            var result = await HandlePostCommandAsync<Success>("agt/documents/bulk", request, cancellationToken);
+            var result = await HandlePostCommandAsync<Success>("agt/fe/documents/bulk", request, cancellationToken);
 
             if (result.IsError == false)
             {

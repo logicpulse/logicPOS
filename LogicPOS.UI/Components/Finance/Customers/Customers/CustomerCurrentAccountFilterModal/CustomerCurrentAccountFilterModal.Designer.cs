@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-            var customers = CustomersService.Customers.Select(c => (c as object, c.Name)).ToList();
+            var customers = CustomersService.GetAllCustomers().Select(c => (c as object, c.Name)).ToList();
             TxtCustomer.WithAutoCompletion(CustomersService.AutocompleteLines, id => CustomersService.GetById(id));
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;

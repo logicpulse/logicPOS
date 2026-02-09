@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.CorrectDocument
 
         public override async Task<ErrorOr<Guid>> Handle(CorrectDocumentCommand request, CancellationToken cancellationToken = default)
         {
-            var result =  await HandleAddCommandAsync("agt/documents/correct", request, cancellationToken);
+            var result =  await HandleAddCommandAsync("agt/fe/documents/correct", request, cancellationToken);
            
             if (result.IsError == false)
             {

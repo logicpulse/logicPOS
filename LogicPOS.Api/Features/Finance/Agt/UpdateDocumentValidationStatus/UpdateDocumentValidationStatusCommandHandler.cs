@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.UpdateDocumentValidationStatus
 
         public override async Task<ErrorOr<Success>> Handle(UpdateDocumentValidationStatusCommand request, CancellationToken cancellationToken = default)
         {
-            var result = await HandleUpdateCommandAsync($"agt/documents/{request.DocumentId}/validation-status", request, cancellationToken);
+            var result = await HandleUpdateCommandAsync($"agt/fe/documents/{request.DocumentId}/validation-status", request, cancellationToken);
 
             if (result.IsError == false)
             {

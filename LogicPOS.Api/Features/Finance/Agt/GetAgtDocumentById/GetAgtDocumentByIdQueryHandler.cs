@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById
 
         public override async Task<ErrorOr<AgtDocument>> Handle(GetAgtDocumentByIdQuery request, CancellationToken ct = default)
         {
-            return await HandleGetQueryAsync<AgtDocument>($"agt/documents/{request.DocumentId}", ct);
+            return await HandleGetQueryAsync<AgtDocument>($"agt/fe/documents/{request.DocumentId}", ct);
         }
     }
 }

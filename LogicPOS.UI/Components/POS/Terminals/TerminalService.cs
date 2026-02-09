@@ -1,10 +1,14 @@
 using ErrorOr;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Terminals.CreateTerminal;
 using LogicPOS.Api.Features.Terminals.GetAllTerminals;
 using LogicPOS.Api.Features.Terminals.GetTerminalByHardwareId;
 using LogicPOS.Api.Features.Terminals.GetTerminalById;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,7 +65,7 @@ namespace LogicPOS.UI.Components.Terminals
 
             if (string.IsNullOrWhiteSpace(hardwareId))
             {
-                return Error.NotFound(description: "HardwareId não encontrado no serviço de licenciamento.");
+                return Error.NotFound(description: $"HardwareId '{hardwareId}' não encontrado.");
             }
 
             var getTerminalResult = _mediator.Send(new GetTerminalByHardwareIdQuery(hardwareId)).Result;
@@ -95,7 +99,7 @@ namespace LogicPOS.UI.Components.Terminals
                 }
                 else
                 {
-                    return Error.Conflict(description: "Limite de Terminais/dispositivos atingido.\n\n" +
+                    return Error.Conflict(description: "Limite de Terminais/dispositivos atingido.\n" +
                                                        "Entre em contacto com o Suporte Técnico");
                 }
             }
@@ -126,12 +130,23 @@ namespace LogicPOS.UI.Components.Terminals
         {
             if (!HardwareIdFileExists())
             {
+
                 CreateHardwareIdFile(Guid.NewGuid().ToString().ToUpper());
             }
 
             var hardwareId = GetHardwareIdFromFile();
             return hardwareId;
         }
+
+        //private static string SelectTerminals()
+        //{
+        //    var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+        //    var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+        //    ResponseType response = (ResponseType)selectTerminalModal.Run();
+        //    var terminalIds = page.SelectedTerminals.Select(t => t.Id).ToList();
+        //    selectTerminalModal.Destroy();
+        //    return terminalIds;
+        //}
 
         public static List<Terminal> GetAllTerminals()
         {

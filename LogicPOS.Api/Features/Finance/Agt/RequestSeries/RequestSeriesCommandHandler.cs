@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.RequestSeries
 
         public override async Task<ErrorOr<AgtSeriesInfo>> Handle(RequestSeriesCommand request, CancellationToken cancellationToken = default)
         {
-            var result =  await HandlePostCommandAsync<AgtSeriesInfo>("agt/documents/series", request, cancellationToken);
+            var result =  await HandlePostCommandAsync<AgtSeriesInfo>("agt/fe/documents/series", request, cancellationToken);
 
             return result;
         }

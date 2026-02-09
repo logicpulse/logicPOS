@@ -116,7 +116,7 @@ namespace LogicPOS.UI.Components.Modals
                 List<Guid> terminals = null;
                 if (_checkSeriesForEachTerminal.Active)
                 {
-                    terminals = TerminalsPage.SelectTerminals();
+                    terminals = TerminalsPage.SelectTerminals(this);
                 }
 
                 if (_checkSeriesForEachTerminal.Active && (terminals == null || terminals.Count == 0))

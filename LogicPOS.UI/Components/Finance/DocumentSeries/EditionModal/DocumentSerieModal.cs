@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (_comboFiscalYears.SelectedEntity.SeriesForEachTerminal)
             {
-                command.Terminals = TerminalsPage.SelectTerminals();
+                command.Terminals = TerminalsPage.SelectTerminals(this);
 
                 if (command.Terminals.Count == 0)
                 {

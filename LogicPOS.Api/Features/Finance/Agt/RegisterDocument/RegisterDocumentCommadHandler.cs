@@ -20,7 +20,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.RegisterDocument
 
         public override async Task<ErrorOr<Guid>> Handle(RegisterDocumentCommand request, CancellationToken cancellationToken = default)
         {
-            var result =  await HandleAddCommandAsync("agt/documents", request, cancellationToken);
+            var result =  await HandleAddCommandAsync("agt/fe/documents", request, cancellationToken);
            
             if (result.IsError == false)
             {

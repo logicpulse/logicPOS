@@ -30,6 +30,7 @@ namespace LogicPOS.UI.Components.Modals
 
             LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
+       
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);
@@ -44,7 +45,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectTerminal_Clicked(object sender, EventArgs e)
         {
-            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var page = new TerminalsPage(this, PageOptions.SelectionPageOptions);
             var selectModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
@@ -55,6 +56,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtTerminal.SelectedEntity = page.SelectedEntity;
             }
         }
+        
         private void TxtStartDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);

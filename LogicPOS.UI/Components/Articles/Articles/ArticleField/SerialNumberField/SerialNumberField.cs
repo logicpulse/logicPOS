@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Articles.GetArticleChildren;
+using LogicPOS.Api.Features.Articles.GetArticleChildren;
 using LogicPOS.Api.Features.Articles.StockManagement.GetUniqueArticleChildren;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -10,8 +10,6 @@ namespace LogicPOS.UI.Components
 {
     public partial class SerialNumberField : IValidatableField
     {
-
-
         public string FieldName => LocalizedString.Instance["global_serial_number"];
 
         public SerialNumberField()

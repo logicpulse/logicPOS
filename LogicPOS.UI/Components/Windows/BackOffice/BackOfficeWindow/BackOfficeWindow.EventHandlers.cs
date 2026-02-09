@@ -205,9 +205,8 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnExportLastMonthSaft_Clicked(object sender, EventArgs e)
         {
-            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
             DateTime endDate = startDate.AddMonths(1).AddDays(-1);
-
             ExportSaftByPeriod(startDate, endDate);
         }
 

@@ -14,7 +14,7 @@ namespace LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument
 
         public override async Task<ErrorOr<OnlineDocument>> Handle(GetOnlineDocumentQuery request, CancellationToken ct = default)
         {
-            return await HandleGetQueryAsync<OnlineDocument>($"agt/online/documents?DocumentNumber={request.DocumentNumber}", ct);
+            return await HandleGetQueryAsync<OnlineDocument>($"agt/fe/online/documents?DocumentNumber={request.DocumentNumber}", ct);
         }
     }
 }
