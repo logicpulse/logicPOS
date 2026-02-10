@@ -1,7 +1,6 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Countries.GetAllCountries;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
@@ -58,6 +57,11 @@ namespace LogicPOS.UI.Services
         public static Country GetById(Guid id)
         {
             return Countries.FirstOrDefault(c => c.Id == id);
+        }
+
+        public static Country GetByCode2(string code2)
+        {
+            return Countries.FirstOrDefault(c => c.Code2.ToLower() == code2.ToLower());
         }
     }
 }

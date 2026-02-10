@@ -11,6 +11,7 @@ using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocum
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Services;
+using Serilog;
 using System;
 using System.Linq;
 
@@ -56,67 +57,79 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnOk_Clicked(object sender, EventArgs e)
         {
-            if (Validate() == false)
+            try
             {
-                Run();
-                return;
-            }
-
-            var addCommand = CreateAddCommand();
-
-            if (DraftMode == false)
-            {
-                var previewQuery = new GetDocumentPreviewDataQuery
-                {
-                    CurrencyId = addCommand.CurrencyId,
-                    Type = addCommand.Type,
-                    ShipFromAdress = addCommand.ShipFromAddress,
-                    ShipToAdress = addCommand.ShipToAddress,
-                    Discount = addCommand.Discount,
-                    Notes = addCommand.Notes,
-                    Details = addCommand.Details,
-                    ExchangeRate = addCommand.ExchangeRate,
-                };
-
-                var confirmModal = new DocumentPreviewModal(this, previewQuery);
-                var confirmation = (ResponseType)confirmModal.Run();
-                confirmModal.Destroy();
-
-                if (confirmation != ResponseType.Yes)
+                Log.Information("Attempting to create document of type {DocumentType}", DocumentTab.GetDocumentType());
+                if (Validate() == false)
                 {
                     Run();
                     return;
                 }
-            }
 
-            IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(addCommand);
-            if (issueDocumentResponse == null)
-            {
-                Run();
-                return;
-            }
+                var addCommand = CreateAddCommand();
 
-            if (_draftId != null)
-            {
-                DocumentsService.DeleteDraft(_draftId.Value);
-            }
-
-
-            bool requireAtRegistration = AtService.DocumentTypeRequiresAtRegistration(addCommand.Type);
-
-            if (SystemInformationService.SystemInformation.IsPortugal && requireAtRegistration && issueDocumentResponse.Value.HasAtRegistration == false)
-            {
-                bool advance = CustomAlerts.Question(this)
-                     .WithMessage("Não foi possível registar o documento na AT. Deseja abrir o documento para impressão mesmo assim?")
-                     .ShowAlert() == ResponseType.Yes;
-
-                if (advance == false)
+                if (DraftMode == false)
                 {
+                    var previewQuery = new GetDocumentPreviewDataQuery
+                    {
+                        CurrencyId = addCommand.CurrencyId,
+                        Type = addCommand.Type,
+                        ShipFromAdress = addCommand.ShipFromAddress,
+                        ShipToAdress = addCommand.ShipToAddress,
+                        Discount = addCommand.Discount,
+                        Notes = addCommand.Notes,
+                        Details = addCommand.Details,
+                        ExchangeRate = addCommand.ExchangeRate,
+                    };
+
+                    var confirmModal = new DocumentPreviewModal(this, previewQuery);
+                    var confirmation = (ResponseType)confirmModal.Run();
+                    confirmModal.Destroy();
+
+                    if (confirmation != ResponseType.Yes)
+                    {
+                        Run();
+                        return;
+                    }
+                }
+
+                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(addCommand);
+                if (issueDocumentResponse == null)
+                {
+                    Run();
                     return;
                 }
-            }
 
-            DocumentPdfUtils.ViewDocumentPdf(this, issueDocumentResponse.Value.Id);
+                Log.Information("Document of type {DocumentType} created with ID {DocumentId}", addCommand.Type, issueDocumentResponse.Value.Id);
+
+                if (_draftId != null)
+                {
+                    DocumentsService.DeleteDraft(_draftId.Value);
+                }
+
+                bool requireAtRegistration = !DraftMode && AtService.DocumentTypeRequiresAtRegistration(addCommand.Type);
+
+                if (SystemInformationService.SystemInformation.IsPortugal && requireAtRegistration && issueDocumentResponse.Value.HasAtRegistration == false)
+                {
+                    bool advance = CustomAlerts.Question(this)
+                         .WithMessage("Não foi possível registar o documento na AT. Deseja abrir o documento para impressão mesmo assim?")
+                         .ShowAlert() == ResponseType.Yes;
+
+                    if (advance == false)
+                    {
+                        return;
+                    }
+                }
+
+                DocumentPdfUtils.ViewDocumentPdf(this, issueDocumentResponse.Value.Id);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error while creating document");
+                CustomAlerts.Error(this)
+                    .WithMessage($"Ocorreu um erro ao criar o documento. Por favor, tente novamente.\n\n{ex.Message}")
+                    .ShowAlert();
+            }
         }
 
         private void BtnClear_Clicked(object sender, EventArgs e)
@@ -150,7 +163,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             CustomerTab.ImportDataFromDocument(document);
             DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
-            if((DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsTransportGuide() ||
+            if ((DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsTransportGuide() ||
                (DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsDeliveryNote())
             {
                 ShipToTab.ImportCustomerShipAddress(document.Customer);

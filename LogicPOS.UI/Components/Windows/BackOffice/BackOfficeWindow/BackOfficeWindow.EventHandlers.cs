@@ -277,6 +277,7 @@ namespace LogicPOS.UI.Components.Windows
 
             string fileName = "\\LPUpdater\\LPUpdater.exe";
             string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
+            string newVersion = "";
 
             if (File.Exists(lPathToUpdater))
             {
@@ -285,7 +286,7 @@ namespace LogicPOS.UI.Components.Windows
                                     .WithSize(new Size(600, 400))
                                     .WithMessageType(MessageType.Question)
                                     .WithButtonsType(ButtonsType.YesNo)
-                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), AppSettings.ServerVersion))
+                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), newVersion))
                                     .ShowAlert();
 
                 if (responseType == ResponseType.Yes)

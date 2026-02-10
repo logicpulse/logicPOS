@@ -42,6 +42,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCountry.SelectedEntity = country;
         }
 
+        private void SelectCountryByCode2(string code2)
+        {
+            var country = CountriesService.GetByCode2(code2);
+            if (country != null)
+            {
+                SelectCountry(country);
+            }
+        }
+
         public void ImportDataFromDocument(Document document)
         {
             var shipAddress = document.ShipToAddress;
@@ -50,15 +59,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtRegion.Text = shipAddress.Region;
             TxtZipCode.Text = shipAddress.PostalCode;
             TxtCity.Text = shipAddress.City;
-            TxtCountry.Text = CountriesService.Countries
-                                     .Where(c => c.Code2 == shipAddress.Country)
-                                     .Select(c => c.Code2)
-                                     .FirstOrDefault() ?? shipAddress.Country;
-
             TxtDeliveryDate.Text = shipAddress.DeliveryDate.HasValue ? shipAddress.DeliveryDate.Value.ToString("yyyy-MM-ddTHH:mm:ss") : "";
             TxtDeliveryId.Text = shipAddress.DeliveryID;
             TxtWarehouseId.Text = shipAddress.WarehouseID;
             TxtLocationId.Text = shipAddress.LocationID;
+            SelectCountryByCode2(shipAddress.Country);
         }
 
         public void ImportCustomerShipAddress(Customer customer)
@@ -67,8 +72,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtRegion.Text = customer.Locality;
-            TxtCountry.SelectedEntity = customer.Country;
-            TxtCountry.Text = customer.Country.Designation;
+            SelectCountryByCode2(customer.Country.Code2);
         }
 
         public void ImportCustomerShipAddress(DocumentCustomer customer)
@@ -77,8 +81,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtRegion.Text = customer.Locality;
-            TxtCountry.SelectedEntity = customer.Country;
-            TxtCountry.Text = CountriesService.Countries.Where(c => c.Code2 == customer.Country).Select(x=>x.Designation).FirstOrDefault();
+            SelectCountryByCode2(customer.Country);
         }
 
         public ShipAddress GetAddress()

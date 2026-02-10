@@ -1,5 +1,6 @@
 using Gtk;
 using logicpos;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
@@ -146,7 +147,7 @@ namespace LogicPOS.UI.Components.Windows
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
-            if(LicensingService.NeedToRegister())StatusBar.PackStart(labelRegister, false, false, 10);
+            if (LicensingService.NeedToRegister()) StatusBar.PackStart(labelRegister, false, false, 10);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
 
@@ -260,7 +261,7 @@ namespace LogicPOS.UI.Components.Windows
                 PanelLeft.Put(PanelButtons, 0, 40);
             }
 
-            CheckForUpdates(fontDescriptionStatusBar);
+            DesignVersionSection(fontDescriptionStatusBar);
 
             PageContainer.PackStart(PanelLeft, false, false, 0);
 
@@ -279,82 +280,68 @@ namespace LogicPOS.UI.Components.Windows
             StartClock();
         }
 
-        private void CheckForUpdates(FontDescription fontDescriptionStatusBar)
+        private void DesignVersionSection(FontDescription fontDescriptionStatusBar)
         {
-            string appVersion = AppSettings.ProductVersion.Replace("v", "");
+            // 1. Version Logic
+            string appVersion = SystemVersionProvider.Version;
+            string serverVersion = appVersion;
+            bool updateAvailable = false;
 
-            return; //tchial0 -> Disable update check
-            /*
-            if (GeneralSettings.ServerVersion != null)
+            // Use built-in Version comparison (safer than manual math)
+            if (Version.TryParse(appVersion, out var vApp) && Version.TryParse(serverVersion, out var vServer))
             {
+                updateAvailable = vServer > vApp;
+            }
 
-                string[] tmpNew = appVersion.Split('.');
-                long tmpNewVer = int.Parse(tmpNew[0]) * 10000000 + int.Parse(tmpNew[1]) * 10000 + int.Parse(tmpNew[2]);
+            // 2. Coordinate Logic (Calculated once)
+            int height = BackOfficeWindow.ScreenSize.Height;
+            int topOffset;
 
-                string[] tmpOld = GeneralSettings.ServerVersion.ToString().Split('.');
-                long tmpOldVer = int.Parse(tmpOld[0]) * 10000000 + int.Parse(tmpOld[1]) * 10000 + int.Parse(tmpOld[2]);
+            if (height <= 800)
+            {
+                topOffset = 165; // Low resolution offset
+            }
+            else
+            {
+                // High resolution: 160 for BackOffice, 200 for FrontOffice
+                topOffset = AppSettings.Instance.OperationMode.IsBackOfficeMode() ? 160 : 200;
+            }
 
-                if (tmpNewVer < tmpOldVer)
-                {
-                    needToUpdate = true;
-                }
+            int yTop = height - topOffset;
+            int yBottom = height - (topOffset - 25); // Bottom element is always 25px lower
 
-                if (needToUpdate)
-                {
-                    if (GeneralSettings.AppUseBackOfficeMode)
-                    {
-                        if (BackOfficeWindow.ScreenSize.Height <= 800)
-                        {
-                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            LabelUpdate.SetAlignment(1.0F, 0.5F);
-                            PanelButtons.Put(LabelUpdate, 5, BackOfficeWindow.ScreenSize.Height - 165);
-                            PanelButtons.Add(LabelUpdate);
-                            PanelButtons.Put(BtnNewVersion, 0, BackOfficeWindow.ScreenSize.Height - 140);
-                            PanelButtons.Add(BtnNewVersion);
-                        }
-                        else
-                        {
-                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            LabelUpdate.SetAlignment(1.0F, 0.5F);
-                            PanelButtons.Put(LabelUpdate, 5, BackOfficeWindow.ScreenSize.Height - 160);
-                            PanelButtons.Add(LabelUpdate);
-                            PanelButtons.Put(BtnNewVersion, 0, BackOfficeWindow.ScreenSize.Height - 135);
-                            PanelButtons.Add(BtnNewVersion);
-                        }
-                    }
-                    else
-                    {
-                        if (BackOfficeWindow.ScreenSize.Height <= 800)
-                        {
-                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            LabelUpdate.SetAlignment(1.0F, 0.5F);
-                            PanelButtons.Put(LabelUpdate, 5, BackOfficeWindow.ScreenSize.Height - 165);
-                            PanelButtons.Add(LabelUpdate);
-                            PanelButtons.Put(BtnNewVersion, 0, BackOfficeWindow.ScreenSize.Height - 140);
-                            PanelButtons.Add(BtnNewVersion);
-                        }
-                        else
-                        {
-                            LabelUpdate = new Label(string.Format(string.Format(GeneralUtils.GetResourceByName("global_new_version"), GeneralSettings.ServerVersion.ToString())));
-                            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
-                            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
-                            LabelUpdate.SetAlignment(1.0F, 0.5F);
-                            PanelButtons.Put(LabelUpdate, 5, BackOfficeWindow.ScreenSize.Height - 200);
-                            PanelButtons.Add(LabelUpdate);
-                            PanelButtons.Put(BtnNewVersion, 0, BackOfficeWindow.ScreenSize.Height - 175);
-                            PanelButtons.Add(BtnNewVersion);
-                        }
+            // 3. Render Top Label
+            // If Update: "New Version..." | If No Update: Current App Version
+            string topText = updateAvailable
+                ? string.Format(LocalizedString.Instance["global_new_version"], serverVersion)
+                : $"Versão: {appVersion}";
 
-                    }
-                }
-            
-            }*/
+            LabelUpdate = new Label(topText);
+            LabelUpdate.ModifyFont(fontDescriptionStatusBar);
+            LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+            LabelUpdate.SetAlignment(1.0F, 0.5F);
+
+            PanelLeft.Put(LabelUpdate, 5, yTop);
+            PanelLeft.Add(LabelUpdate);
+
+            // 4. Render Bottom Element
+            if (updateAvailable)
+            {
+                // Case A: Update Button
+                PanelLeft.Put(BtnNewVersion, 0, yBottom);
+                PanelLeft.Add(BtnNewVersion);
+            }
+            else
+            {
+                // Case B: "by Logicpulse" Label
+                Label lblAttribution = new Label("by Logicpulse");
+                lblAttribution.ModifyFont(fontDescriptionStatusBar);
+                lblAttribution.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
+                lblAttribution.SetAlignment(1.0F, 0.5F);
+
+                PanelLeft.Put(lblAttribution, 5, yBottom);
+                PanelLeft.Add(lblAttribution);
+            }
         }
 
         private void SetWindowIcon()
@@ -370,7 +357,7 @@ namespace LogicPOS.UI.Components.Windows
                 Gtk.Application.Quit();
             }
 
-            args.RetVal = true; 
+            args.RetVal = true;
         }
 
         public void ShowPage(Widget page, string pageTitle)

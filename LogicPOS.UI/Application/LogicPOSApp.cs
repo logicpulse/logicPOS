@@ -82,7 +82,7 @@ namespace LogicPOS.UI.Application
             if (TerminalService.Terminal.PoleDisplay != null)
             {
                 UsbDisplay = UsbDisplayDevice.InitDisplay();
-                UsbDisplay.WriteCentered(string.Format("{0} {1}", AppSettings.AppName, AppSettings.ProductVersion), 1);
+                UsbDisplay.WriteCentered(string.Format("{0} v{1}", AppSettings.AppName, SystemVersionProvider.Version), 1);
                 UsbDisplay.WriteCentered("www.logicpulse.com", 2);
                 UsbDisplay.EnableStandBy();
             }
