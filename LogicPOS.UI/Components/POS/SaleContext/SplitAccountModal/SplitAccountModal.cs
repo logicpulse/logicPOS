@@ -57,8 +57,8 @@ namespace LogicPOS.UI.Components.Modals
                 _vbox.PackStart(splitter, false, true, 5);
             }
 
-            BtnAddSplitter.Sensitive = !(Splitters.Count == PreferenceParametersService.MaxAccountSplitterNumber);
-            BtnRemoveSplitter.Sensitive = !(Splitters.Count == 2);
+            BtnAddSplitter.Sensitive = Splitters.Count < PreferenceParametersService.MaxAccountSplitterNumber;
+            BtnRemoveSplitter.Sensitive = (Splitters.Count != 2);
             UpdateTitle(_order);
 
         }
@@ -69,6 +69,7 @@ namespace LogicPOS.UI.Components.Modals
                                           GeneralUtils.GetResourceByName("global_add"),
                                           AppSettings.Paths.Images + @"Icons\icon_pos_nav_new.png",
                                           AppSettings.Instance.SizeBaseDialogActionAreaButton);
+            BtnAddSplitter.Sensitive= Splitters.Count < PreferenceParametersService.MaxAccountSplitterNumber;
             BtnAddSplitter.Clicked += BtnAddSplitter_Clicked;
 
 

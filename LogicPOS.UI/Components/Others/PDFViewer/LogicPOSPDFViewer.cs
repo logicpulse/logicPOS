@@ -1,3 +1,4 @@
+using System.Drawing.Printing;
 using System.Windows.Forms;
 
 namespace LogicPOS.UI.PDFViewer
@@ -19,13 +20,33 @@ namespace LogicPOS.UI.PDFViewer
         {
             var document = PdfiumViewer.PdfDocument.Load(_pdfLocation);
             pdfViewer.Document = document;
+            pdfViewer.ZoomMode = PdfiumViewer.PdfViewerZoomMode.FitBest;
 
             var toolStrip = GetPdfViewerToolStrip();
+
+            // --- Save Button Customization (Existing) ---
             var originalSaveButton = GetSaveButton();
             var newSaveButton = CloneButton(originalSaveButton);
             newSaveButton.Click += SaveButton_Click;
+
+            // Remove original and add new (You might want to insert it at a specific index to keep order)
+            int saveIndex = toolStrip.Items.IndexOf(originalSaveButton);
             toolStrip.Items.Remove(originalSaveButton);
-            toolStrip.Items.Add(newSaveButton);
+            toolStrip.Items.Insert(saveIndex, newSaveButton);
+
+
+            // --- Print Button Customization (New) ---
+            var originalPrintButton = GetPrintButton();
+            if (originalPrintButton != null)
+            {
+                var newPrintButton = CloneButton(originalPrintButton);
+                newPrintButton.Click += PrintButton_Click;
+
+                // Maintain the position of the print button
+                int printIndex = toolStrip.Items.IndexOf(originalPrintButton);
+                toolStrip.Items.Remove(originalPrintButton);
+                toolStrip.Items.Insert(printIndex, newPrintButton);
+            }
         }
 
         private void SaveButton_Click(object sender, System.EventArgs e)
@@ -52,6 +73,47 @@ namespace LogicPOS.UI.PDFViewer
             }
         }
 
+        private void PrintButton_Click(object sender, System.EventArgs e)
+        {
+            using (var printDialog = new PrintDialog())
+            {
+                printDialog.AllowSomePages = true;
+                printDialog.AllowSelection = true;
+                printDialog.UseEXDialog = true;
+
+                if (printDialog.ShowDialog(FindForm()) == DialogResult.OK)
+                {
+                    try
+                    {
+                        using (var printDocument = pdfViewer.Document.CreatePrintDocument(PdfiumViewer.PdfPrintMode.CutMargin))
+                        {
+                            printDocument.PrinterSettings = printDialog.PrinterSettings;
+                            printDocument.OriginAtMargins = false;
+                            printDocument.DefaultPageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+
+                            printDocument.QueryPageSettings += (s, qsArgs) =>
+                            {
+                                var pdfPageSize = pdfViewer.Document.PageSizes[0];
+
+                                int exactWidth = (int)(pdfPageSize.Width / 72.0 * 100.0);
+                                int exactHeight = (int)(pdfPageSize.Height / 72.0 * 100.0);
+
+                                qsArgs.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom PDF Size", exactWidth, exactHeight);
+
+                                qsArgs.PageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+                            };
+
+                            printDocument.Print();
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        MessageBox.Show(FindForm(), $"Erro ao imprimir: {ex.Message}", "Erro", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
         private ToolStrip GetPdfViewerToolStrip()
         {
             var toolStripFieldInfo = typeof(PdfiumViewer.PdfViewer).GetField("_toolStrip", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
@@ -64,10 +126,14 @@ namespace LogicPOS.UI.PDFViewer
             return (ToolStripButton)saveButtonFieldInfo.GetValue(pdfViewer);
         }
 
+        private ToolStripButton GetPrintButton()
+        {
+            var printButtonFieldInfo = typeof(PdfiumViewer.PdfViewer).GetField("_printButton", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            return (ToolStripButton)printButtonFieldInfo.GetValue(pdfViewer);
+        }
 
         private ToolStripButton CloneButton(ToolStripButton originalButton)
         {
-
             var clonedButton = new ToolStripButton
             {
                 Name = originalButton.Name,
@@ -76,6 +142,7 @@ namespace LogicPOS.UI.PDFViewer
                 DisplayStyle = originalButton.DisplayStyle,
                 Enabled = originalButton.Enabled,
                 Visible = originalButton.Visible,
+                ToolTipText = originalButton.ToolTipText // Copied tooltip as well
             };
 
             return clonedButton;
