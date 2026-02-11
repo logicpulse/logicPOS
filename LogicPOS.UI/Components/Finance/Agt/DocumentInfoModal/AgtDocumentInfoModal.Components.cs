@@ -23,6 +23,20 @@ namespace LogicPOS.UI.Components.Finance.Agt
                         ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Height),
                 });
 
+        private IconButtonWithText BtnMarkAsValid { get; set; } = new IconButtonWithText(
+               new ButtonSettings
+               {
+                   Name = "touchButtonClose_DialogActionArea",
+                   Text = "Marc. Válido",
+                   Font = ExpressionEvaluatorExtended.FontDocumentsSizeDefault,
+                   FontColor = Color.White,
+                   Icon = "Assets\\Images\\Icons\\icon_pos_agt_send.png",
+                   IconSize = ExpressionEvaluatorExtended.SizePosToolbarButtonIconSizeDefault,
+                   ButtonSize = new Size(
+                       ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Width,
+                       ExpressionEvaluatorExtended.SizePosToolbarButtonSizeDefault.Height),
+               });
+
         public TextBox TxtSubmissionDate { get; private set; }
         public TextBox TxtRequestId { get; private set; }
         public TextBox TxtDocumentNumber { get; private set; }

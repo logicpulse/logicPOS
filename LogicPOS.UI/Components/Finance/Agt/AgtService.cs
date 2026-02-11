@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
+using LogicPOS.Api.Features.Finance.Agt.MarkDocumentAsValid;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocument;
 using LogicPOS.Api.Features.Finance.Agt.RegisterDocuments;
 using LogicPOS.Api.Features.Finance.Agt.RequestSeries;
@@ -139,6 +140,18 @@ namespace LogicPOS.UI.Components.Finance.Agt
         public static bool CorrectDocument(Guid correctDocumentId, Guid rejectedDocumentId)
         {
             var command = new CorrectDocumentCommand(correctDocumentId, rejectedDocumentId);
+            var result = DependencyInjection.Mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+            return true;
+        }
+        
+        public static bool MarkAsValid(Guid agtDocumentId)
+        {
+            var command = new MarkDocumentAsValidCommand(agtDocumentId);
             var result = DependencyInjection.Mediator.Send(command).Result;
             if (result.IsError)
             {

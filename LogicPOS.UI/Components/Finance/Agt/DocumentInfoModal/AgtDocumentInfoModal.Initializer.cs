@@ -20,7 +20,9 @@ namespace LogicPOS.UI.Components.Finance.Agt
             InitializeTxtValidationErrors();
             InitializeTxtRejectedDocumentNumber();
             BtnCorrectDocument.Clicked += BtnCorrectDocument_Clicked;
+            BtnMarkAsValid.Clicked += BtnMarkAsValid_Clicked;
         }
+
 
         private void InitializeTxtRejectedDocumentNumber()
         {

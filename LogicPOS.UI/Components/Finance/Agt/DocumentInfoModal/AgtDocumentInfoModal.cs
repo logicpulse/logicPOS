@@ -23,6 +23,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
         {
             _agtDocument = agtDocument;
             ShowData();
+
         }
 
         private void BtnCorrectDocument_Clicked(object sender, EventArgs e)
@@ -64,8 +65,35 @@ namespace LogicPOS.UI.Components.Finance.Agt
             {
                 CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao submeter a correção do documento {_agtDocument.Number}.").ShowAlert();
             }
+        }
 
-            Run();
+        private void BtnMarkAsValid_Clicked(object sender, EventArgs e)
+        {
+            if (_agtDocument == null)
+            {
+                CustomAlerts.Error(this).WithMessage("Este documento foi enviado à AGT").ShowAlert();
+                Run();
+                return;
+            }
+
+            bool advance = CustomAlerts.Question(this).WithMessage($"Tem a certeza que consultou o documento {_agtDocument?.Number} no portal da AGT e este encontra-se válido? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
+
+            if (!advance)
+            {
+                Run();
+                return;
+            }
+
+            var markAsValidResult = AgtService.MarkAsValid(_agtDocument.Id);
+
+            if (markAsValidResult)
+            {
+                CustomAlerts.Information(this).WithMessage($"O documento {_agtDocument.Number} foi marcado como válido.").ShowAlert();
+            }
+            else
+            {
+                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao marcar o documento {_agtDocument.Number} como válido.").ShowAlert();
+            }
         }
 
         private void ShowData()
@@ -80,6 +108,12 @@ namespace LogicPOS.UI.Components.Finance.Agt
             TxtValidationStatus.Text = _agtDocument?.ValidationStatus ?? "Não validado";
             TxtValidationErrors.Text = _agtDocument?.ValidationErrors ?? "-";
             TxtRejectedDocumentNumber.Text = _agtDocument?.RejectedDocumentNumber?.ToString() ?? "-";
+
+            if(_agtDocument?.ValidationStatus == "V")
+            {
+                BtnCorrectDocument.Sensitive = false;
+                BtnMarkAsValid.Sensitive = false;
+            }
         }
 
         public static void Show(AgtDocument agtDocument, Window parent)
