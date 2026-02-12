@@ -1,17 +1,10 @@
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
-using LogicPOS.Api.Features.System.Licensing.AddMessage;
 using LogicPOS.Api.Features.System.Licensing.ConnectToWs;
 using LogicPOS.Api.Features.System.Licensing.GetCountries;
-using LogicPOS.Api.Features.System.Licensing.GetCurrentVersion;
 using LogicPOS.Api.Features.System.Licensing.GetHardwareId;
-using LogicPOS.Api.Features.System.Licensing.GetLicenseInformation;
-using LogicPOS.Api.Features.System.Licensing.GetVersion;
-using LogicPOS.Api.Features.System.Licensing.IsLicensed;
-using LogicPOS.Api.Features.System.Licensing.NeedToRegister;
+using LogicPOS.Api.Features.System.Licensing.GetLicenseData;
 using LogicPOS.Api.Features.System.Licensing.RefreshLicense;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using Newtonsoft.Json;
 using Serilog;
@@ -19,9 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace LogicPOS.UI.Components.Licensing
 {
@@ -44,7 +34,6 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value.ToList();
         }
 
-
         public static string GetHardwareId()
         {
             var result = DependencyInjection.Mediator.Send(new GetHardwareIdQuery()).Result;
@@ -55,7 +44,6 @@ namespace LogicPOS.UI.Components.Licensing
             }
             return result.Value.HardwareId;
         }
-
 
         public static ActivateLicenseResponse? ActivateLicense(ActivateLicenseCommand licenseData)
         {
@@ -70,19 +58,6 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value;
         }
 
-        public static bool IsLicensed()
-        {
-            var result = DependencyInjection.Mediator.Send(new IsLicensedQuery()).Result;
-
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return false;
-            }
-
-            return result.Value.IsLicensed;
-        }
-
         private static bool RefreshLicense()
         {
             var result = DependencyInjection.Mediator.Send(new RefreshLicenseCommand()).Result;
@@ -94,17 +69,6 @@ namespace LogicPOS.UI.Components.Licensing
             }
 
             return true;
-        }
-
-        public static bool NeedToRegister()
-        {
-            var result = DependencyInjection.Mediator.Send(new NeedToRegisterQuery()).Result;
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return true;
-            }
-            return result.Value.NeedToRegister;
         }
 
         public static bool ActivateFromFile()
@@ -126,7 +90,7 @@ namespace LogicPOS.UI.Components.Licensing
             return true;
         }
 
-        public static LicenseData GetLicenseInformation()
+        private static LicenseData GetLicenseData()
         {
             var result = DependencyInjection.Mediator.Send(new GetLicenseDataQuery()).Result;
             if (result.IsError)
@@ -151,24 +115,9 @@ namespace LogicPOS.UI.Components.Licensing
             return result.Value.Connected;
         }
 
-        private static void LoadLicenseInformation()
+        private static void LoadLicenseData()
         {
-            Data = GetLicenseInformation();
-        }
-
-        public static string GetTerminalHardwareID()
-        {
-            string result = string.Empty;
-            try
-            {
-                result = TerminalService.GetTerminalHardwareId();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex.Message, ex);
-            }
-
-            return result;
+            Data = GetLicenseData();
         }
 
         public static bool Initialize()
@@ -176,9 +125,7 @@ namespace LogicPOS.UI.Components.Licensing
             try
             {
                 RefreshLicense();
-                LoadLicenseInformation();
-                Data.TerminalHardwareId = GetTerminalHardwareID();
-                Data.IsValid = IsLicensed();
+                LoadLicenseData();
 
                 return true;
             }

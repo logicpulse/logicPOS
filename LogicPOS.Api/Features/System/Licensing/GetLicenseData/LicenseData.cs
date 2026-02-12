@@ -1,8 +1,7 @@
-using LogicPOS.Api.Features.System.Licensing.GetLicenseInformation;
 using System;
 using System.Data;
 
-namespace LogicPOS.Api.Entities
+namespace LogicPOS.Api.Features.System.Licensing.GetLicenseData
 {
     public class LicenseData
     {
@@ -24,6 +23,5 @@ namespace LogicPOS.Api.Entities
         public int? AllNumberOfDevices { get; set; }
         public bool HasExpired { get; set; }
         public bool IsValid { get; set; }
-        public string TerminalHardwareId { get; set; }
     }
 }

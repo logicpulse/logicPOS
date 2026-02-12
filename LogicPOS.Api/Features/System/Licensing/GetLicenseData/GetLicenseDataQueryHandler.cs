@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LogicPOS.Api.Features.System.Licensing.GetLicenseInformation
+namespace LogicPOS.Api.Features.System.Licensing.GetLicenseData
 {
     public class GetLicenseDataQueryHandler : RequestHandler<GetLicenseDataQuery, ErrorOr<GetLicenseDataResponse>>
     {

@@ -147,7 +147,7 @@ namespace LogicPOS.UI.Components.Windows
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
-            if (LicensingService.NeedToRegister()) StatusBar.PackStart(labelRegister, false, false, 10);
+            if (!LicensingService.Data.IsLicensed) StatusBar.PackStart(labelRegister, false, false, 10);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
 

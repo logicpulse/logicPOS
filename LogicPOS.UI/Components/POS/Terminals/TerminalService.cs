@@ -79,33 +79,6 @@ namespace LogicPOS.UI.Components.Terminals
 
             Terminal = getTerminalResult.Value;
 
-            if (Terminal == null && LicensingService.Data.IsValid)
-            {
-                if (LicensingService.Data.AllNumberOfDevices >= Terminals.Count())
-                {
-                    var createTerminalResult = CreateTerminal(hardwareId);
-
-                    if (createTerminalResult.IsError)
-                    {
-                        return createTerminalResult.Errors;
-                    }
-
-                    var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
-
-                    if (getCreatedTerminal.IsError)
-                    {
-                        return getCreatedTerminal.FirstError;
-                    }
-
-                    Terminal = getCreatedTerminal.Value;
-                }
-                else
-                {
-                    return Error.Conflict(description: "Limite de Terminais/dispositivos atingido.\n" +
-                                                       "Entre em contacto com o Suporte Técnico");
-                }
-            }
-
             if (Terminal == null)
             {
                 var createTerminalResult = CreateTerminal(hardwareId);

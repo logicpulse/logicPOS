@@ -229,7 +229,7 @@ namespace LogicPOS.UI.Components.Windows
             LabelCurrentTable.SetAlignment(labelCurrentTableAlignmentX, 0.5F);
 
             var labelRegister = new Label();
-            labelRegister.Text = "Sistema n„o registrado";
+            labelRegister.Text = "Sistema n√£o registrado";
             labelRegister.ModifyFg(StateType.Normal, new Gdk.Color(255,99,71));
             labelRegister.ModifyFont(Pango.FontDescription.FromString("Bold 18"));
             labelRegister.SetAlignment(30, 7);
@@ -238,7 +238,7 @@ namespace LogicPOS.UI.Components.Windows
             VBox vboxCurrentTable = new VBox(false, 1);
             vboxCurrentTable.PackStart(labelCurrentTableLabel);
             vboxCurrentTable.PackStart(LabelCurrentTable);
-            if (LicensingService.NeedToRegister()) vboxCurrentTable.PackStart(labelRegister);
+            if (!LicensingService.Data.IsLicensed) vboxCurrentTable.PackStart(labelRegister);
 
             if (AppSettings.Instance.AppScreenSize == new Size(800, 600))
             {

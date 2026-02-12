@@ -1,9 +1,8 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
-using LogicPOS.Api.Features.Terminals.AddTerminal;
 using LogicPOS.Api.Features.Terminals.UpdateTerminal;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
 using System;
@@ -53,23 +52,7 @@ namespace LogicPOS.UI.Components.Modals
                     break;
             }
         }
-        private AddTerminalCommand CreateAddCommand()
-        {
-            return new AddTerminalCommand
-            {
-                Designation = _txtDesignation.Text,
-                HardwareId = _txtHardwareId.Text,
-                TimerInterval = uint.Parse(_txtTimerInterval.Text),
-                PlaceId= _comboPlaces.SelectedEntity?.Id,
-                PrinterId= _comboPrinters.SelectedEntity?.Id,
-                ThermalPrinterId= _comboThermalPrinters.SelectedEntity?.Id,
-                PoleDisplayId= _comboPoleDisplays.SelectedEntity?.Id,
-                WeighingMachineId= _comboWeighingMachines.SelectedEntity?.Id,
-                BarcodeReaderId= _comboBarcodeReaders.SelectedEntity?.Id,
-                CardReaderId= _comboCardReaders.SelectedEntity?.Id,
-                Notes = _txtNotes.Value.Text
-            };
-        }
+
         private UpdateTerminalCommand CreateUpdateCommand()
         {
             return new UpdateTerminalCommand
@@ -99,7 +82,7 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
         }
-        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+        protected override bool AddEntity() => false;
         protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
     }
