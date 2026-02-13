@@ -4,10 +4,11 @@ using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Articles.Stocks.Modals.Filters;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
@@ -17,6 +18,7 @@ namespace LogicPOS.UI.Components.Pages
         private void AddEventHandlers()
         {
             Navigator.SearchBox.BtnMore.Clicked += BtnMore_Clicked;
+            Navigator.SearchBox.BtnFilter.Clicked += BtnFilter_Clicked;
         }
 
         public void BtnMore_Clicked(object sender, EventArgs e)
@@ -36,7 +38,7 @@ namespace LogicPOS.UI.Components.Pages
             Histories = paginatedResult.Value;
             AddEntitiesToModel(Histories.Items);
         }
-        
+
         private void BtnOpenSaleDocument_Clicked(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(SelectedEntity.SaleDocument))
@@ -121,6 +123,47 @@ namespace LogicPOS.UI.Components.Pages
                     SelectedHistories.Add(history);
                 }
             }
+        }
+
+        private void BtnFilter_Clicked(object sender, EventArgs e)
+        {
+            RunFilterModal();
+        }
+
+        public void RunFilterModal()
+        {
+            if (filterModal == null)
+            {
+                filterModal = new ArticleHistoryFilterModal(SourceWindow);
+            }
+            var response = (ResponseType)filterModal.Run();
+            ArticleHistoryFilterModalData? filterModalData = filterModal.GetFilterData();
+            filterModal.Hide();
+
+            if (response != ResponseType.Ok)
+            {
+                return;
+            }
+
+            CurrentQuery.StartDate = filterModalData?.StartDate ?? CurrentQuery.StartDate;
+            CurrentQuery.EndDate = filterModalData?.EndDate ?? CurrentQuery.EndDate;
+            CurrentQuery.ArticleId = filterModalData?.ArticleId ?? CurrentQuery.ArticleId;
+            CurrentQuery.Search = filterModalData?.SerialNumber ?? CurrentQuery.Search;
+
+            Refresh();
+
+            if (_entities.Count == 0)
+            {
+                CustomAlerts.Information()
+                    .WithMessageResource("dialog_message_report_filter_no_records_with_criteria")
+                    .ShowAlert();
+
+                CurrentQuery = GetDefaultQuery();
+                Refresh();
+            }
+
+            PageChanged?.Invoke(this, EventArgs.Empty);
+
         }
     }
 }

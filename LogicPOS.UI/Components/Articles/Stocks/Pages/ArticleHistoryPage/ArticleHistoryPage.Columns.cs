@@ -1,11 +1,8 @@
 using Gtk;
-using logicpos;
 using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
-using LogicPOS.UI.Extensions;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -14,7 +11,10 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void AddColumns()
         {
-            GridView.AppendColumn(CreateSelectColumn());
+            if (!IsSelectionPage())
+            {
+                GridView.AppendColumn(CreateSelectColumn());
+            }
             GridView.AppendColumn(CreateDesignationColumn());
             GridView.AppendColumn(CreateSerialNumberColumn());
             GridView.AppendColumn(CreateStatusColumn());

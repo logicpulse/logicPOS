@@ -1,10 +1,10 @@
 using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Common;
-using LogicPOS.Api.Features.Common.Pagination;
-using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles.Stocks.Modals.Filters;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
+using System;
 using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Pages
@@ -12,8 +12,8 @@ namespace LogicPOS.UI.Components.Pages
     public partial class ArticleHistoryPage : Page<ArticleHistory>
     {
         public GetArticlesHistoriesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
-      
-      
+        private ArticleHistoryFilterModal filterModal;
+        public event EventHandler PageChanged;
         public ArticleHistoryPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             RemoveForbiddenButtons();
@@ -21,6 +21,11 @@ namespace LogicPOS.UI.Components.Pages
             AddOpenExternalDocumentButton();
             AddOpenSaleDocumentButton();
             AddEventHandlers();
+            if (IsSelectionPage())
+            {
+                Navigator.SearchBox.BtnFilter.Visible = false;
+                Navigator.SearchBox.BtnFilter.Sensitive = false;
+            }
         }
 
         private void AddOpenSaleDocumentButton()
