@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.System.Licensing.ConnectToWs;
 using LogicPOS.Api.Features.System.Licensing.GetCountries;
 using LogicPOS.Api.Features.System.Licensing.GetHardwareId;
 using LogicPOS.Api.Features.System.Licensing.GetLicenseData;
+using LogicPOS.Api.Features.System.Licensing.GetSystemLatestVersion;
 using LogicPOS.Api.Features.System.Licensing.RefreshLicense;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Errors;
@@ -139,6 +140,26 @@ namespace LogicPOS.UI.Components.Licensing
                         .ShowAlert();
 
                 return false;
+            }
+        }
+
+        public static Version GetLatestSystemVersion()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return new Version(0, 0, 0);
+            }
+
+            if (Version.TryParse(result.Value.Version, out var latestVersion))
+            {
+                return latestVersion;
+            }
+            else
+            {
+                Log.Warning("Received invalid version format from API: " + result.Value.Version);
+                return new Version(0,0,0);
             }
         }
     }

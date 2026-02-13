@@ -50,6 +50,8 @@ namespace LogicPOS.UI
         {
             ConfigureLogging();
             Log.Information("Initializing application...");
+            var appVersion = SystemVersionProvider.Version;
+            Log.Information("LogicPOS version: {Version}", appVersion);
 
             if (IsFirstLaunch())
             {
@@ -70,14 +72,27 @@ namespace LogicPOS.UI
 
                 if (DependencyInjection.Initialize() == false)
                 {
-                    Log.Error("Failed to initialize dependency injection.");
+                    Log.Fatal("Failed to initialize dependency injection.");
                     Quit();
                     return;
                 }
 
+                Log.Information("API version: {Version}", SystemInformationService.ApiVersion.ToString());
+
+
+                var apiVersion = SystemInformationService.ApiVersion;
+
+                if(apiVersion != appVersion)
+                {
+                    SimpleAlerts.Warning()
+                           .WithTitle("Atenção")
+                           .WithMessage($"A versão da API ( {SystemInformationService.ApiVersion}) difere da versão do aplicativo ({SystemVersionProvider.Version}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
+                           .ShowAlert();
+                }
+
                 if (InitializeCulture() == false)
                 {
-                    Log.Error("Failed to initialize culture.");
+                    Log.Fatal("Failed to initialize culture.");
                     Quit();
                     return;
                 }
@@ -115,6 +130,7 @@ namespace LogicPOS.UI
         private static void StartApp()
         {
             Log.Information("Starting application...");
+
             if (LicensingService.Initialize() == false)
             {
                 return;

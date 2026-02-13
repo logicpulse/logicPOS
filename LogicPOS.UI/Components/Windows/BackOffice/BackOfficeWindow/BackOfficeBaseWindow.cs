@@ -283,15 +283,11 @@ namespace LogicPOS.UI.Components.Windows
         private void DesignVersionSection(FontDescription fontDescriptionStatusBar)
         {
             // 1. Version Logic
-            string appVersion = SystemVersionProvider.Version;
-            string serverVersion = appVersion;
+            var appVersion = SystemVersionProvider.Version;
+            var latestVersion = LicensingService.GetLatestSystemVersion();
             bool updateAvailable = false;
 
-            // Use built-in Version comparison (safer than manual math)
-            if (Version.TryParse(appVersion, out var vApp) && Version.TryParse(serverVersion, out var vServer))
-            {
-                updateAvailable = vServer > vApp;
-            }
+            updateAvailable = latestVersion > appVersion;
 
             // 2. Coordinate Logic (Calculated once)
             int height = BackOfficeWindow.ScreenSize.Height;
@@ -313,7 +309,7 @@ namespace LogicPOS.UI.Components.Windows
             // 3. Render Top Label
             // If Update: "New Version..." | If No Update: Current App Version
             string topText = updateAvailable
-                ? string.Format(LocalizedString.Instance["global_new_version"], serverVersion)
+                ? string.Format(LocalizedString.Instance["global_new_version"], latestVersion)
                 : $"Versão: {appVersion}";
 
             LabelUpdate = new Label(topText);

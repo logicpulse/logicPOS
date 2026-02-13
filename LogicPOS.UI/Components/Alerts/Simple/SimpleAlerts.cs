@@ -1,7 +1,4 @@
-﻿using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Errors;
-using System.Text;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -20,6 +17,12 @@ namespace LogicPOS.UI.Alerts
                 .WithFlag(DialogFlags.DestroyWithParent)
                 .WithMessageType(MessageType.Error);
         }
+        public static SimpleAlert Warning()
+        {
+            return new SimpleAlert()
+                .WithFlag(DialogFlags.DestroyWithParent)
+                .WithMessageType(MessageType.Warning);
+        }
 
         public static void ShowInstanceAlreadyRunningAlert()
         {
@@ -29,6 +32,5 @@ namespace LogicPOS.UI.Alerts
                 .WithMessageResource("dialog_message_pos_instance_already_running")
                 .ShowAlert();
         }
-
     }
 }

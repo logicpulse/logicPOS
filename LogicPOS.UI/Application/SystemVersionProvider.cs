@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -5,12 +6,12 @@ namespace LogicPOS.UI.Application
 {
     public static class SystemVersionProvider
     {
-        public static string Version { get; private set; }
+        public static Version Version { get; private set; }
         static SystemVersionProvider()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            Version = fileVersionInfo.ProductVersion;
+            Version = Version.Parse("1.0.0"/*fileVersionInfo.ProductVersion*/);
         }
 
 
