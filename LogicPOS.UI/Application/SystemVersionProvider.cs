@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Application
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-            Version = Version.Parse("1.0.0"/*fileVersionInfo.ProductVersion*/);
+            Version = Version.Parse(fileVersionInfo.ProductVersion);
         }
 
 
