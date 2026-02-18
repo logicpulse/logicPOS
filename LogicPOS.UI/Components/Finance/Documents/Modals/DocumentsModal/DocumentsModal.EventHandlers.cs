@@ -1,15 +1,13 @@
 using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Finance.Documents.Documents;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Printing;
-using Microsoft.Extensions.Caching.Memory;
+using LogicPOS.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
@@ -123,8 +121,9 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id))
                 {
+                    var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"),Page.SelectedEntity.Number);
                     CustomAlerts.Warning(this)
-                                 .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                                 .WithMessage(message)
                                  .ShowAlert();
                     return;
 
@@ -209,8 +208,9 @@ namespace LogicPOS.UI.Components.Modals
 
             if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && !printer.Type.ThermalPrinter)
             {
+                var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), Page.SelectedEntity.Number);
                 CustomAlerts.Warning(this)
-                            .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                            .WithMessage(message)
                             .ShowAlert();
                 return false;
             }

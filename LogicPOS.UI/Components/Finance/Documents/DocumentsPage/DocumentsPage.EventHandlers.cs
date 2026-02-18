@@ -4,6 +4,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
+using LogicPOS.Utility;
 using System;
 using System.Linq;
 
@@ -23,8 +24,9 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(SelectedEntity.Id))
             {
+                var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), SelectedEntity.Number);
                 CustomAlerts.Warning()
-                             .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                             .WithMessage(message)
                              .ShowAlert();
                 return;
 
