@@ -82,7 +82,7 @@ namespace LogicPOS.UI
 
                 var apiVersion = SystemInformationService.ApiVersion;
 
-                if(apiVersion != appVersion)
+                if (apiVersion != appVersion)
                 {
                     SimpleAlerts.Warning()
                            .WithTitle("Atenção")
