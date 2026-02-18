@@ -20,6 +20,7 @@ namespace LogicPOS.UI
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
+        
         public static void InitializeGtk()
         {
             Log.Information("Initializing GTK...");
