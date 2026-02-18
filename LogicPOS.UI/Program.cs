@@ -35,6 +35,7 @@ namespace LogicPOS.UI
             _loadingThread.Start();
         }
 
+
         private static void KeepUIResponsive()
         {
             while (Gtk.Application.EventsPending())
