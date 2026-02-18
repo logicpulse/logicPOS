@@ -16,7 +16,6 @@ using System.Threading;
 
 namespace LogicPOS.UI
 {
-
     internal partial class Program
     {
         private static Thread _loadingThread;
