@@ -1,11 +1,11 @@
 using Gtk;
 using LogicPOS.Api.Entities;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Linq;
 
@@ -21,16 +21,27 @@ namespace LogicPOS.UI.Components.Modals
                 Run();
                 return;
             }
-
-            var result = _mediator.Send(CreateCommand()).Result;
-
-            if (result.IsError)
+            var documentsToPay = Invoices.Select(i => i.Number).ToList();
+            try
             {
-                ErrorHandlingService.HandleApiError(result);
-                return;
-            }
+                Log.Information("Issuing receipt for {Documents}", documentsToPay);
+                var result = _mediator.Send(CreateCommand()).Result;
 
-            DocumentPdfUtils.ViewReceiptPdf(this, result.Value);
+                if (result.IsError)
+                {
+                    ErrorHandlingService.HandleApiError(result);
+                    return;
+                }
+                Log.Information("Receipt for {Documents} issued successfully", documentsToPay);
+                DocumentPdfUtils.ViewReceiptPdf(this, result.Value);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error while issuing receipt for {Documents}",documentsToPay);
+                CustomAlerts.Error(this)
+                    .WithMessage($"Ocorreu um erro ao emitir recibo. Por favor, tente novamente.\n\n{ex.Message}")
+                    .ShowAlert();
+            }
         }
 
         private void TxtTotalPaid_Changed(object sender, EventArgs e)
@@ -80,7 +91,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtPaymentMethod.SelectedEntity = page.SelectedEntity;
             }
         }
-        
+
         private void TxtExchangeRate_Changed(object sender, EventArgs e)
         {
             if (TxtExchangeRate.IsValid())
@@ -89,6 +100,7 @@ namespace LogicPOS.UI.Components.Modals
                 UpdateSystemCurrencyTotalPaid();
             }
         }
+        
         private void UpdateSystemCurrencyTotalPaid()
         {
             TxtSystemCurrencyTotalPaid.Text = CalculateSystemCurrencyTotalPaid().ToString();
