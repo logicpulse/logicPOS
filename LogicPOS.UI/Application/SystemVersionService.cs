@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Application
             Log.Information("API version: {Version}", SystemVersionService.ApiVersion);
         }
 
-        public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "\\LPUpdater\\LPUpdater.exe");
+        public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "LPUpdater\\LPUpdater.exe");
 
 
     }
