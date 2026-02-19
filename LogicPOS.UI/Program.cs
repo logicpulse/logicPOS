@@ -49,8 +49,6 @@ namespace LogicPOS.UI
         {
             ConfigureLogging();
             Log.Information("Initializing application...");
-            var appVersion = SystemVersionProvider.Version;
-            Log.Information("LogicPOS version: {Version}", appVersion);
 
             if (IsFirstLaunch())
             {
@@ -76,18 +74,9 @@ namespace LogicPOS.UI
                     return;
                 }
 
-                Log.Information("API version: {Version}", SystemInformationService.ApiVersion.ToString());
+                SystemVersionService.Initialize();
 
-
-                var apiVersion = SystemInformationService.ApiVersion;
-
-                if (apiVersion != appVersion)
-                {
-                    SimpleAlerts.Warning()
-                           .WithTitle("Atenção")
-                           .WithMessage($"A versão da API ( {SystemInformationService.ApiVersion}) difere da versão do aplicativo ({SystemVersionProvider.Version}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
-                           .ShowAlert();
-                }
+                ShowVersionAlerts();
 
                 if (InitializeCulture() == false)
                 {
@@ -107,6 +96,33 @@ namespace LogicPOS.UI
 
             Log.Information("Application exiting.");
             Log.CloseAndFlush();
+        }
+
+        private static void ShowVersionAlerts()
+        {
+            if (SystemVersionService.ApiVersion != SystemVersionService.PosVersion)
+            {
+                SimpleAlerts.Warning()
+                       .WithTitle("Atenção")
+                       .WithMessage($"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
+                       .ShowAlert();
+            }
+
+            if (SystemVersionService.PosHasUpdate)
+            {
+                SimpleAlerts.Warning()
+                       .WithTitle("Atenção")
+                       .WithMessage($"Há uma actualização disponível para o aplicativo: versão {SystemVersionService.LastestVersion}")
+                       .ShowAlert();
+            }
+
+            if (SystemVersionService.ApiHasUpdate)
+            {
+                SimpleAlerts.Warning()
+                       .WithTitle("Atenção")
+                       .WithMessage($"Actualize a API para a nova versão: {SystemVersionService.LastestVersion}")
+                       .ShowAlert();
+            }
         }
 
         private static bool IsFirstLaunch()

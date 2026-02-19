@@ -142,7 +142,7 @@ namespace LogicPOS.UI.Components.Windows
                 }
 
 
-                Label labelVersion = new Label($"Powered by LogicPulse Technologies © Vers. v{SystemVersionProvider.Version}");
+                Label labelVersion = new Label($"Powered by LogicPulse Technologies © Vers. v{SystemVersionService.PosVersion}");
                 Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                 labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
                 labelVersion.ModifyFont(fontDescLabelVersion);

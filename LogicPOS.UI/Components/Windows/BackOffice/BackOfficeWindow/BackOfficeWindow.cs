@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Windows
         private void AddEventHandlers()
         {
             BtnExit.Clicked += BtnExit_Clicked;
-            BtnNewVersion.Clicked += BtnNewVesion_Clicked;
+            BtnUpdateSoftware.Clicked += BtnUpdateSoftware_Clicked;
             BtnDashboard.Clicked += BtnDashBoard_Clicked;
             BtnPOS.Clicked += BtnPOS_Clicked;
             Shown += Window_Show;

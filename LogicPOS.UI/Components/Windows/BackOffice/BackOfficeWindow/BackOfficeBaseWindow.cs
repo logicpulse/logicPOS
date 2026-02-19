@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Windows
         public IconButtonWithText BtnDashboard { get; set; }
         public IconButtonWithText BtnExit { get; set; }
         public IconButtonWithText BtnPOS { get; set; }
-        public IconButtonWithText BtnNewVersion { get; set; }
+        public IconButtonWithText BtnUpdateSoftware { get; set; }
 
         public BackOfficeBaseWindow()
             : base(WindowType.Toplevel)
@@ -215,10 +215,10 @@ namespace LogicPOS.UI.Components.Windows
                     LeftImage = true
                 });
 
-            BtnNewVersion = new IconButtonWithText(
+            BtnUpdateSoftware = new IconButtonWithText(
                 new ButtonSettings
                 {
-                    Name = "Update_Button",
+                    Name = "touchButton_Green",
                     BackgroundColor = "168, 204, 79".StringToColor(),
                     Text = GeneralUtils.GetResourceByName("global_update_pos"),
                     Font = fontDescription,
@@ -282,12 +282,6 @@ namespace LogicPOS.UI.Components.Windows
 
         private void DesignVersionSection(FontDescription fontDescriptionStatusBar)
         {
-            // 1. Version Logic
-            var appVersion = SystemVersionProvider.Version;
-            var latestVersion = LicensingService.GetLatestSystemVersion();
-            bool updateAvailable = false;
-
-            updateAvailable = latestVersion > appVersion;
 
             // 2. Coordinate Logic (Calculated once)
             int height = BackOfficeWindow.ScreenSize.Height;
@@ -308,9 +302,9 @@ namespace LogicPOS.UI.Components.Windows
 
             // 3. Render Top Label
             // If Update: "New Version..." | If No Update: Current App Version
-            string topText = updateAvailable
-                ? string.Format(LocalizedString.Instance["global_new_version"], latestVersion)
-                : $"Versão: {appVersion}";
+            string topText = SystemVersionService.PosHasUpdate
+                ? string.Format(LocalizedString.Instance["global_new_version"], SystemVersionService.LastestVersion)
+                : $"Versão: {SystemVersionService.PosVersion}";
 
             LabelUpdate = new Label(topText);
             LabelUpdate.ModifyFont(fontDescriptionStatusBar);
@@ -321,11 +315,11 @@ namespace LogicPOS.UI.Components.Windows
             PanelLeft.Add(LabelUpdate);
 
             // 4. Render Bottom Element
-            if (updateAvailable)
+            if (SystemVersionService.PosHasUpdate)
             {
                 // Case A: Update Button
-                PanelLeft.Put(BtnNewVersion, 0, yBottom);
-                PanelLeft.Add(BtnNewVersion);
+                PanelLeft.Put(BtnUpdateSoftware, 0, yBottom);
+                PanelLeft.Add(BtnUpdateSoftware);
             }
             else
             {

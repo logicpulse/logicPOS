@@ -226,7 +226,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnDocumentSeries_Clicked(object sender, EventArgs e)
         {
-            if(FiscalYearsService.HasActiveFiscalYear() == false)
+            if (FiscalYearsService.HasActiveFiscalYear() == false)
             {
                 FiscalYearsService.ShowOpenFiscalYearAlert(this);
                 return;
@@ -271,29 +271,30 @@ namespace LogicPOS.UI.Components.Windows
             MenuBtn_Clicked(BtnDashboard, null);
         }
 
-        private void BtnNewVesion_Clicked(object sender, EventArgs args)
+        private void BtnUpdateSoftware_Clicked(object sender, EventArgs args)
         {
-            DateTime actualDate = DateTime.Now;
+            string updaterPath = SystemVersionService.UpdaterPath;
 
-            string fileName = "\\LPUpdater\\LPUpdater.exe";
-            string lPathToUpdater = string.Format(@"{0}\{1}", Environment.CurrentDirectory, fileName);
-            string newVersion = "";
-
-            if (File.Exists(lPathToUpdater))
+            if (!File.Exists(updaterPath))
             {
-                var responseType = new CustomAlert(this)
-                                    .WithMessageResource("global_pos_update")
-                                    .WithSize(new Size(600, 400))
-                                    .WithMessageType(MessageType.Question)
-                                    .WithButtonsType(ButtonsType.YesNo)
-                                    .WithTitle(string.Format(GeneralUtils.GetResourceByName("window_title_dialog_update_POS"), newVersion))
-                                    .ShowAlert();
+                    CustomAlerts.Error(this)
+                                .WithMessage("O ficheiro de atualização não foi encontrado. Por favor, certifique-se de que o atualizador está presente na pasta de instalação.")
+                                .ShowAlert();
+                return;
+            }
 
-                if (responseType == ResponseType.Yes)
-                {
-                    global::System.Diagnostics.Process.Start(lPathToUpdater);
-                    Gtk.Application.Quit();
-                }
+            var responseType = new CustomAlert(this)
+                                .WithMessageResource("global_pos_update")
+                                .WithSize(new Size(600, 400))
+                                .WithMessageType(MessageType.Question)
+                                .WithButtonsType(ButtonsType.YesNo)
+                                .WithTitle(string.Format(LocalizedString.Instance["window_title_dialog_update_POS"], SystemVersionService.LastestVersion))
+                                .ShowAlert();
+
+            if (responseType == ResponseType.Yes)
+            {
+                Process.Start(updaterPath);
+                Gtk.Application.Quit();
             }
         }
 

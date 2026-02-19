@@ -10,8 +10,7 @@ namespace LogicPOS.UI.Services
     public static class SystemInformationService
     {
         private static SystemInformation _systemInfo;
-        private static Version _apiVersion;
-
+   
         public static SystemInformation SystemInformation
         {
             get
@@ -44,19 +43,7 @@ namespace LogicPOS.UI.Services
             return result.Value;
         }
 
-        public static Version ApiVersion
-        {
-            get
-            {
-                if (_apiVersion == null) {
-                    _apiVersion = GetApiVersion();
-                }
-
-                return _apiVersion;
-            }
-        }
-
-        private static Version GetApiVersion()
+        public static Version GetApiVersion()
         {
             var result = DependencyInjection.Mediator.Send(new GetApiVersionQuery()).Result;
             if (result.IsError)
