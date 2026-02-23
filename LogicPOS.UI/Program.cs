@@ -20,7 +20,7 @@ namespace LogicPOS.UI
     {
         private static Thread _loadingThread;
         public static Dialog SplashScreen { get; set; }
-        
+
         public static void InitializeGtk()
         {
             Log.Information("Initializing GTK...");
@@ -47,6 +47,8 @@ namespace LogicPOS.UI
         [STAThread]
         public static void Main(string[] args)
         {
+            ConfigureGtkRuntime();
+
             ConfigureLogging();
             Log.Information("Initializing application...");
 
@@ -96,6 +98,16 @@ namespace LogicPOS.UI
 
             Log.Information("Application exiting.");
             Log.CloseAndFlush();
+        }
+
+        private static void ConfigureGtkRuntime()
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string gtkPath = Path.Combine(baseDir, "GtkRuntime");
+            Environment.SetEnvironmentVariable("GTK_BASEPATH", gtkPath);
+            string gtkBinPath = Path.Combine(gtkPath, "bin");
+            string currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+            Environment.SetEnvironmentVariable("PATH", $"{currentPath};{gtkBinPath}");
         }
 
         private static void ShowVersionAlerts()
