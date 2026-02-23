@@ -117,7 +117,6 @@
 	</ItemGroup>
 	<Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets"/>
 	<ItemGroup>
-		<Content Include="..\libs\GtkRuntime\**\*" CopyToOutputDirectory="PreserveNewest"/>
 		<Content Include="application.ico"/>
 		<Content Include="Assets\**\*.png;Assets\**\*.jpg">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -249,4 +248,10 @@
 			<Version>9.0.2</Version>
 		</PackageReference>
 	</ItemGroup>
+	<Target Name="CopyGtkRuntime" AfterTargets="Build">
+		<ItemGroup>
+			<GtkFiles Include="..\libs\GtkRuntime\**\*"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(GtkFiles)" DestinationFiles="@(GtkFiles->'$(OutputPath)GtkRuntime\%(RecursiveDir)%(Filename)%(Extension)')"/>
+	</Target>
 </Project>
