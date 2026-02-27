@@ -18,7 +18,9 @@ namespace LogicPOS.UI
 {
     internal partial class Program
     {
-        private static Thread _loadingThread;
+        private static Thread _spashScreenThread;
+        private static bool _splashClosed = false;
+        private static bool _splashShown = false;
         public static Dialog SplashScreen { get; set; }
 
         public static void InitializeGtk()
@@ -30,10 +32,23 @@ namespace LogicPOS.UI
 
         public static void ShowLoadingScreen()
         {
+            Log.Information("Showing loading screen...");
             SplashScreen = Utils.CreateSplashScreen();
+            _spashScreenThread = new Thread(() => SplashScreen.Show());
+            _spashScreenThread.Start();
+            _splashShown = true;
+        }
 
-            _loadingThread = new Thread(() => SplashScreen.Run());
-            _loadingThread.Start();
+        private static void CloseSplashScreen()
+        {
+            if (_splashClosed || _splashShown == false)
+            {
+                return;
+            }
+            _spashScreenThread.Abort();
+            SplashScreen.Destroy();
+            Log.Information("Loading screen closed.");
+            _splashClosed = true;
         }
 
         private static void KeepUIResponsive()
@@ -47,27 +62,26 @@ namespace LogicPOS.UI
         [STAThread]
         public static void Main(string[] args)
         {
-            ConfigureGtkRuntime();
-
-            ConfigureLogging();
-            Log.Information("Initializing application...");
-
-            if (IsFirstLaunch())
+            try
             {
-                Log.Information("First launch detected, starting migrator...");
-                MigratorUtility.LaunchMigrator();
-            }
+                ConfigureGtkRuntime();
+                ConfigureLogging();
+                Log.Information("Initializing application...");
 
-            using (var singleProgramInstance = new SingleProgramInstance())
-            {
-                if (singleProgramInstance.IsSingleInstance == false)
+                if (IsFirstLaunch())
                 {
-                    Log.Warning("Another instance is already running, exiting application.");
-                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
+                    Log.Information("First launch detected, starting migrator...");
+                    MigratorUtility.LaunchMigrator();
+                }
+
+                if (ProgramIsAlreadyRunning())
+                {
+                    Quit();
                     return;
                 }
 
                 InitializeGtk();
+                ShowLoadingScreen();
 
                 if (DependencyInjection.Initialize() == false)
                 {
@@ -82,22 +96,43 @@ namespace LogicPOS.UI
 
                 if (InitializeCulture() == false)
                 {
-                    Log.Fatal("Failed to initialize culture.");
                     Quit();
                     return;
                 }
 
-                ShowLoadingScreen();
-
-                CloseLoadingScreen();
-
+                CloseSplashScreen();
                 KeepUIResponsive();
-
                 StartApp();
+
+                Log.Information("Application exiting gracefully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "An unhandled exception occurred.");
+                SimpleAlerts.Error()
+                            .WithTitle("Erro inesperado")
+                            .WithMessage($"Ocorreu um erro inesperado: {ex.Message}")
+                            .ShowAlert();
+            }
+            finally
+            {
+                CloseSplashScreen();
+            }
+        }
+
+        private static bool ProgramIsAlreadyRunning()
+        {
+            using (var singleProgramInstance = new SingleProgramInstance())
+            {
+                if (singleProgramInstance.IsSingleInstance == false)
+                {
+                    Log.Warning("Another instance is already running, exiting application.");
+                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
+                    return true;
+                }
             }
 
-            Log.Information("Application exiting.");
-            Log.CloseAndFlush();
+            return false;
         }
 
         private static void ConfigureGtkRuntime()
@@ -144,14 +179,10 @@ namespace LogicPOS.UI
 
         public static void Quit()
         {
+            Log.Information("Quitting application...");
+            CloseSplashScreen();
             Gtk.Application.Quit();
             Environment.Exit(0);
-        }
-
-        private static void CloseLoadingScreen()
-        {
-            _loadingThread.Abort();
-            SplashScreen.Destroy();
         }
 
         private static void StartApp()
@@ -203,7 +234,7 @@ namespace LogicPOS.UI
         {
             try
             {
-
+                Log.Information("Initializing culture...");
                 if (SystemInformationService.SystemInformation == null)
                 {
                     return false;
@@ -213,16 +244,18 @@ namespace LogicPOS.UI
                 LocalizedString.Instance = new LocalizedString(culture);
                 CultureInfo.CurrentCulture = new CultureInfo(culture);
                 CultureInfo.CurrentUICulture = CultureInfo.CurrentCulture;
-
+                Log.Information($"Culture initialized: {culture}");
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Log.Error(ex, "Failed to initialize culture.");
                 SimpleAlerts.Error()
-                            .WithTitle("Erro ao obter informações do sistema")
-                            .WithMessage("Erro ao obter informações do sistema")
-                            .ShowAlert();
+                        .WithTitle("Erro ao obter informações do sistema")
+                        .WithMessage("Erro ao obter informações do sistema")
+                        .ShowAlert();
                 return false;
+
             }
         }
 
