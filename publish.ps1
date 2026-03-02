@@ -1,7 +1,7 @@
 param (
     [string]$SolutionOrProject = "LogicPOS.UI\LogicPOS.UI.csproj",
     [string]$Configuration = "Release",
-    [string]$OutputDir = "..\..\artifacts\publish\pos"
+    [string]$OutputDir = "..\..\artifacts\publish\pos\"
 )
 
 function Log {
