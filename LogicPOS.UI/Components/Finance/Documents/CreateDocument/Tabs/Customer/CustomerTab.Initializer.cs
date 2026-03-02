@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using System;
 using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -160,7 +161,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCustomer.WithAutoCompletion(CustomersService.AutocompleteLines, id => CustomersService.GetById(id));
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
+            TxtCustomer.Entry.ClipboardPasted += TxtCustomer_ClipboardPasted;
         }
+
 
     }
 }

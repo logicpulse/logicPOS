@@ -1,3 +1,4 @@
+using AutoUpdaterDotNET;
 using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
@@ -15,8 +16,6 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Pickers;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -293,11 +292,9 @@ namespace LogicPOS.UI.Components.Windows
 
             if (responseType == ResponseType.Yes)
             {
-                Process.Start(updaterPath);
-                Gtk.Application.Quit();
+                SystemVersionService.RunAutoUpdater(Instance);
             }
         }
-
         public void MenuBtn_Clicked(object sender, EventArgs e)
         {
             IconButtonWithText button = (IconButtonWithText)sender;

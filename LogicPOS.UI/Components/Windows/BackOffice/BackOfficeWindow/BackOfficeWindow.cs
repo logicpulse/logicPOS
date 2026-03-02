@@ -1,4 +1,3 @@
-using logicpos;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Terminals;

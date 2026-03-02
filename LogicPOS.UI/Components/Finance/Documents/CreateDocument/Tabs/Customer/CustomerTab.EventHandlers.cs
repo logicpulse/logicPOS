@@ -63,7 +63,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Clear();
             }
         }
-
+        private void TxtCustomer_ClipboardPasted(object sender, EventArgs e)
+        {
+            Clear();
+        }
         private void TxtFiscalNumber_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))

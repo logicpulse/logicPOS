@@ -189,6 +189,9 @@
 		</ProjectReference>
 	</ItemGroup>
 	<ItemGroup>
+    <PackageReference Include="Autoupdater.NET.Official">
+      <Version>1.9.2</Version>
+    </PackageReference>
 		<PackageReference Include="ErrorOr">
 			<Version>2.0.1</Version>
 		</PackageReference>
