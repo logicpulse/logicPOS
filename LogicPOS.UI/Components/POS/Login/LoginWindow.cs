@@ -14,7 +14,7 @@ namespace LogicPOS.UI.Components.Windows
             AddEventHandlers();
             InitializeUI();
 
-            if(CompanyDetailsService.CompnayIsConfigured() == false)
+            if (CompanyDetailsService.CompanyIsConfigured() == false)
             {
                 EditCompanyDetailsModal.ShowModal(this);
             }

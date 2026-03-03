@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Company;
+using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Company.GetCompanyInformations;
 using LogicPOS.Api.Features.Company.UpdateCompanyDetails;
 using LogicPOS.UI.Errors;
@@ -56,7 +56,7 @@ namespace LogicPOS.UI.Services
             LoadCompanyInformations();
         }
 
-        public static bool CompnayIsConfigured()
+        public static bool CompanyIsConfigured()
         {
             return string.IsNullOrWhiteSpace(CompanyInformation.FiscalNumber) == false &&
                    string.IsNullOrWhiteSpace(_companyInformations.Name) == false;

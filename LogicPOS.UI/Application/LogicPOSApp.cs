@@ -2,6 +2,7 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Hardware;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Screen;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
@@ -11,15 +12,13 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 
 namespace LogicPOS.UI.Application
 {
     internal class LogicPOSApp
     {
-        public static bool  _uiIsConfigured = false;
+        public static bool _uiIsConfigured = false;
         public static Dialog LoadingDialog { get; set; }
         public static ThreadNotify DialogThreadNotify { get; set; }
         public static PosKeyboardDialog DialogPosKeyboard { get; set; }
@@ -37,6 +36,17 @@ namespace LogicPOS.UI.Application
                 InitializeTerminalDevices();
                 DialogThreadNotify?.WakeupMain();
                 LoginWindow.Instance.ShowAll();
+                if (SystemVersionService.PosVersion < SystemVersionService.ApiVersion)
+                {
+                    var responseType = new CustomAlert(LoginWindow.Instance)
+                                .WithMessageResource("A versão do POS é inferior à versão da API.\n\nA atualização automática iniciará, não feche a aplicação.")
+                                .WithSize(new Size(600, 400))
+                                .WithMessageType(MessageType.Info)
+                                .WithButtonsType(ButtonsType.Ok)
+                                .WithTitle(string.Format(LocalizedString.Instance["window_title_dialog_update_POS"], SystemVersionService.LastestVersion))
+                                .ShowAlert();
+                    SystemVersionService.RunAutoUpdater(LoginWindow.Instance);
+                }
                 Gtk.Application.Run();
             }
             catch (Exception ex)
@@ -52,7 +62,7 @@ namespace LogicPOS.UI.Application
 
         public static void ConfigureUI()
         {
-            if(_uiIsConfigured)
+            if (_uiIsConfigured)
             {
                 return;
             }
@@ -76,7 +86,7 @@ namespace LogicPOS.UI.Application
                 WeighingBalance.ClosePort();
             }
         }
-     
+
         private static void InitializeTerminalDevices()
         {
             if (TerminalService.Terminal.PoleDisplay != null)
@@ -110,7 +120,7 @@ namespace LogicPOS.UI.Application
 
             }
         }
-   
+
         private static void InitializeTheme()
         {
             try
@@ -125,7 +135,7 @@ namespace LogicPOS.UI.Application
                 CustomAlerts.ShowThemeRenderingErrorAlert(ex.Message, LoginWindow.Instance);
             }
         }
-     
+
         private static void InitializeExpressionEvaluator()
         {
             ExpressionEvaluator.EvaluateFunction += ExpressionEvaluatorExtended.ExpressionEvaluator_EvaluateFunction;

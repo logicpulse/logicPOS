@@ -1,6 +1,5 @@
 using AutoUpdaterDotNET;
 using LogicPOS.UI.Components.Licensing;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using Serilog;
 using System;
@@ -18,7 +17,7 @@ namespace LogicPOS.UI.Application
         public static Version LastestVersion { get; private set; }
         public static bool PosHasUpdate => LastestVersion > PosVersion;
         public static bool ApiHasUpdate => LastestVersion > ApiVersion;
-
+        private static Gtk.Window _instance = null;
         public static void Initialize()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -34,6 +33,8 @@ namespace LogicPOS.UI.Application
 
         public static void RunAutoUpdater(Gtk.Window instance = null)
         {
+            instance.Hide();
+            _instance=instance;
             AutoUpdater.ShowSkipButton = false;
             AutoUpdater.ShowRemindLaterButton = false;
             AutoUpdater.Mandatory = true;
@@ -44,19 +45,24 @@ namespace LogicPOS.UI.Application
             AutoUpdater.Icon = (Bitmap)Bitmap.FromFile("Assets\\Images\\application.ico");
             AutoUpdater.InstalledVersion = SystemVersionService.PosVersion;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start("https://logicpulse.github.io/logicpos-artifacts/update.xml", Assembly.GetExecutingAssembly());
-            if (instance != null)
-            {
-                instance.Hide();
-            }
+            AutoUpdater.Start("https://logicpulse.github.io/logicpos-artifacts/update.xml");
+
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {
             if (args.IsUpdateAvailable)
             {
+                if (_instance != null)
+                {
+                    _instance.Destroy();
+                }
                 AutoUpdater.DownloadUpdate(args);
                 Gtk.Application.Quit();
+            }
+            else
+            {
+                _instance.ShowAll();
             }
         }
 
