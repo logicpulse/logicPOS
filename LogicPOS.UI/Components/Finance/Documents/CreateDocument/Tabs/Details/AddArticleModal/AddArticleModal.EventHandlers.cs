@@ -8,6 +8,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Components.ArticleClasses;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.ArticlesTypes;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.MeasurementUnits;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.SizeUnits;
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Modals
 
             }
 
-            if (_mode == EntityEditionModalMode.Update)
+            if (_mode == DocumentDetailModalMode.Update || _mode == DocumentDetailModalMode.CreditNoteUpdate)
             {
                 DocumentDetail.Article = TxtArticle.SelectedEntity as ArticleViewModel;
                 DocumentDetail.ArticleId = (TxtArticle.SelectedEntity as ArticleViewModel)?.Id ?? DocumentDetail.ArticleId;

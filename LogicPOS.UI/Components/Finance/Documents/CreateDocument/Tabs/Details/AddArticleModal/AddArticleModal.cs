@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -16,11 +17,11 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddArticleModal : Modal
     {
-        private readonly EntityEditionModalMode _mode;
+        private readonly DocumentDetailModalMode _mode;
         public DocumentDetail DocumentDetail { get; }
         private decimal _vatRateValue;
         public AddArticleModal(Window parent,
-                               EntityEditionModalMode mode,
+                               DocumentDetailModalMode mode,
                                DocumentDetail detail = null) : base(parent,
                                                      GeneralUtils.GetResourceByName("global_insert_articles"),
                                                      new Size(900, 360),
@@ -34,23 +35,24 @@ namespace LogicPOS.UI.Components.Modals
 
         private void HandleModalMode()
         {
-            if (_mode != EntityEditionModalMode.Insert)
+            if (_mode != DocumentDetailModalMode.Insert)
             {
                 ShowItemData(DocumentDetail);
             }
 
-            if (_mode == EntityEditionModalMode.View)
+            if (_mode == DocumentDetailModalMode.View)
             {
                 DisableFields();
             }
 
-            if (_mode == EntityEditionModalMode.Update)
+            if (_mode == DocumentDetailModalMode.Update || _mode == DocumentDetailModalMode.CreditNoteUpdate)
             {
                 TxtArticle.Component.Sensitive = false;
                 TxtSubFamily.Component.Sensitive= false;
                 TxtFamily.Component.Sensitive = false;
                 TxtCode.Component.Sensitive = false;
                 TxtSerialNumber.Component.Sensitive = false;
+                TxtPrice.Component.Sensitive = _mode != DocumentDetailModalMode.CreditNoteUpdate;
             }
         }
 

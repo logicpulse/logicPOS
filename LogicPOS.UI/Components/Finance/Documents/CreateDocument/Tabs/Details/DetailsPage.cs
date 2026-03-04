@@ -1,5 +1,6 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using System;
@@ -14,11 +15,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public event Action<decimal> OnTotalChanged;
         public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
         public decimal ServicesTotalFinal => _entities.Where(detail => detail.Article.ClassAcronym == "S").Sum(detail => detail.TotalFinal);
-
+        public Func<string> GetDocumentType { get; set; }
         public DetailsPage(Window parent) : base(parent)
         {
         }
-       
+
         protected override void LoadEntities() { }
 
         public override bool DeleteEntity()
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return (int)ResponseType.Cancel;
             }
 
-            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.View, SelectedEntity);
+            var modal = new AddArticleModal(SourceWindow, DocumentDetailModalMode.View, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             return response;
@@ -67,7 +68,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return (int)ResponseType.Cancel;
             }
 
-            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Update, SelectedEntity);
+            var modalMode = GetDocumentType != null && GetDocumentType() == "NC" 
+                ? DocumentDetailModalMode.CreditNoteUpdate : DocumentDetailModalMode.Update;
+
+            var modal = new AddArticleModal(SourceWindow, modalMode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
             OnTotalChanged?.Invoke(TotalFinal);
@@ -76,13 +80,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private int RunInsertModal()
         {
-            var modal = new AddArticleModal(SourceWindow, EntityEditionModalMode.Insert);
+            var modal = new AddArticleModal(SourceWindow, DocumentDetailModalMode.Insert);
             var response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok)
             {
                 var newItem = modal.GetDetail();
-                 _entities.Add(newItem);
+                _entities.Add(newItem);
             }
 
             modal.Destroy();
@@ -103,7 +107,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             AddTotalSorting();
             AddTotalWithTaxSorting();
         }
-       
+
         protected override DeleteCommand GetDeleteCommand() => null;
 
         public override void UpdateButtonPrevileges() { }

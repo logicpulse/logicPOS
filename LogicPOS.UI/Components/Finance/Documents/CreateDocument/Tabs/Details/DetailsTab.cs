@@ -15,6 +15,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public DetailsPage Page { get; set; }
         public decimal TotalFinal => Page.TotalFinal;
         public decimal ServicesTotalFinal => Page.ServicesTotalFinal;
+        public Func<string> GetDocumentType { get; set; }
 
         public DetailsTab(Window parent) : base(parent: parent,
                                                                name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page3"),
@@ -27,6 +28,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void Initialize()
         {
             Page = new DetailsPage(SourceWindow);
+            Page.GetDocumentType = () => GetDocumentType?.Invoke();
             Page.Navigator.RightButtons.Remove(Page.Navigator.BtnRefresh);
             Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnFilter);
             Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnMore);
