@@ -166,15 +166,16 @@ namespace LogicPOS.UI.Components.Windows
             var endDate = dateRangeModal.DateEnd;
             dateRangeModal.Destroy();
 
-            ExportSaftByPeriod(startDate, endDate);
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_custom"]);
         }
 
-        private void ExportSaftByPeriod(DateTime startDate, DateTime endDate)
+        private void ExportSaftByPeriod(DateTime startDate, DateTime endDate, string modalTitle)
         {
             string defaultSaftFileName = $"saft_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
             string destinationFilePath = FilePicker.GetSaveFilePath(this,
-                                                                    "Export Angola SAFT",
-                                                                    defaultSaftFileName);
+                                                                    modalTitle,
+                                                                    defaultSaftFileName,
+                                                                    PreferenceParametersService.SaftExportPath);
 
             if (destinationFilePath == null)
             {
@@ -199,14 +200,14 @@ namespace LogicPOS.UI.Components.Windows
             DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
             DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
 
-            ExportSaftByPeriod(startDate, endDate);
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_whole_year"]);
         }
 
         private void BtnExportLastMonthSaft_Clicked(object sender, EventArgs e)
         {
             DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
             DateTime endDate = startDate.AddMonths(1).AddDays(-1);
-            ExportSaftByPeriod(startDate, endDate);
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_last_month"]);
         }
 
         private void BtnExportArticles_Clicked(object sender, EventArgs e)

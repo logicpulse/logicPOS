@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using System.Drawing;
 using System.IO;
 using LogicPOS.Utility;
@@ -117,7 +117,7 @@ namespace LogicPOS.UI.Components.Pickers
             return filter;
         }
 
-        public static string GetSaveFilePath(Window sourceWindow, string title, string defaultFileName)
+        public static string GetSaveFilePath(Window sourceWindow, string title, string defaultFileName, string defaultFolder = null)
         {
             FilePicker picker = new FilePicker(sourceWindow,
                                                DialogFlags.DestroyWithParent,
@@ -126,6 +126,10 @@ namespace LogicPOS.UI.Components.Pickers
                                                title);
 
             picker.FileChooser.SelectMultiple = false;
+            if (defaultFolder != null)
+            {
+                picker.FileChooser.SetCurrentFolder(defaultFolder);
+            }
             picker.FileChooser.CurrentName = defaultFileName;
 
             var result = (ResponseType)picker.Run();

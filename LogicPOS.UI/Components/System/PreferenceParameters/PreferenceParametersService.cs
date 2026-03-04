@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Services
 {
     public static class PreferenceParametersService
     {
-        private static IEnumerable<PreferenceParameter> _preferenceParameters;
+        public static List<PreferenceParameter> _preferenceParameters;
 
         public static string GetPreferenceParameterValue(string token)
         {
@@ -34,12 +34,15 @@ namespace LogicPOS.UI.Services
                 return;
             }
 
-            _preferenceParameters = preferenceParameters.Value;
+            _preferenceParameters = preferenceParameters.Value.ToList();
         }
+        
         public static void RefreshPreferenceParameters()
         {
             LoadPreferenceParameters();
         }
+
+        public static string SaftExportPath => GetPreferenceParameterValue("PATH_SAFTPT");
         public static bool UseCachedImages => Convert.ToBoolean(GetPreferenceParameterValue("USE_CACHED_IMAGES"));
         public static bool UseEuropeanVatAutoComplete => Convert.ToBoolean(GetPreferenceParameterValue("USE_EUROPEAN_VAT_AUTOCOMPLETE"));
         public static bool UsePosPdfViewer => Convert.ToBoolean(GetPreferenceParameterValue("USE_POS_PDF_VIEWER"));
