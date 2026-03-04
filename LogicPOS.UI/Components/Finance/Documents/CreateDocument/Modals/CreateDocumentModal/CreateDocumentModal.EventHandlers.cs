@@ -161,6 +161,29 @@ namespace LogicPOS.UI.Components.Modals
 
         private void OnOriginDocumentSelected(Document document)
         {
+            var type = DocumentTab.TxtDocumentType.SelectedEntity as DocumentType;
+
+            if (type != null && type.Analyzer.IsInvoice() && !(document.Type == "PP" || document.Type == "OR" || document.Type == "FP"))
+            {
+                new CustomAlert(this)
+                    .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
+                    .WithTitle("Documento inválido")
+                    .ShowAlert();
+                DocumentTab.TxtOriginDocument.Clear();
+                return;
+            }
+
+            if (type != null && type.Analyzer.IsCreditNote() && !(document.Type == "FT" || document.Type == "FR" || document.Type == "FS"))
+            {
+                new CustomAlert(this)
+                    .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
+                    .WithTitle("Documento inválido")
+                    .ShowAlert();
+                DocumentTab.TxtOriginDocument.Clear();
+                return;
+            }
+
+
             CustomerTab.ImportDataFromDocument(document);
             DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
             if ((DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsTransportGuide() ||
@@ -168,6 +191,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 ShipToTab.ImportCustomerShipAddress(document.Customer);
             }
+
         }
 
         private void OnCopyDocumentSelected(Document document)
