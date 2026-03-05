@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 
@@ -16,6 +16,5 @@ namespace LogicPOS.Api.Features.Countries.AddCountry
         public string FiscalNumberRegex { get; set; }
         public string ZipCodeRegex { get; set; }
         public string Notes { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Users.AddUser;
 using LogicPOS.Api.Features.Users.Profiles.GetAllUserProfiles;
@@ -79,7 +79,7 @@ namespace LogicPOS.UI.Components.Modals
                 DateOfContract = _txtContractDate.Text,
                 Residence = _txtAddress.Text,
                 Locality = _txtLocality.Text,
-                ZipCpde = _txtPostalCode.Text,
+                ZipCode = _txtPostalCode.Text,
                 City = _txtCity.Text,
                 Phone = _txtPhone.Text,
                 MobilePhone = _txtMobile.Text,

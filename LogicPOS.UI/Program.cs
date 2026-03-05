@@ -91,7 +91,7 @@ namespace LogicPOS.UI
                 }
 
                 SystemVersionService.Initialize();
-
+                SystemVersionService.CreateUpdateXml();
                 ShowVersionAlerts();
 
                 if (InitializeCulture() == false)
@@ -225,7 +225,6 @@ namespace LogicPOS.UI
                     }
                 }
             }
-
             LogicPOSApp app = new LogicPOSApp();
             app.Start();
         }

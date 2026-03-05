@@ -40,13 +40,14 @@ namespace LogicPOS.UI.Application
                 {
                     var responseType = new CustomAlert(LoginWindow.Instance)
                                 .WithMessageResource("A versão do POS é inferior à versão da API.\n\nA atualização automática iniciará, não feche a aplicação.")
-                                .WithSize(new Size(600, 400))
-                                .WithMessageType(MessageType.Info)
-                                .WithButtonsType(ButtonsType.Ok)
+                                .WithSize(new Size(500, 350))
+                                 .WithMessageType(MessageType.Info)
+                                 .WithButtonsType(ButtonsType.Ok)
                                 .WithTitle(string.Format(LocalizedString.Instance["window_title_dialog_update_POS"], SystemVersionService.LastestVersion))
                                 .ShowAlert();
                     SystemVersionService.RunAutoUpdater(LoginWindow.Instance);
                 }
+
                 Gtk.Application.Run();
             }
             catch (Exception ex)

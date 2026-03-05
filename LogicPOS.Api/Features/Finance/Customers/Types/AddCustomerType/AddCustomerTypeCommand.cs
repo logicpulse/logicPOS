@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,5 @@ namespace LogicPOS.Api.Features.Customers.Types.AddCustomerType
     {
         public string Designation { get; set; }
         public string Notes { get; set; }
-        public bool IsDeleted { get; set; }
     }
 }

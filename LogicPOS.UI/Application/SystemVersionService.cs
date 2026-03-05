@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Xml.Linq;
 
 namespace LogicPOS.UI.Application
 {
@@ -18,6 +19,7 @@ namespace LogicPOS.UI.Application
         public static bool PosHasUpdate => LastestVersion > PosVersion;
         public static bool ApiHasUpdate => LastestVersion > ApiVersion;
         private static Gtk.Window _instance = null;
+
         public static void Initialize()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -33,8 +35,8 @@ namespace LogicPOS.UI.Application
 
         public static void RunAutoUpdater(Gtk.Window instance = null)
         {
-            instance.Hide();
-            _instance=instance;
+
+            _instance = instance;
             AutoUpdater.ShowSkipButton = false;
             AutoUpdater.ShowRemindLaterButton = false;
             AutoUpdater.Mandatory = true;
@@ -45,8 +47,11 @@ namespace LogicPOS.UI.Application
             AutoUpdater.Icon = (Bitmap)Bitmap.FromFile("Assets\\Images\\application.ico");
             AutoUpdater.InstalledVersion = SystemVersionService.PosVersion;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start("https://logicpulse.github.io/logicpos-artifacts/update.xml");
-
+#if DEBUG
+            AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
+#else
+            AutoUpdater.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml"));
+#endif
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
@@ -55,15 +60,27 @@ namespace LogicPOS.UI.Application
             {
                 if (_instance != null)
                 {
-                    _instance.Destroy();
+                    _instance.Hide();
                 }
                 AutoUpdater.DownloadUpdate(args);
                 Gtk.Application.Quit();
             }
-            else
-            {
-                _instance.ShowAll();
-            }
+
+        }
+
+        public static void CreateUpdateXml()
+        {
+            var xml = new XDocument(
+                new XDeclaration("1.0", "utf-8", "false"),
+                new XElement("item",
+                    new XElement("version", LastestVersion.ToString()),
+                    new XElement("url", "https://box.track.pt/files/latest/logicpos_release.zip"),
+                    new XElement("mandatory", "true")
+                )
+            );
+
+            string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml");
+            xml.Save(path);
         }
 
     }

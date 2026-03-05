@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Api.Features.Countries.UpdateCountry;
 
@@ -25,8 +25,7 @@ namespace LogicPOS.UI.Components.Modals
                 CurrencyCode = _txtCurrencyCode.Text,
                 FiscalNumberRegex = _txtFiscalNumberRegex.Text,
                 ZipCodeRegex = _txtZipCodeRegex.Text,
-                Notes = _txtNotes.Value.Text,
-                IsDeleted = _checkDisabled.Active
+                Notes = _txtNotes.Value.Text
             };
         }
 

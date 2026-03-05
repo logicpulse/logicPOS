@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 
@@ -11,7 +11,7 @@ namespace LogicPOS.Api.Features.Users.AddUser
         public string Name { get; set; } 
         public string Residence { get; set; }
         public string Locality { get; set; }
-        public string ZipCpde { get; set; }
+        public string ZipCode { get; set; }
         public string City { get; set; }
         public string DateOfContract { get; set; }
         public string Phone { get; set; }
