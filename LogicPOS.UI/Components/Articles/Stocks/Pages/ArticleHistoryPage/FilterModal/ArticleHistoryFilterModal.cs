@@ -20,6 +20,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
                 new Size(540, 568),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
+            HideCloseButton();
         }
         protected override void OnResponse(ResponseType response)
         {

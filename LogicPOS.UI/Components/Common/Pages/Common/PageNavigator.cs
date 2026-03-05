@@ -1,4 +1,5 @@
 using Gtk;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals;
@@ -24,6 +25,7 @@ namespace LogicPOS.UI.Components.Pages
         public IconButtonWithText BtnDelete { get; set; }
         public IconButtonWithText BtnRefresh { get; set; }
         public IconButtonWithText BtnApply { get; set; }
+        public IconButtonWithText BtnShowHiddenData { get; set; }
         public HBox Bar { get; set; } = new HBox(false, 0);
         public HBox RightButtons { get; set; } = new HBox(false, 0);
         #endregion
@@ -78,8 +80,15 @@ namespace LogicPOS.UI.Components.Pages
                                                        GeneralUtils.GetResourceByName("global_user_apply_privileges"),
                                                        @"Icons/icon_pos_nav_refresh.png");
 
+            BtnShowHiddenData = IconButtonWithText.Create("touchButtonShowHiddenData_DialogActionArea",
+                                                       LocalizedString.Instance["global_record_disabled"],
+                                                       @"Icons/icon_pos_nav_view.png");
+
+            BtnShowHiddenData.Clicked += delegate { _page.ToggleHiddenDataVisibility(); };
+
             BtnApply.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
 
+            ExtraButtonSpace.PackStart(BtnShowHiddenData, false, false, 0);
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);
         }
 

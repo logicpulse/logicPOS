@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
@@ -20,7 +20,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtButtonName = TextBox.Simple("global_button_name");
         private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private EntityComboBox<ArticleFamily> _comboFamilies;
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;

@@ -17,10 +17,10 @@ namespace LogicPOS.UI.Components.Pages
         public AgtDocumentsPage(Window parent) : base(parent)
         {
 
-            DisableFilterButton();
+            DisableCommonFilterButtons();
             AddEventsHandler();
         }
-        protected override void DisableFilterButton()
+        protected override void DisableCommonFilterButtons()
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;

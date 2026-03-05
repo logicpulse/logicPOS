@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Modals
         private readonly TextBox _txtDesignation = TextBox.CreateDesignationField();
         private readonly TextBox _txtButtonName = TextBox.Simple("global_button_name");
         private readonly ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
-        private readonly CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private EntityComboBox<ArticleFamily> _comboFamilies;
         private EntityComboBox<ArticleSubfamily> _comboSubfamilies;
@@ -28,7 +27,6 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;
         private EntityComboBox<VatRate> _comboVatDirectSelling;
         private EntityComboBox<MeasurementUnit> _comboMeasurementUnits;
-
         private EntityComboBox<Printer> _comboPrinters;
         private EntityComboBox<BarcodeLabelPrintModel> _comboPrintModels;
         private EntityComboBox<SizeUnit> _comboSizeUnits;

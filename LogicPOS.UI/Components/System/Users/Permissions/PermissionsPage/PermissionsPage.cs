@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Users.Permissions.PermissionItems.GetAllPermissionItems;
@@ -28,7 +28,8 @@ namespace LogicPOS.UI.Components.Pages
 
         public PermissionsPage(Window parentWindow) : base(parentWindow)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
+            Navigator.BtnApply.Visible = true;
         }
 
         protected override void LoadEntities()
@@ -50,7 +51,6 @@ namespace LogicPOS.UI.Components.Pages
 
             AddEntitiesToModel(_entities);
         }
-
 
         public override void Search(string searchText)
         {
@@ -186,7 +186,6 @@ namespace LogicPOS.UI.Components.Pages
             base.AddEntitiesToModel(profiles);
             AddPermissionItemsToModel();
         }
-
 
         #region Singleton
         private static PermissionsPage _instance;

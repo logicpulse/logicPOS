@@ -14,7 +14,6 @@ namespace LogicPOS.UI.Components.Finance.Customers
 {
     public static class CustomersService
     {
-        private static List<Customer> _customers;
         private static Customer _default;
 
         public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Select(c => new AutoCompleteLine
@@ -47,11 +46,6 @@ namespace LogicPOS.UI.Components.Finance.Customers
             return customerResult.Value;
         }
 
-        public static void RefreshCustomersCache()
-        {
-            _customers = GetAllCustomers();
-        }
-
         public static Customer Default
         {
             get
@@ -75,7 +69,7 @@ namespace LogicPOS.UI.Components.Finance.Customers
                 return null;
             }
 
-            return customers.Value.ToList();
+            return customers.Value.Where(c => c.IsDeleted == false).ToList();
         }
 
         public static Customer GetById(Guid id)

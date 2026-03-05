@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -345,14 +345,14 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
   <data name="dialog_edit_DocumentFinanceSeries_tab1_label" xml:space="preserve">
     <value>Séries dos Documentos Fiscais</value>
   </data>
-  <data name="dialog_message_article_without_vat_exception_reason_detected" xml:space="preserve">
-    <value>Para criar documentos fiscais contendo artigos isentos de IVA, associe a taxa de insenção do artigo no backoffice.</value>
-  </data>
   <data name="dialog_message_article_already_paid" xml:space="preserve">
     <value>O ticket que está a tentar pagar já foi pago.</value>
   </data>
   <data name="dialog_message_article_already_exited" xml:space="preserve">
     <value>O ticket que está a tentar pagar já foi pago e já deu saida.</value>
+  </data>
+  <data name="dialog_message_article_without_vat_exception_reason_detected" xml:space="preserve">
+    <value>Para criar documentos fiscais contendo artigos isentos de IVA, associe a taxa de insenção do artigo no backoffice.</value>
   </data>
   <data name="dialog_message_cant_create_cc_document_with_default_entity" xml:space="preserve">
     <value>Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NUIT!
@@ -920,6 +920,10 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_button_image" xml:space="preserve">
     <value>Imagem do botão</value>
   </data>
+  <data name="global_button_label_more" xml:space="preserve">
+    <value>_Mostrar Mais</value>
+    <comment>Load more registers</comment>
+  </data>
   <data name="global_button_label_cancel" xml:space="preserve">
     <value>_Cancelar</value>
   </data>
@@ -951,10 +955,6 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   </data>
   <data name="global_button_label_help" xml:space="preserve">
     <value>_Ajuda</value>
-  </data>
-  <data name="global_button_label_more" xml:space="preserve">
-    <value>_Mostrar Mais</value>
-    <comment>Load more registers</comment>
   </data>
   <data name="global_button_label_new_financial_document" xml:space="preserve">
     <value>_Novo</value>
@@ -1821,6 +1821,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_pos" xml:space="preserve">
     <value>POS</value>
   </data>
+  <data name="global_pos_update" xml:space="preserve">
+    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
+  </data>
   <data name="global_postal_code" xml:space="preserve">
     <value>Código-Postal</value>
   </data>
@@ -1981,7 +1984,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Value for "Update At" data in details dialog</comment>
   </data>
   <data name="global_record_disabled" xml:space="preserve">
-    <value>Desligado</value>
+    <value>Desactivado</value>
   </data>
   <data name="global_record_enabled" xml:space="preserve">
     <value>Ativo</value>
@@ -2439,11 +2442,11 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_warning" xml:space="preserve">
     <value>Aviso</value>
   </data>
-  <data name="global_warning_open_fiscal_year_actual" xml:space="preserve">
-    <value>Ainda não iniciou uma série fiscal para o ano atual ({0}).</value>
-  </data>
   <data name="global_warning_open_fiscal_year" xml:space="preserve">
     <value>Para começar a utilizar o POS por favor inicie o ano fiscal no BackOffice e reinicie a aplicação.</value>
+  </data>
+  <data name="global_warning_open_fiscal_year_actual" xml:space="preserve">
+    <value>Ainda não iniciou uma série fiscal para o ano atual ({0}).</value>
   </data>
   <data name="global_website" xml:space="preserve">
     <value>Página</value>
@@ -3224,10 +3227,10 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="report_list_stock_supplier" xml:space="preserve">
     <value>Stock por Fornecedor</value>
   </data>
-	<data name="report_list_stock_gain" xml:space="preserve">
+  <data name="report_list_stock_gain" xml:space="preserve">
     <value>Stock por valorização de artigo</value>
   </data>
-	<data name="report_stock_gain" xml:space="preserve">
+  <data name="report_stock_gain" xml:space="preserve">
     <value>Valorização de artigo</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
@@ -3598,11 +3601,11 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="window_title_dialog_template" xml:space="preserve">
     <value>Modelo</value>
   </data>
-  <data name="window_title_dialog_update_record" xml:space="preserve">
-    <value>Atualizar Registo</value>
-  </data>
   <data name="window_title_dialog_update_POS" xml:space="preserve">
     <value>Atualizar o POS para a versão: {0}</value>
+  </data>
+  <data name="window_title_dialog_update_record" xml:space="preserve">
+    <value>Atualizar Registo</value>
   </data>
   <data name="window_title_dialog_validation_error" xml:space="preserve">
     <value>Erro de validação</value>
@@ -3776,9 +3779,6 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="global_new_version" xml:space="preserve">
     <value>Nova Versão: {0}</value>
   </data>
-  <data name="global_pos_update" xml:space="preserve">
-    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
-  </data>
   <data name="global_documentfinance_years_short" xml:space="preserve">
     <value>Aber. de ano fiscal</value>
   </data>
@@ -3824,6 +3824,18 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="dialog_button_label_new_client" xml:space="preserve">
     <value>Novo Cli.</value>
   </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Artigos Associados</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Artigo composto</value>
+  </data>
+  <data name="dialog_message_composite_article_same" xml:space="preserve">
+    <value>Artigo inserido é o artigo original!</value>
+  </data>
+  <data name="dialog_message_composite_article_already" xml:space="preserve">
+    <value>Artigo inserido já está associado!</value>
+  </data>
   <data name="dialog_message__pos_order_cancel" xml:space="preserve">
     <value>Tem a certeza que deseja cancelar o pedido atual?</value>
   </data>
@@ -3865,18 +3877,6 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="global_email_separator" xml:space="preserve">
     <value>Email (para multiplos emails use a virgula. Ex. 123@123.pt,test@test.pt)</value>
-  </data>
-  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
-    <value>Artigos Associados</value>
-  </data>
-  <data name="global_composite_article" xml:space="preserve">
-    <value>Artigo composto</value>
-  </data>
-  <data name="dialog_message_composite_article_same" xml:space="preserve">
-    <value>Artigo inserido é o artigo original!</value>
-  </data>
-  <data name="dialog_message_composite_article_already" xml:space="preserve">
-    <value>Artigo inserido já está associado!</value>
   </data>
   <data name="change_log" xml:space="preserve">
     <value>Registro de alterações (Changelog)</value>
@@ -3920,11 +3920,11 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="global_internal_moviment" xml:space="preserve">
     <value>Movimento interno</value>
   </data>
-  <data name="global_locations" xml:space="preserve">
-    <value>Localizações</value>
-  </data>
   <data name="global_by_default" xml:space="preserve">
     <value>Por padrão</value>
+  </data>
+  <data name="global_locations" xml:space="preserve">
+    <value>Localizações</value>
   </data>
   <data name="global_warning_acquire_module_stocks" xml:space="preserve">
     <value>Para utilizar a versão completa da gestão de stocks, por favor adquira o módulo adicional</value>

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Subfamilies.DeleteArticleSubfamily;
@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
         public static Guid FamilyId;
         public ArticleSubfamiliesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
 

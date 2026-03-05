@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Menus;
 using MediatR;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Components.Menus
                 return;
             }
 
-            Entities.AddRange(families.Value);
+            Entities.AddRange(families.Value.Where(f => f.IsDeleted == false));
         }
 
     }

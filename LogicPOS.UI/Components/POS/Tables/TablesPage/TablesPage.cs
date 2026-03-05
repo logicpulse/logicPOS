@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.POS.Tables.Common;
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public TablesPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<TableViewModel>>> GetAllQuery => new GetTablesQuery();

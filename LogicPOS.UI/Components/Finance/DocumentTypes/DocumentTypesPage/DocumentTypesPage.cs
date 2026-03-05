@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.BtnDelete.Visible = false;
             Navigator.BtnUpdate.Visible = false;
 
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         public static readonly Dictionary<string, string> ActiveTypesOnlyOptions = 

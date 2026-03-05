@@ -18,6 +18,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtATDocCodeValidationSerie = TextBox.Simple("global_at_atdoccodeid");
         private EntityComboBox<FiscalYear> _comboFiscalYears;
         private EntityComboBox<DocumentType> _comboDocumentTypes;
-        private CheckButton _checkDisabled = new CheckButton(LocalizedString.Instance["global_record_disabled"]);
     }
 }

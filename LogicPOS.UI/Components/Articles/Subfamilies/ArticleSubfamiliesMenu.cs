@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
@@ -85,7 +85,8 @@ namespace LogicPOS.UI.Components.Menus
             {
                 SelectedEntity = null;
             }
-            Entities.AddRange(subfamilies.Value);
+
+            Entities.AddRange(subfamilies.Value.Where(s => s.IsDeleted == false));
         }
 
     }

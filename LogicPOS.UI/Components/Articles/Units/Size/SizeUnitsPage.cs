@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.SizeUnits.DeleteSizeUnit;
@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public SizeUnitsPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
 

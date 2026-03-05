@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
@@ -17,7 +17,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBox.CreateOrderField();
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
         protected override void AddSensitiveFields()

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.MeasurementUnits.DeleteMeasurementUnit;
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public MeasurementUnitsPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<MeasurementUnit>>> GetAllQuery => new GetAllMeasurementUnitsQuery();

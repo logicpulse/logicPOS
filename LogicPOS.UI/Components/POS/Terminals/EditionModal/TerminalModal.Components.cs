@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<WeighingMachine> _comboWeighingMachines;
         private EntityComboBox<InputReader> _comboBarcodeReaders;
         private EntityComboBox<InputReader> _comboCardReaders;
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
      
     }
 }

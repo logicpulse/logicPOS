@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
@@ -31,7 +31,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCardNumber = TextBox.Simple("global_card_number");
         private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber);
         private CheckButton _checkSupplier = new CheckButton(GeneralUtils.GetResourceByName("global_supplier"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
        
         IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
                                                                                                       "Agt. Preench.",

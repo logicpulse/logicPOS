@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Pages;
@@ -31,12 +31,13 @@ namespace LogicPOS.UI.Components.Modals
             AddStockMovementsTab();
             AddArticleHistoryTab();
             AddWarehouseManagementTab();
-
         }
 
         private void AddArticlesTab()
         {
             var articlesTab = new ArticlesPage(this);
+            articlesTab.Navigator.ExtraButtonSpace.Remove(articlesTab.Navigator.BtnApply);
+            articlesTab.Navigator.SearchBox.Bar.Remove(articlesTab.Navigator.SearchBox.BtnFilter);
             Notebook.AppendPage(articlesTab, new Label(LocalizedString.Instance["window_title_dialog_document_finance_page3"]));
         }
 

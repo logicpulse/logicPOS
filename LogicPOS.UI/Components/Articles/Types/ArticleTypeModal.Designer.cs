@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System;
@@ -20,7 +20,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private CheckButton _checkHasPrice = new CheckButton(GeneralUtils.GetResourceByName("global_articletype_haveprice"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
         protected override void AddSensitiveFields()

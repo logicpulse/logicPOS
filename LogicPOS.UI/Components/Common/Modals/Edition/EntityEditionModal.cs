@@ -2,6 +2,7 @@ using ErrorOr;
 using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -30,6 +31,7 @@ namespace LogicPOS.UI.Components.Modals
         #region Components
         protected IconButtonWithText _buttonOk;
         protected IconButtonWithText _buttonCancel;
+        protected readonly CheckButton _checkDisabled = new CheckButton(LocalizedString.Instance["global_record_disabled"]);
         public List<Widget> SensitiveFields { get; private set; } = new List<Widget>();
         public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
 

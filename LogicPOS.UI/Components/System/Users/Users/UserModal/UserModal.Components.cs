@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
@@ -29,6 +29,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtConsumptionBase = TextBox.Simple("global_base_consumption");
         private TextBox _txtBaseOffers = TextBox.Simple("global_base_offers");
         private TextBox _txtPVPOffers = TextBox.Simple("global_price_offers");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
     }
 }

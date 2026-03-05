@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PlacesPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Place>>> GetAllQuery => new GetAllPlacesQuery();

@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.UI.Components.Articles.Stocks.Movements;
 using LogicPOS.UI.Components.Articles.Stocks.Pages.StockMovementsPage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 

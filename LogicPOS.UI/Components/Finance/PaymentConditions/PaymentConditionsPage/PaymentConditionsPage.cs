@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -16,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PaymentConditionsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
         protected override IRequest<ErrorOr<IEnumerable<PaymentCondition>>> GetAllQuery => new GetAllPaymentConditionsQuery();
 

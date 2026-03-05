@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
@@ -39,6 +39,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
                 new Size(540, 568),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
+            HideCloseButton();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<CommissionGroup>>> GetAllQuery => new GetAllCommissionGroupsQuery();
         public CommissionGroupsPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

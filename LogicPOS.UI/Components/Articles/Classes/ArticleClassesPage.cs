@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Classes.DeleteArticleClass;
@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.BtnInsert.Visible = false;
             Navigator.BtnDelete.Visible = false;
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
       

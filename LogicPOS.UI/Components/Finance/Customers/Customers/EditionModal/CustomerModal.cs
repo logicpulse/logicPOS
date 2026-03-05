@@ -157,7 +157,6 @@ namespace LogicPOS.UI.Components.Modals
                 CardCredit = decimal.Parse(_txtCardCredit.Text),
                 Supplier = _checkSupplier.Active
             };
-            CustomersService.RefreshCustomersCache();
             return customer;
         }
 

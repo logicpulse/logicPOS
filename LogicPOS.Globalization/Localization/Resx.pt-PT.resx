@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -250,9 +250,6 @@ Ou selecione '{2}' para iniciar o POS em resolução '1024x768'.</value>
   <data name="backoffice_datetime_format_status_bar" xml:space="preserve">
     <value>dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt</value>
     <comment>Dateformat must have literal chars between single quotes</comment>
-  </data>
-  <data name="dialog_button_label_new_client" xml:space="preserve">
-    <value>Novo Cli.</value>
   </data>
   <data name="dialog_button_label_new_finance_documents" xml:space="preserve">
     <value>Novo Doc.</value>
@@ -686,14 +683,6 @@ Deseja continuar e desativar as séries atuais e criar novas?</value>
 Algumas das séries já foram usadas, use outro acrónimo para gerar séries novas.</value>
   </data>
   <data name="dialog_message_series_fiscal_year_close_current" xml:space="preserve">
-    <value>De momento existe um ano fiscal activo [{0}]. 
-Para continuar e iniciar um novo ano fiscal, tem que fechar o ano fiscal activo
-Nota: Esta operação fechará o ano fiscal activo e não poderá ser anulada!
-Tem a certeza que deseja continuar e fechar ano fiscal activo e criar um novo?
-
-	</value>
-  </data>
-  <data name="dialog_message_series_fiscal_year_close_current_pt" xml:space="preserve">
     <value>De momento existe um ano fiscal activo [{0}]. 
 Para continuar e iniciar um novo ano fiscal, tem que fechar o ano fiscal activo
 Nota: Esta operação fechará o ano fiscal activo e não poderá ser anulada!
@@ -1833,6 +1822,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_pos" xml:space="preserve">
     <value>POS</value>
   </data>
+  <data name="global_pos_update" xml:space="preserve">
+    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
+  </data>
   <data name="global_postal_code" xml:space="preserve">
     <value>Código-Postal</value>
   </data>
@@ -1993,7 +1985,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Value for "Update At" data in details dialog</comment>
   </data>
   <data name="global_record_disabled" xml:space="preserve">
-    <value>Desligado</value>
+    <value>Desactivado</value>
   </data>
   <data name="global_record_enabled" xml:space="preserve">
     <value>Ativo</value>
@@ -2042,10 +2034,6 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   </data>
   <data name="global_report_overlay_software_certification" xml:space="preserve">
     <value>{0} por programa certificado Nº {1}/AT</value>
-    <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
-  </data>
-  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
-    <value>{0} por programa validado Nº {1}/AGT/{3}/LogicPOS</value>
     <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
   </data>
   <data name="global_report_overlay_software_certification_emitted" xml:space="preserve">
@@ -2149,9 +2137,6 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   </data>
   <data name="global_short_quantity" xml:space="preserve">
     <value>Qnt.</value>
-  </data>
-  <data name="global_short_price" xml:space="preserve">
-    <value>Pr. Unit</value>
   </data>
   <data name="global_short_subtotal" xml:space="preserve">
     <value>SubT.</value>
@@ -3080,14 +3065,14 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_ticket_print_ticket" xml:space="preserve">
     <value>Ticket :: Imprimir Ticket</value>
   </data>
-  <data name="global_method" xml:space="preserve">
-    <value>Método</value>
+  <data name="prefparam_qrcode_method" xml:space="preserve">
+    <value>Ticket :: Método de impressão QRCode</value>
   </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documentos :: Imprimir QRCode</value>
   </data>
-  <data name="prefparam_qrcode_method" xml:space="preserve">
-    <value>Ticket :: Método de impressão QRCode</value>
+  <data name="global_method" xml:space="preserve">
+    <value>Método</value>
   </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Aplicação :: Usar Imagens Temporárias</value>
@@ -3243,10 +3228,10 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="report_list_stock_supplier" xml:space="preserve">
     <value>Stock por Fornecedor</value>
   </data>
-	<data name="report_list_stock_gain" xml:space="preserve">
+  <data name="report_list_stock_gain" xml:space="preserve">
     <value>Stock por valorização de artigo</value>
   </data>
-	<data name="report_stock_gain" xml:space="preserve">
+  <data name="report_stock_gain" xml:space="preserve">
     <value>Valorização de artigo</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
@@ -3795,9 +3780,6 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="global_new_version" xml:space="preserve">
     <value>Nova Versão: {0}</value>
   </data>
-  <data name="global_pos_update" xml:space="preserve">
-    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
-  </data>
   <data name="global_documentfinance_years_short" xml:space="preserve">
     <value>Aber. de ano fiscal</value>
   </data>
@@ -3836,6 +3818,13 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="prefparam_use_ccdailyticket" xml:space="preserve">
     <value>Ticket :: Imprimir detalhes da conta corrente no ticket de movimentos diários ou de sessão</value>
+  </data>
+  <data name="global_report_overlay_software_certification_ao" xml:space="preserve">
+    <value>{0} por programa validado Nº {1}/AGT/{3}/LogicPOS</value>
+    <comment>This key is used for software certification label in invoices and the value for this key has specific purposes in different countries. Please pay attention on changes</comment>
+  </data>
+  <data name="dialog_button_label_new_client" xml:space="preserve">
+    <value>Novo Cli.</value>
   </data>
   <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
     <value>Artigos Associados</value>
@@ -3980,5 +3969,16 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>Não tem mesas/ordens ativas. Por favor adicione ou ative no backoffice / Outras Tabelas / Mesas ou Pedidos</value>
+  </data>
+  <data name="dialog_message_series_fiscal_year_close_current_pt" xml:space="preserve">
+    <value>De momento existe um ano fiscal activo [{0}]. 
+Para continuar e iniciar um novo ano fiscal, tem que fechar o ano fiscal activo
+Nota: Esta operação fechará o ano fiscal activo e não poderá ser anulada!
+Tem a certeza que deseja continuar e fechar ano fiscal activo e criar um novo?
+
+	</value>
+  </data>
+  <data name="global_short_price" xml:space="preserve">
+    <value>Pr. Unit</value>
   </data>
 </root>

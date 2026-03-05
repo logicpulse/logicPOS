@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.GetArticles;
 using LogicPOS.Api.Features.Articles.StockManagement.GetStockMovements;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
@@ -30,10 +30,7 @@ namespace LogicPOS.UI.Components.Pages
             AddEventHandlers();
         }
 
-        public StockMovementsPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
-        {
-        }
-
+ 
         public override void Search(string searchText)
         {
             CurrentQuery = new GetStockMovementsQuery { Search = searchText };
@@ -51,6 +48,9 @@ namespace LogicPOS.UI.Components.Pages
         {
             Navigator.RightButtons.Remove(Navigator.BtnView);
             Navigator.RightButtons.Remove(Navigator.BtnDelete);
+           
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnApply);
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnShowHiddenData);
         }
 
         protected override void LoadEntities()

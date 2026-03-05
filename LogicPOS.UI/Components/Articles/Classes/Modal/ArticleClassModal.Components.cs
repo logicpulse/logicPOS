@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -11,7 +11,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtAcronym = TextBox.Simple("global_acronym", true, true, "^.{1}$");
         private CheckButton _checkWorkInStock = new CheckButton(GeneralUtils.GetResourceByName("global_work_in_stock"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
 
     }
 }

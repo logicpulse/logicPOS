@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
@@ -15,7 +15,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtTaxCode = TextBox.Simple("global_vat_rate_tax_code", true, true, @"^(RED|NOR|ISE|OUT|([0-9.])*|NA|NS)$");
         private TextBox _txtCountryRegionCode = TextBox.Simple("global_vat_rate_tax_country_region", true, true, RegularExpressions.AlfaCountryCode2);
         private TextBox _txtDescription = TextBox.Simple("global_vat_rate_description", true);
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
      
     }
 }

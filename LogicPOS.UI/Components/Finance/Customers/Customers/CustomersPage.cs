@@ -28,7 +28,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public CustomersPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override void LoadEntities()
@@ -67,7 +67,6 @@ namespace LogicPOS.UI.Components.Pages
             var modal = new CustomerModal(mode, SelectedEntity);
             var response = modal.Run();
             modal.Destroy();
-            CustomersService.RefreshCustomersCache();
             return response;
         }
 
@@ -90,7 +89,6 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var result = _mediator.Send(GetDeleteCommand()).Result;
-            CustomersService.RefreshCustomersCache();
 
             if (result.IsError)
             {
@@ -117,6 +115,7 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_EDIT");
             this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_DELETE");
             this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_VIEW");
+            this.Navigator.BtnShowHiddenData.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CUSTOMER_VIEW");
         }
 
         protected override void InitializeFilter()

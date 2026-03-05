@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetWarehouseArticles;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 using LogicPOS.Api.Features.Common;
@@ -48,6 +48,8 @@ namespace LogicPOS.UI.Components.Pages
             Navigator.RightButtons.Remove(Navigator.BtnView);
             Navigator.RightButtons.Remove(Navigator.BtnDelete);
             Navigator.RightButtons.Remove(Navigator.BtnInsert);
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnApply);
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnShowHiddenData);
         }
 
         public override int RunModal(EntityEditionModalMode mode)

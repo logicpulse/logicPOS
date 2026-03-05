@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<VatRate>>> GetAllQuery => new GetAllVatRatesQuery();
         public VatRatesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Types.DeleteArticleType;
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
         protected override IRequest<ErrorOr<IEnumerable<ArticleType>>> GetAllQuery => new GetAllArticleTypesQuery();
         public ArticleTypesPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

@@ -43,7 +43,6 @@ namespace LogicPOS.UI.Components.Modals
                                        includeKeyBoardButton: false);
 
             TxtCustomer.Entry.IsEditable = true;
-            var customers = CustomersService.GetAllCustomers().Select(c => (c as object, c.Name)).ToList();
             TxtCustomer.WithAutoCompletion(CustomersService.AutocompleteLines, id => CustomersService.GetById(id));
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;

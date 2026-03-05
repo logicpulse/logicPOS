@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.Pages
         protected readonly ISender _mediator = DependencyInjection.Mediator;
         protected readonly List<TEntity> _entities = new List<TEntity>();
         protected virtual IRequest<ErrorOr<IEnumerable<TEntity>>> GetAllQuery { get; set; }
+        protected bool _showHiddenData = false;
 
         public Window SourceWindow { get; }
         public TreeView GridView { get; set; }
@@ -54,6 +55,12 @@ namespace LogicPOS.UI.Components.Pages
         }
 
         protected void HandleErrorResult<TResult>(ErrorOr<TResult> result) => ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+
+        public void ToggleHiddenDataVisibility()
+        {
+            _showHiddenData = !_showHiddenData;
+            Refresh();
+        }
 
         public virtual void Refresh()
         {
@@ -95,7 +102,7 @@ namespace LogicPOS.UI.Components.Pages
             return result.Value;
         }
 
-        protected virtual void DisableFilterButton()
+        protected virtual void DisableCommonFilterButtons()
         {
             Navigator.BtnApply.Visible = false;
             Navigator.SearchBox.BtnFilter.Visible = false;
@@ -146,6 +153,10 @@ namespace LogicPOS.UI.Components.Pages
 
             foreach (var entity in entities)
             {
+                if(entity is ApiEntity apiEntity && apiEntity.IsDeleted && _showHiddenData == false)
+                {
+                    continue;
+                }
                 model.AppendValues(entity);
             }
         }

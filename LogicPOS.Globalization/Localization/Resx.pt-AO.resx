@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -650,6 +650,18 @@ Todas as séries relacionadas com os terminais selecionados vão ser apagadas e 
 
 Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.</value>
   </data>
+  <data name="dialog_message_series_create_confirmation_text_pt" xml:space="preserve">
+    <value>Deseja continuar e criar novas séries fiscais?
+
+Todas as séries relacionadas com os terminais selecionados vão ser apagadas e recriadas.
+
+Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
+
+As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+
+Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+</value>
+  </data>
   <data name="dialog_message_series_create_document_type_series" xml:space="preserve">
     <value>Deseja criar séries para todos os tipos de documentos fiscais/terminais?</value>
   </data>
@@ -664,18 +676,6 @@ Ao aceitar as condições está a responsabilizar-se pela criação das séries.
   <data name="dialog_message_series_create_document_type_series_already_exist" xml:space="preserve">
     <value>Já existem séries fiscais criadas, para criar novas séries fiscais tem que desativar as séries atuais e criar novas.
 Deseja continuar e desativar as séries atuais e criar novas?</value>
-  </data>
-  <data name="dialog_message_series_create_confirmation_text_pt" xml:space="preserve">
-    <value>Deseja continuar e criar novas séries fiscais?
-
-Todas as séries relacionadas com os terminais selecionados vão ser apagadas e recriadas.
-
-Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
-
-As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
-
-Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
-</value>
   </data>
   <data name="dialog_message_series_create_document_type_series_miss_year" xml:space="preserve">
     <value>Para criar a série de documentos, crie primeiro um ano fiscal.</value>
@@ -921,6 +921,10 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_button_image" xml:space="preserve">
     <value>Imagem do botão</value>
   </data>
+  <data name="global_button_label_more" xml:space="preserve">
+    <value>_Mostrar Mais</value>
+    <comment>Load more registers</comment>
+  </data>
   <data name="global_button_label_cancel" xml:space="preserve">
     <value>_Cancelar</value>
   </data>
@@ -952,10 +956,6 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   </data>
   <data name="global_button_label_help" xml:space="preserve">
     <value>_Ajuda</value>
-  </data>
-  <data name="global_button_label_more" xml:space="preserve">
-    <value>_Mostrar Mais</value>
-    <comment>Load more registers</comment>
   </data>
   <data name="global_button_label_new_financial_document" xml:space="preserve">
     <value>_Novo</value>
@@ -1822,6 +1822,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_pos" xml:space="preserve">
     <value>POS</value>
   </data>
+  <data name="global_pos_update" xml:space="preserve">
+    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
+  </data>
   <data name="global_postal_code" xml:space="preserve">
     <value>Código-Postal</value>
   </data>
@@ -1982,7 +1985,7 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <comment>Value for "Update At" data in details dialog</comment>
   </data>
   <data name="global_record_disabled" xml:space="preserve">
-    <value>Desligado</value>
+    <value>Desactivado</value>
   </data>
   <data name="global_record_enabled" xml:space="preserve">
     <value>Ativo</value>
@@ -2143,9 +2146,6 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   </data>
   <data name="global_source_finance_document" xml:space="preserve">
     <value>Documento de Origem</value>
-  </data>
-  <data name="global_source_document_NC_ND" xml:space="preserve">
-    <value>Anulação ou rectificação do documento de origem</value>
   </data>
   <data name="global_split_account" xml:space="preserve">
     <value>Dividir conta</value>
@@ -3062,9 +3062,6 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="prefparam_ticket_footer_line2" xml:space="preserve">
     <value>Ticket :: Texto Linha 2</value>
   </data>
-  <data name="prefparam_use_cached_images" xml:space="preserve">
-    <value>Aplicação :: Usar Imagens Temporárias</value>
-  </data>
   <data name="prefparam_ticket_print_ticket" xml:space="preserve">
     <value>Ticket :: Imprimir Ticket</value>
   </data>
@@ -3076,6 +3073,9 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   </data>
   <data name="global_method" xml:space="preserve">
     <value>Método</value>
+  </data>
+  <data name="prefparam_use_cached_images" xml:space="preserve">
+    <value>Aplicação :: Usar Imagens Temporárias</value>
   </data>
   <data name="prefparam_use_pdfviewer" xml:space="preserve">
     <value>Aplicação :: Usar o POS PDF Viewer para abrir ficheiros PDF</value>
@@ -3228,10 +3228,10 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="report_list_stock_supplier" xml:space="preserve">
     <value>Stock por Fornecedor</value>
   </data>
-	<data name="report_list_stock_gain" xml:space="preserve">
+  <data name="report_list_stock_gain" xml:space="preserve">
     <value>Stock por valorização de artigo</value>
   </data>
-	<data name="report_stock_gain" xml:space="preserve">
+  <data name="report_stock_gain" xml:space="preserve">
     <value>Valorização de artigo</value>
   </data>
   <data name="report_list_user_commission" xml:space="preserve">
@@ -3278,11 +3278,11 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="report_sales_per_vat" xml:space="preserve">
     <value>Vendas por taxa IVA</value>
   </data>
-  <data name="report_sales_per_family" xml:space="preserve">
-    <value>Vendas por família</value>
-  </data>
   <data name="report_sales_per_vat_by_article_class" xml:space="preserve">
     <value>Sales por taxa IVA/classe de artigo</value>
+  </data>
+  <data name="report_sales_per_family" xml:space="preserve">
+    <value>Vendas por família</value>
   </data>
   <data name="report_sales_per_family_and_subfamily" xml:space="preserve">
     <value>Vendas por família/subfamília</value>
@@ -3780,9 +3780,6 @@ Por motivos de segurança, para prosseguir tem que alterar a palavra-passe!</val
   <data name="global_new_version" xml:space="preserve">
     <value>Nova Versão: {0}</value>
   </data>
-  <data name="global_pos_update" xml:space="preserve">
-    <value>Deseja atualizar o POS? o mesmo será encerrado automaticamente no processo de atualização!</value>
-  </data>
   <data name="global_documentfinance_years_short" xml:space="preserve">
     <value>Aber. de ano fiscal</value>
   </data>
@@ -3828,6 +3825,18 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="dialog_button_label_new_client" xml:space="preserve">
     <value>Novo Cli.</value>
   </data>
+  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
+    <value>Artigos Associados</value>
+  </data>
+  <data name="global_composite_article" xml:space="preserve">
+    <value>Artigo composto</value>
+  </data>
+  <data name="dialog_message_composite_article_same" xml:space="preserve">
+    <value>Artigo inserido é o artigo original!</value>
+  </data>
+  <data name="dialog_message_composite_article_already" xml:space="preserve">
+    <value>Artigo inserido já está associado!</value>
+  </data>
   <data name="dialog_message__pos_order_cancel" xml:space="preserve">
     <value>Tem a certeza que deseja cancelar o pedido atual?</value>
   </data>
@@ -3869,18 +3878,6 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="global_email_separator" xml:space="preserve">
     <value>Email (para multiplos emails use a virgula. Ex. 123@123.pt,test@test.pt)</value>
-  </data>
-  <data name="dialog_edit_article_tab4_label1" xml:space="preserve">
-    <value>Artigos Associados</value>
-  </data>
-  <data name="global_composite_article" xml:space="preserve">
-    <value>Artigo composto</value>
-  </data>
-  <data name="dialog_message_composite_article_same" xml:space="preserve">
-    <value>Artigo inserido é o artigo original!</value>
-  </data>
-  <data name="dialog_message_composite_article_already" xml:space="preserve">
-    <value>Artigo inserido já está associado!</value>
   </data>
   <data name="change_log" xml:space="preserve">
     <value>Registro de alterações (Changelog)</value>
@@ -3971,5 +3968,8 @@ Por favor, insira outro número e tente novamente.</value>
   </data>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>Não tem mesas/ordens ativas. Por favor adicione ou ative no backoffice / Outras Tabelas / Mesas</value>
+  </data>
+  <data name="global_source_document_NC_ND" xml:space="preserve">
+    <value>Anulação ou rectificação do documento de origem</value>
   </data>
 </root>

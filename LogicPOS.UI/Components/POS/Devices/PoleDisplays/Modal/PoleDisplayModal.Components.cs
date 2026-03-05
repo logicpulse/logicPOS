@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -18,6 +18,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtStandByInSeconds = TextBox.Simple("global_pole_display_goto_stand_by_in_seconds", true, true, @"^[\d]+$");
         private TextBox _txtStandByLine1 = TextBox.Simple("global_pole_display_stand_by_line_no");
         private TextBox _txtStandByLine2 = TextBox.Simple("global_pole_display_stand_by_line_no");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
      }
 }

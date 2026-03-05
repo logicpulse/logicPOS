@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.DeleteArticle;
@@ -25,11 +25,14 @@ namespace LogicPOS.UI.Components.Pages
         public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             AddEventHandlers();
-            DisableFilterButton();
+            DisableCommonFilterButtons();
+            Navigator.SearchBox.BtnMore.Visible = true;
         }
 
         protected override void LoadEntities()
         {
+            CurrentQuery.IncludeDeleted = _showHiddenData ? true : (bool?)null;
+
             var getArticles = _mediator.Send(CurrentQuery).Result;
 
             if (getArticles.IsError)

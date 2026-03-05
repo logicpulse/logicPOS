@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.PriceTypes.DeletePriceType;
@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PriceTypesPage(Window parent) : base(parent)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PriceType>>> GetAllQuery => new GetAllPriceTypesQuery();

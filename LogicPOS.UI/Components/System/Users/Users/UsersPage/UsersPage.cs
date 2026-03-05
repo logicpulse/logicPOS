@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -14,10 +14,11 @@ namespace LogicPOS.UI.Components.Pages
 {
     public partial class UsersPage : Page<User>
     {
-
         protected override IRequest<ErrorOr<IEnumerable<User>>> GetAllQuery => new GetAllUsersQuery();
+       
         public UsersPage(Window parent) : base(parent)
         {
+            DisableCommonFilterButtons();
         }
 
         public override int RunModal(EntityEditionModalMode mode)

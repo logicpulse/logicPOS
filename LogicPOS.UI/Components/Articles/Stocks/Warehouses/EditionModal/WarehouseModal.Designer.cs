@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
 using LogicPOS.Api.Entities;
@@ -22,7 +22,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private CheckButton _checkDefaultWarehouse = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         private List<WarehouseLocationField> _locationFields = new List<WarehouseLocationField>();
         private VBox _boxLocations;
         #endregion

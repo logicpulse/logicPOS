@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
             CanDeleteEntity = false;
             Navigator.BtnInsert.Sensitive = false;
             Navigator.Update();
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override void AddColumns()

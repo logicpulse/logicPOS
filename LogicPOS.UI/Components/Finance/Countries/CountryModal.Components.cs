@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -16,6 +16,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCurrencyCode = TextBox.Simple("global_currency_code");
         private TextBox _txtFiscalNumberRegex = TextBox.Simple("global_regex_fiscal_number");
         private TextBox _txtZipCodeRegex = TextBox.Simple("global_regex_postal_code");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
     }
 }

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -17,7 +17,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtAcronym= TextBox.Simple("global_ConfigurationUnitMeasure_Acronym", true, true, "^.{2,3}$");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
         #endregion
 
         protected override void AddSensitiveFields()

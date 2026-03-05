@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -14,6 +14,5 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtParity = TextBox.Simple("global_hardware_com_parity", true, true, @"^(Even|None|Odd)$");
         private TextBox _txtStopBits = TextBox.Simple("global_hardware_com_stopbits", true, true, @"^(One|Two)$");
         private TextBox _txtDataBits = TextBox.Simple("global_hardware_com_databits", true, true, @"^(7|8|9)$");
-        private CheckButton _checkDisabled = new CheckButton(GeneralUtils.GetResourceByName("global_record_disabled"));
     }
 }

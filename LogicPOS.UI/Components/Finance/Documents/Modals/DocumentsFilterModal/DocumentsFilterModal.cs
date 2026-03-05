@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -6,10 +6,6 @@ using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.Receipts.GetReceipts;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
-using LogicPOS.UI.Components.Finance.Customers;
-using LogicPOS.UI.Components.Finance.DocumentTypes;
-using LogicPOS.UI.Components.Finance.PaymentConditions;
-using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
@@ -29,7 +25,7 @@ namespace LogicPOS.UI.Components.Documents
                 new Size(540, 568),
                 AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {
-            WindowSettings.Close.Hide();
+            HideCloseButton();
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()
@@ -65,14 +61,14 @@ namespace LogicPOS.UI.Components.Documents
 
         public GetDocumentsQuery GetDocumentsQuery()
         {
-            if(AllFieldsAreValid() == false)
+            if (AllFieldsAreValid() == false)
             {
                 return null;
             }
 
             var query = new GetDocumentsQuery();
 
-            if(string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
+            if (string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
             {
                 query.StartDate = DateTime.Parse(TxtStartDate.Text);
             }

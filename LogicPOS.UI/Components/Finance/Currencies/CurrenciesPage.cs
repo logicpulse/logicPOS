@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public CurrenciesPage(Window parent, Dictionary<string,string> options = null) : base(parent, options)
         {
-            DisableFilterButton();
+            DisableCommonFilterButtons();
         }
 
         protected override void AddColumns()
