@@ -5,6 +5,7 @@ using logicpos.Classes.Logic.Hardware;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Screen;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
@@ -36,16 +37,20 @@ namespace LogicPOS.UI.Application
                 InitializeTerminalDevices();
                 DialogThreadNotify?.WakeupMain();
                 LoginWindow.Instance.ShowAll();
-                if (SystemVersionService.PosVersion < SystemVersionService.ApiVersion)
+                if (SystemVersionService.PosHasUpdate && LicensingService.ConnectToWs())
                 {
                     var responseType = new CustomAlert(LoginWindow.Instance)
-                                .WithMessageResource("A versão do POS é inferior à versão da API.\n\nA atualização automática iniciará, não feche a aplicação.")
+                                .WithMessage($"Há uma atualização para a aplicação. \nVersão atual: {SystemVersionService.PosVersion}\nNova Versão:{SystemVersionService.LastestVersion}\n\nDeseja atualizar a aplicação.")
                                 .WithSize(new Size(500, 350))
                                  .WithMessageType(MessageType.Info)
-                                 .WithButtonsType(ButtonsType.Ok)
+                                 .WithButtonsType(ButtonsType.YesNo)
                                 .WithTitle(string.Format(LocalizedString.Instance["window_title_dialog_update_POS"], SystemVersionService.LastestVersion))
                                 .ShowAlert();
-                    SystemVersionService.RunAutoUpdater(LoginWindow.Instance);
+                    if (responseType == ResponseType.Yes)
+                    {
+                        SystemVersionService.RunAutoUpdater(LoginWindow.Instance);
+
+                    }
                 }
 
                 Gtk.Application.Run();

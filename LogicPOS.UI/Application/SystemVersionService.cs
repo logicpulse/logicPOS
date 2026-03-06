@@ -1,4 +1,5 @@
 using AutoUpdaterDotNET;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Services;
 using Serilog;
@@ -47,23 +48,37 @@ namespace LogicPOS.UI.Application
             AutoUpdater.Icon = (Bitmap)Bitmap.FromFile("Assets\\Images\\application.ico");
             AutoUpdater.InstalledVersion = SystemVersionService.PosVersion;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-#if DEBUG
+            //#if DEBUG
             AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
-#else
-            AutoUpdater.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml"));
-#endif
+            /*#else
+                        AutoUpdater.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml"));
+            #endif*/
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
         {
+
             if (args.IsUpdateAvailable)
             {
                 if (_instance != null)
-                {
                     _instance.Hide();
+
+                bool result = AutoUpdater.DownloadUpdate(args);
+
+                if (!result)
+                {
+                    _instance.Show();
+                    return;
                 }
-                AutoUpdater.DownloadUpdate(args);
-                Gtk.Application.Quit();
+                else
+                {
+                    Gtk.Application.Quit();
+
+                }
+            }
+            else
+            {
+                Log.Error("An error occurred while checking for updates: " + args.Error.Message);
             }
 
         }
@@ -82,6 +97,7 @@ namespace LogicPOS.UI.Application
             string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml");
             xml.Save(path);
         }
+
 
     }
 }

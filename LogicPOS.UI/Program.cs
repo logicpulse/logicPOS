@@ -155,20 +155,16 @@ namespace LogicPOS.UI
                        .ShowAlert();
             }
 
-            if (SystemVersionService.PosHasUpdate)
+            if (SystemVersionService.PosHasUpdate || SystemVersionService.ApiHasUpdate)
             {
+                var message= $"Há uma actualização disponível para o sistema: versão {SystemVersionService.LastestVersion}\n\n" +
+                             $"Versão atual do aplicativo: {SystemVersionService.PosVersion}\n" +
+                             $"Versão atual da API: {SystemVersionService.ApiVersion}\n\n" +
+                             $"Recomenda-se actualizar para a última versão para garantir a melhor experiência e acesso a novos recursos.";
                 SimpleAlerts.Warning()
-                       .WithTitle("Atenção")
-                       .WithMessage($"Há uma actualização disponível para o aplicativo: versão {SystemVersionService.LastestVersion}")
-                       .ShowAlert();
-            }
-
-            if (SystemVersionService.ApiHasUpdate)
-            {
-                SimpleAlerts.Warning()
-                       .WithTitle("Atenção")
-                       .WithMessage($"Actualize a API para a nova versão: {SystemVersionService.LastestVersion}")
-                       .ShowAlert();
+                            .WithTitle("Atenção")
+                            .WithMessage(message)
+                            .ShowAlert();
             }
         }
 

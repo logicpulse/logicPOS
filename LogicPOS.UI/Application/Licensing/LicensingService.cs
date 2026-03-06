@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 
 namespace LogicPOS.UI.Components.Licensing
 {
@@ -145,6 +146,28 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static Version GetLatestSystemVersion()
         {
+//#if DEBUG
+            string url = "https://box.track.pt/files/latest/update.xml";
+
+            XmlDocument xml = new XmlDocument();
+            try
+            {
+                xml.Load(url);
+                XmlNode version = xml.SelectSingleNode("//version");
+                Version.TryParse(version.InnerText, out var lastDevelopVersion);
+                return lastDevelopVersion;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Received invalid version format from server: " + "0.0.0");
+                Log.Warning(ex.Message);
+                SimpleAlerts.Error().WithTitle("Erro ao carregar a última versão (develop) disponível")
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+
+                return new Version(0, 0, 0);
+            }
+//#else
             var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
             if (result.IsError)
             {
@@ -161,6 +184,7 @@ namespace LogicPOS.UI.Components.Licensing
                 Log.Warning("Received invalid version format from API: " + result.Value.Version);
                 return new Version(0,0,0);
             }
+//#endif
         }
     }
 }
