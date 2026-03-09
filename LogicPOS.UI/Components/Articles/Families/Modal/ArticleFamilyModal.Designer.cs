@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleFamilyModal
     {
-        public override Size ModalSize => new Size(500, 550);
+        public override Size ModalSize => new Size(500, 510);
         public override string ModalTitleResourceName => "window_title_edit_articlefamily";
 
 

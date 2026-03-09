@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentTypeModal
     {
-        public override Size ModalSize => new Size(400, 514);
+        public override Size ModalSize => new Size(400, 460);
         public override string ModalTitleResourceName => "window_title_edit_template";
 
         protected override void AddSensitiveFields()

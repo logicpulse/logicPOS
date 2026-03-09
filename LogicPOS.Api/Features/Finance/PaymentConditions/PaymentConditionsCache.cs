@@ -1,11 +1,11 @@
-﻿using LogicPOS.Api.Features.Common.Caching;
+using LogicPOS.Api.Features.Common.Caching;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace LogicPOS.Api.Features.Finance.PaymentConditions
 {
-    public class PaymentConditionsCache
+    public static class PaymentConditionsCache
     {
         public static void Clear(IKeyedMemoryCache keyedMemoryCache)
         {

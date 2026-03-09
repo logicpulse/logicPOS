@@ -1,4 +1,4 @@
-﻿
+
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class UserModal
     {
-        public override Size ModalSize => new Size(500, 495);
+        public override Size ModalSize => new Size(500, 460);
         public override string ModalTitleResourceName => "window_title_edit_user";
 
         protected override void Initialize()

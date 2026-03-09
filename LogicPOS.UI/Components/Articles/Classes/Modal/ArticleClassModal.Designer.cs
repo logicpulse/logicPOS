@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleClassModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 400);
         public override string ModalTitleResourceName => "global_article_class";
 
 

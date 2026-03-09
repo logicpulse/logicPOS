@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class ArticleModal
     {
-        public override Size ModalSize => new Size(500, 740);
+        public override Size ModalSize => new Size(500, 710);
         public override string ModalTitleResourceName => "window_title_edit_article";
 
         protected override void Initialize()

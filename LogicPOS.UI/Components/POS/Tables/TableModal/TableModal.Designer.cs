@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.UI.Components.InputFields;
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class TableModal
     {
-        public override Size ModalSize => new Size(500, 450);
+        public override Size ModalSize => new Size(500, 380);
         public override string ModalTitleResourceName => "window_title_edit_configurationplacetable";
 
         protected override void Initialize()

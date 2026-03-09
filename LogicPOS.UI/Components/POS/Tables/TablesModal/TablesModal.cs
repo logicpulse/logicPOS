@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application.Enums;
@@ -50,6 +50,7 @@ namespace LogicPOS.UI.Components.POS
             BtnViewTables.Visible = false;
             MenuTables.ApplyFilter(TableStatus.Free);
         }
+       
         private void AddEventHandlers()
         {
             BtnOk.Clicked += BtnOk_Clicked;

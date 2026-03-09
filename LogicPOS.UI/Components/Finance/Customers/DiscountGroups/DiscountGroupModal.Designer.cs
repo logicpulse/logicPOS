@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System;
@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DiscountGroupModal
     {
-        public override Size ModalSize => new Size(500, 309);
+        public override Size ModalSize => new Size(500, 320);
         public override string ModalTitleResourceName => "dialog_edit_CustomerDiscountGroup_tab1_label";
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()

@@ -1,4 +1,4 @@
-﻿
+
 using Gtk;
 using LogicPOS.Utility;
 using System.Drawing;
@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     internal partial class CountryModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 420);
         public override string ModalTitleResourceName => "window_title_edit_dialog_configuration_country";
 
         protected override void AddSensitiveFields()

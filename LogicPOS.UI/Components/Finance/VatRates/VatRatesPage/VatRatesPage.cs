@@ -28,24 +28,6 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
-            GridView.AppendColumn(CreateValueColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
-        }
-       
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-
-            AddCodeSorting(0);
-            AddDesignationSorting(1);
-            AddValueSorting();
-            AddUpdatedAtSorting(3);
-        }
-        
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteVatRateCommand(SelectedEntity.Id);

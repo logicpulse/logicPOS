@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -15,6 +15,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PoleDisplaysPage(Window parent) : base(parent)
         {
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<PoleDisplay>>> GetAllQuery => new GetAllPoleDisplaysQuery();

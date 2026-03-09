@@ -48,11 +48,7 @@ namespace LogicPOS.UI.Application
             AutoUpdater.Icon = (Bitmap)Bitmap.FromFile("Assets\\Images\\application.ico");
             AutoUpdater.InstalledVersion = SystemVersionService.PosVersion;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            //#if DEBUG
             AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
-            /*#else
-                        AutoUpdater.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "update.xml"));
-            #endif*/
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
@@ -72,7 +68,7 @@ namespace LogicPOS.UI.Application
                 }
                 else
                 {
-                    Gtk.Application.Quit();
+                    Program.Quit();
 
                 }
             }

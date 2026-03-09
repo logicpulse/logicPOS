@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentSerieModal
     {
-        public override Size ModalSize => new Size(500, 600);
+        public override Size ModalSize => new Size(500, 560);
 
         public override string ModalTitleResourceName => "dialog_edit_DocumentFinanceSeries_tab1_label";
 

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.UI.Components.InputFields;
@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CustomerTypeModal
     {
-        public override Size ModalSize => new Size(500, 309);
+        public override Size ModalSize => new Size(500, 320);
         public override string ModalTitleResourceName => "window_title_edit_customertype";
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {

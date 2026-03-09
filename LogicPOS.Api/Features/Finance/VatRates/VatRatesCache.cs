@@ -1,11 +1,9 @@
-﻿using LogicPOS.Api.Features.Common.Caching;
+using LogicPOS.Api.Features.Common.Caching;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace LogicPOS.Api.Features.Finance.VatRates
 {
-    public  class VatRatesCache
+    public class VatRatesCache
     {
         public static void Clear(IKeyedMemoryCache keyedMemoryCache)
         {

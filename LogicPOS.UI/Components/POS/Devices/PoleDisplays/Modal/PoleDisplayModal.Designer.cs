@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class PoleDisplayModal
     {
-        public override Size ModalSize => new Size(500, _modalMode == EntityEditionModalMode.Insert ? 600: 750);
+        public override Size ModalSize => new Size(500, 770);
         public override string ModalTitleResourceName => "window_title_edit_configurationpoledisplay";
 
         protected override void AddSensitiveFields()

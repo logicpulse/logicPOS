@@ -36,22 +36,6 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        protected override void AddColumns()
-        {
-            GridView.AppendColumn(Columns.CreateCodeColumn(0));
-            GridView.AppendColumn(Columns.CreateDesignationColumn(2));
-            GridView.AppendColumn(CreatePlaceColumn());
-            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
-        }
-        protected override void InitializeSort()
-        {
-            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
-            AddCodeSorting(0);
-            AddDesignationSorting(2);
-            AddPlaceSorting();
-            AddUpdatedAtSorting(4);
-        }
-
         protected override DeleteCommand GetDeleteCommand()
         {
             return new DeleteTableCommand(SelectedEntity.Id);

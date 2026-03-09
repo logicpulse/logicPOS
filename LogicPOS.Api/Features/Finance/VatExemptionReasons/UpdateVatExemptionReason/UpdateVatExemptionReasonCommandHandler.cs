@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.VatExemptionReasons.UpdateVatExemptionReason
 
         public override async Task<ErrorOr<Success>> Handle(UpdateVatExemptionReasonCommand command, CancellationToken cancellationToken = default)
         {
-            var result= await HandleUpdateCommandAsync($"/vatexemptionreasons/{command.Id}", command, cancellationToken);
+            var result= await HandleUpdateCommandAsync($"vatexemptionreasons/{command.Id}", command, cancellationToken);
             if (result.IsError == false)
             {
                 VatExemptionReasonCache.Clear(_keyedMemoryCache);

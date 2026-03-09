@@ -1,4 +1,4 @@
-﻿
+
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
@@ -15,7 +15,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CustomerModal
     {
-        public override Size ModalSize => new Size(400, 566);
+        public override Size ModalSize => new Size(400, 550);
         public override string ModalTitleResourceName => "window_title_edit_customer";
 
         protected override void Initialize()

@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class PriceTypeModal
     {
-        public override Size ModalSize => new Size(500, 309);
+        public override Size ModalSize => new Size(500, 320);
         public override string ModalTitleResourceName => "window_title_edit_configurationpricetype";
 
         #region Components

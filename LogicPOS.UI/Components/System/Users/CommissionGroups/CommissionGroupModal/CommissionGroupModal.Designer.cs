@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System;
@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
     public partial class CommissionGroupModal
     {
 
-        public override Size ModalSize => new Size(500, 360);
+        public override Size ModalSize => new Size(500, 380);
         public override string ModalTitleResourceName => "global_user_commission_groups";
         protected override void AddSensitiveFields()
         {

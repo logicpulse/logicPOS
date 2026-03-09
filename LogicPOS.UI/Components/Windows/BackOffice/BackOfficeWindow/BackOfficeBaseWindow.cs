@@ -347,7 +347,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             if (CustomAlerts.ShowQuitConfirmationAlert(this))
             {
-                Gtk.Application.Quit();
+                Program.Quit();
             }
 
             args.RetVal = true;

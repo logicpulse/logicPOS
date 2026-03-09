@@ -29,10 +29,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         {
             Page = new DetailsPage(SourceWindow);
             Page.GetDocumentType = () => GetDocumentType?.Invoke();
-            Page.Navigator.RightButtons.Remove(Page.Navigator.BtnRefresh);
-            Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnFilter);
-            Page.Navigator.SearchBox.Bar.Remove(Page.Navigator.SearchBox.BtnMore);
-            Page.Navigator.ExtraButtonSpace.Remove(Page.Navigator.BtnApply);
         }
 
         private void Design()

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System;
@@ -10,7 +10,7 @@ namespace LogicPOS.UI.Components.Modals
     public partial class InputReaderModal
     {
 
-        public override Size ModalSize => new Size(500, 400);
+        public override Size ModalSize => new Size(500, 380);
         public override string ModalTitleResourceName => "global_ConfigurationInputReader";
 
         protected override void AddSensitiveFields()

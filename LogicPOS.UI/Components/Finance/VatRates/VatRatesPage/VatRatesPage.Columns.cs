@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
@@ -18,5 +18,24 @@ namespace LogicPOS.UI.Components.Pages
             var title = GeneralUtils.GetResourceByName("global_vat_rate");
             return Columns.CreateColumn(title, 2, RenderValue);
         }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(CreateValueColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
+        }
+
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
+            AddValueSorting();
+            AddUpdatedAtSorting(3);
+        }
+
     }
 }

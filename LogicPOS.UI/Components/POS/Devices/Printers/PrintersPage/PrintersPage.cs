@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Printers.DeletePrinter;
@@ -16,6 +16,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         public PrintersPage(Window parent) : base(parent)
         {
+            DisableCommonFilterButtons();
         }
 
         protected override IRequest<ErrorOr<IEnumerable<Printer>>> GetAllQuery => new GetAllPrintersQuery();

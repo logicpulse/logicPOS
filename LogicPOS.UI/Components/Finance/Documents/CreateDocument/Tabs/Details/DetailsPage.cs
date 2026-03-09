@@ -16,8 +16,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
         public decimal ServicesTotalFinal => _entities.Where(detail => detail.Article.ClassAcronym == "S").Sum(detail => detail.TotalFinal);
         public Func<string> GetDocumentType { get; set; }
+        
         public DetailsPage(Window parent) : base(parent)
         {
+            Navigator.RightButtons.Remove(Navigator.BtnRefresh);
+            Navigator.SearchBox.Bar.Remove(Navigator.SearchBox.BtnFilter);
+            Navigator.SearchBox.Bar.Remove(Navigator.SearchBox.BtnMore);
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnApply);
+            Navigator.ExtraButtonSpace.Remove(Navigator.BtnShowHiddenData);
         }
 
         protected override void LoadEntities() { }

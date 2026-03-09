@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.UI.Components.InputFields;
@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class PrinterModal
     {
-        public override Size ModalSize => new Size(500, 450);
+        public override Size ModalSize => new Size(500, 420);
         public override string ModalTitleResourceName => "dialog_edit_DialogConfigurationPrinters_tab1_label";
 
         protected override void Initialize()

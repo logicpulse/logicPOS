@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System;
@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
     public partial class WeighingMachineModal
     {
 
-        public override Size ModalSize => new Size(500, 600);
+        public override Size ModalSize => new Size(500, 580);
         public override string ModalTitleResourceName => "global_ConfigurationWeighingMachine";
 
         protected override void AddSensitiveFields()
