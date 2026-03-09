@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.Windows
         public XAccordionChildButton BtnArticleTypes { get; } = new XAccordionChildButton(LocalizedString.Instance["global_article_types"]);
         public XAccordionChildButton BtnArticleClasses { get; } = new XAccordionChildButton(LocalizedString.Instance["global_article_class"]);
         public XAccordionChildButton BtnPriceTypes { get; } = new XAccordionChildButton(LocalizedString.Instance["global_price_type"]);
-        public XAccordionChildButton BtnSotck { get; } = new XAccordionChildButton(LocalizedString.Instance["global_stock_movements"]);
+        public XAccordionChildButton BtnStock { get; } = new XAccordionChildButton(LocalizedString.Instance["global_stock_movements"]);
         #endregion
 
         #region Fiscal
@@ -193,7 +193,7 @@ namespace LogicPOS.UI.Components.Windows
                 PanelArticles.PackStart(BtnArticleTypes.Button, false, false, 0);
                 PanelArticles.PackStart(BtnArticleClasses.Button, false, false, 0);
                 PanelArticles.PackStart(BtnPriceTypes.Button, false, false, 0);
-                PanelArticles.PackStart(BtnSotck.Button, false, false, 0);
+                PanelArticles.PackStart(BtnStock.Button, false, false, 0);
             }
 
             BtnArticlesSection.Button.Clicked += delegate { ShowPanel(PanelArticles); };
@@ -203,7 +203,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnArticleTypes.Button.Clicked += delegate { ShowPage(ArticleTypesPage.Instance, LocalizedString.Instance["global_article_types"]); };
             BtnArticleClasses.Button.Clicked += delegate { ShowPage(ArticleClassesPage.Instance, LocalizedString.Instance["global_article_class"]); };
             BtnPriceTypes.Button.Clicked += delegate { ShowPage(PriceTypesPage.Instance, LocalizedString.Instance["global_price_type"]); };
-            BtnSotck.Button.Clicked += BtnStock_Clicked;
+            BtnStock.Button.Clicked += BtnStock_Clicked;
         }
 
         private void AddFiscalSection()

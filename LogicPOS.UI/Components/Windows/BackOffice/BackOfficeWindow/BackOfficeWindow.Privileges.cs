@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Users;
 
 namespace LogicPOS.UI.Components.Windows
@@ -28,7 +28,7 @@ namespace LogicPOS.UI.Components.Windows
             BtnArticleTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLETYPE_MENU");
             BtnArticleClasses.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLECLASS_MENU");
             BtnPriceTypes.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPRICETYPE_MENU");
-            BtnSotck.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESTOCK_MENU");
+            BtnStock.Button.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESTOCK_MENU");
             #endregion
 
             #region FiscalYear
