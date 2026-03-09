@@ -306,8 +306,8 @@ namespace LogicPOS.UI.Components.Windows
                 ? string.Format(LocalizedString.Instance["global_new_version"], SystemVersionService.LastestVersion)
                 : $"Versão: {SystemVersionService.PosVersion}";
 
-            yTop = AppSettings.Instance.OperationMode.IsBackOfficeMode() ? yTop : yTop- 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
-            yBottom = AppSettings.Instance.OperationMode.IsBackOfficeMode() ? yBottom : yBottom - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
+            yTop = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yTop : yTop- 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
+            yBottom = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height>=800 ? yBottom : yBottom - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
 
             LabelUpdate = new Label(topText);
             LabelUpdate.ModifyFont(fontDescriptionStatusBar);
