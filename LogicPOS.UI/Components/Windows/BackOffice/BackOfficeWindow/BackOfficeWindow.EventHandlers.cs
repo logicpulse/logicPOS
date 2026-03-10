@@ -273,7 +273,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnUpdateSoftware_Clicked(object sender, EventArgs args)
         {
-            string updaterPath = SystemVersionService.UpdaterPath;
+            string updaterPath = SystemUpdateService.UpdaterPath;
 
             if (!File.Exists(updaterPath))
             {
@@ -293,7 +293,7 @@ namespace LogicPOS.UI.Components.Windows
 
             if (responseType == ResponseType.Yes)
             {
-                SystemVersionService.RunAutoUpdater(Instance);
+                SystemUpdateService.RunAutoUpdater(Instance);
             }
         }
         public void MenuBtn_Clicked(object sender, EventArgs e)

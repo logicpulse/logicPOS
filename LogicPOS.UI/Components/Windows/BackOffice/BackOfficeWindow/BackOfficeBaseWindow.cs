@@ -302,7 +302,7 @@ namespace LogicPOS.UI.Components.Windows
 
             // 3. Render Top Label
             // If Update: "New Version..." | If No Update: Current App Version
-            string topText = SystemVersionService.PosHasUpdate
+            string topText = SystemUpdateService.PosHasUpdate
                 ? string.Format(LocalizedString.Instance["global_new_version"], SystemVersionService.LastestVersion)
                 : $"Versão: {SystemVersionService.PosVersion}";
 
@@ -318,7 +318,7 @@ namespace LogicPOS.UI.Components.Windows
             PanelLeft.Add(LabelUpdate);
 
             // 4. Render Bottom Element
-            if (SystemVersionService.PosHasUpdate)
+            if (SystemUpdateService.PosHasUpdate)
             {
                 // Case A: Update Button
                 PanelLeft.Put(BtnUpdateSoftware, 0, yBottom);

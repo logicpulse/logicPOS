@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Application
                 InitializeTerminalDevices();
                 DialogThreadNotify?.WakeupMain();
                 LoginWindow.Instance.ShowAll();
-                if (SystemVersionService.PosHasUpdate && LicensingService.ConnectToWs())
+                if (SystemUpdateService.PosHasUpdate && LicensingService.ConnectToWs())
                 {
                     var responseType = new CustomAlert(LoginWindow.Instance)
                                 .WithMessage($"Há uma atualização para a aplicação. \nVersão atual: {SystemVersionService.PosVersion}\nNova Versão:{SystemVersionService.LastestVersion}\n\nDeseja atualizar a aplicação.")
@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Application
                                 .ShowAlert();
                     if (responseType == ResponseType.Yes)
                     {
-                        SystemVersionService.RunAutoUpdater(LoginWindow.Instance);
+                        SystemUpdateService.RunAutoUpdater(LoginWindow.Instance);
 
                     }
                 }

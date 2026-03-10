@@ -91,7 +91,7 @@ namespace LogicPOS.UI
                 }
 
                 SystemVersionService.Initialize();
-                SystemVersionService.CreateUpdateXml();
+                SystemUpdateService.CreateUpdateXml();
                 ShowVersionAlerts();
 
                 if (InitializeCulture() == false)
@@ -155,7 +155,7 @@ namespace LogicPOS.UI
                        .ShowAlert();
             }
 
-            if (SystemVersionService.PosHasUpdate || SystemVersionService.ApiHasUpdate)
+            if (SystemUpdateService.PosHasUpdate || SystemUpdateService.ApiHasUpdate)
             {
                 var message= $"Há uma actualização disponível para o sistema: versão {SystemVersionService.LastestVersion}\n\n" +
                              $"Versão atual do aplicativo: {SystemVersionService.PosVersion}\n" +
