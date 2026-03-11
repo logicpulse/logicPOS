@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
 using LogicPOS.Api.Features.Reports.GetArticleReportPdf;

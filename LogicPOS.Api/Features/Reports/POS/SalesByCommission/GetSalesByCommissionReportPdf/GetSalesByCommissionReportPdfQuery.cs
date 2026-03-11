@@ -1,17 +1,19 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Reports.Common;
-using MediatR;
 using System;
-using System.Collections.Generic;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf
 {
-    public class GetSalesByCommissionReportPdfQuery : StartAndEndDateReportQuery
+    public class GetSalesByCommissionReportPdfQuery : ReportQuery
     {
-        public GetSalesByCommissionReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public GetSalesByCommissionReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
         {
-            
+
+        }
+
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
+        {
+
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Common.Responses;
 using System.Net.Http;
@@ -16,9 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetStockByArticleGainReportPdf
 
         public async override Task<ErrorOr<TempFile>> Handle(GetStockByArticleGainReportPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/stock-by-article-gain/pdf{query.GetUrlQuery()}" +
-                                                                    $"&articleId={query.ArticleId}"+
-                                                                    $"&customerId={query.CustomerId}");
+            return await HandleGetFileQueryAsync($"reports/stock-by-article-gain/pdf{query.GetUrlQuery()}");
         }
     }
 }

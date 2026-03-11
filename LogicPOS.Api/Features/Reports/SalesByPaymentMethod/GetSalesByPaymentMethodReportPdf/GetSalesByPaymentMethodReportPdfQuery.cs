@@ -1,14 +1,19 @@
-﻿using ErrorOr;
 using LogicPOS.Api.Features.Reports.Common;
-using MediatR;
 using System;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesByPaymentMethodReportPdf
 {
-    public class GetSalesByPaymentMethodReportPdfQuery : StartAndEndDateReportQuery
+    public class GetSalesByPaymentMethodReportPdfQuery : ReportQuery
     {
-        public GetSalesByPaymentMethodReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public GetSalesByPaymentMethodReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
         {
+
+        }
+
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
+        {
+
         }
     }
 }

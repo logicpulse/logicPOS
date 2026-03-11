@@ -1,13 +1,16 @@
-﻿using ErrorOr;
 using LogicPOS.Api.Features.Reports.Common;
-using MediatR;
 using System;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetStockMovementReportPdf
 {
-    public class GetStockMovementsReportPdfQuery : StartAndEndDateReportQuery
+    public class GetStockMovementsReportPdfQuery : ReportQuery
     {
-        public GetStockMovementsReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public GetStockMovementsReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate,null, null)
+        {
+        }
+
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
         }
     }

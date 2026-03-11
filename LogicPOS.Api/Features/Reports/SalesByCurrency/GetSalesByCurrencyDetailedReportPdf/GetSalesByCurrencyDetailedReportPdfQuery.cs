@@ -1,14 +1,18 @@
-﻿using ErrorOr;
 using LogicPOS.Api.Features.Reports.Common;
-using MediatR;
 using System;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesByCurrencyDetailedReportPdf
 {
-    public class GetSalesByCurrencyDetailedReportPdfQuery : StartAndEndDateReportQuery
+    public class GetSalesByCurrencyDetailedReportPdfQuery : ReportQuery
     {
-        public GetSalesByCurrencyDetailedReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate)
+        public GetSalesByCurrencyDetailedReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
         {
+        }
+
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
+        {
+
         }
     }
 }
