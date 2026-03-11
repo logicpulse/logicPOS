@@ -4,6 +4,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -43,6 +44,13 @@ namespace LogicPOS.UI.Components.Modals
             if (AllFieldsAreValid() == false)
             {
                 Validate();
+                return;
+            }
+            if(TxtSupplier.SelectedEntity == null)
+            {
+                CustomAlerts.Warning()
+                            .WithMessage("Selecione um Fornecedor válido.")
+                            .ShowAlert();
                 return;
             }
 

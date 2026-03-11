@@ -161,7 +161,7 @@ namespace LogicPOS.UI.Components.Pages
                 CurrentQuery = GetDefaultQuery();
                 Refresh();
             }
-
+            SelectedHistories.Clear();
             PageChanged?.Invoke(this, EventArgs.Empty);
 
         }
