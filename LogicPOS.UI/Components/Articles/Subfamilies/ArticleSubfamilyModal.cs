@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Articles.Subfamilies.AddArticleSubfamily;
 using LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily;
@@ -73,7 +73,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 ShowImage();
             }
-            _comboPrinters.SelectedEntity = PrinterAssociationService.GetPrinter(_entity.Id);
+            _comboPrinters.SelectedEntity = PrinterAssociationService.GetEntityPrinter(_entity.Id);
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
 

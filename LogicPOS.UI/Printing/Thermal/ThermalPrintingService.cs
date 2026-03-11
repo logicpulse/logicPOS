@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Printing
             {
                 if (data.Items.Count == 1)
                 {
-                    var printer = PrinterAssociationService.GetPrinter(data.Items.First().Id);
+                    var printer = PrinterAssociationService.GetArticlePrinter(data.Items.First().Id);
                     if (printer != null)
                     {
                         new PosTicketPrinter(new Printer(printer.Designation), data).Print();

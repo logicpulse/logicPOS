@@ -204,8 +204,6 @@ namespace LogicPOS.UI.Components.Modals
             TxtSerialNumber.SelectEntityClicked += TxtSerialNumber_SelectEntityClicked;
         }
 
-
-
         private void InitializeTxtFamily()
         {
             TxtFamily = new TextBox(WindowSettings.Source,

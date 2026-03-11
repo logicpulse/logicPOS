@@ -57,8 +57,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
             }
 
             var data = new ArticleHistoryFilterModalData();
-           
-
+          
             if (string.IsNullOrWhiteSpace(TxtStartDate.Text) == false)
             {
                 data.StartDate = DateTime.Parse(TxtStartDate.Text);
@@ -75,12 +74,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
                 data.ArticleId = article.Id;
             }
 
-            if (TxtSerialNumber.SelectedEntity != null)
-            {
-                var articleHistory = (TxtSerialNumber.SelectedEntity as ArticleHistory);
-                data.SerialNumber = articleHistory.SerialNumber;
-            }
-            if (!string.IsNullOrEmpty(TxtSerialNumber.Text))
+            if (!string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
             {
                 data.SerialNumber = TxtSerialNumber.Text;
             }

@@ -48,9 +48,19 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 
         }
 
-        public static Printer GetPrinter(Guid entityId)
+        public static Printer GetEntityPrinter(Guid entityId)
         {
-            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetArticlePrinterQuery(entityId)).Result;
+            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetEntityPrinterQuery(entityId)).Result;
+            if (entityAssociatedResult.IsError)
+            {
+                return null;
+            }
+            return entityAssociatedResult.Value;
+        }
+
+        public static Printer GetArticlePrinter(Guid articleId)
+        {
+            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetArticlePrinterQuery(articleId)).Result;
             if (entityAssociatedResult.IsError)
             {
                 return null;

@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Modals
             var labelText = GeneralUtils.GetResourceByName("global_printers");
             if (_entity != null)
             {
-                var currentPrinter = PrinterAssociationService.GetPrinter(_entity.Id);
+                var currentPrinter = PrinterAssociationService.GetEntityPrinter(_entity.Id);
 
                 _comboPrinters = new EntityComboBox<Api.Entities.Printer>(labelText,
                                                                           printers,

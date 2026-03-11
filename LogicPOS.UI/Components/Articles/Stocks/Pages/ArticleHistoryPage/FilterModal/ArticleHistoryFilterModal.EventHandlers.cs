@@ -41,10 +41,12 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
             TxtArticle.Clear();
             TxtSerialNumber.Clear();
         }
+        
         private void ArticleAutocompleteLine_Selected(object article)
         {
             TxtArticle.SelectedEntity=article as ArticleViewModel;
         }
+        
         private void BtnSelectSerialNumber_Clicked(object sender, EventArgs e)
         {
             var page = new ArticleHistoryPage(null, PageOptions.SelectionPageOptions);
@@ -58,6 +60,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
                 TxtSerialNumber.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
@@ -72,7 +75,6 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
             }
         }
 
-       
         private void TxtStartDate_Entry_Changed(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(TxtStartDate.Text) && TxtStartDate.Text.Length >= 10)

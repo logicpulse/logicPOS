@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LogicPOS.Api.Features.Printers.PrinterAssociations.GetEntityAssociatedPrinterById
 {
-    public class GetEntityAssociatedPrinterByIdQueryHandler : RequestHandler<GetEntityAssociatedPrinterByIdQuery, ErrorOr<Printer>>
+    public class GetEntityPrinterQueryHandler : RequestHandler<GetEntityPrinterQuery, ErrorOr<Printer>>
     {
-        public GetEntityAssociatedPrinterByIdQueryHandler(IHttpClientFactory factory) : base(factory)
+        public GetEntityPrinterQueryHandler(IHttpClientFactory factory) : base(factory)
         {
         }
 
-        public async override Task<ErrorOr<Printer>> Handle(GetEntityAssociatedPrinterByIdQuery query, CancellationToken cancellationToken = default)
+        public async override Task<ErrorOr<Printer>> Handle(GetEntityPrinterQuery query, CancellationToken cancellationToken = default)
         {
             return await HandleGetQueryAsync<Printer>($"printers/associations/{query.Id}", cancellationToken);
         }

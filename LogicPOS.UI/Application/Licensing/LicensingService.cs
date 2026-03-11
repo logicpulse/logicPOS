@@ -146,7 +146,32 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static Version GetLatestSystemVersion()
         {
-//#if DEBUG
+            return GetLastestVersionFromDevelopment();
+            //return GetLatestVersionFromRelease();
+        }
+
+        private static Version GetLatestVersionFromRelease()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return new Version(0, 0, 0);
+            }
+
+            if (Version.TryParse(result.Value.Version, out var latestVersion))
+            {
+                return latestVersion;
+            }
+            else
+            {
+                Log.Warning("Received invalid version format from API: " + result.Value.Version);
+                return new Version(0, 0, 0);
+            }
+        }
+
+        private static Version GetLastestVersionFromDevelopment()
+        {
             string url = "https://box.track.pt/files/latest/update.xml";
 
             XmlDocument xml = new XmlDocument();
@@ -167,24 +192,6 @@ namespace LogicPOS.UI.Components.Licensing
 
                 return new Version(0, 0, 0);
             }
-//#else
-            var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
-            if (result.IsError)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return new Version(0, 0, 0);
-            }
-
-            if (Version.TryParse(result.Value.Version, out var latestVersion))
-            {
-                return latestVersion;
-            }
-            else
-            {
-                Log.Warning("Received invalid version format from API: " + result.Value.Version);
-                return new Version(0,0,0);
-            }
-//#endif
         }
     }
 }

@@ -145,10 +145,10 @@ namespace LogicPOS.UI.Components.Pages
                 return;
             }
 
-            CurrentQuery.StartDate = filterModalData?.StartDate ?? CurrentQuery.StartDate;
-            CurrentQuery.EndDate = filterModalData?.EndDate ?? CurrentQuery.EndDate;
-            CurrentQuery.ArticleId = filterModalData?.ArticleId ?? CurrentQuery.ArticleId;
-            CurrentQuery.Search = filterModalData?.SerialNumber ?? CurrentQuery.Search;
+            CurrentQuery.StartDate = filterModalData?.StartDate;
+            CurrentQuery.EndDate = filterModalData?.EndDate;
+            CurrentQuery.ArticleId = filterModalData?.ArticleId;
+            CurrentQuery.Search = filterModalData?.SerialNumber;
 
             Refresh();
 
