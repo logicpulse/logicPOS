@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using Gtk;
@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class CurrencyModal
     {
-        public override Size ModalSize => new Size(600, 500);
+        public override Size ModalSize => new Size(600, 475);
         public override string ModalTitleResourceName => "window_title_edit_configurationcurrency";
 
         protected override void AddSensitiveFields()

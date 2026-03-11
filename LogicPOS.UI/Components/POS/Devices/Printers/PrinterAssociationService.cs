@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.GetArticlePrinter;
 using LogicPOS.Api.Features.Printers.PrinterAssociations.AddPrinterAssociations;
 using LogicPOS.Api.Features.Printers.PrinterAssociations.GetEntityAssociatedPrinterById;
 using LogicPOS.Api.Features.Printers.PrinterAssociations.RemoveEntityAssociatedPrinter;
@@ -49,7 +50,7 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
 
         public static Printer GetPrinter(Guid entityId)
         {
-            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetEntityAssociatedPrinterByIdQuery(entityId)).Result;
+            var entityAssociatedResult = DependencyInjection.Mediator.Send(new GetArticlePrinterQuery(entityId)).Result;
             if (entityAssociatedResult.IsError)
             {
                 return null;

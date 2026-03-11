@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 
 namespace LogicPOS.UI.Printing.Thermal.Printers
 {
@@ -12,6 +13,7 @@ namespace LogicPOS.UI.Printing.Thermal.Printers
 
     public struct TicketItem
     {
+        public Guid Id { get; set; }
         public string Article { get; set; }
         public decimal Quantity { get; set; }
         public string Unit { get; set; }

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class MovementTypeModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 350);
         public override string ModalTitleResourceName => "window_title_edit_configurationplacemovementtype";
 
         protected override void AddSensitiveFields()

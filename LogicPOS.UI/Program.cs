@@ -155,17 +155,17 @@ namespace LogicPOS.UI
                        .ShowAlert();
             }
 
-            if (SystemUpdateService.PosHasUpdate || SystemUpdateService.ApiHasUpdate)
+            if (!ApiMonitorController.MonitorIsRunning() && SystemUpdateService.ApiHasUpdate)
             {
-                var message= $"Há uma actualização disponível para o sistema: versão {SystemVersionService.LastestVersion}\n\n" +
-                             $"Versão atual do aplicativo: {SystemVersionService.PosVersion}\n" +
+                var message =$"Há uma actualização disponível para a API: versão {SystemVersionService.LastestVersion}\n\n" +
                              $"Versão atual da API: {SystemVersionService.ApiVersion}\n\n" +
-                             $"Recomenda-se actualizar para a última versão para garantir a melhor experiência e acesso a novos recursos.";
+                             $"Recomenda-se actualizar (usando o logicpos-api-monitor) para a última versão para garantir a melhor experiência e acesso a novos recursos.";
                 SimpleAlerts.Warning()
                             .WithTitle("Atenção")
                             .WithMessage(message)
                             .ShowAlert();
             }
+
         }
 
         private static bool IsFirstLaunch()

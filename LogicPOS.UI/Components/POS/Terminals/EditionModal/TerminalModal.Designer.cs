@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class TerminalModal
     {
-        public override Size ModalSize => new Size(500, 550);
+        public override Size ModalSize => new Size(500, 480);
         public override string ModalTitleResourceName => "dialog_edit_ConfigurationPlaceTerminal_tab1_label";
 
         protected override void Initialize()

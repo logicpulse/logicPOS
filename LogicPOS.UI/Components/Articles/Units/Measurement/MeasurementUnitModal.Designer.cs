@@ -9,7 +9,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class MeasurementUnitModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 370);
         public override string ModalTitleResourceName => "global_unit_measure";
 
         #region Components

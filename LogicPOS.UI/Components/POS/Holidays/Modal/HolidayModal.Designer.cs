@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class HolidayModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 520);
         public override string ModalTitleResourceName => "global_holidays";
         protected override void AddSensitiveFields()
         {

@@ -181,6 +181,7 @@ namespace LogicPOS.UI.Components.POS
                 Table = SaleContext.CurrentTable.Designation,
                 Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
                 {
+                    Id=i.Article.Id,
                     Article = i.Article.Designation,
                     Quantity = i.Quantity,
                     Unit = i.Article.Unit

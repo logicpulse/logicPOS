@@ -293,6 +293,10 @@ namespace LogicPOS.UI.Components.Windows
 
             if (responseType == ResponseType.Yes)
             {
+                if (ApiMonitorController.MonitorIsRunning() && SystemUpdateService.ApiHasUpdate)
+                {
+                    ApiMonitorController.SendUpdateCommand();
+                }
                 SystemUpdateService.RunAutoUpdater(Instance);
             }
         }

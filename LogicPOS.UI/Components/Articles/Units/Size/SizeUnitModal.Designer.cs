@@ -8,7 +8,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class SizeUnitModal
     {
-        public override Size ModalSize => new Size(500, 500);
+        public override Size ModalSize => new Size(500, 330);
         public override string ModalTitleResourceName => "dialog_edit_ConfigurationUnitSize_tab1_label";
 
         #region Components

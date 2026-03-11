@@ -2,11 +2,13 @@ using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing.Thermal.Printers;
 using Serilog;
 using System;
+using System.Linq;
 using static LogicPOS.UI.Printing.InvoicePrinter;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 
@@ -32,6 +34,16 @@ namespace LogicPOS.UI.Printing
         {
             try
             {
+                if (data.Items.Count == 1)
+                {
+                    var printer = PrinterAssociationService.GetPrinter(data.Items.First().Id);
+                    if (printer != null)
+                    {
+                        new PosTicketPrinter(new Printer(printer.Designation), data).Print();
+                        return;
+                    }
+                }
+
                 if (Printer != null)
                 {
                     new PosTicketPrinter(Printer, data).Print();

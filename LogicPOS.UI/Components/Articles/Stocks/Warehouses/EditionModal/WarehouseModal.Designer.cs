@@ -13,7 +13,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class WarehouseModal
     {
-        public override Size ModalSize => new Size(500, 450);
+        public override Size ModalSize => new Size(500, 390);
 
         public override string ModalTitleResourceName => "global_warehouse";
 
