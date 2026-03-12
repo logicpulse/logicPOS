@@ -8,7 +8,7 @@ namespace LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf
     {
         public Guid? ArticleId;
 
-        public GetStockByArticleReportPdfQuery(DateTime startDate, DateTime endDate, Guid articleId) : base(startDate, endDate, null, null)
+        public GetStockByArticleReportPdfQuery(DateTime startDate, DateTime endDate, Guid? articleId) : base(startDate, endDate, null, null)
         {
             ArticleId = articleId;
         }

@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 
 namespace LogicPOS.UI.Components.Modals
@@ -9,6 +9,7 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtEndDate { get; set; }
         public TextBox TxtDocumentType { get; set; }
         public TextBox TxtCustomer { get; set; }
+        public TextBox TxtTerminal { get; set; }
         public TextBox TxtWarehouse { get; set; }
         public TextBox TxtFamily{ get; set; }
         public TextBox TxtSubfamily{ get; set; }

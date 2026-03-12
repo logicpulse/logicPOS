@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByPaymentMethodReportPdf
 {
     public class GetSalesByPaymentMethodReportPdfQuery : ReportQuery
     {
-        public GetSalesByPaymentMethodReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
+        public GetSalesByPaymentMethodReportPdfQuery(DateTime startDate,
+                                                     DateTime endDate,
+                                                     string documentType=null,
+                                                     Guid? terminalId=null) : base(startDate, endDate, documentType, terminalId)
         {
 
         }

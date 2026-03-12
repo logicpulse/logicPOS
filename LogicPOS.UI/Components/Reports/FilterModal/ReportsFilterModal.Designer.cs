@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -33,6 +33,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtFamily();
             InitializeTxtSerialNumber();
             InitializeTxtDocumentNumber();
+            InitializeTxtTerminal();
         }
         private void InitializeTxtCustomer()
         {
@@ -186,6 +187,20 @@ namespace LogicPOS.UI.Components.Modals
             TxtDocumentNumber.Entry.IsEditable = true;
             TxtDocumentNumber.OnCompletionSelected += c => SelectDocument(c as Document);
             TxtDocumentNumber.SelectEntityClicked += BtnSelectDocumentNumber_Clicked;
+        }
+
+        private void InitializeTxtTerminal()
+        {
+            TxtTerminal= new TextBox(this,
+                                              GeneralUtils.GetResourceByName("global_terminal"),
+                                              isRequired: false,
+                                              isValidatable: false,
+                                              includeSelectButton: true,
+                                              includeKeyBoardButton: false);
+
+            TxtTerminal.Entry.IsEditable = true;
+            TxtTerminal.OnCompletionSelected += c => SelectTerminal(c as Terminal);
+            TxtTerminal.SelectEntityClicked += BtnSelectTerminal_Clicked;
         }
     }
 }

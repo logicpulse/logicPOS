@@ -8,7 +8,10 @@ namespace LogicPOS.Api.Features.Reports.POS.SalesByTable.GetSalesByTableDetailed
 {
     public class GetSalesByTableDetailedReportPdfQuery : ReportQuery
     {
-        public GetSalesByTableDetailedReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate,null,null)
+        public GetSalesByTableDetailedReportPdfQuery(DateTime startDate, 
+                                                     DateTime endDate,
+                                                     string documentType=null,
+                                                     Guid? terminalId=null) : base(startDate, endDate,documentType, terminalId)
         {
         }
 

@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByEmployeeReportPdf
 {
     public class GetSalesByEmployeeReportPdfQuery : ReportQuery
     {
-        public GetSalesByEmployeeReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate,null,null)
+        public GetSalesByEmployeeReportPdfQuery(DateTime startDate, 
+                                                DateTime endDate,
+                                                string documentType=null,
+                                                Guid? terminalId=null) : base(startDate, endDate,documentType,terminalId)
         {
         }
 

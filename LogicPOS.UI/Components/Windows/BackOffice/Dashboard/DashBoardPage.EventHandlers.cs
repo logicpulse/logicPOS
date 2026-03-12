@@ -1,5 +1,7 @@
 using Gtk;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Windows;
@@ -81,7 +83,9 @@ namespace LogicPOS.UI.Components.Pages
 
             if (response == ResponseType.Ok)
             {
-                ReportsService.ShowSalesByDateReport(modal.StartDate, modal.EndDate);
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByDateReport(modal.StartDate, modal.EndDate, documentType, terminalId );
             }
             modal.Destroy();
         }

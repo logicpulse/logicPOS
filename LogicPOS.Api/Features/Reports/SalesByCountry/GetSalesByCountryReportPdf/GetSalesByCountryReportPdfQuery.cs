@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByCountryReportPdf
 {
     public class GetSalesByCountryReportPdfQuery : ReportQuery
     {
-        public GetSalesByCountryReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
+        public GetSalesByCountryReportPdfQuery(DateTime startDate, 
+                                               DateTime endDate,
+                                               string documentType=null,
+                                               Guid? terminalId=null) : base(startDate, endDate, documentType, terminalId)
         {
         }
 

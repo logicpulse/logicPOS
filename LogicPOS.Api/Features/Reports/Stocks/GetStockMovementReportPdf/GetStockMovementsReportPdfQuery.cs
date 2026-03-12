@@ -6,7 +6,11 @@ namespace LogicPOS.Api.Features.Reports.GetStockMovementReportPdf
 {
     public class GetStockMovementsReportPdfQuery : ReportQuery
     {
-        public GetStockMovementsReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate,null, null)
+        public GetStockMovementsReportPdfQuery(DateTime startDate, 
+                                               DateTime endDate,
+                                               string documentType,
+                                               Guid? terminalId
+                                               ) : base(startDate, endDate, documentType, terminalId)
         {
         }
 

@@ -60,14 +60,14 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetDeletedOrdersReportPdfQuery(startDate, endDate));
         }
 
-        public static void ShowSalesByDocumentTypeReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByDocumentTypeReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByDocumentTypeReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByDocumentTypeReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByDateReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByDateReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByDateReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByDateReportPdfQuery(startDate, endDate,documentType, terminalId));
         }
 
         private static void ShowReport(IRequest<ErrorOr<TempFile>> query)
@@ -81,59 +81,59 @@ namespace LogicPOS.UI.Services
 
             LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
-        public static void ShowSalesByUserReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByUserReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByEmployeeReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByEmployeeReportPdfQuery(startDate, endDate, documentType,terminalId));
         }
 
-        public static void ShowSalesByTerminalReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByTerminalReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByTerminalReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByTerminalReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByCustomerReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByCustomerReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCustomerReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCustomerReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByPaymentMethodReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByPaymentMethodReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPaymentMethodReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByPaymentMethodReportPdfQuery(startDate, endDate,documentType,terminalId));
         }
 
-        public static void ShowSalesByPaymentConditionReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByPaymentConditionReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPaymentConditionReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByPaymentConditionReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByCurrencyReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByCurrencyReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCurrencyReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCurrencyReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowArticleTotalSoldReport(DateTime startDate, DateTime endDate)
+        public static void ShowArticleTotalSoldReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetArticleTotalSoldReportPdfQuery(startDate, endDate));
+            ShowReport(new GetArticleTotalSoldReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByCountryReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByCountryReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCountryReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCountryReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByVatAndArticleTypeReport(DateTime startDate, DateTime endDate, Guid TaxId = new Guid())
+        public static void ShowSalesByVatAndArticleTypeReport(DateTime startDate, DateTime endDate, Guid? TaxId = null)
         {
             ShowReport(new GetSalesByVatAndArticleTypeReportPdfQuery(startDate, endDate, TaxId));
         }
 
-        public static void ShowSalesByVatAndArticleClassReport(DateTime startDate, DateTime endDate, Guid TaxId = new Guid())
+        public static void ShowSalesByVatAndArticleClassReport(DateTime startDate, DateTime endDate, Guid? TaxId = null)
         {
             ShowReport(new GetSalesByVatAndArticleClassReportPdfQuery(startDate, endDate, TaxId));
         }
 
-        public static void ShowDetailedSalesByCustomerReport(DateTime startDate, DateTime endDate)
+        public static void ShowDetailedSalesByCustomerReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCustomerDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCustomerDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         public static void ShowCustomerBalanceDetailsReport(DateTime startDate, DateTime endDate, Guid customerId)
@@ -141,49 +141,49 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetCustomerCurrentAccountPdfQuery() { StartDate = startDate, EndDate = endDate, CustomerId = customerId });
         }
 
-        public static void ShowSalesByDocumentDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByDocumentDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByDocumentTypeDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByDocumentTypeDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByDateDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByDateDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByDateDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByDateDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByUserDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByUserDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByEmployeeDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByEmployeeDetailedReportPdfQuery(startDate, endDate, documentType,terminalId));
         }
 
-        public static void ShowSalesByTerminalDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByTerminalDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByTerminalDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByTerminalDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByPaymentConditionDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByPaymentConditionDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPaymentConditionDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByPaymentConditionDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByPaymentMethodDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByPaymentMethodDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPaymentMethodDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByPaymentMethodDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByCurrencyDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByCurrencyDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCurrencyDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCurrencyDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByCountryDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByCountryDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCountryDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCountryDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByFamilyDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByFamilyDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByFamilyDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByFamilyDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         public static void ShowSalesBySubfamilyDetailsReport(GetSalesBySubFamilyDetailedReportPdfQuery query)
@@ -191,17 +191,17 @@ namespace LogicPOS.UI.Services
             ShowReport(query);
         }
 
-        public static void ShowSalesByPlaceDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByPlaceDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPlaceDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByPlaceDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByTableDetailsReport(DateTime startDate, DateTime endDate)
+        public static void ShowSalesByTableDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByTableDetailedReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByTableDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowSalesByVatGroupDetailsReport(DateTime startDate, DateTime endDate, Guid taxId = new Guid())
+        public static void ShowSalesByVatGroupDetailsReport(DateTime startDate, DateTime endDate, Guid? taxId = null)
         {
 
             ShowReport(new GetSalesByTaxGroupDetailedReportPdfQuery(startDate, endDate, taxId));
@@ -227,32 +227,32 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetSalesByCommissionReportPdfQuery(startDate, endDate));
         }
 
-        public static void ShowStockMovementsReport(DateTime startDate, DateTime endDate)
+        public static void ShowStockMovementsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate));
+            ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid articleId, Guid warehouseId, string serialNumber)
+        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? warehouseId, string serialNumber=null)
         {
             ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseId, serialNumber));
         }
 
-        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid articleId = new Guid())
+        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid? articleId=null)
         {
             ShowReport(new GetStockByArticleReportPdfQuery(startDate, endDate, articleId));
         }
 
-        public static void ShowStockBySupplierReport(DateTime startDate, DateTime endDate, Guid supplierId = new Guid(), string documentNumber = "")
+        public static void ShowStockBySupplierReport(DateTime startDate, DateTime endDate, Guid? supplierId = null, string documentNumber = null)
         {
             ShowReport(new GetStockBySupplierReportPdfQuery(startDate, endDate, supplierId, documentNumber));
         }
 
-        public static void ShowStockByArticleGainReport(DateTime startDate, DateTime endDate, Guid articleId = new Guid(), Guid customerId = new Guid())
+        public static void ShowStockByArticleGainReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? customerId)
         {
             ShowReport(new GetStockByArticleGainReportPdfQuery(startDate, endDate, articleId, customerId));
         }
 
-        public static void ShowSystemAuditsReport(DateTime startDate, DateTime endDate, Guid terminalId= new Guid())
+        public static void ShowSystemAuditsReport(DateTime startDate, DateTime endDate, Guid? terminalId)
         {
             ShowReport(new GetSystemAuditsReportPdfQuery(startDate, endDate, terminalId));
         }

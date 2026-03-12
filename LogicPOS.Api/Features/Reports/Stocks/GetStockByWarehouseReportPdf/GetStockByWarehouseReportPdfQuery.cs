@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Reports.GetStockReportPdf
             DateTime endDate,
             Guid? articleId,
             Guid? warehouseId,
-            string serialNumber) : base(startDate, endDate, null, null)
+            string serialNumber=null) : base(startDate, endDate, null, null)
         {
             ArticleId = articleId;
             WarehouseId = warehouseId;

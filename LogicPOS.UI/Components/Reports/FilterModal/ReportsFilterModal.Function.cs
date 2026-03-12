@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -46,6 +46,12 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtDocumentNumber.Text=entity.Number;
             TxtDocumentNumber.SelectedEntity= entity;
+        }
+
+        public void SelectTerminal(Terminal entity)
+        {
+            TxtTerminal.Text = entity.Designation;
+            TxtTerminal.SelectedEntity = entity;
         }
 
 

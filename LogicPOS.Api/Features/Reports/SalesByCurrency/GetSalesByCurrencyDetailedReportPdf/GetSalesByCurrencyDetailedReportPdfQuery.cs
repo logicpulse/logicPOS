@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByCurrencyDetailedReportPdf
 {
     public class GetSalesByCurrencyDetailedReportPdfQuery : ReportQuery
     {
-        public GetSalesByCurrencyDetailedReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
+        public GetSalesByCurrencyDetailedReportPdfQuery(DateTime startDate, 
+                                                        DateTime endDate,
+                                                        string documentType=null,
+                                                        Guid? terminalId=null) : base(startDate, endDate, documentType, terminalId)
         {
         }
 

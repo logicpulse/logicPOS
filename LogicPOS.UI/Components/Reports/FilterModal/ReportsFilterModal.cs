@@ -62,6 +62,7 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtStartDate.Component, false, false, 0);
             vbox.PackStart(TxtEndDate.Component, false, false, 0);
             vbox.PackStart(TxtDocumentType.Component, false, false, 0);
+            vbox.PackStart(TxtTerminal.Component, false, false, 0);
             vbox.PackStart(TxtCustomer.Component, false, false, 0);
             vbox.PackStart(TxtWarehouse.Component, false, false, 0);
             vbox.PackStart(TxtVatRate.Component, false, false, 0);

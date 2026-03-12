@@ -1,12 +1,9 @@
-
-
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
@@ -51,6 +48,20 @@ namespace LogicPOS.UI.Components.Modals
             {
                 TxtDocumentType.Text = page.SelectedEntity.Designation;
                 TxtDocumentType.SelectedEntity = page.SelectedEntity;
+            }
+        }
+
+        private void BtnSelectTerminal_Clicked(object sender, EventArgs e)
+        {
+            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            ResponseType response = (ResponseType)selectTerminalModal.Run();
+            selectTerminalModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtTerminal.Text = page.SelectedEntity.Designation;
+                TxtTerminal.SelectedEntity = page.SelectedEntity;
             }
         }
 

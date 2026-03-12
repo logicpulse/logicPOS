@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf
 {
     public class GetArticleTotalSoldReportPdfQuery : ReportQuery
     {
-        public GetArticleTotalSoldReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
+        public GetArticleTotalSoldReportPdfQuery(DateTime startDate, 
+                                                 DateTime endDate,
+                                                 string documentType=null,
+                                                 Guid? terminalId=null) : base(startDate, endDate, documentType, terminalId)
         {
         }
 

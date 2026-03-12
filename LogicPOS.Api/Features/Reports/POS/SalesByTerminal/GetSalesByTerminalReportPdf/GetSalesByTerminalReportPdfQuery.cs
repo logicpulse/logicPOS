@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalRe
 {
     public class GetSalesByTerminalReportPdfQuery : ReportQuery
     {
-        public GetSalesByTerminalReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null,null)
+        public GetSalesByTerminalReportPdfQuery(DateTime startDate, 
+                                                DateTime endDate,
+                                                string documentType,
+                                                Guid? terminalId) : base(startDate, endDate, documentType, terminalId)
         {
         }
 
