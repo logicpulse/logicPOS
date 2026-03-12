@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Buttons;
@@ -60,6 +60,7 @@ namespace LogicPOS.UI.Components.Menus
         {
             Entities.Clear();
             var filteredEntities = FilterEntities(TablesService.GetAllTables());
+            filteredEntities = filteredEntities.Where(x => x.IsDeleted == false);
             Entities.AddRange(filteredEntities);
         }
 
@@ -103,14 +104,14 @@ namespace LogicPOS.UI.Components.Menus
         {
             if (MenuPlaces.SelectedEntity != null)
             {
-                entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id);
+                entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.IsDeleted==false);
             }
 
             if (_mode==MenuMode.SelectFree) 
             {
                 if (MenuPlaces.SelectedEntity != null)
                 {
-                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Status==TableStatus.Free);
+                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Status==TableStatus.Free && x.IsDeleted == false);
                 }
 
             }
@@ -119,14 +120,14 @@ namespace LogicPOS.UI.Components.Menus
             {
                 if (MenuPlaces.SelectedEntity != null)
                 {
-                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Id != SaleContext.CurrentTable.Id);
+                    entities = entities.Where(x => x.PlaceId == MenuPlaces.SelectedEntity.Id && x.Id != SaleContext.CurrentTable.Id && x.IsDeleted == false);
                 }
 
             }
 
             if (Filter != null)
             {
-                entities = entities.Where(x => x.Status == Filter);
+                entities = entities.Where(x => x.Status == Filter && x.IsDeleted == false);
             }
 
             return entities;
