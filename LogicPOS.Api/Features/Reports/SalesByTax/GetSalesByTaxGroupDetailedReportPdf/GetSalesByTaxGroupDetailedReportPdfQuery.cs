@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByTaxGroupDetailedReportPdf
         {
             if (TaxId != null)
             {
-                urlQueryBuilder.Append($"TaxId={TaxId}");
+                urlQueryBuilder.Append($"&TaxId={TaxId}");
             }
         }
     }

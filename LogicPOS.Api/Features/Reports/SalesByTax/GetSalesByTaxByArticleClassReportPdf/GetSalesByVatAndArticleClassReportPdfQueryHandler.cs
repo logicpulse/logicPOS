@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Common.Responses;
 using System.Net.Http;
@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleClassReportPdf
 
         public override async Task<ErrorOr<TempFile>> Handle(GetSalesByVatAndArticleClassReportPdfQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/sales-by-vatrate-and-articleclass/{request.TaxId}/pdf{request.GetUrlQuery()}");
+            return await HandleGetFileQueryAsync($"reports/sales-by-vatrate-and-articleclass/pdf/{request.TaxId}{request.GetUrlQuery()}");
         }
     }
 }

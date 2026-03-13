@@ -11,7 +11,7 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByPaymentConditionDetailedReport
         public GetSalesByPaymentConditionDetailedReportPdfQuery(DateTime startDate, 
                                                                 DateTime endDate,
                                                                 string documentType=null,
-                                                                Guid? terminalId=null) : base(startDate, endDate,null,null)
+                                                                Guid? terminalId=null) : base(startDate, endDate,documentType,terminalId)
         {
         }
 

@@ -17,7 +17,7 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleClassReportPdf
         {
             if (TaxId != null)
             {
-                urlQueryBuilder.Append($"TaxId={TaxId}");
+                urlQueryBuilder.Append($"&TaxId={TaxId}");
             }
         }
     }

@@ -446,7 +446,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             if (modal.TxtArticle.SelectedEntity != null)
             {
-                query.ArticleCode = (modal.TxtArticle.SelectedEntity as ArticleViewModel).Code;
+                query.ArticleCode = (modal.TxtArticle.SelectedEntity as Article)?.Code;
             }
 
             if (response == ResponseType.Ok)
