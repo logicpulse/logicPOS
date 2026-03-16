@@ -6,7 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Xml.Linq;
 
-namespace LogicPOS.UI.Application
+namespace LogicPOS.UI.Application.Services
 {
     public static class SystemUpdateService
     {

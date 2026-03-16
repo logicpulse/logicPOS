@@ -3,7 +3,7 @@ using Gtk;
 using logicpos;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;

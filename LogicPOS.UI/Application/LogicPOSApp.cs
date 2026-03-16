@@ -5,6 +5,7 @@ using logicpos.Classes.Logic.Hardware;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Screen;
+using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
 using LogicPOS.UI.Components.Terminals;

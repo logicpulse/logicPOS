@@ -5,7 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace LogicPOS.UI.Application
+namespace LogicPOS.UI.Application.Services
 {
     public static class SystemVersionService
     {

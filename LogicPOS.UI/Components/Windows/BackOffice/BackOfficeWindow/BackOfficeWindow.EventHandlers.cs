@@ -6,7 +6,7 @@ using LogicPOS.Api.Features.Database;
 using LogicPOS.Api.Features.Finance.Saft.GetSaft;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Customers;

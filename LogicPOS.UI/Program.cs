@@ -3,7 +3,7 @@ using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Application.Utils;
+using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Services;
@@ -68,10 +68,10 @@ namespace LogicPOS.UI
                 ConfigureLogging();
                 Log.Information("Initializing application...");
 
-                if (IsFirstLaunch())
+                if (MigratorService.HasOldPosSqliteDatabase())
                 {
-                    Log.Information("First launch detected, starting migrator...");
-                    MigratorUtility.LaunchMigrator();
+                    Log.Information("Old pos sqlite database file detected...");
+                    MigratorService.LaunchMigrator();
                 }
 
                 if (ProgramIsAlreadyRunning())
@@ -154,11 +154,6 @@ namespace LogicPOS.UI
                        .WithMessage($"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
                        .ShowAlert();
             }
-        }
-
-        private static bool IsFirstLaunch()
-        {
-            return File.Exists("terminal.id") == false;
         }
 
         public static void Quit()

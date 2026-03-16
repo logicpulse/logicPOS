@@ -1,13 +1,35 @@
 using Serilog;
+using System;
 using System.IO;
 using System.Windows;
 
-namespace LogicPOS.UI.Application.Utils
+namespace LogicPOS.UI.Application.Services
 {
-    public static class MigratorUtility
+    public static class MigratorService
     {
         private const string MigratorExecutablePath = "migrator\\lpmigrator.exe";
         public static bool MigratorExists => File.Exists(MigratorExecutablePath);
+
+        public static bool HasOldPosSqliteDatabase() => File.Exists("logicposdb.db");
+        
+        private static void HideOldPosSQliteDatabase()
+        {
+            Log.Information("Hiding old pos sqlite database");
+            if(!File.Exists("logicposdb.db"))
+            {
+                Log.Warning("Could not find old pos sqlite database");
+                return;
+            }
+
+            try
+            {
+                File.Move("logicposdb.db", "logicposdb.db.old");
+            }
+            catch (Exception ex) {
+                Log.Error(ex, "Could not rename the file logicposdb.bd to hide it");
+                MessageBox.Show("Ocorreu um erro ao renomear o ficheiro logicposdb.bd: \n" + ex.Message);
+            }
+        }
 
         public static void LaunchMigrator()
         {
@@ -40,6 +62,9 @@ namespace LogicPOS.UI.Application.Utils
                 {
                     process.WaitForExit();
                 }
+
+                HideOldPosSQliteDatabase();
+
             }
             catch (System.Exception ex)
             {
