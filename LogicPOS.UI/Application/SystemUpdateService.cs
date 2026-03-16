@@ -1,4 +1,5 @@
 using AutoUpdaterDotNET;
+using LogicPOS.Api.Features.System.Monitor.CreateUpdateSignal;
 using Serilog;
 using System;
 using System.Drawing;
@@ -74,6 +75,11 @@ namespace LogicPOS.UI.Application
             xml.Save(path);
         }
 
+        public static bool SendUpdateSignalToApi()
+        {
+            var result = DependencyInjection.Mediator.Send(new CreateUpdateSignalCommand()).Result;
+            return !result.IsError;
+        }
        
     }
 }

@@ -293,13 +293,14 @@ namespace LogicPOS.UI.Components.Windows
 
             if (responseType == ResponseType.Yes)
             {
-                if (ApiMonitorController.MonitorIsRunning() && SystemUpdateService.ApiHasUpdate)
+                if (SystemUpdateService.ApiHasUpdate)
                 {
-                    ApiMonitorController.SendUpdateCommand();
+                    SystemUpdateService.SendUpdateSignalToApi();
                 }
                 SystemUpdateService.RunAutoUpdater(Instance);
             }
         }
+       
         public void MenuBtn_Clicked(object sender, EventArgs e)
         {
             IconButtonWithText button = (IconButtonWithText)sender;

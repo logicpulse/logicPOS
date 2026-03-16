@@ -48,10 +48,7 @@ namespace LogicPOS.UI.Application
                                 .ShowAlert();
                     if (responseType == ResponseType.Yes)
                     {
-                        if (ApiMonitorController.MonitorIsRunning() && SystemUpdateService.ApiHasUpdate)
-                        {
-                            ApiMonitorController.SendUpdateCommand();
-                        }
+                        SystemUpdateService.SendUpdateSignalToApi();
                         SystemUpdateService.RunAutoUpdater(LoginWindow.Instance);
                     }
                 }

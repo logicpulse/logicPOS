@@ -154,18 +154,6 @@ namespace LogicPOS.UI
                        .WithMessage($"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
                        .ShowAlert();
             }
-
-            if (!ApiMonitorController.MonitorIsRunning() && SystemUpdateService.ApiHasUpdate)
-            {
-                var message =$"Há uma actualização disponível para a API: versão {SystemVersionService.LastestVersion}\n\n" +
-                             $"Versão atual da API: {SystemVersionService.ApiVersion}\n\n" +
-                             $"Recomenda-se actualizar (usando o Monitor da API) para a última versão para garantir a melhor experiência e acesso a novos recursos.";
-                SimpleAlerts.Warning()
-                            .WithTitle("Atenção")
-                            .WithMessage(message)
-                            .ShowAlert();
-            }
-
         }
 
         private static bool IsFirstLaunch()
