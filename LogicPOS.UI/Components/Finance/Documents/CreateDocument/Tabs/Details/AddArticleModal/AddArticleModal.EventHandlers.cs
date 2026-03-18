@@ -37,6 +37,11 @@ namespace LogicPOS.UI.Components.Modals
                 CreateArticleAndSelect();
 
             }
+            if (TxtArticle.SelectedEntity != null && (TxtArticle.SelectedEntity as ArticleViewModel).Designation != TxtArticle.Entry.Text)
+            {
+                CreateArticleAndSelect();
+
+            }
 
             if (_mode == DocumentDetailModalMode.Update || _mode == DocumentDetailModalMode.CreditNoteUpdate)
             {
@@ -119,6 +124,7 @@ namespace LogicPOS.UI.Components.Modals
 
             ArticlesService.RefreshArticlesCache();
             var documentDetail = ArticlesService.GetArticleViewModel(articleResult.Value);
+            documentDetail.DefaultQuantity = decimal.Parse(TxtQuantity.Text);
             SelectArticle(documentDetail);
         }
 

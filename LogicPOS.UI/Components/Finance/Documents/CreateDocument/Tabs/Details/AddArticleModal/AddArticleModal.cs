@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Articles.Subfamilies;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates;
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Components.Modals
                 DisableFields();
             }
 
-            if (_mode == DocumentDetailModalMode.Update || _mode == DocumentDetailModalMode.CreditNoteUpdate)
+            if (_mode == DocumentDetailModalMode.CreditNoteUpdate)
             {
                 TxtArticle.Component.Sensitive = false;
                 TxtSubFamily.Component.Sensitive= false;
@@ -82,6 +83,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtArticle.Text = detail.Designation;
             TxtFamily.Text = detail.Article.Family;
             TxtSubFamily.Text = detail.Article.Subfamily;
+            TxtSubFamily.SelectedEntity = ArticleSubfamiliesService.ArticleSubfamilies.FirstOrDefault(sf => sf.Designation == detail.Article.Subfamily);
             TxtPrice.Text = detail.UnitPrice.ToString("F2");
             TxtQuantity.Text = detail.Quantity.ToString("F2");
             TxtDiscount.Text = detail.Discount.ToString("F2");
@@ -140,6 +142,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtNotes.Text = article.Notes;
             TxtFamily.Text = article.Family;
             TxtSubFamily.Text = article.Subfamily;
+            TxtSubFamily.SelectedEntity= ArticleSubfamiliesService.ArticleSubfamilies.FirstOrDefault(sf => sf.Designation == article.Subfamily);
 
             TxtFamily.BtnSelect.Sensitive = false;
             TxtSubFamily.BtnSelect.Sensitive = false;
