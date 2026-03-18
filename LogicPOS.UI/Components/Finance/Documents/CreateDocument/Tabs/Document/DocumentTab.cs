@@ -3,7 +3,6 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
-using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;

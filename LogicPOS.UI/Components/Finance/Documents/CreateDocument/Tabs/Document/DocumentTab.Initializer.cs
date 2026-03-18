@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void Initialize()
         {
             InitializeTxtDocumentType();
-            InitializeTxtPaymnentCondition();
+            InitializeTxtPaymentCondition();
             if (SinglePaymentMethod)
             {
                 InitializeTxtPaymnentMethod();
@@ -90,7 +90,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             }
         }
 
-        private void InitializeTxtPaymnentCondition()
+        private void InitializeTxtPaymentCondition()
         {
             TxtPaymentCondition = new TextBox(SourceWindow,
                                                    GeneralUtils.GetResourceByName("global_payment_condition"),

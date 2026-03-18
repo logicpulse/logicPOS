@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Services;

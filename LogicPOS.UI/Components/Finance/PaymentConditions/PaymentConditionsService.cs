@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.PaymentConditions.GetAllPaymentCondition;
 using LogicPOS.UI.Errors;
@@ -12,6 +12,7 @@ namespace LogicPOS.UI.Components.Finance.PaymentConditions
     {
         private static List<PaymentCondition> _paymentConditins;
 
+        public static PaymentCondition Default => PaymentConditions.FirstOrDefault(c => c.Acronym.ToUpper() == "PP");
         public static List<PaymentCondition> PaymentConditions
         {
             get

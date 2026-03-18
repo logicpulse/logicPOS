@@ -1,11 +1,6 @@
-using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Globalization;
-using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
-using Spire.Pdf.General.Paper.Uof;
-using System;
-using System.Collections.Generic;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -13,12 +8,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public override bool IsValid()
         {
-            if (TxtDocumentType.SelectedEntity == null )
+            if (TxtDocumentType.SelectedEntity == null)
             {
                 return false;
             }
 
-            if(SinglePaymentMethod && TxtPaymentMethod.IsValid() == false)
+            if (SinglePaymentMethod && TxtPaymentMethod.IsValid() == false)
             {
                 return false;
             }
@@ -29,14 +24,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                    TxtOriginDocument.IsValid() &&
                    TxtCopyDocument.IsValid() &&
                    TxtNotes.IsValid();
-                   
+
         }
 
         public DocumentTypeAnalyzer? DocumentTypeAnalyzer => GetDocumentType()?.Analyzer;
 
         private void UpdateValidatableFields()
         {
-            if(DocumentTypeAnalyzer == null)
+            if (DocumentTypeAnalyzer == null)
             {
                 return;
             }
@@ -52,11 +47,16 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 TxtNotes.Require(false);
                 return;
             }
-            
+
             if (DocumentTypeAnalyzer.Value.IsInformative())
             {
                 TxtOriginDocument.Require(false, false);
-                TxtPaymentCondition.Require(true);
+                TxtPaymentCondition.IsRequired = true;
+                TxtPaymentCondition.Component.Sensitive = true;
+                if (PaymentConditionsService.Default != null)
+                {
+                    SelectPaymentCondition(PaymentConditionsService.Default);
+                }
                 if (SinglePaymentMethod)
                 {
                     TxtPaymentMethod.Require(false, false);
@@ -68,7 +68,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             if (DocumentTypeAnalyzer.Value.IsInvoice())
             {
                 TxtOriginDocument.Require(false);
-                TxtPaymentCondition.Require(true);
+                TxtPaymentCondition.IsRequired = true;
+                TxtPaymentCondition.Component.Sensitive = true;
+                if (PaymentConditionsService.Default != null)
+                {
+                    SelectPaymentCondition(PaymentConditionsService.Default);
+                }
                 if (SinglePaymentMethod)
                 {
                     TxtPaymentMethod.Require(false, false);
@@ -81,7 +86,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 TxtOriginDocument.Require(false, false);
                 TxtPaymentCondition.Require(false, false);
-                if(SinglePaymentMethod)
+                if (SinglePaymentMethod)
                 {
                     TxtPaymentMethod.Require(true, true);
                 }
@@ -110,7 +115,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 }
                 TxtNotes.Require(true);
                 TxtNotes.Label.Text = "Motivo";
-            } else
+            }
+            else
             {
                 TxtNotes.Label.Text = LocalizedString.Instance["global_notes"];
             }
