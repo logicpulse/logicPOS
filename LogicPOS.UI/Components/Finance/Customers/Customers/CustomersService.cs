@@ -15,8 +15,21 @@ namespace LogicPOS.UI.Components.Finance.Customers
     public static class CustomersService
     {
         private static Customer _default;
+        private static List<Customer> _customers;
+        public static List<Customer> Customers
+        {
+            get
+            {
+                if (_customers == null)
+                {
+                    _customers = GetAllCustomers();
+                }
 
-        public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Select(c => new AutoCompleteLine
+                return _customers;
+            }
+        }
+
+public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Select(c => new AutoCompleteLine
         {
             Id = c.Id,
             Name = c.Name

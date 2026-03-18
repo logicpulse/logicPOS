@@ -2,10 +2,14 @@ using ErrorOr;
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.PaymentConditions;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -62,16 +66,36 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 Clear();
             }
+          
         }
         private void TxtCustomer_ClipboardPasted(object sender, EventArgs e)
         {
             Clear();
+            if (CustomersService.Customers.Any(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text))
+            {
+                CustomAlerts.Error().WithMessage("# Erro (conflict):\r\n" +
+                                                 "Descrição: Nome ou número fiscal especificado não coincide com o cliente registado\r\n\r\n" +
+                                                 "# Mais detalhes\r\n" +
+                                                 "Título: Conflict\r\n" +
+                                                 "Detalhe: Nome ou número fiscal especificado não coincide com o cliente registado")
+                                    .ShowAlert();
+            }
         }
         private void TxtFiscalNumber_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
             {
                 Clear();
+            }
+
+            if(CustomersService.Customers.Any(x=>x.FiscalNumber==TxtFiscalNumber.Text && x.Name != TxtCustomer.Text))
+            {
+                CustomAlerts.Error().WithMessage("# Erro (conflict):\r\n" +
+                                                 "Descrição: Nome ou número fiscal especificado não coincide com o cliente registado\r\n\r\n" +
+                                                 "# Mais detalhes\r\n" +
+                                                 "Título: Conflict\r\n" +
+                                                 "Detalhe: Nome ou número fiscal especificado não coincide com o cliente registado")
+                                    .ShowAlert();
             }
         }
     }
