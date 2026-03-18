@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public string Type { get; set; }
         public string Status { get; set; }
         public AgtInfo AgtInfo { get; set; }
-        public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;
+        public bool HasValidTimeToCancel => CreatedAt.Month == DateTime.Now.Month;
         public DateTime? ShipFromAddressDeliveryDate { get; set; }
         public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
         public bool IsDraft { get; set; }
@@ -28,7 +28,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public List<string> RelatedDocuments { get; set; }
         public bool Paid { get; set; }
         public bool IsActive => Status == "N" && IsDraft == false;
-        public bool IsCancellable => IsActive && HasPassed48Hours == false;
+        public bool IsCancellable => IsActive && HasValidTimeToCancel;
         public bool IsPayable => IsActive && Paid == false && (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsDebitNote());
         public bool IsAgtDocument => (TypeAnalyzer.IsInvoice() || TypeAnalyzer.IsInvoiceReceipt() || TypeAnalyzer.IsCreditNote() || TypeAnalyzer.IsDebitNote()) && IsDraft == false;
         public bool IsAtDocument => TypeAnalyzer.IsWayBill() && IsDraft == false;
