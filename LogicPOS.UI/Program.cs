@@ -9,8 +9,10 @@ using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Services;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 
 
@@ -122,16 +124,12 @@ namespace LogicPOS.UI
 
         private static bool ProgramIsAlreadyRunning()
         {
-            using (var singleProgramInstance = new SingleProgramInstance())
+            var ins = Process.GetProcessesByName("logicpos");
+            if (ins.Length > 1)
             {
-                if (singleProgramInstance.IsSingleInstance == false)
-                {
-                    Log.Warning("Another instance is already running, exiting application.");
-                    SimpleAlerts.ShowInstanceAlreadyRunningAlert();
-                    return true;
-                }
+                Log.Warning("Another instance is already running, exiting application.");
+                return true;
             }
-
             return false;
         }
 

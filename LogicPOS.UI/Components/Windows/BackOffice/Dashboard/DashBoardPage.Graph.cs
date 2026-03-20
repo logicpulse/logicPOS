@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Pages
 
             DateTimeAxis dateTimeAxis = new DateTimeAxis(0, AxisLocation.Bottom);
 
-            dateTimeAxis.Padding = 5;
+            dateTimeAxis.Padding = 10;
             dateTimeAxis.ShowGridLines = true;
             dateTimeAxis.ShowTicks = true;
             dateTimeAxis.ShowTickLabels = true;
@@ -68,8 +68,6 @@ namespace LogicPOS.UI.Components.Pages
                     {
                         grossTotal = 0;
                     }
-
-                    treeStore.AppendValues(new DateTime(year, monthSale.Month, 1), grossTotal);
                 }
                 for (int month = 1; month <= 12; month++)
                 {
@@ -78,7 +76,7 @@ namespace LogicPOS.UI.Components.Pages
                     {
                         grossTotal = 0;
                     }
-                    treeStore.AppendValues(new DateTime(year, month, 1), grossTotal);
+                    treeStore.AppendValues(new DateTime(year, month, 1), Math.Round(grossTotal,2));
 
                 }
 

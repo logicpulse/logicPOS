@@ -1,9 +1,13 @@
 using AutoUpdaterDotNET;
 using LogicPOS.Api.Features.System.Monitor.CreateUpdateSignal;
+using LogicPOS.UI.Alerts;
 using Serilog;
 using System;
 using System.Drawing;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace LogicPOS.UI.Application.Services
@@ -15,6 +19,17 @@ namespace LogicPOS.UI.Application.Services
         public static bool ApiHasUpdate => SystemVersionService.LastestVersion > SystemVersionService.ApiVersion;
 
         public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "AutoUpdater.Net.dll");
+
+
+        public static async Task<bool> UpdateZipFileIsAvailable(string url = "https://box.track.pt/files/latest/logicpos_1.5.zip")
+        {
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Head, url);
+            var response = await client.SendAsync(request);
+
+            return response.StatusCode == HttpStatusCode.OK;
+        }
 
         public static void RunAutoUpdater(Gtk.Window instance = null)
         {
@@ -29,7 +44,17 @@ namespace LogicPOS.UI.Application.Services
             AutoUpdater.Icon = (Bitmap)Bitmap.FromFile("Assets\\Images\\application.ico");
             AutoUpdater.InstalledVersion = SystemVersionService.PosVersion;
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
-            AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
+            if (UpdateZipFileIsAvailable().Result)
+            {
+                AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
+            }
+            else
+            {
+                Log.Error("The update zip file is not available at the specified URL.");
+                CustomAlerts.Error()
+                    .WithMessage("Ocorreu um erro ao tentar baixar os arquivos de atualização. \n\nTente novamente mais tarde.")
+                    .ShowAlert();
+            }
         }
 
         private static void AutoUpdaterOnCheckForUpdateEvent(UpdateInfoEventArgs args)
@@ -80,6 +105,6 @@ namespace LogicPOS.UI.Application.Services
             var result = DependencyInjection.Mediator.Send(new CreateUpdateSignalCommand()).Result;
             return !result.IsError;
         }
-       
+
     }
 }
