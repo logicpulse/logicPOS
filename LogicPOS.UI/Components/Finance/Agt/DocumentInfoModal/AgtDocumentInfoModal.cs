@@ -1,6 +1,6 @@
+using Atk;
 using Gtk;
-using LogicPOS.Api.Features.Finance.Agt.Common;
-using LogicPOS.Api.Features.Finance.Agt.CorrectDocument;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Modals;
@@ -15,20 +15,59 @@ namespace LogicPOS.UI.Components.Finance.Agt
 {
     public partial class AgtDocumentInfoModal : Modal
     {
-        private AgtDocument _agtDocument;
-        public AgtDocumentInfoModal(AgtDocument agtDocument, Window parent) : base(parent,
+        private AgtDocumentInfo _document;
+
+        public AgtDocumentInfoModal(DocumentViewModel document, Window parent) : base(parent,
                                                      "Informação Do Documento (AGT)",
                                                      new Size(550, 560),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
         {
-            _agtDocument = agtDocument;
+            _document = new AgtDocumentInfo
+            {
+                Id = document.Id,
+                SubmissionDate = document.Agt.SubmissionDate,
+                Number = document.Number,
+                Type = document.Type,
+                RequestId = document.Agt.RequestId,
+                SubmissionErrorCode  = document.Agt.SubmissionErrorCode,
+                SubmissionErrorDescription = document.Agt.SubmissionErrorDescription,
+                HttpStatusCode = document.Agt.HttpStatusCode,
+                ValidationResultCode = document.Agt.ValidationResultCode,
+                ValidationErrors = document.Agt.ValidationErrors,
+                RejectedDocumentNumber = document.Agt.RejectedDocumentNumber,
+                ValidationStatus = document.Agt.ValidationStatus
+            };
+            ShowData();
+
+        }
+
+        public AgtDocumentInfoModal(ReceiptViewModel receipt, Window parent) : base(parent,
+                                                     "Informação Do Documento (AGT)",
+                                                     new Size(550, 560),
+                                                     AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
+        {
+            _document = new AgtDocumentInfo
+            {
+                Id = receipt.Id,
+                SubmissionDate= receipt.Agt.SubmissionDate,
+                Number = receipt.RefNo,
+                Type = receipt.RefNo.Substring(0,2),
+                RequestId = receipt.Agt.RequestId,
+                SubmissionErrorCode = receipt.Agt.SubmissionErrorCode,
+                SubmissionErrorDescription = receipt.Agt.SubmissionErrorDescription,
+                HttpStatusCode = receipt.Agt.HttpStatusCode,
+                ValidationResultCode = receipt.Agt.ValidationResultCode,
+                ValidationErrors = receipt.Agt.ValidationErrors,
+                RejectedDocumentNumber = receipt.Agt.RejectedDocumentNumber,
+                ValidationStatus = receipt.Agt.ValidationStatus
+            };
             ShowData();
 
         }
 
         private void BtnCorrectDocument_Clicked(object sender, EventArgs e)
         {
-            if(_agtDocument == null)
+            if (_document == null)
             {
                 CustomAlerts.Error(this).WithMessage("Este documento foi enviado à AGT").ShowAlert();
                 Run();
@@ -47,7 +86,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
                 return;
             }
 
-            bool advance = CustomAlerts.Question(this).WithMessage($"Enviar o documento {page.SelectedEntity.Number} para corrigir {_agtDocument?.Number}? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
+            bool advance = CustomAlerts.Question(this).WithMessage($"Enviar o documento {page.SelectedEntity.Number} para corrigir {_document?.Number}? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
 
             if (!advance)
             {
@@ -55,28 +94,28 @@ namespace LogicPOS.UI.Components.Finance.Agt
                 return;
             }
 
-            var correctDocumentResult = AgtService.CorrectDocument(correctDocumentId, _agtDocument.DocumentId);
+            var correctDocumentResult = AgtService.CorrectDocument(correctDocumentId, _document.Id);
 
             if (correctDocumentResult)
             {
-                CustomAlerts.Information(this).WithMessage($"Correção do documento {_agtDocument.Number} submetida com sucesso.").ShowAlert();
+                CustomAlerts.Information(this).WithMessage($"Correção do documento {_document.Number} submetida com sucesso.").ShowAlert();
             }
             else
             {
-                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao submeter a correção do documento {_agtDocument.Number}.").ShowAlert();
+                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao submeter a correção do documento {_document.Number}.").ShowAlert();
             }
         }
 
         private void BtnMarkAsValid_Clicked(object sender, EventArgs e)
         {
-            if (_agtDocument == null)
+            if (_document == null)
             {
                 CustomAlerts.Error(this).WithMessage("Este documento foi enviado à AGT").ShowAlert();
                 Run();
                 return;
             }
 
-            bool advance = CustomAlerts.Question(this).WithMessage($"Tem a certeza que consultou o documento {_agtDocument?.Number} no portal da AGT e este encontra-se válido? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
+            bool advance = CustomAlerts.Question(this).WithMessage($"Tem a certeza que consultou o documento {_document?.Number} no portal da AGT e este encontra-se válido? Esta acção é irreversível.").ShowAlert() == ResponseType.Yes;
 
             if (!advance)
             {
@@ -84,44 +123,69 @@ namespace LogicPOS.UI.Components.Finance.Agt
                 return;
             }
 
-            var markAsValidResult = AgtService.MarkAsValid(_agtDocument.Id);
+            var markAsValidResult = AgtService.MarkAsValid(_document.Id);
 
             if (markAsValidResult)
             {
-                CustomAlerts.Information(this).WithMessage($"O documento {_agtDocument.Number} foi marcado como válido.").ShowAlert();
+                CustomAlerts.Information(this).WithMessage($"O documento {_document.Number} foi marcado como válido.").ShowAlert();
             }
             else
             {
-                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao marcar o documento {_agtDocument.Number} como válido.").ShowAlert();
+                CustomAlerts.Error(this).WithMessage($"Ocorreu um erro ao marcar o documento {_document.Number} como válido.").ShowAlert();
             }
         }
 
         private void ShowData()
         {
-            TxtSubmissionDate.Text = _agtDocument?.CreatedAt.ToString("g") ?? "Não submetido";
-            TxtRequestId.Text = _agtDocument?.RequestId ?? "Não submetido";
-            TxtDocumentNumber.Text = _agtDocument?.Number ?? "Não submetido";
-            TxtSubmissionErrorCode.Text = _agtDocument?.SubmissionErrorCode ?? "-";
-            TxtSubmissionErrorDescription.Text = _agtDocument?.SubmissionErrorDescription ?? "-";
-            TxtHttpStatusCode.Text = _agtDocument?.HttpStatusCode?.ToString() ?? "-";
-            TxtValidationResultCode.Text = _agtDocument?.ValidationResultCode ?? "Não validado";
-            TxtValidationStatus.Text = _agtDocument?.ValidationStatus ?? "Não validado";
-            TxtValidationErrors.Text = _agtDocument?.ValidationErrors ?? "-";
-            TxtRejectedDocumentNumber.Text = _agtDocument?.RejectedDocumentNumber?.ToString() ?? "-";
+            TxtSubmissionDate.Text = _document?.SubmissionDate?.ToString("g") ?? "Não submetido";
+            TxtRequestId.Text = _document?.RequestId ?? "Não submetido";
+            TxtDocumentNumber.Text = _document?.Number ?? "Não submetido";
+            TxtSubmissionErrorCode.Text = _document?.SubmissionErrorCode ?? "-";
+            TxtSubmissionErrorDescription.Text = _document?.SubmissionErrorDescription ?? "-";
+            TxtHttpStatusCode.Text = _document?.HttpStatusCode?.ToString() ?? "-";
+            TxtValidationResultCode.Text = _document?.ValidationResultCode ?? "Não validado";
+            TxtValidationStatus.Text = _document?.ValidationStatus ?? "Não validado";
+            TxtValidationErrors.Text = _document?.ValidationErrors ?? "-";
+            TxtRejectedDocumentNumber.Text = _document?.RejectedDocumentNumber?.ToString() ?? "-";
 
-            if(_agtDocument?.ValidationStatus == "V")
+            if (_document?.ValidationStatus == "V")
             {
                 BtnCorrectDocument.Sensitive = false;
                 BtnMarkAsValid.Sensitive = false;
             }
         }
 
-        public static void Show(AgtDocument agtDocument, Window parent)
+        public static void Show(DocumentViewModel document, Window parent)
         {
-            var modal = new AgtDocumentInfoModal(agtDocument, parent);
+            var modal = new AgtDocumentInfoModal(document, parent);
             var response = (ResponseType)modal.Run();
             modal.Destroy();
         }
 
+        public static void Show(ReceiptViewModel receipt, Window parent)
+        {
+            var modal = new AgtDocumentInfoModal(receipt, parent);
+            var response = (ResponseType)modal.Run();
+            modal.Destroy();
+        }
+
+
+        private class AgtDocumentInfo
+        {
+            public Guid Id { get; set; }
+            public DateTime? SubmissionDate { get; set; }
+            public string Number { get; set; }
+            public string Type { get; set; }
+            public string RequestId { get; set; }
+            public string SubmissionErrorCode { get; set; }
+            public string SubmissionErrorDescription { get; set; }
+            public int? HttpStatusCode { get; set; }
+            public string ValidationResultCode { get; set; }
+            public string ValidationStatus { get; set; }
+            public string ValidationErrors { get; set; }
+            public string SubmissionUuid { get; set; }
+            public string RejectedDocumentNumber { get; set; }
+
+        }
     }
 }

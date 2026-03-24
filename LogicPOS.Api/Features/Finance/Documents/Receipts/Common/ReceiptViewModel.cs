@@ -14,21 +14,21 @@ namespace LogicPOS.Api.Entities
         public string CustomerFiscalNumber { get; set; }
         public bool IsCancelled => Status == "A";
         public List<string> RelatedDocuments { get; set; }
-        public AgtInfo AgtInfo { get; set; }
+        public AgtDocumentInfo Agt { get; set; }
        
         public string GetAgtStatus()
         {
-            if (AgtInfo == null || string.IsNullOrWhiteSpace(AgtInfo.RequestId))
+            if (string.IsNullOrWhiteSpace(Agt.RequestId))
             {
                 return "Não submetido";
             }
 
-            if (string.IsNullOrWhiteSpace(AgtInfo.ValidationStatus))
+            if (string.IsNullOrWhiteSpace(Agt.ValidationStatus))
             {
                 return "Submetido (Não validado)";
             }
 
-            return $"Submetido ({AgtInfo.ValidationStatus})";
+            return $"Submetido ({Agt.ValidationStatus})";
         }
         
         public bool HasPassed48Hours => CreatedAt.AddHours(48) < DateTime.Now;

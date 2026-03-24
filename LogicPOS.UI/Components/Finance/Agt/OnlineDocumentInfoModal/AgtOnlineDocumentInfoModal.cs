@@ -1,24 +1,25 @@
 using Gtk;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
+using System;
 using System.Drawing;
 
 namespace LogicPOS.UI.Components.Finance.Agt
 {
     public partial class AgtOnlineDocumentInfoModal : Modal
     {
-        public AgtOnlineDocumentInfoModal(string documentNumber, Window parent) : base(parent,
+        public AgtOnlineDocumentInfoModal(string number, Window parent) : base(parent,
                                                      "Documento Online (AGT)",
                                                      new Size(550, 560),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
         {
-            ShowData(documentNumber);
+            ShowData(number);
         }
 
-        private void ShowData(string documentNumber)
+        private void ShowData(string number)
         {
 
-            var agtDocument = AgtService.GetOnlineDocument(documentNumber);
+            var agtDocument = AgtService.GetOnlineDocument(number);
             TxtDate.Text = agtDocument?.Date;
             TxtDocumentType.Text = agtDocument?.Type;
             TxtDocumentNumber.Text = agtDocument?.Number;
@@ -29,9 +30,9 @@ namespace LogicPOS.UI.Components.Finance.Agt
             TxtGrossTotal.Text = agtDocument?.GrossTotal;
         }
 
-        public static void Show(string documentNumber, Window parent)
+        public static void Show(string number, Window parent)
         {
-            var modal = new AgtOnlineDocumentInfoModal(documentNumber, parent);
+            var modal = new AgtOnlineDocumentInfoModal(number, parent);
             modal.Run();
             modal.Destroy();
         }

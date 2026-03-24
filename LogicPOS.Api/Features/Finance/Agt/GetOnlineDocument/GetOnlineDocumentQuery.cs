@@ -1,15 +1,16 @@
 using ErrorOr;
 using MediatR;
+using System;
 
 namespace LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument
 {
     public class GetOnlineDocumentQuery : IRequest<ErrorOr<OnlineDocument>>
     {
-        public string DocumentNumber { get; set; }
+        public string Number { get; set; }
 
-        public GetOnlineDocumentQuery(string documentNumber)
+        public GetOnlineDocumentQuery(string number)
         {
-            DocumentNumber = documentNumber;
+            Number = number;
         }
     }
 }

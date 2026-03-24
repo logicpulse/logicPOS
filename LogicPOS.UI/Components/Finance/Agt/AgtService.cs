@@ -1,6 +1,4 @@
-using LogicPOS.Api.Features.Finance.Agt.Common;
 using LogicPOS.Api.Features.Finance.Agt.CorrectDocument;
-using LogicPOS.Api.Features.Finance.Agt.GetAgtDocumentById;
 using LogicPOS.Api.Features.Finance.Agt.GetContributorByNif;
 using LogicPOS.Api.Features.Finance.Agt.GetOnlineDocument;
 using LogicPOS.Api.Features.Finance.Agt.ListOnlineSeries;
@@ -99,19 +97,6 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return result.Value.ToList();
         }
 
-        public static AgtDocument GetAgtDocument(Guid documentId)
-        {
-            var result = DependencyInjection.Mediator.Send(new GetAgtDocumentByIdQuery(documentId)).Result;
-
-            if (result.IsError != false)
-            {
-                ErrorHandlingService.HandleApiError(result);
-                return null;
-            }
-
-            return result.Value;
-        }
-
         public static string[] EligibleDocumentTypes { get; } = new string[] { "FT", "FR", "RG", "NC", "ND", "RC" };
 
         public static Api.Features.Finance.Agt.RequestSeries.AgtSeriesInfo? RequestSeries(RequestSeriesCommand command)
@@ -126,9 +111,9 @@ namespace LogicPOS.UI.Components.Finance.Agt
             return result.Value;
         }
 
-        public static OnlineDocument? GetOnlineDocument(string documentNumber)
+        public static OnlineDocument? GetOnlineDocument(string number)
         {
-            var result = DependencyInjection.Mediator.Send(new GetOnlineDocumentQuery(documentNumber)).Result;
+            var result = DependencyInjection.Mediator.Send(new GetOnlineDocumentQuery(number)).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);
@@ -148,7 +133,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             }
             return true;
         }
-        
+
         public static bool MarkAsValid(Guid agtDocumentId)
         {
             var command = new MarkDocumentAsValidCommand(agtDocumentId);

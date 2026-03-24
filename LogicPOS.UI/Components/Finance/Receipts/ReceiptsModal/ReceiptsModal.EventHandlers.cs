@@ -36,14 +36,12 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnViewAgtDocument_Clicked(object sender, EventArgs e)
         {
-            if (Page.SelectedEntity == null || Page.SelectedEntity.AgtInfo?.Number == null)
+            if (Page.SelectedEntity == null || Page.SelectedEntity.Agt.RequestId == null)
             {
                 return;
             }
 
-            var agtDocument = AgtService.GetAgtDocument(Page.SelectedEntity.Id);
-
-            AgtDocumentInfoModal.Show(agtDocument, this);
+            AgtDocumentInfoModal.Show(Page.SelectedEntity, this);
         }
 
         private void BtnUpdateAgtValidationStatus_Clicked(object sender, EventArgs e)

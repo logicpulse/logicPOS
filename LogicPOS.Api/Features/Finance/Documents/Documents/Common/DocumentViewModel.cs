@@ -15,7 +15,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public string Number { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
-        public AgtInfo AgtInfo { get; set; }
+        public AgtDocumentInfo Agt { get; set; }
         public bool HasValidTimeToCancel => CreatedAt.Month == DateTime.Now.Month;
         public DateTime? ShipFromAddressDeliveryDate { get; set; }
         public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
@@ -39,17 +39,17 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
                 return "N/A";
             }
 
-            if (AgtInfo == null || string.IsNullOrWhiteSpace(AgtInfo.RequestId))
+            if (string.IsNullOrWhiteSpace(Agt.RequestId))
             {
                 return "Não submetido";
             }
 
-            if (string.IsNullOrWhiteSpace(AgtInfo.ValidationStatus))
+            if (string.IsNullOrWhiteSpace(Agt.ValidationStatus))
             {
                 return "Submetido (Não validado)";
             }
 
-            return $"Submetido ({AgtInfo.ValidationStatus})";
+            return $"Submetido ({Agt.ValidationStatus})";
         }
 
         public string GetAtStatus()
