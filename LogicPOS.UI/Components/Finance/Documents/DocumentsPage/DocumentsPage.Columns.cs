@@ -90,7 +90,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = ((DocumentViewModel)model.GetValue(iter, 0));
-                (cell as CellRendererText).Text = document.TotalToPay.ToString("0.00");
+                (cell as CellRendererText).Text = document.TotalToPay<0? 0.ToString("0.00") :document.TotalToPay.ToString("0.00");
                 cell.Xalign = 1;
             }
 
