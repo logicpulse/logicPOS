@@ -163,7 +163,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             var type = DocumentTab.TxtDocumentType.SelectedEntity as DocumentType;
 
-            if (type != null && type.Analyzer.IsInvoice() && !(document.Type == "PP" || document.Type == "OR" || document.Type == "FP" || document.Type == "PF"))
+            if (type != null && type.Analyzer.IsInvoice() && 
+                !(document.Type == "PP" || document.Type == "OR" || 
+                document.Type == "FP" || document.Type == "PF" || 
+                document.Type=="GT" || document.Type== "GR" || 
+                document.Type=="GD" || document.Type=="GA"))
             {
                 new CustomAlert(this)
                     .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
