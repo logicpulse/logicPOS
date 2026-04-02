@@ -146,8 +146,11 @@ namespace LogicPOS.UI.Components.Licensing
 
         public static Version GetLatestSystemVersion()
         {
+#if DEBUG
             return GetLastestVersionFromDevelopment();
-            //return GetLatestVersionFromRelease();
+#else
+            return GetLatestVersionFromRelease();
+#endif
         }
 
         private static Version GetLatestVersionFromRelease()

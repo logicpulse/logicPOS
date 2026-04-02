@@ -46,7 +46,11 @@ namespace LogicPOS.UI.Application.Services
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             if (UpdateZipFileIsAvailable().Result)
             {
+#if DEBUG
                 AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
+#else
+                AutoUpdater.Start(Directory.GetCurrentDirectory()+"\\update.xml");
+#endif
             }
             else
             {
