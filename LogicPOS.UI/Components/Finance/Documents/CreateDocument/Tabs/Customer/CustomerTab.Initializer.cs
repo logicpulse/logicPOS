@@ -26,7 +26,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPhone = new TextBox(SourceWindow,
                                        GeneralUtils.GetResourceByName("global_phone"),
                                        isRequired: false,
-                                       isValidatable: false,
+                                       isValidatable: true,
+                                       regex: RegularExpressions.PhoneNumber,
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true);
         }

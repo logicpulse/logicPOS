@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Components.Licensing
             vboxInnerLeft.PackStart(EntryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            EntryBoxPhone = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_phone"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
+            EntryBoxPhone = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_phone"), KeyboardMode.AlfaNumeric, RegularExpressions.PhoneNumber, true);
             EntryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxPhone.EntryValidation.Text = mockPhone;
             EntryBoxPhone.EntryValidation.Changed += delegate { Validate(); };

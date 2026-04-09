@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields.Validation;
 using System;

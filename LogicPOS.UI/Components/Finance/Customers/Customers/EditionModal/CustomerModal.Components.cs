@@ -22,8 +22,8 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtLocality = TextBox.Simple("global_locality");
         private TextBox _txtCity = TextBox.Simple("global_city");
         private TextBox _txtPostalCode = TextBox.Simple("global_postal_code");
-        private TextBox _txtPhone = TextBox.Simple("global_phone");
-        private TextBox _txtMobile = TextBox.Simple("global_mobile_phone");
+        private TextBox _txtPhone = TextBox.Simple("global_phone", false, true, RegularExpressions.PhoneNumber);
+        private TextBox _txtMobile = TextBox.Simple("global_mobile_phone", false, true, RegularExpressions.PhoneNumber);
         private TextBox _txtEmail = TextBox.Simple("global_email_separator");
 
         private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");

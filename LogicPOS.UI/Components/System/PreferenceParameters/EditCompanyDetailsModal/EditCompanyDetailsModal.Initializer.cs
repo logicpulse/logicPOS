@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -70,9 +70,11 @@ namespace LogicPOS.UI.Components.Modals
             TxtMobile = new TextBox(this,
                                        GeneralUtils.GetResourceByName("prefparam_company_mobilephone"),
                                        isRequired: false,
-                                       isValidatable: false,
+                                       isValidatable: true,
+                                       regex: RegularExpressions.PhoneNumber,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: true, includeClearButton: false);
+                                       includeKeyBoardButton: true,
+                                       includeClearButton: false);
         }
 
         private void InitializeTxtPhone()
@@ -80,9 +82,11 @@ namespace LogicPOS.UI.Components.Modals
             TxtPhone = new TextBox(this,
                                        GeneralUtils.GetResourceByName("prefparam_company_telephone"),
                                        isRequired: false,
-                                       isValidatable: false,
+                                       isValidatable: true,
+                                       regex: RegularExpressions.PhoneNumber,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: true, includeClearButton: false);
+                                       includeKeyBoardButton: true,
+                                       includeClearButton: false);
         }
 
         private void InitializeTxtTaxEntity()
