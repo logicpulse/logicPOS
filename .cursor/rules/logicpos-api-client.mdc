@@ -1,0 +1,14 @@
+---
+description: Conventions for LogicPOS.Api MediatR HTTP client layer
+globs: LogicPOS.Api/**/*.cs
+alwaysApply: false
+---
+
+# LogicPOS.Api patterns
+
+- Add features under `Features/<Area>/...` with **Command** / **Query** + **Handler** names matching existing neighbors (e.g. `AddXCommand`, `GetXQuery`, `*Handler`).
+- Handlers usually inherit **`RequestHandler<TRequest, TResponse>`** and use **`IHttpClientFactory`** client `"Default"`. Use **`ErrorOr<T>`** for results.
+- **Do not** add ASP.NET Core types (controllers, `IHost`, etc.). HTTP is **outbound only**.
+- **`apisettings.json`**: `BaseAddress` must point to the real API; never commit secrets — use **`apisettings.example.json`** as the tracked template.
+- Respect **`AuthenticationData.Token`** — authorization headers are set in `RequestHandler` when a token exists.
+- Reuse **caching** patterns (`IMemoryCache`, `IKeyedMemoryCache`) where similar handlers already do.
