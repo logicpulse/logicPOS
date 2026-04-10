@@ -2,8 +2,5 @@
   "dotnet.preferCSharpExtension": true,
   "dotnet.unitTestDebuggingOptions": {
     "type": "clr"
-  },
-  "csharp.unitTestDebuggingOptions": {
-    "type": "clr"
   }
 }
