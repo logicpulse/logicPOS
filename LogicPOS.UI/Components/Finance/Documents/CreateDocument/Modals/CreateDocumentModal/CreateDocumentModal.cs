@@ -217,7 +217,7 @@ namespace LogicPOS.UI.Components.Modals
         }
 
         private decimal GetTotalFinal()
-        {
+                                   {
             decimal discount = 0;
             decimal.TryParse(CustomerTab.TxtDiscount.Text, out discount);
             decimal detailsTotal = DetailsTab.TotalFinal;

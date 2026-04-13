@@ -1,6 +1,8 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
 using System.Collections.Generic;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
@@ -39,7 +41,7 @@ namespace LogicPOS.UI.Components.POS
         public decimal Quantity { get; set; }
         public decimal Vat { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
-        public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
+        public decimal TotalNet =>Quantity * UnitPrice - DiscountPrice;
         public decimal DiscountPrice => Quantity * UnitPrice * Discount/100M;
         public decimal VatPrice => TotalNet * Vat / 100M;
         public string Code => Article.Code;

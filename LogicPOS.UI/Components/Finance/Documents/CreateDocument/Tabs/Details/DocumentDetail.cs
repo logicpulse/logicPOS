@@ -23,8 +23,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public decimal Discount { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
         public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
-        public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100;
-        public decimal VatPrice => TotalNet * Vat / 100;
+        public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100M;
+        public decimal VatPrice => TotalNet * Vat / 100M;
         public string SerialNumber { get; set; }
+
     }
 }

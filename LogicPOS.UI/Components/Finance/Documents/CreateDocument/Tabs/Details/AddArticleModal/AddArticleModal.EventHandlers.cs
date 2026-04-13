@@ -35,12 +35,10 @@ namespace LogicPOS.UI.Components.Modals
             if(AllFieldsAreValid()==true && TxtArticle.SelectedEntity == null)
             {
                 CreateArticleAndSelect();
-
             }
             if (TxtArticle.SelectedEntity != null && (TxtArticle.SelectedEntity as ArticleViewModel).Designation != TxtArticle.Entry.Text)
             {
                 CreateArticleAndSelect();
-
             }
 
             if (_mode == DocumentDetailModalMode.Update || _mode == DocumentDetailModalMode.CreditNoteUpdate)
@@ -49,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentDetail.ArticleId = (TxtArticle.SelectedEntity as ArticleViewModel)?.Id ?? DocumentDetail.ArticleId;
                 DocumentDetail.Code = DocumentDetail.Article?.Code ?? DocumentDetail.Code;
                 DocumentDetail.Designation = TxtArticle?.Text ?? DocumentDetail.Designation;
-                DocumentDetail.UnitPrice = decimal.Parse(TxtPrice.Text);
+                DocumentDetail.UnitPrice =  decimal.Parse(TxtPrice.Text);
                 DocumentDetail.Quantity = decimal.Parse(TxtQuantity.Text);
                 DocumentDetail.Discount = decimal.Parse(TxtDiscount.Text);
                 DocumentDetail.VatRate = TxtTax.SelectedEntity as VatRate;

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.GridViews;
@@ -84,7 +84,10 @@ namespace LogicPOS.UI.Components.POS
             var model = (ListStore)GridViewSettings.Model;
             Ticket.Items.ForEach(entity => model.AppendValues(entity));
 
-            SelectItem(Ticket.Items.Last());
+            if (Ticket.Items.Any())
+            {
+                SelectItem(Ticket.Items.Last());
+            }
 
             UpdateLabelTotalValue();
         }
