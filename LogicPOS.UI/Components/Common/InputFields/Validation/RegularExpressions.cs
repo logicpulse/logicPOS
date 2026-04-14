@@ -68,8 +68,12 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                 {
                     return AngolanFiscalNumber;
                 }
+                else if (SystemInformationService.SystemInformation.IsPortugal)
+                {
 
                 return PortugueseFiscalNumber;
+                }
+                return "^[A-Za-z0-9]{9,}$";
             }
         }
     }

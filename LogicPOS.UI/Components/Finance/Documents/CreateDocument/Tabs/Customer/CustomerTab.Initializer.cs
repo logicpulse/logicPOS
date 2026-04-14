@@ -1,3 +1,4 @@
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
@@ -42,9 +43,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          includeKeyBoardButton: false);
 
             TxtCountry.Entry.IsEditable = false;
-
+            TxtCountry.Entry.Changed += Entry_Changed;
             TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
             SelectDefaultCountry();
+        }
+
+        private void Entry_Changed(object sender, EventArgs e)
+        {
+            CustomerCountryHasFiscalNumberValidation();
         }
 
         private void SelectDefaultCountry()

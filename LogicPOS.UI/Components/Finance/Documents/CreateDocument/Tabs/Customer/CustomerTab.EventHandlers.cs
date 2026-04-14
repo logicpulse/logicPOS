@@ -20,6 +20,15 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text): 0);
         }
 
+        private void CustomerCountryHasFiscalNumberValidation()
+        {
+            if ((TxtCountry.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Country)?.Code2.ToUpper() != "PT" &&
+               (TxtCountry.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Country)?.Code2.ToUpper() != "AO")
+            {
+                TxtFiscalNumber.Regex = "^[A-Za-z0-9]{9,}$";
+                TxtFiscalNumber.IsValid();
+            }
+        }
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);

@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
                     return false;
                 }
 
-                if (CustomerTab.FiscalNumber == CustomersService.Default.FiscalNumber && DetailsTab.TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal)
+                if (CustomerTab.FiscalNumber == CustomersService.Default?.FiscalNumber && DetailsTab.TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal)
                 {
 
                     string message = GetInvalidTotalForFinalConsumerMessage();
