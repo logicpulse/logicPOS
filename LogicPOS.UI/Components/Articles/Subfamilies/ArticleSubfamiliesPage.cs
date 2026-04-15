@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleSubfamiliesPage : Page<ArticleSubfamily>
@@ -116,10 +117,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_CREATE");
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_EDIT");
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_DELETE");
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_ARTICLESUBFAMILY_VIEW");
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_ARTICLESUBFAMILY_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_ARTICLESUBFAMILY_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_ARTICLESUBFAMILY_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_ARTICLESUBFAMILY_VIEW);
         }
 
         #region Singleton

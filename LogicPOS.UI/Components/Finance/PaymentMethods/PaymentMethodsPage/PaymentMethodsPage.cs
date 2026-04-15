@@ -10,6 +10,7 @@ using LogicPOS.UI.Components.Windows;
 using MediatR;
 using System.Collections.Generic;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class PaymentMethodsPage : Page<PaymentMethod>
@@ -57,10 +58,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_CREATE");
-            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_EDIT");
-            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_DELETE");
-            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_VIEW");
+            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_CREATE);
+            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_EDIT);
+            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_DELETE);
+            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_VIEW);
         }
 
         #region Singleton

@@ -10,6 +10,7 @@ using LogicPOS.UI.Services;
 using MediatR;
 using System.Collections.Generic;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class DocumentSeriesPage : Page<DocumentSeries>
@@ -55,8 +56,8 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT");
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW");
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW);
         }
 
         #region Singleton

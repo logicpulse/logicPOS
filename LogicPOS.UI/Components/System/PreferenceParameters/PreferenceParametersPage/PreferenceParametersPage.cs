@@ -9,6 +9,7 @@ using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class PreferenceParametersPage : Page<PreferenceParameter>
@@ -122,8 +123,8 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW");
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_EDIT");
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_VIEW);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPREFERENCEPARAMETER_EDIT);
         }
 
         #region Singleton

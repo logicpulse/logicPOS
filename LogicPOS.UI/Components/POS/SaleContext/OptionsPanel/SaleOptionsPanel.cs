@@ -1,9 +1,10 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleOptionsPanel : Box
@@ -120,15 +121,15 @@ namespace LogicPOS.UI.Components.POS
             BtnPrevious.Sensitive = hasTicketItems && presentTicketMode;
             BtnNext.Sensitive = hasTicketItems && presentTicketMode;
             BtnDecrease.Sensitive = hasTicketItems && presentTicketMode;
-            BtnPrice.Sensitive = hasTicketItems && presentTicketMode && AuthenticationService.UserHasPermission("TICKETLIST_CHANGE_PRICE");
+            BtnPrice.Sensitive = hasTicketItems && presentTicketMode && AuthenticationService.UserHasPermission(UserProfilePermissions.TICKETLIST_CHANGE_PRICE);
             BtnQuantity.Sensitive = hasTicketItems && presentTicketMode;
             BtnWeight.Sensitive = hasTicketItems && presentTicketMode;
             BtnFinishOrder.Sensitive = hasTicketItems && presentTicketMode;
-            BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission("TICKETLIST_DELETE");
+            BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission(UserProfilePermissions.TICKETLIST_DELETE);
             BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
-            BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_PAYMENT");
-            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_PAYMENT");
-            BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission("WORKSESSION_ORDER_MOVE");
+            BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ORDER_PAYMENT);
+            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ORDER_PAYMENT);
+            BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ORDER_MOVE);
         }
 
         public void UpdateUI()

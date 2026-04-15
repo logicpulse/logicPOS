@@ -3,9 +3,10 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Authentication;
 using LogicPOS.Api.Features.Authentication.Login;
 using LogicPOS.Api.Features.Users.GetUserPermissions;
-using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.System.Users.Permissions;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Users
             {
                 return;
             }
-            if(!UserHasPermission("HARDWARE_DRAWER_OPEN"))
+            if(!UserHasPermission(UserProfilePermissions.HARDWARE_DRAWER_OPEN))
             {
                 CustomAlerts.Information()
                              .WithMessage(GeneralUtils.GetResourceByName("open_cash_draw_permissions"))
@@ -47,8 +48,8 @@ namespace LogicPOS.UI.Components.Users
         public static void LoginUser(User user, string jwtToken)
         {
             User = user;
-            LoadPermissions();
             AuthenticationData.Token = jwtToken;
+            LoadPermissions();
         }
 
         public static ErrorOr<string> Authenticate(Guid userId, string password)
@@ -66,11 +67,12 @@ namespace LogicPOS.UI.Components.Users
         {
             Permissions.Clear();
 
-            var mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+            var mediator = DependencyInjection.Mediator;
             var getPermissionsResult = mediator.Send(new GetUserPermissionsQuery(User.Id)).Result;
 
             if (getPermissionsResult.IsError)
             {
+                ErrorHandlingService.HandleApiError(getPermissionsResult, closeApplication: true);
                 return;
             }
 

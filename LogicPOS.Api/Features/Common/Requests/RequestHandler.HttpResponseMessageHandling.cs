@@ -2,6 +2,7 @@ using ErrorOr;
 using LogicPOS.Api.Errors;
 using MediatR;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -43,7 +44,22 @@ namespace LogicPOS.Api.Features.Common.Requests
 
         private async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
         {
-            var problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+            ProblemDetails problemDetails;
+            var url = httpResponse.RequestMessage.RequestUri.AbsolutePath.ToString();
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    problemDetails = ProblemDetails.Unauthorized(url);
+                    return Error.Unauthorized(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+                case HttpStatusCode.Forbidden:
+                    problemDetails = ProblemDetails.Forbidden(url);
+                    return Error.Forbidden(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+                default:
+                    problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+                    break;
+
+            }
+
             return Error.Unexpected(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
         }
 

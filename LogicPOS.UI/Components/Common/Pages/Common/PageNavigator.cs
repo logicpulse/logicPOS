@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Users;
 using LogicPOS.Utility;
 using System;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Pages
 {
     internal class PageNavigator<Tentity> : Box where Tentity : class
@@ -86,7 +87,7 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnShowHiddenData.Clicked += delegate { _page.ToggleHiddenDataVisibility(); };
 
-            BtnApply.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USER_PRIVILEGES_APPLY");
+            BtnApply.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USER_PRIVILEGES_APPLY);
 
             ExtraButtonSpace.PackStart(BtnShowHiddenData, false, false, 0);
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);

@@ -12,6 +12,7 @@ namespace LogicPOS.UI.Application.Services
         public static Version PosVersion { get; private set; }
         public static Version ApiVersion { get; private set; }
         public static Version LastestVersion { get; private set; }
+        public static Version LatestVersionFromLicense { get; private set; }
 
         public static void Initialize()
         {
@@ -19,6 +20,7 @@ namespace LogicPOS.UI.Application.Services
             FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
             PosVersion = Version.Parse(fileVersionInfo.ProductVersion);
             LastestVersion = LicensingService.GetLatestSystemVersion();
+            LatestVersionFromLicense = LicensingService.GetLatestVersionFromLicense();
             ApiVersion = SystemInformationService.GetApiVersion();
             Log.Information("LogicPOS version: {Version}", SystemVersionService.PosVersion);
             Log.Information("API version: {Version}", SystemVersionService.ApiVersion);

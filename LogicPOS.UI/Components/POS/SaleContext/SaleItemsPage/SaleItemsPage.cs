@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleItemsPage : Box
@@ -126,7 +127,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            if (!AuthenticationService.UserHasPermission("WORKSESSION_ORDER_MOVE"))
+            if (!AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ORDER_MOVE))
             {
                 return;
             }

@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.System.Users.Permissions;
 using System;
 
 namespace LogicPOS.UI.Components.Pages
@@ -51,10 +52,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_CREATE");
-            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_EDIT");
-            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_DELETE");
-            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission("BACKOFFICE_MAN_USERPERMISSIONPROFILE_VIEW");
+            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USERPERMISSIONPROFILE_CREATE);
+            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USERPERMISSIONPROFILE_EDIT);
+            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USERPERMISSIONPROFILE_DELETE);
+            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USERPERMISSIONPROFILE_VIEW);
         }
 
         protected override DeleteCommand GetDeleteCommand()

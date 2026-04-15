@@ -5,6 +5,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using Serilog;
 using System;
+using System.Linq;
 using System.Text;
 
 namespace LogicPOS.UI.Errors
@@ -57,6 +58,10 @@ namespace LogicPOS.UI.Errors
                 errorMessage.AppendLine("\n# Mais detalhes");
                 errorMessage.AppendLine("Título: " + problemDetails.Title);
                 errorMessage.AppendLine($"Detalhe: {problemDetails.Detail}");
+                errorMessage.AppendLine($"Status: {problemDetails.Status}");
+                errorMessage.AppendLine($"Instância: {problemDetails.Instance}");
+                errorMessage.AppendLine($"Tipo: {problemDetails.Type}");
+                errorMessage.AppendLine($"TraceId: {problemDetails.TraceId}");
             }
             else
             {

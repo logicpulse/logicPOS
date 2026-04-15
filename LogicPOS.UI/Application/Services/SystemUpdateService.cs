@@ -1,6 +1,7 @@
 using AutoUpdaterDotNET;
 using LogicPOS.Api.Features.System.Monitor.CreateUpdateSignal;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Licensing;
 using Serilog;
 using System;
 using System.Drawing;
@@ -19,7 +20,6 @@ namespace LogicPOS.UI.Application.Services
         public static bool ApiHasUpdate => SystemVersionService.LastestVersion > SystemVersionService.ApiVersion;
 
         public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "AutoUpdater.Net.dll");
-
 
         public static async Task<bool> UpdateZipFileIsAvailable(string url = "https://box.track.pt/files/latest/logicpos_1.5.zip")
         {
@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Application.Services
             var xml = new XDocument(
                 new XDeclaration("1.0", "utf-8", "false"),
                 new XElement("item",
-                    new XElement("version", SystemVersionService.LastestVersion.ToString()),
+                    new XElement("version", SystemVersionService.LatestVersionFromLicense.ToString()),
                     new XElement("url", "https://box.track.pt/files/latest/logicpos_release.zip"),
                     new XElement("mandatory", "true")
                 )

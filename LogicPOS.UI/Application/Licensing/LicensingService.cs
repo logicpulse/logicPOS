@@ -153,7 +153,7 @@ namespace LogicPOS.UI.Components.Licensing
 #endif
         }
 
-        private static Version GetLatestVersionFromRelease()
+        public static Version GetLatestVersionFromLicense()
         {
             var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
             if (result.IsError)

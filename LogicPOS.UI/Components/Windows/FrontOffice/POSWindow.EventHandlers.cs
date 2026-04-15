@@ -11,6 +11,7 @@ using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
 using System;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
@@ -223,10 +224,10 @@ namespace LogicPOS.UI.Components.Windows
 
         public void UpdatePrivileges()
         {
-            BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_ACCESS");
-            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_ALL");
-            BtnReports.Sensitive = AuthenticationService.UserHasPermission("REPORT_ACCESS");
-            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission("BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE");
+            BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_ACCESS);
+            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ALL);
+            BtnReports.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.REPORT_ACCESS);
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE);
         }
     }
 }

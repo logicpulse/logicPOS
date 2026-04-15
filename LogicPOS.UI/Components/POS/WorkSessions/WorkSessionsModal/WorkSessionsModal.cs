@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Users;
@@ -7,6 +7,7 @@ using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
+using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class WorkSessionsModal : Modal
@@ -21,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
                                                     render: false)
         {
             Render();
-            BtnPrintDay.Sensitive = AuthenticationService.UserHasPermission("WORKSESSION_ALL");
+            BtnPrintDay.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ALL);
         }
 
 

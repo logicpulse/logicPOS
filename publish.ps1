@@ -1,6 +1,6 @@
 param (
     [string]$SolutionOrProject = "LogicPOS.UI\LogicPOS.UI.csproj",
-    [string]$Configuration = "Release",
+    [string]$Configuration = "Debug",
     [string]$OutputDir = "..\..\artifacts\publish\pos\"
 )
 
