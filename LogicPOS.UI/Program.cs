@@ -69,6 +69,11 @@ namespace LogicPOS.UI
                 ConfigureGtkRuntime();
                 ConfigureLogging();
                 Log.Information("Initializing application...");
+#if DEBUG
+                Log.Information($"Configuration: Debug");
+#else
+                Log.Information($"Configuration: Release");
+#endif
 
                 if (MigratorService.HasOldPosSqliteDatabase())
                 {

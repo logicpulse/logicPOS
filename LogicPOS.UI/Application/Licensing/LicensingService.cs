@@ -149,7 +149,7 @@ namespace LogicPOS.UI.Components.Licensing
 #if DEBUG
             return GetLastestVersionFromDevelopment();
 #else
-            return GetLatestVersionFromRelease();
+            return GetLatestVersionFromLicense();
 #endif
         }
 
