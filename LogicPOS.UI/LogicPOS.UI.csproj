@@ -3,7 +3,7 @@
   <Import Project="..\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\build\MSBuild.Microsoft.VisualStudio.Web.targets.props" Condition="Exists('..\packages\MSBuild.Microsoft.VisualStudio.Web.targets.14.0.0.3\build\MSBuild.Microsoft.VisualStudio.Web.targets.props')" />
 	<PropertyGroup>
 		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 		<ProductVersion>10.0.0</ProductVersion>
 		<SchemaVersion>2.0</SchemaVersion>
 		<ProjectGuid>{340331CF-94E0-49B0-8EBB-D4DF61A3DCCC}</ProjectGuid>
