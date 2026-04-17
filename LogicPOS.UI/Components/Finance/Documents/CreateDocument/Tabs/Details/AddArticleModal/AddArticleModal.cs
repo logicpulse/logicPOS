@@ -229,12 +229,13 @@ namespace LogicPOS.UI.Components.Modals
                 var vatRatePrice = totalNet * _vatRateValue / 100M;
                 var totalWithTax = totalNet + vatRatePrice;
                 TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
-
+                
+                /*
                 var article = TxtArticle.SelectedEntity as ArticleViewModel;
 
                 if ( article!=null && article.PriceWithVat && _vatRateValue>0)
                 {
-                    price = SaleItem.ExtractPriceWithoutVat(article.Price1, _vatRateValue);
+                    price = SaleItem.ExtractPriceWithoutVat(price, _vatRateValue);
                     discountPrice = quantity * price * discount / 100M;
                     totalNet = quantity * price - discountPrice;
                     vatRatePrice = totalNet * _vatRateValue / 100M;
@@ -243,7 +244,7 @@ namespace LogicPOS.UI.Components.Modals
                     TxtTotal.Text = totalNet.ToString("0.00");
                     TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
                     return;
-                }
+                }*/
                 return;
             }
 
