@@ -58,10 +58,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_CREATE);
-            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_EDIT);
-            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_DELETE);
-            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_VIEW);
+            Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PaymentMethods.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_CREATE);
+            Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PaymentMethods.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_EDIT);
+            Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PaymentMethods.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_DELETE);
+            Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PaymentMethods.BACKOFFICE_MAN_CONFIGURATIONPAYMENTMETHOD_VIEW);
         }
 
         #region Singleton

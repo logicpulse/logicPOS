@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Pages
 
             BtnShowHiddenData.Clicked += delegate { _page.ToggleHiddenDataVisibility(); };
 
-            BtnApply.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_USER_PRIVILEGES_APPLY);
+            BtnApply.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.System.Users.BACKOFFICE_MAN_USER_PRIVILEGES_APPLY);
 
             ExtraButtonSpace.PackStart(BtnShowHiddenData, false, false, 0);
             ExtraButtonSpace.PackStart(BtnApply, false, false, 0);

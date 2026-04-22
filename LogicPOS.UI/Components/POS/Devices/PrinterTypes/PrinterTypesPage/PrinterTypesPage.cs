@@ -56,10 +56,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.Types.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.Types.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.Types.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.Types.BACKOFFICE_MAN_CONFIGURATIONPRINTERSTYPE_VIEW);
         }
 
         #region Signleton

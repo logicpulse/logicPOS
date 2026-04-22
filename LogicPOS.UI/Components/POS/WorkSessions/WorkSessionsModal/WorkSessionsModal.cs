@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
                                                     render: false)
         {
             Render();
-            BtnPrintDay.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ALL);
+            BtnPrintDay.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ALL);
         }
 
 

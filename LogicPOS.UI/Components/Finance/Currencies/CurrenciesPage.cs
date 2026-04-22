@@ -83,10 +83,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Currencies.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Currencies.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Currencies.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Currencies.BACKOFFICE_MAN_CONFIGURATIONCURRENCY_VIEW);
         }
 
         #region Singleton

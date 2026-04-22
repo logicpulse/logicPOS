@@ -53,10 +53,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.WeighingMachines.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.WeighingMachines.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.WeighingMachines.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.WeighingMachines.BACKOFFICE_MAN_CONFIGURATIONWEIGHINGMACHINE_VIEW);
         }
 
         #region Singleton

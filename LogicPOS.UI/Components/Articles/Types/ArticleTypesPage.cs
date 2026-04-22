@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_ARTICLETYPE_EDIT);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.Types.BACKOFFICE_MAN_ARTICLETYPE_EDIT);
         }
 
         #region Singleton

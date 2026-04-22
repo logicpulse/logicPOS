@@ -225,9 +225,9 @@ namespace LogicPOS.UI.Components.Windows
         public void UpdatePrivileges()
         {
             BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_ACCESS);
-            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ALL);
-            BtnReports.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.REPORT_ACCESS);
-            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE);
+            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ALL);
+            BtnReports.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Reports.REPORT_ACCESS);
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Types.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE);
         }
     }
 }

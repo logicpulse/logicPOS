@@ -56,8 +56,8 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Series.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_EDIT);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Series.BACKOFFICE_MAN_DOCUMENTFINANCESERIES_VIEW);
         }
 
         #region Singleton

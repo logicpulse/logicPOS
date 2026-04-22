@@ -53,10 +53,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PoleDisplays.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PoleDisplays.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PoleDisplays.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.PoleDisplays.BACKOFFICE_MAN_CONFIGURATIONPOLEDISPLAY_VIEW);
         }
 
 

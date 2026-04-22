@@ -110,8 +110,8 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_DELETE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Terminals.BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_DELETE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Terminals.BACKOFFICE_MAN_CONFIGURATIONPLACETERMINAL_EDIT);
         }
        
         public static List<Guid> SelectTerminals(Window sourceWindow)

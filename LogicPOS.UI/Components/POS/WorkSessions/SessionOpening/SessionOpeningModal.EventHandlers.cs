@@ -264,18 +264,18 @@ namespace LogicPOS.UI.Components.POS
                 BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_close_day"];
                 if(WorkSessionsService.TerminalIsOpen())
                 {
-                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_TERMINAL_CLOSE);
+                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_TERMINAL_CLOSE);
                 }
                 else
                 {
-                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_TERMINAL_OPEN);
+                    BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_TERMINAL_OPEN);
                 }
-                BtnDayOpening.Sensitive= AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_DAY_CLOSE);
+                BtnDayOpening.Sensitive= AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_DAY_CLOSE);
             }
             else
             {
                 BtnDayOpening.ButtonLabel.Text = LocalizedString.Instance["global_worksession_open_day"];
-                BtnDayOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_DAY_OPEN);
+                BtnDayOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_DAY_OPEN);
                 BtnSessionOpening.Sensitive = false;
             }
         }

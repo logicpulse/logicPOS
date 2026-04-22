@@ -67,15 +67,15 @@ namespace LogicPOS.UI.Components.Modals
             var selectedDocument = Page.SelectedEntity;
             bool documentIsSelected = selectedDocument != null;
 
-            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE) && hasFiscalYear;
-            BtnOpenDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTSSHOW_MENU) && documentIsSelected;
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Types.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE) && hasFiscalYear;
+            BtnOpenDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.BACKOFFICE_MAN_DOCUMENTSSHOW_MENU) && documentIsSelected;
             BtnPrintDocument.Sensitive = documentIsSelected;
             BtnPrintDocumentAs.Sensitive = documentIsSelected;
             BtnSendDocumentEmail.Sensitive = documentIsSelected;
 
-            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTSPAY_MENU) && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsInvoicePaymentMode;
+            BtnPayInvoice.Sensitive = BtnPayInvoice.Visible = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.BACKOFFICE_MAN_DOCUMENTSPAY_MENU) && hasFiscalYear && documentIsSelected && selectedDocument.IsPayable && IsInvoicePaymentMode;
             BtnCloneDocument.Visible = documentIsSelected && selectedDocument.IsActive && IsNotSelectionMode;
-            BtnCancelDocument.Visible = AuthenticationService.UserHasPermission(UserProfilePermissions.FINANCE_DOCUMENT_CANCEL_DOCUMENT) && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable && IsNotSelectionMode; ;
+            BtnCancelDocument.Visible = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.FINANCE_DOCUMENT_CANCEL_DOCUMENT) && hasFiscalYear && documentIsSelected && selectedDocument.IsCancellable && IsNotSelectionMode; ;
             BtnDeleteDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnEditDraft.Visible = documentIsSelected && selectedDocument.IsDraft && IsNotSelectionMode;
             BtnSendDocumentToAgt.Visible = documentIsSelected && selectedDocument.IsAgtDocument && IsNotSelectionMode;

@@ -40,10 +40,10 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.FiscalYears.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.FiscalYears.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.FiscalYears.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.FiscalYears.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW);
         }
     }
 }

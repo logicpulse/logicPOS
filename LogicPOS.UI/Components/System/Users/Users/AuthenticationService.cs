@@ -27,7 +27,7 @@ namespace LogicPOS.UI.Components.Users
             {
                 return;
             }
-            if(!UserHasPermission(UserProfilePermissions.HARDWARE_DRAWER_OPEN))
+            if(!UserHasPermission(UserProfilePermissions.Hardware.HARDWARE_DRAWER_OPEN))
             {
                 CustomAlerts.Information()
                              .WithMessage(GeneralUtils.GetResourceByName("open_cash_draw_permissions"))

@@ -112,11 +112,11 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CUSTOMER_CREATE);
-            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CUSTOMER_EDIT);
-            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CUSTOMER_DELETE);
-            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CUSTOMER_VIEW);
-            this.Navigator.BtnShowHiddenData.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_MAN_CUSTOMER_VIEW);
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_VIEW);
+            this.Navigator.BtnShowHiddenData.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_VIEW);
         }
 
         protected override void InitializeFilter()

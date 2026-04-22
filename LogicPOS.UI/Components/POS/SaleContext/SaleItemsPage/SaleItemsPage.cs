@@ -127,7 +127,7 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            if (!AuthenticationService.UserHasPermission(UserProfilePermissions.WORKSESSION_ORDER_MOVE))
+            if (!AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_MOVE))
             {
                 return;
             }
