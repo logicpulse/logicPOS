@@ -10,7 +10,6 @@ namespace LogicPOS.Api.Features.Finance.Customers.Customers.Common
         public RelatedEntity CustomerType { get; set; }
         public RelatedEntity PriceType { get; set; }
         public Country Country { get; set; }
-        public RelatedEntity? DiscountGroup { get; set; }
         #endregion
 
         public uint Order { get; set; }

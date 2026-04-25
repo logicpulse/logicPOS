@@ -219,7 +219,7 @@ namespace LogicPOS.UI.Components.POS
 
         private DocumentCustomer GetDocumentCustomer()
         {
-            var country = (TxtCountry.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Country);
+            var country = TxtCountry.SelectedEntity as Api.Entities.Country;
 
             return new DocumentCustomer
             {
