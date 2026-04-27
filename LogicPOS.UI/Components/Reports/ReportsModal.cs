@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Modals
         private void AddEventHandlers()
         {
             BtnCompanyBillingReport.Button.Clicked += BtnCompanyBillingReport_Clicked;
-            BtnCustomerBalanceSummaryReport.Button.Clicked += BtnCustomerBalanceSummaryReport_Clicked;
+            BtnCustomerBalanceSummaryReport.Button.Clicked += BtnCustomersCurrentAccountSummaryReport_Clicked;
             BtnSalesByDocumentReport.Button.Clicked += BtnSalesByDocumentReport_Clicked;
             BtnSalesByDateReport.Button.Clicked += BtnSalesByDateReport_Clicked;
             BtnSalesByUserReport.Button.Clicked += BtnSalesByUserReport_Clicked;

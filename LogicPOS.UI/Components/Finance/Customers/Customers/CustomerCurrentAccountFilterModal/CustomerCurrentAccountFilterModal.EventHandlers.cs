@@ -30,6 +30,7 @@ namespace LogicPOS.UI.Components.Modals
 
             LogicPOSPDFViewer.ShowPDF(result.Value.Path, result.Value.Name);
         }
+        
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);
@@ -55,6 +56,7 @@ namespace LogicPOS.UI.Components.Modals
                 TxtCustomer.SelectedEntity = page.SelectedEntity;
             }
         }
+       
         private void TxtStartDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);

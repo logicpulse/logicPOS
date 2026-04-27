@@ -37,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             TxtCustomer = new TextBox(this,
                                        GeneralUtils.GetResourceByName("global_customer"),
-                                       isRequired: true,
+                                       isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: true,
                                        includeKeyBoardButton: false);
@@ -47,8 +47,6 @@ namespace LogicPOS.UI.Components.Modals
             TxtCustomer.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtCustomer.Entry.Changed += TxtCustomer_Changed;
             TxtCustomer.SelectEntityClicked += BtnSelectCustomer_Clicked;
-
-            ValidatableFields.Add(TxtCustomer);
         }
 
         private void InitializeTxtStartDate()
@@ -67,6 +65,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtStartDate.Entry.Changed+=TxtStartDate_Entry_Changed;
             TxtStartDate.SelectEntityClicked += TxtStartDate_SelectEntityClicked;
         }
+       
         private void TxtStartDate_Entry_Changed(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(TxtStartDate.Text) && TxtStartDate.Text.Length >= 10)

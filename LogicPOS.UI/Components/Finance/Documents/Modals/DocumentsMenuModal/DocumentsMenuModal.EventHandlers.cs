@@ -1,5 +1,7 @@
 using Gtk;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Services;
 using System;
 
 namespace LogicPOS.UI.Components.Modals
@@ -27,7 +29,22 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
         {
-            CustomerCurrentAccountFilterModal.ShowModal(WindowSettings.Source);
+            var modal = ReportsModal.DefaultFilterModal(this);
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = true;
+            modal.TxtCustomer.IsRequired = true;
+            modal.TxtCustomer.UpdateValidationColors();
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtCustomer.SelectedEntity != null)
+                {
+                    ReportsService.ShowCustomerBalanceDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as ApiEntity).Id);
+                }
+            }
+            modal.Destroy();
         }
 
         private void BtnDocuments_Clicked(object sender, EventArgs e)

@@ -41,7 +41,8 @@ namespace LogicPOS.UI.Components.Modals
             return new List<IValidatableField>
             {
                 TxtStartDate,
-                TxtEndDate
+                TxtEndDate,
+                TxtCustomer
             };
         }
 

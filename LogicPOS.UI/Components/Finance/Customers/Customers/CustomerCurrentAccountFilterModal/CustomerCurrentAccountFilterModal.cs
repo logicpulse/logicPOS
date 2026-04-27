@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Reports.Customers.GetCurrentAccountSummaryPdf;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
@@ -45,14 +46,13 @@ namespace LogicPOS.UI.Components.Modals
             BtnOk.Clicked += BtnOk_Clicked;
         }
 
-        private GetCustomerCurrentAccountPdfQuery CreateQuery()
+        private GetCustomersCurrentAccountSummaryReportPdfQuery CreateQuery()
         {
-            return new GetCustomerCurrentAccountPdfQuery
-            {
-                CustomerId = (TxtCustomer.SelectedEntity as Customer).Id,
-                StartDate = DateTime.ParseExact(TxtStartDate.Text,"yyyy-MM-dd",CultureInfo.InvariantCulture),
-                EndDate = DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture),
-            };
+            var customerId = (TxtCustomer.SelectedEntity as Customer)?.Id;
+            var startDate = DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            var endDate = DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return new GetCustomersCurrentAccountSummaryReportPdfQuery(startDate, endDate,customerId);
+
         }
         private void SelectCustomer(Customer customer)
         {

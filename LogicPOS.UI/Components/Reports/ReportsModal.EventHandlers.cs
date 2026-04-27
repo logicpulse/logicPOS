@@ -1,6 +1,7 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf;
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
             modal.Destroy();
         }
 
-        private void BtnCustomerBalanceSummaryReport_Clicked(object sender, EventArgs e)
+        private void BtnCustomersCurrentAccountSummaryReport_Clicked(object sender, EventArgs e)
         {
             CustomerCurrentAccountFilterModal.ShowModal(this);
         }
@@ -111,7 +112,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByTerminalReport_Clicked(object sender, EventArgs e)
         {
-            ReportsFilterModal modal = DefaultFilterModal();
+            ReportsFilterModal modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -123,9 +124,9 @@ namespace LogicPOS.UI.Components.Modals
             modal.Destroy();
         }
 
-        private ReportsFilterModal DefaultFilterModal()
+        public static ReportsFilterModal DefaultFilterModal(Window parentWindow)
         {
-            var modal = new ReportsFilterModal(this);
+            var modal = new ReportsFilterModal(parentWindow);
 
             modal.TxtArticle.Component.Visible = false;
             modal.TxtCustomer.Component.Visible = false;
@@ -140,7 +141,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByCustomerReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -154,7 +155,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnArticleTotalSoldReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -168,7 +169,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -182,7 +183,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -196,7 +197,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByCurrencyReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -210,7 +211,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByCountryReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -224,7 +225,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByVatAndArticleTypeReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtVatRate.Component.Visible = true;
@@ -239,7 +240,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSalesByVatAndArticleClassReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtVatRate.Component.Visible = true;
@@ -254,7 +255,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByCustomerReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -268,30 +269,27 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnCustomerBalanceDetailsReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtCustomer.Component.Visible = true;
             modal.TxtCustomer.IsRequired = true;
-            modal.TxtCustomer.IsValidatable = true;
-            modal.TxtCustomer.Regex = @"^[0-9a-zA-Z\s]+$";
-
+            modal.TxtCustomer.UpdateValidationColors();
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
                 if (modal.TxtCustomer.SelectedEntity != null)
                 {
-                    ReportsService.ShowCustomerBalanceDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as Customer).Id);
+                    ReportsService.ShowCustomerBalanceDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as ApiEntity).Id);
                 }
             }
             modal.Destroy();
         }
 
-
         private void BtnDetailedSalesByDocumentReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -305,7 +303,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByDateReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -320,7 +318,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByUserReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -335,7 +333,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByTerminalReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -350,7 +348,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -364,7 +362,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -379,7 +377,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByCurrencyReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -394,7 +392,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByCountryReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -409,7 +407,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByFamilyReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -459,7 +457,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByPlaceReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -474,7 +472,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByTableReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -488,7 +486,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDetailedSalesByVatGroupReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtVatRate.Component.Visible = true;
@@ -514,7 +512,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
 
@@ -530,7 +528,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnStockMovementsReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
 
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
@@ -545,7 +543,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnStockByWarehouseReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtSerialNumber.Component.Visible = true;
             modal.TxtWarehouse.Component.Visible = true;
             modal.TxtArticle.Component.Visible = true;
@@ -567,7 +565,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnStockByArticleReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtArticle.Component.Visible = true;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
@@ -582,7 +580,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnStockBySupplierReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtCustomer.Component.Visible = true;
             modal.TxtDocumentNumber.Component.Visible = true;
             modal.TxtDocumentType.Component.Visible = false;
@@ -598,7 +596,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnStockByArticleGainReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtArticle.Component.Visible = true;
@@ -616,7 +614,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnDeletedOrdersReport_Clicked(object sender, EventArgs e)
         {
-            var modal = DefaultFilterModal();
+            var modal = DefaultFilterModal(this);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
 

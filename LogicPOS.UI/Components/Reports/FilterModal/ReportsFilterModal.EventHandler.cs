@@ -130,7 +130,6 @@ namespace LogicPOS.UI.Components.Modals
             }
         }
 
-     
         private void TxtEndDate_SelectEntityClicked(object sender, EventArgs e)
         {
             var dateTimePicker = new DateTimePicker(this);
