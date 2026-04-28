@@ -1,4 +1,4 @@
-﻿using ESC_POS_USB_NET.Enums;
+using ESC_POS_USB_NET.Enums;
 using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.UI.Components.Terminals;
@@ -206,6 +206,7 @@ namespace LogicPOS.UI.Printing
             _printer.Append(_data.Document.Number);
             _printer.Append($"Original");
             _printer.Append(_data.Document.Date.ToShortDateString());
+            if(!string.IsNullOrEmpty(_data.Table)) _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
             _printer.ExpandedMode(PrinterModeState.Off);
             _printer.Separator(' ');
             _printer.NormalWidth();
@@ -320,6 +321,8 @@ namespace LogicPOS.UI.Printing
         public struct InvoicePrintingData
         {
             public Guid DocumentId { get; set; }
+            public string Table { get; set; }
+            public string Place { get; set; }
             public DocumentPrintingModel Document { get; set; }
             public CompanyInformation CompanyInformations { get; set; }
         }

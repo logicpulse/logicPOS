@@ -133,14 +133,17 @@ namespace LogicPOS.UI.Components.Modals
             }
             command.Details = details;
 
-            var printingData = DocumentsService.IssueDocumentForPrinting(command);
+            var printingDataResult = DocumentsService.IssueDocumentForPrinting(command);
 
-            if (printingData == null)
+            if (printingDataResult == null)
             {
                 return;
             }
 
-            ThermalPrintingService.PrintInvoice(printingData.Value);
+            var printingData = printingDataResult.Value;
+            printingData.Table = SaleContext.CurrentTable.Designation;
+            printingData.Place = SaleContext.CurrentTable.Place;
+            ThermalPrintingService.PrintInvoice(printingData);
 
         }
     }

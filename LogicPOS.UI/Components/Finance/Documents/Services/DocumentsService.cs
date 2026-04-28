@@ -60,7 +60,12 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
                 return null;
             }
 
-            var document = GetPrintingModel(issueDocumentReponse.Value.Id);
+            return GetPrintingData(issueDocumentReponse.Value.Id);
+        }
+
+        public static InvoicePrintingData? GetPrintingData(Guid documentId)
+        {
+            var document = GetPrintingModel(documentId);
 
             if (document == null)
             {
@@ -69,7 +74,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
 
             return new InvoicePrintingData
             {
-                DocumentId = issueDocumentReponse.Value.Id,
+                DocumentId = documentId,
                 Document = document,
                 CompanyInformations = CompanyDetailsService.CompanyInformation
             };

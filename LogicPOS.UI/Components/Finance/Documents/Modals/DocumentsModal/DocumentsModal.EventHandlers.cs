@@ -121,7 +121,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id))
                 {
-                    var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"),Page.SelectedEntity.Number);
+                    var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), Page.SelectedEntity.Number);
                     CustomAlerts.Warning(this)
                                  .WithMessage(message)
                                  .ShowAlert();
@@ -181,16 +181,25 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
-
-            if (tempFile == null)
-            {
-                return;
-            }
-
             try
             {
-                PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+                if (printer.Type.ThermalPrinter)
+                {
+                    var thermalPrintingData = DocumentsService.GetPrintingData(Page.SelectedEntity.Id);
+                    if (thermalPrintingData != null)
+                    {
+                        ThermalPrintingService.PrintInvoice(thermalPrintingData.Value);
+                    }
+                }
+                else
+                {
+                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
+
+                    if (tempFile != null)
+                    {
+                        PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
+                    }
+                }
                 DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason, printer.Type.ThermalPrinter);
             }
             catch (Exception ex)
@@ -305,7 +314,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => (d.Id,d.Number)),
+            var modal = new SendDocumentByEmailModal(Page.SelectedDocuments.Select(d => (d.Id, d.Number)),
                                                      Page.SelectedEntity.Customer.FiscalNumber,
                                                      false,
                                                      this);
