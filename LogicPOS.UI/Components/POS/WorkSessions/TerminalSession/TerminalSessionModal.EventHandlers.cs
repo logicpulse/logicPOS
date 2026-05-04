@@ -1,5 +1,6 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -14,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Text;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -180,31 +182,13 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            CustomAlerts.Information(this)
-                     .WithMessageResource("dialog_message_worksession_terminal_close_successfully")
-                     .ShowAlert();
-
-            var response = CustomAlerts.Question(this)
-                                       .WithSize(new Size(620, 300))
-                                       .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
-                                       .ShowAlert();
-
-            if (response == ResponseType.Yes)
-            {
-                ThermalPrintingService.PrintCashDrawerClose(totalInCashDrawer, amount, description);
-                var newTotalInCashDrawer = WorkSessionsService.GetTotalCashInCashDrawer();
-                if (newTotalInCashDrawer > totalInCashDrawer)
-                {
-                    ThermalPrintingService.PrintCashDrawerInMovement(newTotalInCashDrawer, amount - totalInCashDrawer, description);
-                }
-                else if (newTotalInCashDrawer < totalInCashDrawer)
-                {
-                    ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer - newTotalInCashDrawer, description);
-                }
-            }
-
+            ShowTerminalSessionEndInformation();
+            HandleTerminalSessionReportPrinting();
+            
             POSWindow.Instance.UpdateUI();
         }
+
+
 
         private void OpenSession()
         {
@@ -297,6 +281,120 @@ namespace LogicPOS.UI.Components.POS
                     BtnOut.ModifyBg(StateType.Normal, AppSettings.Instance.ColorBaseDialogDefaultButtonBackground.Lighten(0.50f).ToGdkColor());
                     break;
             }
+        }
+
+        private void ShowTerminalSessionEndInformation()
+        {
+            DayReportData reportData = WorkSessionsService.GetLastClosedTerminalSessionReportData();
+
+            var message = new StringBuilder($"Sessão de terminal fechada com sucesso!\n\n");
+
+
+            if (reportData != null)
+            {
+                message.AppendLine($"Abertura: {reportData.Day.StartDate}");
+                message.AppendLine($"Fecho: {reportData.Day.EndDate}");
+                message.AppendLine($"Total abertura: {reportData.OpeningCashTotal:N2}");
+                message.AppendLine($"Total em Caixa: {reportData.EndOfDayCashTotal:N2}");
+                message.AppendLine($"Entrada de Numerário: {reportData.CashDrawerIn:N2}");
+                message.AppendLine($"Saída de Numerário: {reportData.CashDrawerOut:N2}\n");
+
+                message.AppendLine();
+                message.AppendLine($"# Total por método de pagamento (Qnt.)");
+                foreach (var payment in reportData.GetTotalPerPaymentMethod())
+                {
+                    message.AppendLine($"{payment.Method}: ({payment.Quantity:F2}) {payment.Total:F2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por família (Qnt.)");
+                foreach (var family in reportData.GetTotalPerFamily())
+                {
+                    message.AppendLine($"{family.Family}: ({family.Quantity:F2}) {family.Total:N2}");
+                }
+
+
+                message.AppendLine();
+                message.AppendLine($"# Total por subfamília (Qnt.)");
+                foreach (var subfamily in reportData.GetTotalPerSubfamily())
+                {
+                    message.AppendLine($"{subfamily.Subfamily}: ({subfamily.Quantity:F2}) {subfamily.Total:N2}");
+                }
+
+
+                message.AppendLine();
+                message.AppendLine($"# Total por artigo (Qnt.) ");
+                foreach (var article in reportData.GetTotalPerArticle())
+                {
+                    message.AppendLine($"{article.Article}: ({article.Quantity:F2}) {article.Total:N2}");
+                }
+
+
+                message.AppendLine();
+                message.AppendLine($"# Total por taxa (Qnt.)");
+                foreach (var tax in reportData.GetTotalPerTax())
+                {
+                    message.AppendLine($"{tax.Tax}: ({tax.Quantity:F2}) {tax.Total:N2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"# Total por utilizador (Qnt.)");
+                foreach (var user in reportData.GetTotalPerUser())
+                {
+                    message.AppendLine($"{user.User}: ({user.Quantity:F2}) {user.Total:N2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine("# Total por documento (Qnt.)");
+                foreach (var document in reportData.GetTotalPerDocumentType())
+                {
+                    message.AppendLine($"{document.DocumentType}: ({document.Quantity:F2}) {document.Total:N2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine("# Total por hora (Qnt.)");
+                foreach (var hour in reportData.GetTotalPerHour())
+                {
+                    message.AppendLine($"{hour.Hour}: ({hour.Quantity:F2}) {hour.Total:N2}");
+                }
+
+                message.AppendLine();
+                message.AppendLine($"## Total Ilí.: {reportData.DocumentsTotal:N2}");
+            }
+
+
+            CustomAlerts.Information(this)
+                        .WithMessage(message.ToString())
+                        .ShowAlert();
+
+        }
+
+        private bool HandleTerminalSessionReportPrinting()
+        {
+            var printDialogResponse = CustomAlerts.Question(this)
+                                                                .WithSize(new Size(500, 350))
+                                                                .WithTitleResource("global_button_label_print")
+                                                                .WithMessageResource("dialog_message_request_print_document_confirmation")
+                                                                .ShowAlert();
+
+            if (printDialogResponse != ResponseType.Yes)
+            {
+                return false;
+            }
+
+            var reportData = WorkSessionsService.GetLastClosedTerminalSessionReportData();
+
+            if (reportData == null)
+            {
+                CustomAlerts.Error(this)
+                            .WithSize(new Size(620, 300))
+                            .WithMessage("Não foi possível obter os dados do relatório da sessão.")
+                            .ShowAlert();
+                return false;
+            }
+
+            ThermalPrintingService.PrintWorkSessionReport(reportData);
+            return true;
         }
 
         private void UpdateButtonsSensitivity()

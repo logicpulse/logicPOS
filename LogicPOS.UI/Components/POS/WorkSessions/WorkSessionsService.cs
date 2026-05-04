@@ -1,5 +1,6 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
+using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetTerminalSessionReportData;
 using LogicPOS.Api.Features.WorkSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseAllSessions;
 using LogicPOS.Api.Features.WorkSessions.CloseWorkSessionPeriodDay;
@@ -185,6 +186,26 @@ namespace LogicPOS.UI.Services
         {
             var result = DependencyInjection.Mediator.Send(new GetLastClosedDayQuery()).Result;
 
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+
+        public static DayReportData GetLastClosedTerminalSessionReportData()
+        {
+            var lastClosedTerminalSession = GetTerminalLastWorkSession();
+
+            if (lastClosedTerminalSession == null)
+            {
+                return null;
+            }
+
+            var result = DependencyInjection.Mediator.Send(new GetTerminalSessionReportDataQuery(lastClosedTerminalSession.Id)).Result;
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result);

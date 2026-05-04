@@ -116,6 +116,8 @@ namespace LogicPOS.UI.Components.POS
             POSWindow.Instance.UpdateUI();
         }
 
+        
+
         private void ShowDayEndInformation()
         {
             DayReportData reportData = WorkSessionsService.GetLastClosedDayReportData();
