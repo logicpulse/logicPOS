@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleTypeReportPdf
 {
-    public class GetSalesByVatAndArticleTypeReportPdfQuery : ReportQuery
+    public class GetSalesByVatAndArticleTypeReportPdfQuery : ReportFileQuery
     {
         public Guid? TaxId { get; set; }
         public GetSalesByVatAndArticleTypeReportPdfQuery(DateTime startDate,

@@ -1,14 +1,22 @@
-﻿using ErrorOr;
-using LogicPOS.Api.Features.Common.Responses;
-using MediatR;
+using LogicPOS.Api.Features.Reports.Common;
 using System;
+using System.Text;
 
 namespace LogicPOS.Api.Features.Customers.GetCurrentAccountPdf
 {
-    public class GetCustomerCurrentAccountPdfQuery : IRequest<ErrorOr<TempFile>>
+    public class GetCustomerCurrentAccountPdfQuery : ReportFileQuery
     {
+        public GetCustomerCurrentAccountPdfQuery(DateTime startDate,
+            DateTime endDate, Guid customerId) : base(startDate, endDate, null, null)
+        {
+            CustomerId = customerId;
+        }
+
         public Guid CustomerId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+
+        protected override void BuildQuery(StringBuilder urlQueryBuilder)
+        {
+            urlQueryBuilder.Append($"&CustomerId={CustomerId}");
+        }
     }
 }

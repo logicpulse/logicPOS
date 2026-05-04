@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesByPaymentConditionDetailedReportPdf
 {
-    public class GetSalesByPaymentConditionDetailedReportPdfQuery : ReportQuery
+    public class GetSalesByPaymentConditionDetailedReportPdfQuery : ReportFileQuery
     {
         public GetSalesByPaymentConditionDetailedReportPdfQuery(DateTime startDate, 
                                                                 DateTime endDate,

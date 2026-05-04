@@ -1,9 +1,10 @@
 using ErrorOr;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetCurrentAccountPdf;
+using LogicPOS.Api.Features.Reports.Company.GetCompanyBillingReportPdf;
+using LogicPOS.Api.Features.Reports.Customers.GetSuppliersReportPdf;
 using LogicPOS.Api.Features.Reports.GetArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetArticleTotalSoldReportPdf;
-using LogicPOS.Api.Features.Reports.GetCompanyBillingReportPdf;
 using LogicPOS.Api.Features.Reports.GetCustomerReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCountryDetailedReportPdf;
 using LogicPOS.Api.Features.Reports.GetSalesByCountryReportPdf;
@@ -31,7 +32,6 @@ using LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockBySupplierReportPdfReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockMovementReportPdf;
 using LogicPOS.Api.Features.Reports.GetStockReportPdf;
-using LogicPOS.Api.Features.Reports.GetSuppliersReportPdf;
 using LogicPOS.Api.Features.Reports.POS.DeletedOrders.GetDeletedOrdersReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissionReportPdf;
 using LogicPOS.Api.Features.Reports.POS.SalesByPlace.GetSalesByPlaceDetailedReportPdf;
@@ -67,7 +67,7 @@ namespace LogicPOS.UI.Services
 
         public static void ShowSalesByDateReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByDateReportPdfQuery(startDate, endDate,documentType, terminalId));
+            ShowReport(new GetSalesByDateReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         private static void ShowReport(IRequest<ErrorOr<TempFile>> query)
@@ -83,7 +83,7 @@ namespace LogicPOS.UI.Services
         }
         public static void ShowSalesByUserReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByEmployeeReportPdfQuery(startDate, endDate, documentType,terminalId));
+            ShowReport(new GetSalesByEmployeeReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         public static void ShowSalesByTerminalReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
@@ -98,7 +98,7 @@ namespace LogicPOS.UI.Services
 
         public static void ShowSalesByPaymentMethodReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByPaymentMethodReportPdfQuery(startDate, endDate,documentType,terminalId));
+            ShowReport(new GetSalesByPaymentMethodReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         public static void ShowSalesByPaymentConditionReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
@@ -138,7 +138,7 @@ namespace LogicPOS.UI.Services
 
         public static void ShowCustomerBalanceDetailsReport(DateTime startDate, DateTime endDate, Guid customerId)
         {
-            ShowReport(new GetCustomerCurrentAccountPdfQuery() { StartDate = startDate, EndDate = endDate, CustomerId = customerId });
+            ShowReport(new GetCustomerCurrentAccountPdfQuery(startDate, endDate, customerId));
         }
 
         public static void ShowSalesByDocumentDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
@@ -153,7 +153,7 @@ namespace LogicPOS.UI.Services
 
         public static void ShowSalesByUserDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByEmployeeDetailedReportPdfQuery(startDate, endDate, documentType,terminalId));
+            ShowReport(new GetSalesByEmployeeDetailedReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
         public static void ShowSalesByTerminalDetailsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
@@ -214,12 +214,12 @@ namespace LogicPOS.UI.Services
 
         public static void ShowCustomersReport()
         {
-            ShowReport(new GetCustomerReportPdfQuery());
+            ShowReport(new GetCustomersListReportPdfQuery());
         }
 
         public static void ShowSuppliersReport()
         {
-            ShowReport(new GetSuppliersReportPdfQuery());
+            ShowReport(new GetSuppliersListReportPdfQuery());
         }
 
         public static void ShowCommissionsReport(DateTime startDate, DateTime endDate)
@@ -232,12 +232,12 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? warehouseId, string serialNumber=null)
+        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? warehouseId, string serialNumber = null)
         {
             ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseId, serialNumber));
         }
 
-        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid? articleId=null)
+        public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid? articleId = null)
         {
             ShowReport(new GetStockByArticleReportPdfQuery(startDate, endDate, articleId));
         }

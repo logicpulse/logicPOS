@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.Customers.GetCurrentAccountSummaryPdf
 {
-    public class GetCustomersCurrentAccountSummaryReportPdfQuery : ReportQuery
+    public class GetCustomersCurrentAccountSummaryReportPdfQuery : ReportFileQuery
     {
         public GetCustomersCurrentAccountSummaryReportPdfQuery(DateTime startDate, DateTime endDate, Guid? customerId = null) : base(
             startDate, endDate, null, null)
@@ -18,7 +18,7 @@ namespace LogicPOS.Api.Features.Reports.Customers.GetCurrentAccountSummaryPdf
         {
             if (CustomerId.HasValue)
             {
-                urlQueryBuilder.Append($"&customerId={CustomerId}");
+                urlQueryBuilder.Append($"&CustomerId={CustomerId}");
             }
         }
     }

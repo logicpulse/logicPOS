@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf
 {
-    public class GetSalesBySubFamilyDetailedReportPdfQuery : ReportQuery
+    public class GetSalesBySubFamilyDetailedReportPdfQuery : ReportFileQuery
     {
         public string FamilyCode { get; set; }
         public string SubfamilyCode { get; set; }

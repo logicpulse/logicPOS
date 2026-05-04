@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetStockBySupplierReportPdfReportPdf
 {
-    public class GetStockBySupplierReportPdfQuery : ReportQuery
+    public class GetStockBySupplierReportPdfQuery : ReportFileQuery
     {
         public Guid? SupplierId { get; set; }
         public string DocumentNumber { get; set; }

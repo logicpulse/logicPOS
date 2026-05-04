@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetStockByArticleGainReportPdf
 {
-    public class GetStockByArticleGainReportPdfQuery : ReportQuery
+    public class GetStockByArticleGainReportPdfQuery : ReportFileQuery
     {
         public Guid? ArticleId { get; set; }
         public Guid? CustomerId { get; set; }

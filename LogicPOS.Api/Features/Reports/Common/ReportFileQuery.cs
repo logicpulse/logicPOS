@@ -6,14 +6,14 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.Common
 {
-    public abstract class ReportQuery : IRequest<ErrorOr<TempFile>>
+    public abstract class ReportFileQuery : IRequest<ErrorOr<TempFile>>
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string DocumentType { get; set; }
         public Guid? TerminalId { get; set; }
 
-        public ReportQuery(DateTime startDate, DateTime endDate, string documentType, Guid? terminalId)
+        public ReportFileQuery(DateTime startDate, DateTime endDate, string documentType, Guid? terminalId)
         {
             StartDate = startDate;
             EndDate = endDate;

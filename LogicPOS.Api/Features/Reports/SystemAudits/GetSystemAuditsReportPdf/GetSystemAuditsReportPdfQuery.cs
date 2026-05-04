@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.SystemAudits.GetSystemAuditsReportPdf
 {
-    public class GetSystemAuditsReportPdfQuery : ReportQuery
+    public class GetSystemAuditsReportPdfQuery : ReportFileQuery
     {
         public GetSystemAuditsReportPdfQuery(DateTime startDate, DateTime endDate, Guid? terminalId) : base(startDate, endDate,null,terminalId)
         {

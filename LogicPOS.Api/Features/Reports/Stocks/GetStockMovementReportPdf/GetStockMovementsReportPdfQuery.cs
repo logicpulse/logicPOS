@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetStockMovementReportPdf
 {
-    public class GetStockMovementsReportPdfQuery : ReportQuery
+    public class GetStockMovementsReportPdfQuery : ReportFileQuery
     {
         public GetStockMovementsReportPdfQuery(DateTime startDate, 
                                                DateTime endDate,

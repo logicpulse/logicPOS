@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.POS.DeletedOrders.GetDeletedOrdersReportPdf
 {
-    public class GetDeletedOrdersReportPdfQuery : ReportQuery
+    public class GetDeletedOrdersReportPdfQuery : ReportFileQuery
     {
         public GetDeletedOrdersReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate,null,null)
         {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetStockReportPdf
 {
-    public class GetStockByWarehouseReportPdfQuery : ReportQuery
+    public class GetStockByWarehouseReportPdfQuery : ReportFileQuery
     {
         public Guid? ArticleId;
         public Guid? WarehouseId;

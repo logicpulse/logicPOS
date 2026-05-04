@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LogicPOS.Api.Features.Reports.GetSalesByCustomerDetailedReportPdf
 {
-    public class GetSalesByCustomerDetailedReportPdfQuery : ReportQuery
+    public class GetSalesByCustomerDetailedReportPdfQuery : ReportFileQuery
     {
         public GetSalesByCustomerDetailedReportPdfQuery(DateTime startDate, 
                                                         DateTime endDate,
