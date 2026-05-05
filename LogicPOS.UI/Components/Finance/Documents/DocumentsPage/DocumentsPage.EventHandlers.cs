@@ -14,7 +14,6 @@ namespace LogicPOS.UI.Components.Pages
     {
         public event EventHandler PageChanged;
 
-
         private void AddEventHandlers()
         {
             SelectedEntityConfirmed += OnSelectedEntityConfirmed;
@@ -43,18 +42,25 @@ namespace LogicPOS.UI.Components.Pages
                 if (SelectedDocuments.Contains(document))
                 {
                     SelectedDocuments.Remove(document);
-                    SelectedDocumentsTotalFinal -= document.TotalFinal;
                 }
                 else
                 {
                     SelectedDocuments.Add(document);
-                    SelectedDocumentsTotalFinal += document.TotalFinal;
                 }
+
+                SelectedDocumentsTotalFinal = CalculateSelectedDocumentsTotalFinal();
 
                 PageChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
+        private decimal CalculateSelectedDocumentsTotalFinal()
+        {
+            decimal invoicesTotalFinal  = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => d.TotalFinal);
+            decimal creditNotesTotalFinal = SelectedDocuments.Where(d => d.Type == "NC").Sum(d => d.TotalFinal);
+            decimal totalFinal = invoicesTotalFinal - creditNotesTotalFinal;
+            return totalFinal < 0 ? totalFinal*(-1) : totalFinal;
+        }
 
         public override void UpdateButtonPrevileges()
         {

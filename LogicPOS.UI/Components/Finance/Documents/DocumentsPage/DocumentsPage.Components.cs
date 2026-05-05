@@ -10,6 +10,7 @@ namespace LogicPOS.UI.Components.Pages
         public List<DocumentViewModel> SelectedDocuments { get; private set; } = new List<DocumentViewModel>();
         public decimal SelectedDocumentsTotalFinal { get; private set; }
 
+
         protected override void InitializeGridView()
         {
             GridViewSettings.Model = new ListStore(typeof(Document), typeof(bool));
