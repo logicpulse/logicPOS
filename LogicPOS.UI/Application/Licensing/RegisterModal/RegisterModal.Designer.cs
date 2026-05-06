@@ -87,7 +87,7 @@ namespace LogicPOS.UI.Components.Licensing
             vboxInnerLeft.PackStart(EntryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            EntryBoxFiscalNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_fiscal_number"), KeyboardMode.Numeric, RegularExpressions.FiscalNumber, true);
+            EntryBoxFiscalNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_fiscal_number"), KeyboardMode.Numeric, RegularExpressions.GetFiscalNumberRegexForCountry("XX"), true);
             EntryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
             EntryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };

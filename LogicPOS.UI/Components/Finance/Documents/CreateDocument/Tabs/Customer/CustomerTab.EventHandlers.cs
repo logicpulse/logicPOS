@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
@@ -20,15 +21,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text): 0);
         }
 
-        private void CustomerCountryHasFiscalNumberValidation()
-        {
-            if ((TxtCountry.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Country)?.Code2.ToUpper() != "PT" &&
-               (TxtCountry.SelectedEntity as Api.Features.Finance.Customers.Customers.Common.Country)?.Code2.ToUpper() != "AO")
-            {
-                TxtFiscalNumber.Regex = "^[A-Za-z0-9]{9,}$";
-                TxtFiscalNumber.IsValid();
-            }
-        }
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
@@ -40,7 +32,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 TxtCountry.Text = page.SelectedEntity.Designation;
                 TxtCountry.SelectedEntity = page.SelectedEntity;
+                UpdateTxtFiscalNumberRegex(page.SelectedEntity.Code2);
             }
+        }
+
+        private void UpdateTxtFiscalNumberRegex(string countryCode2)
+        {
+            TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+            TxtFiscalNumber.UpdateValidationColors();
         }
 
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)

@@ -119,7 +119,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtCustomer.SelectedEntity = customer;
             CustomerId = customer.Id;
             ShowCustomerData(customer);
-            CustomerCountryHasFiscalNumberValidation();
+            UpdateTxtFiscalNumberRegex(customer.Country.Code2);
             FreezeEditableFields(customer.IsFinalConsumer);
             CustomerSelected?.Invoke(customer);
         }

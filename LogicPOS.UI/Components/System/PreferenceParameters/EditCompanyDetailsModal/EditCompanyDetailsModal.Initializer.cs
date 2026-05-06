@@ -1,13 +1,8 @@
-using Gtk;
-using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Finance.Currencies;
-using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
-using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -96,7 +91,7 @@ namespace LogicPOS.UI.Components.Modals
                                        isRequired: true,
                                        isValidatable: false,
                                        includeSelectButton: false,
-                                       includeKeyBoardButton: true, 
+                                       includeKeyBoardButton: true,
                                        includeClearButton: false);
 
             TxtTaxEntity.Entry.IsEditable = false;
@@ -123,7 +118,7 @@ namespace LogicPOS.UI.Components.Modals
                                              isValidatable: true,
                                              includeSelectButton: false,
                                              includeKeyBoardButton: true,
-                                             regex: RegularExpressions.FiscalNumber, includeClearButton: false);
+                                             regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2), includeClearButton: false);
         }
 
         private void InitializeTxtBusiness()

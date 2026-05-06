@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Collections.Generic;
@@ -153,7 +154,7 @@ namespace LogicPOS.UI.Components.POS
                                               GeneralUtils.GetResourceByName("global_fiscal_number"),
                                               isRequired: true,
                                               isValidatable: true,
-                                              regex: RegularExpressions.FiscalNumber,
+                                              regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true,
                                               includeClearButton: false);

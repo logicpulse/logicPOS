@@ -71,6 +71,23 @@ namespace LogicPOS.UI.Components.Modals
                                                              CountriesService.Countries,
                                                              currentCountry,
                                                              true);
+
+            _comboCountries.ComboBox.Changed += ComboBoxCountries_Changed;
+        }
+
+        private void ComboBoxCountries_Changed(object sender, EventArgs e)
+        {
+            var selectedCountry = _comboCountries.SelectedEntity as Country;
+            if (selectedCountry != null)
+            {
+                UpdateTxtFiscalNumberRegex(selectedCountry.Code2);
+            }
+        }
+
+        private void UpdateTxtFiscalNumberRegex(string countryCode2)
+        {
+            _txtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+            _txtFiscalNumber.UpdateValidationColors();
         }
 
         protected override void AddSensitiveFields()

@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 
@@ -27,7 +28,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtEmail = TextBox.Simple("global_email_separator");
 
         private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
-        private TextBox _txtFiscalNumber = TextBox.Simple("global_fiscal_number", true, true, RegularExpressions.FiscalNumber);
+        private TextBox _txtFiscalNumber = TextBox.Simple("global_fiscal_number", true, true, RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2));
         private TextBox _txtCardNumber = TextBox.Simple("global_card_number");
         private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber);
         private CheckButton _checkSupplier = new CheckButton(GeneralUtils.GetResourceByName("global_supplier"));

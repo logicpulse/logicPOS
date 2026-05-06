@@ -43,14 +43,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                          includeKeyBoardButton: false);
 
             TxtCountry.Entry.IsEditable = false;
-            TxtCountry.Entry.Changed += Entry_Changed;
             TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
             SelectDefaultCountry();
-        }
-
-        private void Entry_Changed(object sender, EventArgs e)
-        {
-            CustomerCountryHasFiscalNumberValidation();
         }
 
         private void SelectDefaultCountry()
@@ -144,7 +138,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               GeneralUtils.GetResourceByName("global_fiscal_number"),
                                               isRequired: true,
                                               isValidatable: true,
-                                              regex: RegularExpressions.FiscalNumber,
+                                              regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
 
