@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 
@@ -26,16 +26,8 @@ namespace LogicPOS.Api.Features.Customers.UpdateCustomer
         public string NewWebSite { get; set; }
         public string NewFiscalNumber { get; set; }
         public string NewCardNumber { get; set; }
-        public string NewDiscountType { get; set; }
         public decimal? NewDiscount { get; set; }
-        public decimal? NewCardCredit { get; set; }
-        public decimal? NewTotalDebt { get; set; }
-        public decimal? NewTotalCredit { get; set; }
-        public decimal? NewCurrentBalance { get; set; }
-        public string NewCreditLine { get; set; }
-        public string NewRemarks { get; set; }
         public bool? Supplier { get; set; } 
-        public bool? Hidden { get; set; }
         public string NewNotes { get; set; }
         public bool? IsDeleted { get; set; }
     }

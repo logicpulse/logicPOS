@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.PayDocuments;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
@@ -72,7 +72,8 @@ namespace LogicPOS.UI.Components.Modals
                 ExchangeRate = decimal.Parse(TxtExchangeRate.Text),
                 CurrencyAmount = decimal.Parse(TxtTotalPaid.Text),
                 Amount = CalculateSystemCurrencyTotalPaid(),
-                Documents = Invoices.Select(x => x.Id).ToList()
+                Documents = Invoices.Select(x => x.Id).ToList(),
+                Notes = TxtNotes.Text
             };
 
             return command;

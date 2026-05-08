@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -70,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
                                  GeneralUtils.GetResourceByName("global_article_code"),
                                  isRequired: false,
                                  isValidatable: true,
-                                 regex:RegularExpressions.AlfaNumeric,
+                                 regex:RegularExpressions.ExtendedAlphaNumeric,
                                  includeSelectButton: false,
                                  includeKeyBoardButton: true);
 

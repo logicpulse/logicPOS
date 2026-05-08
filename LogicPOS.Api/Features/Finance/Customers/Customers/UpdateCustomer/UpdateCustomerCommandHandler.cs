@@ -1,8 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
 using LogicPOS.Api.Features.Finance.Customers.Customers;
-using MediatR;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;

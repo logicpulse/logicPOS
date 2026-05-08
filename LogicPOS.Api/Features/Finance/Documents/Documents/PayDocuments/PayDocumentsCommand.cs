@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -13,6 +13,7 @@ namespace LogicPOS.Api.Features.Documents.PayDocuments
         public decimal CurrencyAmount { get; set; }
         public decimal ExchangeRate { get; set; }
         public IEnumerable<Guid> Documents { get; set; } 
+        public string Notes { get; set; }
 
     }
 }

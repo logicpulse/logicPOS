@@ -29,10 +29,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
         private TextBox _txtFiscalNumber = TextBox.Simple("global_fiscal_number", true, true, RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2));
-        private TextBox _txtCardNumber = TextBox.Simple("global_card_number");
-        private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber);
+        private TextBox _txtCardNumber = TextBox.Simple("global_card_number", false, true, RegularExpressions.AlphaNumeric);
+        private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private CheckButton _checkSupplier = new CheckButton(GeneralUtils.GetResourceByName("global_supplier"));
-       
+
         IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
                                                                                                       "Agt. Preench.",
                                                                                                       AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_show_change_user_dialog.png");

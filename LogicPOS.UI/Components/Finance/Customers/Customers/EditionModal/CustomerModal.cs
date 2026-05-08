@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             BtnFillCustomerData.Visible = false;
+            _txtCardCredit.Entry.Sensitive = false;
         }
 
         private void AddFillCustomerDataBtn()
@@ -125,7 +126,6 @@ namespace LogicPOS.UI.Components.Modals
                 NewEmail = _txtEmail.Text,
                 NewFiscalNumber = _txtFiscalNumber.Text,
                 NewCardNumber = _txtCardNumber.Text,
-                NewCardCredit = decimal.Parse(_txtCardCredit.Text),
                 NewNotes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active,
                 Supplier = _checkSupplier.Active
@@ -154,7 +154,6 @@ namespace LogicPOS.UI.Components.Modals
                 FiscalNumber = _txtFiscalNumber.Text,
                 Notes = _txtNotes.Value.Text,
                 CardNumber = _txtCardNumber.Text,
-                CardCredit = decimal.Parse(_txtCardCredit.Text),
                 Supplier = _checkSupplier.Active
             };
             return customer;
