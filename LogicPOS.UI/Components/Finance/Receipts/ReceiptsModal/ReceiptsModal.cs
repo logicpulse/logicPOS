@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             bool canCancel = true;
 
-            if (receipt.IsCancelled || receipt.HasPassed48Hours)
+            if (receipt.IsCancelled)
             {
                 canCancel = false;
             }

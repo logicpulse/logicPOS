@@ -28,7 +28,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                        GeneralUtils.GetResourceByName("global_phone"),
                                        isRequired: false,
                                        isValidatable: true,
-                                       regex: RegularExpressions.PhoneNumber,
+                                       regex: RegularExpressions.IntegerNumber,
                                        includeSelectButton: false,
                                        includeKeyBoardButton: true);
         }
