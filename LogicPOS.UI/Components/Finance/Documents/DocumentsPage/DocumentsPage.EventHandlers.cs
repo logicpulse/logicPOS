@@ -39,6 +39,14 @@ namespace LogicPOS.UI.Components.Pages
             {
                 var document = (DocumentViewModel)GridView.Model.GetValue(iterator, 0);
 
+                if (SelectedDocuments.Count > 0 && !SelectedDocuments.Any(c => c.Customer.FiscalNumber == document.Customer.FiscalNumber))
+                {
+                    var checkButton = (CellRendererToggle)o;
+                    checkButton.Active = false;
+                    SelectedEntity = null;
+                    return;
+                }
+
                 if (SelectedDocuments.Contains(document))
                 {
                     SelectedDocuments.Remove(document);

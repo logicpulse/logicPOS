@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.Utilities;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -36,6 +37,13 @@ namespace LogicPOS.UI.Components.Pages
             if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
             {
                 var receipt = (ReceiptViewModel)GridView.Model.GetValue(iterator, 0);
+                if (SelectedReceipts.Count > 0 && !SelectedReceipts.Any(c=>c.CustomerFiscalNumber == receipt.CustomerFiscalNumber))
+                {
+                    var checkButton = (CellRendererToggle)o;
+                    checkButton.Active = false;
+                    SelectedEntity=null;
+                    return;
+                }
 
                 if (SelectedReceipts.Contains(receipt))
                 {
@@ -50,6 +58,7 @@ namespace LogicPOS.UI.Components.Pages
 
                 PageChanged?.Invoke(this, EventArgs.Empty);
             }
+
         }
 
         public override void UpdateButtonPrevileges()
