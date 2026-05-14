@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Globalization;
@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
@@ -35,26 +36,30 @@ namespace LogicPOS.UI.Components.Menus
         public void BtnArticle_Clicked(ArticleViewModel article)
         {
             article = ArticlesService.GetArticleViewModel(article.Id);
+
             var totalStock = ArticlesService.GetArticleTotalStock(article.Id);
 
-            if (totalStock - article.DefaultQuantity <= article.MinimumStock)
+            if (PreferenceParametersService.CheckStocks)
             {
-                var message = $"{LocalizedString.Instance["window_check_stock_question"]}" +
-                    $"\n\n{LocalizedString.Instance["global_article"]}: {article.Designation}" +
-                    $"\n{LocalizedString.Instance["global_total_stock"]}: {totalStock:0.00}" +
-                    $"\n{LocalizedString.Instance["global_minimum_stock"]}: {article.MinimumStock:0.00}";
-
-                var stockWarningResponse = new CustomAlert(SourceWindow)
-                                        .WithMessage(message)
-                                        .WithSize(new Size(500, 350))
-                                        .WithMessageType(MessageType.Question)
-                                        .WithButtonsType(ButtonsType.YesNo)
-                                        .WithTitleResource("global_stock_movements")
-                                        .ShowAlert();
-
-                if (stockWarningResponse == ResponseType.No)
+                if (totalStock - article.DefaultQuantity <= article.MinimumStock)
                 {
-                    return;
+                    var message = $"{LocalizedString.Instance["window_check_stock_question"]}" +
+                        $"\n\n{LocalizedString.Instance["global_article"]}: {article.Designation}" +
+                        $"\n{LocalizedString.Instance["global_total_stock"]}: {totalStock:0.00}" +
+                        $"\n{LocalizedString.Instance["global_minimum_stock"]}: {article.MinimumStock:0.00}";
+
+                    var stockWarningResponse = new CustomAlert(SourceWindow)
+                                            .WithMessage(message)
+                                            .WithSize(new Size(500, 350))
+                                            .WithMessageType(MessageType.Question)
+                                            .WithButtonsType(ButtonsType.YesNo)
+                                            .WithTitleResource("global_stock_movements")
+                                            .ShowAlert();
+
+                    if (stockWarningResponse == ResponseType.No)
+                    {
+                        return;
+                    }
                 }
             }
 

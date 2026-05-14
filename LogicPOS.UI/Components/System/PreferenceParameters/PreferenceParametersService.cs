@@ -43,11 +43,6 @@ namespace LogicPOS.UI.Services
         }
 
         public static string SaftExportPath => GetPreferenceParameterValue("PATH_SAFTPT");
-        public static bool UseCachedImages => Convert.ToBoolean(GetPreferenceParameterValue("USE_CACHED_IMAGES"));
-        public static bool UseEuropeanVatAutoComplete => Convert.ToBoolean(GetPreferenceParameterValue("USE_EUROPEAN_VAT_AUTOCOMPLETE"));
-        public static bool UsePosPdfViewer => Convert.ToBoolean(GetPreferenceParameterValue("USE_POS_PDF_VIEWER"));
-        public static bool PrintQrCode => Convert.ToBoolean(GetPreferenceParameterValue("PRINT_QRCODE"));
-        public static bool PrintTicket => Convert.ToBoolean(GetPreferenceParameterValue("TICKET_PRINT_TICKET"));
         public static bool CheckStocks => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS"));
         public static bool CheckStocksMessage => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS_MESSAGE"));
         public static bool DatabaseBackupAutomaticEnabled => Convert.ToBoolean(GetPreferenceParameterValue("DATABASE_BACKUP_AUTOMATIC_ENABLED"));

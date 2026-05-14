@@ -1,9 +1,10 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using System.Diagnostics;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
                 _modalSize=new Size(1200, 700);
             }
 
-            if (LicensingService.Data.StocksModule == false)
+            if (LicensingService.Data.StocksModule == false && PreferenceParametersService.CheckStocksMessage)
             {
                 var messageDialog = new CustomAlert(BackOfficeWindow.Instance)
                     .WithMessageType(MessageType.Warning)

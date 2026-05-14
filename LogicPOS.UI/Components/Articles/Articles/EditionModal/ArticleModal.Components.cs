@@ -113,6 +113,13 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(_txtTare);
             ValidatableFields.Add(_txtWeight);
             ValidatableFields.Add(_txtBarcode);
+            ValidatableFields.Add(_comboSubfamilies);
+            ValidatableFields.Add(_comboVatDirectSelling);
+            ValidatableFields.Add(_comboMeasurementUnits);
+            ValidatableFields.Add(_comboSizeUnits);
+            ValidatableFields.Add(_comboTypes);
+            ValidatableFields.Add(_comboClasses);
+
             foreach (var priceField in _prices)
             {
                 ValidatableFields.Add(priceField);

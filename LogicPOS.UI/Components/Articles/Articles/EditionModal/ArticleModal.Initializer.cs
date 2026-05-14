@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeSubfamiliesComboBox()
         {
 
-            var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity.Id);
+            var subfamilies = GetSubfamilies(_comboFamilies.SelectedEntity?.Id);
 
             var labelText = GeneralUtils.GetResourceByName("global_article_subfamily");
             var currentSubfamily = _entity != null && subfamilies != null ? _entity.Subfamily : subfamilies.FirstOrDefault();

@@ -196,7 +196,11 @@ namespace LogicPOS.UI.Components.POS
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtCountry.Text = customer.Country.Designation;
-            TxtCountry.SelectedEntity = customer.Country;
+            TxtCountry.SelectedEntity = new Api.Entities.Country { 
+                Id = customer.Country.Id, 
+                Code2 = customer.Country.Code2, 
+                Designation = customer.Country.Designation 
+            };
             TxtNotes.Text = customer.Notes;
         }
 
@@ -291,7 +295,7 @@ namespace LogicPOS.UI.Components.POS
             command.Discount = decimal.Parse(TxtDiscount.Text);
 
             var getCurrentFiscalYearResult = DependencyInjection.Mediator.Send(new GetCurrentFiscalYearQuery()).Result;
-            var hasValidFiscalYear = getCurrentFiscalYearResult.Value != null && getCurrentFiscalYearResult.Value.Year== DateTime.Now.Year;
+            var hasValidFiscalYear = getCurrentFiscalYearResult.Value != null && getCurrentFiscalYearResult.Value.Year == DateTime.Now.Year;
 
             if (!hasValidFiscalYear)
             {
