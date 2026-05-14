@@ -4,7 +4,6 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Pagination;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.GridViews;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
@@ -118,7 +117,7 @@ namespace LogicPOS.UI.Components.Pages
                 HandleErrorResult(getEntitiesResult);
                 return;
             }
-            
+
             _entities.Clear();
             _entities.AddRange(getEntitiesResult.Value);
         }
@@ -153,7 +152,7 @@ namespace LogicPOS.UI.Components.Pages
 
             foreach (var entity in entities)
             {
-                if(entity is ApiEntity apiEntity && apiEntity.IsDeleted && _showHiddenData == false)
+                if (entity is ApiEntity apiEntity && apiEntity.IsDeleted && _showHiddenData == false)
                 {
                     continue;
                 }
@@ -208,7 +207,7 @@ namespace LogicPOS.UI.Components.Pages
                 return leftEntity.Designation.CompareTo(rightEntity.Designation);
             });
         }
-       
+
         protected void AddCodeSorting(int sortColumnId)
         {
             GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
@@ -224,7 +223,7 @@ namespace LogicPOS.UI.Components.Pages
                 return leftEntity.Code.CompareTo(rightEnity.Code);
             });
         }
-        
+
         protected void AddUpdatedAtSorting(int sortColumnId)
         {
             GridViewSettings.Sort.SetSortFunc(sortColumnId, (model, left, right) =>
@@ -317,7 +316,7 @@ namespace LogicPOS.UI.Components.Pages
                 Refresh();
             }
         }
-        
+
         protected PaginatedResult<TEntity>? ShowMore(
             PaginationQuery<TEntity> query)
         {

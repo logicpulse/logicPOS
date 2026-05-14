@@ -14,6 +14,13 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
+using WinFormsApplication = System.Windows.Forms.Application;
+using WinFormsMessageBox = System.Windows.Forms.MessageBox;
+using WinFormsMessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
+using WinFormsMessageBoxIcon = System.Windows.Forms.MessageBoxIcon;
+using WinFormsThreadExceptionEventArgs = System.Threading.ThreadExceptionEventArgs;
+using WinFormsUnhandledExceptionMode = System.Windows.Forms.UnhandledExceptionMode;
 
 
 namespace LogicPOS.UI
@@ -30,6 +37,27 @@ namespace LogicPOS.UI
             Log.Information("Initializing GTK...");
             Gtk.Application.Init();
             GtkThemeStyle.ParseTheme();
+            // Exceptions in GTK# callbacks (signals, native→managed) do not reach AppDomain.UnhandledException.
+            GLib.ExceptionManager.UnhandledException += OnGlibUnhandledException;
+        }
+
+        private static void OnGlibUnhandledException(GLib.UnhandledExceptionArgs args)
+        {
+            var ex = args.ExceptionObject as Exception;
+            if (ex != null)
+            {
+                TryLogSerilogFatalAndFlush(ex, "Unhandled GLib/GTK# callback exception. IsTerminating={IsTerminating}", args.IsTerminating);
+            }
+            else
+            {
+                TryLogSerilogFatalNoExceptionAndFlush(
+                    "Unhandled GLib/GTK# callback exception (non-Exception). Object={ExceptionObject} IsTerminating={IsTerminating}",
+                    args.ExceptionObject,
+                    args.IsTerminating);
+            }
+
+            ShowFatalErrorMessageBox(ex ?? new Exception(args.ExceptionObject?.ToString() ?? "Unknown error"));
+            args.ExitApplication = true;
         }
 
         public static void ShowLoadingScreen()
@@ -66,8 +94,10 @@ namespace LogicPOS.UI
         {
             try
             {
+                TryRegisterWinFormsThreadExceptionRouting();
                 ConfigureGtkRuntime();
                 ConfigureLogging();
+                RegisterAppDomainAndTaskExceptionHandlers();
                 Log.Information("Initializing application...");
 #if DEBUG
                 Log.Information($"Configuration: Debug");
@@ -115,7 +145,7 @@ namespace LogicPOS.UI
             }
             catch (Exception ex)
             {
-                Log.Fatal(ex, "An unhandled exception occurred.");
+                TryLogSerilogFatalAndFlush(ex, "An unhandled exception occurred in Main.");
                 SimpleAlerts.Error()
                             .WithTitle("Erro inesperado")
                             .WithMessage($"Ocorreu um erro inesperado: {ex.Message}")
@@ -238,6 +268,153 @@ namespace LogicPOS.UI
                 return false;
 
             }
+        }
+
+        /// <summary>
+        /// Must run before any windows are created (GTK or WinForms) so the mode can be applied.
+        /// </summary>
+        private static void TryRegisterWinFormsThreadExceptionRouting()
+        {
+            try
+            {
+                WinFormsApplication.SetUnhandledExceptionMode(WinFormsUnhandledExceptionMode.CatchException);
+                WinFormsApplication.ThreadException += OnWinFormsThreadException;
+            }
+            catch (InvalidOperationException)
+            {
+                // Already configured (e.g. by another component); ignore.
+            }
+        }
+
+        private static void RegisterAppDomainAndTaskExceptionHandlers()
+        {
+            AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainUnhandledException;
+            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        }
+
+        private static void OnWinFormsThreadException(object sender, WinFormsThreadExceptionEventArgs e)
+        {
+            TryLogSerilogFatalAndFlush(e.Exception, "Unhandled WinForms-routed thread exception.");
+            ShowFatalErrorMessageBox(e.Exception);
+        }
+
+        private static void OnCurrentDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var ex = e.ExceptionObject as Exception;
+            if (ex != null)
+            {
+                TryLogSerilogFatalAndFlush(ex, "Unhandled AppDomain exception. IsTerminating={IsTerminating}", e.IsTerminating);
+            }
+            else
+            {
+                TryLogSerilogFatalNoExceptionAndFlush(
+                    "Unhandled AppDomain exception (non-Exception). Object={ExceptionObject} IsTerminating={IsTerminating}",
+                    e.ExceptionObject,
+                    e.IsTerminating);
+            }
+
+            ShowFatalErrorMessageBox(ex ?? new Exception(e.ExceptionObject?.ToString() ?? "Unknown error"));
+        }
+
+        private static void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
+        {
+            try
+            {
+                TryLogSerilogErrorAndFlush(e.Exception, "Unobserved task exception.");
+                e.SetObserved();
+            }
+            catch
+            {
+                // Avoid throwing from the handler.
+            }
+        }
+
+        /// <summary>
+        /// Logs with Serilog and flushes sinks so entries are not lost when the process terminates immediately after.
+        /// </summary>
+        private static void TryLogSerilogFatalAndFlush(Exception exception, string messageTemplate, params object[] propertyValues)
+        {
+            try
+            {
+                Log.Fatal(exception, messageTemplate, propertyValues);
+                Log.CloseAndFlush();
+            }
+            catch
+            {
+                // Serilog or disk failure — do not rethrow from an exception handler.
+            }
+        }
+
+        private static void TryLogSerilogFatalNoExceptionAndFlush(string messageTemplate, params object[] propertyValues)
+        {
+            try
+            {
+                Log.Fatal(messageTemplate, propertyValues);
+                Log.CloseAndFlush();
+            }
+            catch
+            {
+            }
+        }
+
+        private static void TryLogSerilogErrorAndFlush(Exception exception, string messageTemplate, params object[] propertyValues)
+        {
+            try
+            {
+                Log.Error(exception, messageTemplate, propertyValues);
+                Log.CloseAndFlush();
+            }
+            catch
+            {
+            }
+        }
+
+        private static void ShowFatalErrorMessageBox(Exception ex)
+        {
+            string details = BuildUserFacingErrorDetails(ex);
+            try
+            {
+                WinFormsMessageBox.Show(
+                    "Ocorreu um erro não tratado. A aplicação pode encerrar." + Environment.NewLine + Environment.NewLine + details,
+                    "Erro inesperado — LogicPOS",
+                    WinFormsMessageBoxButtons.OK,
+                    WinFormsMessageBoxIcon.Error);
+            }
+            catch
+            {
+                Debug.WriteLine(details);
+            }
+        }
+
+        private static string BuildUserFacingErrorDetails(Exception ex)
+        {
+            if (ex == null)
+            {
+                return "(sem detalhes)";
+            }
+
+            var parts = ex.Message;
+            if (ex.InnerException != null)
+            {
+                parts += Environment.NewLine + ex.InnerException.Message;
+            }
+
+            if (!string.IsNullOrEmpty(ex.StackTrace))
+            {
+                parts += Environment.NewLine + Environment.NewLine + TruncateForDialog(ex.StackTrace, 1800);
+            }
+
+            return parts;
+        }
+
+        private static string TruncateForDialog(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value) || value.Length <= maxLength)
+            {
+                return value;
+            }
+
+            return value.Substring(0, maxLength) + Environment.NewLine + "…";
         }
 
         public static void ConfigureLogging()
