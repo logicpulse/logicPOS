@@ -206,7 +206,7 @@ namespace LogicPOS.UI.Printing
             _printer.Append(_data.Document.Number);
             _printer.Append($"Original");
             _printer.Append(_data.Document.Date.ToShortDateString());
-            if(!string.IsNullOrEmpty(_data.Table)) _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
+            if (!string.IsNullOrEmpty(_data.Table)) _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
             _printer.ExpandedMode(PrinterModeState.Off);
             _printer.Separator(' ');
             _printer.NormalWidth();
@@ -240,12 +240,16 @@ namespace LogicPOS.UI.Printing
             {
                 _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_non_invoice_footer_at"));
             }
+            _printer.Separator(' ');
+            if (_data.CompanyInformations.IsPortugal)
+            {
+                _printer.Append($"ATCUD {_data.Document.ATCUD}");
+            }
 
             if (!string.IsNullOrEmpty(_data.Document.ATQRCode))
             {
                 _printer.Image(GetQRCode(_data.Document.ATQRCode));
                 _printer.NormalLineHeight();
-                if (_data.CompanyInformations.IsPortugal) _printer.Append($"ATCUD\n {_data.Document.ATCUD}");
             }
             else
             {
