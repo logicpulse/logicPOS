@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         private void TxtDiscount_Changed(object sender, EventArgs e)
         {
-            DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text): 0);
+            DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text) : 0);
         }
 
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
@@ -74,21 +74,20 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             {
                 Clear();
             }
-          
+
         }
+
         private void TxtCustomer_ClipboardPasted(object sender, EventArgs e)
         {
             Clear();
-            if (CustomersService.Customers.Any(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text))
+            var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
+            if (customer != null)
             {
-                CustomAlerts.Error().WithMessage("# Erro (conflict):\r\n" +
-                                                 "Descrição: Nome ou número fiscal especificado não coincide com o cliente registado\r\n\r\n" +
-                                                 "# Mais detalhes\r\n" +
-                                                 "Título: Conflict\r\n" +
-                                                 "Detalhe: Nome ou número fiscal especificado não coincide com o cliente registado")
+                CustomAlerts.Warning().WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
                                     .ShowAlert();
             }
         }
+
         private void TxtFiscalNumber_Changed(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
@@ -96,13 +95,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Clear();
             }
 
-            if(CustomersService.Customers.Any(x=>x.FiscalNumber==TxtFiscalNumber.Text && x.Name != TxtCustomer.Text))
+            var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
+            if (customer != null)
             {
-                CustomAlerts.Error().WithMessage("# Erro (conflict):\r\n" +
-                                                 "Descrição: Nome ou número fiscal especificado não coincide com o cliente registado\r\n\r\n" +
-                                                 "# Mais detalhes\r\n" +
-                                                 "Título: Conflict\r\n" +
-                                                 "Detalhe: Nome ou número fiscal especificado não coincide com o cliente registado")
+                CustomAlerts.Warning().WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
                                     .ShowAlert();
             }
         }

@@ -148,7 +148,7 @@ namespace LogicPOS.UI
                 TryLogSerilogFatalAndFlush(ex, "An unhandled exception occurred in Main.");
                 SimpleAlerts.Error()
                             .WithTitle("Erro inesperado")
-                            .WithMessage($"Ocorreu um erro inesperado: {ex.Message}")
+                            .WithMessage($"Ocorreu um erro inesperado: \nPor favor, contacte o suporte técnico.")
                             .ShowAlert();
             }
             finally
@@ -375,7 +375,7 @@ namespace LogicPOS.UI
             try
             {
                 WinFormsMessageBox.Show(
-                    "Ocorreu um erro não tratado. A aplicação pode encerrar." + Environment.NewLine + Environment.NewLine + details,
+                    "Ocorreu um erro não tratado. A aplicação pode encerrar." + Environment.NewLine + Environment.NewLine + "Contacte o suporte técnico.",
                     "Erro inesperado — LogicPOS",
                     WinFormsMessageBoxButtons.OK,
                     WinFormsMessageBoxIcon.Error);

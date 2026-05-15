@@ -45,13 +45,7 @@ namespace LogicPOS.UI.Services
         public static string SaftExportPath => GetPreferenceParameterValue("PATH_SAFTPT");
         public static bool CheckStocks => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS"));
         public static bool CheckStocksMessage => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS_MESSAGE"));
-        public static bool DatabaseBackupAutomaticEnabled => Convert.ToBoolean(GetPreferenceParameterValue("DATABASE_BACKUP_AUTOMATIC_ENABLED"));
-        public static TimeSpan DatabaseBackupTimeSpan => TimeSpan.Parse(GetPreferenceParameterValue("DATABASE_BACKUP_TIMESPAN"));
-        public static TimeSpan DatabaseBackupTimeSpanRangeStart => TimeSpan.Parse(GetPreferenceParameterValue("DATABASE_BACKUP_TIME_SPAN_RANGE_START"));
-        public static TimeSpan DatabaseBackupTimeSpanRangeEnd => TimeSpan.Parse(GetPreferenceParameterValue("DATABASE_BACKUP_TIME_SPAN_RANGE_END"));
-        public static int NotificationDocumentsToInvoiceIgnoreAfterShowNumberOfTimes => Convert.ToInt16(GetPreferenceParameterValue("NOTIFICATION_DOCUMENTS_TO_INVOICE_IGNORE_AFTER_SHOW_NUMBER_OF_TIMES"));
-        public static bool ServiceAtSendDocuments => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS"));
-        public static bool ServiceAtSendDocumentsWaybill => Convert.ToBoolean(GetPreferenceParameterValue("SERVICE_AT_SEND_DOCUMENTS_WAYBILL"));
+        public static bool PrintTicket => Convert.ToBoolean(GetPreferenceParameterValue("TICKET_PRINT_TICKET"));
         public static string SystemCurrency => GetPreferenceParameterValue("SYSTEM_CURRENCY");
         public static string AgtLogo => GetPreferenceParameterValue("AGT_FE_QRCODE_LOGO");
         public static int MaxAccountSplitterNumber => int.Parse(GetPreferenceParameterValue("SPLIT_PAYMENT_MAX_CLIENTS"));

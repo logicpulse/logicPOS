@@ -174,19 +174,23 @@ namespace LogicPOS.UI.Components.POS
                 }
             }
 
-            ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
+            if (PreferenceParametersService.PrintTicket)
             {
-                Number = SaleContext.ItemsPage.Ticket.Number,
-                Place = SaleContext.CurrentTable.Place,
-                Table = SaleContext.CurrentTable.Designation,
-                Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
                 {
-                    Id=i.Article.Id,
-                    Article = i.Article.Designation,
-                    Quantity = i.Quantity,
-                    Unit = i.Article.Unit
-                }).ToList()
-            });
+                    Number = SaleContext.ItemsPage.Ticket.Number,
+                    Place = SaleContext.CurrentTable.Place,
+                    Table = SaleContext.CurrentTable.Designation,
+                    Items = SaleContext.ItemsPage.Ticket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                    {
+                        Id = i.Article.Id,
+                        Article = i.Article.Designation,
+                        Quantity = i.Quantity,
+                        Unit = i.Article.Unit
+                    }).ToList()
+                });
+            }
+
             SaleContext.ItemsPage.FinishTicket();
 
             UpdateButtonsSensitivity();
