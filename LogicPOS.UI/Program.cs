@@ -375,7 +375,7 @@ namespace LogicPOS.UI
             try
             {
                 WinFormsMessageBox.Show(
-                    "Ocorreu um erro não tratado. A aplicação pode encerrar." + Environment.NewLine + Environment.NewLine + "Contacte o suporte técnico.",
+                    "Ocorreu um erro inesperado.\n\nNão foi possível concluir a operação. Por favor, tente novamente. Caso o problema persista, contacte o suporte técnico.",
                     "Erro inesperado — LogicPOS",
                     WinFormsMessageBoxButtons.OK,
                     WinFormsMessageBoxIcon.Error);
