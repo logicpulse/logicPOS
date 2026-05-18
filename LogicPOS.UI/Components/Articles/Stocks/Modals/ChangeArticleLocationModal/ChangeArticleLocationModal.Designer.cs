@@ -31,6 +31,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtArticle.Component.Sensitive = false;
             _txtSerialNumber.Component.Sensitive = false;
             _txtQuantity.Component.Sensitive = string.IsNullOrWhiteSpace(_entity.SerialNumber);
+            _txtQuantity.IsValidFunction = (q) => decimal.TryParse(q,out decimal r) && r <= _entity.Quantity;
         }
  
         protected override void AddSensitiveFields()
