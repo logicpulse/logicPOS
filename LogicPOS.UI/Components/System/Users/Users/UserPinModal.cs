@@ -17,7 +17,6 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         private readonly User _user;
         private readonly UserPinPanel _pinPanel;
         private readonly bool _notLoginAuth;
-        public string JwtToken { get; private set; }
 
         public UserPinModal(Window parentWindow,
                             User user,

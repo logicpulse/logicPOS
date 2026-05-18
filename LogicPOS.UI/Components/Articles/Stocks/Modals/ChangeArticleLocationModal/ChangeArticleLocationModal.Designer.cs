@@ -1,8 +1,9 @@
-﻿
+
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,8 +18,8 @@ namespace LogicPOS.UI.Components.Modals
 
         #region Components
         private TextBox _txtArticle { get; set; } = TextBox.Simple("global_article", true);
-        private TextBox _txtSerialNumber { get; set; } = TextBox.Simple("global_serialNumber", false);
-        private TextBox _txtQuantity { get; set; } = TextBox.Simple("global_quantity", true);
+        private TextBox _txtSerialNumber { get; set; } = TextBox.Simple("global_serial_number", false);
+        private TextBox _txtQuantity { get; set; } = TextBox.Simple("global_quantity", true,true,RegularExpressions.DecimalGreaterThanZero);
         private WarehouseSelectionField _locationField;
         #endregion
 
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
 
             _txtArticle.Component.Sensitive = false;
             _txtSerialNumber.Component.Sensitive = false;
-            _txtQuantity.Component.Sensitive = false;
+            _txtQuantity.Component.Sensitive = string.IsNullOrWhiteSpace(_entity.SerialNumber);
         }
  
         protected override void AddSensitiveFields()

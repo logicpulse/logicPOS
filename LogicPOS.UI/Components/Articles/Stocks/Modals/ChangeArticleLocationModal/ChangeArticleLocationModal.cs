@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation;
+using LogicPOS.Api.Features.Articles.StockManagement.ChangeArticleLocation;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.Common;
 
 namespace LogicPOS.UI.Components.Modals
@@ -21,13 +21,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override bool UpdateEntity()
         {
-            var command = new ChangeArticleLocationCommand()
-            {
-                WarehouseArticleId = _entity.Id,
-                LocationId = _locationField.LocationField.SelectedEntity.Id
-            };
+            var command = new ChangeArticleLocationCommand( _entity.Id,_locationField.LocationField.SelectedEntity.Id,decimal.Parse(_txtQuantity.Text));
 
-           return ExecuteUpdateCommand(command).IsError == false;
+            return ExecuteUpdateCommand(command).IsError == false;
         }
     }
 }
