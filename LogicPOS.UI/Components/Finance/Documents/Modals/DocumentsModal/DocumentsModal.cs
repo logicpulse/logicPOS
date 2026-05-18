@@ -19,7 +19,6 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal : Modal
     {
-        private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
         public DocumentsPage Page { get; set; }
         private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
         private DocumentsModalMode _mode;
@@ -94,7 +93,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 return;
             }
-            var result = _meditaor.Send(new CancelDocumentCommand { Id = document.Id, Reason = cancelReasonDialog.Text }).Result;
+            var result = DependencyInjection.Mediator.Send(new CancelDocumentCommand { Id = document.Id, Reason = cancelReasonDialog.Text }).Result;
 
             if (result.IsError)
             {

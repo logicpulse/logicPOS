@@ -81,7 +81,12 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-  
         protected override DeleteCommand GetDeleteCommand() => null;
+
+        private decimal CalculateSelectedDocumentsTotalFinal()
+        {
+            decimal totalToPay = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => d.TotalToPay);
+            return totalToPay < 0 ? totalToPay * (-1) : totalToPay;
+        }
     }
 }

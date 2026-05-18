@@ -2,7 +2,6 @@ using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
-using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using System;
@@ -62,17 +61,9 @@ namespace LogicPOS.UI.Components.Pages
             }
         }
 
-        private decimal CalculateSelectedDocumentsTotalFinal()
-        {
-            decimal invoicesTotalFinal  = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => d.TotalFinal);
-            decimal creditNotesTotalFinal = SelectedDocuments.Where(d => d.Type == "NC").Sum(d => d.TotalFinal);
-            decimal totalFinal = invoicesTotalFinal - creditNotesTotalFinal;
-            return totalFinal < 0 ? totalFinal*(-1) : totalFinal;
-        }
-
         public override void UpdateButtonPrevileges()
         {
-            
+
         }
     }
 }
