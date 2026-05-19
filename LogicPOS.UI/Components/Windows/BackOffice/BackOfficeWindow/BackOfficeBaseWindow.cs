@@ -306,23 +306,38 @@ namespace LogicPOS.UI.Components.Windows
                 ? string.Format(LocalizedString.Instance["global_new_version"], SystemVersionService.LastestVersion)
                 : $"Versão: {SystemVersionService.PosVersion}";
 
-            yTop = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yTop : yTop- 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
-            yBottom = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height>=800 ? yBottom : yBottom - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
+            yTop = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yTop : yTop - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
+            yBottom = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yBottom : yBottom - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
 
             LabelUpdate = new Label(topText);
             LabelUpdate.ModifyFont(fontDescriptionStatusBar);
             LabelUpdate.ModifyFg(StateType.Normal, "61, 61, 61".StringToColor().ToGdkColor());
             LabelUpdate.SetAlignment(1.0F, 0.5F);
 
-            PanelLeft.Put(LabelUpdate, 5, yTop);
-            PanelLeft.Add(LabelUpdate);
+            if (BackOfficeWindow.ScreenSize.Height == 900)
+            {
+                PanelLeft.Put(LabelUpdate, 5, yTop + 40);
+            }
+            else
+            {
+                PanelLeft.Put(LabelUpdate, 5, yTop);
+                PanelLeft.Add(LabelUpdate);
+            }
 
             // 4. Render Bottom Element
             if (SystemUpdateService.PosHasUpdate)
             {
                 // Case A: Update Button
-                PanelLeft.Put(BtnUpdateSoftware, 0, yBottom);
-                PanelLeft.Add(BtnUpdateSoftware);
+                if (BackOfficeWindow.ScreenSize.Height == 900)
+                {
+                    PanelLeft.Put(BtnUpdateSoftware, 0, yBottom+40);
+                }
+                else
+                {
+
+                    PanelLeft.Put(BtnUpdateSoftware, 0, yBottom);
+                    PanelLeft.Add(BtnUpdateSoftware);
+                }
             }
             else
             {
