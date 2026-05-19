@@ -261,7 +261,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
 
-            var modal = new PayInvoiceModal(this, Page.SelectedDocuments);
+            var modal = new PayInvoiceModal(this, Page.SelectedDocuments.Where(d => d.Type == "FT" || d.Type == "ND"));
             var response = (ResponseType)modal.Run();
             modal.Destroy();
 

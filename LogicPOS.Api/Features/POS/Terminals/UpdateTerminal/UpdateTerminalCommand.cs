@@ -7,17 +7,17 @@ namespace LogicPOS.Api.Features.Terminals.UpdateTerminal
     public class UpdateTerminalCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint? NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public string NewDesignation { get; set; }
-        public Guid? NewPrinterId { get; set; }
-        public Guid? NewWeighingMachineId { get; set; }
-        public Guid? NewPlaceId { get; set; }
-        public Guid? NewThermalPrinterId { get; set; }
-        public Guid? NewBarcodeReaderId { get; set; }
-        public Guid? NewCardReaderId { get; set; }
-        public Guid? NewPoleDisplayId { get; set; }
-        public uint? NewTimerInterval { get; set; }
-        public string NewNotes { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public string Designation { get; set; }
+        public Guid? PrinterId { get; set; }
+        public Guid? WeighingMachineId { get; set; }
+        public Guid? PlaceId { get; set; }
+        public Guid? ThermalPrinterId { get; set; }
+        public Guid? BarcodeReaderId { get; set; }
+        public Guid? CardReaderId { get; set; }
+        public Guid? PoleDisplayId { get; set; }
+        public uint TimerInterval { get; set; }
+        public string Notes { get; set; }
     }
 }

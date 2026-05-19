@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.AddArticleFamily;
 using LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
@@ -41,12 +41,12 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateArticleFamilyCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
-                NewDesignation = _txtDesignation.Text,
-                NewButton = GetButton(),
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
+                Designation = _txtDesignation.Text,
+                Button = GetButton(),
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

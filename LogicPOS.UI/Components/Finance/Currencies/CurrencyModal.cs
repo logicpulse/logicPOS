@@ -26,12 +26,14 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateCurrencyCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewAcronym = _txtAcronym.Text,
-                NewExchangeRate = decimal.Parse(_txtExchangeRate.Text),
-                NewEntity = _txtEntity.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Acronym = _txtAcronym.Text,
+                ExchangeRate = decimal.Parse(_txtExchangeRate.Text),
+                Entity = _txtEntity.Text,
+                Symbol = _entity.Symbol,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }
@@ -48,6 +50,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtAcronym.Text = _entity.Acronym;
             _txtExchangeRate.Text = _entity.ExchangeRate.ToString();
             _txtEntity.Text = _entity.Entity;
+            _txtNotes.Value.Text = _entity.Notes;
             _checkDisabled.Active = _entity.IsDeleted;
         }
     }

@@ -31,15 +31,15 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateWeighingMachineCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewPortName = _txtPortName.Text,
-                NewBaudRate = uint.Parse(_txtBaudRate.Text),
-                NewParity = _txtParity.Text,
-                NewStopBits = _txtStopBits.Text,
-                NewDataBits = uint.Parse(_txtDataBits.Text),
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                PortName = _txtPortName.Text,
+                BaudRate = uint.Parse(_txtBaudRate.Text),
+                Parity = _txtParity.Text,
+                StopBits = _txtStopBits.Text,
+                DataBits = uint.Parse(_txtDataBits.Text),
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

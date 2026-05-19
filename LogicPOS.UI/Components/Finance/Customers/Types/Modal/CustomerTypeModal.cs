@@ -26,10 +26,10 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateCustomerTypeCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

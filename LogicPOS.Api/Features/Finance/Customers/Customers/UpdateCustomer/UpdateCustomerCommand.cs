@@ -7,28 +7,28 @@ namespace LogicPOS.Api.Features.Customers.UpdateCustomer
     public class UpdateCustomerCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint? NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public Guid? NewCustomerTypeId { get; set; }
-        public Guid? NewDiscountGroupId { get; set; }
-        public Guid? NewPriceTypeId { get; set; }
-        public Guid? NewCountryId { get; set; }
-        public string NewName { get; set; } 
-        public string NewAddress { get; set; }
-        public string NewLocality { get; set; }
-        public string NewZipCode { get; set; }
-        public string NewCity { get; set; }
-        public DateTime? NewBirthDate { get; set; }
-        public string NewPhone { get; set; }
-        public string NewFax { get; set; }
-        public string NewMobilePhone { get; set; }
-        public string NewEmail { get; set; }
-        public string NewWebSite { get; set; }
-        public string NewFiscalNumber { get; set; }
-        public string NewCardNumber { get; set; }
-        public decimal? NewDiscount { get; set; }
-        public bool? Supplier { get; set; } 
-        public string NewNotes { get; set; }
-        public bool? IsDeleted { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public Guid TypeId { get; set; }
+        public Guid? DiscountGroupId { get; set; }
+        public Guid PriceTypeId { get; set; }
+        public Guid CountryId { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public string Locality { get; set; }
+        public string ZipCode { get; set; }
+        public string City { get; set; }
+        public DateTime? BirthDate { get; set; }
+        public string Phone { get; set; }
+        public string Fax { get; set; }
+        public string MobilePhone { get; set; }
+        public string Email { get; set; }
+        public string WebSite { get; set; }
+        public string FiscalNumber { get; set; }
+        public string CardNumber { get; set; }
+        public decimal Discount { get; set; }
+        public bool Supplier { get; set; }
+        public string Notes { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

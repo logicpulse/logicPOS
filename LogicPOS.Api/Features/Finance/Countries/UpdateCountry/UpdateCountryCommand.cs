@@ -7,17 +7,18 @@ namespace LogicPOS.Api.Features.Countries.UpdateCountry
     public class UpdateCountryCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public string NewDesignation { get; set; }
-        public string NewCode2 { get; set; }
-        public string NewCode3 { get; set; }
-        public string NewCapital { get; set; }
-        public string NewCurrency { get; set; }
-        public string NewCurrencyCode { get; set; }
-        public string NewFiscalNumberRegex { get; set; }
-        public string NewZipCodeRegex { get; set; }
-        public string NewNotes { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public string Designation { get; set; }
+        public string Code2 { get; set; }
+        public string Code3 { get; set; }
+        public string Capital { get; set; }
+        public string Currency { get; set; }
+        public string CurrencyCode { get; set; }
+        public string FiscalNumberRegex { get; set; }
+        public string ZipCodeRegex { get; set; }
+        public string TLD { get; set; }
+        public string Notes { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

@@ -23,6 +23,8 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Common
         public decimal TotalFinal { get; set; }
         public decimal TotalPaid { get; set; }
         public decimal TotalToPay { get; set; }
+        public decimal ReceiptsTotal { get; set; }
+        public decimal CreditNotesTotal { get; set; }
         public string AtDocCodeId { get; set; }
         public bool AtResendDocument { get; set; }
         public List<string> RelatedDocuments { get; set; }

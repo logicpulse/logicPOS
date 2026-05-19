@@ -28,14 +28,15 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateHolidayCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewDescription = _txtDescription.Text,
-                NewDay = int.Parse(_txtDay.Text),
-                NewMonth = int.Parse(_txtMonth.Text),
-                NewYear = int.Parse(_txtYear.Text),
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Description = _txtDescription.Text,
+                Day = int.Parse(_txtDay.Text),
+                Month = int.Parse(_txtMonth.Text),
+                Year = int.Parse(_txtYear.Text),
+                Fixed = _entity.Fixed,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

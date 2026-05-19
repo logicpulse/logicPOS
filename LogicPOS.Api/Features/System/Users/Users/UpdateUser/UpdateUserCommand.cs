@@ -7,26 +7,27 @@ namespace LogicPOS.Api.Features.Users.UpdateUser
     public class UpdateUserCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint? NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public Guid? NewProfileId { get; set; }
-        public Guid? NewCommissionGroupId { get; set; }
-        public string NewName { get; set; }
-        public string NewResidence { get; set; }
-        public string NewLocality { get; set; }
-        public string NewZipCpde { get; set; }
-        public string NewCity { get; set; }
-        public string NewDateOfContract { get; set; }
-        public string NewPhone { get; set; }
-        public string NewMobilePhone { get; set; }
-        public string NewEmail { get; set; }
-        public string NewFiscalNumber { get; set; }
-        public string NewLanguage { get; set; }
-        public string NewAssignedSeating { get; set; }
-        public string NewBaseConsumption { get; set; }
-        public string NewBaseOffers { get; set; }
-        public string NewPVPOffers { get; set; }
-        public string NewNotes { get; set; }
-        public bool? IsDeleted { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public Guid ProfileId { get; set; }
+        public Guid? CommissionGroupId { get; set; }
+        public string Name { get; set; }
+        public string Login { get; set; }
+        public string Residence { get; set; }
+        public string Locality { get; set; }
+        public string ZipCpde { get; set; }
+        public string City { get; set; }
+        public string DateOfContract { get; set; }
+        public string Phone { get; set; }
+        public string MobilePhone { get; set; }
+        public string Email { get; set; }
+        public string FiscalNumber { get; set; }
+        public string Language { get; set; }
+        public string AssignedSeating { get; set; }
+        public string BaseConsumption { get; set; }
+        public string BaseOffers { get; set; }
+        public string PVPOffers { get; set; }
+        public string Notes { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

@@ -26,12 +26,12 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateVatExemptionReasonCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewAcronym = _txtAcronym.Text,
-                NewStandardApplicable = _txtStandardApplicable.Text,
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Acronym = _txtAcronym.Text,
+                StandardApplicable = _txtStandardApplicable.Text,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

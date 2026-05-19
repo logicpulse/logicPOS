@@ -7,17 +7,17 @@ namespace LogicPOS.Api.Features.VatRates.UpdateVatRate
     public class UpdateVatRateCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public string NewDesignation { get; set; }
-        public decimal NewValue { get; set; }
-        public string NewReasonCode { get; set; }
-        public string NewTaxType { get; set; }
-        public string NewTaxCode { get; set; }
-        public string NewCountryRegionCode { get; set; }
-        public DateTime NewExpirationDate { get; set; }
-        public string NewDescription { get; set; }
-        public string NewNotes { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public string Designation { get; set; }
+        public decimal Value { get; set; }
+        public string ReasonCode { get; set; }
+        public string TaxType { get; set; }
+        public string TaxCode { get; set; }
+        public string CountryRegionCode { get; set; }
+        public DateTime? ExpirationDate { get; set; }
+        public string Description { get; set; }
+        public string Notes { get; set; }
         public bool IsDeleted { get; set; }
     }
 }

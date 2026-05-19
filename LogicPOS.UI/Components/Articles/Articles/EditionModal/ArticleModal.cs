@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
 using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
@@ -123,66 +123,66 @@ namespace LogicPOS.UI.Components.Modals
             var updateCommand = new UpdateArticleCommand();
 
             updateCommand.Id = _entity.Id;
-            updateCommand.NewOrder = uint.Parse(_txtOrder.Text);
-            updateCommand.NewCode = _txtCode.Text;
-            updateCommand.NewCodeDealer = _txtCodeDealer.Text;
-            updateCommand.NewDesignation = _txtDesignation.Text;
-            updateCommand.NewButton = GetButton();
-            updateCommand.NewPriceWithVat = _checkPriceWithVat.Active;
-            updateCommand.NewDiscount = decimal.Parse(_txtDiscount.Text);
-            updateCommand.NewDefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
-            updateCommand.NewMinimumStock = decimal.Parse(_txtMinimumStock.Text);
-            updateCommand.NewTare = decimal.Parse(_txtTare.Text);
-            updateCommand.NewWeight = float.Parse(_txtWeight.Text);
-            updateCommand.NewBarcode = _txtBarcode.Text;
-            updateCommand.NewPVPVariable = _checkPVPVariable.Active;
+            updateCommand.Order = uint.Parse(_txtOrder.Text);
+            updateCommand.Code = _txtCode.Text;
+            updateCommand.CodeDealer = _txtCodeDealer.Text;
+            updateCommand.Designation = _txtDesignation.Text;
+            updateCommand.Button = GetButton();
+            updateCommand.PriceWithVat = _checkPriceWithVat.Active;
+            updateCommand.Discount = decimal.Parse(_txtDiscount.Text);
+            updateCommand.DefaultQuantity = decimal.Parse(_txtDefaultQuantity.Text);
+            updateCommand.MinimumStock = decimal.Parse(_txtMinimumStock.Text);
+            updateCommand.Tare = decimal.Parse(_txtTare.Text);
+            updateCommand.Weight = float.Parse(_txtWeight.Text);
+            updateCommand.Barcode = _txtBarcode.Text;
+            updateCommand.PVPVariable = _checkPVPVariable.Active;
             updateCommand.Favorite = _checkFavorite.Active;
             updateCommand.UseWeighingBalance = _checkUseWeighingBalance.Active;
-            updateCommand.NewSubfamilyId = _comboSubfamilies.SelectedEntity.Id;
-            updateCommand.NewTypeId = _comboTypes.SelectedEntity.Id;
-            updateCommand.NewClassId = _comboClasses.SelectedEntity.Id;
-            updateCommand.NewMeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
-            updateCommand.NewSizeUnitId = _comboSizeUnits.SelectedEntity.Id;
-            updateCommand.NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty;
-            updateCommand.NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty;
-            updateCommand.NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
-            updateCommand.NewVatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.SubfamilyId = _comboSubfamilies.SelectedEntity.Id;
+            updateCommand.TypeId = _comboTypes.SelectedEntity.Id;
+            updateCommand.ClassId = _comboClasses.SelectedEntity.Id;
+            updateCommand.MeasurementUnitId = _comboMeasurementUnits.SelectedEntity.Id;
+            updateCommand.SizeUnitId = _comboSizeUnits.SelectedEntity.Id;
+            updateCommand.CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty;
+            updateCommand.VatDirectSellingId = _comboVatDirectSelling.SelectedEntity.Id;
+            updateCommand.VatExemptionReasonId = _comboVatExemptionReasons.SelectedEntity?.Id ?? Guid.Empty;
             updateCommand.IsComposed = _checkIsComposed.Active;
             updateCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity?.Model;
             updateCommand.UniqueArticles = _checkUniqueArticles.Active;
-            updateCommand.NewNotes = _txtNotes.Value.Text;
+            updateCommand.Notes = _txtNotes.Value.Text;
             updateCommand.IsDeleted = _checkDisabled.Active;
 
 
             switch (_prices.Count())
             {
                 case 1:
-                    updateCommand.NewPrice1 = _prices[0].Price;
+                    updateCommand.Price1 = _prices[0].Price;
 
                     break;
                 case 2:
-                    updateCommand.NewPrice1 = _prices[0].Price;
-                    updateCommand.NewPrice2 = _prices[1].Price;
+                    updateCommand.Price1 = _prices[0].Price;
+                    updateCommand.Price2 = _prices[1].Price;
 
                     break;
                 case 3:
-                    updateCommand.NewPrice1 = _prices[0].Price;
-                    updateCommand.NewPrice2 = _prices[1].Price;
-                    updateCommand.NewPrice3 = _prices[2].Price;
+                    updateCommand.Price1 = _prices[0].Price;
+                    updateCommand.Price2 = _prices[1].Price;
+                    updateCommand.Price3 = _prices[2].Price;
                     break;
                 case 4:
-                    updateCommand.NewPrice1 = _prices[0].Price;
-                    updateCommand.NewPrice2 = _prices[1].Price;
-                    updateCommand.NewPrice3 = _prices[2].Price;
-                    updateCommand.NewPrice4 = _prices[3].Price;
+                    updateCommand.Price1 = _prices[0].Price;
+                    updateCommand.Price2 = _prices[1].Price;
+                    updateCommand.Price3 = _prices[2].Price;
+                    updateCommand.Price4 = _prices[3].Price;
 
                     break;
                 case 5:
-                    updateCommand.NewPrice1 = _prices[0].Price;
-                    updateCommand.NewPrice2 = _prices[1].Price;
-                    updateCommand.NewPrice3 = _prices[2].Price;
-                    updateCommand.NewPrice4 = _prices[3].Price;
-                    updateCommand.NewPrice5 = _prices[4].Price;
+                    updateCommand.Price1 = _prices[0].Price;
+                    updateCommand.Price2 = _prices[1].Price;
+                    updateCommand.Price3 = _prices[2].Price;
+                    updateCommand.Price4 = _prices[3].Price;
+                    updateCommand.Price5 = _prices[4].Price;
                     break;
             }
 

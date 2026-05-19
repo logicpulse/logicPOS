@@ -28,12 +28,12 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdatePrinterTypeCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewToken = _txtToken.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Token = _txtToken.Text,
                 ThermalPrinter = _checkThermalPrinter.Active,
-                NewNotes = _txtNotes.Value.Text,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

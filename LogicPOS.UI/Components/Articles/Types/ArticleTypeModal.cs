@@ -25,11 +25,11 @@ namespace LogicPOS.UI.Components.Modals
            return new UpdateArticleTypeCommand
            {
                Id = _entity.Id,
-               NewOrder = uint.Parse(_txtOrder.Text),
-               NewCode = _txtCode.Text,
-               NewDesignation = _txtDesignation.Text,
+               Order = uint.Parse(_txtOrder.Text),
+               Code = _txtCode.Text,
+               Designation = _txtDesignation.Text,
                HasPrice = _checkHasPrice.Active,
-               NewNotes = _txtNotes.Value.Text,
+               Notes = _txtNotes.Value.Text,
                IsDeleted = _checkDisabled.Active
            };
         }

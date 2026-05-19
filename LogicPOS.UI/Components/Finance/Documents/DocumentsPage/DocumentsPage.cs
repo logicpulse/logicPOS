@@ -47,7 +47,7 @@ namespace LogicPOS.UI.Components.Pages
             {
                 CurrentQuery.PaymentStatus = DocumentPaymentStatusFilter.Unpaid;
                 CurrentQuery.Status = 'N';
-                CurrentQuery.Types = new string[] { "FT" };
+                CurrentQuery.Types = new string[] { "FT","NC" };
             }
 
             var getDocumentsResult = _mediator.Send(CurrentQuery).Result;
@@ -85,8 +85,9 @@ namespace LogicPOS.UI.Components.Pages
 
         private decimal CalculateSelectedDocumentsTotalFinal()
         {
-            decimal totalToPay = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => d.TotalToPay);
-            return totalToPay < 0 ? totalToPay * (-1) : totalToPay;
+            decimal totalDebit = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => (d.TotalFinal - d.ReceiptsTotal));
+            decimal totalCredit = SelectedDocuments.Where(d => d.Type == "NC").Sum(d => d.TotalFinal);
+            return totalDebit - totalCredit;     
         }
     }
 }

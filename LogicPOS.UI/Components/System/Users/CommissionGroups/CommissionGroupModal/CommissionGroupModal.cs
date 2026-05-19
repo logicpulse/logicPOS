@@ -25,11 +25,11 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateCommissionGroupCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewCommission = decimal.Parse(_txtCommission.Text),
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Commission = decimal.Parse(_txtCommission.Text),
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

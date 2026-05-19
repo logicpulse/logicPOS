@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.InputReaders.GetAllInputReaders;
 using LogicPOS.Api.Features.Places.GetAllPlaces;
 using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
@@ -58,18 +58,18 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateTerminalCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewTimerInterval = uint.Parse(_txtTimerInterval.Text),
-                NewPlaceId = _comboPlaces.SelectedEntity?.Id ?? Guid.Empty,
-                NewPrinterId = _comboPrinters.SelectedEntity?.Id ?? Guid.Empty,
-                NewThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id ?? Guid.Empty,
-                NewPoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id ?? Guid.Empty,
-                NewWeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id ?? Guid.Empty,
-                NewBarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id ?? Guid.Empty,
-                NewCardReaderId = _comboCardReaders.SelectedEntity?.Id ?? Guid.Empty,
-                NewNotes = _txtNotes.Value.Text                
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                TimerInterval = uint.Parse(_txtTimerInterval.Text),
+                PlaceId = _comboPlaces.SelectedEntity?.Id ?? Guid.Empty,
+                PrinterId = _comboPrinters.SelectedEntity?.Id ?? Guid.Empty,
+                ThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id ?? Guid.Empty,
+                PoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id ?? Guid.Empty,
+                WeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id ?? Guid.Empty,
+                BarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id ?? Guid.Empty,
+                CardReaderId = _comboCardReaders.SelectedEntity?.Id ?? Guid.Empty,
+                Notes = _txtNotes.Value.Text                
             };
         }
         protected override void ShowEntityData()

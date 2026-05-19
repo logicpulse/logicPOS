@@ -29,15 +29,17 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateVatRateCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewValue = decimal.Parse(_txtValue.Text),
-                NewTaxType = _txtTaxType.Text,
-                NewTaxCode = _txtTaxCode.Text,
-                NewCountryRegionCode = _txtCountryRegionCode.Text,
-                NewDescription = _txtDescription.Text,
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Value = decimal.Parse(_txtValue.Text),
+                TaxType = _txtTaxType.Text,
+                TaxCode = _txtTaxCode.Text,
+                CountryRegionCode = _txtCountryRegionCode.Text,
+                Description = _txtDescription.Text,
+                ReasonCode = _entity.ReasonCode,
+                ExpirationDate = _entity.ExpirationDate,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

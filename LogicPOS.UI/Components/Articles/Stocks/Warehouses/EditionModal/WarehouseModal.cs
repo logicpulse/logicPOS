@@ -130,12 +130,12 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateWarehouseCommand()
             {
                 Id = _entity.Id,
-                NewCode = _txtCode.Text,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewDesignation = _txtDesignation.Text,
+                Code = _txtCode.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Designation = _txtDesignation.Text,
                 IsDefault = _checkDefaultWarehouse.Active,
                 IsDeleted = _checkDisabled.Active,
-                NewNotes = _txtNotes.Value.Text
+                Notes = _txtNotes.Value.Text
             };
 
         }

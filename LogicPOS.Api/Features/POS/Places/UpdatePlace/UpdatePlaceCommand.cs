@@ -7,13 +7,13 @@ namespace LogicPOS.Api.Features.Places.UpdatePlace
     public class UpdatePlaceCommand : IRequest<ErrorOr<Success>>
     {
         public Guid Id { get; set; }
-        public uint NewOrder { get; set; }
-        public string NewCode { get; set; }
-        public string NewDesignation { get; set; }
-        public Guid NewPriceTypeId { get; set; }
-        public Guid NewMovementTypeId { get; set; }
-        public string NewButtonImage { get; set; }
-        public string NewNotes { get; set; }
+        public uint Order { get; set; }
+        public string Code { get; set; }
+        public string Designation { get; set; }
+        public Guid PriceTypeId { get; set; }
+        public Guid MovementTypeId { get; set; }
+        public string ButtonImage { get; set; }
+        public string Notes { get; set; }
         public bool IsDeleted { get; set; }
 
     }

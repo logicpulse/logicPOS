@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Countries.AddCountry;
 using LogicPOS.Api.Features.Countries.UpdateCountry;
 
@@ -33,17 +33,18 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateCountryCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewCode2 = _txtCode2.Text,
-                NewCode3 = _txtCode3.Text,
-                NewCapital = _txtCapital.Text,
-                NewCurrency = _txtCurrency.Text,
-                NewCurrencyCode = _txtCurrencyCode.Text,
-                NewFiscalNumberRegex = _txtFiscalNumberRegex.Text,
-                NewZipCodeRegex = _txtZipCodeRegex.Text,
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Code2 = _txtCode2.Text,
+                Code3 = _txtCode3.Text,
+                Capital = _txtCapital.Text,
+                Currency = _txtCurrency.Text,
+                CurrencyCode = _txtCurrencyCode.Text,
+                FiscalNumberRegex = _txtFiscalNumberRegex.Text,
+                ZipCodeRegex = _txtZipCodeRegex.Text,
+                TLD = _entity.TLD,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

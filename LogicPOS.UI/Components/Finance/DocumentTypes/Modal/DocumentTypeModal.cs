@@ -15,12 +15,12 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateDocumentTypeCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewPrintCopies = int.Parse(_txtPrintCopies.Text),
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                PrintCopies = int.Parse(_txtPrintCopies.Text),
                 PrintRequestConfirmation = _checkRequestPrintConfirmation.Active,
                 PrintOpenDrawer = _checkOpenDrawer.Active,
-                NewNotes = _txtNotes.Value.Text
+                Notes = _txtNotes.Value.Text
             };
         }
 

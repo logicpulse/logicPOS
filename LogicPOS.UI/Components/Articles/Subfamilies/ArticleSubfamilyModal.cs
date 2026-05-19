@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Articles.Subfamilies.AddArticleSubfamily;
 using LogicPOS.Api.Features.Articles.Subfamilies.UpdateArticleSubfamily;
@@ -47,16 +47,16 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateArticleSubfamilyCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewFamilyId = _comboFamilies.SelectedEntity.Id,
-                NewCommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
-                NewDiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty,
-                NewVatOnTableId = _comboVatOnTable.SelectedEntity?.Id ?? Guid.Empty,
-                NewVatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id ?? Guid.Empty,
-                NewDesignation = _txtDesignation.Text,
-                NewButton = GetButton(),
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                FamilyId = _comboFamilies.SelectedEntity.Id,
+                CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
+                DiscountGroupId = _comboDiscountGroups.SelectedEntity?.Id ?? Guid.Empty,
+                VatOnTableId = _comboVatOnTable.SelectedEntity?.Id ?? Guid.Empty,
+                VatDirectSellingId = _comboVatDirectSelling.SelectedEntity?.Id ?? Guid.Empty,
+                Designation = _txtDesignation.Text,
+                Button = GetButton(),
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

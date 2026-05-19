@@ -31,13 +31,13 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdatePrinterCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _comboDesignation.ActiveText,
-                NewNotes = _txtNotes.Value.Text,
-                NewNetworkName = _txtNetworkName.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _comboDesignation.ActiveText,
+                Notes = _txtNotes.Value.Text,
+                NetworkName = _txtNetworkName.Text,
                 IsDeleted = _checkDisabled.Active,
-                NewTypeId = _comboPrinterTypes.SelectedEntity.Id
+                TypeId = _comboPrinterTypes.SelectedEntity.Id
             };
         }
 

@@ -68,14 +68,14 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdatePlaceCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewNotes = _txtNotes.Value.Text,
-                NewButtonImage = _imagePicker.GetBase64Image(),
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Notes = _txtNotes.Value.Text,
+                ButtonImage = _imagePicker.GetBase64Image(),
                 IsDeleted = _checkDisabled.Active,
-                NewPriceTypeId = _comboPriceTypes.SelectedEntity.Id,
-                NewMovementTypeId = _comboMovementTypes.SelectedEntity.Id
+                PriceTypeId = _comboPriceTypes.SelectedEntity.Id,
+                MovementTypeId = _comboMovementTypes.SelectedEntity.Id
             };
         }
 

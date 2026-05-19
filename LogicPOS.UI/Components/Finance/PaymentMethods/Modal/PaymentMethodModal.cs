@@ -27,12 +27,16 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdatePaymentMethodCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewDesignation = _txtDesignation.Text,
-                NewToken = _txtToken.Text,
-                NewAcronym = _txtAcronym.Text,
-                NewNotes = _txtNotes.Value.Text,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Token = _txtToken.Text,
+                ResourceString = _entity.ResourceString,
+                ButtonIcon = _entity.ButtonIcon,
+                Acronym = _txtAcronym.Text,
+                AllowPayback = _entity.AllowPayback,
+                Symbol = _entity.Symbol,
+                Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active
             };
         }

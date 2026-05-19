@@ -1,4 +1,4 @@
-using LogicPOS.Api.Entities;
+﻿using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.PreferenceParameters.UpdatePreferenceParameter;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Services;
@@ -63,10 +63,10 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdatePreferenceParameterCommand
             {
                 Id = _entity.Id,
-                NewOrder = uint.Parse(_txtOrder.Text),
-                NewCode = _txtCode.Text,
-                NewValue = LogoGetBase64Image(),
-                NewNotes = _txtNotes.Value.Text
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Value = LogoGetBase64Image(),
+                Notes = _txtNotes.Value.Text
             };
         }
     }
