@@ -38,16 +38,11 @@ namespace LogicPOS.UI.Components.Windows
         private Color GetScreenBackgroundColorFromTheme(dynamic theme)
             => (theme.Globals.ScreenBackgroundColor as string).StringToColor();
 
-        private string GetAppIconFileLocation()
-        {
-            return string.Format("{0}{1}", AppSettings.Paths.Images, @"Icos\application.ico");
-        }
-
         private void SetAppIcon()
         {
-            string appIconFileLocation = GetAppIconFileLocation();
-
-            if (File.Exists(appIconFileLocation)) Icon = Utils.ImageToPixbuf(global::System.Drawing.Image.FromFile(appIconFileLocation));
+            var pixbuf = ApplicationIconHelper.TryLoadPixbuf();
+            if (pixbuf != null)
+                Icon = pixbuf;
         }
 
         private void ConfigureScreen(

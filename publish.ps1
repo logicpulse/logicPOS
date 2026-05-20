@@ -1,6 +1,6 @@
 param (
     [string]$SolutionOrProject = "LogicPOS.UI\LogicPOS.UI.csproj",
-    [string]$Configuration = "Debug",
+    [string]$Configuration = "Release",
     [string]$OutputDir = "..\..\artifacts\publish\pos\"
 )
 
@@ -33,6 +33,7 @@ if (Test-Path $OutputDir) {
 Log "Building $SolutionOrProject ($Configuration) using global MSBuild"
 
 MSBuild $SolutionOrProject `
+    /restore `
     /t:Clean,Build `
     /p:Configuration=$Configuration `
     /p:OutputPath=$OutputDir `
