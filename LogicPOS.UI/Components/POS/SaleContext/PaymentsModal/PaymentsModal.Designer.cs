@@ -71,46 +71,46 @@ namespace LogicPOS.UI.Components.POS
 
         private EventBox CreateOldTotalsTable()
         {
-            uint padding = 9;
-            Gtk.Table table = new Gtk.Table(3, 2, false);
-            table.HeightRequest = 132;
+            var layout = new VBox(false, 6) { BorderWidth = 8 };
 
-            //Row 1
-            table.Attach(LabelTotal, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(LabelTotalValue, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            layout.PackStart(CreateTotalsBlock(LabelTotal, LabelTotalValue), true, true, 0);
+            layout.PackStart(CreateTotalsBlock(LabelDelivery, LabelDeliveryValue), true, true, 0);
+            layout.PackStart(CreateTotalsBlock(LabelChange, LabelChangeValue), true, true, 0);
 
-            //Row 2
-            table.Attach(LabelDelivery, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(LabelDeliveryValue, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-
-            //Row 3
-            table.Attach(LabelChange, 0, 1, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(LabelChangeValue, 1, 2, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-
-            EventBox eventBox = new EventBox();
+            var eventBox = new EventBox();
             eventBox.BorderWidth = 4;
             eventBox.ModifyBg(StateType.Normal, AppSettings.Instance.ColorPosPaymentsDialogTotalPannelBackground.ToGdkColor());
-            eventBox.Add(table);
+            eventBox.Add(layout);
 
             return eventBox;
+        }
+
+        private static VBox CreateTotalsBlock(Label caption, Label value)
+        {
+            var block = new VBox(false, 2);
+            block.PackStart(caption, false, false, 0);
+            block.PackStart(value, true, true, 0);
+            return block;
         }
 
         private Gtk.Table CreateOldPaymentMethodsTable()
         {
             uint padding = 0;
-            Gtk.Table table = new Gtk.Table(2, 3, true) { BorderWidth = 2 };
+            Gtk.Table table = new Gtk.Table(3, 3, true) { BorderWidth = 2 };
 
-            //Row 1
+            // Row 1
             table.Attach(BtnMoney, 0, 1, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(BtnMB, 1, 2, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(BtnDebitCard, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnVisa, 2, 3, 0, 1, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
 
-            //Row 2
+            // Row 2
             table.Attach(BtnCheck, 0, 1, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(BtnCreditCard, 1, 2, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
             table.Attach(BtnCurrentAccountMethod, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
-            table.Attach(BtnCustomerCard, 2, 3, 1, 2, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+
+            // Row 3 — customer card (seventh button); Visa stays in code but is not shown in this grid
+            table.Attach(BtnCustomerCard, 0, 3, 2, 3, AttachOptions.Fill, AttachOptions.Fill, padding, padding);
+            BtnVisa.Visible = false;
 
             return table;
         }
@@ -118,7 +118,7 @@ namespace LogicPOS.UI.Components.POS
         private HBox CreateOldTopPanel()
         {
             HBox topPanel = new HBox(false, 0);
-            topPanel.PackStart(CreateOldPaymentMethodsTable(), true, true, 0);
+            topPanel.PackStart(CreateOldPaymentMethodsTable(), false, true, 0);
             topPanel.PackStart(CreateOldTotalsTable(), true, true, 0);
             return topPanel;
         }

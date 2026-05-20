@@ -66,7 +66,7 @@ namespace LogicPOS.UI.Components.Pages
             if (CustomersService.CanRechargeCard(customer) == false)
             {
                 CustomAlerts.Warning(SourceWindow)
-                    .WithMessage(LocalizedString.Instance["dialog_message_invalid_customer_card_detected"])
+                    .WithMessage("Cliente inválido.")
                     .ShowAlert();
                 return;
             }

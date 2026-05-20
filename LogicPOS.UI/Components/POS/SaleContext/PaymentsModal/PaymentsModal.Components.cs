@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.POS
         private Label LabelTotal { get; } = new Label(LocalizedString.Instance["global_total_price_to_pay"] + ":");
         private Label LabelDelivery { get; } = new Label(LocalizedString.Instance["global_total_deliver"] + ":");
         private Label LabelChange { get; } = new Label(LocalizedString.Instance["global_total_change"] + ":");
-        private Label LabelTotalValue { get; } = new Label("0") { WidthRequest = 135 };
+        private Label LabelTotalValue { get; } = new Label("0");
         private Label LabelDeliveryValue { get; } = new Label("0");
         private Label LabelChangeValue { get; } = new Label("0");
 

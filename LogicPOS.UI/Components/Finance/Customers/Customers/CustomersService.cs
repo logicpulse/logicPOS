@@ -123,5 +123,14 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
                 && customer.IsDeleted == false
                 && string.IsNullOrWhiteSpace(customer.CardNumber) == false;
         }
+
+        public static bool CanPayWithCustomerCard(Customer customer)
+        {
+            return customer != null
+                && customer.Id != Guid.Empty
+                && customer.IsDeleted == false
+                && customer.IsFinalConsumer == false
+                && string.IsNullOrWhiteSpace(customer.CardNumber) == false;
+        }
     }
 }

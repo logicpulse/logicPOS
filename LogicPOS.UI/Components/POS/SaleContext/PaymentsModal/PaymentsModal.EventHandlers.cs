@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
@@ -282,8 +283,15 @@ namespace LogicPOS.UI.Components.POS
         {
             foreach (var button in PaymentMethodButtons)
             {
+                if (button == BtnCustomerCard)
+                {
+                    continue;
+                }
+
                 button.Sensitive = true;
             }
+
+            UpdateCustomerCardPaymentAvailability();
         }
 
         private void BtnCurrentAccountMethod_Clicked(object sender, EventArgs e)
@@ -293,7 +301,24 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnCustomerCard_Clicked(object sender, EventArgs e)
         {
+            if (TrySelectCustomerCardPayment() == false)
+            {
+                return;
+            }
+        }
+
+        private bool TrySelectCustomerCardPayment()
+        {
+            if (CustomersService.CanPayWithCustomerCard(GetSelectedCustomer()) == false)
+            {
+                CustomAlerts.Warning(this)
+                    .WithMessage(LocalizedString.Instance["dialog_message_invalid_customer_card_detected"])
+                    .ShowAlert();
+                return false;
+            }
+
             SelectPaymentMethodByToken("CUSTOMER_CARD");
+            return true;
         }
 
         private void BtnVisa_Clicked(object sender, EventArgs e)

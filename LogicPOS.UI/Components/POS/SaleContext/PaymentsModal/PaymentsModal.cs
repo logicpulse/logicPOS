@@ -43,7 +43,7 @@ namespace LogicPOS.UI.Components.POS
 
         public PaymentsModal(Window parent) : base(parent,
                                                    LocalizedString.Instance["window_title_dialog_payments"],
-                                                   new Size(633, 620),
+                                                   new Size(633, 680),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
             UpdateLabels();
@@ -97,23 +97,23 @@ namespace LogicPOS.UI.Components.POS
             LabelDeliveryValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
             LabelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
 
-            //Alignments
-            LabelTotal.SetAlignment(0, 0.5F);
-            LabelDelivery.SetAlignment(0, 0.5F);
-            LabelChange.SetAlignment(0, 0.5F);
+            // Alignments — caption on its own row, amount below (right-aligned)
+            LabelTotal.SetAlignment(0, 0);
+            LabelDelivery.SetAlignment(0, 0);
+            LabelChange.SetAlignment(0, 0);
             LabelTotalValue.SetAlignment(1, 0.5F);
             LabelDeliveryValue.SetAlignment(1, 0.5F);
             LabelChangeValue.SetAlignment(1, 0.5F);
 
-            //labels Font
-            Pango.FontDescription fontDescription = Pango.FontDescription.FromString("Bold 10");
-            LabelTotal.ModifyFont(fontDescription);
-            LabelDelivery.ModifyFont(fontDescription);
-            LabelChange.ModifyFont(fontDescription);
-            Pango.FontDescription fontDescriptionValue = Pango.FontDescription.FromString("Bold 12");
-            LabelTotalValue.ModifyFont(fontDescriptionValue);
-            LabelDeliveryValue.ModifyFont(fontDescriptionValue);
-            LabelChangeValue.ModifyFont(fontDescriptionValue);
+            var captionFont = Pango.FontDescription.FromString("Bold 11");
+            LabelTotal.ModifyFont(captionFont);
+            LabelDelivery.ModifyFont(captionFont);
+            LabelChange.ModifyFont(captionFont);
+
+            LabelTotalValue.ModifyFont(Pango.FontDescription.FromString("Bold 16"));
+            var amountFont = Pango.FontDescription.FromString("Bold 13");
+            LabelDeliveryValue.ModifyFont(amountFont);
+            LabelChangeValue.ModifyFont(amountFont);
         }
 
         private bool SelectPaymentCondition()
@@ -220,6 +220,37 @@ namespace LogicPOS.UI.Components.POS
             TxtCountry.SelectedEntity = CountriesService.Default;
             TxtNotes.Clear();
             FreezeEditableFields(false);
+            UpdateCustomerCardPaymentAvailability();
+        }
+
+        private Customer GetSelectedCustomer() => TxtCustomer?.SelectedEntity as Customer;
+
+        private void UpdateCustomerCardPaymentAvailability()
+        {
+            if (BtnCustomerCard == null)
+            {
+                return;
+            }
+
+            BtnCustomerCard.Sensitive = CustomersService.CanPayWithCustomerCard(GetSelectedCustomer());
+
+            if (BtnCustomerCard.Sensitive == false)
+            {
+                ClearCustomerCardPaymentSelectionIfNeeded();
+            }
+        }
+
+        private void ClearCustomerCardPaymentSelectionIfNeeded()
+        {
+            if (_selectedPaymentMethod?.Token != "CUSTOMER_CARD")
+            {
+                return;
+            }
+
+            _selectedPaymentMethod = null;
+            TotalDelivery = 0;
+            TotalChange = 0;
+            UpdateLabels();
         }
 
         private DocumentCustomer GetDocumentCustomer()
@@ -339,6 +370,7 @@ namespace LogicPOS.UI.Components.POS
             TxtCustomer.SelectedEntity = customer;
             ShowCustomerData(customer);
             FreezeEditableFields(customer.IsFinalConsumer);
+            UpdateCustomerCardPaymentAvailability();
         }
 
         private void FreezeEditableFields(bool freeze = true)

@@ -48,6 +48,7 @@ namespace LogicPOS.UI.Components.POS
                 BtnCurrentAccountMethod };
 
             AddEventHandlers();
+            UpdateCustomerCardPaymentAvailability();
         }
 
         private void InitializeTxtCountry()

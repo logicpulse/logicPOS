@@ -44,6 +44,26 @@ namespace LogicPOS.UI.Components.POS
                 return false;
             }
 
+            if (_selectedPaymentMethod?.Token == "CUSTOMER_CARD")
+            {
+                var customer = GetSelectedCustomer();
+                if (CustomersService.CanPayWithCustomerCard(customer) == false)
+                {
+                    CustomAlerts.Warning(this)
+                        .WithMessage("Cliente inválido!")
+                        .ShowAlert();
+                    return false;
+                }
+
+                if (customer.CardCredit < TotalFinal)
+                {
+                    CustomAlerts.Warning(this)
+                        .WithMessage(string.Format(LocalizedString.Instance["dialog_message_value_exceed_customer_card_credit"],customer.CardCredit.ToString("N2"),TotalFinal.ToString("N2")))
+                        .ShowAlert();
+                    return false;
+                }
+            }
+
             if (SystemInformationService.SystemInformation.IsPortugal)
             {
 
