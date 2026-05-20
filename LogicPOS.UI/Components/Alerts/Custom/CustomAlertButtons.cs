@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.Utility;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Alerts
                 {
                     Name = "touchButtonOk_DialogActionArea",
                     BackgroundColor = settings.colorBaseDialogActionAreaButtonBackground,
-                    Text = GeneralUtils.GetResourceByName("global_button_label_ok"),
+                    Text = LocalizedString.Instance["global_button_label_ok"],
                     Font = settings.fontBaseDialogActionAreaButton,
                     FontColor = settings.colorBaseDialogActionAreaButtonFont,
                     Icon = settings.fileActionOK,
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Alerts
                 {
                     Name = "touchButtonCancel_DialogActionArea",
                     BackgroundColor = settings.colorBaseDialogActionAreaButtonBackground,
-                    Text = GeneralUtils.GetResourceByName("global_button_label_cancel"),
+                    Text = LocalizedString.Instance["global_button_label_cancel"],
                     Font = settings.fontBaseDialogActionAreaButton,
                     FontColor = settings.colorBaseDialogActionAreaButtonFont,
                     Icon = settings.fileActionCancel,
@@ -47,7 +48,7 @@ namespace LogicPOS.UI.Alerts
                 {
                     Name = "touchButtonYes_DialogActionArea",
                     BackgroundColor = settings.colorBaseDialogActionAreaButtonBackground,
-                    Text = GeneralUtils.GetResourceByName("global_button_label_yes"),
+                    Text = LocalizedString.Instance["global_button_label_yes"],
                     Font = settings.fontBaseDialogActionAreaButton,
                     FontColor = settings.colorBaseDialogActionAreaButtonFont,
                     Icon = settings.fileActionYes,
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Alerts
                 {
                     Name = "touchButtonNo_DialogActionArea",
                     BackgroundColor = settings.colorBaseDialogActionAreaButtonBackground,
-                    Text = GeneralUtils.GetResourceByName("global_button_label_no"),
+                    Text = LocalizedString.Instance["global_button_label_no"],
                     Font = settings.fontBaseDialogActionAreaButton,
                     FontColor = settings.colorBaseDialogActionAreaButtonFont,
                     Icon = settings.fileActionNo,
@@ -73,7 +74,7 @@ namespace LogicPOS.UI.Alerts
                 {
                     Name = "touchButtonClose_DialogActionArea",
                     BackgroundColor = settings.colorBaseDialogActionAreaButtonBackground,
-                    Text = GeneralUtils.GetResourceByName("global_button_label_close"),
+                    Text = LocalizedString.Instance["global_button_label_close"],
                     Font = settings.fontBaseDialogActionAreaButton,
                     FontColor = settings.colorBaseDialogActionAreaButtonFont,
                     Icon = settings.fileActionClose,

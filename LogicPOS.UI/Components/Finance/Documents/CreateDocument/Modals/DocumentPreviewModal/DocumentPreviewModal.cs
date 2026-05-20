@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals.Common;
@@ -6,6 +6,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal
 {
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
     {
         private readonly GetDocumentPreviewDataQuery _query;
         public DocumentPreviewModal(Window parent, GetDocumentPreviewDataQuery query) : base(parent: parent,
-                                                 title: GeneralUtils.GetResourceByName("window_title_dialog_documentfinance_preview_totals_mode_confirm"),
+                                                 title: LocalizedString.Instance["window_title_dialog_documentfinance_preview_totals_mode_confirm"],
                                                  size: new Size(700, 360),
                                                  icon: AppSettings.Paths.Images + @"Icons\Windows\icon_window_preview.png")
         {

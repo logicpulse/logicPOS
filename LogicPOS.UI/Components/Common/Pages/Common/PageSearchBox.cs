@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Components.Pages
         private void Intitialize()
         {
             TxtSearch = new EntryBoxValidation(SourceWindow,
-                                               GeneralUtils.GetResourceByName("widget_generictreeviewsearch_search_label"),
+                                               LocalizedString.Instance["widget_generictreeviewsearch_search_label"],
                                                KeyboardMode.AlfaNumeric,
                                                RegularExpressions.AlfaNumericExtended,
                                                false);
@@ -44,11 +45,11 @@ namespace LogicPOS.UI.Components.Pages
 
 
             BtnMore = CreateIconButton("touchButtonSearchAdvanced_DialogActionArea",
-                                       GeneralUtils.GetResourceByName("global_button_label_more"),
+                                       LocalizedString.Instance["global_button_label_more"],
                                        BtnMoreIcon);
 
             BtnFilter = CreateIconButton("touchButtonSearchAdvanced_DialogActionArea",
-                                         GeneralUtils.GetResourceByName("global_button_label_filter"),
+                                         LocalizedString.Instance["global_button_label_filter"],
                                          BtnFilterIcon);
 
             Bar.PackStart(BtnMore, false, false, 0);

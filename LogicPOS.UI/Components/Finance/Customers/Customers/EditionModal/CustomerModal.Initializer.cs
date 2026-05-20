@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Services;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using System.Linq;
 
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeCustomerTypesComboBox()
         {
             var customerTypes = GetCustomerTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_customer_types");
+            var labelText = LocalizedString.Instance["global_customer_types"];
             var currentCustomerType = _entity != null ?
                 new CustomerType { Id = _entity.CustomerType.Id, Designation = _entity.CustomerType.Designation } :
                 customerTypes.First();
@@ -40,7 +41,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializePriceTypesComboBox()
         {
             var priceTypes = GetPriceTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_price_type");
+            var labelText = LocalizedString.Instance["global_price_type"];
             var currentPriceType = _entity != null ?
                 new PriceType { Id = _entity.PriceType.Id, Designation = _entity.PriceType.Designation } :
                 priceTypes.First();
@@ -53,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeCountriesComboBox()
         {
-            var labelText = GeneralUtils.GetResourceByName("global_country");
+            var labelText = LocalizedString.Instance["global_country"];
             var currentCountry = _entity != null ?
                 new Country { Id = _entity.Country.Id, Designation = _entity.Country.Designation } :
                 CountriesService.Default;

@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Extensions;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_date_end"),
+                                         LocalizedString.Instance["global_date_end"],
                                          isRequired: true,
                                          isValidatable: true,
                                          RegularExpressions.Date,
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_customer"),
+                                       LocalizedString.Instance["global_customer"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: true,
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("global_date_start"),
+                                      LocalizedString.Instance["global_date_start"],
                                       isRequired: true,
                                       isValidatable: true,
                                       RegularExpressions.Date,

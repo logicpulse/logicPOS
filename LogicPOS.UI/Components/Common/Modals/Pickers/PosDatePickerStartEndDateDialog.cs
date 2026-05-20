@@ -1,4 +1,4 @@
-﻿
+
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Buttons;
@@ -8,6 +8,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -52,7 +53,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             DateEnd = pDateEnd;
 
             //Init Local Vars
-            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_datepicket_startend");
+            string windowTitle = LocalizedString.Instance["window_title_dialog_datepicket_startend"];
             Size windowSize = new Size(300, 255);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png";
 
@@ -60,13 +61,13 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             _fixedContent = new Fixed();
 
             //Init DateEntry Start
-            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_start"), DateStart, RegularExpressions.Date, true);
+            _entryBoxDateStart = new EntryBoxValidationDatePickerDialog(this, LocalizedString.Instance["global_date_start"], DateStart, RegularExpressions.Date, true);
             _entryBoxDateStart.EntryValidation.Text = DateStart.ToString(AppSettings.Culture.DateFormat);
             _entryBoxDateStart.EntryValidation.Validate();
             _entryBoxDateStart.ClosePopup += entryBoxDateStart_ClosePopup;
             _entryBoxDateStart.EntryValidation.Changed += entryBoxDateStartEntryValidation_Changed;
             //Init DateEntry End
-            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, GeneralUtils.GetResourceByName("global_date_end"), DateEnd, RegularExpressions.Date, true);
+            _entryBoxDateEnd = new EntryBoxValidationDatePickerDialog(this, LocalizedString.Instance["global_date_end"], DateEnd, RegularExpressions.Date, true);
             _entryBoxDateEnd.EntryValidation.Text = DateEnd.ToString(AppSettings.Culture.DateFormat);
             _entryBoxDateEnd.EntryValidation.Validate();
             _entryBoxDateEnd.ClosePopup += entryBoxDateEnd_ClosePopup;

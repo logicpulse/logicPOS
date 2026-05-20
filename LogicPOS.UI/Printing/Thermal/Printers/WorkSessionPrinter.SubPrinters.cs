@@ -1,10 +1,11 @@
-﻿
+
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System.Collections.Generic;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
@@ -15,9 +16,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_subfamily"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_subfamily"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -57,9 +58,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_article"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_article"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -99,9 +100,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_tax"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_tax"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -140,9 +141,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_payment_method"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_payment_method"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -179,9 +180,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_documentfinance_type"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_documentfinance_type"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -200,7 +201,7 @@ namespace LogicPOS.UI.Printing
                 documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
 
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = GeneralUtils.GetResourceByName(documentType);
+                dataRow[0] = LocalizedString.Instance[documentType];
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
@@ -225,9 +226,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_hour"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_hour"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);
@@ -268,9 +269,9 @@ namespace LogicPOS.UI.Printing
         {
             var columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_user"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_user"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             var ticketTable = new TicketTable(columns);

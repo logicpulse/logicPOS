@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.UI.Alerts;
@@ -11,6 +11,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -139,7 +140,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     CustomAlerts.Error(BackOfficeWindow.Instance)
                                 .WithSize(new Size(500, 340))
                                 .WithTitleResource("global_error")
-                                .WithMessage(GeneralUtils.GetResourceByName("dialog_message_field_validation_error_keyboardpad"))
+                                .WithMessage(LocalizedString.Instance["dialog_message_field_validation_error_keyboardpad"])
                                 .ShowAlert();
                 }
             }
@@ -372,7 +373,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                         CustomAlerts.Error(BackOfficeWindow.Instance)
                                     .WithSize(new Size(500, 340))
                                     .WithTitleResource("global_error")
-                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message_field_validation_error_keyboardpad"))
+                                    .WithMessage(LocalizedString.Instance["dialog_message_field_validation_error_keyboardpad"])
                                     .ShowAlert();
                     };
                     break;

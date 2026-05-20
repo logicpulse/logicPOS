@@ -9,6 +9,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -27,7 +28,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             bool showCancel = false;
             int DialogHeight = (showCancel) ? 465 : 440;
             _user = user;
-            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_request_user_pin");
+            string windowTitle = LocalizedString.Instance["window_title_dialog_request_user_pin"];
             Size windowSize = new Size(332, DialogHeight);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_users.png";
             ActionAreaButtons actionAreaButtons;

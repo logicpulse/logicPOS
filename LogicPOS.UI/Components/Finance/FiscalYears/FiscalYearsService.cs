@@ -8,6 +8,7 @@ using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.FiscalYears
 {
@@ -64,7 +65,7 @@ namespace LogicPOS.UI.Components.FiscalYears
             CustomAlerts.Warning(parent)
                        .WithSize(new Size(600, 400))
                        .WithTitleResource("global_warning")
-                       .WithMessage(GeneralUtils.GetResourceByName("global_warning_open_fiscal_year"))
+                       .WithMessage(LocalizedString.Instance["global_warning_open_fiscal_year"])
                        .ShowAlert();
         }
 

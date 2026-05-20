@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Components.Licensing
                 new ButtonSettings
                 {
                     Name = "touchButtonRegister_DialogActionArea",
-                    Text = GeneralUtils.GetResourceByName("pos_button_label_licence_register"),
+                    Text = LocalizedString.Instance["pos_button_label_licence_register"],
                     Font = FontSettings.ActionAreaButton,
                     FontColor = ColorSettings.ActionAreaButtonFont,
                     Icon = fileActionRegister,
@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.Licensing
                 new ButtonSettings
                 {
                     Name = "touchButtonContinue_DialogActionArea",
-                    Text = GeneralUtils.GetResourceByName("pos_button_label_licence_continue"),
+                    Text = LocalizedString.Instance["pos_button_label_licence_continue"],
                     Font = FontSettings.ActionAreaButton,
                     FontColor = ColorSettings.ActionAreaButtonFont,
                     Icon = fileActionContinue,
@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Licensing
                 CustomAlerts.Error(this)
                             .WithSize(new global::System.Drawing.Size(600, 300))
                             .WithTitleResource("global_error")
-                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_ws_connection_error"))
+                            .WithMessage(LocalizedString.Instance["dialog_message_license_ws_connection_error"])
                             .ShowAlert();
 
                 var temp = CreateActivateLicenseCommand();
@@ -135,7 +135,7 @@ namespace LogicPOS.UI.Components.Licensing
             CustomAlerts.Information(this)
                         .WithSize(new global::System.Drawing.Size(600, 300))
                         .WithTitleResource("global_information")
-                        .WithMessage(GeneralUtils.GetResourceByName("dialog_message_license_aplication_registered"))
+                        .WithMessage(LocalizedString.Instance["dialog_message_license_aplication_registered"])
                         .ShowAlert();
 
             Destroy();

@@ -157,7 +157,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          LocalizedString.Instance["global_customer"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -171,7 +171,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectCustomerModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCustomerModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCustomerModal.Run();
             selectCustomerModal.Destroy();
 
@@ -185,7 +185,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void InitializeTxtArticle()
         {
             TxtArticle = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_article"),
+                                              LocalizedString.Instance["global_article"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -199,7 +199,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
-            var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
 
@@ -213,7 +213,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_date_start"),
+                                       LocalizedString.Instance["global_date_start"],
                                        isRequired: false,
                                        isValidatable: true,
                                        regex: RegularExpressions.Date,
@@ -265,7 +265,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Movements
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_end"),
+                                           LocalizedString.Instance["global_date_end"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,

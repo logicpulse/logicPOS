@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -24,7 +25,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void TxtCountry_SelectEntityClicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -12,8 +13,8 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtAcronym = TextBox.Simple("global_ConfigurationUnitMeasure_Acronym");
         private TextBox _txtPrintCopies = TextBox.Simple("global_print_copies", true, true, RegularExpressions.IntegerNumber);
-        private CheckButton _checkRequestPrintConfirmation = new CheckButton(GeneralUtils.GetResourceByName("global_print_request_confirmation"));
-        private CheckButton _checkOpenDrawer = new CheckButton(GeneralUtils.GetResourceByName("global_open_drawer"));
+        private CheckButton _checkRequestPrintConfirmation = new CheckButton(LocalizedString.Instance["global_print_request_confirmation"]);
+        private CheckButton _checkOpenDrawer = new CheckButton(LocalizedString.Instance["global_open_drawer"]);
         
     }
 }

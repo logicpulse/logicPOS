@@ -1,9 +1,10 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -54,8 +55,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

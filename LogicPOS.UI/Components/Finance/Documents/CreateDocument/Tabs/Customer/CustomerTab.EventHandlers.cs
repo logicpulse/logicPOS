@@ -11,6 +11,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -24,7 +25,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
-            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCountryModal.Run();
             selectCountryModal.Destroy();
 
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
-            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCurrencyModal.Run();
             selectCurrencyModal.Destroy();
 
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 

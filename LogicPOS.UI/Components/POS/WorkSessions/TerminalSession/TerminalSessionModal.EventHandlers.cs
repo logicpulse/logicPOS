@@ -137,7 +137,7 @@ namespace LogicPOS.UI.Components.POS
 
                 var response = CustomAlerts.Question(this)
                                             .WithSize(new Size(620, 300))
-                                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                            .WithMessage(LocalizedString.Instance["dialog_message_request_print_document_confirmation"])
                                             .ShowAlert();
 
                 if (response == ResponseType.Yes)
@@ -159,7 +159,7 @@ namespace LogicPOS.UI.Components.POS
                 CustomAlerts.ShowOperationSucceededAlert(this);
                 var response = CustomAlerts.Question(this)
                                             .WithSize(new Size(620, 300))
-                                            .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                            .WithMessage(LocalizedString.Instance["dialog_message_request_print_document_confirmation"])
                                             .ShowAlert();
 
                 if (response == ResponseType.Yes)
@@ -207,7 +207,7 @@ namespace LogicPOS.UI.Components.POS
 
             var response = CustomAlerts.Question(this)
                                        .WithSize(new Size(620, 300))
-                                       .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_print_document_confirmation"))
+                                       .WithMessage(LocalizedString.Instance["dialog_message_request_print_document_confirmation"])
                                        .ShowAlert();
 
             if (response == ResponseType.Yes)

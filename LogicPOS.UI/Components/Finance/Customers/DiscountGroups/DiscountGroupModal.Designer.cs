@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
@@ -17,8 +18,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         protected override void AddSensitiveFields()

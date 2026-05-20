@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Documents
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 
@@ -81,7 +82,7 @@ namespace LogicPOS.UI.Components.Documents
         {
             
             var page = new DocumentTypesPage(null, PageOptions.SelectionPageOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 
@@ -95,7 +96,7 @@ namespace LogicPOS.UI.Components.Documents
         private void BtnSelectPaymentCondition_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentConditionsPage(null, PageOptions.SelectionPageOptions);
-            var selectPaymentConditionModal = new EntitySelectionModal<PaymentCondition>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectPaymentConditionModal = new EntitySelectionModal<PaymentCondition>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentConditionModal.Run();
             selectPaymentConditionModal.Destroy();
 
@@ -109,7 +110,7 @@ namespace LogicPOS.UI.Components.Documents
         private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
-            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentMethodModal.Run();
             selectPaymentMethodModal.Destroy();
 

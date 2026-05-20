@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumentType()
         {
             TxtDocumentType = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"),
+                                           LocalizedString.Instance["global_documentfinanceseries_documenttype"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex:RegularExpressions.Acronym2Chars,
@@ -55,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtYear()
         {
             TxtYear= new TextBox(this,
-                                 GeneralUtils.GetResourceByName("global_year"),
+                                 LocalizedString.Instance["global_year"],
                                  isRequired: false,
                                  isValidatable: true,
                                  regex: RegularExpressions.DateYear,
@@ -67,7 +68,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCode()
         {
             TxtCode = new TextBox(this,
-                                 GeneralUtils.GetResourceByName("global_article_code"),
+                                 LocalizedString.Instance["global_article_code"],
                                  isRequired: false,
                                  isValidatable: true,
                                  regex:RegularExpressions.ExtendedAlphaNumeric,

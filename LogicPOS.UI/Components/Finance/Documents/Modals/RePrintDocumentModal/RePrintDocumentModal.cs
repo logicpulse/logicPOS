@@ -6,6 +6,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Modals
     {
         public RePrintDocumentModal(Window parent,
                                     string documentNumber) : base(parent,
-                                                                  GeneralUtils.GetResourceByName("window_title_dialog_document_finance_print"),
+                                                                  LocalizedString.Instance["window_title_dialog_document_finance_print"],
                                                                   new Size(500, 400),
                                                                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_document_new.png")
         {
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetTitle()
         {
-            WindowSettings.Title.Text = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_document_finance_print"),
+            WindowSettings.Title.Text = string.Format(LocalizedString.Instance["window_title_dialog_document_finance_print"],
                                                       _documentNumber);
         }
 
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var verticalLayout = new VBox(false, 2);
 
-            var checkBoxes = new CheckButtonBoxGroup(GeneralUtils.GetResourceByName("global_print_copies"),
+            var checkBoxes = new CheckButtonBoxGroup(LocalizedString.Instance["global_print_copies"],
                                                      Buttons);
 
 

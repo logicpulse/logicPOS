@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = permissionItem.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_privilege_property");
+            var title = LocalizedString.Instance["global_privilege_property"];
             var itemDesignationCol = Columns.CreateColumn(title, 0, RenderDesignation);
 
             return itemDesignationCol;
@@ -24,7 +25,7 @@ namespace LogicPOS.UI.Components.Pages
         private TreeViewColumn CreateGrantedColumn()
         {
             TreeViewColumn grantedColumn = new TreeViewColumn();
-            grantedColumn.Title = GeneralUtils.GetResourceByName("global_privilege_active");
+            grantedColumn.Title = LocalizedString.Instance["global_privilege_active"];
 
             var label = new Label(grantedColumn.Title);
             label.ModifyFont(CellRenderers.TitleFont);

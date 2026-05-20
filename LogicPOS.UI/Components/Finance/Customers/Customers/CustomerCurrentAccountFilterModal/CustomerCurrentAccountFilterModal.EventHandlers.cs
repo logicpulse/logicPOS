@@ -4,6 +4,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using System;
 
@@ -46,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

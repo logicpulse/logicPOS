@@ -36,7 +36,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       LocalizedString.Instance["global_notes"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtVatExemptionReason()
         {
             TxtVatExemptionReason = new TextBox(WindowSettings.Source,
-                                                    GeneralUtils.GetResourceByName("global_vat_exemption_reason"),
+                                                    LocalizedString.Instance["global_vat_exemption_reason"],
                                                     isRequired: true,
                                                     isValidatable: false,
                                                     includeSelectButton: true,
@@ -62,7 +62,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTax()
         {
             TxtTax = new TextBox(WindowSettings.Source,
-                                     GeneralUtils.GetResourceByName("global_vat_rate"),
+                                     LocalizedString.Instance["global_vat_rate"],
                                      isRequired: true,
                                      isValidatable: false,
                                      includeSelectButton: true,
@@ -79,7 +79,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTotalWithTax()
         {
             TxtTotalWithTax = new TextBox(WindowSettings.Source,
-                                              GeneralUtils.GetResourceByName("global_total_per_item_vat"),
+                                              LocalizedString.Instance["global_total_per_item_vat"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: false,
@@ -92,7 +92,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTotal()
         {
             TxtTotal = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_total_article_tab"),
+                                       LocalizedString.Instance["global_total_article_tab"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -105,7 +105,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDiscount()
         {
             TxtDiscount = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_discount"),
+                                          LocalizedString.Instance["global_discount"],
                                           isRequired: true,
                                           isValidatable: true,
                                           includeSelectButton: false,
@@ -124,7 +124,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtPrice()
         {
             TxtPrice = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_price"),
+                                       LocalizedString.Instance["global_price"],
                                        isRequired: true,
                                        isValidatable: true,
                                        includeSelectButton: false,
@@ -139,7 +139,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtQuantity()
         {
             TxtQuantity = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_quantity"),
+                                          LocalizedString.Instance["global_quantity"],
                                           isRequired: true,
                                           isValidatable: true,
                                           includeSelectButton: false,
@@ -155,7 +155,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtArticle()
         {
             TxtArticle = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_article"),
+                                          LocalizedString.Instance["global_article"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -173,7 +173,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCode()
         {
             TxtCode = new TextBox(WindowSettings.Source,
-                                  GeneralUtils.GetResourceByName("global_article_code"),
+                                  LocalizedString.Instance["global_article_code"],
                                   isRequired: true,
                                   isValidatable: false,
                                   includeSelectButton: false,
@@ -189,7 +189,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSerialNumber()
         {
             TxtSerialNumber = new TextBox(WindowSettings.Source,
-                                  GeneralUtils.GetResourceByName("global_serial_number"),
+                                  LocalizedString.Instance["global_serial_number"],
                                   isRequired: false,
                                   isValidatable: false,
                                   includeSelectButton: true,
@@ -207,7 +207,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtFamily()
         {
             TxtFamily = new TextBox(WindowSettings.Source,
-                         GeneralUtils.GetResourceByName("global_article_family"),
+                         LocalizedString.Instance["global_article_family"],
                          isRequired: true,
                          isValidatable: false,
                          includeSelectButton: true,
@@ -224,7 +224,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSubFamily()
         {
             TxtSubFamily = new TextBox(WindowSettings.Source,
-                         GeneralUtils.GetResourceByName("global_article_subfamily"),
+                         LocalizedString.Instance["global_article_subfamily"],
                          isRequired: true,
                          isValidatable: false,
                          includeSelectButton: true,

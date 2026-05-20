@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Pages
                 cell.Width = 50;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_date_start");
+            var title = LocalizedString.Instance["global_date_start"];
             var col= Columns.CreateColumn(title, 2, RenderValue);
             col.Expand = false;
             col.IsFloating = false;
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
                 
             }
 
-            var title = GeneralUtils.GetResourceByName("global_date_end");
+            var title = LocalizedString.Instance["global_date_end"];
             var col= Columns.CreateColumn(title, 3, RenderValue);
             col.Expand = false;
             col.IsFloating = false;

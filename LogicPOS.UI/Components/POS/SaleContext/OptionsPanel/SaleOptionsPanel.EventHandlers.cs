@@ -13,6 +13,7 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Components.POS
             ResponseType responseType = CustomAlerts.Question(POSWindow.Instance)
                                                     .WithSize(new Size(400, 280))
                                                     .WithTitleResource("global_warning")
-                                                    .WithMessage(GeneralUtils.GetResourceByName("dialog_message__pos_order_cancel"))
+                                                    .WithMessage(LocalizedString.Instance["dialog_message__pos_order_cancel"])
                                                     .ShowAlert();
 
             if (responseType != ResponseType.Yes && responseType != ResponseType.Ok)
@@ -130,7 +131,7 @@ namespace LogicPOS.UI.Components.POS
             decimal currentPrice = item.Article.PriceWithVat ? item.UnitPriceWithVat : item.UnitPrice;
 
             InsertMoneyModalResponse price = InsertMoneyModal.RequestDecimalValue(POSWindow.Instance,
-                                                                                   GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"),
+                                                                                   LocalizedString.Instance["window_title_dialog_moneypad_product_price"],
                                                                                    Math.Round(currentPrice, 2, MidpointRounding.AwayFromZero));
 
             if (price.Response != ResponseType.Ok)
@@ -208,7 +209,7 @@ namespace LogicPOS.UI.Components.POS
                 ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
                                                           .WithSize(new Size(400, 280))
                                                           .WithTitleResource("global_warning")
-                                                          .WithMessage(GeneralUtils.GetResourceByName("dialog_message_request_close_open_ticket"))
+                                                          .WithMessage(LocalizedString.Instance["dialog_message_request_close_open_ticket"])
                                                           .ShowAlert();
 
                 if (dialogResponse != ResponseType.Yes)
@@ -231,7 +232,7 @@ namespace LogicPOS.UI.Components.POS
             logicpos.Utils.ResponseText response = logicpos.Utils.GetInputText(POSWindow.Instance,
                                                                                DialogFlags.Modal,
                                                                                fileWindowIcon,
-                                                                               GeneralUtils.GetResourceByName("global_barcode_articlecode"),
+                                                                               LocalizedString.Instance["global_barcode_articlecode"],
                                                                                string.Empty,
                                                                                RegularExpressions.AlfaNumericExtended,
                                                                                true);
@@ -263,7 +264,7 @@ namespace LogicPOS.UI.Components.POS
             logicpos.Utils.GetInputText(POSWindow.Instance,
                                         DialogFlags.Modal,
                                         fileWindowIcon,
-                                        GeneralUtils.GetResourceByName("global_cardcode_small"),
+                                        LocalizedString.Instance["global_cardcode_small"],
                                         string.Empty,
                                         RegularExpressions.AlfaNumericExtended,
                                         true);

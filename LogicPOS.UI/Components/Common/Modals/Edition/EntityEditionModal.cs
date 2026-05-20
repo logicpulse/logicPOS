@@ -127,7 +127,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void SetWindowTitle()
         {
-            Title = GeneralUtils.GetResourceByName(ModalTitleResourceName);
+            Title = LocalizedString.Instance[ModalTitleResourceName];
         }
 
         private void SetWindowIcon()
@@ -161,7 +161,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 Name = "touchButtonOk_DialogActionArea",
                 BackgroundColor = colorBaseDialogActionAreaButtonBackground,
-                Text = GeneralUtils.GetResourceByName("global_button_label_ok"),
+                Text = LocalizedString.Instance["global_button_label_ok"],
                 Font = fontBaseDialogActionAreaButton,
                 FontColor = colorBaseDialogActionAreaButtonFont,
                 Icon = tmpFileActionOK,
@@ -174,7 +174,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var buttonCancelSettings = buttonOkSettings.Clone();
 
-            buttonCancelSettings.Text = GeneralUtils.GetResourceByName("global_button_label_cancel");
+            buttonCancelSettings.Text = LocalizedString.Instance["global_button_label_cancel"];
             buttonCancelSettings.Name = "touchButtonCancel_DialogActionArea";
             buttonCancelSettings.Icon = tmpFileActionCancel;
 
@@ -222,7 +222,7 @@ namespace LogicPOS.UI.Components.Modals
 
             //UpdatedBy
             VBox vboxUpdatedBy = new VBox(true, 0);
-            Label labelUpdatedBy = new Label(GeneralUtils.GetResourceByName("global_record_user_update"));
+            Label labelUpdatedBy = new Label(LocalizedString.Instance["global_record_user_update"]);
             string lastUpdatedBy = AuthenticationService.User.Name;
 
             if (_entity != null && _entity.UpdatedBy != Guid.Empty)
@@ -238,7 +238,7 @@ namespace LogicPOS.UI.Components.Modals
 
             //CreatedAt
             VBox vboxCreatedAt = new VBox(true, 0);
-            Label labelCreatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_created"));
+            Label labelCreatedAt = new Label(LocalizedString.Instance["global_record_date_created"]);
             var createdAt = _entity?.CreatedAt.ToString() ?? DateTime.Now.ToString();
             Label labelCreatedAtValue = new Label(createdAt);
             labelCreatedAt.SetAlignment(0.5F, 0.5F);
@@ -248,7 +248,7 @@ namespace LogicPOS.UI.Components.Modals
 
             //UpdatedAt
             VBox vboxUpdatedAt = new VBox(true, 0);
-            Label labelUpdatedAt = new Label(GeneralUtils.GetResourceByName("global_record_date_updated_for_base_dialog"));
+            Label labelUpdatedAt = new Label(LocalizedString.Instance["global_record_date_updated_for_base_dialog"]);
             var updatedAt = _entity?.UpdatedAt.ToString() ?? DateTime.Now.ToString();
             Label labelUpdatedAtValue = new Label(updatedAt);
             labelUpdatedAt.SetAlignment(1.0F, 0.5F);

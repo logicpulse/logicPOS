@@ -3,6 +3,7 @@ using Gtk;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -49,7 +50,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = table.Place;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_places");
+            var title = LocalizedString.Instance["global_places"];
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
     }

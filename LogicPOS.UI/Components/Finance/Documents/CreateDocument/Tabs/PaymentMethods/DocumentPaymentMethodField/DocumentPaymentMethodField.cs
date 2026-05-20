@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {
@@ -38,7 +39,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
-            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentMethodModal.Run();
             selectPaymentMethodModal.Destroy();
 

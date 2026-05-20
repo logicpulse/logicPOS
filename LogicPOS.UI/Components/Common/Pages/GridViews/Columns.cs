@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages.GridViews
 {
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Pages.GridViews
 
         public static TreeViewColumn CreateCodeColumn(int sortColumnId)
         {
-            var title = GeneralUtils.GetResourceByName("global_record_code");
+            var title = LocalizedString.Instance["global_record_code"];
 
             void RenderCode(TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
             {
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages.GridViews
        
         public static TreeViewColumn CreateDesignationColumn(int sortColumnId)
         {
-            var title = GeneralUtils.GetResourceByName("global_designation");
+            var title = LocalizedString.Instance["global_designation"];
 
             void RenderDesignation(TreeViewColumn col, CellRenderer cell, TreeModel model, TreeIter iter)
             {
@@ -86,7 +87,7 @@ namespace LogicPOS.UI.Components.Pages.GridViews
                 cell.Xalign = 1;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_record_date_updated");
+            var title = LocalizedString.Instance["global_record_date_updated"];
             var col = CreateColumn(title, sortColumnId, RenderUpdatedAt);
             col.Alignment = 1;
             return col;

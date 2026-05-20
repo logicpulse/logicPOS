@@ -1,6 +1,7 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Caching;
 using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Customers.Customers;
 using LogicPOS.Api.Features.Finance.Documents.Documents;
 using MediatR;
 using System.Net.Http;
@@ -27,6 +28,7 @@ namespace LogicPOS.Api.Features.Documents.CancelDocument
             if (result.IsError == false)
             {
                 DocumentsCache.Clear(_keyedMemoryCache);
+                CustomersCache.Clear(_keyedMemoryCache);
             }
 
             return result;

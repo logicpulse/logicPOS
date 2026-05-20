@@ -8,6 +8,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class WorkSessionsModal : Modal
@@ -16,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         public WorkSessionsPage Page { get; set; }
 
         public WorkSessionsModal(Window parent) : base(parent,
-                                                    GeneralUtils.GetResourceByName("window_title_select_worksession_period_day"),
+                                                    LocalizedString.Instance["window_title_select_worksession_period_day"],
                                                     AppSettings.MaxWindowSize,
                                                     $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
                                                     render: false)

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
@@ -9,6 +9,7 @@ using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
             : base(parentWindow, DialogFlags.DestroyWithParent)
         {
             //Init Local Vars
-            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_change_user");
+            string windowTitle = LocalizedString.Instance["window_title_dialog_change_user"];
             Size windowSize = new Size(559, 562);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_users.png";
 
@@ -106,7 +107,7 @@ namespace LogicPOS.UI.Components.Modals
                 CustomAlerts.Information(this)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_information")
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), User.Name, "0000"))
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_user_request_change_password"], User.Name, "0000"))
                             .ShowAlert();
             }
 

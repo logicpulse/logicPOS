@@ -80,7 +80,7 @@ namespace LogicPOS.UI.Components.Windows
                 fontDescription = fontDescriptionParentLowRes;
             }
 
-            DateTimeFormat = GeneralUtils.GetResourceByName("backoffice_datetime_format_status_bar");
+            DateTimeFormat = LocalizedString.Instance["backoffice_datetime_format_status_bar"];
 
             string fontBackOfficeStatusBar = AppSettings.Instance.FontPosStatusBar;
             string fileImageBackOfficeLogoLong = AppSettings.Paths.Themes + @"Default\Images\logo_backoffice_long.png";
@@ -193,7 +193,7 @@ namespace LogicPOS.UI.Components.Windows
                 new ButtonSettings
                 {
                     Name = "touchButton_Red",
-                    Text = GeneralUtils.GetResourceByName("global_quit"),
+                    Text = LocalizedString.Instance["global_quit"],
                     Font = fontDescription,
                     FontColor = "255, 255, 255".StringToColor(),
                     Icon = _exitIcon,
@@ -220,7 +220,7 @@ namespace LogicPOS.UI.Components.Windows
                 {
                     Name = "touchButton_Green",
                     BackgroundColor = "168, 204, 79".StringToColor(),
-                    Text = GeneralUtils.GetResourceByName("global_update_pos"),
+                    Text = LocalizedString.Instance["global_update_pos"],
                     Font = fontDescription,
                     FontColor = "61, 61, 61".StringToColor(),
                     Icon = _updateIcon,

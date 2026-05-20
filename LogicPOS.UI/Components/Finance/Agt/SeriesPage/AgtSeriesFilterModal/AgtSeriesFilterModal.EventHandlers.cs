@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -61,7 +62,7 @@ namespace LogicPOS.UI.Components.Modals
         private string SelectDocumentType()
         {
             var page = new DocumentTypesPage(this, DocumentTypesPage.ActiveTypesOnlyOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentTypeModal = new EntitySelectionModal<DocumentType>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 

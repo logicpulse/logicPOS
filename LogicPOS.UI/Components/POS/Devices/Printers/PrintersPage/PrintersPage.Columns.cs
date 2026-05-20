@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using Printer = LogicPOS.Api.Entities.Printer;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -16,7 +17,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = table.Type.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_printer_type");
+            var title = LocalizedString.Instance["global_printer_type"];
             return Columns.CreateColumn(title, 3, RenderPlace);
         }
 

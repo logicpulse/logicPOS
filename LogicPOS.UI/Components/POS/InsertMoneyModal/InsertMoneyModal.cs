@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Dialogs;
@@ -6,6 +6,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -31,13 +32,13 @@ namespace LogicPOS.UI.Components.Modals
             if (pTotalOrder > 0)
             {
                 windowTitle = string.Format("{0} - {1} : {2}",
-                                            GeneralUtils.GetResourceByName("window_title_dialog_moneypad"),
-                                            GeneralUtils.GetResourceByName("global_total_table_tickets"),
+                                            LocalizedString.Instance["window_title_dialog_moneypad"],
+                                            LocalizedString.Instance["global_total_table_tickets"],
                                             pTotalOrder.ToString("F2"));
             }
             else
             {
-                windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_moneypad");
+                windowTitle = LocalizedString.Instance["window_title_dialog_moneypad"];
             }
 
             InitObject(parentWindow, pDialogFlags, windowTitle, pInitialValue, pTotalOrder);

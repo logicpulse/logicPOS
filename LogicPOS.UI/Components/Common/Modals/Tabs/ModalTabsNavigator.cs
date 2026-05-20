@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals.Common
 {
@@ -112,7 +113,7 @@ namespace LogicPOS.UI.Components.Modals.Common
                 {
                     Name = "buttonUserId",
                     BackgroundColor = HotButtonBackgroundColor,
-                    Text = GeneralUtils.GetResourceByName("pos_button_label_prev_pages_toolbar"),
+                    Text = LocalizedString.Instance["pos_button_label_prev_pages_toolbar"],
                     Font = BtnNavigatorFont,
                     FontColor = Color.White,
                     Icon = BtnPreviousIcon,
@@ -126,7 +127,7 @@ namespace LogicPOS.UI.Components.Modals.Common
                 {
                     Name = "buttonUserId",
                     BackgroundColor = HotButtonBackgroundColor,
-                    Text = GeneralUtils.GetResourceByName("pos_button_label_next_pages_toolbar"),
+                    Text = LocalizedString.Instance["pos_button_label_next_pages_toolbar"],
                     Font = BtnNavigatorFont,
                     FontColor = Color.White,
                     Icon = BtnNextIcon,

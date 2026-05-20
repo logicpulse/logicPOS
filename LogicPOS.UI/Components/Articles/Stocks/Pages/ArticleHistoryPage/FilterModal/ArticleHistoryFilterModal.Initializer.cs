@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
 {
@@ -21,7 +22,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
         private void InitializeTxtSerialNumber()
         {
             TxtSerialNumber = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_serial_number"),
+                                          LocalizedString.Instance["global_serial_number"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
         private void InitializeTxtArticle()
         {
             TxtArticle = new TextBox(this,
-                                     GeneralUtils.GetResourceByName("global_article"),
+                                     LocalizedString.Instance["global_article"],
                                      isRequired: false,
                                      isValidatable: false,
                                      includeSelectButton: true,
@@ -51,7 +52,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_date_start"),
+                                       LocalizedString.Instance["global_date_start"],
                                        isRequired: false,
                                        isValidatable: true,
                                        regex: RegularExpressions.Date,
@@ -67,7 +68,7 @@ namespace LogicPOS.UI.Components.Articles.Stocks.Modals.Filters
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_end"),
+                                           LocalizedString.Instance["global_date_end"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,

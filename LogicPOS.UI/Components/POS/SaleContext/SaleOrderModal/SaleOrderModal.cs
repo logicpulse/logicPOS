@@ -14,6 +14,7 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -22,7 +23,7 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnPrintOrder { get; set; }
         private IconButtonWithText BtnTableConsult { get; set; }
         public SaleOrderModal(Window parent) : base(parent,
-                                                   GeneralUtils.GetResourceByName("window_title_dialog_orders"),
+                                                   LocalizedString.Instance["window_title_dialog_orders"],
                                                    new Size(500, 220),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_orders.png")
         {
@@ -31,12 +32,12 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeButtons()
         {
-            BtnTableConsult = DesignButton(BtnTableConsult, GeneralUtils.GetResourceByName("dialog_orders_button_label_table_consult"),
+            BtnTableConsult = DesignButton(BtnTableConsult, LocalizedString.Instance["dialog_orders_button_label_table_consult"],
                                                                            AppSettings.Paths.Images + @"Icons\icon_pos_table_view_order.png",
                                                                            new Size(240, 150));
             BtnTableConsult.Clicked += BtnTableConsult_Clicked;
 
-            BtnPrintOrder = DesignButton(BtnPrintOrder, GeneralUtils.GetResourceByName("dialog_orders_button_label_print_order"),
+            BtnPrintOrder = DesignButton(BtnPrintOrder, LocalizedString.Instance["dialog_orders_button_label_print_order"],
                                                                         AppSettings.Paths.Images + @"Icons\icon_pos_print.png",
                                                                         new Size(240, 150));
             BtnPrintOrder.Clicked += BtnPrintOrder_Clicked;
@@ -125,7 +126,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 command.Customer = new DocumentCustomer
                 {
-                    Name = GeneralUtils.GetResourceByName("global_final_consumer"),
+                    Name = LocalizedString.Instance["global_final_consumer"],
                     FiscalNumber = customer.FiscalNumber,
                     Country = country.Code2,
                     CountryId = country.Id

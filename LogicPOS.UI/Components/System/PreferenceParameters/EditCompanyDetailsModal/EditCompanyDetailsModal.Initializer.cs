@@ -3,6 +3,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtWebsite()
         {
             TxtWebsite = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_website"),
+                                       LocalizedString.Instance["prefparam_company_website"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtEmail()
         {
             TxtEmail = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_email"),
+                                       LocalizedString.Instance["prefparam_company_email"],
                                        isRequired: false,
                                        isValidatable: true,
                                        includeSelectButton: false,
@@ -53,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtFax()
         {
             TxtFax = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_fax"),
+                                       LocalizedString.Instance["prefparam_company_fax"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -63,7 +64,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtMobile()
         {
             TxtMobile = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_mobilephone"),
+                                       LocalizedString.Instance["prefparam_company_mobilephone"],
                                        isRequired: false,
                                        isValidatable: true,
                                        regex: RegularExpressions.PhoneNumber,
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtPhone()
         {
             TxtPhone = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_telephone"),
+                                       LocalizedString.Instance["prefparam_company_telephone"],
                                        isRequired: false,
                                        isValidatable: true,
                                        regex: RegularExpressions.PhoneNumber,
@@ -87,7 +88,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTaxEntity()
         {
             TxtTaxEntity = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_tax_entity"),
+                                       LocalizedString.Instance["prefparam_company_tax_entity"],
                                        isRequired: true,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -101,7 +102,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtStockCapital()
         {
             TxtStockCapital = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("prefparam_company_stock_capital"),
+                                          LocalizedString.Instance["prefparam_company_stock_capital"],
                                           isRequired: true,
                                           isValidatable: true,
                                           includeSelectButton: false,
@@ -113,7 +114,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtFiscalNumber()
         {
             TxtFiscalNumber = new TextBox(this,
-                                             GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber"),
+                                             LocalizedString.Instance["prefparam_company_fiscalnumber"],
                                              isRequired: true,
                                              isValidatable: true,
                                              includeSelectButton: false,
@@ -124,7 +125,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtBusiness()
         {
             TxtBusiness = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_business_name"),
+                                       LocalizedString.Instance["prefparam_company_business_name"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -134,7 +135,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCompany()
         {
             TxtCompany = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("prefparam_company_name"),
+                                       LocalizedString.Instance["prefparam_company_name"],
                                        isRequired: true,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -145,7 +146,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_country"),
+                                         LocalizedString.Instance["global_country"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: true,
@@ -161,7 +162,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCurrency()
         {
             TxtCurrency = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_currency"),
+                                          LocalizedString.Instance["global_currency"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -178,7 +179,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCity()
         {
             TxtCity = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("prefparam_company_city"),
+                                      LocalizedString.Instance["prefparam_company_city"],
                                       isRequired: true,
                                       isValidatable: false,
                                       includeSelectButton: false,
@@ -188,7 +189,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtZipCode()
         {
             TxtZipCode = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("prefparam_company_postalcode"),
+                                         LocalizedString.Instance["prefparam_company_postalcode"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: false,
@@ -198,7 +199,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtAddress()
         {
             TxtAddress = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("prefparam_company_address"),
+                                         LocalizedString.Instance["prefparam_company_address"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: false,

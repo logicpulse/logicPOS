@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -6,6 +6,7 @@ using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components
 {
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components
         private void InitializeComboboxes()
         {
             var warehouses = GetWarehouses();
-            var labelText = GeneralUtils.GetResourceByName("global_warehouse");
+            var labelText = LocalizedString.Instance["global_warehouse"];
 
             WarehouseField = new EntityComboBox<Warehouse>(labelText,
                                                             warehouses,
@@ -39,7 +40,7 @@ namespace LogicPOS.UI.Components
                 currentWarehouse = warehouses.Where(x => x.Id == _warehouseArticle.WarehouseLocation.Warehouse.Id).First();
             }
             
-            LocationField = new EntityComboBox<WarehouseLocation>(GeneralUtils.GetResourceByName("global_locations"),
+            LocationField = new EntityComboBox<WarehouseLocation>(LocalizedString.Instance["global_locations"],
                                                                              currentWarehouse?.Locations ?? Enumerable.Empty<WarehouseLocation>(),
                                                                              _warehouseArticle?.WarehouseLocation,
                                                                             true);

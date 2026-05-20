@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = vatRate.Value.ToString("0.00");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_vat_rate");
+            var title = LocalizedString.Instance["global_vat_rate"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
 

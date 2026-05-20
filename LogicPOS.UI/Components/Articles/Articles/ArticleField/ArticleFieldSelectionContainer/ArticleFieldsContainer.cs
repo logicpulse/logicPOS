@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.UI.Components.Enums;
@@ -7,12 +7,13 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Articles
 {
     public partial class ArticleFieldsContainer : IValidatableField
     {
-        public string FieldName => GeneralUtils.GetResourceByName("global_article");
+        public string FieldName => LocalizedString.Instance["global_article"];
 
         public ArticleFieldsContainer(ArticlesBoxMode mode = ArticlesBoxMode.Article)
         {

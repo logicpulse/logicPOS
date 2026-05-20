@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -38,7 +39,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          LocalizedString.Instance["global_customer"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -53,7 +54,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumentType()
         {
             TxtDocumentType = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"),
+                                              LocalizedString.Instance["global_documentfinanceseries_documenttype"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -68,7 +69,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtVatRate()
         {
             TxtVatRate = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_vat_rates"),
+                                         LocalizedString.Instance["global_vat_rates"],
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: true,
@@ -83,7 +84,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtWarehouse()
         {
             TxtWarehouse = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_warehouse"),
+                                           LocalizedString.Instance["global_warehouse"],
                                            isRequired: false,
                                            isValidatable: false,
                                            includeSelectButton: true,
@@ -96,7 +97,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_start"),
+                                           LocalizedString.Instance["global_date_start"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,
@@ -113,7 +114,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_end"),
+                                           LocalizedString.Instance["global_date_end"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,
@@ -128,7 +129,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtFamily()
         {
             TxtFamily= new TextBox(this,
-                                    GeneralUtils.GetResourceByName("global_families"),
+                                    LocalizedString.Instance["global_families"],
                                     isRequired: false,
                                     isValidatable: false,
                                     includeSelectButton: true,
@@ -139,7 +140,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSubfamily()
         {
             TxtSubfamily= new TextBox(this,
-                                    GeneralUtils.GetResourceByName("global_subfamilies"),
+                                    LocalizedString.Instance["global_subfamilies"],
                                     isRequired: false,
                                     isValidatable: false,
                                     includeSelectButton: true,
@@ -150,7 +151,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtArticle()
         {
             TxtArticle = new TextBox(this,
-                                    GeneralUtils.GetResourceByName("global_articles"),
+                                    LocalizedString.Instance["global_articles"],
                                     isRequired: false,
                                     isValidatable: false,
                                     includeSelectButton: true,
@@ -165,7 +166,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSerialNumber()
         {
             TxtSerialNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_serialnumber"),
+                                              LocalizedString.Instance["global_serialnumber"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -178,7 +179,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumentNumber()
         {
             TxtDocumentNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_document_number"),
+                                              LocalizedString.Instance["global_document_number"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -192,7 +193,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTerminal()
         {
             TxtTerminal= new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_terminal"),
+                                              LocalizedString.Instance["global_terminal"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,

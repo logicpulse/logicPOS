@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -79,7 +80,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = string.Join(",", doc.RelatedDocuments);
             }
 
-            var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
+            var title = LocalizedString.Instance["window_title_dialog_document_finance_column_related_doc"];
             var col = Columns.CreateColumn(title, 10, RenderRelatedDocuments);
 
             return col;
@@ -94,7 +95,7 @@ namespace LogicPOS.UI.Components.Pages
                 cell.Xalign = 1;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_debit");
+            var title = LocalizedString.Instance["global_debit"];
             return Columns.CreateColumn(title, 9, RenderTotalToPay);
         }
 
@@ -107,7 +108,7 @@ namespace LogicPOS.UI.Components.Pages
                 cell.Xalign = 1;
             }
 
-            var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_total_credit_rc_nc_based");
+            var title = LocalizedString.Instance["window_title_dialog_document_finance_column_total_credit_rc_nc_based"];
             return Columns.CreateColumn(title, 8, RenderTotalPaid);
         }
 
@@ -120,7 +121,7 @@ namespace LogicPOS.UI.Components.Pages
                 cell.Xalign = 1;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_total_final");
+            var title = LocalizedString.Instance["global_total_final"];
             return Columns.CreateColumn(title, 7, RenderTotalFinal);
         }
 
@@ -132,7 +133,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = document.Customer.FiscalNumber;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_fiscal_number");
+            var title = LocalizedString.Instance["global_fiscal_number"];
             return Columns.CreateColumn(title, 6, RenderFiscalNumber);
         }
 
@@ -144,7 +145,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = document.Customer.Name;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_entity");
+            var title = LocalizedString.Instance["global_entity"];
             var col = Columns.CreateColumn(title, 5, RenderEntity);
             return col;
         }
@@ -166,7 +167,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_status");
+            var title = LocalizedString.Instance["global_document_status"];
             return Columns.CreateColumn(title, 4, RenderStatus);
         }
 
@@ -178,7 +179,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = document.CreatedAt.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_date");
+            var title = LocalizedString.Instance["global_document_date"];
             return Columns.CreateColumn(title, 2, RenderDate);
         }
 
@@ -199,7 +200,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_number");
+            var title = LocalizedString.Instance["global_document_number"];
             return Columns.CreateColumn(title, 3, RenderNumber);
         }
 

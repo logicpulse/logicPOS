@@ -1,5 +1,6 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -40,7 +41,7 @@ namespace LogicPOS.UI.Alerts
 
         public SimpleAlert WithTitleResource(string titleResource)
         {
-            _title = GeneralUtils.GetResourceByName(titleResource);
+            _title = LocalizedString.Instance[titleResource];
             return this;
         }
 
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Alerts
 
         public SimpleAlert WithMessageResource(string messageResource)
         {
-            _message = GeneralUtils.GetResourceByName(messageResource);
+            _message = LocalizedString.Instance[messageResource];
             return this;
         }
 

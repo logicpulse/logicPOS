@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.Modals
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeCommissionGroupsComboBox()
         {
             var groups = GetCommissionGroups();
-            var labelText = GeneralUtils.GetResourceByName("global_commission_group");
+            var labelText = LocalizedString.Instance["global_commission_group"];
             var currentCommissionGroup = _entity != null ? _entity.CommissionGroup : null;
 
             _comboCommissionGroups = new EntityComboBox<CommissionGroup>(labelText,
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializePrintersComboBox()
         {
             var printers = GetPrinters();
-            var labelText = GeneralUtils.GetResourceByName("global_printers");
+            var labelText = LocalizedString.Instance["global_printers"];
             if (_entity != null)
             {
                 var currentPrinter = PrinterAssociationService.GetEntityPrinter(_entity.Id);
@@ -93,8 +94,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

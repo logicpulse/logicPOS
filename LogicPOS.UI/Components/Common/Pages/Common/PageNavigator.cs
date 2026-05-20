@@ -78,7 +78,7 @@ namespace LogicPOS.UI.Components.Pages
             ExtraButtonSpace = new HBox(false, 0);
 
             BtnApply = IconButtonWithText.Create("touchButtonApplyPrivileges_DialogActionArea",
-                                                       GeneralUtils.GetResourceByName("global_user_apply_privileges"),
+                                                       LocalizedString.Instance["global_user_apply_privileges"],
                                                        @"Icons/icon_pos_nav_refresh.png");
 
             BtnShowHiddenData = IconButtonWithText.Create("touchButtonShowHiddenData_DialogActionArea",
@@ -95,13 +95,13 @@ namespace LogicPOS.UI.Components.Pages
 
         private void InitializeButtons()
         {
-            BtnPrevious = IconButtonWithText.Create("touchButtonPrev_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_prev"), @"Icons/icon_pos_nav_prev.png");
-            BtnNext = IconButtonWithText.Create("touchButtonNext_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_record_next"), @"Icons/icon_pos_nav_next.png");
-            BtnInsert = IconButtonWithText.Create("touchButtonInsert_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_insert"), @"Icons/icon_pos_nav_new.png");
-            BtnView = IconButtonWithText.Create("touchButtonView_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_view"), @"Icons/icon_pos_nav_view.png");
-            BtnUpdate = IconButtonWithText.Create("touchButtonUpdate_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_update"), @"Icons/icon_pos_nav_update.png");
-            BtnDelete = IconButtonWithText.Create("touchButtonDelete_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_delete"), @"Icons/icon_pos_nav_delete.png");
-            BtnRefresh = IconButtonWithText.Create("touchButtonRefresh_DialogActionArea", GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_refresh"), @"Icons/icon_pos_nav_refresh.png");
+            BtnPrevious = IconButtonWithText.Create("touchButtonPrev_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_record_prev"], @"Icons/icon_pos_nav_prev.png");
+            BtnNext = IconButtonWithText.Create("touchButtonNext_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_record_next"], @"Icons/icon_pos_nav_next.png");
+            BtnInsert = IconButtonWithText.Create("touchButtonInsert_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_insert"], @"Icons/icon_pos_nav_new.png");
+            BtnView = IconButtonWithText.Create("touchButtonView_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_view"], @"Icons/icon_pos_nav_view.png");
+            BtnUpdate = IconButtonWithText.Create("touchButtonUpdate_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_update"], @"Icons/icon_pos_nav_update.png");
+            BtnDelete = IconButtonWithText.Create("touchButtonDelete_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_delete"], @"Icons/icon_pos_nav_delete.png");
+            BtnRefresh = IconButtonWithText.Create("touchButtonRefresh_DialogActionArea", LocalizedString.Instance["widget_generictreeviewnavigator_refresh"], @"Icons/icon_pos_nav_refresh.png");
 
             AddEventHandlers();
         }

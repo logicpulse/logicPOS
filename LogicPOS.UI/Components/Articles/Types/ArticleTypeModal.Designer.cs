@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBox.CreateOrderField();
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private CheckButton _checkHasPrice = new CheckButton(GeneralUtils.GetResourceByName("global_articletype_haveprice"));
+        private CheckButton _checkHasPrice = new CheckButton(LocalizedString.Instance["global_articletype_haveprice"]);
         #endregion
 
         protected override void AddSensitiveFields()
@@ -50,8 +51,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

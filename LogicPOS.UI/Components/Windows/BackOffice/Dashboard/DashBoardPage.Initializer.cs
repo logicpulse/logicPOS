@@ -1,10 +1,11 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Windows.BackOffice.Dashboard;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
                    new ButtonSettings
                    {
                        Name = "touchButton_Green",
-                       Text = GeneralUtils.GetResourceByName("dialog_edit_ConfigurationPlaceTerminal_tab1_label"),
+                       Text = LocalizedString.Instance["dialog_edit_ConfigurationPlaceTerminal_tab1_label"],
                        Font = font,
                        FontColor = _colorBaseDialogDefaultButtonFont,
                        Icon = terminalsIcon,
@@ -32,7 +33,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_application_setup"),
+                    Text = LocalizedString.Instance["global_application_setup"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_configurations.png",
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_documentfinance_years_short"),
+                    Text = LocalizedString.Instance["global_documentfinance_years_short"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_fiscal_year.png",
@@ -57,7 +58,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_printers"),
+                    Text = LocalizedString.Instance["global_printers"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_printer.png",
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_articles"),
+                    Text = LocalizedString.Instance["global_articles"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_articles.png",
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_customers"),
+                    Text = LocalizedString.Instance["global_customers"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_costumers.png",
@@ -94,7 +95,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_users"),
+                    Text = LocalizedString.Instance["global_users"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_employees.png",
@@ -106,7 +107,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_other_tables"),
+                    Text = LocalizedString.Instance["global_other_tables"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_other_tables.png",
@@ -119,7 +120,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"),
+                    Text = LocalizedString.Instance["global_worksession_resume_finance_documents"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_new.png",
@@ -131,7 +132,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("window_title_dialog_new_document"),
+                    Text = LocalizedString.Instance["window_title_dialog_new_document"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents.png",
@@ -143,7 +144,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("dialog_button_label_select_payments"),
+                    Text = LocalizedString.Instance["dialog_button_label_select_payments"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_new.png",
@@ -155,7 +156,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_documentticket_type_title_cs_short"),
+                    Text = LocalizedString.Instance["global_documentticket_type_title_cs_short"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_documents_merch.png",
@@ -168,7 +169,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_reports"),
+                    Text = LocalizedString.Instance["global_reports"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports.png",
@@ -180,7 +181,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("report_company_billing_short"),
+                    Text = LocalizedString.Instance["report_company_billing_short"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_report.png",
@@ -192,7 +193,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("report_customer_balance_details_short"),
+                    Text = LocalizedString.Instance["report_customer_balance_details_short"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_client.png",
@@ -204,7 +205,7 @@ namespace LogicPOS.UI.Components.Pages
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("report_sales_per_date"),
+                    Text = LocalizedString.Instance["report_sales_per_date"],
                     Font = font,
                     FontColor = _colorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\BackOffice\icon_reports_sales_day.png",

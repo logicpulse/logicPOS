@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Warehouses;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -21,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBox.CreateOrderField();
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
-        private CheckButton _checkDefaultWarehouse = new CheckButton(GeneralUtils.GetResourceByName("global_default_warehouse"));
+        private CheckButton _checkDefaultWarehouse = new CheckButton(LocalizedString.Instance["global_default_warehouse"]);
         private List<WarehouseLocationField> _locationFields = new List<WarehouseLocationField>();
         private VBox _boxLocations;
         #endregion
@@ -60,9 +61,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateLocationsTab(), GeneralUtils.GetResourceByName("global_locations"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateLocationsTab(), LocalizedString.Instance["global_locations"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private ScrolledWindow CreateScrolledWindow()

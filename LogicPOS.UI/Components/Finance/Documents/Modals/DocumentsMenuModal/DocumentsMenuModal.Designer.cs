@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Modals
                 {
                     Name = "touchButton_Green",
                     BackgroundColor = ColorSettings.DefaultButtonBackground,
-                    Text = GeneralUtils.GetResourceByName(textResource),
+                    Text = LocalizedString.Instance[textResource],
                     Font = FontSettings.Button,
                     FontColor = ColorSettings.DefaultButtonFont,
                     Icon = icon,

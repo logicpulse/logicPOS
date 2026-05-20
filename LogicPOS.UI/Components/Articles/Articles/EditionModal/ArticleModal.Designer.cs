@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.Modals
@@ -30,15 +31,15 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateFinanceDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab2_label"));
-            yield return (CreateOtherDetailsTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab3_label"));
-            yield return (CreateCompositionTab(), GeneralUtils.GetResourceByName("dialog_edit_article_tab4_label1"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateFinanceDetailsTab(), LocalizedString.Instance["dialog_edit_article_tab2_label"]);
+            yield return (CreateOtherDetailsTab(), LocalizedString.Instance["dialog_edit_article_tab3_label"]);
+            yield return (CreateCompositionTab(), LocalizedString.Instance["dialog_edit_article_tab4_label1"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
 
             if (_entity != null  && LicensingService.Data.StocksModule)
             {
-                yield return (CreateUniqueArticlesTab(), GeneralUtils.GetResourceByName("global_serial_number"));
+                yield return (CreateUniqueArticlesTab(), LocalizedString.Instance["global_serial_number"]);
             }
 
         }
@@ -120,9 +121,9 @@ namespace LogicPOS.UI.Components.Modals
             var vbox = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
             Label labelEmpty = new Label(string.Empty) { WidthRequest = columnsWidths[0] };
-            Label labelNormal = new Label(GeneralUtils.GetResourceByName("article_normal_price")) { WidthRequest = columnsWidths[1] };
-            Label labelPromotion = new Label(GeneralUtils.GetResourceByName("article_promotion_price")) { WidthRequest = columnsWidths[2] };
-            Label labelUsePromotion = new Label(GeneralUtils.GetResourceByName("article_use_promotion_price")) { WidthRequest = columnsWidths[3] };
+            Label labelNormal = new Label(LocalizedString.Instance["article_normal_price"]) { WidthRequest = columnsWidths[1] };
+            Label labelPromotion = new Label(LocalizedString.Instance["article_promotion_price"]) { WidthRequest = columnsWidths[2] };
+            Label labelUsePromotion = new Label(LocalizedString.Instance["article_use_promotion_price"]) { WidthRequest = columnsWidths[3] };
             labelNormal.SetAlignment(0.0F, 0.5F);
             labelPromotion.SetAlignment(0.0F, 0.5F);
             labelUsePromotion.SetAlignment(0.0F, 0.5F);

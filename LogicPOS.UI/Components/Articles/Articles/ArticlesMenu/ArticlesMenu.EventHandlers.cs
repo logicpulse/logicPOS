@@ -68,7 +68,7 @@ namespace LogicPOS.UI.Components.Menus
 
             if (price <= 0)
             {
-                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, GeneralUtils.GetResourceByName("window_title_dialog_moneypad_product_price"), price);
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(SourceWindow, LocalizedString.Instance["window_title_dialog_moneypad_product_price"], price);
 
                 if (result.Response == ResponseType.Cancel)
                 {

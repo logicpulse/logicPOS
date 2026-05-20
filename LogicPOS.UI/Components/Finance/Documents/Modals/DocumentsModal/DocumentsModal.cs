@@ -14,17 +14,18 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentsModal : Modal
     {
         public DocumentsPage Page { get; set; }
-        private string WindowTitleBase => GeneralUtils.GetResourceByName("window_title_select_finance_document");
+        private string WindowTitleBase => LocalizedString.Instance["window_title_select_finance_document"];
         private DocumentsModalMode _mode;
 
         public DocumentsModal(Window parent, DocumentsModalMode mode) : base(parent,
-                                                    GeneralUtils.GetResourceByName("window_title_select_finance_document"),
+                                                    LocalizedString.Instance["window_title_select_finance_document"],
                                                     AppSettings.MaxWindowSize,
                                                     $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
                                                     render: false)
@@ -84,7 +85,7 @@ namespace LogicPOS.UI.Components.Modals
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,
                                                              AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_default.png",
-                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), document.Number),
+                                                             string.Format(LocalizedString.Instance["global_cancel_document_input_text_label"], document.Number),
                                                              string.Empty,
                                                              RegularExpressions.AlfaNumericExtendedForMotive,
                                                              true);
@@ -106,7 +107,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowCannotCancelDocumentMessage(string documentNumber)
         {
-            string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), documentNumber);
+            string infoMessage = string.Format(LocalizedString.Instance["app_info_show_ignored_cancelled_documents"], documentNumber);
 
             CustomAlerts.Information(this)
                         .WithSize(new Size(600, 400))

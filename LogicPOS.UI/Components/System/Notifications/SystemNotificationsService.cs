@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.System.Notifications.GetAllSystemNotifications;
 using LogicPOS.Api.Features.System.Notifications.UpdateNotification;
@@ -12,6 +12,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Services
 {
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Services
             }
             else
             {
-                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_no_notification"), 5);
+                var message = string.Format(LocalizedString.Instance["dialog_message_no_notification"], 5);
                 CustomAlerts.Information()
                             .WithSize(new Size(700, 480))
                             .WithTitleResource("window_title_dialog_notification")

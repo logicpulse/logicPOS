@@ -10,6 +10,7 @@ using LogicPOS.Api.Extensions;
 using LogicPOS.UI.Errors;
 using LogicPOS.Api.Features.Articles.Stocks.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -71,7 +72,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectSupplier_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

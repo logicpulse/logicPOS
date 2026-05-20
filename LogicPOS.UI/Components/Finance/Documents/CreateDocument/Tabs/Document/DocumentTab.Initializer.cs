@@ -33,7 +33,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtPaymnentMethod()
         {
             TxtPaymentMethod = new TextBox(SourceWindow,
-                                               GeneralUtils.GetResourceByName("global_payment_method"),
+                                               LocalizedString.Instance["global_payment_method"],
                                                isRequired: true,
                                                isValidatable: false,
                                                includeSelectButton: true,
@@ -58,7 +58,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCopyDocument()
         {
             TxtCopyDocument = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_copy_finance_document"),
+                                              LocalizedString.Instance["global_copy_finance_document"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCurrency()
         {
             TxtCurrency = new TextBox(SourceWindow,
-                                          GeneralUtils.GetResourceByName("global_currency"),
+                                          LocalizedString.Instance["global_currency"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -93,7 +93,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtPaymentCondition()
         {
             TxtPaymentCondition = new TextBox(SourceWindow,
-                                                   GeneralUtils.GetResourceByName("global_payment_condition"),
+                                                   LocalizedString.Instance["global_payment_condition"],
                                                    isRequired: true,
                                                    isValidatable: false,
                                                    includeSelectButton: true,
@@ -109,7 +109,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtDocumentType()
         {
             TxtDocumentType = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"),
+                                              LocalizedString.Instance["global_documentfinanceseries_documenttype"],
                                               isRequired: true,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -135,7 +135,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtOriginDocument()
         {
             TxtOriginDocument = new TextBox(SourceWindow,
-                                                GeneralUtils.GetResourceByName("global_source_finance_document"),
+                                                LocalizedString.Instance["global_source_finance_document"],
                                                 isRequired: false,
                                                 isValidatable: false,
                                                 includeSelectButton: true,

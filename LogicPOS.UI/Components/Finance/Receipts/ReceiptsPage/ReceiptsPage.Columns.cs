@@ -3,6 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -45,7 +46,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = string.Join(",", receipt.RelatedDocuments);
             }
 
-            var title = GeneralUtils.GetResourceByName("window_title_dialog_document_finance_column_related_doc");
+            var title = LocalizedString.Instance["window_title_dialog_document_finance_column_related_doc"];
             return Columns.CreateColumn(title, 8, RenderRelatedDocuments);
         }
 
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
                 cell.Xalign = 1;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_total");
+            var title = LocalizedString.Instance["global_total"];
             return Columns.CreateColumn(title, 7, RenderAmountColumn);
         }
 
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = receipt.CustomerFiscalNumber;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_fiscal_number");
+            var title = LocalizedString.Instance["global_fiscal_number"];
             return Columns.CreateColumn(title, 6, RenderFiscalNumber);
         }
 
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = receipt.Customer;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_entity");
+            var title = LocalizedString.Instance["global_entity"];
             return Columns.CreateColumn(title, 5, RenderEntity);
         }
 
@@ -94,7 +95,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = receipt.Status;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_status");
+            var title = LocalizedString.Instance["global_document_status"];
             return Columns.CreateColumn(title, 4, RenderStatus);
         }
 
@@ -106,7 +107,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = receipt.CreatedAt.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_date");
+            var title = LocalizedString.Instance["global_document_date"];
             return Columns.CreateColumn(title, 2, RenderDate);
         }
 
@@ -118,7 +119,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = receipt.RefNo;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_document_number");
+            var title = LocalizedString.Instance["global_document_number"];
             return Columns.CreateColumn(title, 3, RenderNumber);
         }
 

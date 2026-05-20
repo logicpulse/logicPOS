@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.Name;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_users");
+            var title = LocalizedString.Instance["global_users"];
             return Columns.CreateColumn(title, 1, RenderValue);
         }
 
@@ -27,7 +28,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.Profile.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_profile");
+            var title = LocalizedString.Instance["global_profile"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
 
@@ -39,7 +40,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.FiscalNumber;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_fiscal_number");
+            var title = LocalizedString.Instance["global_fiscal_number"];
             return Columns.CreateColumn(title, 3, RenderValue);
         }
     }

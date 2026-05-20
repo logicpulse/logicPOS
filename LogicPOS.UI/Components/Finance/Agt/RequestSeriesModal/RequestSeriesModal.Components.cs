@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
 {
@@ -33,7 +34,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
         {
             var currentFiscalYear = FiscalYearsService.CurrentFiscalYear;
             var fiscalYears = new List<FiscalYear> { currentFiscalYear };
-            var labelText = GeneralUtils.GetResourceByName("global_fiscal_year");
+            var labelText = LocalizedString.Instance["global_fiscal_year"];
             var defaultFiscalYear =  currentFiscalYear;
 
             _comboFiscalYears = new EntityComboBox<FiscalYear>(labelText,
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
         {
             string[] eligibleDocTypes = AgtService.EligibleDocumentTypes;
             var documentTypes = DocumentTypesService.GetAll().Where(dc => eligibleDocTypes.Contains(dc.Acronym));
-            var labelText = GeneralUtils.GetResourceByName("global_documentfinance_type");
+            var labelText = LocalizedString.Instance["global_documentfinance_type"];
 
             _comboDocumentTypes = new EntityComboBox<DocumentType>(labelText,
                                                              documentTypes,

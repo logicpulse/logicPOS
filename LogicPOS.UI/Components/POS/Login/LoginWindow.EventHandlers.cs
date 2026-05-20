@@ -8,6 +8,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -84,7 +85,7 @@ namespace LogicPOS.UI.Components.Windows
                 CustomAlerts.Information(this)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_information")
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_user_request_change_password"), user.Name, "0000"))
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_user_request_change_password"], user.Name, "0000"))
                             .ShowAlert();
             }
 

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleSubfamiliesPage : Page<ArticleSubfamily>
@@ -80,7 +81,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = family.Family?.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_article_family");
+            var title = LocalizedString.Instance["global_article_family"];
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
 

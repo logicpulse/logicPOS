@@ -6,6 +6,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -37,7 +38,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSupplier()
         {
             TxtSupplier = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_supplier"),
+                                          LocalizedString.Instance["global_supplier"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -55,7 +56,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumnetNumber()
         {
             TxtDocumnetNumber = new TextBox(this,
-                                            GeneralUtils.GetResourceByName("global_document_number"),
+                                            LocalizedString.Instance["global_document_number"],
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: true,
@@ -69,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDate()
         {
             TxtDate = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("global_date"),
+                                      LocalizedString.Instance["global_date"],
                                       isRequired: true,
                                       isValidatable: false,
                                       includeSelectButton: true,
@@ -104,7 +105,7 @@ namespace LogicPOS.UI.Components.Modals
             tab.PackStart(TxtQuantity.Component, false, false, 0);
             tab.PackStart(TxtPrice.Component, false, false, 0);
 
-            yield return (tab, GeneralUtils.GetResourceByName("Movimento de Entrada"));
+            yield return (tab, LocalizedString.Instance["Movimento de Entrada"]);
         }
     }
 }

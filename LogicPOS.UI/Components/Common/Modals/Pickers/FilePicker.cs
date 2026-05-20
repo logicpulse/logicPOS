@@ -6,6 +6,7 @@ using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Settings;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pickers
 {
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Components.Pickers
             PickerAction = chooserAction;
 
             //Init Local Vars
-            string windowTitle = string.Format("{0} {1}", GeneralUtils.GetResourceByName("window_title_dialog_filepicker"),title);
+            string windowTitle = string.Format("{0} {1}", LocalizedString.Instance["window_title_dialog_filepicker"],title);
             WindowSettings.Size = new Size(700, 473);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_select_record.png";
 

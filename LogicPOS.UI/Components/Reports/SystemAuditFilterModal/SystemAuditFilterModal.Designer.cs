@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -21,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                            GeneralUtils.GetResourceByName("global_date_end"),
+                                            LocalizedString.Instance["global_date_end"],
                                             isRequired: false,
                                             isValidatable: true,
                                             regex: RegularExpressions.Date,
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTerminal()
         {
             TxtTerminal = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_terminal"),
+                                       LocalizedString.Instance["global_terminal"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: true,
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                               GeneralUtils.GetResourceByName("global_date_start"),
+                               LocalizedString.Instance["global_date_start"],
                                isRequired: false,
                                isValidatable: true,
                                regex: RegularExpressions.Date,

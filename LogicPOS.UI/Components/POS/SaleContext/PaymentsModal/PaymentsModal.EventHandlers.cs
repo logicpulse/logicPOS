@@ -15,6 +15,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -190,7 +191,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
             selectDocumentTypeModal.Destroy();
 
@@ -203,7 +204,7 @@ namespace LogicPOS.UI.Components.POS
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
-            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCountryModal.Run();
             selectCountryModal.Destroy();
 

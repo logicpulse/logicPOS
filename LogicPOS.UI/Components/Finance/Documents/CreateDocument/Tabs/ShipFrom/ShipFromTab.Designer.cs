@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -36,29 +37,29 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtLocationId()
         {
             TxtLocationId = new TextBox(SourceWindow,
-                                            GeneralUtils.GetResourceByName("global_ship_to_location_id"),
+                                            LocalizedString.Instance["global_ship_to_location_id"],
                                             isRequired: true,
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
-            TxtLocationId.Text=GeneralUtils.GetResourceByName("xml_value_unknown"); 
+            TxtLocationId.Text=LocalizedString.Instance["xml_value_unknown"]; 
         }
 
         private void InitializeTxtWarehouseId()
         {
             TxtWarehouseId = new TextBox(SourceWindow,
-                                             GeneralUtils.GetResourceByName("global_ship_from_warehouse_id"),
+                                             LocalizedString.Instance["global_ship_from_warehouse_id"],
                                              isRequired: false,
                                              isValidatable: false,
                                              includeSelectButton: false,
                                              includeKeyBoardButton: true);
-            TxtWarehouseId.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
+            TxtWarehouseId.Text = LocalizedString.Instance["xml_value_unknown"];
         }
 
         private void InitializeTxtDeliveryId()
         {
             TxtDeliveryId = new TextBox(SourceWindow,
-                                            GeneralUtils.GetResourceByName("global_ship_from_delivery_id"),
+                                            LocalizedString.Instance["global_ship_from_delivery_id"],
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
@@ -69,7 +70,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtDeliveryDate()
         {
             TxtDeliveryDate = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_ship_from_delivery_date"),
+                                              LocalizedString.Instance["global_ship_from_delivery_date"],
                                               isRequired: true,
                                               isValidatable: true,
                                               RegularExpressions.DateTime,
@@ -85,7 +86,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_country"),
+                                         LocalizedString.Instance["global_country"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: true,
@@ -109,7 +110,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCity()
         {
             TxtCity = new TextBox(SourceWindow,
-                                      GeneralUtils.GetResourceByName("global_city"),
+                                      LocalizedString.Instance["global_city"],
                                       isRequired: true,
                                       isValidatable: false,
                                       includeSelectButton: false,
@@ -121,7 +122,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtZipCode()
         {
             TxtZipCode = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_zipcode"),
+                                         LocalizedString.Instance["global_zipcode"],
                                          isRequired: SystemInformationService.SystemInformation.IsPortugal,
                                          isValidatable: true,
                                          regex: RegularExpressions.PostalCode,
@@ -133,18 +134,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtRegion()
         {
             TxtRegion = new TextBox(SourceWindow,
-                                        GeneralUtils.GetResourceByName("global_region"),
+                                        LocalizedString.Instance["global_region"],
                                         isRequired: true,
                                         isValidatable: false,
                                         includeSelectButton: false,
                                         includeKeyBoardButton: true);
-            TxtRegion.Text = GeneralUtils.GetResourceByName("xml_value_unknown");
+            TxtRegion.Text = LocalizedString.Instance["xml_value_unknown"];
         }
 
         private void InitializeTxtAddress()
         {
             TxtAddress = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_address"),
+                                         LocalizedString.Instance["global_address"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: false,

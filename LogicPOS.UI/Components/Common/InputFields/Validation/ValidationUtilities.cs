@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.InputFields.Validation
 {
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
             CustomAlerts.Error(sourceWindow ?? BackOfficeWindow.Instance)
                         .WithSize(new Size(500, 340))
                         .WithTitleResource("window_title_dialog_validation_error")
-                        .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_field_validation_error"),
+                        .WithMessage(string.Format(LocalizedString.Instance["dialog_message_field_validation_error"],
                                                   invalidFields))
                         .ShowAlert();
         }

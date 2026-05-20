@@ -11,6 +11,7 @@ using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -52,7 +53,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_country"),
+                                         LocalizedString.Instance["global_country"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: true,
@@ -67,7 +68,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtCity()
         {
             TxtCity = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("global_city"),
+                                      LocalizedString.Instance["global_city"],
                                       isRequired: false,
                                       isValidatable: false,
                                       includeSelectButton: false,
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtZipCode()
         {
             TxtZipCode = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_zipcode"),
+                                         LocalizedString.Instance["global_zipcode"],
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
@@ -89,7 +90,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       LocalizedString.Instance["global_notes"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -102,7 +103,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtLocality()
         {
             TxtLocality = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_locality"),
+                                          LocalizedString.Instance["global_locality"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: false,
@@ -113,7 +114,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtAddress()
         {
             TxtAddress = new TextBox(this,
-                                         GeneralUtils.GetResourceByName("global_address"),
+                                         LocalizedString.Instance["global_address"],
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
@@ -124,7 +125,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtDiscount()
         {
             TxtDiscount = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_discount"),
+                                          LocalizedString.Instance["global_discount"],
                                           isRequired: true,
                                           isValidatable: true,
                                           includeSelectButton: false,
@@ -140,7 +141,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtCardNumber()
         {
             TxtCardNumber = new TextBox(this,
-                                            GeneralUtils.GetResourceByName("global_card_number"),
+                                            LocalizedString.Instance["global_card_number"],
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
@@ -151,7 +152,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtFiscalNumber()
         {
             TxtFiscalNumber = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_fiscal_number"),
+                                              LocalizedString.Instance["global_fiscal_number"],
                                               isRequired: true,
                                               isValidatable: true,
                                               regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
@@ -168,7 +169,7 @@ namespace LogicPOS.UI.Components.POS
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          LocalizedString.Instance["global_customer"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -186,28 +187,28 @@ namespace LogicPOS.UI.Components.POS
 
         private void InitializePaymentMethodButtons()
         {
-            BtnMoney = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_money"),
+            BtnMoney = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_money"],
                                                              AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_money.png");
 
-            BtnCheck = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_bank_check"),
+            BtnCheck = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_bank_check"],
                                                   AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_bank_check.png");
 
-            BtnMB = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_cash_machine"),
+            BtnMB = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_cash_machine"],
                                               AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_cash_machine.png");
 
-            BtnCreditCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_credit_card"),
+            BtnCreditCard = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_credit_card"],
                                                       AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_credit_card.png");
 
-            BtnDebitCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_debit_card"),
+            BtnDebitCard = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_debit_card"],
                                                      AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_debit_card.png");
 
-            BtnVisa = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_visa"),
+            BtnVisa = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_visa"],
                                                 AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_visa.png");
 
-            BtnCustomerCard = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_customer_card"),
+            BtnCustomerCard = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_customer_card"],
                                                         AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_customer_card.png");
 
-            BtnCurrentAccountMethod = CreatePaymentMethodButton(GeneralUtils.GetResourceByName("pos_button_label_payment_type_current_account"),
+            BtnCurrentAccountMethod = CreatePaymentMethodButton(LocalizedString.Instance["pos_button_label_payment_type_current_account"],
                                                           AppSettings.Paths.Images + @"Icons/icon_pos_payment_type_current_account.png");
         }
 

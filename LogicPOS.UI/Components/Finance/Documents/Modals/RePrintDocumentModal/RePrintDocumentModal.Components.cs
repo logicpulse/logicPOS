@@ -19,7 +19,7 @@ namespace LogicPOS.UI.Components.Modals
         private CheckButtonExtended BtnCopy3 { get; } = new CheckButtonExtended(LocalizedString.Instance["global_print_copy_title3"]);
         private CheckButtonExtended BtnCopy4 { get; } = new CheckButtonExtended(LocalizedString.Instance["global_print_copy_title4"]);
         private List<CheckButtonExtended> Buttons { get; set; }
-        private CheckButtonBox CheckSecondCopy { get; } = new CheckButtonBox(GeneralUtils.GetResourceByName("global_second_copy"), true);
+        private CheckButtonBox CheckSecondCopy { get; } = new CheckButtonBox(LocalizedString.Instance["global_second_copy"], true);
         public bool SecondPrint => CheckSecondCopy.Active;
         public string Reason => TxtMotive.Text.Trim();
     }

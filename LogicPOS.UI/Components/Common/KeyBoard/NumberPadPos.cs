@@ -1,8 +1,9 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -29,7 +30,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     Name = "buttonKeySplitAccount",
                     BackgroundColor = colorRightButton,
-                    Text = GeneralUtils.GetResourceByName("global_split_account"),
+                    Text = LocalizedString.Instance["global_split_account"],
                     Font = fontRightButton,
                     FontColor = colorFont,
                     Icon = icon1,
@@ -42,7 +43,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     Name = "buttonKeyMessages",
                     BackgroundColor = colorRightButton,
-                    Text = GeneralUtils.GetResourceByName("global_messages"),
+                    Text = LocalizedString.Instance["global_messages"],
                     Font = fontRightButton,
                     FontColor = colorFont,
                     Icon = icon2,
@@ -55,7 +56,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 {
                     Name = "buttonKeyGifts",
                     BackgroundColor = colorRightButton,
-                    Text = GeneralUtils.GetResourceByName("global_gifts"),
+                    Text = LocalizedString.Instance["global_gifts"],
                     Font = fontRightButton,
                     FontColor = colorFont,
                     Icon = icon3,
@@ -63,7 +64,7 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                     ButtonSize = new Size(rightButtonWidth, buttonHeight)
                 });
 
-            IconButtonWithText buttonKeyWeight = new IconButtonWithText(new ButtonSettings { Name = "buttonKeyWeight", BackgroundColor = colorRightButton, Text = GeneralUtils.GetResourceByName("global_weight"), Font = fontRightButton, FontColor = colorFont, Icon = icon4, IconSize = sizeIcon, ButtonSize = new Size(rightButtonWidth, buttonHeight) });
+            IconButtonWithText buttonKeyWeight = new IconButtonWithText(new ButtonSettings { Name = "buttonKeyWeight", BackgroundColor = colorRightButton, Text = LocalizedString.Instance["global_weight"], Font = fontRightButton, FontColor = colorFont, Icon = icon4, IconSize = sizeIcon, ButtonSize = new Size(rightButtonWidth, buttonHeight) });
             
             buttonKeyMessages.Sensitive = false;
             buttonKeyGifts.Sensitive = false;

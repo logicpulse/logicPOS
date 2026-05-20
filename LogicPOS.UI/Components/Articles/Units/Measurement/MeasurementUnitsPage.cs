@@ -13,6 +13,7 @@ using System.Collections.Generic;
 
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public class MeasurementUnitsPage : Page<MeasurementUnit>
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = measurementUnit.Acronym.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = LocalizedString.Instance["global_acronym"];
             return Columns.CreateColumn(title, 2, RenderMonth);
         }
 

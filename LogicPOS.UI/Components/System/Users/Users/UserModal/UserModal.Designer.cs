@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -22,7 +23,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeProfilesComboBox()
         {
             var priceTypes = GetProfiles();
-            var labelText = GeneralUtils.GetResourceByName("global_user_profiles");
+            var labelText = LocalizedString.Instance["global_user_profiles"];
             var currentProfile = _entity != null ? _entity.Profile : null;
 
             _comboProfiles = new EntityComboBox<UserProfile>(labelText,
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeCommissionGroupsComboBox()
         {
             var commissionGroups = GetCommissionGroups();
-            var labelText = GeneralUtils.GetResourceByName("global_commission_group");
+            var labelText = LocalizedString.Instance["global_commission_group"];
             var currentCommissionGroup = _entity != null ? _entity.CommissionGroup : null;
 
             _comboCommissionGroups = new EntityComboBox<CommissionGroup>(labelText,
@@ -82,10 +83,10 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateContactsTab(), GeneralUtils.GetResourceByName("global_contacts"));
-            yield return (CreateOthersTab(), GeneralUtils.GetResourceByName("global_others"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateContactsTab(), LocalizedString.Instance["global_contacts"]);
+            yield return (CreateOthersTab(), LocalizedString.Instance["global_others"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

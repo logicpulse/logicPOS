@@ -7,6 +7,7 @@ using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtEmail()
         {
             TxtEmail = new TextBox(SourceWindow,
-                                       GeneralUtils.GetResourceByName("global_email"),
+                                       LocalizedString.Instance["global_email"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtPhone()
         {
             TxtPhone = new TextBox(SourceWindow,
-                                       GeneralUtils.GetResourceByName("global_phone"),
+                                       LocalizedString.Instance["global_phone"],
                                        isRequired: false,
                                        isValidatable: true,
                                        regex: RegularExpressions.IntegerNumber,
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCountry()
         {
             TxtCountry = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_country"),
+                                         LocalizedString.Instance["global_country"],
                                          isRequired: true,
                                          isValidatable: false,
                                          includeSelectButton: true,
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCity()
         {
             TxtCity = new TextBox(SourceWindow,
-                                      GeneralUtils.GetResourceByName("global_city"),
+                                      LocalizedString.Instance["global_city"],
                                       isRequired: false,
                                       isValidatable: false,
                                       includeSelectButton: false,
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtZipCode()
         {
             TxtZipCode = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_zipcode"),
+                                         LocalizedString.Instance["global_zipcode"],
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
@@ -76,7 +77,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(SourceWindow,
-                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       LocalizedString.Instance["global_notes"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -88,7 +89,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtLocality()
         {
             TxtLocality = new TextBox(SourceWindow,
-                                          GeneralUtils.GetResourceByName("global_locality"),
+                                          LocalizedString.Instance["global_locality"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: false,
@@ -98,7 +99,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtAddress()
         {
             TxtAddress = new TextBox(SourceWindow,
-                                         GeneralUtils.GetResourceByName("global_address"),
+                                         LocalizedString.Instance["global_address"],
                                          isRequired: false,
                                          isValidatable: false,
                                          includeSelectButton: false,
@@ -108,7 +109,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtDiscount()
         {
             TxtDiscount = new TextBox(SourceWindow,
-                                          GeneralUtils.GetResourceByName("global_discount"),
+                                          LocalizedString.Instance["global_discount"],
                                           isRequired: true,
                                           isValidatable: true,
                                           includeSelectButton: false,
@@ -125,7 +126,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCardNumber()
         {
             TxtCardNumber = new TextBox(SourceWindow,
-                                            GeneralUtils.GetResourceByName("global_card_number"),
+                                            LocalizedString.Instance["global_card_number"],
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: false,
@@ -135,7 +136,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtFiscalNumber()
         {
             TxtFiscalNumber = new TextBox(SourceWindow,
-                                              GeneralUtils.GetResourceByName("global_fiscal_number"),
+                                              LocalizedString.Instance["global_fiscal_number"],
                                               isRequired: true,
                                               isValidatable: true,
                                               regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
@@ -151,7 +152,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(SourceWindow,
-                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          LocalizedString.Instance["global_customer"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,

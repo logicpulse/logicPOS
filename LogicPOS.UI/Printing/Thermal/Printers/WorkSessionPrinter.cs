@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities.Enums;
+using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Printing
    
         private void DefineTicketSubtitle()
         {
-            var ticketSubTitleExtra = "";// GeneralUtils.GetResourceByName("global_current_account");
+            var ticketSubTitleExtra = "";// LocalizedString.Instance["global_current_account"];
 
             if (!string.IsNullOrEmpty(_SubTitle) && !string.IsNullOrEmpty(ticketSubTitleExtra))
             {
@@ -47,22 +48,22 @@ namespace LogicPOS.UI.Printing
             {
                 if (_reportData.Day.Status == WorkSessionPeriodStatus.Open)
                 {
-                    _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_day_resume");
+                    _Title = LocalizedString.Instance["ticket_title_worksession_day_resume"];
                 }
                 else
                 {
-                    _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_day_close");
+                    _Title = LocalizedString.Instance["ticket_title_worksession_day_close"];
                 }
                 return;
             }
 
             if (_reportData.Day.Status == WorkSessionPeriodStatus.Open)
             {
-                _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_resume");
+                _Title = LocalizedString.Instance["ticket_title_worksession_terminal_resume"];
             }
             else
             {
-                _Title = GeneralUtils.GetResourceByName("ticket_title_worksession_terminal_close");
+                _Title = LocalizedString.Instance["ticket_title_worksession_terminal_close"];
             }
             _SubTitle = _reportData.Day.Type == WorkSessionPeriodType.Terminal ? TerminalService.Terminal.Designation : string.Empty;
         }
@@ -70,11 +71,11 @@ namespace LogicPOS.UI.Printing
         public void PrintFooter()
         {
             _printer.Separator(' ');
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer1"));
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer2"));
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
             _printer.Separator(' ');
             _printer.NewLine();
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer3"));
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
             _printer.Separator(' ');
             _printer.NewLine();
             _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Printing
             //Printed On | Company|App|Version
             _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                 , Environment.NewLine
-                , GeneralUtils.GetResourceByName("global_printed_on_date")
+                , LocalizedString.Instance["global_printed_on_date"]
                 , DateTime.Now.ToLocalTime()
                 , "LogicPulse"//_customVars["APP_COMPANY"]
                 , "LogicPOS"//_customVars["APP_NAME"]
@@ -124,32 +125,32 @@ namespace LogicPOS.UI.Printing
             TicketTable ticketTable = new TicketTable(columns);
             //Open DateTime
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_datetime"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_open_datetime"]);
             dataRow[1] = dayReportData.Day.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Close DataTime
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_datetime"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_close_datetime"]);
             dataRow[1] = dayReportData.Day.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
             ticketTable.Rows.Add(dataRow);
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_open_total_cashdrawer"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_open_total_cashdrawer"]);
             dataRow[1] = (dayReportData.OpeningCashTotal).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_close_total_cashdrawer"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_close_total_cashdrawer"]);
             dataRow[1] = (dayReportData.GetTotalPerFamily().Sum(t=>t.Total)).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money In
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_in"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_total_money_in"]);
             dataRow[1] = (dayReportData.CashDrawerIn).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = ticketTable.NewRow();
-            dataRow[0] = string.Format("{0}:", GeneralUtils.GetResourceByName("global_worksession_total_money_out"));
+            dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_total_money_out"]);
             dataRow[1] = (dayReportData.CashDrawerOut).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
             ticketTable.Rows.Add(dataRow);
 
@@ -171,7 +172,7 @@ namespace LogicPOS.UI.Printing
             if (groupPosition == 0)
             {
                 _printer.DoubleWidth2();
-                _printer.BoldMode(GeneralUtils.GetResourceByName("global_worksession_resume_finance_documents"));
+                _printer.BoldMode(LocalizedString.Instance["global_worksession_resume_finance_documents"]);
                 _printer.NormalWidth();
                 _printer.Separator(' ');
             }
@@ -181,10 +182,10 @@ namespace LogicPOS.UI.Printing
 
             columns = new List<TicketColumn>
                             {
-                                new TicketColumn("GroupTitle", GeneralUtils.GetResourceByName("global_family"), 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_family"], 0, TicketColumnsAlignment.Left),
+                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
                                 //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
-                                new TicketColumn("Total", GeneralUtils.GetResourceByName("global_totalfinal_acronym"), 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
                             };
 
             //Init DataTable
@@ -211,7 +212,7 @@ namespace LogicPOS.UI.Printing
             {
                 //Create Row
                 dataRow = ticketTable.NewRow();
-                dataRow[0] = GeneralUtils.GetResourceByName("global_cashdrawer_without_movements");
+                dataRow[0] = LocalizedString.Instance["global_cashdrawer_without_movements"];
                 dataRow[1] = 0.0m;
                 //dataRow[2] = string.Empty;//UnitMeasure
                 dataRow[2] = 0.0m;
@@ -222,7 +223,7 @@ namespace LogicPOS.UI.Printing
             summaryTotal = dayReportData.GetTotalPerFamily().Sum(x => x.Total);
             summaryTotalQuantity = dayReportData.GetTotalPerFamily().Sum(x => x.Quantity);
             dataRow = ticketTable.NewRow();
-            dataRow[0] = GeneralUtils.GetResourceByName("global_total");
+            dataRow[0] = LocalizedString.Instance["global_total"];
             dataRow[1] = summaryTotalQuantity;
             //dataRow[2] = string.Empty;
             dataRow[2] = summaryTotal;
@@ -287,7 +288,7 @@ namespace LogicPOS.UI.Printing
 
             _printer.NewLine();
             _printer.DoubleWidth2();
-            _printer.BoldMode(GeneralUtils.GetResourceByName("global_worksession_resume_paymens_documents"));
+            _printer.BoldMode(LocalizedString.Instance["global_worksession_resume_paymens_documents"]);
             _printer.NormalWidth();
             _printer.Separator(' ');
 
@@ -308,7 +309,7 @@ namespace LogicPOS.UI.Printing
             //}
             //ticketTable = new TicketTable(columns);
             //dataRow = ticketTable.NewRow();
-            //dataRow[0] = GeneralUtils.GetResourceByName("global_total");
+            //dataRow[0] = LocalizedString.Instance["global_total"];
             //dataRow[1] = summaryTotalQuantity;
             ////dataRow[2] = string.Empty;
             //dataRow[2] = summaryTotal;

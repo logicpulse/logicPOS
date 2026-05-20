@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
             }
 
-            var title = GeneralUtils.GetResourceByName("global_value");
+            var title = LocalizedString.Instance["global_value"];
             var valueColumn = Columns.CreateColumn(title, 1, RenderValue);
 
             return valueColumn;
@@ -44,7 +45,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = parameter.ResourceStringValue;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_designation");
+            var title = LocalizedString.Instance["global_designation"];
 
             var column = Columns.CreateColumn(title,
                                               0,

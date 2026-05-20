@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = place.PriceType.Designation.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_ConfigurationPlace_PriceType");
+            var title = LocalizedString.Instance["global_ConfigurationPlace_PriceType"];
             return Columns.CreateColumn(title, 2, RenderPriceType);
         }
 
@@ -27,7 +28,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = place.MovementType.Designation.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_ConfigurationPlace_MovementType");
+            var title = LocalizedString.Instance["global_ConfigurationPlace_MovementType"];
             return Columns.CreateColumn(title, 3, RenderMovementType);
         }
     }

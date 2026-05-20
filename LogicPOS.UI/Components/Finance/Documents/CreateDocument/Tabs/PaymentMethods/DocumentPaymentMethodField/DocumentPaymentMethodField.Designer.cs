@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {
@@ -50,7 +51,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         private void InitializeTxtPaymentMethod(Window sourceWindow)
         {
             TxtPaymentMethod = new TextBox(sourceWindow,
-                                               GeneralUtils.GetResourceByName("global_payment_method"),
+                                               LocalizedString.Instance["global_payment_method"],
                                                isRequired: true,
                                                isValidatable: false,
                                                includeSelectButton: true,
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         private void InitializeTxtAmount(Window sourceWindow)
         {
             TxtAmount = new TextBox(sourceWindow,
-                                        GeneralUtils.GetResourceByName("global_total_deliver"),
+                                        LocalizedString.Instance["global_total_deliver"],
                                         isRequired: true,
                                         isValidatable: true,
                                         regex: RegularExpressions.Money,

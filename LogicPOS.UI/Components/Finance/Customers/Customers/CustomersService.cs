@@ -4,6 +4,8 @@ using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.ExportCustomersToExcel;
 using LogicPOS.Api.Features.Finance.Customers.Customers.GetCustomer;
+using LogicPOS.Api.Features.Finance.Customers.Customers.RechargeCard;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Errors;
 using LogicPOS.Utility;
 using System;
@@ -65,7 +67,7 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
             {
                 if (_default == null)
                 {
-                    _default = GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == GeneralUtils.GetResourceByName("global_final_consumer").ToLower());
+                    _default = GetAllCustomers().FirstOrDefault(x => x.Name.ToLower() == LocalizedString.Instance["global_final_consumer"].ToLower());
                 }
 
                 return _default;
@@ -101,5 +103,25 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
             return result.Value.Path;
         }
 
+        public static bool RechargeCard(Guid customerId, decimal amount)
+        {
+            var command = new RechargeCardCommand(customerId, amount);
+            var result = DependencyInjection.Mediator.Send(command).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            _customers = null;
+            return true;
+        }
+
+        public static bool CanRechargeCard(Customer customer)
+        {
+            return customer != null
+                && customer.IsDeleted == false
+                && string.IsNullOrWhiteSpace(customer.CardNumber) == false;
+        }
     }
 }

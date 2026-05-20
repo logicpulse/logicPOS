@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Reports.SystemAudits.GetSystemAuditsReportPdf;
 using LogicPOS.UI.Components.Modals.Common;
@@ -8,6 +8,7 @@ using MediatR;
 using System;
 using System.Drawing;
 using System.Globalization;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -16,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly ISender _mediator = DependencyInjection.Mediator;
 
         private SystemAuditFilterModal(Window parent) : base(parent,
-                                                                       GeneralUtils.GetResourceByName("report_customer_balance_summary"),
+                                                                       LocalizedString.Instance["report_customer_balance_summary"],
                                                                        new Size(500, 509),
                                                                        AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {

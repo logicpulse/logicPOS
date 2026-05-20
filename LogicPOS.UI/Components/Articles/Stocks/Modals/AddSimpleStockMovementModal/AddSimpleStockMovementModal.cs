@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Extensions;
 using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
@@ -11,13 +11,14 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class AddSimpleStockMovementModal : Modal
     {
         public AddSimpleStockMovementModal(Window parent) : base(parent,
-                                                   GeneralUtils.GetResourceByName("window_title_dialog_article_stock"),
+                                                   LocalizedString.Instance["window_title_dialog_article_stock"],
                                                    new Size(500, 660),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_stocks.png")
         {
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectSupplier_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.SupplierSelectionOptions);
-            var selectModal = new EntitySelectionModal<Customer>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

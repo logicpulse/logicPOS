@@ -17,6 +17,7 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
@@ -33,20 +34,20 @@ namespace LogicPOS.UI.Printing
         {
             List<TicketColumn> columns = new List<TicketColumn>();
 
-            columns.Add(new TicketColumn("VatRate", GeneralUtils.GetResourceByName("global_vat_rate") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
-            columns.Add(new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("UnitMeasure", GeneralUtils.GetResourceByName("global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right));
+            columns.Add(new TicketColumn("VatRate", LocalizedString.Instance["global_vat_rate"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
+            columns.Add(new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            columns.Add(new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right));
             if (_data.Document.Customer.Country.ToUpper() == "PT")
             {
-                columns.Add(new TicketColumn("UnitPrice", GeneralUtils.GetResourceByName("global_short_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("UnitPrice", LocalizedString.Instance["global_short_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             }
             else
             {
-                columns.Add(new TicketColumn("Price", GeneralUtils.GetResourceByName("global_price"), 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+                columns.Add(new TicketColumn("Price", LocalizedString.Instance["global_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             }
-            columns.Add(new TicketColumn("Discount", GeneralUtils.GetResourceByName("global_discount_acronym") + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            //columns.Add(new TicketColumn("TotalNet", GeneralUtils.GetResourceByName("global_totalnet_acronym"), 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("TotalFinal", GeneralUtils.GetResourceByName("global_total_per_item"), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            columns.Add(new TicketColumn("Discount", LocalizedString.Instance["global_discount_acronym"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            //columns.Add(new TicketColumn("TotalNet", LocalizedString.Instance["global_totalnet_acronym"], 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            columns.Add(new TicketColumn("TotalFinal", LocalizedString.Instance["global_total_per_item"], 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
 
             TicketTable ticketTable = new TicketTable(columns, 48);
             string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
@@ -90,10 +91,10 @@ namespace LogicPOS.UI.Printing
             var TaxResume = _data.Document.GetTaxResumes();
             List<TicketColumn> columns = new List<TicketColumn>();
 
-            columns.Add(new TicketColumn("Designation", GeneralUtils.GetResourceByName("global_designation"), 0, TicketColumnsAlignment.Left));
-            columns.Add(new TicketColumn("Tax", GeneralUtils.GetResourceByName("global_tax"), 8, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("TotalBase", GeneralUtils.GetResourceByName("global_total_tax_base"), 12, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("Total", GeneralUtils.GetResourceByName("global_documentfinance_totaltax_acronym"), 10, TicketColumnsAlignment.Right));
+            columns.Add(new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left));
+            columns.Add(new TicketColumn("Tax", LocalizedString.Instance["global_tax"], 8, TicketColumnsAlignment.Right));
+            columns.Add(new TicketColumn("TotalBase", LocalizedString.Instance["global_total_tax_base"], 12, TicketColumnsAlignment.Right));
+            columns.Add(new TicketColumn("Total", LocalizedString.Instance["global_documentfinance_totaltax_acronym"], 10, TicketColumnsAlignment.Right));
 
             TicketTable ticketTable = new TicketTable(columns, 48);
 
@@ -115,23 +116,23 @@ namespace LogicPOS.UI.Printing
             _printer.AlignCenter();
             if (!string.IsNullOrEmpty(_data.Document.PaymentCondition))
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_payment_conditions") + ": " + _data.Document.PaymentCondition);
+                _printer.Append(LocalizedString.Instance["global_payment_conditions"] + ": " + _data.Document.PaymentCondition);
             }
             if (_data.Document.PaymentMethods != null)
             {
                 foreach (var paymentMethod in _data.Document.PaymentMethods)
                 {
-                    _printer.Append(GeneralUtils.GetResourceByName("global_payment_method_field") + ": " + paymentMethod);
+                    _printer.Append(LocalizedString.Instance["global_payment_method_field"] + ": " + paymentMethod);
                 }
             }
-            _printer.Append(GeneralUtils.GetResourceByName("global_currency_field") + ": " + _data.Document.Currency);
+            _printer.Append(LocalizedString.Instance["global_currency_field"] + ": " + _data.Document.Currency);
             _printer.NewLine();
         }
 
         protected void PrintCustomer(Customer customer)
         {
-            _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_customer"), customer.Name));
-            _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_address"), customer.Address));
+            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_customer"], customer.Name));
+            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_address"], customer.Address));
 
             string addressDetails = customer.Country;
 
@@ -148,7 +149,7 @@ namespace LogicPOS.UI.Printing
                 addressDetails = string.Format("{0} - {1}", customer.City, customer.Country);
             }
             _printer.Append(addressDetails);
-            _printer.Append(string.Format("{0}: {1}", GeneralUtils.GetResourceByName("global_fiscal_number"), customer.FiscalNumber));
+            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_fiscal_number"], customer.FiscalNumber));
 
             _printer.AlignLeft();
             _printer.Separator(' ');
@@ -168,7 +169,7 @@ namespace LogicPOS.UI.Printing
                 _printer.NewLine();
                 _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                                     , Environment.NewLine
-                                    , GeneralUtils.GetResourceByName("global_printed_on_date")
+                                    , LocalizedString.Instance["global_printed_on_date"]
                                     , DateTime.Now.ToLocalTime()
                                     , "LogicPulse"//"APP_COMPANY"
                                     , "LogicPOS"//"APP_NAME"
@@ -191,17 +192,17 @@ namespace LogicPOS.UI.Printing
             if (string.IsNullOrEmpty(_data.CompanyInformations.Address) == false) _printer.Append($"{_data.CompanyInformations.Address} ");
             if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode) == false) _printer.Append($"{_data.CompanyInformations.PostalCode} {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
             if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode)) _printer.Append($"0000-000 {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Phone) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_phone")}: {_data.CompanyInformations.Phone} ({GeneralUtils.GetResourceByName("report_phonenumber_label")})");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.MobilePhone) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_mobile_phone")}: {_data.CompanyInformations.MobilePhone} ({GeneralUtils.GetResourceByName("report_mobilephonenumber_label")})");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Email) == false) _printer.Append($"{GeneralUtils.GetResourceByName("global_user_email")}: {_data.CompanyInformations.Email} ");
-            _printer.Append($"{GeneralUtils.GetResourceByName("prefparam_company_fiscalnumber")}: {_data.CompanyInformations.FiscalNumber} ");
+            if (string.IsNullOrEmpty(_data.CompanyInformations.Phone) == false) _printer.Append($"{LocalizedString.Instance["global_phone"]}: {_data.CompanyInformations.Phone} ({LocalizedString.Instance["report_phonenumber_label"]})");
+            if (string.IsNullOrEmpty(_data.CompanyInformations.MobilePhone) == false) _printer.Append($"{LocalizedString.Instance["global_mobile_phone"]}: {_data.CompanyInformations.MobilePhone} ({LocalizedString.Instance["report_mobilephonenumber_label"]})");
+            if (string.IsNullOrEmpty(_data.CompanyInformations.Email) == false) _printer.Append($"{LocalizedString.Instance["global_user_email"]}: {_data.CompanyInformations.Email} ");
+            _printer.Append($"{LocalizedString.Instance["prefparam_company_fiscalnumber"]}: {_data.CompanyInformations.FiscalNumber} ");
             _printer.AlignCenter();
             _printer.SetLineHeight(80);
             _printer.Separator(' ');
             _printer.AlignCenter();
             _printer.DoubleWidth2();
             _printer.ExpandedMode(PrinterModeState.On);
-            _printer.BoldMode(GeneralUtils.GetResourceByName(documentType));
+            _printer.BoldMode(LocalizedString.Instance[documentType]);
             _printer.Separator(' ');
             _printer.Append(_data.Document.Number);
             _printer.Append($"Original");
@@ -218,11 +219,11 @@ namespace LogicPOS.UI.Printing
             PrintDocumentDetails();
 
             _printer.AlignLeft();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_totalnet")}: {_data.Document.TotalNet:F2}");
+            _printer.BoldMode($"{LocalizedString.Instance["global_totalnet"]}: {_data.Document.TotalNet:F2}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totaltax")}: {_data.Document.TotalTax:F2}");
+            _printer.BoldMode($"{LocalizedString.Instance["global_documentfinance_totaltax"]}: {_data.Document.TotalTax:F2}");
             _printer.NewLine();
-            _printer.BoldMode($"{GeneralUtils.GetResourceByName("global_documentfinance_totalfinal")}: {_data.Document.TotalFinal:F2}");
+            _printer.BoldMode($"{LocalizedString.Instance["global_documentfinance_totalfinal"]}: {_data.Document.TotalFinal:F2}");
             _printer.Separator(' ');
             _printer.NewLine();
             PrintTotalTax();
@@ -234,11 +235,11 @@ namespace LogicPOS.UI.Printing
 
             if (typeAnalyzer.IsInvoice() || typeAnalyzer.IsSimplifiedInvoice() || typeAnalyzer.IsInvoiceReceipt() || typeAnalyzer.IsConsignmentInvoice())
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_invoice_footer_at"));
+                _printer.Append(LocalizedString.Instance["global_documentfinance_type_report_invoice_footer_at"]);
             }
             else
             {
-                _printer.Append(GeneralUtils.GetResourceByName("global_documentfinance_type_report_non_invoice_footer_at"));
+                _printer.Append(LocalizedString.Instance["global_documentfinance_type_report_non_invoice_footer_at"]);
             }
             _printer.Separator(' ');
             if (_data.CompanyInformations.IsPortugal)

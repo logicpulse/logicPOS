@@ -1,8 +1,9 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Buttons
 {
@@ -79,51 +80,51 @@ namespace LogicPOS.UI.Buttons
                     buttonImage = fileActionDefault;
                     break;
                 case DialogButtonType.Ok:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_ok");
+                    buttonLabel = LocalizedString.Instance["global_button_label_ok"];
                     buttonImage = fileActionOK;
                     break;
                 case DialogButtonType.Cancel:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_cancel");
+                    buttonLabel = LocalizedString.Instance["global_button_label_cancel"];
                     buttonImage = fileActionCancel;
                     break;
                 case DialogButtonType.Yes:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_yes");
+                    buttonLabel = LocalizedString.Instance["global_button_label_yes"];
                     buttonImage = fileActionYes;
                     break;
                 case DialogButtonType.No:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_no");
+                    buttonLabel = LocalizedString.Instance["global_button_label_no"];
                     buttonImage = fileActionNo;
                     break;
                 case DialogButtonType.Close:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_close");
+                    buttonLabel = LocalizedString.Instance["global_button_label_close"];
                     buttonImage = fileActionClose;
                     break;
                 case DialogButtonType.Print:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_print");
+                    buttonLabel = LocalizedString.Instance["global_button_label_print"];
                     buttonImage = fileActionPrint;
                     break;
                 case DialogButtonType.PrintAs:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_print_as");
+                    buttonLabel = LocalizedString.Instance["global_button_label_print_as"];
                     buttonImage = fileActionPrintAs;
                     break;
                 case DialogButtonType.Help:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_help");
+                    buttonLabel = LocalizedString.Instance["global_button_label_help"];
                     buttonImage = fileActionHelp;
                     break;
                 case DialogButtonType.CloneDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_clone_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_clone_document"];
                     buttonImage = fileActionCloneDocument;
                     break;
                 case DialogButtonType.OpenDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_open_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_open_document"];
                     buttonImage = fileActionOpenDocument;
                     break;
                 case DialogButtonType.SendEmailDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_send_email_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_send_email_document"];
                     buttonImage = fileActionSendEmailDocument;
                     break;
                 case DialogButtonType.CleanFilter:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_filter_clear");
+                    buttonLabel = LocalizedString.Instance["global_button_label_filter_clear"];
                     buttonImage = fileActionCleanFilter;
                     break;
                 default:
@@ -194,51 +195,51 @@ namespace LogicPOS.UI.Buttons
                     buttonImage = fileActionDefault;
                     break;
                 case DialogButtonType.Ok:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_ok");
+                    buttonLabel = LocalizedString.Instance["global_button_label_ok"];
                     buttonImage = fileActionOK;
                     break;
                 case DialogButtonType.Cancel:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_cancel");
+                    buttonLabel = LocalizedString.Instance["global_button_label_cancel"];
                     buttonImage = fileActionCancel;
                     break;
                 case DialogButtonType.Yes:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_yes");
+                    buttonLabel = LocalizedString.Instance["global_button_label_yes"];
                     buttonImage = fileActionYes;
                     break;
                 case DialogButtonType.No:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_no");
+                    buttonLabel = LocalizedString.Instance["global_button_label_no"];
                     buttonImage = fileActionNo;
                     break;
                 case DialogButtonType.Close:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_close");
+                    buttonLabel = LocalizedString.Instance["global_button_label_close"];
                     buttonImage = fileActionClose;
                     break;
                 case DialogButtonType.Print:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_print");
+                    buttonLabel = LocalizedString.Instance["global_button_label_print"];
                     buttonImage = fileActionPrint;
                     break;
                 case DialogButtonType.PrintAs:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_print_as");
+                    buttonLabel = LocalizedString.Instance["global_button_label_print_as"];
                     buttonImage = fileActionPrintAs;
                     break;
                 case DialogButtonType.Help:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_help");
+                    buttonLabel = LocalizedString.Instance["global_button_label_help"];
                     buttonImage = fileActionHelp;
                     break;
                 case DialogButtonType.CloneDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_clone_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_clone_document"];
                     buttonImage = fileActionCloneDocument;
                     break;
                 case DialogButtonType.OpenDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_open_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_open_document"];
                     buttonImage = fileActionOpenDocument;
                     break;
                 case DialogButtonType.SendEmailDocument:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_send_email_document");
+                    buttonLabel = LocalizedString.Instance["global_button_label_send_email_document"];
                     buttonImage = fileActionSendEmailDocument;
                     break;
                 case DialogButtonType.CleanFilter:
-                    buttonLabel = GeneralUtils.GetResourceByName("global_button_label_filter_clear");
+                    buttonLabel = LocalizedString.Instance["global_button_label_filter_clear"];
                     buttonImage = fileActionCleanFilter;
                     break;
                 default:

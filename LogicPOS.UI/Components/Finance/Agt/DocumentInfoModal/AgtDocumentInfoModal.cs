@@ -10,6 +10,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Finance.Agt
 {
@@ -75,7 +76,7 @@ namespace LogicPOS.UI.Components.Finance.Agt
             }
 
             var page = new DocumentsPage(null, PageOptions.SelectionPageOptions);
-            var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectDocumentModal = new EntitySelectionModal<DocumentViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType selectionResponse = (ResponseType)selectDocumentModal.Run();
             var correctDocumentId = page.SelectedEntity.Id;
             selectDocumentModal.Destroy();

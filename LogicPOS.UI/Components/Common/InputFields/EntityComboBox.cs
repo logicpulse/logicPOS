@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -114,7 +115,7 @@ namespace LogicPOS.UI.Components.InputFields
 
         private void AddDefaultItem()
         {
-            var iterator = _listStore.AppendValues(GeneralUtils.GetResourceByName("widget_combobox_undefined"), null);
+            var iterator = _listStore.AppendValues(LocalizedString.Instance["widget_combobox_undefined"], null);
             ComboBox.SetActiveIter(iterator);
 
             if (SelectedEntity == null)

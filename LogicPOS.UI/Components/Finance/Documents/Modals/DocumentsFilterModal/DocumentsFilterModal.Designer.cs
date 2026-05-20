@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.Components.Finance.Customers;
@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtCustomer()
         {
             TxtCustomer = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_customer"),
+                                          LocalizedString.Instance["global_customer"],
                                           isRequired: false,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -57,7 +58,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtDocumentType()
         {
             TxtDocumentType = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_documentfinanceseries_documenttype"),
+                                              LocalizedString.Instance["global_documentfinanceseries_documenttype"],
                                               isRequired: false,
                                               isValidatable: false,
                                               includeSelectButton: true,
@@ -73,7 +74,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtPaymentCondition()
         {
             TxtPaymentCondition = new TextBox(this,
-                                                   GeneralUtils.GetResourceByName("global_payment_condition"),
+                                                   LocalizedString.Instance["global_payment_condition"],
                                                    isRequired: false,
                                                    isValidatable: false,
                                                    includeSelectButton: true,
@@ -89,7 +90,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtPaymentMethod()
         {
             TxtPaymentMethod = new TextBox(this,
-                                               GeneralUtils.GetResourceByName("global_payment_method"),
+                                               LocalizedString.Instance["global_payment_method"],
                                                isRequired: false,
                                                isValidatable: false,
                                                includeSelectButton: true,
@@ -105,7 +106,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtStartDate()
         {
             TxtStartDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_start"),
+                                           LocalizedString.Instance["global_date_start"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,
@@ -121,7 +122,7 @@ namespace LogicPOS.UI.Components.Documents
         private void InitializeTxtEndDate()
         {
             TxtEndDate = new TextBox(this,
-                                           GeneralUtils.GetResourceByName("global_date_end"),
+                                           LocalizedString.Instance["global_date_end"],
                                            isRequired: false,
                                            isValidatable: true,
                                            regex: RegularExpressions.Date,

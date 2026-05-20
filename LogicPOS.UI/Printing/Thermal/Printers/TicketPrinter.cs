@@ -1,4 +1,4 @@
-﻿using ESC_POS_USB_NET.Enums;
+using ESC_POS_USB_NET.Enums;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
@@ -27,13 +28,13 @@ namespace LogicPOS.UI.Printing
         {
 
             _ticketTitle = string.Format("{0}: #{1}"
-                , GeneralUtils.GetResourceByName("global_order_request")
+                , LocalizedString.Instance["global_order_request"]
                 , _ticket.Number.ToString()
             );
             var mode = AppSettings.Instance.AppOperationModeTheme.ToLower();
             //Table|Order #2|Name/Zone
             _ticketSubTitle = string.Format("{0}: #{1}/{2}"
-                , GeneralUtils.GetResourceByName(string.Format($"global_table_appmode_{mode}").ToLower()) /* IN008024 */
+                , LocalizedString.Instance[string.Format($"global_table_appmode_{mode}").ToLower()] /* IN008024 */
                 , _ticket.Table
                 , _ticket.Place
             );
@@ -55,9 +56,9 @@ namespace LogicPOS.UI.Printing
             _printer.NewLine();
             List<TicketColumn> columns = new List<TicketColumn>
             {
-                new TicketColumn("Designation", GeneralUtils.GetResourceByName("global_designation"), 0, TicketColumnsAlignment.Left),
-                new TicketColumn("Quantity", GeneralUtils.GetResourceByName("global_quantity_acronym"), 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                new TicketColumn("UnitMeasure", GeneralUtils.GetResourceByName("global_unit_measure_acronym"), 3, TicketColumnsAlignment.Right)
+                new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left),
+                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right)
             };
 
             //Prepare Table with Padding
@@ -80,11 +81,11 @@ namespace LogicPOS.UI.Printing
         private void PrintFooter()
         {
             _printer.Separator(' ');
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer1"));
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer2"));
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
             _printer.Separator(' ');
             _printer.NewLine();
-            _printer.Append(GeneralUtils.GetResourceByName("global_internal_document_footer3"));
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
             _printer.Separator(' ');
             _printer.NewLine();
             _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
@@ -92,7 +93,7 @@ namespace LogicPOS.UI.Printing
             //Printed On | Company|App|Version
             _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                 , Environment.NewLine
-                , GeneralUtils.GetResourceByName("global_printed_on_date")
+                , LocalizedString.Instance["global_printed_on_date"]
                 , DateTime.Now.ToLocalTime()
                 , "LogicPulse"//_customVars["APP_COMPANY"]
                 , "LogicPOS"//_customVars["APP_NAME"]

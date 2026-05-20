@@ -10,13 +10,14 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
     public partial class DocumentTab : ModalTab
     {
         public DocumentTab(Window parent) : base(parent: parent,
-                                                  name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page1"),
+                                                  name: LocalizedString.Instance["window_title_dialog_document_finance_page1"],
                                                   icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png")
         {
             Initialize();

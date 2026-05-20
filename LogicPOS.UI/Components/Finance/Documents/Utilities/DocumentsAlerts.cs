@@ -1,8 +1,9 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Alerts;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents
 {
@@ -18,7 +19,7 @@ namespace LogicPOS.UI.Components.Documents
                     ignoredDocumentsMessage += $"{Environment.NewLine}{documents[i]}";
                 }
 
-                string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), ignoredDocumentsMessage);
+                string infoMessage = string.Format(LocalizedString.Instance["app_info_show_ignored_cancelled_documents"], ignoredDocumentsMessage);
 
                 CustomAlerts.Information(parentWindow)
                             .WithSize(new Size(600, 400))

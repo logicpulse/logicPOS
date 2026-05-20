@@ -11,6 +11,7 @@ using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly ISender _meditaor = DependencyInjection.Services.GetRequiredService<IMediator>();
 
         public ReceiptsModal(Window parent) : base(parent,
-                                                   GeneralUtils.GetResourceByName("window_title_dialog_document_finance_payment"),
+                                                   LocalizedString.Instance["window_title_dialog_document_finance_payment"],
                                                    AppSettings.MaxWindowSize,
                                                    $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}")
         {
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowCannotCancelReceiptMessage(string refNo)
         {
-            string infoMessage = string.Format(GeneralUtils.GetResourceByName("app_info_show_ignored_cancelled_documents"), refNo);
+            string infoMessage = string.Format(LocalizedString.Instance["app_info_show_ignored_cancelled_documents"], refNo);
 
             CustomAlerts.Information(this)
                         .WithSize(new Size(600, 400))
@@ -62,7 +63,7 @@ namespace LogicPOS.UI.Components.Modals
             var cancelReasonDialog = logicpos.Utils.GetInputText(this,
                                                              DialogFlags.Modal,
                                                              AppSettings.Paths.Images + @"Icons\Windows\icon_window_input_text_default.png",
-                                                             string.Format(GeneralUtils.GetResourceByName("global_cancel_document_input_text_label"), receipt.RefNo),
+                                                             string.Format(LocalizedString.Instance["global_cancel_document_input_text_label"], receipt.RefNo),
                                                              string.Empty,
                                                              RegularExpressions.AlfaNumericExtendedForMotive,
                                                              true);

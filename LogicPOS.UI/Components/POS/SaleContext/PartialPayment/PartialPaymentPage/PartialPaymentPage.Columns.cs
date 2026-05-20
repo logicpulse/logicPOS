@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = item.Article.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_designation");
+            var title = LocalizedString.Instance["global_designation"];
             return Columns.CreateColumn(title, 2, RenderDesignation);
         }
 
@@ -46,7 +47,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = item.UnitPrice.ToString("0.00");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_price");
+            var title = LocalizedString.Instance["global_price"];
             return Columns.CreateColumn(title, 3, RenderPrice);
         }
 
@@ -58,7 +59,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = item.Vat.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_vat_rate");
+            var title = LocalizedString.Instance["global_vat_rate"];
             return Columns.CreateColumn(title, 4, RenderVat);
         }
 
@@ -70,7 +71,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = item.Discount.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_discount");
+            var title = LocalizedString.Instance["global_discount"];
             return Columns.CreateColumn(title, 5, RenderTotal);
         }
 

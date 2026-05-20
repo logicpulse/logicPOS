@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using System.Collections.Generic;
 using System.Drawing;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using LogicPOS.Api.Entities;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -16,7 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializePriceTypesComboBox()
         {
             var priceTypes = GetPriceTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_placetable_PriceType");
+            var labelText = LocalizedString.Instance["global_placetable_PriceType"];
             var currentPriceType = _entity != null ? _entity.PriceType : null;
 
             _comboPriceTypes = new EntityComboBox<PriceType>(labelText,
@@ -28,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeMovementTypesComboBox()
         {
             var movementTypes = GetMovementTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_placetable_MovementType");
+            var labelText = LocalizedString.Instance["global_placetable_MovementType"];
             var currentMovementType = _entity != null ? _entity.MovementType : null;
 
             _comboMovementTypes = new EntityComboBox<MovementType>(labelText,
@@ -67,8 +68,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

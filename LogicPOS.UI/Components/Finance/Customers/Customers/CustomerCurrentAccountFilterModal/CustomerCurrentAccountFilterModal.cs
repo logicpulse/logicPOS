@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Reports.Customers.GetCurrentAccountSummaryPdf;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly ISender _mediator = DependencyInjection.Mediator;
 
         private CustomerCurrentAccountFilterModal(Window parent) : base(parent,
-                                                                       GeneralUtils.GetResourceByName("report_customer_balance_summary"),
+                                                                       LocalizedString.Instance["report_customer_balance_summary"],
                                                                        new Size(500, 509),
                                                                        AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {

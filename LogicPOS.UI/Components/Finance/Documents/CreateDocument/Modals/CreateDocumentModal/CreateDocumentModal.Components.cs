@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -14,10 +15,10 @@ namespace LogicPOS.UI.Components.Modals
         private IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
         private IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonClearCustomer_DialogActionArea",
-                                                                                                                GeneralUtils.GetResourceByName("global_button_label_payment_dialog_clear_client"),
+                                                                                                                LocalizedString.Instance["global_button_label_payment_dialog_clear_client"],
                                                                                                                 AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png");
         private IconButtonWithText BtnPreview { get; set; } = ActionAreaButton.FactoryGetDialogButtonType("touchButtonPreview_DialogActionArea",
-                                                                                                          GeneralUtils.GetResourceByName("widget_generictreeviewnavigator_preview"),
+                                                                                                          LocalizedString.Instance["widget_generictreeviewnavigator_preview"],
                                                                                                           AppSettings.Paths.Images + @"Icons\Dialogs\icon_pos_dialog_preview.png");
 
         #endregion

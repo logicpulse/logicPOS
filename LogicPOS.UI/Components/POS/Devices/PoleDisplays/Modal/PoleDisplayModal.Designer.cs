@@ -5,6 +5,7 @@ using System.Drawing;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -51,8 +52,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()
@@ -74,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
             detailsTab.PackStart(_txtCharsPerLine.Component, false, false, 0);
             detailsTab.PackStart(_txtStandByInSeconds.Component, false, false, 0);
 
-            var standByLineResource = GeneralUtils.GetResourceByName("global_pole_display_stand_by_line_no");
+            var standByLineResource = LocalizedString.Instance["global_pole_display_stand_by_line_no"];
             _txtStandByLine1.Label.Text = string.Format(standByLineResource, 1);
             detailsTab.PackStart(_txtStandByLine1.Component, false, false, 0);
 

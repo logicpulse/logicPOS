@@ -41,7 +41,7 @@ namespace LogicPOS.UI.Components.POS
 
                 CustomAlerts.Error(this)
                             .WithSize(new Size(620, 300))
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_worksession_period_warning_open_orders_tables"),
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_worksession_period_warning_open_orders_tables"],
                                           openTables.Count(),
                                           $"\n{tablesNames}"))
                             .ShowAlert();

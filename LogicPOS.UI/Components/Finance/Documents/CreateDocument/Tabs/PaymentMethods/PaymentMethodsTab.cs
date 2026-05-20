@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Documents.CreateDocument.Fields;
 using LogicPOS.UI.Components.Modals.Common;
@@ -6,6 +6,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -13,7 +14,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
     {
         public DocumentPaymentMethodsBox PaymentMethodsBox { get; set; }
         public PaymentMethodsTab(Window parent) : base(parent: parent,
-                                                                     name: GeneralUtils.GetResourceByName("global_payment_method"),
+                                                                     name: LocalizedString.Instance["global_payment_method"],
                                                                      icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_1_new_document.png",
                                                                      false)
         {

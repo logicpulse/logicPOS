@@ -135,7 +135,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectVatExemptionReason_Clicked(object sender, EventArgs e)
         {
             var page = new VatExemptionReasonsPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<VatExemptionReason>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<VatExemptionReason>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 
@@ -149,7 +149,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectTax_Clicked(object sender, EventArgs e)
         {
             var page = new VatRatesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<VatRate>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<VatRate>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 
@@ -182,7 +182,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<ArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 
@@ -197,7 +197,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectFamily_Clicked(object sender, EventArgs e)
         {
             var page = new ArticleFamiliesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<ArticleFamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<ArticleFamily>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 
@@ -216,7 +216,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             ArticleSubfamiliesPage.FamilyId = (TxtFamily.SelectedEntity as ArticleFamily).Id;
             var page = new ArticleSubfamiliesPage(null, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<ArticleSubfamily>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<ArticleSubfamily>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

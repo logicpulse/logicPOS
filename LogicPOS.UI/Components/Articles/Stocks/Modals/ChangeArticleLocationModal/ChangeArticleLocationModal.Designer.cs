@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Modals
             tab.PackStart(_locationField.LocationField.Component, false, false, 0);
             tab.PackStart(_txtQuantity.Component, false, false, 0);
 
-            yield return (tab, GeneralUtils.GetResourceByName("window_title_article_location"));
+            yield return (tab, LocalizedString.Instance["window_title_article_location"]);
         }
 
     }

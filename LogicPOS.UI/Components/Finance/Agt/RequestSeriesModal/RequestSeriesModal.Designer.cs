@@ -4,6 +4,7 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Finance.Agt.RequestSeriesModal
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
         }
 
         private VBox CreateDetailsTab()

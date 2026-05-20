@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = vatRate.Acronym;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = LocalizedString.Instance["global_acronym"];
             return Columns.CreateColumn(title, 2, RenderAcronym);
         }
     }

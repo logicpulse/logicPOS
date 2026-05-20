@@ -2,6 +2,7 @@ using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.Pages
                 }
             }
 
-            var title = GeneralUtils.GetResourceByName("global_acronym");
+            var title = LocalizedString.Instance["global_acronym"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
 
@@ -55,7 +56,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = fiscalYear.Year.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_fiscal_year");
+            var title = LocalizedString.Instance["global_fiscal_year"];
             return Columns.CreateColumn(title, 3, RenderValue);
         }
     }

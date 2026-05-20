@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Extensions;
@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Services.Description;
 using Image = System.Drawing.Image;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -134,7 +135,7 @@ namespace LogicPOS.UI.Components.InputFields
             } while (ComboBox.Model.IterNext(ref iterator));
 
             VBox box = new VBox(false, 2);
-            Label.Text = GeneralUtils.GetResourceByName("global_language");
+            Label.Text = LocalizedString.Instance["global_language"];
             box.PackStart(Label, false, false, 0);
             box.PackStart(ComboBox, false, false, 0);
 

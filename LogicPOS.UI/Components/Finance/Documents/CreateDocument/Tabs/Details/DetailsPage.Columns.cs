@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using System.Data.Common;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.TotalFinal.ToString("F2");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_total_per_item_vat");
+            var title = LocalizedString.Instance["global_total_per_item_vat"];
             return Columns.CreateColumn(title, 7, RenderTotalWithTax);
         }
 
@@ -42,7 +43,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.UnitPrice.ToString("F2");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_price");
+            var title = LocalizedString.Instance["global_price"];
             return Columns.CreateColumn(title, 3, RenderPrice);
         }
 
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.Discount.ToString("F2");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_discount");
+            var title = LocalizedString.Instance["global_discount"];
             return Columns.CreateColumn(title, 4, RenderDiscount);
         }
 
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.VatRate?.Designation ?? item.VatDesignation;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_vat_rate");
+            var title = LocalizedString.Instance["global_vat_rate"];
             return Columns.CreateColumn(title, 5, RenderTax);
         }
 
@@ -78,7 +79,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.Quantity.ToString("F2");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_quantity_acronym");
+            var title = LocalizedString.Instance["global_quantity_acronym"];
             return Columns.CreateColumn(title, 2, RenderQuantity);
         }
 
@@ -90,7 +91,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 (cell as CellRendererText).Text = item.TotalNet.ToString("F2");
             }
 
-            var title = GeneralUtils.GetResourceByName("global_total_article_tab");
+            var title = LocalizedString.Instance["global_total_article_tab"];
             return Columns.CreateColumn(title, 6, RenderTotal);
         }
     }

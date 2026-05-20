@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Modals.Common;
@@ -39,7 +39,7 @@ namespace LogicPOS.UI.Components.POS
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("global_worksession_open_day"),
+                    Text = LocalizedString.Instance["global_worksession_open_day"],
                     Font = AppSettings.Instance.FontBaseDialogButton,
                     FontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_start_stop_worksession_period_day.png",
@@ -52,7 +52,7 @@ namespace LogicPOS.UI.Components.POS
                 new ButtonSettings
                 {
                     Name = "touchButton_Green",
-                    Text = GeneralUtils.GetResourceByName("pos_button_label_cashdrawer"),
+                    Text = LocalizedString.Instance["pos_button_label_cashdrawer"],
                     Font = AppSettings.Instance.FontBaseDialogButton,
                     FontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont,
                     Icon = AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_cashdrawer.png",

@@ -6,6 +6,7 @@ using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -46,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectTerminal_Clicked(object sender, EventArgs e)
         {
             var page = new TerminalsPage(this, PageOptions.SelectionPageOptions);
-            var selectModal = new EntitySelectionModal<Terminal>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
             selectModal.Destroy();
 

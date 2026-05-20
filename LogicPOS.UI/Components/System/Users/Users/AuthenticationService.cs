@@ -12,6 +12,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Users
 {
@@ -30,7 +31,7 @@ namespace LogicPOS.UI.Components.Users
             if(!UserHasPermission(UserProfilePermissions.Hardware.HARDWARE_DRAWER_OPEN))
             {
                 CustomAlerts.Information()
-                             .WithMessage(GeneralUtils.GetResourceByName("open_cash_draw_permissions"))
+                             .WithMessage(LocalizedString.Instance["open_cash_draw_permissions"])
                             .ShowAlert();
                  return;
             }

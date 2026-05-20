@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.POS
         private int SplittersNumber;
 
         public PaymentsModal(Window parent) : base(parent,
-                                                   GeneralUtils.GetResourceByName("window_title_dialog_payments"),
+                                                   LocalizedString.Instance["window_title_dialog_payments"],
                                                    new Size(633, 620),
                                                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
@@ -118,7 +119,7 @@ namespace LogicPOS.UI.Components.POS
         private bool SelectPaymentCondition()
         {
             var page = new PaymentConditionsPage(this, PageOptions.SelectionPageOptions);
-            var selectPaymentConditionModal = new EntitySelectionModal<PaymentCondition>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectPaymentConditionModal = new EntitySelectionModal<PaymentCondition>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentConditionModal.Run();
             var selectedPaymentCondition = page.SelectedEntity;
             selectPaymentConditionModal.Destroy();

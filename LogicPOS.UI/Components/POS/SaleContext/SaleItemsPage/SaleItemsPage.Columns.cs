@@ -1,10 +1,11 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
 using OxyPlot.Series;
 using System;
 using System.Windows.Forms;
 using Label = Gtk.Label;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -18,7 +19,7 @@ namespace LogicPOS.UI.Components.POS
                 (cell as CellRendererText).Text = item.Article.Designation;
             }
 
-            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_designation");
+            var title = LocalizedString.Instance["pos_ticketlist_label_designation"];
             var col = CreateColumn(title, RenderDesignation);
             col.MaxWidth = Convert.ToInt16(Theme.Columns.DesignationWidth) - 10;
             col.MinWidth = col.MaxWidth;
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.POS
                 (cell as CellRendererText).Xalign = 1.0F;
             }
 
-            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_price");
+            var title = LocalizedString.Instance["pos_ticketlist_label_price"];
             var col = CreateColumn(title, RenderPrice);
             col.MaxWidth = 65;
             col.MinWidth = col.MaxWidth;
@@ -51,7 +52,7 @@ namespace LogicPOS.UI.Components.POS
                 (cell as CellRendererText).Xalign = 1.0F;
             }
 
-            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_quantity");
+            var title = LocalizedString.Instance["pos_ticketlist_label_quantity"];
             var col = CreateColumn(title, RenderQuantity);
             col.MaxWidth = 55;
             col.MinWidth = col.MaxWidth;
@@ -68,7 +69,7 @@ namespace LogicPOS.UI.Components.POS
                 (cell as CellRendererText).Xalign = 1.0F;
             }
 
-            var title = GeneralUtils.GetResourceByName("pos_ticketlist_label_total");
+            var title = LocalizedString.Instance["pos_ticketlist_label_total"];
             var col =  CreateColumn(title, RenderTotal);
             col.MaxWidth = 75;
             col.MinWidth = col.MaxWidth;

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using Button = Gtk.Button;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -43,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle(PosOrder order)
         {
-            WindowSettings.Title.Text = string.Format(GeneralUtils.GetResourceByName("window_title_dialog_split_payment"), TitleNumber.ToString(), (order.TotalFinal / TitleNumber).ToString("F2")) + PreferenceParametersService.SystemCurrency;
+            WindowSettings.Title.Text = string.Format(LocalizedString.Instance["window_title_dialog_split_payment"], TitleNumber.ToString(), (order.TotalFinal / TitleNumber).ToString("F2")) + PreferenceParametersService.SystemCurrency;
         }
 
         private void UpdateSplitters()
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeButtons()
         {
             BtnAddSplitter = DesignButton(BtnAddSplitter, "touchButtonTableIncrementSplit_DialogActionArea",
-                                          GeneralUtils.GetResourceByName("global_add"),
+                                          LocalizedString.Instance["global_add"],
                                           AppSettings.Paths.Images + @"Icons\icon_pos_nav_new.png",
                                           AppSettings.Instance.SizeBaseDialogActionAreaButton);
             BtnAddSplitter.Sensitive= Splitters.Count < PreferenceParametersService.MaxAccountSplitterNumber;
@@ -74,7 +75,7 @@ namespace LogicPOS.UI.Components.Modals
 
 
             BtnRemoveSplitter = DesignButton(BtnRemoveSplitter, "touchButtonTableDecrementSplit_DialogActionArea",
-                                             GeneralUtils.GetResourceByName("global_remove"),
+                                             LocalizedString.Instance["global_remove"],
                                              AppSettings.Paths.Images + @"Icons\icon_pos_nav_delete.png",
                                              AppSettings.Instance.SizeBaseDialogActionAreaButton);
             BtnRemoveSplitter.Clicked += BtnRemoveSplitter_Clicked;

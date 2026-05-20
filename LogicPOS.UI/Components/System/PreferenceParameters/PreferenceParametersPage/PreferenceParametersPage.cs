@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public partial class PreferenceParametersPage : Page<PreferenceParameter>
@@ -105,7 +106,7 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             _entities.AddRange(parameters);
-            _entities.ForEach(p => p.ResourceStringValue = GeneralUtils.GetResourceByName(p.ResourceString));
+            _entities.ForEach(p => p.ResourceStringValue = LocalizedString.Instance[p.ResourceString]);
         }
 
         public override int RunModal(EntityEditionModalMode mode)

@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO.Ports;
 using System.Text;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Logic.Hardware
 {
@@ -39,7 +40,7 @@ namespace logicpos.Classes.Logic.Hardware
             }
             catch (Exception ex)
             {
-                var message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_initializing_weighing_balance"), TerminalService.Terminal.Designation, ex.Message);
+                var message = string.Format(LocalizedString.Instance["dialog_message_error_initializing_weighing_balance"], TerminalService.Terminal.Designation, ex.Message);
 
                 CustomAlerts.Error(LoginWindow.Instance)
                             .WithSize(new Size(500, 340))

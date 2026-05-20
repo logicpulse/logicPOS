@@ -11,6 +11,7 @@ using MediatR;
 using System.Collections.Generic;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public class HolidaysPage : Page<Holiday>
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = holiday.Month.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_month");
+            var title = LocalizedString.Instance["global_month"];
             return Columns.CreateColumn(title, 4, RenderMonth);
         }
 
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = holiday.Year.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_year");
+            var title = LocalizedString.Instance["global_year"];
             return Columns.CreateColumn(title, 3, RenderYear);
         }
 
@@ -72,7 +73,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = holiday.Day.ToString();
             }
 
-            var title = GeneralUtils.GetResourceByName("global_day");
+            var title = LocalizedString.Instance["global_day"];
             return Columns.CreateColumn(title, 2, RenderDay);
         }
 

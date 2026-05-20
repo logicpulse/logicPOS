@@ -1,4 +1,4 @@
-﻿using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.Utility;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -44,7 +45,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtExchangeRate()
         {
             TxtExchangeRate = new TextBox(this,
-                                              GeneralUtils.GetResourceByName("global_exchangerate"),
+                                              LocalizedString.Instance["global_exchangerate"],
                                               isRequired: true,
                                               isValidatable: true,
                                               regex: RegularExpressions.DecimalNumber,
@@ -59,7 +60,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(this,
-                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       LocalizedString.Instance["global_notes"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -69,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDateTime()
         {
             TxtDateTime = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_date"),
+                                          LocalizedString.Instance["global_date"],
                                           isRequired: true,
                                           isValidatable: true,
                                           regex: RegularExpressions.DateTime,
@@ -82,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtTotalPaid()
         {
             TxtTotalPaid = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_total_deliver"),
+                                          LocalizedString.Instance["global_total_deliver"],
                                           isRequired: true,
                                           isValidatable: true,
                                           regex: RegularExpressions.Money,
@@ -95,7 +96,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtPaymentMethod()
         {
             TxtPaymentMethod = new TextBox(this,
-                                               GeneralUtils.GetResourceByName("global_payment_method"),
+                                               LocalizedString.Instance["global_payment_method"],
                                                isRequired: true,
                                                isValidatable: false,
                                                includeSelectButton: true,
@@ -109,7 +110,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtCurrency()
         {
             TxtCurrency = new TextBox(this,
-                                          GeneralUtils.GetResourceByName("global_currency"),
+                                          LocalizedString.Instance["global_currency"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,

@@ -12,6 +12,7 @@ using MediatR;
 using System.Collections.Generic;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public class ArticleTypesPage : Page<ArticleType>
@@ -43,14 +44,14 @@ namespace LogicPOS.UI.Components.Pages
             void RenderHasPrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var articleType = (ArticleType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_true");
+                (cell as CellRendererText).Text = LocalizedString.Instance["global_treeview_true"];
                 if (articleType.HasPrice == false)
                 {
-                    (cell as CellRendererText).Text = GeneralUtils.GetResourceByName("global_treeview_false");
+                    (cell as CellRendererText).Text = LocalizedString.Instance["global_treeview_false"];
                 }
             }
 
-            var title = GeneralUtils.GetResourceByName("global_articletype_haveprice");
+            var title = LocalizedString.Instance["global_articletype_haveprice"];
             return Columns.CreateColumn(title, 2, RenderHasPrice);
         }
 

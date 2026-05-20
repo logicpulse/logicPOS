@@ -11,6 +11,7 @@ using MediatR;
 using System.Collections.Generic;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
 namespace LogicPOS.UI.Components.Pages
 {
     public class CurrenciesPage : Page<Currency>
@@ -64,7 +65,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = currency.Acronym;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_ConfigurationCurrency_Acronym");
+            var title = LocalizedString.Instance["global_ConfigurationCurrency_Acronym"];
             return Columns.CreateColumn(title, 2, RenderAcronym);
         }
 

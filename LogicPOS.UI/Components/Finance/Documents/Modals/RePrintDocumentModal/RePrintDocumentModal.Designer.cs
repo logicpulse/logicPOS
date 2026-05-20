@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -48,7 +49,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtMotive()
         {
             TxtMotive = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_reprint_original_motive"),
+                                       LocalizedString.Instance["global_reprint_original_motive"],
                                        isRequired: false,
                                        isValidatable:true,
                                        regex: "^(?!\\s)[A-Za-z0-9 ]+$",

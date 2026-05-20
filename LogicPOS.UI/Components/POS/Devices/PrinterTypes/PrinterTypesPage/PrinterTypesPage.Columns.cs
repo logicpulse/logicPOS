@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -12,10 +13,10 @@ namespace LogicPOS.UI.Components.Pages
             void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var printerType = (PrinterType)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = printerType.ThermalPrinter ? GeneralUtils.GetResourceByName("global_treeview_true") : GeneralUtils.GetResourceByName("global_treeview_false");
+                (cell as CellRendererText).Text = printerType.ThermalPrinter ? LocalizedString.Instance["global_treeview_true"] : LocalizedString.Instance["global_treeview_false"];
             }
 
-            var title = GeneralUtils.GetResourceByName("global_printer_thermal_printer");
+            var title = LocalizedString.Instance["global_printer_thermal_printer"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
     }

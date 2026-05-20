@@ -1,6 +1,7 @@
 ﻿using Gtk;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.Globalization;
 using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Pages
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.Name;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_customers");
+            var title = LocalizedString.Instance["global_customers"];
             return Columns.CreateColumn(title, 1, RenderValue);
         }
 
@@ -27,7 +28,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = customer.CardNumber;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_card_number");
+            var title = LocalizedString.Instance["global_card_number"];
             return Columns.CreateColumn(title, 3, RenderValue);
         }
 
@@ -39,7 +40,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = user.FiscalNumber;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_fiscal_number");
+            var title = LocalizedString.Instance["global_fiscal_number"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
 

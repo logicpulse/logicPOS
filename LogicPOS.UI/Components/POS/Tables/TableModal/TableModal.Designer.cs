@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 using LogicPOS.Api.Entities;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -21,7 +22,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializePlacesComboBox()
         {
             var places = GetPlaces();
-            var labelText = GeneralUtils.GetResourceByName("global_places");
+            var labelText = LocalizedString.Instance["global_places"];
             var currentPlace = _entity != null ? _entity.Place : null;
 
             _comboPlaces = new EntityComboBox<Place>(labelText,
@@ -58,8 +59,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

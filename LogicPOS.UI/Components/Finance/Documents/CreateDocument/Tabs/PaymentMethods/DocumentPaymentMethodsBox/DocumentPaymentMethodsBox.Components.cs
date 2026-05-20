@@ -1,6 +1,7 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Utility;
 using System.Collections.Generic;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
 {
@@ -12,6 +13,6 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument.Fields
         public Window SourceWindow { get; set; }
         public Label LabelTotal { get; set; }
 
-        public string FieldName => GeneralUtils.GetResourceByName("global_payment_method");
+        public string FieldName => LocalizedString.Instance["global_payment_method"];
     }
 }

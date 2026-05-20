@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.IO;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -143,7 +144,7 @@ namespace LogicPOS.UI.Components.Windows
                 CustomAlerts.Error(this)
                             .WithSize(new Size(500, 340))
                             .WithTitleResource("global_error")
-                            .WithMessage(string.Format(GeneralUtils.GetResourceByName("dialog_message_low_resolution_detected"), width, height))
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_low_resolution_detected"], width, height))
                             .ShowAlert();
 
                 Environment.Exit(0);

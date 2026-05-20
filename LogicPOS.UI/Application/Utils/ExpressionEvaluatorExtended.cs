@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
@@ -10,6 +10,7 @@ using LogicPOS.Utility;
 using Serilog;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos
 {
@@ -224,7 +225,7 @@ namespace logicpos
                                               .WithMessage($"Unsupported Resolution Detected: {AppSettings.Instance.AppScreenSize.Width}x{AppSettings.Instance.AppScreenSize.Height}")
                                               .WithMessageType(MessageType.Error)
                                               .WithButtonsType(ButtonsType.Close)
-                                              .WithTitleResource(GeneralUtils.GetResourceByName("dialog_message_operation_successfully"))
+                                              .WithTitleResource(LocalizedString.Instance["dialog_message_operation_successfully"])
                                               .ShowAlert();
                     //Utils.ShowMessageTouchUnsupportedResolutionDetectedAndExit(LoginWindow.Instance, AppSettings.Instance.AppScreenSize.Width, AppSettings.Instance.AppScreenSize.Height); :: dúvida na substituição ::LUCIANO
                 }

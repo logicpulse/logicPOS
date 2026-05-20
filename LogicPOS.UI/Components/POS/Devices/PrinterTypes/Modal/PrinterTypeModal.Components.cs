@@ -1,6 +1,7 @@
 using Gtk;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -10,6 +11,6 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtToken = TextBox.Simple("global_DialogConfigurationPrintersTypetoken", true);
-        private CheckButton _checkThermalPrinter = new CheckButton(GeneralUtils.GetResourceByName("global_printer_thermal_printer"));
+        private CheckButton _checkThermalPrinter = new CheckButton(LocalizedString.Instance["global_printer_thermal_printer"]);
     }
 }

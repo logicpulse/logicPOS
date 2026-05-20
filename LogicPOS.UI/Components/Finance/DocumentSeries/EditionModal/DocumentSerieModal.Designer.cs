@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Management.Instrumentation;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeBtnATSeriesComunicate()
         {
             _btnATSeriesComunicate = CreateIconButton("touchButton_Green",
-                                                       GeneralUtils.GetResourceByName("label_communicate_series"),
+                                                       LocalizedString.Instance["label_communicate_series"],
                                                        AppSettings.Paths.Images + @"Icons\icon_pos_nav_new.png");
             _btnATSeriesComunicate.Clicked += BtnATSeriesComunicate_Clicked;
 
@@ -64,7 +65,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var currentFiscalYear = FiscalYearsService.CurrentFiscalYear;
             var fiscalYears = new List<FiscalYear> { currentFiscalYear };
-            var labelText = GeneralUtils.GetResourceByName("global_fiscal_year");
+            var labelText = LocalizedString.Instance["global_fiscal_year"];
             var defaultFiscalYear = _entity != null ? _entity.FiscalYear : currentFiscalYear;
 
             _comboFiscalYears = new EntityComboBox<FiscalYear>(labelText,
@@ -91,7 +92,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeDocumentTypesComboBox()
         {
             var documentTypes = GetDocumentTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_documentfinance_type");
+            var labelText = LocalizedString.Instance["global_documentfinance_type"];
             var currentDocumentType = _entity != null ? _entity.DocumentType : null;
 
             _comboDocumentTypes = new EntityComboBox<DocumentType>(labelText,
@@ -146,8 +147,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private IconButtonWithText CreateIconButton(string name, string text, string icon)

@@ -10,6 +10,7 @@ using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public event Action<decimal> DiscountChanged;
 
         public CustomerTab(Window parent) : base(parent: parent,
-                                                               name: GeneralUtils.GetResourceByName("window_title_dialog_document_finance_page2"),
+                                                               name: LocalizedString.Instance["window_title_dialog_document_finance_page2"],
                                                                icon: AppSettings.Paths.Images + @"Icons/Dialogs/DocumentFinanceDialog/icon_pos_dialog_toolbar_2_customer.png")
         {
             Initialize();

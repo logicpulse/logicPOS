@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
 using LogicPOS.Utility;
 using System.Collections.Generic;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.Modals
@@ -19,7 +20,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtButtonName = TextBox.Simple("global_button_name");
-        private ImagePicker _imagePicker = new ImagePicker(GeneralUtils.GetResourceByName("global_button_image"));
+        private ImagePicker _imagePicker = new ImagePicker(LocalizedString.Instance["global_button_image"]);
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private EntityComboBox<ArticleFamily> _comboFamilies;
         private EntityComboBox<DiscountGroup> _comboDiscountGroups;
@@ -74,9 +75,9 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateDetails2Tab(), GeneralUtils.GetResourceByName("dialog_edit_articlesubfamily_tab2_label"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateDetails2Tab(), LocalizedString.Instance["dialog_edit_articlesubfamily_tab2_label"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()

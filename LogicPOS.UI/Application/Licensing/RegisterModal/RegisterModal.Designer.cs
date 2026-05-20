@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Licensing
 {
@@ -43,12 +44,12 @@ namespace LogicPOS.UI.Components.Licensing
             _hboxMain.PackStart(vboxMain, true, true, (uint)padding);
 
             //Pack VBoxMain : Welcome
-            Label labelWelcome = new Label(GeneralUtils.GetResourceByName("window_license_label_welcome"));
+            Label labelWelcome = new Label(LocalizedString.Instance["window_license_label_welcome"]);
             labelWelcome.SetAlignment(0.0F, 0.0F);
             labelWelcome.ModifyFont(FontDescription.FromString("Arial 9 bold"));
             vboxMain.PackStart(labelWelcome, false, false, (uint)padding);
             //Pack VBoxMain : Info
-            Label lableInfo = new Label(GeneralUtils.GetResourceByName("window_license_label_info"));
+            Label lableInfo = new Label(LocalizedString.Instance["window_license_label_info"]);
             lableInfo.WidthRequest = 630;
             lableInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             lableInfo.Wrap = true;
@@ -67,55 +68,55 @@ namespace LogicPOS.UI.Components.Licensing
             hboxInner.PackStart(vboxInnerRight, false, false, (uint)padding * 2);
 
             //VBoxInnerLeft 
-            Label labelInternetRegistration = new Label(GeneralUtils.GetResourceByName("window_license_label_internet_registration"));
+            Label labelInternetRegistration = new Label(LocalizedString.Instance["window_license_label_internet_registration"]);
             labelInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelInternetRegistration.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerLeft.PackStart(labelInternetRegistration, false, false, 0);
 
             //EntryBoxName
-            EntryBoxName = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_name"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
+            EntryBoxName = new EntryBoxValidation(this, LocalizedString.Instance["global_name"], KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxName.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxName.EntryValidation.Text = mockName;
             EntryBoxName.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxName, false, false, 0);
 
             //EntryBoxCompany
-            EntryBoxCompany = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_company"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
+            EntryBoxCompany = new EntryBoxValidation(this, LocalizedString.Instance["global_company"], KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxCompany.EntryValidation.Text = mockCompany;
             EntryBoxCompany.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxCompany.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxCompany, false, false, 0);
 
             //EntryFiscalNumber
-            EntryBoxFiscalNumber = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_fiscal_number"), KeyboardMode.Numeric, RegularExpressions.GetFiscalNumberRegexForCountry("XX"), true);
+            EntryBoxFiscalNumber = new EntryBoxValidation(this, LocalizedString.Instance["global_fiscal_number"], KeyboardMode.Numeric, RegularExpressions.GetFiscalNumberRegexForCountry("XX"), true);
             EntryBoxFiscalNumber.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxFiscalNumber.EntryValidation.Text = mockFiscalNumber;
             EntryBoxFiscalNumber.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxFiscalNumber, false, false, 0);
 
             //EntryBoxAddress
-            EntryBoxAddress = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_address"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
+            EntryBoxAddress = new EntryBoxValidation(this, LocalizedString.Instance["global_address"], KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, true);
             EntryBoxAddress.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxAddress.EntryValidation.Text = mockAddress;
             EntryBoxAddress.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxAddress, false, false, 0);
 
             //EntryBoxEmail
-            EntryBoxEmail = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_email"), KeyboardMode.AlfaNumeric, RegularExpressions.Email, true);
+            EntryBoxEmail = new EntryBoxValidation(this, LocalizedString.Instance["global_email"], KeyboardMode.AlfaNumeric, RegularExpressions.Email, true);
             EntryBoxEmail.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxEmail.EntryValidation.Text = mockEmail;
             EntryBoxEmail.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxEmail, false, false, 0);
 
             //EntryBoxPhone
-            EntryBoxPhone = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_phone"), KeyboardMode.AlfaNumeric, RegularExpressions.PhoneNumber, true);
+            EntryBoxPhone = new EntryBoxValidation(this, LocalizedString.Instance["global_phone"], KeyboardMode.AlfaNumeric, RegularExpressions.PhoneNumber, true);
             EntryBoxPhone.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             EntryBoxPhone.EntryValidation.Text = mockPhone;
             EntryBoxPhone.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(EntryBoxPhone, false, false, 0);
 
             //EntryBoxHardwareId
-            _entryBoxHardwareId = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_hardware_id"), KeyboardMode.None, RegularExpressions.AlfaNumericExtended, true);
+            _entryBoxHardwareId = new EntryBoxValidation(this, LocalizedString.Instance["global_hardware_id"], KeyboardMode.None, RegularExpressions.AlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
             _entryBoxHardwareId.EntryValidation.Sensitive = false;
@@ -123,27 +124,27 @@ namespace LogicPOS.UI.Components.Licensing
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 
             //EntryBoxSoftwareKey
-            _entryBoxSoftwareKey = new EntryBoxValidation(this, GeneralUtils.GetResourceByName("global_software_key"), KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, false);
+            _entryBoxSoftwareKey = new EntryBoxValidation(this, LocalizedString.Instance["global_software_key"], KeyboardMode.AlfaNumeric, RegularExpressions.AlfaNumericExtended, false);
             _entryBoxSoftwareKey.EntryValidation.ModifyFont(FontDescription.FromString("Courier 10"));
             _entryBoxSoftwareKey.EntryValidation.Text = mockSoftwareKey;
             _entryBoxSoftwareKey.EntryValidation.Changed += delegate { Validate(); };
             vboxInnerLeft.PackStart(_entryBoxSoftwareKey, false, false, 0);
 
             //VBoxInnerRight
-            Label labelWithoutInternetRegistration = new Label(GeneralUtils.GetResourceByName("window_license_label_without_internet_registration"));
+            Label labelWithoutInternetRegistration = new Label(LocalizedString.Instance["window_license_label_without_internet_registration"]);
             labelWithoutInternetRegistration.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetRegistration.ModifyFont(FontDescription.FromString("Arial 9"));
             vboxInnerRight.PackStart(labelWithoutInternetRegistration, false, false, 0);
 
             //Info
-            Label labelWithoutInternetContactInfo = new Label(GeneralUtils.GetResourceByName("window_license_label_without_internet_contact_info"));
+            Label labelWithoutInternetContactInfo = new Label(LocalizedString.Instance["window_license_label_without_internet_contact_info"]);
             labelWithoutInternetContactInfo.Wrap = true;
             labelWithoutInternetContactInfo.ModifyFont(FontDescription.FromString("Arial 9"));
             labelWithoutInternetContactInfo.SetAlignment(0.0F, 0.0F);
             vboxInnerRight.PackStart(labelWithoutInternetContactInfo, false, false, 0);
 
             //Company
-            Label labelWithoutInternetContactCompanyNameLabel = new Label(GeneralUtils.GetResourceByName("global_company"));
+            Label labelWithoutInternetContactCompanyNameLabel = new Label(LocalizedString.Instance["global_company"]);
             labelWithoutInternetContactCompanyNameLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyNameLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyNameLabel, false, false, (uint)padding * 2);
@@ -154,7 +155,7 @@ namespace LogicPOS.UI.Components.Licensing
 
             //Phone
             string[] primaryPhones = ("+351 233 042 347 / +351 910 287 029 / +351 800 180 500").Split(new string[] { " / " }, StringSplitOptions.None);
-            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(GeneralUtils.GetResourceByName("global_phone"));
+            Label labelWithoutInternetContactCompanyPhoneLabel = new Label(LocalizedString.Instance["global_phone"]);
             labelWithoutInternetContactCompanyPhoneLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyPhoneLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneLabel, false, false, (uint)padding * 2);
@@ -164,7 +165,7 @@ namespace LogicPOS.UI.Components.Licensing
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyPhoneValue, false, false, 0);
 
             //Website
-            Label labelWithoutInternetContactCompanyWebLabel = new Label(GeneralUtils.GetResourceByName("global_website"));
+            Label labelWithoutInternetContactCompanyWebLabel = new Label(LocalizedString.Instance["global_website"]);
             labelWithoutInternetContactCompanyWebLabel.SetAlignment(0.0F, 0.0F);
             labelWithoutInternetContactCompanyWebLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebLabel, false, false, (uint)padding * 2);
@@ -174,7 +175,7 @@ namespace LogicPOS.UI.Components.Licensing
             vboxInnerRight.PackStart(labelWithoutInternetContactCompanyWebValue, false, false, 0);
 
             //Country
-            Label labelCountryLabel = new Label(GeneralUtils.GetResourceByName("global_country"));
+            Label labelCountryLabel = new Label(LocalizedString.Instance["global_country"]);
             labelCountryLabel.SetAlignment(0.0F, 0.0F);
             labelCountryLabel.ModifyFont(FontDescription.FromString("Arial 10 bold"));
             vboxInnerRight.PackStart(labelCountryLabel, false, false, (uint)padding * 2);

@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using Serilog;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -66,7 +67,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
-            var selectCurrencyModal = new EntitySelectionModal<Api.Entities.Currency>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCurrencyModal = new EntitySelectionModal<Api.Entities.Currency>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCurrencyModal.Run();
             selectCurrencyModal.Destroy();
 
@@ -81,7 +82,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
         {
             var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
-            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentMethodModal.Run();
             selectPaymentMethodModal.Destroy();
 

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
@@ -7,6 +7,7 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Widgets
 {
@@ -176,11 +177,11 @@ namespace logicpos.Classes.Gui.Gtk.Widgets
                 _label = new Label(pLabelText);
                 _label.ModifyFont(fontDescriptionLabel);
                 _label.SetAlignment(0, 2.5F);
-                _label2 = new Label(GeneralUtils.GetResourceByName("global_article_code") + "   ");
+                _label2 = new Label(LocalizedString.Instance["global_article_code"] + "   ");
                 _label2.ModifyFont(fontDescriptionLabel);
                 _label2.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label2.SetAlignment(0, 0.5F);
-                _label3 = new Label("                                                         " + GeneralUtils.GetResourceByName("pos_ticketlist_label_quantity"));
+                _label3 = new Label("                                                         " + LocalizedString.Instance["pos_ticketlist_label_quantity"]);
                 _label3.ModifyFont(fontDescriptionLabel);
                 _label3.ModifyBg(StateType.Normal, validLabel.ToGdkColor());
                 _label3.SetAlignment(0, 0.5F);

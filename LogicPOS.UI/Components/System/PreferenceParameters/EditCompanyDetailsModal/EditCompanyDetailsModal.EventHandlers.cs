@@ -7,6 +7,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using System;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -42,7 +43,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectCountry_Clicked(object sender, EventArgs e)
         {
             var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
-            var selectCountryModal = new EntitySelectionModal<Country>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCountryModal = new EntitySelectionModal<Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCountryModal.Run();
             selectCountryModal.Destroy();
 
@@ -56,7 +57,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
         {
             var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
-            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectCurrencyModal.Run();
             selectCurrencyModal.Destroy();
 

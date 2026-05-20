@@ -11,7 +11,11 @@ using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Buttons;
+using LogicPOS.Utility;
 using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -22,6 +26,7 @@ namespace LogicPOS.UI.Components.Pages
     {
         private const string ProvidersOnlyOption = "providers-only";
         private const string CustomersOnlyOption = "customers-only";
+        private IconButtonWithText _btnRechargeCard;
         public static readonly Dictionary<string, string> SupplierSelectionOptions = new Dictionary<string, string> { { "selection-page", "true" }, { ProvidersOnlyOption, "true" } };
         public static readonly Dictionary<string, string> CustomerSelectionOptions = new Dictionary<string, string> { { "selection-page", "true" }, { CustomersOnlyOption, "true" } };
 
@@ -30,6 +35,50 @@ namespace LogicPOS.UI.Components.Pages
         public CustomersPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
         {
             DisableCommonFilterButtons();
+            InitializeRechargeCardButton();
+        }
+
+        private void InitializeRechargeCardButton()
+        {
+            if (_btnRechargeCard != null)
+            {
+                return;
+            }
+
+            _btnRechargeCard = IconButtonWithText.Create(
+                "touchButtonRechargeCustomerCard_PageNavigator",
+                LocalizedString.Instance["pos_button_label_payment_type_customer_card"],
+                @"Icons/icon_pos_nav_update.png");
+
+            _btnRechargeCard.Clicked += BtnRechargeCard_Clicked;
+            Navigator.ExtraButtonSpace.PackStart(_btnRechargeCard, false, false, 0);
+        }
+
+        private void BtnRechargeCard_Clicked(object sender, EventArgs e)
+        {
+            if (SelectedEntity == null)
+            {
+                return;
+            }
+
+            var customer = CustomersService.GetById(SelectedEntity.Id);
+
+            if (CustomersService.CanRechargeCard(customer) == false)
+            {
+                CustomAlerts.Warning(SourceWindow)
+                    .WithMessage(LocalizedString.Instance["dialog_message_invalid_customer_card_detected"])
+                    .ShowAlert();
+                return;
+            }
+
+            var modal = new RechargeCustomerCardModal(SourceWindow, customer);
+            var response = (ResponseType)modal.Run();
+            modal.Destroy();
+
+            if (response == ResponseType.Ok)
+            {
+                Refresh();
+            }
         }
 
         protected override void LoadEntities()
@@ -117,6 +166,12 @@ namespace LogicPOS.UI.Components.Pages
             this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_DELETE);
             this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_VIEW);
             this.Navigator.BtnShowHiddenData.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_VIEW);
+
+            InitializeRechargeCardButton();
+            
+            _btnRechargeCard.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Customers.BACKOFFICE_MAN_CUSTOMER_EDIT)
+                && SelectedEntity != null
+                && CustomersService.CanRechargeCard(SelectedEntity);
         }
 
         protected override void InitializeFilter()

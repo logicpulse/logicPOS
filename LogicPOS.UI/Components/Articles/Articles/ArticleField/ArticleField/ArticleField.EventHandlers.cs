@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -14,7 +15,7 @@ namespace LogicPOS.UI.Components.InputFields
         private void BtnSelect_Clicked(object sender, EventArgs e)
         {
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
-            var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, GeneralUtils.GetResourceByName("window_title_dialog_select_record"));
+            var selectArticleModal = new EntitySelectionModal<ArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectArticleModal.Run();
             selectArticleModal.Destroy();
 

@@ -6,6 +6,7 @@ using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -22,7 +23,7 @@ namespace LogicPOS.UI.Components.Pages
         {
             if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(SelectedEntity.Id))
             {
-                var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), SelectedEntity.Number);
+                var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], SelectedEntity.Number);
                 CustomAlerts.Warning()
                              .WithMessage(message)
                              .ShowAlert();

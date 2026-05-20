@@ -5,10 +5,15 @@ using LogicPOS.Api.Features.Customers.HasDocumentsAssociated;
 using LogicPOS.Api.Features.Customers.Types.GetAllCustomerTypes;
 using LogicPOS.Api.Features.Customers.UpdateCustomer;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using Gtk;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Finance.Agt;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.System.Users.Permissions;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Settings;
 using System;
 using System.Collections.Generic;
 
@@ -27,6 +32,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtCardCredit.Entry.Sensitive = false;
         }
 
+      
         private void AddFillCustomerDataBtn()
         {
             BtnFillCustomerData.Clicked += BtnFillCustomerData_Clicked;

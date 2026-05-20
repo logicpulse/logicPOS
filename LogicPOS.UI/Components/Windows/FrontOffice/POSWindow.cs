@@ -246,7 +246,7 @@ namespace LogicPOS.UI.Components.Windows
                 labelTotalTableLabelAlignmentX -= 20;
             }
             //EventBoxStatusBar2:vboxTotalTable:LabelTotalTableLabel
-            Label labelTotalTableLabel = new Label(GeneralUtils.GetResourceByName("global_total_price_to_pay"));
+            Label labelTotalTableLabel = new Label(LocalizedString.Instance["global_total_price_to_pay"]);
             labelTotalTableLabel.ModifyFont(labelTotalTableLabelFont);
             labelTotalTableLabel.ModifyFg(StateType.Normal, labelTotalTableLabelFontColor);
             labelTotalTableLabel.SetAlignment(labelTotalTableLabelAlignmentX, 0.5F);

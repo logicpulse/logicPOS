@@ -88,7 +88,7 @@ namespace LogicPOS.UI.Alerts
                                                         string message)
         {
             Error(parent).WithTitleResource("global_error")
-                .WithMessageResource(string.Format(GeneralUtils.GetResourceByName("dialog_message_error_printing_ticket"), printerName, printerNetworkName, message))
+                .WithMessageResource(string.Format(LocalizedString.Instance["dialog_message_error_printing_ticket"], printerName, printerNetworkName, message))
                 .WithSize(new System.Drawing.Size(800, 400))
                 .ShowAlert();
         }
@@ -137,9 +137,9 @@ namespace LogicPOS.UI.Alerts
                                                                                          Window parent = null)
         {
             var message = string.Format(
-                    GeneralUtils.GetResourceByName("dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer")
-                    , $"{GeneralUtils.GetResourceByName("global_total")}: {currentTotal}"
-                    , $"{GeneralUtils.GetResourceByName("global_maximum")}: {maxTotal}");
+                    LocalizedString.Instance["dialog_message_value_exceed_simplified_invoice_for_final_or_annonymous_consumer"]
+                    , $"{LocalizedString.Instance["global_total"]}: {currentTotal}"
+                    , $"{LocalizedString.Instance["global_maximum"]}: {maxTotal}");
 
             Warning(parent)
                 .WithTitleResource("global_warning")
@@ -166,7 +166,7 @@ namespace LogicPOS.UI.Alerts
 
         public static void ShowUnsupportedResolutionErrorAlert(Window parentWindow, int width, int height)
         {
-            string message = string.Format(GeneralUtils.GetResourceByName("app_error_unsupported_resolution_detected"), width, height);
+            string message = string.Format(LocalizedString.Instance["app_error_unsupported_resolution_detected"], width, height);
 
             Error(parentWindow)
                 .WithTitleResource("global_error")
@@ -180,7 +180,7 @@ namespace LogicPOS.UI.Alerts
                                                                                  decimal currentQuantity,
                                                                                  decimal maxPossibleQuantity)
         {
-            string message = string.Format(GeneralUtils.GetResourceByName("dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"),
+            string message = string.Format(LocalizedString.Instance["dialog_message_error_try_to_issue_a_credit_note_exceeding_source_document_article_quantities"],
                                            currentQuantity,
                                            maxPossibleQuantity);
 
@@ -196,7 +196,7 @@ namespace LogicPOS.UI.Alerts
             Error(parentWindow)
                 .WithSize(new Size(500, 240))
                 .WithTitleResource("global_error")
-                .WithMessage($"{GeneralUtils.GetResourceByName("app_error_contact_support")}\n\n{additionalInformation}")
+                .WithMessage($"{LocalizedString.Instance["app_error_contact_support"]}\n\n{additionalInformation}")
                 .ShowAlert();
         }
 

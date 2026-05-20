@@ -18,6 +18,7 @@ using LogicPOS.Utility;
 using MediatR;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components
 {
@@ -93,7 +94,7 @@ namespace LogicPOS.UI.Components
             //Event
 
             //Label Status
-            _labelStatus = new Label(GeneralUtils.GetResourceByName("pos_pinpad_message_type_password"));
+            _labelStatus = new Label(LocalizedString.Instance["pos_pinpad_message_type_password"]);
             _labelStatus.ModifyFont(Pango.FontDescription.FromString(StatusLabelFont));
             _labelStatus.ModifyFg(StateType.Normal, labelStatusFontColor.ToGdkColor());
             _labelStatus.SetAlignment(0.5F, 0.5f);
@@ -124,7 +125,7 @@ namespace LogicPOS.UI.Components
             BtnOk = new TextButton(new ButtonSettings
             {
                 Name = "touchButtonKeyOK_Green",
-                Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok"),
+                Text = LocalizedString.Instance["widget_pospinpad_ok"],
                 Font = Font,
                 FontColor = ButtonFontColor,
                 ButtonSize = _btnSize
@@ -139,7 +140,7 @@ namespace LogicPOS.UI.Components
                    new ButtonSettings
                    {
                        Name = "touchButtonKeyQuit_DarkGrey",
-                       Text = GeneralUtils.GetResourceByName("global_quit_title"),
+                       Text = LocalizedString.Instance["global_quit_title"],
                        Font = Font,
                        FontColor = ButtonFontColor,
                        ButtonSize = _btnSize
@@ -315,7 +316,7 @@ namespace LogicPOS.UI.Components
                 }
 
                 TxtPin.ModifyText(StateType.Normal, Color.Red.ToGdkColor());
-                TxtPin.Text = GeneralUtils.GetResourceByName("status_message_pin_error");
+                TxtPin.Text = LocalizedString.Instance["status_message_pin_error"];
                 TxtPin.Visibility = true;
                 _entryPinShowStatus = true;
                 return false;
@@ -346,20 +347,20 @@ namespace LogicPOS.UI.Components
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
-                    _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_password");
-                    BtnOk.ButtonLabel.Text = !_notLoginAuth ? GeneralUtils.GetResourceByName("widget_pospinpad_login") : GeneralUtils.GetResourceByName("widget_pospinpad_ok");
+                    _labelStatus.Text = LocalizedString.Instance["pos_pinpad_message_type_password"];
+                    BtnOk.ButtonLabel.Text = !_notLoginAuth ? LocalizedString.Instance["widget_pospinpad_login"] : LocalizedString.Instance["widget_pospinpad_ok"];
                     break;
                 case NumberPadPinMode.PasswordOld:
-                    _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_old_password");
-                    BtnOk.ButtonLabel.Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok");
+                    _labelStatus.Text = LocalizedString.Instance["pos_pinpad_message_type_old_password"];
+                    BtnOk.ButtonLabel.Text = LocalizedString.Instance["widget_pospinpad_ok"];
                     break;
                 case NumberPadPinMode.PasswordNew:
-                    _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_new_password");
-                    BtnOk.ButtonLabel.Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok");
+                    _labelStatus.Text = LocalizedString.Instance["pos_pinpad_message_type_new_password"];
+                    BtnOk.ButtonLabel.Text = LocalizedString.Instance["widget_pospinpad_ok"];
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    _labelStatus.Text = GeneralUtils.GetResourceByName("pos_pinpad_message_type_new_password_confirm");
-                    BtnOk.ButtonLabel.Text = GeneralUtils.GetResourceByName("widget_pospinpad_ok");
+                    _labelStatus.Text = LocalizedString.Instance["pos_pinpad_message_type_new_password_confirm"];
+                    BtnOk.ButtonLabel.Text = LocalizedString.Instance["widget_pospinpad_ok"];
                     break;
                 default:
                     break;

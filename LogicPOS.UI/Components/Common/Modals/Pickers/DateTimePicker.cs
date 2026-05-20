@@ -5,6 +5,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
 using System.Drawing;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Modals
         public Calendar Calendar { get; set; } = new Calendar();
 
         public DateTimePicker(Window parent) : base(parent,
-                                                    GeneralUtils.GetResourceByName("window_title_dialog_datepicker"),
+                                                    LocalizedString.Instance["window_title_dialog_datepicker"],
                                                     new Size(600, 373),
                                                     AppSettings.Paths.Images + @"Icons\Windows\icon_window_date_picker.png")
         {

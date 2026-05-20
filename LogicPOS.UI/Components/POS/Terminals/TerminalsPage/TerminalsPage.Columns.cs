@@ -1,7 +1,8 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Pages
                 (cell as CellRendererText).Text = terminal.HardwareId;
             }
 
-            var title = GeneralUtils.GetResourceByName("global_hardware_id");
+            var title = LocalizedString.Instance["global_hardware_id"];
             return Columns.CreateColumn(title, 2, RenderValue);
         }
     }

@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using logicpos.Classes.Logic.Others;
@@ -18,6 +18,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Net;
 using System.Text.RegularExpressions;
+using LogicPOS.Globalization;
 
 namespace logicpos
 {
@@ -43,7 +44,7 @@ namespace logicpos
 
         public static ResponseText GetInputText(Window parentWindow, DialogFlags pDialogFlags, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
         {
-            return GetInputText(parentWindow, pDialogFlags, GeneralUtils.GetResourceByName("window_title_default_input_text_dialog"), pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
+            return GetInputText(parentWindow, pDialogFlags, LocalizedString.Instance["window_title_default_input_text_dialog"], pWindowIcon, pEntryLabel, pDefaultValue, pRule, pRequired);
         }
 
         public static ResponseText GetInputText(Window parentWindow, DialogFlags pDialogFlags, string pWindowTitle, string pWindowIcon, string pEntryLabel, string pDefaultValue, string pRule, bool pRequired)
@@ -331,7 +332,7 @@ namespace logicpos
             Label labelBoot;
 
 
-            labelBoot = new Label(GeneralUtils.GetResourceByName("global_load"));
+            labelBoot = new Label(LocalizedString.Default["global_load"]);
 
             if (backupProcess != string.Empty)
             {

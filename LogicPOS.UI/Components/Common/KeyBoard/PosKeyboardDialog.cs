@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -8,6 +8,7 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Globalization;
+using LogicPOS.Globalization;
 
 namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
 {
@@ -39,7 +40,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
             string pValidationRule) : base(parentWindow, pDialogFlags)
         {
             //Init Local Vars
-            string windowTitle = GeneralUtils.GetResourceByName("window_title_dialog_virtual_keyboard");
+            string windowTitle = LocalizedString.Instance["window_title_dialog_virtual_keyboard"];
             Size windowSize = new Size(916, 358);
             string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_keyboard.png";
             string fileKeyboardXML = System.IO.Path.Combine(AppSettings.Paths.Keyboards, @"163.xml");

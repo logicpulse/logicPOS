@@ -1,8 +1,9 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.Utility;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.Pages
@@ -26,10 +27,10 @@ namespace LogicPOS.UI.Components.Pages
 			void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
 			{
 				var article = (ArticleViewModel)model.GetValue(iter, 0);
-				(cell as CellRendererText).Text = article.IsComposed ? GeneralUtils.GetResourceByName("global_treeview_true") : GeneralUtils.GetResourceByName("global_treeview_false");
+				(cell as CellRendererText).Text = article.IsComposed ? LocalizedString.Instance["global_treeview_true"] : LocalizedString.Instance["global_treeview_false"];
 			}
 
-			var title = GeneralUtils.GetResourceByName("global_composite_article");
+			var title = LocalizedString.Instance["global_composite_article"];
 			return Columns.CreateColumn(title, 3, RenderMonth);
 		}
 
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.Pages
 				(cell as CellRendererText).Text = article.Family;
 			}
 
-			var title = GeneralUtils.GetResourceByName("global_article_family");
+			var title = LocalizedString.Instance["global_article_family"];
 			return Columns.CreateColumn(title, 4, RenderMonth);
 		}
 
@@ -53,7 +54,7 @@ namespace LogicPOS.UI.Components.Pages
 				(cell as CellRendererText).Text = article.Subfamily;
 			}
 
-			var title = GeneralUtils.GetResourceByName("global_article_subfamily");
+			var title = LocalizedString.Instance["global_article_subfamily"];
 			return Columns.CreateColumn(title, 5, RenderMonth);
 		}
 
@@ -65,7 +66,7 @@ namespace LogicPOS.UI.Components.Pages
 				(cell as CellRendererText).Text = (_articleStocks[articleId]).ToString("0.00");
 			}
 
-			var title = GeneralUtils.GetResourceByName("global_total_stock");
+			var title = LocalizedString.Instance["global_total_stock"];
 			return Columns.CreateColumn(title, 2, RenderTotalStock);
 		}
 
@@ -77,7 +78,7 @@ namespace LogicPOS.UI.Components.Pages
 				(cell as CellRendererText).Text = article.Type;
 			}
 
-			var title = GeneralUtils.GetResourceByName("global_article_type");
+			var title = LocalizedString.Instance["global_article_type"];
 			return Columns.CreateColumn(title, 6, RenderMonth);
 		}
 

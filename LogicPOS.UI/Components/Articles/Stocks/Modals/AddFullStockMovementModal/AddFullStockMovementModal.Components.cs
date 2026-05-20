@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Enums;
@@ -9,6 +9,7 @@ using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -36,7 +37,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtSupplier()
         {
             TxtSupplier = new TextBox(WindowSettings.Source,
-                                          GeneralUtils.GetResourceByName("global_supplier"),
+                                          LocalizedString.Instance["global_supplier"],
                                           isRequired: true,
                                           isValidatable: false,
                                           includeSelectButton: true,
@@ -60,7 +61,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtNotes()
         {
             TxtNotes = new TextBox(WindowSettings.Source,
-                                       GeneralUtils.GetResourceByName("global_notes"),
+                                       LocalizedString.Instance["global_notes"],
                                        isRequired: false,
                                        isValidatable: false,
                                        includeSelectButton: false,
@@ -71,7 +72,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDocumnetNumber()
         {
             TxtDocumnetNumber = new TextBox(WindowSettings.Source,
-                                            GeneralUtils.GetResourceByName("global_document_number"),
+                                            LocalizedString.Instance["global_document_number"],
                                             isRequired: false,
                                             isValidatable: false,
                                             includeSelectButton: true,
@@ -84,7 +85,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeTxtDate()
         {
             TxtDate = new TextBox(this,
-                                      GeneralUtils.GetResourceByName("global_date"),
+                                      LocalizedString.Instance["global_date"],
                                       isRequired: true,
                                       isValidatable: false,
                                       includeSelectButton: true,

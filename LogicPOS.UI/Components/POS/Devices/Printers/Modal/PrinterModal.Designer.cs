@@ -7,6 +7,7 @@ using LogicPOS.Api.Entities;
 using System;
 using System.Drawing.Printing;
 using System.CodeDom;
+using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.Modals
@@ -25,7 +26,7 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializePrinterTypesComboBox()
         {
             var printerTypes = GetPrinterTypes();
-            var labelText = GeneralUtils.GetResourceByName("global_printer_type");
+            var labelText = LocalizedString.Instance["global_printer_type"];
             var currentPrinterType = _entity != null ? _entity.Type : null;
 
             _comboPrinterTypes = new EntityComboBox<PrinterType>(labelText,
@@ -63,8 +64,8 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
-            yield return (CreateDetailsTab(), GeneralUtils.GetResourceByName("global_record_main_detail"));
-            yield return (CreateNotesTab(), GeneralUtils.GetResourceByName("global_notes"));
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
         }
 
         private VBox CreateDetailsTab()
@@ -136,7 +137,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private Label CreateDesignationLabel(string labelResourceName)
                 {
-                var label = new Label(GeneralUtils.GetResourceByName(labelResourceName));
+                var label = new Label(LocalizedString.Instance[labelResourceName]);
                 label.SetAlignment(0.0F, 0.0F);
                 return label;
             }

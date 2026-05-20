@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.POS
             ScrolledWindow scrolledWindow = new ScrolledWindow();
             scrolledWindow.SetPolicy(PolicyType.Never, PolicyType.Always);
 
-            LabelTotal = new Label(GeneralUtils.GetResourceByName("global_total_ticket"));
+            LabelTotal = new Label(LocalizedString.Instance["global_total_ticket"]);
             LabelTotal.ModifyFont(labelLabelTotalFont);
             LabelTotal.ModifyFg(StateType.Normal, labelLabelTotalFontColor);
             LabelTotal.SetAlignment(labelLabelTotalAlignmentX, 0.0F);

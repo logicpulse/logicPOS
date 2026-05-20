@@ -15,6 +15,7 @@ using LogicPOS.Utility;
 using System.Drawing;
 using System.Linq;
 using DocumentDetail = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -26,7 +27,7 @@ namespace LogicPOS.UI.Components.Modals
         public AddArticleModal(Window parent,
                                DocumentDetailModalMode mode,
                                DocumentDetail detail = null) : base(parent,
-                                                     GeneralUtils.GetResourceByName("global_insert_articles"),
+                                                     LocalizedString.Instance["global_insert_articles"],
                                                      new Size(900, 360),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_finance_article.png")
         {

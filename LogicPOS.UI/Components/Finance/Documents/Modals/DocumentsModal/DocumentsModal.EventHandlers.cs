@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
 using System.Linq;
+using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -121,7 +122,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id))
                 {
-                    var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), Page.SelectedEntity.Number);
+                    var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], Page.SelectedEntity.Number);
                     CustomAlerts.Warning(this)
                                  .WithMessage(message)
                                  .ShowAlert();
@@ -217,7 +218,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && !printer.Type.ThermalPrinter)
             {
-                var message = string.Format(GeneralUtils.GetResourceByName("window_dialog_cant_open_document"), Page.SelectedEntity.Number);
+                var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], Page.SelectedEntity.Number);
                 CustomAlerts.Warning(this)
                             .WithMessage(message)
                             .ShowAlert();
