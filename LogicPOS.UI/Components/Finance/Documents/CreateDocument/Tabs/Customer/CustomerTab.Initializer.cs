@@ -131,6 +131,10 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                             isValidatable: false,
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true);
+            TxtCardNumber.WithAutoCompletion(CustomersService.CardNumberAutocompleteLines, id => CustomersService.GetById(id));
+            TxtCardNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtCardNumber.Entry.Activated += OnTxtCardNumberEnterPressed;
+            TxtCardNumber.Entry.Changed += TxtCardNumber_Changed;
         }
 
         private void InitializeTxtFiscalNumber()
@@ -142,8 +146,8 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
-
-            var customers = CustomersService.GetAllCustomers().Select(c => (c as object, c.FiscalNumber)).ToList();
+            
+            var customers = CustomersService.GetAllCustomers().Select(c => (c as object, c.Name)).ToList();
             TxtFiscalNumber.WithAutoCompletion(CustomersService.FiscalNumberAutocompleteLines, id => CustomersService.GetById(id));
             TxtFiscalNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtFiscalNumber.Entry.Changed += TxtFiscalNumber_Changed;

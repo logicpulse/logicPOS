@@ -103,5 +103,29 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                     .ShowAlert();
             }
         }
+
+        private void TxtCardNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCardNumber.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void OnTxtCardNumberEnterPressed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtCardNumber.Text))
+            {
+                var customer = CustomersService.Customers.FirstOrDefault(c => c.CardNumber == TxtCardNumber.Text);
+                if (customer != null)
+                {
+                    SelectCustomer(customer);
+                }
+                else
+                {
+                    TxtCardNumber.Clear();
+                }
+            }
+        }
     }
 }

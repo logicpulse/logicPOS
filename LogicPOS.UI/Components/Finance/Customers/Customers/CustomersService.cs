@@ -49,6 +49,12 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
             Name = c.FiscalNumber
         }).ToList();
 
+        public static List<AutoCompleteLine> CardNumberAutocompleteLines => GetAllCustomers().Where(c => c.CardNumber != null).Select(c => new AutoCompleteLine
+        {
+            Id = c.Id,
+            Name = c.CardNumber
+        }).ToList();
+
         public static Customer GetByFiscalNumber(string fiscalNumber)
         {
             GetCustomerQuery query = new GetCustomerQuery(fiscalNumber);

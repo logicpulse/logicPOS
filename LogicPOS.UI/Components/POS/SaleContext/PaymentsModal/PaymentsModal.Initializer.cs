@@ -148,6 +148,11 @@ namespace LogicPOS.UI.Components.POS
                                             includeSelectButton: false,
                                             includeKeyBoardButton: true,
                                           includeClearButton: false);
+
+            TxtCardNumber.WithAutoCompletion(CustomersService.CardNumberAutocompleteLines, id => CustomersService.GetById(id));
+            TxtCardNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
+            TxtCardNumber.Entry.Changed+= TxtCardNumber_Changed;
+            TxtCardNumber.Entry.Activated += OnTxtCardNumberEnterPressed;
         }
 
         private void InitializeTxtFiscalNumber()
