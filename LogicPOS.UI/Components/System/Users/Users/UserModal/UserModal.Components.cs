@@ -1,8 +1,6 @@
-using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
-using LogicPOS.Utility;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -11,6 +9,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtOrder = TextBox.CreateOrderField();
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtName = TextBox.Simple("global_name", true);
+        private TextBox _txtLogin = TextBox.Simple("global_login", true,true,RegularExpressions.AlphaNumeric);
         private EntityComboBox<UserProfile> _comboProfiles;
         private EntityComboBox<CommissionGroup> _comboCommissionGroups;
         private TextBox _txtContractDate = TextBox.Simple("global_contract_date");

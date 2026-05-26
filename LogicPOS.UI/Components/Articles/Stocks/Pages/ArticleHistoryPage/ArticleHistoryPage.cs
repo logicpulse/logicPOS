@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
+using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.DeleteWarehouseArticle;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.UI.Components.Articles.Stocks.Modals.Filters;
 using LogicPOS.UI.Components.Modals;
@@ -51,7 +52,6 @@ namespace LogicPOS.UI.Components.Pages
         private void RemoveForbiddenButtons()
         {
             Navigator.RightButtons.Remove(Navigator.BtnView);
-            Navigator.RightButtons.Remove(Navigator.BtnDelete);
             Navigator.RightButtons.Remove(Navigator.BtnInsert);
             Navigator.ExtraButtonSpace.Remove(Navigator.BtnApply);
             Navigator.ExtraButtonSpace.Remove(Navigator.BtnShowHiddenData);
@@ -91,7 +91,10 @@ namespace LogicPOS.UI.Components.Pages
             return response;
         }
 
-        protected override DeleteCommand GetDeleteCommand() => null;
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return SelectedEntity == null ? null : new DeleteWarehouseArticleCommand(SelectedEntity.Id);
+        }
 
         protected override void InitializeSort()
         {

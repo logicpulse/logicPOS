@@ -11,7 +11,7 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class UserModal
     {
-        public override Size ModalSize => new Size(500, 460);
+        public override Size ModalSize => new Size(500, 500);
         public override string ModalTitleResourceName => "window_title_edit_user";
 
         protected override void Initialize()
@@ -49,6 +49,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtOrder.Entry);
             SensitiveFields.Add(_txtCode.Entry);
             SensitiveFields.Add(_txtName.Entry);
+            SensitiveFields.Add(_txtLogin.Entry);
             SensitiveFields.Add(_comboProfiles.ComboBox);
             SensitiveFields.Add(_comboCommissionGroups.ComboBox);
             SensitiveFields.Add(_txtContractDate.Entry);
@@ -72,6 +73,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override void AddValidatableFields()
         {
             ValidatableFields.Add(_txtName);
+            ValidatableFields.Add(_txtLogin);
             ValidatableFields.Add(_comboProfiles);
 
             if (_modalMode == EntityEditionModalMode.Update)
@@ -100,6 +102,7 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             detailsTab.PackStart(_txtName.Component, false, false, 0);
+            detailsTab.PackStart(_txtLogin.Component, false, false, 0);
             detailsTab.PackStart(_comboProfiles.Component, false, false, 0);
             detailsTab.PackStart(_comboCommissionGroups.Component, false, false, 0);
             detailsTab.PackStart(_txtContractDate.Component, false, false, 0);

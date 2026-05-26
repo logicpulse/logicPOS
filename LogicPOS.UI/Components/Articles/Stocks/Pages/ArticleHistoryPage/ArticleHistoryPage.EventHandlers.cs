@@ -1,4 +1,5 @@
 using Gtk;
+using LogicPOS.Api.Enums;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Articles.Stocks.UniqueArticles.GenerateBarcodeLabelPdf;
@@ -107,6 +108,12 @@ namespace LogicPOS.UI.Components.Pages
         {
             this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_ARTICLEWAREHOUSE_CREATE);
             this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_ARTICLEWAREHOUSE_EDIT);
+
+            var canDeleteSelectedArticle = SelectedEntity?.Status == ArticleSerialNumberStatus.Available
+                && Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_ARTICLEWAREHOUSE_DELETE);
+
+            this.Navigator.BtnDelete.Visible = canDeleteSelectedArticle;
+            this.Navigator.BtnDelete.Sensitive = canDeleteSelectedArticle;
         }
 
         private void CheckBox_Clicked(object o, ToggledArgs args)

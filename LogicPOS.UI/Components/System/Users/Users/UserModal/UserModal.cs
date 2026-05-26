@@ -17,6 +17,7 @@ namespace LogicPOS.UI.Components.Modals
         protected override void ShowEntityData()
         {
             _txtName.Text = _entity.Name;
+            _txtLogin.Text = _entity.Login;
             _txtOrder.Text = _entity.Order.ToString();
             _txtCode.Text = _entity.Code;
             _txtContractDate.Text = _entity.DateOfContract;
@@ -46,7 +47,7 @@ namespace LogicPOS.UI.Components.Modals
                 Order = uint.Parse(_txtOrder.Text),
                 Code = _txtCode.Text,
                 Name = _txtName.Text,
-                Login = _entity.Login,
+                Login = _txtLogin.Text,
                 ProfileId = _comboProfiles.SelectedEntity.Id,
                 CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
                 DateOfContract = _txtContractDate.Text,
@@ -75,6 +76,7 @@ namespace LogicPOS.UI.Components.Modals
             return new AddUserCommand
             {
                 Name = _txtName.Text,
+                Login = _txtLogin.Text,
                 ProfileId = _comboProfiles.SelectedEntity.Id,
                 CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
                 DateOfContract = _txtContractDate.Text,
