@@ -14,6 +14,7 @@ namespace LogicPOS.UI.Components.InputFields
         public IconButton BtnSelect { get; set; }
         public IconButton BtnRemove { get; set; }
         public IconButton BtnAdd { get; set; }
+        public IconButton BtnKeyboard { get; set; }
         public Entry TxtQuantity { get; set; } = new Entry() { WidthRequest = 50 };
         public Entry TxtCode { get; set; } = new Entry() { WidthRequest = 50, IsEditable = true };
         public Label Label { get; set; } = new Label(LocalizedString.Instance["global_article"]);

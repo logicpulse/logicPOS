@@ -1,12 +1,16 @@
 using Gtk;
+using logicpos;
+using logicpos.Classes.Enums.Keyboard;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.Utility;
 using System;
 using System.Linq;
-using LogicPOS.Globalization;
+using System.Text.RegularExpressions;
 
 namespace LogicPOS.UI.Components.InputFields
 {
@@ -66,6 +70,25 @@ namespace LogicPOS.UI.Components.InputFields
         private bool SerialNumberIsUnique(string serialNumber)
         {
             return _serialNumberFields.Select(f => f.TxtSerialNumber.Text).Count(s => s == serialNumber) == 1;
+        }
+
+        private void CallKeyboard()
+        {
+            KeyboardMode mode = KeyboardMode.AlfaNumeric;
+            string rule = RegularExpressions.DecimalNumber;
+
+            string input = Utils.GetVirtualKeyBoardInput(null,
+                                                         mode,
+                                                         TxtQuantity.Text,
+                                                         rule);
+
+            if (input == null)
+            {
+                return;
+            }
+
+            TxtQuantity.Text = input;
+            TxtQuantity.GrabFocus();
         }
     }
 }

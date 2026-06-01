@@ -32,6 +32,7 @@ namespace LogicPOS.UI.Components.InputFields
                         isValidatable,
                         regex,
                         includeSelectButton: false,
+                        includeKeyBoardButton: true,
                         includeClearButton: false,
                         style: TextBoxStyle.Simple);
 

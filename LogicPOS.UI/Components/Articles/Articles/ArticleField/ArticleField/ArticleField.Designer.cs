@@ -48,6 +48,7 @@ namespace LogicPOS.UI.Components.InputFields
             hbox.PackStart(TxtCode, false, false, 0);
             hbox.PackStart(TxtDesignation, true, true, 0);
             hbox.PackStart(TxtQuantity, false, false, 0);
+            hbox.PackStart(BtnKeyboard, false, false, 0);
             hbox.PackStart(BtnSelect, false, false, 0);
             hbox.PackStart(BtnRemove, false, false, 0);
             hbox.PackStart(BtnAdd, false, false, 0);
@@ -73,6 +74,16 @@ namespace LogicPOS.UI.Components.InputFields
             BtnSelect = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconSelectRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             BtnRemove = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconClearRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
             BtnAdd = new IconButton(new ButtonSettings { Name = "buttonUserId", Icon = iconAddRecord, IconSize = new Size(20, 20), ButtonSize = new Size(30, 30) });
+            BtnKeyboard = new IconButton(
+               new ButtonSettings
+               {
+                   Name = "buttonUserId",
+                   Icon = $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_keyboard.png"}",
+                   IconSize = new Size(20, 20),
+                   ButtonSize = new Size(30, 30)
+               });
+
+            BtnKeyboard.Clicked += (sender, args) => CallKeyboard();
         }
 
     }
