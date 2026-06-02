@@ -1,6 +1,7 @@
 param (
     [string]$SolutionOrProject = "LogicPOS.UI\LogicPOS.UI.csproj",
     [string]$Configuration = "Release",
+    [string]$ProductVersion = "",
     [string]$OutputDir = "..\..\artifacts\publish\pos\"
 )
 
@@ -31,12 +32,28 @@ if (Test-Path $OutputDir) {
 
 # --- Build ---
 Log "Building $SolutionOrProject ($Configuration) using global MSBuild"
+if ($ProductVersion) {
+    Log "Product version: $ProductVersion"
+}
+
+$versionProperties = @()
+if (-not [string]::IsNullOrWhiteSpace($ProductVersion)) {
+    $v = $ProductVersion.Trim()
+    $parts = $v.Split('.')
+    $fileVersion = if ($parts.Count -eq 3) { "$v.0" } elseif ($parts.Count -ge 4) { $v } else { "$v.0.0" }
+    $versionProperties = @(
+        "/p:ApplicationVersion=$fileVersion",
+        "/p:AssemblyVersion=$fileVersion",
+        "/p:FileVersion=$fileVersion"
+    )
+}
 
 MSBuild $SolutionOrProject `
     /restore `
     /t:Clean,Build `
     /p:Configuration=$Configuration `
     /p:OutputPath=$OutputDir `
+    @versionProperties `
     /verbosity:minimal
 
 if ($LASTEXITCODE -ne 0) {
