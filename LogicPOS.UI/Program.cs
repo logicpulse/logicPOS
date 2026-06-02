@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using WinFormsApplication = System.Windows.Forms.Application;
@@ -36,6 +37,7 @@ namespace LogicPOS.UI
         {
             Log.Information("Initializing GTK...");
             Gtk.Application.Init();
+            ApplicationIconHelper.ApplyGtkDefaultIcon();
             GtkThemeStyle.ParseTheme();
             // Exceptions in GTK# callbacks (signals, native→managed) do not reach AppDomain.UnhandledException.
             GLib.ExceptionManager.UnhandledException += OnGlibUnhandledException;
@@ -113,7 +115,11 @@ namespace LogicPOS.UI
 
                 if (ProgramIsAlreadyRunning())
                 {
-                    Quit();
+                    WinFormsMessageBox.Show(
+                        "Já existe uma instância do logicPOS em execução neste PC.",
+                        "logicPOS",
+                        WinFormsMessageBoxButtons.OK,
+                        WinFormsMessageBoxIcon.Information);
                     return;
                 }
 
@@ -146,10 +152,7 @@ namespace LogicPOS.UI
             catch (Exception ex)
             {
                 TryLogSerilogFatalAndFlush(ex, "An unhandled exception occurred in Main.");
-                SimpleAlerts.Error()
-                            .WithTitle("Erro inesperado")
-                            .WithMessage($"Ocorreu um erro inesperado: \nPor favor, contacte o suporte técnico.")
-                            .ShowAlert();
+                ShowFatalErrorMessageBox(ex);
             }
             finally
             {
@@ -168,25 +171,46 @@ namespace LogicPOS.UI
             return false;
         }
 
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        private static extern bool SetDllDirectory(string lpPathName);
+
         private static void ConfigureGtkRuntime()
         {
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
             string gtkPath = Path.Combine(baseDir, "GtkRuntime");
-            Environment.SetEnvironmentVariable("GTK_BASEPATH", gtkPath);
             string gtkBinPath = Path.Combine(gtkPath, "bin");
+            Environment.SetEnvironmentVariable("GTK_BASEPATH", gtkPath);
+
+            if (!Directory.Exists(gtkBinPath))
+            {
+                Debug.WriteLine($"GtkRuntime bin folder not found: {gtkBinPath}");
+                return;
+            }
+
+            SetDllDirectory(gtkBinPath);
             string currentPath = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
-            Environment.SetEnvironmentVariable("PATH", $"{currentPath};{gtkBinPath}");
+            if (currentPath.IndexOf(gtkBinPath, StringComparison.OrdinalIgnoreCase) < 0)
+            {
+                Environment.SetEnvironmentVariable("PATH", gtkBinPath + Path.PathSeparator + currentPath);
+            }
         }
 
         private static void ShowVersionAlerts()
         {
-            if (SystemVersionService.ApiVersion != SystemVersionService.PosVersion)
+            if (SystemVersionService.ApiVersion == SystemVersionService.PosVersion)
             {
-                SimpleAlerts.Warning()
-                       .WithTitle("Atenção")
-                       .WithMessage($"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n Algumas partes do sistema podem não funcionar como esperado, convém usar versões iguais.")
-                       .ShowAlert();
+                return;
             }
+
+            string message =
+                $"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n" +
+                "Algumas partes do sistema podem não funcionar como esperado; convém usar versões iguais.";
+
+            WinFormsMessageBox.Show(
+                message,
+                "Atenção — logicPOS",
+                WinFormsMessageBoxButtons.OK,
+                WinFormsMessageBoxIcon.Warning);
         }
 
         public static void Quit()

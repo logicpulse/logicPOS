@@ -1,6 +1,9 @@
 using Gtk;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
+using WinFormsMessageBox = System.Windows.Forms.MessageBox;
+using WinFormsMessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
+using WinFormsMessageBoxIcon = System.Windows.Forms.MessageBoxIcon;
 
 namespace LogicPOS.UI.Alerts
 {
@@ -15,16 +18,58 @@ namespace LogicPOS.UI.Alerts
 
         public ResponseType ShowAlert()
         {
-            MessageDialog dialog = new MessageDialog(_parentWindow,
-                                                     _flags,
-                                                     _messageType,
-                                                     _buttonsType,
-                                                     _message);
-            dialog.Title = _title;
-            ResponseType responseType = (ResponseType)dialog.Run();
-            dialog.Destroy();
+            if (!CanUseGtkDialog())
+            {
+                ShowWinFormsFallback();
+                return ResponseType.Ok;
+            }
 
-            return responseType;
+            using (var dialog = new MessageDialog(
+                _parentWindow,
+                _flags,
+                _messageType,
+                _buttonsType,
+                _message))
+            {
+                dialog.Title = _title;
+                return (ResponseType)dialog.Run();
+            }
+        }
+
+        private static bool CanUseGtkDialog()
+        {
+            try
+            {
+                return Gdk.Screen.Default != null;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private void ShowWinFormsFallback()
+        {
+            WinFormsMessageBox.Show(
+                _message ?? string.Empty,
+                _title ?? "LogicPOS",
+                WinFormsMessageBoxButtons.OK,
+                MapMessageType(_messageType));
+        }
+
+        private static WinFormsMessageBoxIcon MapMessageType(MessageType type)
+        {
+            switch (type)
+            {
+                case MessageType.Error:
+                    return WinFormsMessageBoxIcon.Error;
+                case MessageType.Warning:
+                    return WinFormsMessageBoxIcon.Warning;
+                case MessageType.Question:
+                    return WinFormsMessageBoxIcon.Question;
+                default:
+                    return WinFormsMessageBoxIcon.Information;
+            }
         }
 
         public SimpleAlert WithParent(Window parentWindow)

@@ -68,6 +68,16 @@ namespace LogicPOS.UI.Errors
                 errorMessage.AppendLine(error.Description);
             }
 
+            if (sourceWindow == null)
+            {
+                System.Windows.MessageBox.Show(
+                    errorMessage.ToString(),
+                    "Erro — logicPOS",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error);
+                return;
+            }
+
             new CustomAlert(sourceWindow)
                            .WithMessage(errorMessage.ToString())
                            .WithMessageType(MessageType.Error)
