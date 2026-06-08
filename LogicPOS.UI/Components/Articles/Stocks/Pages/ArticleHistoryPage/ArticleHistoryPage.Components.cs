@@ -1,7 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Common.Pagination;
-using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.UI.Buttons;
 using System.Collections.Generic;
 
@@ -19,7 +18,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void InitializeGridView()
         {
-            GridViewSettings.Model = new ListStore(typeof(ArticleHistory),typeof(bool));
+            GridViewSettings.Model = new ListStore(typeof(ArticleHistory), typeof(bool));
 
             InitializeGridViewModel();
 

@@ -157,6 +157,7 @@ namespace LogicPOS.UI.Components.Pages
             CurrentQuery.EndDate = filterModalData?.EndDate;
             CurrentQuery.ArticleId = filterModalData?.ArticleId;
             CurrentQuery.Search = filterModalData?.SerialNumber;
+            CurrentQuery.Page = 1;
 
             Refresh();
 
