@@ -1,6 +1,6 @@
-﻿namespace LogicPOS.Api.Features.Articles
+namespace LogicPOS.Api.Features.Articles
 {
-    public class ArticlePrice
+    public struct ArticlePrice
     {
         public decimal Value { get; set; }
         public decimal PromotionValue { get; set; }

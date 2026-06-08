@@ -30,7 +30,7 @@ namespace LogicPOS.UI.Components.Modals
             var labelText = LocalizedString.Instance["global_customer_types"];
             var currentCustomerType = _entity != null ?
                 new CustomerType { Id = _entity.CustomerType.Id, Designation = _entity.CustomerType.Designation } :
-                customerTypes.First();
+                customerTypes?.FirstOrDefault();
 
             _comboCustomerTypes = new EntityComboBox<CustomerType>(labelText,
                                                              customerTypes,
@@ -44,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
             var labelText = LocalizedString.Instance["global_price_type"];
             var currentPriceType = _entity != null ?
                 new PriceType { Id = _entity.PriceType.Id, Designation = _entity.PriceType.Designation } :
-                priceTypes.First();
+                priceTypes?.FirstOrDefault();
 
             _comboPriceTypes = new EntityComboBox<PriceType>(labelText,
                                                              priceTypes,

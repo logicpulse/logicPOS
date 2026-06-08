@@ -1,11 +1,10 @@
-﻿using System.Resources;
+using System.Resources;
 
 namespace LogicPOS.Globalization
 {
     public class LocalizedString
     {
-        public static LocalizedString Default { get; } = new LocalizedString ("pt-PT");
-        public static LocalizedString Instance { get; set; }
+        public static LocalizedString Instance { get; set; } = new LocalizedString("pt-PT");
 
         private readonly string _culture;
         private ResXResourceSet ResourceSet { get; set; }

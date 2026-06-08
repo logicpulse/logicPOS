@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -24,15 +24,15 @@ namespace LogicPOS.UI.Components.InputFields
 
         public string FieldName => _priceType.Designation;
 
-        public ArticlePriceField(PriceType priceType, ArticlePrice current = null)
+        public ArticlePriceField(PriceType priceType, ArticlePrice? current = null)
         {
             _priceType = priceType;
 
             if (current != null)
             {
-                _txtPrice.Text = current.Value.ToString("F2");
-                _txtPromotionPrice.Text = current.PromotionValue.ToString("F2");
-                _checkUsePromotionPrice.Active = current.UsePromotion;
+                _txtPrice.Text = current.Value.Value.ToString("F2");
+                _txtPromotionPrice.Text = current.Value.PromotionValue.ToString("F2");
+                _checkUsePromotionPrice.Active = current.Value.UsePromotion;
             }
 
             AddEventHandlers();

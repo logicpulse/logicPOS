@@ -332,7 +332,7 @@ namespace logicpos
             Label labelBoot;
 
 
-            labelBoot = new Label(LocalizedString.Default["global_load"]);
+            labelBoot = new Label(LocalizedString.Instance["global_load"]);
 
             if (backupProcess != string.Empty)
             {

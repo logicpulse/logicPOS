@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Alerts
     public class CustomAlert : BaseDialog
     {
         private TextView _txtLog;
-        private string _title = LocalizedString["window_title_dialog_message_dialog"];
+        private string _title = LocalizedString.Instance["window_title_dialog_message_dialog"];
         private string _message;
         private DialogFlags _flags = DialogFlags.Modal;
         private MessageType _messageType = MessageType.Info;
@@ -23,7 +23,6 @@ namespace LogicPOS.UI.Alerts
         private string _icon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_default.png";
         private string _image = string.Empty;
 
-        private static LocalizedString LocalizedString => (LocalizedString.Instance == null ? LocalizedString.Default : LocalizedString.Instance);
 
         public CustomAlert(Window parentWindow)
             : base(parentWindow, DialogFlags.Modal)
@@ -39,7 +38,7 @@ namespace LogicPOS.UI.Alerts
 
         public CustomAlert WithTitleResource(string titleResource)
         {
-            _title = LocalizedString[titleResource];
+            _title = LocalizedString.Instance[titleResource];
             return this;
         }
 
@@ -51,7 +50,7 @@ namespace LogicPOS.UI.Alerts
 
         public CustomAlert WithMessageResource(string messageResource)
         {
-            _message = LocalizedString[messageResource];
+            _message = LocalizedString.Instance[messageResource];
             return this;
         }
 

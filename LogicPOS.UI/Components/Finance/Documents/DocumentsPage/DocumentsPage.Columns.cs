@@ -1,10 +1,8 @@
 using Gtk;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Pages.GridViews;
 using LogicPOS.UI.Services;
-using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -27,7 +25,8 @@ namespace LogicPOS.UI.Components.Pages
             if (SystemInformationService.UseAgtFe)
             {
                 GridView.AppendColumn(CreateAgtStatusColumn());
-            } else if (SystemInformationService.SystemInformation.IsPortugal)
+            }
+            else if (SystemInformationService.SystemInformation.IsPortugal)
             {
                 GridView.AppendColumn(CreateAtStatusColumn());
             }
@@ -91,7 +90,7 @@ namespace LogicPOS.UI.Components.Pages
             void RenderTotalToPay(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var document = ((DocumentViewModel)model.GetValue(iter, 0));
-                (cell as CellRendererText).Text = document.TotalToPay<0? 0.ToString("0.00") :document.TotalToPay.ToString("0.00");
+                (cell as CellRendererText).Text = document.TotalToPay.ToString("0.00");
                 cell.Xalign = 1;
             }
 

@@ -153,6 +153,10 @@ namespace LogicPOS.UI.Components.InputFields
             if (includeKeyBoardButton)
             {
                 hbox.PackStart(BtnKeyboard, false, false, 0);
+                if(_style == TextBoxStyle.Simple)
+                {
+                    BtnKeyboard.SetSizeRequest(30,20);
+                }
             }
 
             if (includeClearButton)

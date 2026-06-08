@@ -1,24 +1,19 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.AddArticle;
 using LogicPOS.Api.Features.Articles.AddArticleChildren;
-using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
 using LogicPOS.Api.Features.Articles.Families.GetAllArticleFamilies;
 using LogicPOS.Api.Features.Articles.GetArticleChildren;
 using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
 using LogicPOS.Api.Features.Articles.Subfamilies.GetAllArticleSubfamilies;
-using LogicPOS.Api.Features.Articles.Types.GetAllArticleTypes;
 using LogicPOS.Api.Features.Articles.UpdateArticle;
 using LogicPOS.Api.Features.Articles.UpdateArticleChildren;
 using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
 using LogicPOS.Api.Features.Customers.DiscountGroups.GetAllDiscountGroups;
-using LogicPOS.Api.Features.MeasurementUnits.GetAllMeasurementUnits;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
-using LogicPOS.Api.Features.SizeUnits.GetAllSizeUnits;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
-using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +34,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void HandleMode(EntityEditionModalMode modalMode)
         {
-            if(_modalMode == EntityEditionModalMode.Insert)
+            if (_modalMode == EntityEditionModalMode.Insert)
             {
                 _txtCode.Text = ArticlesService.GenerateRandomCode();
             }
@@ -49,7 +44,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             var addArticleCommand = new AddArticleCommand();
 
-            addArticleCommand.Code= _txtCode.Text;
+            addArticleCommand.Code = _txtCode.Text;
             addArticleCommand.CodeDealer = _txtCodeDealer.Text;
             addArticleCommand.Designation = _txtDesignation.Text;
             addArticleCommand.Button = GetButton();
@@ -158,7 +153,6 @@ namespace LogicPOS.UI.Components.Modals
             {
                 case 1:
                     updateCommand.Price1 = _prices[0].Price;
-
                     break;
                 case 2:
                     updateCommand.Price1 = _prices[0].Price;
@@ -194,7 +188,7 @@ namespace LogicPOS.UI.Components.Modals
             var result = ExecuteAddCommand(CreateAddCommand());
             ArticlesService.RefreshArticlesCache();
 
-            if( result.IsError)
+            if (result.IsError)
             {
                 return false;
             }
@@ -250,7 +244,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ShowImage()
         {
-             string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
+            string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
             _imagePicker.SetImage(imagePath);
         }
 
@@ -287,7 +281,8 @@ namespace LogicPOS.UI.Components.Modals
 
             UpdateImageInCache();
 
-            if (_checkIsComposed.Active) {
+            if (_checkIsComposed.Active)
+            {
                 var updateChildrenCommand = new UpdateArticleChildrenCommand
                 {
                     Id = _entity.Id,
@@ -295,8 +290,8 @@ namespace LogicPOS.UI.Components.Modals
                 };
 
                 ExecuteUpdateCommand(updateChildrenCommand);
-            } 
-            
+            }
+
             return true;
         }
 
@@ -304,7 +299,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (_imagePicker.HasImage == true)
             {
-                ButtonImageCache.DeleteImage(_entity.Id,_entity.Button.ImageExtension);
+                ButtonImageCache.DeleteImage(_entity.Id, _entity.Button.ImageExtension);
                 return;
             }
 

@@ -2,11 +2,15 @@ using Gtk;
 using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Documents.GetDocuments;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetUnsettledDocumentsForSettlement;
+using ErrorOr;
+using LogicPOS.UI.Components.Finance.Documents.Utilities;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using LogicPOS.Api.Features.Common.Pagination;
 
 namespace LogicPOS.UI.Components.Pages
 {
@@ -43,14 +47,25 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override void LoadEntities()
         {
+            ErrorOr.ErrorOr<PaginatedResult<DocumentViewModel>> getDocumentsResult;
+
             if (IsUnpaidInvoicesMode())
             {
-                CurrentQuery.PaymentStatus = DocumentPaymentStatusFilter.Unpaid;
-                CurrentQuery.Status = 'N';
-                CurrentQuery.Types = new string[] { "FT","NC" };
+                var unsettledQuery = new GetUnsettledDocumentsForSettlementQuery
+                {
+                    Page = CurrentQuery.Page,
+                    PageSize = CurrentQuery.PageSize,
+                    StartDate = CurrentQuery.StartDate,
+                    EndDate = CurrentQuery.EndDate,
+                    Search = CurrentQuery.Search,
+                    CustomerId = CurrentQuery.CustomerId
+                };
+                getDocumentsResult = _mediator.Send(unsettledQuery).Result;
             }
-
-            var getDocumentsResult = _mediator.Send(CurrentQuery).Result;
+            else
+            {
+                getDocumentsResult = _mediator.Send(CurrentQuery).Result;
+            }
 
             if (getDocumentsResult.IsError)
             {
@@ -83,11 +98,7 @@ namespace LogicPOS.UI.Components.Pages
 
         protected override DeleteCommand GetDeleteCommand() => null;
 
-        private decimal CalculateSelectedDocumentsTotalFinal()
-        {
-            decimal totalDebit = SelectedDocuments.Where(d => d.Type != "NC").Sum(d => (d.TotalFinal - d.ReceiptsTotal));
-            decimal totalCredit = SelectedDocuments.Where(d => d.Type == "NC").Sum(d => d.TotalFinal);
-            return totalDebit - totalCredit;     
-        }
+        private decimal CalculateSelectedDocumentsTotalFinal() =>
+            DocumentSettlementTotals.CalculateNetSettlementAmount(SelectedDocuments);
     }
 }

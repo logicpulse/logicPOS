@@ -1,4 +1,4 @@
-﻿using LogicPOS.DTOs.Common;
+using LogicPOS.DTOs.Common;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Settings;
@@ -190,11 +190,6 @@ namespace LogicPOS.Utility
 
             }
             return listResult;
-        }
-
-        public static string GetResourceByName(string resourceName)
-        {
-            return (LocalizedString.Instance == null ? LocalizedString.Default : LocalizedString.Instance)[resourceName];
         }
 
         public static string PrepareCutWord(string pText)

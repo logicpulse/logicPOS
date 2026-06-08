@@ -109,7 +109,9 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateTitle()
         {
-            var totalPaidPercentage = (CalculateSystemCurrencyTotalPaid() / _invoicesTotalFinal) * 100;
+            var totalPaidPercentage = _invoicesTotalFinal > 0
+                ? CalculateSystemCurrencyTotalPaid() / _invoicesTotalFinal * 100
+                : 100;
             WindowSettings.Title.Text = $"{TitleBase} ({Invoices.Count} = {_invoicesTotalFinal:0.00}) - {totalPaidPercentage:0.00}%";
         }
 
