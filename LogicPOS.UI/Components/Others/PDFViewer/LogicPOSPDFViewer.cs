@@ -87,11 +87,8 @@ namespace LogicPOS.UI.PDFViewer
                     {
                         using (var printDocument = pdfViewer.Document.CreatePrintDocument(PdfiumViewer.PdfPrintMode.CutMargin))
                         {
-                            var firstPageSize = pdfViewer.Document.PageSizes[0];
-
                             printDocument.PrinterSettings = printDialog.PrinterSettings;
                             printDocument.OriginAtMargins = false;
-                            printDocument.DefaultPageSettings.Landscape = IsLandscape(firstPageSize);
                             printDocument.DefaultPageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
 
                             printDocument.QueryPageSettings += (s, qsArgs) =>
@@ -103,7 +100,6 @@ namespace LogicPOS.UI.PDFViewer
 
                                 qsArgs.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom PDF Size", exactWidth, exactHeight);
 
-                                qsArgs.PageSettings.Landscape = IsLandscape(pdfPageSize);
                                 qsArgs.PageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
                             };
 
@@ -116,11 +112,6 @@ namespace LogicPOS.UI.PDFViewer
                     }
                 }
             }
-        }
-
-        private static bool IsLandscape(System.Drawing.SizeF pageSize)
-        {
-            return pageSize.Width > pageSize.Height;
         }
 
         private ToolStrip GetPdfViewerToolStrip()
