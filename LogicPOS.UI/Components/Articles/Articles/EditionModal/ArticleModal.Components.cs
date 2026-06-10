@@ -38,6 +38,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly CheckButton _checkUseWeighingBalance = new CheckButton(LocalizedString.Instance["global_use_weighing_balance"]);
         private readonly CheckButton _checkPriceWithVat = new CheckButton(LocalizedString.Instance["global_price_with_vat"]);
         private readonly CheckButton _checkPVPVariable = new CheckButton(LocalizedString.Instance["global_variable_price"]);
+        private readonly CheckButton _checkIsSdrPackaging = new CheckButton("Embalagem Volta");
         private readonly TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
         private readonly TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber).WithText("1");
         private readonly TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber).WithText("1");
@@ -80,6 +81,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_comboSubfamilies.ComboBox);
             SensitiveFields.Add(_comboClasses.ComboBox);
             SensitiveFields.Add(_checkIsComposed);
+            SensitiveFields.Add(_checkIsSdrPackaging);
             SensitiveFields.Add(_checkUniqueArticles);
             SensitiveFields.Add(_checkFavorite);
             SensitiveFields.Add(_checkUseWeighingBalance);
@@ -91,6 +93,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtTare.Entry);
             SensitiveFields.Add(_txtWeight.Entry);
             SensitiveFields.Add(_txtBarcode.Entry);
+           
             foreach (var priceField in _prices)
             {
                 SensitiveFields.Add(priceField.Component);

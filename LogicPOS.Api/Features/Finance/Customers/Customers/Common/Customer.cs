@@ -27,6 +27,7 @@ namespace LogicPOS.Api.Features.Finance.Customers.Customers.Common
         public string CardNumber { get; set; }
         public decimal Discount { get; set; }
         public decimal CardCredit { get; set; }
+        public CardMode CardMode { get; set; }
         public bool Supplier { get; set; }
         public bool IsFinalConsumer => Name == "Consumidor Final";
     }

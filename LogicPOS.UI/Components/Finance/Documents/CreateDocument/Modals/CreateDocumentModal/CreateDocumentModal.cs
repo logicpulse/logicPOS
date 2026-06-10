@@ -77,7 +77,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var analyzer = documentType.Analyzer;
 
-            if (analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice())
+            if (analyzer.IsInvoiceReceipt() || analyzer.IsSimplifiedInvoice() || analyzer.IsVoltaRefundReceipt())
             {
                 command.PaymentMethods = SinglePaymentMethod ? DocumentTab.GetPaymentMethods() : PaymentMethodsTab.PaymentMethodsBox.GetPaymentMethods();
             }
@@ -115,6 +115,7 @@ namespace LogicPOS.UI.Components.Modals
             var query = new GetDocumentPreviewPdfQuery();
 
             query.CurrencyId = DocumentTab.GetCurrencyId();
+            query.Type = DocumentTab.GetDocumentType().Acronym;
             query.Notes = DocumentTab.TxtNotes.Text;
             query.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             query.Details = DetailsTab.GetDocumentDetails();

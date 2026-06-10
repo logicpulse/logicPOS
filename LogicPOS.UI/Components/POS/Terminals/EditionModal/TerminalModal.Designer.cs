@@ -132,8 +132,9 @@ namespace LogicPOS.UI.Components.Modals
             tab1.PackStart(_txtHardwareId.Component, false, false, 0);
             tab1.PackStart(_comboPlaces.Component, false, false, 0);
 
-            if (_modalMode != EntityEditionModalMode.Insert)
+            if (_modalMode == EntityEditionModalMode.Update)
             {
+                tab1.PackStart(_checkDefaultTerminal, false, false, 0);
                 tab1.PackStart(_checkDisabled, false, false, 0);
             }
 

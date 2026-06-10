@@ -22,7 +22,8 @@ namespace LogicPOS.Api.Features.Documents
         public bool IsBudget() => Type == "OR";
         public bool IsProform() => Type == "PF" || Type == "PP" || Type == "FP";
         public bool IsConsignmentInvoice() => Type == "FC";
-        public bool IsInformative() => IsProform() || IsBudget();
+        public bool IsVoltaRefundReceipt() => Type == "TRV";
+        public bool IsInformative() => IsProform() || IsBudget() || IsVoltaRefundReceipt();
         public bool IsWayBill() => IsTransportGuide() || IsConsignmentGuide() || IsManagementOfFixedAssetsForm() || IsDeliveryNote() || IsReturnSlip();
     }
 }

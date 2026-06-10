@@ -10,6 +10,7 @@ namespace LogicPOS.Api.Features.Articles.Common
         public uint Order { get; set; }
         public string Code { get; set; }
         public bool IsComposed { get; set; }
+        public bool IsSdrPackaging { get; set; }
         public string Family { get; set; }
         public string Subfamily { get; set; }
         public string Designation { get; set; }

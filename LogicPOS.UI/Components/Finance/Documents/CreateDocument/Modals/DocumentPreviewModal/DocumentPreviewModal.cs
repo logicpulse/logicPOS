@@ -26,7 +26,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateD
         {
             var data = DocumentsService.GetPreviewData(_query);
 
-            if (data == null || data.Details.Count == 0)
+            if (data == null || data.Details?.Count == 0)
             {
                 return;
             }

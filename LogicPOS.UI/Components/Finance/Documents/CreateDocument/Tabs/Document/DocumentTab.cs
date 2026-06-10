@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.Api.Entities;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
@@ -61,7 +62,18 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             TxtPaymentCondition.SelectedEntity = paymentCondition;
         }
 
-        public IEnumerable<DocumentPaymentMethod> GetPaymentMethods()
+        private void SelectPaymentMethod(PaymentMethod paymentMethod)
+        {
+            if (paymentMethod == null)
+            {
+                return;
+            }
+
+            TxtPaymentMethod.Text = paymentMethod.Designation;
+            TxtPaymentMethod.SelectedEntity = paymentMethod;
+        }
+
+        public IEnumerable<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod> GetPaymentMethods()
         {
             yield return new Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod
             {

@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Orders.ChangeOrderTable;
+using LogicPOS.Api.Features.Orders.ChangeOrderTable;
 using LogicPOS.Api.Features.POS.Orders.Orders.GetOrderById;
 using LogicPOS.Api.Features.POS.Tables.Common;
 using LogicPOS.UI.Components.Terminals;
@@ -30,7 +30,6 @@ namespace LogicPOS.UI.Components.POS
             ItemsPage.PresentOrderItems();
             POSWindow.Instance.UpdateUI();
         }
-
 
         public static void ChangeOrderTable(TableViewModel table, Guid orderId)
         {

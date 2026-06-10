@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetSalesByVatAndArticleTypeReportPdf
 
         public override async Task<ErrorOr<TempFile>> Handle(GetSalesByVatAndArticleTypeReportPdfQuery request, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/sales-by-vatrate-and-articletype/pdf/{request.TaxId}{request.GetUrlQuery()}");
+            return await HandleGetFileQueryAsync($"reports/sales-by-vatrate-and-articletype/pdf{request.GetUrlQuery()}");
         }
     }
 }

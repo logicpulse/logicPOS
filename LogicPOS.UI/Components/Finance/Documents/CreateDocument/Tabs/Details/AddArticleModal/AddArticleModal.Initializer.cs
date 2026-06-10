@@ -61,7 +61,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void InitializeTxtTax()
         {
-            TxtTax = new TextBox(WindowSettings.Source,
+            TxtVatRate = new TextBox(WindowSettings.Source,
                                      LocalizedString.Instance["global_vat_rate"],
                                      isRequired: true,
                                      isValidatable: false,
@@ -69,11 +69,11 @@ namespace LogicPOS.UI.Components.Modals
                                      includeKeyBoardButton: false,
                                      regex: RegularExpressions.DecimalNumber);
 
-            TxtTax.Entry.IsEditable = false;
+            TxtVatRate.Entry.IsEditable = false;
 
-            TxtTax.SelectEntityClicked += BtnSelectTax_Clicked;
+            TxtVatRate.SelectEntityClicked += BtnSelectTax_Clicked;
 
-            ValidatableFields.Add(TxtTax);
+            ValidatableFields.Add(TxtVatRate);
         }
 
         private void InitializeTxtTotalWithTax()

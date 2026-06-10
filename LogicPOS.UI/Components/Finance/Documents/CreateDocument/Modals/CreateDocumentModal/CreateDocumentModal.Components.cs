@@ -1,11 +1,10 @@
 using Gtk;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.CreateDocument;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -30,7 +29,7 @@ namespace LogicPOS.UI.Components.Modals
         private ShipToTab ShipToTab { get; set; }
         private ShipFromTab ShipFromTab { get; set; }
         private PaymentMethodsTab PaymentMethodsTab { get; set; }
-        private bool SinglePaymentMethod => SystemInformationService.SystemInformation.IsPortugal;
+        private bool SinglePaymentMethod => !SystemInformationService.SystemInformation.IsAngola;
         #endregion
 
         private ModalTabsNavigator Navigator { get; set; }

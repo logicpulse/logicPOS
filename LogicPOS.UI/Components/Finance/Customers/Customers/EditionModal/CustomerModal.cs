@@ -103,6 +103,7 @@ namespace LogicPOS.UI.Components.Modals
             _txtFiscalNumber.Text = _entity.FiscalNumber;
             _txtCardNumber.Text = _entity.CardNumber;
             _txtCardCredit.Text = _entity.CardCredit.ToString("0.00");
+            _comboCardMode.Active = (int)_entity.CardMode;
             _checkDisabled.Active = _entity.IsDeleted;
             _txtNotes.Value.Text = _entity.Notes;
             _checkSupplier.Active = _entity?.Supplier ?? false;
@@ -132,6 +133,7 @@ namespace LogicPOS.UI.Components.Modals
                 Email = _txtEmail.Text,
                 FiscalNumber = _txtFiscalNumber.Text,
                 CardNumber = _txtCardNumber.Text,
+                CardMode = (CardMode)_comboCardMode.Active,
                 Notes = _txtNotes.Value.Text,
                 IsDeleted = _checkDisabled.Active,
                 Supplier = _checkSupplier.Active
@@ -160,6 +162,7 @@ namespace LogicPOS.UI.Components.Modals
                 FiscalNumber = _txtFiscalNumber.Text,
                 Notes = _txtNotes.Value.Text,
                 CardNumber = _txtCardNumber.Text,
+                CardMode = (CardMode)_comboCardMode.Active,
                 Supplier = _checkSupplier.Active
             };
             return customer;

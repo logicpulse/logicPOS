@@ -1,5 +1,6 @@
 ﻿using LogicPOS.Api.Features.POS.Orders.Orders.Common;
 using LogicPOS.Api.Features.POS.Tables.Common;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Services;
 using System;
 using System.Collections.Generic;
@@ -25,16 +26,16 @@ namespace LogicPOS.UI.Components.POS
             AddTickets(order);
         }
 
-        public List<SaleItem> GetOrderItems()
+        public List<SaleItem> GetOrderItems(bool excludeOpenTicket = false)
         {
-            var orderItems = new List<SaleItem>();
-            if (SaleContext.HasOpenTicket())
-            {
-                Tickets.Remove(SaleContext.ItemsPage.Ticket);
-            }
-            var ticketsItems = Tickets.SelectMany(t => t.Items);
+            var tickets = Tickets.AsEnumerable();
 
-            return SaleItem.Compact(ticketsItems).ToList();
+            if (excludeOpenTicket && SaleContext.HasOpenTicket())
+            {
+                tickets = tickets.Where(t => t != SaleContext.ItemsPage.Ticket);
+            }
+
+            return SaleItem.Compact(tickets.SelectMany(t => t.Items)).ToList();
         }
 
         public PosTicket AddTicket(IEnumerable<SaleItem> items)
@@ -56,13 +57,11 @@ namespace LogicPOS.UI.Components.POS
             }
         }
 
-        public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal);
+        public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal) + SdrDocumentDetailsService.CalculateDepositTotal(GetOrderItems());
         public decimal ServicesTotalFinal => Tickets.Sum(_ => _.ServicesTotalFinal);
 
         public IEnumerable<DocumentDetailDto> GetDocumentDetails()
-        {
-            return SaleItem.GetOrderDetailsFromSaleItems(GetOrderItems());
-        }
+            => SdrDocumentDetailsService.EnrichFromSaleItems(GetOrderItems());
 
         public bool ReduceItems(IEnumerable<SaleItem> items)
         {

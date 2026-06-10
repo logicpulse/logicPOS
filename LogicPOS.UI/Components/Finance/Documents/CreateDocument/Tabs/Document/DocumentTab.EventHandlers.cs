@@ -194,6 +194,11 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void BtnSelectPaymentMethod_Clicked(object sender, EventArgs e)
         {
+            if (DocumentTypeAnalyzer?.IsVoltaRefundReceipt() == true)
+            {
+                return;
+            }
+
             var page = new PaymentMethodsPage(null, PageOptions.SelectionPageOptions);
             var selectPaymentMethodModal = new EntitySelectionModal<PaymentMethod>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectPaymentMethodModal.Run();

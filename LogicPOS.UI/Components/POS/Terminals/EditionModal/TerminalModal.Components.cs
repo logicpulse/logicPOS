@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.Utility;
 
@@ -19,6 +20,6 @@ namespace LogicPOS.UI.Components.Modals
         private EntityComboBox<WeighingMachine> _comboWeighingMachines;
         private EntityComboBox<InputReader> _comboBarcodeReaders;
         private EntityComboBox<InputReader> _comboCardReaders;
-     
+        private readonly CheckButton _checkDefaultTerminal = new CheckButton(LocalizedString.Instance["global_by_default"]);
     }
 }

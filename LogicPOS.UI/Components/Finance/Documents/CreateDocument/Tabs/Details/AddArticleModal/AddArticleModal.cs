@@ -26,15 +26,18 @@ namespace LogicPOS.UI.Components.Modals
         private decimal _vatRateValue;
         public AddArticleModal(Window parent,
                                DocumentDetailModalMode mode,
-                               DocumentDetail detail = null) : base(parent,
+                               DocumentDetail detail = null,
+                               string documentTypeAcronym = null) : base(parent,
                                                      LocalizedString.Instance["global_insert_articles"],
                                                      new Size(900, 360),
                                                      AppSettings.Paths.Images + @"Icons\Windows\icon_window_finance_article.png")
         {
             _mode = mode;
             DocumentDetail = detail;
+            _documentTypeAcronym = documentTypeAcronym;
 
             HandleModalMode();
+            ApplyTrvRestrictions();
         }
 
         private void HandleModalMode()
@@ -67,7 +70,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtPrice.Component.Sensitive = false;
             TxtQuantity.Component.Sensitive = false;
             TxtDiscount.Component.Sensitive = false;
-            TxtTax.Component.Sensitive = false;
+            TxtVatRate.Component.Sensitive = false;
             TxtVatExemptionReason.Component.Sensitive = false;
             TxtNotes.Component.Sensitive = false;
             TxtSubFamily.Component.Sensitive = false;
@@ -92,8 +95,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtDiscount.Text = detail.Discount.ToString("F2");
             TxtVatExemptionReason.SelectedEntity = detail.VatExemptionReason;
             TxtVatExemptionReason.Text = detail.VatExemptionReason?.Designation ?? detail.ExemptionReason;
-            TxtTax.SelectedEntity = detail.VatRate;
-            TxtTax.Text = detail.VatRate?.Designation ?? detail.VatDesignation;
+            TxtVatRate.SelectedEntity = detail.VatRate;
+            TxtVatRate.Text = detail.VatRate?.Designation ?? detail.VatDesignation;
             _vatRateValue = detail.Vat;
             TxtNotes.Text = detail.Notes;
             TxtSerialNumber.Text = detail.SerialNumber;
@@ -139,8 +142,8 @@ namespace LogicPOS.UI.Components.Modals
             TxtVatExemptionReason.SelectedEntity = vatExempetionReason;
             TxtVatExemptionReason.Text = vatExempetionReason?.Designation;
 
-            TxtTax.SelectedEntity = vatrate;
-            TxtTax.Text = vatrate.Designation;
+            TxtVatRate.SelectedEntity = vatrate;
+            TxtVatRate.Text = vatrate.Designation;
             _vatRateValue = article.VatDirectSelling.Value;
 
             TxtNotes.Text = article.Notes;
@@ -165,7 +168,7 @@ namespace LogicPOS.UI.Components.Modals
             TxtDiscount.Text = "0";
             TxtTotal.Text = "0";
             TxtTotalWithTax.Text = "0";
-            TxtTax.Clear();
+            TxtVatRate.Clear();
             TxtVatExemptionReason.Clear();
             TxtNotes.Clear();
             TxtSubFamily.Clear();
@@ -189,11 +192,11 @@ namespace LogicPOS.UI.Components.Modals
                 UnitPrice = selectedArticle.PriceWithVat? SaleItem.ExtractPriceWithoutVat(selectedArticle.Price1, _vatRateValue) : decimal.Parse(TxtPrice.Text),
                 Quantity = decimal.Parse(TxtQuantity.Text),
                 Discount = decimal.Parse(TxtDiscount.Text),
-                VatRate = TxtTax.SelectedEntity as VatRate,
-                VatDesignation = TxtTax.Text,
+                VatRate = TxtVatRate.SelectedEntity as VatRate,
+                VatDesignation = TxtVatRate.Text,
                 SerialNumber = TxtSerialNumber.Text,
                 Vat = _vatRateValue,
-                VatRateId = (TxtTax.SelectedEntity as VatRate).Id,
+                VatRateId = (TxtVatRate.SelectedEntity as VatRate).Id,
                 VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason,
                 ExemptionReason = TxtVatExemptionReason.Text,
                 Notes = TxtNotes.Text

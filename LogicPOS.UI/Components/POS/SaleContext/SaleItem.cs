@@ -113,6 +113,16 @@ namespace LogicPOS.UI.Components.POS
             return orderItems;
         }
 
+        public static SaleItem CreateDepositLine(ArticleViewModel depositArticle, decimal quantity)
+            => new SaleItem
+            {
+                Article = depositArticle,
+                Quantity = quantity,
+                UnitPrice = depositArticle.Price1,
+                Discount = 0,
+                Vat = depositArticle.VatDirectSelling ?? 0
+            };
+
         public static IEnumerable<DocumentDetailDto> GetOrderDetailsFromSaleItems(IEnumerable<SaleItem> items)
         {
             items = Compact(items);

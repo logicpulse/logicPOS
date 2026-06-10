@@ -9,6 +9,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.POS
 {
@@ -55,7 +57,9 @@ namespace LogicPOS.UI.Components.POS
         public void PresentOrderItems()
         {
             TicketMode = false;
-            var orderItems = SaleContext.CurrentOrder.GetOrderItems();
+            var orderItems = SdrDocumentDetailsService.EnrichSaleItemsForDisplay(
+                SaleContext.CurrentOrder.GetOrderItems(excludeOpenTicket: true),
+                compactItems: false);
 
             Clear();
             SetOrderModeBackGround();
@@ -83,7 +87,8 @@ namespace LogicPOS.UI.Components.POS
             }
 
             var model = (ListStore)GridViewSettings.Model;
-            Ticket.Items.ForEach(entity => model.AppendValues(entity));
+            SdrDocumentDetailsService.EnrichSaleItemsForDisplay(Ticket.Items)
+                .ForEach(entity => model.AppendValues(entity));
 
             if (Ticket.Items.Any())
             {
@@ -95,7 +100,9 @@ namespace LogicPOS.UI.Components.POS
 
         public void UpdateLabelTotalValue()
         {
-            var total = (TicketMode) ? Ticket?.TotalFinal ?? 0 : SaleContext.CurrentOrder?.TotalFinal ?? 0;
+            var total = TicketMode
+                ? (Ticket?.TotalFinal ?? 0) + SdrDocumentDetailsService.CalculateDepositTotal(Ticket?.Items ?? Enumerable.Empty<SaleItem>())
+                : SaleContext.CurrentOrder?.TotalFinal ?? 0;
             LabelTotalValue.Text = total.ToString("C");
         }
 
@@ -278,7 +285,8 @@ namespace LogicPOS.UI.Components.POS
             }
             Clear();
             var model = (ListStore)GridViewSettings.Model;
-            model.AppendValues(Ticket.Items.Last());
+            SdrDocumentDetailsService.EnrichSaleItemsForDisplay(Ticket.Items)
+                .ForEach(entity => model.AppendValues(entity));
         }
 
         public bool ContainsItem(SaleItem item)
@@ -286,33 +294,77 @@ namespace LogicPOS.UI.Components.POS
             return Ticket.Items.Any(x => x.Article.Id == item.Article.Id);
         }
 
-        private void SelectItem(SaleItem item)
+        public void ChangeItemQuantity(SaleItem item, decimal quantity)
         {
-            var index = Ticket?.Items?.IndexOf(item);
-
-            if (index == null)
+            if (!TryResolveEditableTicketItem(item, out var ticketItem))
             {
                 return;
             }
 
-            var path = new TreePath(new int[] { index.Value });
-            GridView.SetCursor(path, null, false);
-            SelectedItem = item;
-        }
-
-        public void ChangeItemQuantity(SaleItem item, decimal quantity)
-        {
-            item.Quantity = quantity;
+            ticketItem.Quantity = quantity;
             Refresh();
-            SelectItem(item);
-
+            SelectItem(ticketItem);
         }
 
         public void ChangeItemPrice(SaleItem item, decimal price)
         {
-            item.SetUnitPrice(price);
+            if (!TryResolveEditableTicketItem(item, out var ticketItem))
+            {
+                return;
+            }
+
+            ticketItem.SetUnitPrice(price);
             Refresh();
-            SelectItem(item);
+            SelectItem(ticketItem);
+        }
+
+        private List<SaleItem> GetDisplayItems()
+            => Ticket == null
+                ? new List<SaleItem>()
+                : SdrDocumentDetailsService.EnrichSaleItemsForDisplay(Ticket.Items);
+
+        private bool TryResolveEditableTicketItem(SaleItem item, out SaleItem ticketItem)
+        {
+            ticketItem = null;
+
+            if (item == null || Ticket == null || SdrConstants.IsDepositArticle(item.Article?.Code))
+            {
+                return false;
+            }
+
+            if (Ticket.Items.Contains(item))
+            {
+                ticketItem = item;
+                return true;
+            }
+
+            ticketItem = Ticket.Items.FirstOrDefault(x => x.Article.Id == item.Article.Id);
+            return ticketItem != null;
+        }
+
+        private void SelectItem(SaleItem item)
+        {
+            if (Ticket == null || item == null)
+            {
+                return;
+            }
+
+            var displayItems = GetDisplayItems();
+            var index = displayItems.IndexOf(item);
+
+            if (index < 0)
+            {
+                index = displayItems.FindIndex(x => x.Article.Id == item.Article.Id);
+            }
+
+            if (index < 0)
+            {
+                return;
+            }
+
+            var path = new TreePath(new int[] { index });
+            GridView.SetCursor(path, null, false);
+            SelectedItem = displayItems[index];
         }
     }
 }

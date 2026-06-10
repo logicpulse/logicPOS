@@ -1,5 +1,6 @@
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.Finance.PaymentConditions;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -48,6 +49,20 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 return;
             }
 
+            if (DocumentTypeAnalyzer.Value.IsVoltaRefundReceipt())
+            {
+                TxtOriginDocument.Require(false, false);
+                TxtPaymentCondition.Require(false, false);
+                if (SinglePaymentMethod)
+                {
+                    TxtPaymentMethod.Require(true, true);
+                    TxtPaymentMethod.Component.Sensitive = false;
+                    SelectPaymentMethod(TrvDocumentUiRules.ResolvePaymentMethod());
+                }
+                TxtNotes.Require(false);
+                return;
+            }
+
             if (DocumentTypeAnalyzer.Value.IsInformative())
             {
                 TxtOriginDocument.Require(false, false);
@@ -60,6 +75,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 if (SinglePaymentMethod)
                 {
                     TxtPaymentMethod.Require(false, false);
+                    TxtPaymentMethod.Component.Sensitive = true;
                 }
                 TxtNotes.Require(false);
                 return;

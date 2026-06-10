@@ -55,7 +55,7 @@ namespace LogicPOS.UI.Components.POS
                     return false;
                 }
 
-                if (customer.CardCredit < TotalFinal)
+                if (CustomersService.HasSufficientCardBalance(customer, TotalFinal) == false)
                 {
                     CustomAlerts.Warning(this)
                         .WithMessage(string.Format(LocalizedString.Instance["dialog_message_value_exceed_customer_card_credit"],customer.CardCredit.ToString("N2"),TotalFinal.ToString("N2")))

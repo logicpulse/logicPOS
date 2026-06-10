@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.Modals
                                               TxtTotal,
                                               TxtTotalWithTax), false, false, 0);
 
-            vbox.PackStart(TextBox.CreateHbox(TxtTax, TxtVatExemptionReason), false, false, 0);
+            vbox.PackStart(TextBox.CreateHbox(TxtVatRate, TxtVatExemptionReason), false, false, 0);
 
             vbox.PackStart(TxtNotes.Component, false, false, 0);
 

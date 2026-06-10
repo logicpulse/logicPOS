@@ -1,5 +1,6 @@
 using ErrorOr;
 using MediatR;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using System;
 
 namespace LogicPOS.Api.Features.Customers.UpdateCustomer
@@ -27,6 +28,7 @@ namespace LogicPOS.Api.Features.Customers.UpdateCustomer
         public string FiscalNumber { get; set; }
         public string CardNumber { get; set; }
         public decimal Discount { get; set; }
+        public CardMode CardMode { get; set; }
         public bool Supplier { get; set; }
         public string Notes { get; set; }
         public bool IsDeleted { get; set; }

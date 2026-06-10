@@ -47,5 +47,11 @@ namespace LogicPOS.UI.Components.Finance.PaymentMethods
         {
             return PaymentMethods.FirstOrDefault(pm => pm.Id == id);
         }
+
+        public static PaymentMethod GetByAcronym(string acronym)
+        {
+            return PaymentMethods.FirstOrDefault(pm =>
+                string.Equals(pm.Acronym, acronym, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

@@ -44,8 +44,9 @@ namespace LogicPOS.UI.Components.Pages
                 GridView.AppendColumn(CreateSelectColumn());
                 GridView.AppendColumn(Columns.CreateCodeColumn(1));
                 GridView.AppendColumn(Columns.CreateDesignationColumn(2));
+                GridView.AppendColumn(CreateIsDefaultColumn(3));
                 GridView.AppendColumn(CreateHardwareIdColumn());
-                GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
+                GridView.AppendColumn(Columns.CreateUpdatedAtColumn(5));
             }
             else
             {
@@ -62,8 +63,9 @@ namespace LogicPOS.UI.Components.Pages
 
             AddCodeSorting(0);
             AddDesignationSorting(1);
+            AddIsDefaultSorting();
             AddHardwareIdSorting();
-            AddUpdatedAtSorting(3);
+            AddUpdatedAtSorting(Options != null && Options.Count != 0 ? 5 : 4);
         }
 
         private TreeViewColumn CreateSelectColumn()

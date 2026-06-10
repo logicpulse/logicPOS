@@ -157,7 +157,10 @@ namespace LogicPOS.UI.Components.Terminals
                 return null;
             }
 
-            return terminals.Value.ToList();
+            return terminals.Value
+                .OrderByDescending(t => t.IsDefault)
+                .ThenBy(t => t.Order)
+                .ToList();
         }
     }
 }

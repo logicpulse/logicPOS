@@ -1,4 +1,6 @@
+using Gtk;
 using LogicPOS.Api.Entities;
+using CardMode = LogicPOS.Api.Features.Finance.Customers.Customers.Common.CardMode;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Services;
 using LogicPOS.Globalization;
@@ -17,6 +19,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeCustomerTypesComboBox();
             _txtCardCredit.Text = "0";
             _txtCardCredit.Component.Sensitive = false;
+            InitializeCardModeComboBox();
 
             if (_modalMode == EntityEditionModalMode.Insert && SystemInformationService.SystemInformation.IsAngola)
             {
@@ -50,6 +53,22 @@ namespace LogicPOS.UI.Components.Modals
                                                              priceTypes,
                                                              currentPriceType,
                                                              true);
+        }
+
+        private void InitializeCardModeComboBox()
+        {
+            _lblCardMode = new Label(LocalizedString.Instance["global_card_mode"]);
+            _lblCardMode.SetAlignment(0, 0);
+            _comboCardMode = new ComboBox(new[]
+            {
+                LocalizedString.Instance["global_debit"],
+                LocalizedString.Instance["global_credit"]
+            });
+            _comboCardMode.Active = (int)CardMode.Debit;
+
+            _cardModeComponent = new VBox(false, 2);
+            _cardModeComponent.PackStart(_lblCardMode, false, false, 0);
+            _cardModeComponent.PackStart(_comboCardMode, false, false, 0);
         }
 
         private void InitializeCountriesComboBox()

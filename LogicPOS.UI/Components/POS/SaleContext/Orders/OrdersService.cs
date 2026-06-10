@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Features.Orders.AddTicket;
+using LogicPOS.Api.Features.Orders.AddTicket;
 using LogicPOS.Api.Features.Orders.CloseOrder;
 using LogicPOS.Api.Features.Orders.CreateOrder;
 using LogicPOS.Api.Features.Orders.GetAllOrders;
@@ -162,7 +162,6 @@ namespace LogicPOS.UI.Services
 
             return true;
         }
-
 
         public static bool SplitTicket(Guid orderId, IEnumerable<SaleItem> items, int splittersNumber)
         {

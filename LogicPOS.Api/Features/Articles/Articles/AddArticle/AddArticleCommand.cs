@@ -38,7 +38,8 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public Guid VatDirectSellingId { get; set; } 
         public Guid? VatExemptionReasonId { get; set; }
         public bool IsComposed { get; set; } 
-        public bool UniqueArticles { get; set; } 
+        public bool UniqueArticles { get; set; }
+        public bool IsSdrPackaging { get; set; }
         public string Notes { get; set; }
         public string BarcodeLabelPrintModel { get; set; }
     }

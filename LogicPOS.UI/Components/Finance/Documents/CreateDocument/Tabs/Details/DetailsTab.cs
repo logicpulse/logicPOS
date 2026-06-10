@@ -1,13 +1,13 @@
 using Gtk;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {
@@ -80,12 +80,29 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 SerialNumber = detail.SerialNumber,
             });
 
-            return details.ToList();
+            var list = details.ToList();
+
+            if (TrvDocumentUiRules.IsTrvDocument(GetDocumentType?.Invoke()))
+            {
+                return list;
+            }
+
+            return SdrDocumentDetailsService.Enrich(list);
         }
 
         public override bool IsValid()
         {
-            return Page.Items.Count > 0;
+            if (Page.Items.Count == 0)
+            {
+                return false;
+            }
+
+            if (!TrvDocumentUiRules.IsTrvDocument(GetDocumentType?.Invoke()))
+            {
+                return true;
+            }
+
+            return Page.Items.All(item => TrvDocumentUiRules.IsAllowedArticle(item.Code));
         }
     }
 }

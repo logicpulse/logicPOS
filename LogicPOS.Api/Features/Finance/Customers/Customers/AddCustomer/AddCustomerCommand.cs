@@ -1,5 +1,6 @@
 using ErrorOr;
 using MediatR;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using System;
 
 namespace LogicPOS.Api.Features.Customers.AddCustomer
@@ -25,6 +26,7 @@ namespace LogicPOS.Api.Features.Customers.AddCustomer
         public string CardNumber { get; set; }
         public string DiscountType { get; set; }
         public decimal Discount { get; set; }
+        public CardMode CardMode { get; set; }
         public bool Supplier { get; set; }
         public string Notes { get; set; }
     }

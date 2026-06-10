@@ -32,6 +32,9 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtFiscalNumber = TextBox.Simple("global_fiscal_number", true, true, RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2));
         private TextBox _txtCardNumber = TextBox.Simple("global_card_number", false, true, RegularExpressions.AlphaNumeric);
         private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private Label _lblCardMode;
+        private ComboBox _comboCardMode;
+        private VBox _cardModeComponent;
         private CheckButton _checkSupplier = new CheckButton(LocalizedString.Instance["global_supplier"]);
 
         IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",

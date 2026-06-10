@@ -31,6 +31,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtTimerInterval.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
+            SensitiveFields.Add(_checkDefaultTerminal);
         }
         protected override void AddValidatableFields()
         {
@@ -62,13 +63,14 @@ namespace LogicPOS.UI.Components.Modals
                 Code = _txtCode.Text,
                 Designation = _txtDesignation.Text,
                 TimerInterval = uint.Parse(_txtTimerInterval.Text),
-                PlaceId = _comboPlaces.SelectedEntity?.Id ?? Guid.Empty,
-                PrinterId = _comboPrinters.SelectedEntity?.Id ?? Guid.Empty,
-                ThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id ?? Guid.Empty,
-                PoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id ?? Guid.Empty,
-                WeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id ?? Guid.Empty,
-                BarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id ?? Guid.Empty,
-                CardReaderId = _comboCardReaders.SelectedEntity?.Id ?? Guid.Empty,
+                PlaceId = _comboPlaces.SelectedEntity?.Id,
+                PrinterId = _comboPrinters.SelectedEntity?.Id,
+                ThermalPrinterId = _comboThermalPrinters.SelectedEntity?.Id,
+                PoleDisplayId = _comboPoleDisplays.SelectedEntity?.Id,
+                WeighingMachineId = _comboWeighingMachines.SelectedEntity?.Id,
+                BarcodeReaderId = _comboBarcodeReaders.SelectedEntity?.Id,
+                CardReaderId = _comboCardReaders.SelectedEntity?.Id,
+                IsDefault = _checkDefaultTerminal.Active,
                 Notes = _txtNotes.Value.Text                
             };
         }
@@ -80,6 +82,8 @@ namespace LogicPOS.UI.Components.Modals
             _txtTimerInterval.Text = _entity.TimerInterval.ToString();
             _txtHardwareId.Text = _entity.HardwareId;
             _checkDisabled.Active = _entity.IsDeleted;
+            _checkDefaultTerminal.Active = _entity.IsDefault;
+            _checkDefaultTerminal.Sensitive = !_entity.IsDefault;
             _txtNotes.Value.Text = _entity.Notes;
         }
         protected override bool AddEntity() => false;

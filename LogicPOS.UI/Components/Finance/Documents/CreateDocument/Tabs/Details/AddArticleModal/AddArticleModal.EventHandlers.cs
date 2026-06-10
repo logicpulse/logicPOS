@@ -32,11 +32,18 @@ namespace LogicPOS.UI.Components.Modals
             {
                 return;
             }
-            if(AllFieldsAreValid()==true && TxtArticle.SelectedEntity == null)
+
+            if (!ValidateTrvArticleSelection())
+            {
+                return;
+            }
+
+            if (!IsTrvMode && AllFieldsAreValid() == true && TxtArticle.SelectedEntity == null)
             {
                 CreateArticleAndSelect();
             }
-            if (TxtArticle.SelectedEntity != null && (TxtArticle.SelectedEntity as ArticleViewModel).Designation != TxtArticle.Entry.Text)
+
+            if (!IsTrvMode && TxtArticle.SelectedEntity != null && (TxtArticle.SelectedEntity as ArticleViewModel).Designation != TxtArticle.Entry.Text)
             {
                 CreateArticleAndSelect();
             }
@@ -50,9 +57,9 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentDetail.UnitPrice =  decimal.Parse(TxtPrice.Text);
                 DocumentDetail.Quantity = decimal.Parse(TxtQuantity.Text);
                 DocumentDetail.Discount = decimal.Parse(TxtDiscount.Text);
-                DocumentDetail.VatRate = TxtTax.SelectedEntity as VatRate;
-                DocumentDetail.VatRateId = (TxtTax.SelectedEntity as VatRate)?.Id ?? DocumentDetail.VatRateId;
-                DocumentDetail.VatDesignation = TxtTax.Text;
+                DocumentDetail.VatRate = TxtVatRate.SelectedEntity as VatRate;
+                DocumentDetail.VatRateId = (TxtVatRate.SelectedEntity as VatRate)?.Id ?? DocumentDetail.VatRateId;
+                DocumentDetail.VatDesignation = TxtVatRate.Text;
                 DocumentDetail.Vat = _vatRateValue;
                 DocumentDetail.VatExemptionReason = TxtVatExemptionReason.SelectedEntity as VatExemptionReason;
                 DocumentDetail.ExemptionReason = DocumentDetail.VatExemptionReason is null ? TxtVatExemptionReason.Text : DocumentDetail.VatExemptionReason.Designation;
@@ -76,7 +83,7 @@ namespace LogicPOS.UI.Components.Modals
                 ClassId = ArticleClassesService.DefaultArticleClass.Id,
                 MeasurementUnitId = MeasurementUnitsService.DefaultMeasurementUnit.Id,
                 SizeUnitId = SizeUnitsService.DefaultSizeUnit.Id,
-                VatDirectSellingId = (TxtTax.SelectedEntity as VatRate).Id,
+                VatDirectSellingId = (TxtVatRate.SelectedEntity as VatRate).Id,
                 VatExemptionReasonId = TxtVatExemptionReason.SelectedEntity == null ? null : (TxtVatExemptionReason.SelectedEntity as VatExemptionReason)?.Id,
                 Notes = TxtNotes.Text,
 
@@ -155,8 +162,8 @@ namespace LogicPOS.UI.Components.Modals
 
             if (response == ResponseType.Ok && page.SelectedEntity != null)
             {
-                TxtTax.Text = page.SelectedEntity.Designation;
-                TxtTax.SelectedEntity = page.SelectedEntity;
+                TxtVatRate.Text = page.SelectedEntity.Designation;
+                TxtVatRate.SelectedEntity = page.SelectedEntity;
                 _vatRateValue = page.SelectedEntity.Value;
                 UpdateTotals();
                 UpdateValidatableFields();
@@ -181,6 +188,11 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSelectArticle_Clicked(object sender, EventArgs e)
         {
+            if (IsTrvMode)
+            {
+                return;
+            }
+
             var page = new ArticlesPage(null, PageOptions.SelectionPageOptions);
             var selectModal = new EntitySelectionModal<ArticleViewModel>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectModal.Run();
@@ -229,6 +241,11 @@ namespace LogicPOS.UI.Components.Modals
 
         private void ArticleAutocompleteLine_Selected(object article)
         {
+            if (IsTrvMode)
+            {
+                return;
+            }
+
             SelectArticle(article as ArticleViewModel);
             TxtSerialNumber.Clear();
             TxtQuantity.Component.Sensitive = true;

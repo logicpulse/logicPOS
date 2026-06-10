@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (FiscalYearsService.HasActiveFiscalYear())
             {
-                ResponseType dialog1Response = CustomAlerts.Question(BackOfficeWindow.Instance)
+                ResponseType dialog1Response = CustomAlerts.Question(this)
                                                            .WithSize(new Size(600, 400))
                                                            .WithTitle(LocalizedString.Instance["window_title_series_fiscal_year_close_current"])
                                                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_series_fiscal_year_close_current"], FiscalYearsService.CurrentFiscalYear.Designation))
@@ -94,6 +94,9 @@ namespace LogicPOS.UI.Components.Modals
 
                 if (FiscalYearsService.CloseCurrentFiscalYear() == false)
                 {
+                    CustomAlerts.Error(this)
+                                .WithMessage("Não foi possível fechar o ano fiscal atual.")
+                                .ShowAlert();
                     return false;
                 }
             }

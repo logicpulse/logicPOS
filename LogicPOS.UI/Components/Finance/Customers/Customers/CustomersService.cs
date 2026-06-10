@@ -138,5 +138,11 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
                 && customer.IsFinalConsumer == false
                 && string.IsNullOrWhiteSpace(customer.CardNumber) == false;
         }
+
+        public static bool HasSufficientCardBalance(Customer customer, decimal amount)
+        {
+            return customer != null
+                && (customer.CardMode == CardMode.Credit || customer.CardCredit >= amount);
+        }
     }
 }

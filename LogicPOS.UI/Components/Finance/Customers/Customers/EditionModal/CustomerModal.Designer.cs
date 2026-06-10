@@ -51,6 +51,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_txtEmail.Entry);
             SensitiveFields.Add(_txtFiscalNumber.Entry);
             SensitiveFields.Add(_txtCardNumber.Entry);
+            SensitiveFields.Add(_comboCardMode);
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_checkSupplier);
             SensitiveFields.Add(_txtDiscount.Entry);
@@ -128,6 +129,7 @@ namespace LogicPOS.UI.Components.Modals
             var contactsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
             contactsTab.PackStart(_txtCardNumber.Component, false, false, 0);
+            contactsTab.PackStart(_cardModeComponent, false, false, 0);
             contactsTab.PackStart(_txtCardCredit.Component, false, false, 0);
             contactsTab.PackStart(_txtBirthDate.Component, false, false, 0);
 

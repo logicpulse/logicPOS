@@ -77,7 +77,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             var modalMode = GetDocumentType != null && GetDocumentType() == "NC" 
                 ? DocumentDetailModalMode.CreditNoteUpdate : DocumentDetailModalMode.Update;
 
-            var modal = new AddArticleModal(SourceWindow, modalMode, SelectedEntity);
+            var modal = new AddArticleModal(SourceWindow, modalMode, SelectedEntity, GetDocumentType?.Invoke());
             var response = modal.Run();
             modal.Destroy();
             OnTotalChanged?.Invoke(TotalFinal);
@@ -86,7 +86,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private int RunInsertModal()
         {
-            var modal = new AddArticleModal(SourceWindow, DocumentDetailModalMode.Insert);
+            var modal = new AddArticleModal(SourceWindow, DocumentDetailModalMode.Insert, documentTypeAcronym: GetDocumentType?.Invoke());
             var response = (ResponseType)modal.Run();
 
             if (response == ResponseType.Ok)

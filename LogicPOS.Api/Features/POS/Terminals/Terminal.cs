@@ -34,5 +34,6 @@ namespace LogicPOS.Api.Entities
         public string HardwareId { get; set; }
 
         public uint TimerInterval { get; set; }
+        public bool IsDefault { get; set; }
     }
 }

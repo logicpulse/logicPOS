@@ -18,6 +18,7 @@ namespace LogicPOS.Api.Features.Terminals.UpdateTerminal
         public Guid? CardReaderId { get; set; }
         public Guid? PoleDisplayId { get; set; }
         public uint TimerInterval { get; set; }
+        public bool IsDefault { get; set; }
         public string Notes { get; set; }
     }
 }

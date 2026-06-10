@@ -17,7 +17,22 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var title = LocalizedString.Instance["global_hardware_id"];
-            return Columns.CreateColumn(title, 2, RenderValue);
+            var sortIndex = Options != null && Options.Count != 0 ? 4 : 3;
+            return Columns.CreateColumn(title, sortIndex, RenderValue);
+        }
+
+        private TreeViewColumn CreateIsDefaultColumn(int sortIndex)
+        {
+            void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var terminal = (Terminal)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = terminal.IsDefault
+                    ? LocalizedString.Instance["global_treeview_true"]
+                    : string.Empty;
+            }
+
+            var title = LocalizedString.Instance["global_by_default"];
+            return Columns.CreateColumn(title, sortIndex, RenderValue);
         }
     }
 }

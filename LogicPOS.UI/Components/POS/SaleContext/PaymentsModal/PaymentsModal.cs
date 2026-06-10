@@ -6,6 +6,7 @@ using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -159,7 +160,8 @@ namespace LogicPOS.UI.Components.POS
                     TotalFinal = OrderTotalFinal;
                     break;
                 case PaymentMode.Partial:
-                    TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal);
+                    TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal)
+                        + SdrDocumentDetailsService.CalculateDepositTotal(_partialPaymentItems);
                     break;
                 case PaymentMode.Splited:
                     if (InitialSplittersNumber != 0 && InitialSplittersNumber == SplittersNumber)
@@ -289,7 +291,7 @@ namespace LogicPOS.UI.Components.POS
                 return SaleContext.CurrentOrder.GetDocumentDetails();
             }
 
-            return SaleItem.GetOrderDetailsFromSaleItems(_partialPaymentItems);
+            return SdrDocumentDetailsService.EnrichFromSaleItems(_partialPaymentItems);
         }
 
         private IEnumerable<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod> GetPaymentMethodsDtos()
