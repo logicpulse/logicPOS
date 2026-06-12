@@ -16,6 +16,7 @@ using System.Drawing;
 using System.Linq;
 using DocumentDetail = LogicPOS.UI.Components.Documents.CreateDocument.DocumentDetail;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -100,6 +101,7 @@ namespace LogicPOS.UI.Components.Modals
             _vatRateValue = detail.Vat;
             TxtNotes.Text = detail.Notes;
             TxtSerialNumber.Text = detail.SerialNumber;
+            ApplySerialNumberQuantityRestriction();
             UpdateTotals();
             UpdateValidatableFields();
         }
@@ -211,13 +213,41 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             ValidationUtilities.ShowValidationErrors(ValidatableFields);
+            if (!IsSerialNumberQuantityValid())
+            {
+                CustomAlerts.Error()
+                    .WithMessage("Artigos com número de série têm de ter quantidade 1.")
+                    .ShowAlert();
+            }
 
             Run();
         }
 
         protected bool AllFieldsAreValid()
         {
-            return ValidatableFields.All(txt => txt.IsValid());
+            return ValidatableFields.All(txt => txt.IsValid()) && IsSerialNumberQuantityValid();
+        }
+
+        private bool IsSerialNumberQuantityValid()
+        {
+            if (string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
+            {
+                return true;
+            }
+
+            return decimal.TryParse(TxtQuantity.Text, out var quantity) && quantity == 1;
+        }
+
+        private void ApplySerialNumberQuantityRestriction()
+        {
+            if (string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
+            {
+                TxtQuantity.Component.Sensitive = true;
+                return;
+            }
+
+            TxtQuantity.Text = 1M.ToString("0.00");
+            TxtQuantity.Component.Sensitive = false;
         }
 
         private void UpdateTotals()

@@ -256,14 +256,18 @@ namespace LogicPOS.UI.Components.Modals
             if (string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
             {
                 Clear();
+                return;
             }
+
+            ApplySerialNumberQuantityRestriction();
+            UpdateTotals();
         }
 
         private void SerialNumberAutocompleteLine_Selected(object article)
         {
             SelectArticle(article as ArticleViewModel);
-            TxtQuantity.Text = "1";
-            TxtQuantity.Component.Sensitive = false;
+            ApplySerialNumberQuantityRestriction();
+            UpdateTotals();
         }
 
         private void TxtSerialNumber_SelectEntityClicked(object sender, EventArgs e)
@@ -278,6 +282,8 @@ namespace LogicPOS.UI.Components.Modals
                 TxtSerialNumber.Text = page.SelectedEntity.SerialNumber;
                 var article = ArticlesService.GetArticleViewModel(page.SelectedEntity.ArticleId);
                 SelectArticle(article);
+                ApplySerialNumberQuantityRestriction();
+                UpdateTotals();
             }
         }
 
