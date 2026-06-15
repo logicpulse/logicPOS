@@ -76,9 +76,9 @@ namespace LogicPOS.UI.Components.Modals
 
              var labelsResult = _mediator.Send(new GenerateBarcodeLabelPdfQuery(serialNumbers)).Result;
 
-            if (result.IsError)
+            if (labelsResult.IsError)
             {
-                ErrorHandlingService.HandleApiError(result);
+                ErrorHandlingService.HandleApiError(labelsResult);
                 return;
             }
 

@@ -1,3 +1,5 @@
+using System;
+using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 
@@ -89,18 +91,16 @@ namespace LogicPOS.UI.PDFViewer
                         {
                             printDocument.PrinterSettings = printDialog.PrinterSettings;
                             printDocument.OriginAtMargins = false;
-                            printDocument.DefaultPageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
 
+                            ApplyPdfPageSizeToPrintSettings(printDocument.DefaultPageSettings, pdfViewer.Document.PageSizes[0]);
+
+                            var currentPageIndex = 0;
+                            printDocument.BeginPrint += (s, bpArgs) => currentPageIndex = 0;
                             printDocument.QueryPageSettings += (s, qsArgs) =>
                             {
-                                var pdfPageSize = pdfViewer.Document.PageSizes[0];
-
-                                int exactWidth = (int)(pdfPageSize.Width / 72.0 * 100.0);
-                                int exactHeight = (int)(pdfPageSize.Height / 72.0 * 100.0);
-
-                                qsArgs.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom PDF Size", exactWidth, exactHeight);
-
-                                qsArgs.PageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+                                var pageIndex = Math.Min(currentPageIndex, pdfViewer.Document.PageCount - 1);
+                                ApplyPdfPageSizeToPrintSettings(qsArgs.PageSettings, pdfViewer.Document.PageSizes[pageIndex]);
+                                currentPageIndex++;
                             };
 
                             printDocument.Print();
@@ -112,6 +112,17 @@ namespace LogicPOS.UI.PDFViewer
                     }
                 }
             }
+        }
+
+        private static void ApplyPdfPageSizeToPrintSettings(PageSettings pageSettings, SizeF pdfPageSize)
+        {
+            var isLandscape = pdfPageSize.Width > pdfPageSize.Height;
+            var paperWidth = (int)(Math.Min(pdfPageSize.Width, pdfPageSize.Height) / 72.0 * 100.0);
+            var paperHeight = (int)(Math.Max(pdfPageSize.Width, pdfPageSize.Height) / 72.0 * 100.0);
+
+            pageSettings.Landscape = isLandscape;
+            pageSettings.PaperSize = new PaperSize("Custom PDF Size", paperWidth, paperHeight);
+            pageSettings.Margins = new Margins(0, 0, 0, 0);
         }
 
         private ToolStrip GetPdfViewerToolStrip()
