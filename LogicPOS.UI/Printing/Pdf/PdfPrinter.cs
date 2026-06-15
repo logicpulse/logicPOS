@@ -12,7 +12,6 @@ namespace LogicPOS.Printing.Services
 
             if (dialogResult != DialogResult.OK)
             {
-                printDialog.Dispose();
                 return dialogResult;
             }
 
@@ -21,7 +20,7 @@ namespace LogicPOS.Printing.Services
 
             PdfDocument pdf = new PdfDocument();
             pdf.LoadFromFile(fileLocation);
-            pdf.PrintSettings.PrinterName = printerName;
+            pdf.PrintSettings.PrinterName = printDialog.PrinterSettings.PrinterName;
             pdf.Print();
             pdf.Dispose();
 
