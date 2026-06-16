@@ -14,6 +14,7 @@ namespace LogicPOS.UI.Components.POS
         public IconButtonWithText BtnListMode { get; set; }
         public IconButtonWithText BtnListOrder { get; set; }
         public IconButtonWithText BtnSplitAccount { get; set; }
+        public IconButtonWithText BtnVoltaRefundReceipt { get; set; }
         public IconButtonWithText BtnMessages { get; set; }
         public IconButtonWithText BtnWeight { get; set; }
         public IconButtonWithText BtnGifts { get; set; }

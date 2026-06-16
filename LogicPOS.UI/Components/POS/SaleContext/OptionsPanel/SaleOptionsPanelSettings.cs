@@ -108,6 +108,15 @@ namespace LogicPOS.UI.Components
         public bool BtnSplitAccountVisible => Convert.ToBoolean(Theme.ButtonSplitAccount.Visible);
         #endregion
 
+        #region BtnVoltaRefundReceipt
+        public string BtnVoltaRefundReceiptName => Theme.ButtonVoltaRefundReceipt.Name;
+        public string BtnVoltaRefundReceiptText => Theme.ButtonVoltaRefundReceipt.Text;
+        public Point BtnVoltaRefundReceiptPosition => logicpos.Utils.StringToPosition(Theme.ButtonVoltaRefundReceipt.Position);
+        public Size BtnVoltaRefundReceiptSize => (Theme.ButtonVoltaRefundReceipt.Size as string).ToSize();
+        public string BtnVoltaRefundReceiptImageFileName => Theme.ButtonVoltaRefundReceipt.ImageFileName;
+        public bool BtnVoltaRefundReceiptVisible => Convert.ToBoolean(Theme.ButtonVoltaRefundReceipt.Visible);
+        #endregion
+
         #region BtnMessages
         public string BtnMessagesName => Theme.ButtonMessages.Name;
         public string BtnMessagesText => Theme.ButtonMessages.Text;
@@ -325,6 +334,18 @@ namespace LogicPOS.UI.Components
                                       BtnSplitAccountImageFileName);
 
             button.Visible = BtnSplitAccountVisible;
+
+            return button;
+        }
+
+        public IconButtonWithText CreateBtnVoltaRefundReceipt()
+        {
+            var button = CreateButton(BtnVoltaRefundReceiptName,
+                                      BtnVoltaRefundReceiptText,
+                                      BtnVoltaRefundReceiptSize,
+                                      BtnVoltaRefundReceiptImageFileName);
+
+            button.Visible = BtnVoltaRefundReceiptVisible;
 
             return button;
         }

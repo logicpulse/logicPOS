@@ -1,10 +1,9 @@
 using Gtk;
 using LogicPOS.UI.Application.Enums;
+using LogicPOS.UI.Components.System.Users.Permissions;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
-
-using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.POS
 {
     public partial class SaleOptionsPanel : Box
@@ -42,6 +41,7 @@ namespace LogicPOS.UI.Components.POS
             BtnNext.Clicked += BtnNext_Clicked;
             BtnPrevious.Clicked += BtnPrevious_Clicked;
             BtnSplitAccount.Clicked += BtnSplitAccount_Clicked;
+            BtnVoltaRefundReceipt.Clicked += BtnVoltaRefundReceipt_Clicked;
             SaleContext.ItemsPage.TicketOpened += ItemsPage_TicketOpened;
         }
 
@@ -67,6 +67,7 @@ namespace LogicPOS.UI.Components.POS
             if (BtnPayments.Visible) box.Put(BtnPayments, PanelSettings.BtnPaymentsPosition.X, PanelSettings.BtnPaymentsPosition.Y);
             if (BtnBarcode.Visible) box.Put(BtnBarcode, PanelSettings.BtnBarCodePosition.X, PanelSettings.BtnBarCodePosition.Y);
             if (BtnSplitAccount.Visible) box.Put(BtnSplitAccount, PanelSettings.BtnSplitAccountPosition.X, PanelSettings.BtnSplitAccountPosition.Y);
+            if (BtnVoltaRefundReceipt.Visible) box.Put(BtnVoltaRefundReceipt, PanelSettings.BtnVoltaRefundReceiptPosition.X, PanelSettings.BtnVoltaRefundReceiptPosition.Y);
             if (BtnMessages.Visible) box.Put(BtnMessages, PanelSettings.BtnMessagesPosition.X, PanelSettings.BtnMessagesPosition.Y);
 
             return box;
@@ -84,6 +85,7 @@ namespace LogicPOS.UI.Components.POS
             BtnListMode = PanelSettings.CreateBtnListMode();
             BtnListOrder = PanelSettings.CreateBtnListOrder();
             BtnSplitAccount = PanelSettings.CreateBtnSplitAccount();
+            BtnVoltaRefundReceipt = PanelSettings.CreateBtnVoltaRefundReceipt();
             BtnMessages = PanelSettings.CreateBtnMessages();
             BtnWeight = PanelSettings.CreateBtnWeight();
             BtnGifts = PanelSettings.CreateBtnGifts();
@@ -109,6 +111,11 @@ namespace LogicPOS.UI.Components.POS
                 BtnWeight.Visible = true;
                 BtnBarcode.Visible = true;
             }
+
+            if (SystemInformationService.SystemInformation.IsPortugal == false)
+            {
+                BtnVoltaRefundReceipt.Visible = false;
+            }
         }
 
         public void UpdateButtonsSensitivity()
@@ -128,6 +135,7 @@ namespace LogicPOS.UI.Components.POS
             BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission(UserProfilePermissions.Tickets.TICKETLIST_DELETE);
             BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
             BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
+            BtnVoltaRefundReceipt.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_MOVE);
         }

@@ -488,7 +488,7 @@
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_messages.png</ImageFileName>
 							<Visible>false</Visible>
 						</ButtonMessages>
-						<!-- ButtonSplitAccount : Disabled -->
+						<!-- ButtonSplitAccount -->
 						<ButtonSplitAccount>
 							<Name>touchButtonPosTicketPadSplitAccount</Name>
 							<Text>Resx[global_split_account]</Text>
@@ -497,6 +497,14 @@
 							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_split_payments.png</ImageFileName>
 							<Visible>false</Visible>
 						</ButtonSplitAccount>
+						<ButtonVoltaRefundReceipt>
+							<Name>touchButtonPosTicketPadVoltaRefundReceipt</Name>
+							<Text>Reemb. Volta</Text>
+							<Position>0,0</Position>
+							<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
+							<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_payments.png</ImageFileName>
+							<Visible>false</Visible>
+						</ButtonVoltaRefundReceipt>
 						<!-- BOF : Not Used Button in Retail Mode-->
 					</Buttons>
 				</EventBoxPosTicketPad>

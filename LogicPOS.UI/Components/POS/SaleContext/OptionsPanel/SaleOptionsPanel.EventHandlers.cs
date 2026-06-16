@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -340,6 +341,12 @@ namespace LogicPOS.UI.Components.POS
             ResponseType response = (ResponseType)modal.Run();
             modal.Destroy();
             PaymentsModal.InitialSplittersNumber = 0;
+            UpdateButtonsSensitivity();
+        }
+
+        private void BtnVoltaRefundReceipt_Clicked(object sender, EventArgs e)
+        {
+            VoltaRefundReceiptModal.Show(SourceWindow);
             UpdateButtonsSensitivity();
         }
     }
