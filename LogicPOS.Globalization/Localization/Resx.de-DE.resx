@@ -1354,6 +1354,9 @@ Um fortzufahren, drücken Sie Ja, um alle Terminals zu schließen, oder drücken
   <data name="global_documentfinance_type_title_rc" xml:space="preserve">
     <value>Kassenzettel</value>
   </data>
+  <data name="global_documentfinance_type_title_tr" xml:space="preserve">
+    <value>Volta-Erstattungsbeleg</value>
+  </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Kommentare</value>
   </data>

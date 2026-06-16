@@ -1403,6 +1403,9 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
   <data name="global_documentfinance_type_title_rc" xml:space="preserve">
     <value>Recibo</value>
   </data>
+  <data name="global_documentfinance_type_title_tr" xml:space="preserve">
+    <value>Talão Reembolso Volta</value>
+  </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Observações</value>
     <comment>Used in Report Label</comment>

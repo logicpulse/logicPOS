@@ -1404,6 +1404,9 @@ Pour continuer, appuyez sur Oui pour fermer tous les terminaux, ou appuyez sur N
   <data name="global_documentfinance_type_title_rc" xml:space="preserve">
     <value>Réception</value>
   </data>
+  <data name="global_documentfinance_type_title_tr" xml:space="preserve">
+    <value>Bon de remboursement Volta</value>
+  </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Commentaires</value>
     <comment>Used in Report Label</comment>

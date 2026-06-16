@@ -1404,6 +1404,9 @@ To continue press Yes to close all terminals, or press No and close all terminal
   <data name="global_documentfinance_type_title_rc" xml:space="preserve">
     <value>Sales Slip</value>
   </data>
+  <data name="global_documentfinance_type_title_tr" xml:space="preserve">
+    <value>Volta Refund Receipt</value>
+  </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Comments</value>
     <comment>Used in Report Label</comment>

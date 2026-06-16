@@ -1404,6 +1404,9 @@ Para continuar y cerrar todas las terminales presione SI o NO y cierre todos los
   <data name="global_documentfinance_type_title_rc" xml:space="preserve">
     <value>Pago</value>
   </data>
+  <data name="global_documentfinance_type_title_tr" xml:space="preserve">
+    <value>Talón Reembolso Volta</value>
+  </data>
   <data name="global_documentfinance_waybill_comments" xml:space="preserve">
     <value>Comentarios</value>
     <comment>Used in Report Label</comment>

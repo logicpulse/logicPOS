@@ -3734,6 +3734,15 @@ namespace LogicPOS.Globalization.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Volta Refund Receipt.
+        /// </summary>
+        public static string global_documentfinance_type_title_tr {
+            get {
+                return ResourceManager.GetString("global_documentfinance_type_title_tr", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Types of documents.
         /// </summary>
         public static string global_documentfinance_types {

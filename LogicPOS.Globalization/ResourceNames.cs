@@ -388,6 +388,7 @@
         public const string GLOBAL_DOCUMENTFINANCE_TYPE_TITLE_ND = "global_documentfinance_type_title_nd";
         public const string GLOBAL_DOCUMENTFINANCE_TYPE_TITLE_OR = "global_documentfinance_type_title_or";
         public const string GLOBAL_DOCUMENTFINANCE_TYPE_TITLE_RC = "global_documentfinance_type_title_rc";
+        public const string GLOBAL_DOCUMENTFINANCE_TYPE_TITLE_TR = "global_documentfinance_type_title_tr";
         public const string GLOBAL_DOCUMENTFINANCE_TYPES = "global_documentfinance_types";
         public const string GLOBAL_DOCUMENTFINANCE_WAYBILL_COMMENTS = "global_documentfinance_waybill_comments";
         public const string GLOBAL_DOCUMENTFINANCE_WAYBILL_DATA_LOAD = "global_documentfinance_waybill_data_load";
