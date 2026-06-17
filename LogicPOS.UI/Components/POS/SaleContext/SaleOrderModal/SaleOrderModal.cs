@@ -88,10 +88,10 @@ namespace LogicPOS.UI.Components.Modals
             }
             ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
             {
-                Number = SaleContext.CurrentOrder.Tickets.Last().Number,
+                Number = SaleContext.CurrentOrder.Tickets.First().Number,
                 Place = SaleContext.CurrentTable.Place,
                 Table = SaleContext.CurrentTable.Designation,
-                Items = SaleContext.CurrentOrder.Tickets.Last().Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                Items = SaleContext.CurrentOrder.Tickets.First().Items.Select(i => new Printing.Thermal.Printers.TicketItem
                 {
                     Article = i.Article.Designation,
                     Quantity = i.Quantity,
