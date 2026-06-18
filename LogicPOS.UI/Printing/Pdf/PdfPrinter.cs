@@ -50,16 +50,16 @@ namespace LogicPOS.Printing.Services
             var widthPt = (float)pageSize.Width;
             var heightPt = (float)pageSize.Height;
 
-            pdf.PrintSettings.Landscape = widthPt > heightPt;
-
             if (IsLabelPage(widthPt))
             {
+                pdf.PrintSettings.Landscape = false;
                 int exactWidth = (int)(widthPt / 72.0 * 100.0);
                 int exactHeight = (int)(heightPt / 72.0 * 100.0);
                 pdf.PrintSettings.PaperSize = new PaperSize("Custom Label", exactWidth, exactHeight);
             }
             else
             {
+                pdf.PrintSettings.Landscape = widthPt > heightPt;
                 var printerSettings = new PrinterSettings { PrinterName = printerName };
                 pdf.PrintSettings.PaperSize = CreateA4PaperSize(printerSettings);
             }

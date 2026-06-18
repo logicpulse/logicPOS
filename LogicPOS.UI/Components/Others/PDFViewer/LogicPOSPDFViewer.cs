@@ -123,16 +123,18 @@ namespace LogicPOS.UI.PDFViewer
         private static void ApplyPageSettings(PageSettings pageSettings, SizeF pdfPageSize)
         {
             pageSettings.Margins = new Margins(0, 0, 0, 0);
-            pageSettings.Landscape = pdfPageSize.Width > pdfPageSize.Height;
 
             if (IsLabelPage(pdfPageSize))
             {
+                // Custom size already matches PDF media box (e.g. 45×33 mm); Landscape would rotate 90° again.
+                pageSettings.Landscape = false;
                 int exactWidth = (int)(pdfPageSize.Width / 72.0 * 100.0);
                 int exactHeight = (int)(pdfPageSize.Height / 72.0 * 100.0);
                 pageSettings.PaperSize = new PaperSize("Custom Label", exactWidth, exactHeight);
             }
             else
             {
+                pageSettings.Landscape = pdfPageSize.Width > pdfPageSize.Height;
                 pageSettings.PaperSize = CreateA4PaperSize(pageSettings.PrinterSettings);
             }
         }
