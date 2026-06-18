@@ -3,12 +3,12 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Articles.Subfamilies;
+using LogicPOS.UI.Components.Finance;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
 using LogicPOS.UI.Components.Finance.VatRates;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals.Common;
-using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -137,16 +137,16 @@ namespace LogicPOS.UI.Components.Modals
             TxtArticle.SelectedEntity = article;
             TxtCode.Text = article.Code;
 
-            TxtPrice.Text = article.Price1.ToString("F2");
+            TxtVatRate.SelectedEntity = vatrate;
+            TxtVatRate.Text = vatrate.Designation;
+            _vatRateValue = article.VatDirectSelling ?? vatrate.Value;
+
+            TxtPrice.Text = UnitPriceHelper.ToNetUnitPrice(article.Price1, _vatRateValue, article).ToString("F2");
             TxtQuantity.Text = article.DefaultQuantity > 0 ? article.DefaultQuantity.ToString("F2") : 1.ToString("F2");
             TxtDiscount.Text = article.Discount.ToString("F2");
 
             TxtVatExemptionReason.SelectedEntity = vatExempetionReason;
             TxtVatExemptionReason.Text = vatExempetionReason?.Designation;
-
-            TxtVatRate.SelectedEntity = vatrate;
-            TxtVatRate.Text = vatrate.Designation;
-            _vatRateValue = article.VatDirectSelling.Value;
 
             TxtNotes.Text = article.Notes;
             TxtFamily.Text = article.Family;
@@ -191,7 +191,7 @@ namespace LogicPOS.UI.Components.Modals
                 Designation = TxtArticle.Text,
                 Article = selectedArticle,
                 ArticleId = selectedArticle.Id,
-                UnitPrice = selectedArticle.PriceWithVat? SaleItem.ExtractPriceWithoutVat(selectedArticle.Price1, _vatRateValue) : decimal.Parse(TxtPrice.Text),
+                UnitPrice = UnitPriceHelper.ParseUnitPrice(TxtPrice.Text),
                 Quantity = decimal.Parse(TxtQuantity.Text),
                 Discount = decimal.Parse(TxtDiscount.Text),
                 VatRate = TxtVatRate.SelectedEntity as VatRate,
@@ -261,29 +261,12 @@ namespace LogicPOS.UI.Components.Modals
                 var totalNet = subTotal - discountPrice;
                 TxtTotal.Text = totalNet.ToString("0.00");
                 var vatRatePrice = totalNet * _vatRateValue / 100M;
-                var totalWithTax = totalNet + vatRatePrice;
-                TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
-                
-                /*
-                var article = TxtArticle.SelectedEntity as ArticleViewModel;
-
-                if ( article!=null && article.PriceWithVat && _vatRateValue>0)
-                {
-                    price = SaleItem.ExtractPriceWithoutVat(price, _vatRateValue);
-                    discountPrice = quantity * price * discount / 100M;
-                    totalNet = quantity * price - discountPrice;
-                    vatRatePrice = totalNet * _vatRateValue / 100M;
-                    totalWithTax = totalNet + vatRatePrice;
-                    TxtPrice.Text = price.ToString("0.00");
-                    TxtTotal.Text = totalNet.ToString("0.00");
-                    TxtTotalWithTax.Text = totalWithTax.ToString("0.00");
-                    return;
-                }*/
+                TxtTotalWithTax.Text = (totalNet + vatRatePrice).ToString("0.00");
                 return;
             }
 
             TxtTotal.Text = 0M.ToString("0.00");
-            TxtTotalWithTax.Text = 0M.ToString("0.00"); 
+            TxtTotalWithTax.Text = 0M.ToString("0.00");
         }
     }
 }

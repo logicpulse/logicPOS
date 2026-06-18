@@ -8,6 +8,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Components.ArticleClasses;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.ArticlesTypes;
+using LogicPOS.UI.Components.Finance;
 using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Tabs.Details.AddArticleModal;
 using LogicPOS.UI.Components.MeasurementUnits;
 using LogicPOS.UI.Components.Pages;
@@ -54,7 +55,7 @@ namespace LogicPOS.UI.Components.Modals
                 DocumentDetail.ArticleId = (TxtArticle.SelectedEntity as ArticleViewModel)?.Id ?? DocumentDetail.ArticleId;
                 DocumentDetail.Code = DocumentDetail.Article?.Code ?? DocumentDetail.Code;
                 DocumentDetail.Designation = TxtArticle?.Text ?? DocumentDetail.Designation;
-                DocumentDetail.UnitPrice =  decimal.Parse(TxtPrice.Text);
+                DocumentDetail.UnitPrice = UnitPriceHelper.ParseUnitPrice(TxtPrice.Text);
                 DocumentDetail.Quantity = decimal.Parse(TxtQuantity.Text);
                 DocumentDetail.Discount = decimal.Parse(TxtDiscount.Text);
                 DocumentDetail.VatRate = TxtVatRate.SelectedEntity as VatRate;

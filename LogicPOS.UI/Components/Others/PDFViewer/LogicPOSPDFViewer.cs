@@ -85,7 +85,7 @@ namespace LogicPOS.UI.PDFViewer
                 {
                     try
                     {
-                        using (var printDocument = pdfViewer.Document.CreatePrintDocument(PdfiumViewer.PdfPrintMode.CutMargin))
+                        using (var printDocument = pdfViewer.Document.CreatePrintDocument(PdfiumViewer.PdfPrintMode.ShrinkToMargin))
                         {
                             printDocument.PrinterSettings = printDialog.PrinterSettings;
                             printDocument.OriginAtMargins = false;

@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.UI.Components.Finance;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using System.Collections.Generic;
@@ -49,13 +50,11 @@ namespace LogicPOS.UI.Components.POS
 
         public void SetUnitPrice(decimal price)
         {
-            UnitPrice = (Article.PriceWithVat && Vat > 0) ? ExtractPriceWithoutVat(price, Vat) : price;
+            UnitPrice = UnitPriceHelper.ToNetUnitPrice(price, Vat, Article);
         }
 
         public static decimal ExtractPriceWithoutVat(decimal priceWithVat, decimal vat)
-        {
-            return priceWithVat / (1 + vat / 100);
-        }
+            => UnitPriceHelper.ToNetUnitPrice(priceWithVat, vat, true);
 
         public SaleItem SingleClone()
         {
@@ -114,14 +113,17 @@ namespace LogicPOS.UI.Components.POS
         }
 
         public static SaleItem CreateDepositLine(ArticleViewModel depositArticle, decimal quantity)
-            => new SaleItem
+        {
+            var item = new SaleItem
             {
                 Article = depositArticle,
                 Quantity = quantity,
-                UnitPrice = depositArticle.Price1,
                 Discount = 0,
                 Vat = depositArticle.VatDirectSelling ?? 0
             };
+            item.SetUnitPrice(depositArticle.Price1);
+            return item;
+        }
 
         public static IEnumerable<DocumentDetailDto> GetOrderDetailsFromSaleItems(IEnumerable<SaleItem> items)
         {
