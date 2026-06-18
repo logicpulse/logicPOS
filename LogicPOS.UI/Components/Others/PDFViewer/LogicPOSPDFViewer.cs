@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Drawing.Printing;
 using System.Windows.Forms;
 
@@ -85,22 +86,18 @@ namespace LogicPOS.UI.PDFViewer
                 {
                     try
                     {
-                        using (var printDocument = pdfViewer.Document.CreatePrintDocument(PdfiumViewer.PdfPrintMode.ShrinkToMargin))
+                        var pdfPageSize = pdfViewer.Document.PageSizes[0];
+                        var printMode = ResolvePrintMode(pdfPageSize);
+
+                        using (var printDocument = pdfViewer.Document.CreatePrintDocument(printMode))
                         {
                             printDocument.PrinterSettings = printDialog.PrinterSettings;
                             printDocument.OriginAtMargins = false;
-                            printDocument.DefaultPageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+                            ApplyPageSettings(printDocument.DefaultPageSettings, pdfPageSize);
 
                             printDocument.QueryPageSettings += (s, qsArgs) =>
                             {
-                                var pdfPageSize = pdfViewer.Document.PageSizes[0];
-
-                                int exactWidth = (int)(pdfPageSize.Width / 72.0 * 100.0);
-                                int exactHeight = (int)(pdfPageSize.Height / 72.0 * 100.0);
-
-                                qsArgs.PageSettings.PaperSize = new System.Drawing.Printing.PaperSize("Custom PDF Size", exactWidth, exactHeight);
-
-                                qsArgs.PageSettings.Margins = new System.Drawing.Printing.Margins(0, 0, 0, 0);
+                                ApplyPageSettings(qsArgs.PageSettings, pdfPageSize);
                             };
 
                             printDocument.Print();
@@ -112,6 +109,56 @@ namespace LogicPOS.UI.PDFViewer
                     }
                 }
             }
+        }
+
+        private static bool IsLabelPage(SizeF pdfPageSize)
+        {
+            const double labelMaxWidthMm = 110;
+            return pdfPageSize.Width / 72.0 * 25.4 <= labelMaxWidthMm;
+        }
+
+        /// <summary>
+        /// Applies paper size and orientation from the current PDF only — never inherited from prior jobs.
+        /// </summary>
+        private static void ApplyPageSettings(PageSettings pageSettings, SizeF pdfPageSize)
+        {
+            pageSettings.Margins = new Margins(0, 0, 0, 0);
+            pageSettings.Landscape = pdfPageSize.Width > pdfPageSize.Height;
+
+            if (IsLabelPage(pdfPageSize))
+            {
+                int exactWidth = (int)(pdfPageSize.Width / 72.0 * 100.0);
+                int exactHeight = (int)(pdfPageSize.Height / 72.0 * 100.0);
+                pageSettings.PaperSize = new PaperSize("Custom Label", exactWidth, exactHeight);
+            }
+            else
+            {
+                pageSettings.PaperSize = CreateA4PaperSize(pageSettings.PrinterSettings);
+            }
+        }
+
+        private static PaperSize CreateA4PaperSize(PrinterSettings printerSettings)
+        {
+            if (printerSettings?.PaperSizes != null)
+            {
+                foreach (PaperSize size in printerSettings.PaperSizes)
+                {
+                    if (size.Kind == PaperKind.A4)
+                        return size;
+                }
+            }
+
+            return new PaperSize("A4", 827, 1169);
+        }
+
+        /// <summary>
+        /// Label PDFs (e.g. 45×33, 105×53 mm) print 1:1; larger documents shrink to fit printer margins.
+        /// </summary>
+        private static PdfiumViewer.PdfPrintMode ResolvePrintMode(SizeF pdfPageSize)
+        {
+            return IsLabelPage(pdfPageSize)
+                ? PdfiumViewer.PdfPrintMode.CutMargin
+                : PdfiumViewer.PdfPrintMode.ShrinkToMargin;
         }
 
         private ToolStrip GetPdfViewerToolStrip()
