@@ -25,14 +25,22 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (AppSettings.Instance.AppScreenSize.Width <= 1024 && AppSettings.Instance.AppScreenSize.Height <= 800)
             {
-                _modalSize=new Size(1000, 700);
+                _modalSize = new Size(1000, 700);
             }
             else
             {
-                _modalSize=new Size(1200, 700);
+                _modalSize = new Size(1200, 700);
             }
 
-            if (LicensingService.Data.StocksModule == false && PreferenceParametersService.CheckStocksMessage)
+            if (LicensingService.Data.StocksModule)
+            {
+                var stockManagementModal = new StockManagementModal(parent, _modalSize);
+                stockManagementModal.Run();
+                stockManagementModal.Destroy();
+                return;
+            }
+
+            if (PreferenceParametersService.CheckStocksMessage)
             {
                 var messageDialog = new CustomAlert(BackOfficeWindow.Instance)
                     .WithMessageType(MessageType.Warning)
@@ -46,15 +54,9 @@ namespace LogicPOS.UI.Components.Modals
                     Process.Start("https://logic-pos.com/");
                     return;
                 }
-
-                AddSimpleStockMovementModal.ShowModal(parent);
-
-                return;   
             }
 
-            var stockManagementModal = new StockManagementModal(parent, _modalSize);
-            stockManagementModal.Run();
-            stockManagementModal.Destroy();
+            AddSimpleStockMovementModal.ShowModal(parent);
         }
 
     }

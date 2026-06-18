@@ -111,11 +111,6 @@ namespace LogicPOS.UI.Components.POS
                 BtnWeight.Visible = true;
                 BtnBarcode.Visible = true;
             }
-
-            if (SystemInformationService.SystemInformation.IsPortugal == false)
-            {
-                BtnVoltaRefundReceipt.Visible = false;
-            }
         }
 
         public void UpdateButtonsSensitivity()
@@ -135,7 +130,8 @@ namespace LogicPOS.UI.Components.POS
             BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission(UserProfilePermissions.Tickets.TICKETLIST_DELETE);
             BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
             BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
-            BtnVoltaRefundReceipt.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
+            BtnVoltaRefundReceipt.Sensitive = SystemInformationService.SystemInformation.IsPortugal
+                && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_MOVE);
         }

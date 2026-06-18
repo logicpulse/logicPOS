@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.UI.Printing
@@ -55,6 +56,25 @@ namespace LogicPOS.UI.Printing
                                     c == '+' ||
                                     c == '/' ||
                                     c == '=');
+        }
+
+        protected static string ToThermalText(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            var sb = new StringBuilder();
+            foreach (char letter in text.Normalize(NormalizationForm.FormD).ToCharArray())
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(letter) != UnicodeCategory.NonSpacingMark)
+                {
+                    sb.Append(letter);
+                }
+            }
+
+            return sb.ToString();
         }
 
         protected void PrintHeader()

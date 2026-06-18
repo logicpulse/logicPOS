@@ -202,7 +202,7 @@ namespace LogicPOS.UI.Printing
             _printer.AlignCenter();
             _printer.DoubleWidth2();
             _printer.ExpandedMode(PrinterModeState.On);
-            _printer.BoldMode(LocalizedString.Instance[documentType]);
+            _printer.BoldMode(ToThermalText(LocalizedString.Instance[documentType]));
             _printer.Separator(' ');
             _printer.Append(_data.Document.Number);
             _printer.Append($"Original");

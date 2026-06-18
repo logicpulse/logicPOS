@@ -346,6 +346,11 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnVoltaRefundReceipt_Clicked(object sender, EventArgs e)
         {
+            if (SystemInformationService.SystemInformation.IsPortugal == false)
+            {
+                return;
+            }
+
             VoltaRefundReceiptModal.Show(SourceWindow);
             UpdateButtonsSensitivity();
         }

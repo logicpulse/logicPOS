@@ -455,7 +455,7 @@
 <ButtonSplitAccount>
 	<Name>touchButtonPosTicketPadSplitAccount_Green</Name>
 	<Text>Resx[global_split_account]</Text>
-	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_split_payments.png</ImageFileName>
 	<Visible>true</Visible>
@@ -464,7 +464,7 @@
 <ButtonVoltaRefundReceipt>
 	<Name>touchButtonPosTicketPadVoltaRefundReceipt</Name>
 	<Text>Reemb. Volta</Text>
-	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 3, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
+	<Position>Eval[Size(posMainWindowTicketPadButtonSize.Width * 2, posMainWindowTicketPadButtonSize.Height * 3)]</Position>
 	<Size>Eval[Size(posMainWindowTicketPadButtonSize.Width, posMainWindowTicketPadButtonSize.Height)]</Size>
 	<ImageFileName>Assets/Images/Icons/icon_pos_ticketpad_payments.png</ImageFileName>
 	<Visible>true</Visible>
