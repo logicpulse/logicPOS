@@ -197,10 +197,11 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtSerialNumber.Entry.WidthRequest = 120;
 
-            var autoCompleteLines = ArticlesService.GetUniqueArticlesAutocompleteLines();
-            TxtSerialNumber.WithAutoCompletion(autoCompleteLines, id => ArticlesService.GetArticleViewModel(id));
+            _serialNumberAutocompleteLines = ArticlesService.GetUniqueArticlesAutocompleteLines();
+            TxtSerialNumber.WithAutoCompletion(_serialNumberAutocompleteLines, id => ArticlesService.GetArticleViewModel(id));
             TxtSerialNumber.OnCompletionSelected += SerialNumberAutocompleteLine_Selected;
             TxtSerialNumber.Entry.Changed += TxtSerialNumber_Changed;
+            TxtSerialNumber.Entry.Activated += TxtSerialNumber_Activated;
             TxtSerialNumber.SelectEntityClicked += TxtSerialNumber_SelectEntityClicked;
         }
 

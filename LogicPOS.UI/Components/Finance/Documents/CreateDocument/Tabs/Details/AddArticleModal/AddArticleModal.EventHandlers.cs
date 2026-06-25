@@ -254,7 +254,16 @@ namespace LogicPOS.UI.Components.Modals
 
         private void TxtSerialNumber_Changed(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TxtSerialNumber.Text))
+            var raw = TxtSerialNumber.Text;
+            var normalized = NormalizeSerialNumber(raw);
+            if (normalized != raw)
+            {
+                TxtSerialNumber.Text = normalized;
+                ResolveArticleFromSerialNumber();
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(normalized))
             {
                 Clear();
                 return;
@@ -264,11 +273,50 @@ namespace LogicPOS.UI.Components.Modals
             UpdateTotals();
         }
 
+        private void TxtSerialNumber_Activated(object sender, EventArgs e)
+        {
+            ResolveArticleFromSerialNumber();
+        }
+
         private void SerialNumberAutocompleteLine_Selected(object article)
         {
             SelectArticle(article as ArticleViewModel);
             ApplySerialNumberQuantityRestriction();
             UpdateTotals();
+        }
+
+        private void ResolveArticleFromSerialNumber()
+        {
+            if (IsTrvMode)
+            {
+                return;
+            }
+
+            var serialNumber = NormalizeSerialNumber(TxtSerialNumber.Text);
+            if (string.IsNullOrWhiteSpace(serialNumber))
+            {
+                return;
+            }
+
+            var article = ArticlesService.GetArticleBySerialNumber(serialNumber, _serialNumberAutocompleteLines);
+            if (article == null)
+            {
+                return;
+            }
+
+            SelectArticle(article);
+            ApplySerialNumberQuantityRestriction();
+            UpdateTotals();
+        }
+
+        private static string NormalizeSerialNumber(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+            {
+                return text;
+            }
+
+            return text.Trim().Trim('\r', '\n', '\t');
         }
 
         private void TxtSerialNumber_SelectEntityClicked(object sender, EventArgs e)

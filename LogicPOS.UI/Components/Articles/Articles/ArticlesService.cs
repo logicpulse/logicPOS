@@ -137,6 +137,25 @@ namespace LogicPOS.UI.Components.Articles
             return result.Value;
         }
 
+        public static ArticleViewModel GetArticleBySerialNumber(string serialNumber, IEnumerable<AutoCompleteLine> serialAutocompleteLines)
+        {
+            if (string.IsNullOrWhiteSpace(serialNumber))
+            {
+                return null;
+            }
+
+            var normalized = serialNumber.Trim();
+            var line = serialAutocompleteLines.FirstOrDefault(l =>
+                string.Equals(l.Code?.Trim(), normalized, StringComparison.OrdinalIgnoreCase));
+
+            if (line.Id == Guid.Empty)
+            {
+                return null;
+            }
+
+            return GetArticleViewModel(line.Id);
+        }
+
         public static ArticleViewModel GetArticleByCode(string code)
         {
             var result = DependencyInjection.Mediator.Send(new GetArticleByCodeQuery(code)).Result;

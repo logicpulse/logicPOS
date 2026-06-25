@@ -1,3 +1,4 @@
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields;
 using LogicPOS.UI.Components.InputFields.Validation;
@@ -25,5 +26,6 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtNotes { get; set; }    
         public TextBox TxtFamily { get; set; }
         public TextBox TxtSubFamily { get; set; }
+        private List<AutoCompleteLine> _serialNumberAutocompleteLines;
     }
 }
