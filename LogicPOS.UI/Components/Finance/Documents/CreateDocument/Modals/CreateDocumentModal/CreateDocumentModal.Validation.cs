@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Components.Modals
             return validatableTabs;
         }
 
-        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs());
+        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(GetValidatableTabs(), this);
 
         private string GetInvalidSimplifiedInvoiceMessage()
         {

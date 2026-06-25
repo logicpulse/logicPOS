@@ -133,16 +133,19 @@ namespace LogicPOS.UI.Components.Terminals
             var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
             ResponseType response = (ResponseType)selectTerminalModal.Run();
             string hardwareId = selectTerminalModal.Page.SelectedEntity?.HardwareId;
-            selectTerminalModal.Destroy();
 
             if (response != ResponseType.Ok)
             {
-                CustomAlerts.Warning()
+                CustomAlerts.Warning(selectTerminalModal)
                             .WithMessage("Nenhum terminal selecionado")
                             .ShowAlert();
 
+                selectTerminalModal.Destroy();
                 Program.Quit();
+                return null;
             }
+
+            selectTerminalModal.Destroy();
 
             return hardwareId;
         }

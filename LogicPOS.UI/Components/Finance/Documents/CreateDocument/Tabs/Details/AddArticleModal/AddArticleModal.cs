@@ -212,10 +212,10 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+            ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
             if (!IsSerialNumberQuantityValid())
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(this)
                     .WithMessage("Artigos com número de série têm de ter quantidade 1.")
                     .ShowAlert();
             }

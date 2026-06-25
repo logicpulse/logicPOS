@@ -18,7 +18,7 @@ namespace LogicPOS.UI.Components.InputFields.Validation
                                             fields.Where(field => field.IsValid() == false)
                                                              .Select(field => field.FieldName));
 
-            CustomAlerts.Error(sourceWindow ?? BackOfficeWindow.Instance)
+            CustomAlerts.Error(CustomAlerts.ResolveParentWindow(sourceWindow))
                         .WithSize(new Size(500, 340))
                         .WithTitleResource("window_title_dialog_validation_error")
                         .WithMessage(string.Format(LocalizedString.Instance["dialog_message_field_validation_error"],

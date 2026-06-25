@@ -24,7 +24,7 @@ namespace LogicPOS.UI.Components.Pages
             if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(SelectedEntity.Id))
             {
                 var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], SelectedEntity.Number);
-                CustomAlerts.Warning()
+                CustomAlerts.Warning(SourceWindow)
                              .WithMessage(message)
                              .ShowAlert();
                 return;

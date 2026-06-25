@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             if(TxtSupplier.SelectedEntity == null)
             {
-                CustomAlerts.Warning()
+                CustomAlerts.Warning(this)
                             .WithMessage("Selecione um Fornecedor válido.")
                             .ShowAlert();
                 return;
@@ -139,7 +139,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+            ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
 
             Run();
         }

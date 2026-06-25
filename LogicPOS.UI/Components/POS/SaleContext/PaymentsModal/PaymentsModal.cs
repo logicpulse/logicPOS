@@ -333,7 +333,7 @@ namespace LogicPOS.UI.Components.POS
 
             if (!hasValidFiscalYear)
             {
-                CustomAlerts.Information()
+                CustomAlerts.Information(this)
                             .WithMessage($"{DateTime.Now.Year} não é um ano fiscal ativo no sistema")
                             .ShowAlert();
 

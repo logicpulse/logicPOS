@@ -16,17 +16,7 @@ namespace LogicPOS.UI.Errors
         {
             Log.Error("API Error: {Error}", error.Errors);
 
-            if (source == null)
-            {
-                source = (POSWindow.HasInstance && POSWindow.Instance.Visible) ? POSWindow.Instance : null;
-
-                if (source == null)
-                {
-                    source = BackOfficeWindow.HasInstance ? BackOfficeWindow.Instance : null;
-                }
-            }
-
-            ShowApiErrorAlert(source, error.FirstError);
+            ShowApiErrorAlert(CustomAlerts.ResolveParentWindow(source), error.FirstError);
 
             if (closeApplication)
             {

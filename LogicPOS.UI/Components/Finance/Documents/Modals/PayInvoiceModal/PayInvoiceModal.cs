@@ -81,7 +81,7 @@ namespace LogicPOS.UI.Components.Modals
 
         public bool AllFieldsAreValid() => ValidatableFields.All(tab => tab.IsValid());
 
-        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(ValidatableFields);
+        protected void ShowValidationErrors() => ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
 
     }
 }

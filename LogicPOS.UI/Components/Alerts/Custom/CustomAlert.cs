@@ -17,7 +17,7 @@ namespace LogicPOS.UI.Alerts
         private DialogFlags _flags = DialogFlags.Modal;
         private MessageType _messageType = MessageType.Info;
         private ButtonsType _buttonsType = ButtonsType.Ok;
-        private Window _parentWindow = null;
+        private Window _parentWindow;
         private ActionAreaButtons _buttons;
         private System.Drawing.Size _size = new System.Drawing.Size(600, 400);
         private string _icon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_default.png";
@@ -25,9 +25,9 @@ namespace LogicPOS.UI.Alerts
 
 
         public CustomAlert(Window parentWindow)
-            : base(parentWindow, DialogFlags.Modal)
+            : base(CustomAlerts.ResolveParentWindow(parentWindow), DialogFlags.Modal)
         {
-
+            _parentWindow = CustomAlerts.ResolveParentWindow(parentWindow);
         }
 
         public CustomAlert WithTitle(string title)
@@ -84,6 +84,8 @@ namespace LogicPOS.UI.Alerts
             InitObject();
 
             HideCloseButton();
+            ApplyAlertWindowBehavior();
+            Present();
             ResponseType responseType = (ResponseType)Run();
 
             if (responseType != ResponseType.Apply)
@@ -92,6 +94,15 @@ namespace LogicPOS.UI.Alerts
             }
 
             return responseType;
+        }
+
+        private void ApplyAlertWindowBehavior()
+        {
+            Modal = true;
+            if (_parentWindow != null)
+            {
+                TransientFor = _parentWindow;
+            }
         }
 
         private void InitObject()
@@ -154,6 +165,8 @@ namespace LogicPOS.UI.Alerts
                        _size,
                        body,
                       _buttons);
+
+            ApplyAlertWindowBehavior();
         }
 
 

@@ -40,7 +40,7 @@ namespace LogicPOS.UI.Components.POS
         {
             if (AllFieldsAreValid() == false)
             {
-                ValidationUtilities.ShowValidationErrors(ValidatableFields);
+                ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
                 return false;
             }
 

@@ -80,7 +80,7 @@ namespace LogicPOS.UI.Components.Modals
         {
             if (SaleContext.CurrentOrder.Tickets.Count() == 0 || SaleContext.CurrentOrder.Tickets == null)
             {
-                SimpleAlerts.Information()
+                SimpleAlerts.Information(this)
                             .WithTitle("Mesa vazia")
                             .WithMessage("Não existem pedidos associados a esta mesa")
                             .ShowAlert();
@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Components.Modals
 
             if (details == null || details.Count == 0)
             {
-                SimpleAlerts.Information()
+                SimpleAlerts.Information(this)
                             .WithTitle("Mesa vazia")
                             .WithMessage("Não existem pedidos associados a esta mesa")
                             .ShowAlert();

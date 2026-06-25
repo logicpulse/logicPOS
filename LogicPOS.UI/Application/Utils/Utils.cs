@@ -5,6 +5,7 @@ using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -426,9 +427,14 @@ namespace logicpos
 
             if (useBaseDialogWindowMask)
             {
-                LogicPOSApp.DialogPosKeyboard.TransientFor = LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask;
-                LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask.TransientFor = parentWindow;
-                LogicPOSApp.DialogPosKeyboard.WindowSettings.Mask.Show();
+                var keyboard = LogicPOSApp.DialogPosKeyboard;
+                var primaryMask = keyboard.WindowSettings.Mask;
+                keyboard.TransientFor = primaryMask ?? parentWindow;
+                DialogMaskHelper.ShowAll(keyboard.WindowSettings.MaskWindows);
+                if (primaryMask != null)
+                {
+                    primaryMask.TransientFor = parentWindow;
+                }
             }
             else
             {

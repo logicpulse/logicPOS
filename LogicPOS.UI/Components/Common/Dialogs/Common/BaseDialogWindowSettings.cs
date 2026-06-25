@@ -1,6 +1,8 @@
 ﻿using Gtk;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Settings;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Dialogs
 {
@@ -43,7 +45,23 @@ namespace LogicPOS.UI.Dialogs
         }
 
         public bool UseMask = AppSettings.Instance.UseBaseDialogWindowMask;
-        public Window Mask { get; set; }
+
+        private readonly List<Window> _maskWindows = new List<Window>();
+
+        public IReadOnlyList<Window> MaskWindows => _maskWindows;
+
+        public Window Mask => _maskWindows.FirstOrDefault();
+
+        public void SetMaskWindows(IEnumerable<Window> masks)
+        {
+            _maskWindows.Clear();
+            if (masks == null)
+            {
+                return;
+            }
+
+            _maskWindows.AddRange(masks.Where(mask => mask != null));
+        }
 
         public Label WindowTitle { get; set; } = new Label();
         public bool ConfirmDialogOnEnter { get; set; }

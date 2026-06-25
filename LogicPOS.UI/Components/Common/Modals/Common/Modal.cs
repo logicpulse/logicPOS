@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Extensions;
 using System;
 using System.Drawing;
@@ -15,7 +16,7 @@ namespace LogicPOS.UI.Components.Modals.Common
                      string title,
                      Size size,
                      string icon = null,
-                     DialogFlags flags = DialogFlags.DestroyWithParent,
+                     DialogFlags flags = DialogFlags.Modal | DialogFlags.DestroyWithParent,
                      bool render = true,
                      bool windowMode = false) : base(title, parent, flags)
         {
@@ -28,6 +29,8 @@ namespace LogicPOS.UI.Components.Modals.Common
 
             InitializeWindow(parent, title, size, icon);
 
+            Destroyed += (_, __) => WindowSettings.Source?.EnableClicks();
+
             if (render)
             {
                 Render();
@@ -39,6 +42,18 @@ namespace LogicPOS.UI.Components.Modals.Common
             Design();
             ShowAll();
             ActionArea.Visible = false;
+        }
+
+        public new int Run()
+        {
+            if (WindowSettings.Source != null)
+            {
+                TransientFor = WindowSettings.Source;
+                WindowSettings.Source.DisableClicks();
+            }
+
+            Present();
+            return base.Run();
         }
 
         private void InitializeWindow(Window parent,
@@ -212,24 +227,10 @@ namespace LogicPOS.UI.Components.Modals.Common
 
         protected void ApplyMask(Window parent)
         {
-            //Window Mask Background Hack
-            WindowSettings.Mask = new Window("");
-            WindowSettings.Mask.TransientFor = parent;
-            WindowSettings.Mask.SetSizeRequest(10, 10);
-            WindowSettings.Mask.Move(-100, -100);
-            WindowSettings.Mask.ModifyBg(StateType.Normal, global::System.Drawing.Color.Black.ToGdkColor());
+            WindowSettings.SetMaskWindows(DialogMaskHelper.CreateAndShow(parent));
+            TransientFor = parent;
 
-            //Prevent click outside Dialog
-            WindowSettings.Mask.Opacity = 0.35F;//0.55F | 0.75F
-            WindowSettings.Mask.CanFocus = false;
-            WindowSettings.Mask.AcceptFocus = false;
-            WindowSettings.Mask.Sensitive = false;
-            WindowSettings.Mask.Fullscreen();
-            WindowSettings.Mask.Show();
-
-            TransientFor = WindowSettings.Mask;
-
-            Destroyed += delegate { WindowSettings.Mask.Destroy(); };
+            Destroyed += delegate { DialogMaskHelper.DestroyAll(WindowSettings.MaskWindows); };
         }
 
     }

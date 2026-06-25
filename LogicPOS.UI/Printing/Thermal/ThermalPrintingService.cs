@@ -53,7 +53,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
@@ -76,7 +76,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
@@ -98,7 +98,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
                             .ShowAlert();
 
@@ -126,7 +126,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n")
                             .ShowAlert();
 
@@ -154,7 +154,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n")
                             .ShowAlert();
 
@@ -179,7 +179,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n")
                             .ShowAlert();
 
@@ -207,7 +207,7 @@ namespace LogicPOS.UI.Printing
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error()
+                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
                             .WithMessage($"Erro ao imprimir. \n")
                             .ShowAlert();
 

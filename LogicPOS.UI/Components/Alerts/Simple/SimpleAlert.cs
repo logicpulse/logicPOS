@@ -1,7 +1,7 @@
 using Gtk;
 using LogicPOS.Utility;
 using LogicPOS.Globalization;
-using WinFormsMessageBox = System.Windows.Forms.MessageBox;
+using LogicPOS.UI.Extensions;using WinFormsMessageBox = System.Windows.Forms.MessageBox;
 using WinFormsMessageBoxButtons = System.Windows.Forms.MessageBoxButtons;
 using WinFormsMessageBoxIcon = System.Windows.Forms.MessageBoxIcon;
 
@@ -24,15 +24,24 @@ namespace LogicPOS.UI.Alerts
                 return ResponseType.Ok;
             }
 
+            var parentWindow = CustomAlerts.ResolveParentWindow(_parentWindow);
+
             using (var dialog = new MessageDialog(
-                _parentWindow,
+                parentWindow,
                 _flags,
                 _messageType,
                 _buttonsType,
                 _message))
             {
                 dialog.Title = _title;
-                return (ResponseType)dialog.Run();
+                dialog.Modal = true;
+                if (parentWindow != null)
+                {
+                    dialog.TransientFor = parentWindow;
+                }
+
+                dialog.Present();
+                return (ResponseType)dialog.RunWithDisabledParent(parentWindow);
             }
         }
 

@@ -1,8 +1,9 @@
 using Gtk;
 using logicpos.Classes.Enums.Keyboard;
 using logicpos.Classes.Gui.Gtk.Widgets;
-using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using System;
@@ -78,7 +79,10 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
         {
             bool useBaseDialogWindowMask = Convert.ToBoolean(AppSettings.Instance.UseBaseDialogWindowMask);
 
-            if (useBaseDialogWindowMask && this.WindowSettings.Mask.Visible) this.WindowSettings.Mask.Hide();
+            if (useBaseDialogWindowMask && WindowSettings.MaskWindows.Count > 0)
+            {
+                DialogMaskHelper.HideAll(WindowSettings.MaskWindows);
+            }
 
             this.Hide();
         }

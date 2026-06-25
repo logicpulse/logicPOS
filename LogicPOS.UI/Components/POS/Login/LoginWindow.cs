@@ -36,6 +36,8 @@ namespace LogicPOS.UI.Components.Windows
         #region Static 
         private static LoginWindow _instance;
         
+        public static bool HasInstance => _instance != null;
+
         public static LoginWindow Instance
         {
             get

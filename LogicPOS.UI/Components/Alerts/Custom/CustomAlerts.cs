@@ -1,20 +1,47 @@
-using ErrorOr;
 using Gtk;
-using LogicPOS.Api.Errors;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using System.Text;
 
 namespace LogicPOS.UI.Alerts
 {
     public static class CustomAlerts
     {
+        public static Window ResolveParentWindow(Window parent = null)
+        {
+            if (parent != null)
+            {
+                return parent;
+            }
+
+            if (POSWindow.HasInstance && POSWindow.Instance.Visible)
+            {
+                return POSWindow.Instance;
+            }
+
+            if (BackOfficeWindow.HasInstance && BackOfficeWindow.Instance.Visible)
+            {
+                return BackOfficeWindow.Instance;
+            }
+
+            if (BackOfficeWindow.HasInstance)
+            {
+                return BackOfficeWindow.Instance;
+            }
+
+            if (LoginWindow.HasInstance && LoginWindow.Instance.Visible)
+            {
+                return LoginWindow.Instance;
+            }
+
+            return null;
+        }
+
         public static CustomAlert Information(Window parent = null)
         {
-            return new CustomAlert(parent)
+            return new CustomAlert(ResolveParentWindow(parent))
                        .WithTitleResource("global_information")
                        .WithMessageType(MessageType.Info)
                        .WithButtonsType(ButtonsType.Ok);
@@ -22,7 +49,7 @@ namespace LogicPOS.UI.Alerts
 
         public static CustomAlert Error(Window parent = null)
         {
-            return new CustomAlert(parent)
+            return new CustomAlert(ResolveParentWindow(parent))
                        .WithTitleResource("global_error")
                        .WithMessageType(MessageType.Error)
                        .WithButtonsType(ButtonsType.Ok);
@@ -30,7 +57,7 @@ namespace LogicPOS.UI.Alerts
 
         public static CustomAlert Warning(Window parent = null)
         {
-            return new CustomAlert(parent)
+            return new CustomAlert(ResolveParentWindow(parent))
                        .WithTitleResource("global_warning")
                        .WithMessageType(MessageType.Warning)
                        .WithButtonsType(ButtonsType.Ok);
@@ -38,7 +65,7 @@ namespace LogicPOS.UI.Alerts
 
         public static CustomAlert Question(Window parent = null)
         {
-            return new CustomAlert(parent)
+            return new CustomAlert(ResolveParentWindow(parent))
                        .WithMessageType(MessageType.Question)
                        .WithButtonsType(ButtonsType.YesNo);
         }
@@ -200,12 +227,12 @@ namespace LogicPOS.UI.Alerts
                 .ShowAlert();
         }
 
-  
+
 
 
         public static bool ShowQuitConfirmationAlert(Window parentWindow)
         {
-            ResponseType responseType = new CustomAlert(parentWindow)
+            ResponseType responseType = new CustomAlert(ResolveParentWindow(parentWindow))
                                             .WithMessageResource("global_quit_message")
                                             .WithSize(new Size(400, 300))
                                             .WithMessageType(MessageType.Question)

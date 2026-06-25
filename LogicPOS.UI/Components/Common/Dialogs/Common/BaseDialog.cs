@@ -182,7 +182,7 @@ namespace LogicPOS.UI.Dialogs
             {
                 if (this is PosKeyboardDialog)
                 {
-                    if (WindowSettings.UseMask) WindowSettings.Mask.Hide();
+                    if (WindowSettings.UseMask) DialogMaskHelper.HideAll(WindowSettings.MaskWindows);
                     Respond(ResponseType.Close);
                 }
                 else
@@ -325,24 +325,10 @@ namespace LogicPOS.UI.Dialogs
 
         private void ApplyMask(Window parent)
         {
-            //Window Mask Background Hack
-            WindowSettings.Mask = new Window("");
-            WindowSettings.Mask.TransientFor = parent;
-            WindowSettings.Mask.SetSizeRequest(10, 10);
-            WindowSettings.Mask.Move(-100, -100);
-            WindowSettings.Mask.ModifyBg(StateType.Normal, System.Drawing.Color.Black.ToGdkColor());
+            WindowSettings.SetMaskWindows(DialogMaskHelper.CreateAndShow(parent));
+            TransientFor = parent;
 
-            //Prevent click outside Dialog
-            WindowSettings.Mask.Opacity = 0.35F;//0.55F | 0.75F
-            WindowSettings.Mask.CanFocus = false;
-            WindowSettings.Mask.AcceptFocus = false;
-            WindowSettings.Mask.Sensitive = false;
-            WindowSettings.Mask.Fullscreen();
-            WindowSettings.Mask.Show();
-
-            TransientFor = WindowSettings.Mask;
-
-            Destroyed += delegate { WindowSettings.Mask.Destroy(); };
+            Destroyed += delegate { DialogMaskHelper.DestroyAll(WindowSettings.MaskWindows); };
         }
 
     }

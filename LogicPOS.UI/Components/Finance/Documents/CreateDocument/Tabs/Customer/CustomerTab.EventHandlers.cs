@@ -84,7 +84,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
             if (customer != null)
             {
-                CustomAlerts.Warning().WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
+                CustomAlerts.Warning(SourceWindow).WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
                                     .ShowAlert();
             }
         }
@@ -99,7 +99,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
             var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
             if (customer != null)
             {
-                CustomAlerts.Warning().WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
+                CustomAlerts.Warning(SourceWindow).WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
                                     .ShowAlert();
             }
         }

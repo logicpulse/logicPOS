@@ -94,7 +94,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            ValidationUtilities.ShowValidationErrors(ValidatableFields);
+            ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
 
             Run();
         }

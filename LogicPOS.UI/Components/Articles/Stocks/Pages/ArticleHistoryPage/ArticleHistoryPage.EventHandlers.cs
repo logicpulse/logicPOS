@@ -163,7 +163,7 @@ namespace LogicPOS.UI.Components.Pages
 
             if (_entities.Count == 0)
             {
-                CustomAlerts.Information()
+                CustomAlerts.Information(SourceWindow)
                     .WithMessageResource("dialog_message_report_filter_no_records_with_criteria")
                     .ShowAlert();
 

@@ -4,23 +4,27 @@ namespace LogicPOS.UI.Alerts
 {
     public static class SimpleAlerts
     {
-        public static SimpleAlert Information()
+        public static SimpleAlert Information(Window parent = null)
         {
             return new SimpleAlert()
-                .WithFlag(DialogFlags.DestroyWithParent)
+                .WithParent(parent)
+                .WithFlag(DialogFlags.DestroyWithParent | DialogFlags.Modal)
                 .WithMessageType(MessageType.Info);
         }
 
-        public static SimpleAlert Error()
+        public static SimpleAlert Error(Window parent = null)
         {
             return new SimpleAlert()
-                .WithFlag(DialogFlags.DestroyWithParent)
+                .WithParent(parent)
+                .WithFlag(DialogFlags.DestroyWithParent | DialogFlags.Modal)
                 .WithMessageType(MessageType.Error);
         }
-        public static SimpleAlert Warning()
+
+        public static SimpleAlert Warning(Window parent = null)
         {
             return new SimpleAlert()
-                .WithFlag(DialogFlags.DestroyWithParent)
+                .WithParent(parent)
+                .WithFlag(DialogFlags.DestroyWithParent | DialogFlags.Modal)
                 .WithMessageType(MessageType.Warning);
         }
 
