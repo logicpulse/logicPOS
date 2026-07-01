@@ -22,19 +22,8 @@ namespace LogicPOS.UI.Components.Articles
     public static class ArticlesService
     {
         private static readonly Random _random = new Random();
-        private static List<AutoCompleteLine> _autocompleteLines;
 
-        public static List<AutoCompleteLine> AutocompleteLines
-        {
-            get
-            {
-                if (_autocompleteLines == null)
-                {
-                    _autocompleteLines = GetAutocompleteLines();
-                }
-                return _autocompleteLines;
-            }
-        }
+        public static List<AutoCompleteLine> AutocompleteLines => GetAutocompleteLines();
 
         public static List<AutoCompleteLine> CodeAutocompleteLines => AutocompleteLines.Select(line => new AutoCompleteLine
         {
@@ -42,15 +31,8 @@ namespace LogicPOS.UI.Components.Articles
             Name = line.Code
         }).ToList();
 
-
-        public static void RefreshArticlesCache()
-        {
-            _autocompleteLines = GetAutocompleteLines();
-        }
-
         private static List<AutoCompleteLine> GetAutocompleteLines()
         {
-
             var articles = DependencyInjection.Mediator.Send(new GetAutoCompleteLinesQuery()).Result;
 
             if (articles.IsError != false)

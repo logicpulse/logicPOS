@@ -128,7 +128,6 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            ArticlesService.RefreshArticlesCache();
             var documentDetail = ArticlesService.GetArticleViewModel(articleResult.Value);
             documentDetail.DefaultQuantity = decimal.Parse(TxtQuantity.Text);
             SelectArticle(documentDetail);

@@ -6,6 +6,7 @@ using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -290,7 +291,7 @@ namespace LogicPOS.UI.Components.InputFields
             Entry.Completion.MatchFunc = (comp, key, iter) =>
             {
                 string value = (string)comp.Model.GetValue(iter, 1);
-                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+                return TextSearch.Contains(value, key);
             };
             _completionSelectedHandlerMethod = selectHandler;
             Entry.Completion.MatchSelected += Completion_MatchSelected;

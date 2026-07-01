@@ -189,7 +189,6 @@ namespace LogicPOS.UI.Components.Modals
         protected override bool AddEntity()
         {
             var result = ExecuteAddCommand(CreateAddCommand());
-            ArticlesService.RefreshArticlesCache();
 
             if (result.IsError)
             {

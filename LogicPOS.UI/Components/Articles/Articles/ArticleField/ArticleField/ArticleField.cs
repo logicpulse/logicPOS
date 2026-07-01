@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Articles.StockManagement.AddStockMovement;
 using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -157,7 +158,7 @@ namespace LogicPOS.UI.Components.InputFields
             TxtDesignation.Completion.MatchFunc = (comp, key, iter) =>
             {
                 string value = (string)comp.Model.GetValue(iter, 1);
-                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+                return TextSearch.Contains(value, key);
             };
 
             TxtDesignation.Completion.MatchSelected += Completion_MatchSelected;
@@ -181,7 +182,7 @@ namespace LogicPOS.UI.Components.InputFields
             TxtCode.Completion.MatchFunc = (comp, key, iter) =>
             {
                 string value = (string)comp.Model.GetValue(iter, 1);
-                return value.Trim().IndexOf(key.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
+                return TextSearch.Contains(value, key);
             };
 
             TxtCode.Completion.MatchSelected += Completion_MatchSelected;

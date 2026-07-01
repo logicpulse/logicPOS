@@ -81,7 +81,6 @@ namespace LogicPOS.UI.Components.Pages
         {
             var modal = new ArticleModal(mode, GetSelectedArticle());
             var response = modal.Run();
-            ArticlesService.RefreshArticlesCache();
             modal.Destroy();
             return response;
         }
@@ -114,8 +113,6 @@ namespace LogicPOS.UI.Components.Pages
             }
 
             var result = _mediator.Send(GetDeleteCommand()).Result;
-
-            ArticlesService.RefreshArticlesCache();
 
             if (result.IsError)
             {
