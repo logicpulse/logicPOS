@@ -215,17 +215,24 @@ namespace LogicPOS.UI.Components.Modals
 
         private bool CheckPrinterCompatibility(Api.Entities.Printer printer)
         {
-
-            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && !printer.Type.ThermalPrinter)
+            if (printer.Type == null)
             {
-                var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], Page.SelectedEntity.Number);
-                CustomAlerts.Warning(this)
-                            .WithMessage(message)
+                CustomAlerts.Error(this)
+                            .WithMessage($"Erro ao carregar as configurações da impressora {printer.Designation}. \n\n" +
+                                          "Reinicie a aplicação para recarregar as configurações.")
                             .ShowAlert();
                 return false;
             }
 
-            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) == false && printer.Type.ThermalPrinter)
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && (!printer.Type?.ThermalPrinter==true))
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
+                            .ShowAlert();
+                return false;
+            }
+
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) == false && (printer.Type?.ThermalPrinter == true))
             {
                 CustomAlerts.Warning(this)
                             .WithMessage("O documento que tentou imprimir não foi Criado em uma impressora Térmica.")
