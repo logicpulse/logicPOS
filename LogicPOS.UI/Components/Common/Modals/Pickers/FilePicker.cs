@@ -108,12 +108,10 @@ namespace LogicPOS.UI.Components.Pickers
 
         public static FileFilter GetFileFilterImportExport()
         {
-
             FileFilter filter = new FileFilter();
 
-            filter.Name = "Import/export xls";
-            filter.AddMimeType("application/octet-stream");
-            filter.AddPattern("*.xls");
+            filter.Name = "Excel (.xlsx)";
+            filter.AddMimeType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             filter.AddPattern("*.xlsx");
             return filter;
         }

@@ -8,6 +8,7 @@ using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Printing;
+using System;
 using System.Collections.Generic;
 using DocumentDetail = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
 using IssueDocumentPaymentMethod = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod;
@@ -16,7 +17,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
 {
     public static class VoltaRefundReceiptService
     {
-        public static bool TryIssue(Window parent, Customer customer, PaymentMethod paymentMethod, decimal quantity)
+        public static bool TryIssue(Window parent, Customer customer, PaymentMethod paymentMethod, decimal quantity, Guid? originDocumentId = null)
         {
             if (quantity <= 0 || customer == null || paymentMethod == null)
             {
@@ -44,6 +45,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
 
             var command = new IssueDocumentCommand
             {
+                ParentId = originDocumentId,
                 Type = TrvDocumentUiRules.DocumentTypeAcronym,
                 CustomerId = customer.Id,
                 CurrencyId = currency?.Id,

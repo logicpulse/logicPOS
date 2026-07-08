@@ -22,7 +22,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
         public VoltaRefundReceiptModal(Window parent)
             : base(parent,
                    TitleBase,
-                   new Size(620, 300),
+                   new Size(620, 360),
                    AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
         {
         }
@@ -79,6 +79,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
             layout.PackStart(TxtCustomer.Component, false, false, 0);
             layout.PackStart(TxtQuantity.Component, false, false, 0);
             layout.PackStart(TxtPaymentMethod.Component, false, false, 0);
+            layout.PackStart(TxtOriginDocument.Component, false, false, 0);
 
             return layout;
         }
@@ -117,6 +118,20 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
             TxtPaymentMethod.Entry.IsEditable = true;
             TxtPaymentMethod.WithAutoCompletion(PaymentMethodsService.AutocompleteLines, id => PaymentMethodsService.GetBydId(id));
             TxtPaymentMethod.Component.Sensitive = false;
+
+            InitializeTxtOriginDocument();
+        }
+
+        private void InitializeTxtOriginDocument()
+        {
+            TxtOriginDocument = new TextBox(this,
+                                                LocalizedString.Instance["global_source_finance_document"],
+                                                isRequired: false,
+                                                isValidatable: false,
+                                                includeSelectButton: true,
+                                                includeKeyBoardButton: false);
+            TxtOriginDocument.Entry.IsEditable = false;
+            TxtOriginDocument.SelectEntityClicked += BtnSelectOriginDocument_Clicked;
         }
 
         private void UpdateTotal()

@@ -1,6 +1,8 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Articles.ExportArticlesToExcel;
+using LogicPOS.Api.Features.Articles.Articles.ImportArticlesFromExcel;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleImage;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Articles.Articles.GetArticleViewModel;
 using LogicPOS.Api.Features.Articles.Articles.GetAutoCompleteLines;
 using LogicPOS.Api.Features.Articles.Common;
@@ -11,7 +13,6 @@ using LogicPOS.Api.Features.Articles.StockManagement.GetArticlesHistories;
 using LogicPOS.Api.Features.Articles.StockManagement.GetTotalStocks;
 using LogicPOS.Api.Features.Articles.Stocks.WarehouseArticles.GetWarehouseArticleById;
 using LogicPOS.Api.Features.Common.Pagination;
-using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.UI.Errors;
 using System;
 using System.Collections.Generic;
@@ -222,6 +223,18 @@ namespace LogicPOS.UI.Components.Articles
                 return null;
             }
             return result.Value.Path;
+        }
+
+        public static ExcelImportResponse ImportArticlesFromExcel(string filePath)
+        {
+            var result = DependencyInjection.Mediator.Send(new ImportArticlesFromExcelCommand(filePath)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
         }
     }
 }

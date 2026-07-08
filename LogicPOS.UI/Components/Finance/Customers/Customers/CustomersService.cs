@@ -3,6 +3,7 @@ using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Customers.GetAllCustomers;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.ExportCustomersToExcel;
+using LogicPOS.Api.Features.Finance.Customers.Customers.ImportCustomersFromExcel;
 using LogicPOS.Api.Features.Finance.Customers.Customers.GetCustomer;
 using LogicPOS.Api.Features.Finance.Customers.Customers.RechargeCard;
 using LogicPOS.Globalization;
@@ -107,6 +108,19 @@ public static List<AutoCompleteLine> AutocompleteLines => GetAllCustomers().Sele
                 return null;
             }
             return result.Value.Path;
+        }
+
+        public static ExcelImportResponse ImportCustomersFromExcel(string filePath)
+        {
+            var result = DependencyInjection.Mediator.Send(new ImportCustomersFromExcelCommand(filePath)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            _customers = null;
+            return result.Value;
         }
 
         public static bool RechargeCard(Guid customerId, decimal amount)

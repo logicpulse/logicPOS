@@ -1,7 +1,7 @@
-using AutoUpdaterDotNET;
 using Gtk;
 using logicpos;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Features.Common.Responses;
 using LogicPOS.Api.Features.Database;
 using LogicPOS.Api.Features.Finance.Saft.GetSaft;
 using LogicPOS.Globalization;
@@ -20,6 +20,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -212,14 +214,122 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnExportArticles_Clicked(object sender, EventArgs e)
         {
-            var filePath = ArticlesService.ExportArticlesToExcel();
-            OpenExcelFile(filePath);
+            var tempPath = ArticlesService.ExportArticlesToExcel();
+            if (tempPath == null)
+            {
+                return;
+            }
+
+            var destination = FilePicker.GetSaveFilePath(
+                this,
+                LocalizedString.Instance["global_export_articles"],
+                global::System.IO.Path.GetFileNameWithoutExtension(tempPath));
+
+            if (destination == null)
+            {
+                return;
+            }
+
+            if (!destination.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                destination += ".xlsx";
+            }
+
+            File.Copy(tempPath, destination, true);
+            OpenExcelFile(destination);
         }
 
         private void BtnExportCustomers_Clicked(object sender, EventArgs e)
         {
-            var filePath = CustomersService.ExportCustomersToExcel();
-            OpenExcelFile(filePath);
+            var tempPath = CustomersService.ExportCustomersToExcel();
+            if (tempPath == null)
+            {
+                return;
+            }
+
+            var destination = FilePicker.GetSaveFilePath(
+                this,
+                LocalizedString.Instance["global_export_costumers"],
+                global::System.IO.Path.GetFileNameWithoutExtension(tempPath));
+
+            if (destination == null)
+            {
+                return;
+            }
+
+            if (!destination.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                destination += ".xlsx";
+            }
+
+            File.Copy(tempPath, destination, true);
+            OpenExcelFile(destination);
+        }
+
+        private void BtnImportArticles_Clicked(object sender, EventArgs e)
+        {
+            var filePath = FilePicker.GetOpenFilePath(
+                this,
+                LocalizedString.Instance["global_import_articles"],
+                FilePicker.GetFileFilterImportExport());
+
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var result = ArticlesService.ImportArticlesFromExcel(filePath);
+            ShowExcelImportResult(result, "artigos");
+        }
+
+        private void BtnImportCustomers_Clicked(object sender, EventArgs e)
+        {
+            var filePath = FilePicker.GetOpenFilePath(
+                this,
+                LocalizedString.Instance["global_import_costumers"],
+                FilePicker.GetFileFilterImportExport());
+
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var result = CustomersService.ImportCustomersFromExcel(filePath);
+            ShowExcelImportResult(result, "clientes");
+        }
+
+        private void ShowExcelImportResult(ExcelImportResponse result, string entityLabel)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var message = new StringBuilder();
+            message.AppendLine($"Importação de {entityLabel} concluída.");
+            message.AppendLine();
+            message.AppendLine($"Linhas: {result.RowsFound}");
+            message.AppendLine($"Criados: {result.Created}");
+            message.AppendLine($"Ignorados: {result.Skipped}");
+            message.AppendLine($"Falhados: {result.Failed}");
+
+            if (result.Failed > 0 && result.Items != null)
+            {
+                message.AppendLine();
+                message.AppendLine("Erros:");
+                foreach (var item in result.Items.Where(i => i.Action == "failed").Take(10))
+                {
+                    message.AppendLine($"Linha {item.RowNumber}: {item.Message}");
+                }
+            }
+
+            if (result.Failed > 0)
+            {
+                CustomAlerts.Warning(this).WithMessage(message.ToString()).ShowAlert();
+                return;
+            }
+
+            CustomAlerts.Information(this).WithMessage(message.ToString()).ShowAlert();
         }
 
         #endregion
@@ -277,9 +387,9 @@ namespace LogicPOS.UI.Components.Windows
 
             if (!File.Exists(updaterPath))
             {
-                    CustomAlerts.Error(this)
-                                .WithMessage("O ficheiro de atualização não foi encontrado. Por favor, certifique-se de que o atualizador está presente na pasta de instalação.")
-                                .ShowAlert();
+                CustomAlerts.Error(this)
+                            .WithMessage("O ficheiro de atualização não foi encontrado. Por favor, certifique-se de que o atualizador está presente na pasta de instalação.")
+                            .ShowAlert();
                 return;
             }
 
@@ -300,7 +410,7 @@ namespace LogicPOS.UI.Components.Windows
                 SystemUpdateService.RunAutoUpdater(Instance);
             }
         }
-       
+
         public void MenuBtn_Clicked(object sender, EventArgs e)
         {
             IconButtonWithText button = (IconButtonWithText)sender;

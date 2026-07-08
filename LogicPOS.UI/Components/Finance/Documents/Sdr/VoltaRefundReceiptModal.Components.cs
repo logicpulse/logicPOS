@@ -8,13 +8,11 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
     {
         private IconButtonWithText BtnOk { get; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
         private IconButtonWithText BtnCancel { get; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
-
         private TextBox TxtCustomer { get; set; }
+        private TextBox TxtOriginDocument { get; set; }
         private TextBox TxtQuantity { get; set; }
         private TextBox TxtPaymentMethod { get; set; }
-
         private const string TitleBase = "Talão Reembolso Volta";
-
         private Customer _selectedCustomer;
     }
 }

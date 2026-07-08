@@ -350,6 +350,8 @@ namespace LogicPOS.UI.Components.Windows
             }
 
             BtnImportSection.Button.Clicked += delegate { ShowPanel(PanelImport); };
+            BtnImportArticles.Button.Clicked += BtnImportArticles_Clicked;
+            BtnImportCustomers.Button.Clicked += BtnImportCustomers_Clicked;
         }
 
         private void AddExportSection()

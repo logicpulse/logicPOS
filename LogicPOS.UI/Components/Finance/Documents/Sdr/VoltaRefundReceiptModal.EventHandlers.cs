@@ -1,12 +1,15 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.Globalization;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Finance.Documents.Sdr
 {
@@ -24,7 +27,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
         private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
         {
             var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
-            var selectCustomerModal = new EntitySelectionModal<Customer>(
+            var selectCustomerModal = new EntitySelectionModal<Api.Features.Finance.Customers.Customers.Common.Customer>(
                 page,
                 LocalizedString.Instance["window_title_dialog_select_record"]);
 
@@ -62,7 +65,8 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
                 this,
                 _selectedCustomer,
                 paymentMethod,
-                GetQuantity());
+                GetQuantity(),
+                (TxtOriginDocument.SelectedEntity as DocumentViewModel)?.Id);
 
             if (issued)
             {
@@ -71,6 +75,33 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
             }
 
             Run();
+        }
+
+        private void BtnSelectOriginDocument_Clicked(object sender, EventArgs e)
+        {
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Selection);
+            ResponseType response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok && modal.Page.SelectedEntity != null)
+            {
+                string[] allowedTypes = new string[] { "FR", "FS" };
+                if (modal.Page.SelectedEntity.IsActive == false || allowedTypes.Contains(modal.Page.SelectedEntity.Type) == false)
+                {
+                    CustomAlerts.Warning(this)
+                     .WithTitle("Documento inválido")
+                     .WithMessage("Não é possível selecionar um documento que se encontra cancelado/anulado ou em rascunho. Tipos permitidos: FS, FR.")
+                     .ShowAlert();
+
+                    modal.Destroy();
+
+                    return;
+                }
+
+                TxtOriginDocument.Text = modal.Page.SelectedEntity.Number;
+                TxtOriginDocument.SelectedEntity = modal.Page.SelectedEntity;
+            }
+
+            modal.Destroy();
         }
 
         private bool Validate()
