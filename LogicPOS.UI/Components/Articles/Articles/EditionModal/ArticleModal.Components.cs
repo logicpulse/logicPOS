@@ -39,6 +39,16 @@ namespace LogicPOS.UI.Components.Modals
         private readonly CheckButton _checkPriceWithVat = new CheckButton(LocalizedString.Instance["global_price_with_vat"]);
         private readonly CheckButton _checkPVPVariable = new CheckButton(LocalizedString.Instance["global_variable_price"]);
         private readonly CheckButton _checkIsSdrPackaging = new CheckButton("Embalagem Volta");
+        private readonly TextBox _txtSdrVoltaPrice = new TextBox(
+            null,
+            "Valor Volta",
+            isRequired: false,
+            isValidatable: false,
+            regex: null,
+            includeSelectButton: false,
+            includeKeyBoardButton: false,
+            includeClearButton: false,
+            style: TextBoxStyle.Simple);
         private readonly TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
         private readonly TextBox _txtDefaultQuantity = TextBox.Simple("global_article_default_quantity", true, true, RegularExpressions.DecimalNumber).WithText("1");
         private readonly TextBox _txtMinimumStock = TextBox.Simple("global_minimum_stock", true, true, RegularExpressions.DecimalNumber).WithText("1");
@@ -46,6 +56,8 @@ namespace LogicPOS.UI.Components.Modals
         private readonly TextBox _txtWeight = TextBox.Simple("global_weight", true, true, RegularExpressions.DecimalNumber).WithText("0");
         private readonly TextBox _txtBarcode = TextBox.Simple("global_barcode", false, true, RegularExpressions.IntegerNumber);
         private List<ArticlePriceField> _prices;
+        private VBox _pricesArea;
+        private Widget _sdrDepositPriceArea;
         private readonly ArticleFieldsContainer _addArticlesBox = new ArticleFieldsContainer();
         private VBox _compositionTab;
         #endregion
@@ -99,6 +111,11 @@ namespace LogicPOS.UI.Components.Modals
                 SensitiveFields.Add(priceField.Component);
             }
 
+            if (IsSdrDepositArticle)
+            {
+                SensitiveFields.Add(_txtSdrVoltaPrice.Entry);
+            }
+
             SensitiveFields.Add(_txtCodeDealer.Entry);
         }
 
@@ -124,9 +141,12 @@ namespace LogicPOS.UI.Components.Modals
             ValidatableFields.Add(_comboTypes);
             ValidatableFields.Add(_comboClasses);
 
-            foreach (var priceField in _prices)
+            if (!IsSdrDepositArticle)
             {
-                ValidatableFields.Add(priceField);
+                foreach (var priceField in _prices)
+                {
+                    ValidatableFields.Add(priceField);
+                }
             }
         }
 

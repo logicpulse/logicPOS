@@ -38,6 +38,12 @@ namespace LogicPOS.UI.Components.Modals
         private void InitializeArticlePriceFields()
         {
             _prices = new List<ArticlePriceField>();
+
+            if (IsSdrDepositArticle)
+            {
+                return;
+            }
+
             var pricetypes = GetPriceTypes().OrderByDescending(price => price.EnumValue).Take(5).OrderBy(x => x.Code).ToArray();
 
             switch (pricetypes.Length)

@@ -84,7 +84,12 @@ namespace LogicPOS.UI.Components.Modals
         {
             var financeDetailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
 
-            financeDetailsTab.PackStart(CreatePricesArea(), false, false, 0);
+            _pricesArea = CreatePricesArea();
+            _sdrDepositPriceArea = _txtSdrVoltaPrice.Component;
+            _sdrDepositPriceArea.Visible = false;
+
+            financeDetailsTab.PackStart(_pricesArea, false, false, 0);
+            financeDetailsTab.PackStart(_sdrDepositPriceArea, false, false, 0);
             financeDetailsTab.PackStart(_checkPVPVariable, false, false, 0);
             financeDetailsTab.PackStart(_checkPriceWithVat, false, false, 0);
             financeDetailsTab.PackStart(_checkIsSdrPackaging, false, false, 0);

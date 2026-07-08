@@ -25,12 +25,13 @@ namespace LogicPOS.UI.Components.Modals
 
         private IEnumerable<ArticleSubfamily> _subfamilies;
 
-        public ArticleModal(EntityEditionModalMode modalMode, Article entity = null) : base(modalMode, entity)
+        public ArticleModal(EntityEditionModalMode modalMode, Article entity = null)
+            : base(ResolveModalMode(modalMode, entity), entity)
         {
             UpdateCompositionTabVisibility();
+            ApplySdrDepositArticleUi();
             UpdateValidatableFields();
             HandleMode(modalMode);
-            ApplySdrDepositArticleFieldRestrictions();
         }
 
         private void HandleMode(EntityEditionModalMode modalMode)
@@ -236,6 +237,12 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
             _checkIsSdrPackaging.Active = _entity.IsSdrPackaging;
+
+            if (IsSdrDepositArticle)
+            {
+                _txtSdrVoltaPrice.Text = _entity.Price1.Value.ToString("F2");
+            }
+
             if (_entity.IsComposed)
             {
                 var children = ExecuteGetEntitiesQuery(new GetArticleChildrenQuery(_entity.Id));
