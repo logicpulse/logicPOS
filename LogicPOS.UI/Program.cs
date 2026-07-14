@@ -3,10 +3,12 @@ using logicpos;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
 using Serilog;
 using System;
 using System.Diagnostics;
@@ -137,6 +139,12 @@ namespace LogicPOS.UI
                 SystemUpdateService.CreateUpdateXml();
                 ShowVersionAlerts();
 
+                if (ApplyAppOperationModeFromApi() == false)
+                {
+                    Quit();
+                    return;
+                }
+
                 if (InitializeCulture() == false)
                 {
                     Quit();
@@ -263,6 +271,54 @@ namespace LogicPOS.UI
             }
             LogicPOSApp app = new LogicPOSApp();
             app.Start();
+        }
+
+        /// <summary>
+        /// Loads system information from the API and overrides <see cref="AppSettings.AppOperationModeToken"/>
+        /// when a known module is returned. appsettings.json remains the fallback.
+        /// Must run before theme load in <see cref="LogicPOSApp.ConfigureUI"/>.
+        /// </summary>
+        public static bool ApplyAppOperationModeFromApi()
+        {
+            try
+            {
+                Log.Information("Resolving AppOperationModeToken from API module...");
+                var systemInformation = SystemInformationService.SystemInformation;
+                if (systemInformation == null)
+                {
+                    return false;
+                }
+
+                var fallbackToken = AppSettings.Instance.AppOperationModeToken;
+                var apiModule = systemInformation.Module;
+                var mappedToken = AppOperationModeExtensions.TryMapApiModuleToToken(apiModule);
+
+                if (mappedToken == null)
+                {
+                    Log.Information(
+                        "Keeping AppOperationModeToken from appsettings: {Token} (API module: {Module})",
+                        fallbackToken,
+                        apiModule ?? "(null)");
+                    return true;
+                }
+
+                AppSettings.Instance.ApplyOperationModeFromApiModule(apiModule);
+                Log.Information(
+                    "AppOperationModeToken overridden from API module {Module} → {Token} (appsettings was {Fallback})",
+                    apiModule,
+                    AppSettings.Instance.AppOperationModeToken,
+                    fallbackToken);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Failed to resolve AppOperationModeToken from API.");
+                SimpleAlerts.Error()
+                        .WithTitle("Erro ao obter informações do sistema")
+                        .WithMessage("Erro ao obter o módulo de operação do sistema")
+                        .ShowAlert();
+                return false;
+            }
         }
 
         public static bool InitializeCulture()

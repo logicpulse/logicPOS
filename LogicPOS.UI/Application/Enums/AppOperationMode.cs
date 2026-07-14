@@ -45,6 +45,11 @@
 
         public static AppOperationMode FromString(string mode)
         {
+            if (string.IsNullOrWhiteSpace(mode))
+            {
+                return AppOperationMode.Default;
+            }
+
             switch (mode.ToLower())
             {
                 case "retail":
@@ -64,6 +69,7 @@
                 case "restaurant":
                     return AppOperationMode.Restaurant;
                 case "seafoodshop":
+                case "seafoodstore":
                     return AppOperationMode.SeafoodShop;
                 case "backofficemode":
                     return AppOperationMode.BackOfficeMode;
@@ -71,6 +77,45 @@
                     return AppOperationMode.ShoeStore;
                 default:
                     return AppOperationMode.Default;
+            }
+        }
+
+        /// <summary>
+        /// Maps API <c>DatabaseSettings.Module</c> to a GTK <c>AppOperationModeToken</c>.
+        /// Returns null when the module is empty or unknown so local appsettings remain the fallback.
+        /// </summary>
+        public static string TryMapApiModuleToToken(string apiModule)
+        {
+            if (string.IsNullOrWhiteSpace(apiModule))
+            {
+                return null;
+            }
+
+            switch (apiModule.Trim().ToLowerInvariant())
+            {
+                case "default":
+                    return nameof(AppOperationMode.Default);
+                case "parking":
+                    return nameof(AppOperationMode.Parking);
+                case "bakery":
+                    return nameof(AppOperationMode.Bakery);
+                case "butchery":
+                    return nameof(AppOperationMode.Butchery);
+                case "cafe":
+                    return nameof(AppOperationMode.Cafe);
+                case "clothingstore":
+                    return nameof(AppOperationMode.ClothingStore);
+                case "hardwarestore":
+                    return nameof(AppOperationMode.HardwareStore);
+                case "restaurant":
+                    return nameof(AppOperationMode.Restaurant);
+                case "seafoodstore":
+                case "seafoodshop":
+                    return nameof(AppOperationMode.SeafoodShop);
+                case "shoestore":
+                    return nameof(AppOperationMode.ShoeStore);
+                default:
+                    return null;
             }
         }
 

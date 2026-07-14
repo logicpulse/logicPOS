@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using LogicPOS.UI.Application.Enums;
+using System.Drawing;
 using System.IO;
 
 namespace LogicPOS.UI.Settings
@@ -28,6 +29,21 @@ namespace LogicPOS.UI.Settings
 
             var json = File.ReadAllText("appsettings.json");
             _instance = Newtonsoft.Json.JsonConvert.DeserializeObject<AppSettings>(json, new ColorConverter());
+        }
+
+        /// <summary>
+        /// Overrides <see cref="AppOperationModeToken"/> from the API module when a known mapping exists.
+        /// Leaves the value from appsettings.json when module is missing or unknown.
+        /// </summary>
+        public void ApplyOperationModeFromApiModule(string apiModule)
+        {
+            var mappedToken = AppOperationModeExtensions.TryMapApiModuleToToken(apiModule);
+            if (mappedToken == null)
+            {
+                return;
+            }
+
+            AppOperationModeToken = mappedToken;
         }
 
         #region Properties
