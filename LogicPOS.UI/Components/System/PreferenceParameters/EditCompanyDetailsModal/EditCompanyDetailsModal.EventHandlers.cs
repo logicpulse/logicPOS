@@ -73,17 +73,20 @@ namespace LogicPOS.UI.Components.Modals
             if (!AllFieldsAreValid())
             {
                 ShowValidationErrors();
-                Run();
                 return;
             }
 
-            CompanyDetailsService.UpdateCompanyDetails(CreateCommand());
+            if (CompanyDetailsService.UpdateCompanyDetails(CreateCommand()) == false)
+            {
+                return;
+            }
+
+            _saved = true;
         }
 
         private void BtnDemo_Clicked(object sender, EventArgs e)
         {
             FillWithDemoData();
-            Run();
         }
 
     }

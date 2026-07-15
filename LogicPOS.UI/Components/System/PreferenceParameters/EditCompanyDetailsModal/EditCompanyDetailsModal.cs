@@ -14,12 +14,33 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class EditCompanyDetailsModal : Modal
     {
+        private bool _saved;
+
         private EditCompanyDetailsModal(Window parent) : base(parent,
             LocalizedString.Instance["window_title_edit_configurationpreferenceparameter"],
             new Size(600, 600),
             AppSettings.Paths.Images + @"Icons\Windows\icon_window_system.png")
         {
             HideCloseButton();
+        }
+
+        protected override void OnResponse(ResponseType response)
+        {
+            // Demo / AGT keep the dialog open (ResponseType.None).
+            if (response == ResponseType.None)
+            {
+                Run();
+                return;
+            }
+
+            // Modal.Button_Clicked always Respond(Ok); only close after a successful save.
+            if (response == ResponseType.Ok && _saved == false)
+            {
+                Run();
+                return;
+            }
+
+            base.OnResponse(response);
         }
 
 
@@ -86,10 +107,6 @@ namespace LogicPOS.UI.Components.Modals
         {
             var modal = new EditCompanyDetailsModal(parent);
             var response = (ResponseType)modal.Run();
-            while (response != ResponseType.Ok)
-            {
-                response = (ResponseType)modal.Run();
-            }
             modal.Destroy();
             return response;
         }

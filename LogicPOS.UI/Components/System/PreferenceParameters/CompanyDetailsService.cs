@@ -42,7 +42,7 @@ namespace LogicPOS.UI.Services
             _companyInformations = companyInformations.Value;
         }
 
-        public static void UpdateCompanyDetails(UpdateCompanyDetailsCommand command)
+        public static bool UpdateCompanyDetails(UpdateCompanyDetailsCommand command)
         {
 
             var result = DependencyInjection.Mediator.Send(command).Result;
@@ -50,10 +50,11 @@ namespace LogicPOS.UI.Services
             if (result.IsError)
             {
                 ErrorHandlingService.HandleApiError(result, false);
-                return;
+                return false;
             }
 
             LoadCompanyInformations();
+            return true;
         }
 
         public static bool CompanyIsConfigured()

@@ -30,8 +30,6 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateBody()
         {
-            InitializeTextBoxes();
-
             var verticalLayout = new VBox(false, 2);
 
             InitializeTextBoxes();
