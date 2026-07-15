@@ -14,7 +14,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -241,10 +240,10 @@ namespace LogicPOS.UI
             var terminalResult = TerminalService.InitializeTerminal();
             if (terminalResult.IsError)
             {
-                Log.Error("Failed to initialize terminal: {Error}", string.Join(Environment.NewLine, terminalResult.FirstError.Description));
+                Log.Error("Failed to initialize terminal: {Error}", terminalResult.Errors);
                 SimpleAlerts.Error()
                             .WithTitle("Erro ao inicializar terminal")
-                            .WithMessage(string.Join(Environment.NewLine, terminalResult.FirstError.Description))
+                            .WithMessage(LogicPOS.UI.Errors.ApiErrorMessageFormatter.ToUserMessage(terminalResult.FirstError))
                             .ShowAlert();
                 return;
             }

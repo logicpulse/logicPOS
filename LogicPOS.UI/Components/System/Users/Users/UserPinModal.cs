@@ -63,7 +63,7 @@ namespace logicpos.Classes.Gui.Gtk.Pos.Dialogs
                 _user = AuthenticationService.User;
             }
 
-            _pinPanel.Mode = (_user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
+            _pinPanel.PrepareModeForUser(_user);
 
 
             this.Initialize(this,

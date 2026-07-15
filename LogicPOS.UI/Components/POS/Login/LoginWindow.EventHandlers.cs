@@ -5,10 +5,8 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Drawing;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -78,17 +76,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void OnUserSelected(User user)
         {
-            PinPanel.Mode = (user.PasswordReset) ? NumberPadPinMode.PasswordOld : NumberPadPinMode.Password;
-
-            if (user.PasswordReset)
-            {
-                CustomAlerts.Information(this)
-                            .WithSize(new Size(500, 340))
-                            .WithTitleResource("global_information")
-                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_user_request_change_password"], user.Name, "0000"))
-                            .ShowAlert();
-            }
-
+            PinPanel.PrepareModeForUser(user);
             PinPanel.TxtPin.GrabFocus();
         }
 

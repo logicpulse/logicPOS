@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Printers.PrinterAssociations.GetEntityAssociatedPrin
 using LogicPOS.Api.Features.Printers.PrinterAssociations.RemoveEntityAssociatedPrinter;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
 using System;
 
 namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
@@ -29,7 +30,7 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
             if (createAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
-                            .WithMessage(createAssociationResult.FirstError.Description)
+                            .WithMessage(ApiErrorMessageFormatter.ToUserMessage(createAssociationResult.FirstError))
                             .ShowAlert();
                 return;
             }
@@ -41,7 +42,7 @@ namespace LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation
             if (removeAssociationResult.IsError)
             {
                 CustomAlerts.Error(POSWindow.Instance)
-                            .WithMessage(removeAssociationResult.FirstError.Description)
+                            .WithMessage(ApiErrorMessageFormatter.ToUserMessage(removeAssociationResult.FirstError))
                             .ShowAlert();
                 return;
             }

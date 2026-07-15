@@ -215,6 +215,18 @@ namespace LogicPOS.UI.Components
 
         }
 
+        /// <summary>
+        /// Forced first login: only new PIN twice. Voluntary change still collects the current PIN.
+        /// </summary>
+        public void PrepareModeForUser(User user)
+        {
+            _oldPassword = null;
+            _newPassword = null;
+            Mode = user != null && user.PasswordReset
+                ? NumberPadPinMode.PasswordNew
+                : NumberPadPinMode.Password;
+        }
+
         public bool ProcessPassword(User user, string password)
         {
             TxtPin.GrabFocus();
@@ -230,8 +242,7 @@ namespace LogicPOS.UI.Components
                     ProcessNewPassword(password);
                     break;
                 case NumberPadPinMode.PasswordNewConfirm:
-                    ProcessNewPasswordConfirmation(user.Id, password);
-                    break;
+                    return ProcessNewPasswordConfirmation(user, password);
                 case NumberPadPinMode.PasswordReset:
                     ProcessPasswordReset(user, password);
                     break;
@@ -252,33 +263,47 @@ namespace LogicPOS.UI.Components
             Mode = NumberPadPinMode.PasswordNew;
         }
 
-        private void ProcessNewPasswordConfirmation(Guid userId, string password)
+        private bool ProcessNewPasswordConfirmation(User user, string password)
         {
-            if (_newPassword == password && ChangePassword(userId, _oldPassword, _newPassword))
+            if (_newPassword != password)
             {
-                CustomAlerts.Information(SourceWindow)
-                      .WithTitleResource("window_title_dialog_change_password")
-                      .WithMessageResource("pos_pinpad_message_password_changed")
-                      .ShowAlert();
+                CustomAlerts.Error(SourceWindow)
+                            .WithTitleResource("window_title_dialog_change_password")
+                            .WithMessageResource("pos_pinpad_message_password_confirmation_error")
+                            .ShowAlert();
 
-
-                Mode = NumberPadPinMode.Password;
-                return;
+                ClearEntryPinStatusMessage(true);
+                Mode = NumberPadPinMode.PasswordNew;
+                _newPassword = string.Empty;
+                return false;
             }
 
-            CustomAlerts.Error(SourceWindow)
-                        .WithTitleResource("window_title_dialog_change_password")
-                        .WithMessageResource("pos_pinpad_message_password_confirmation_error")
-                        .ShowAlert();
+            // Forced reset: API skips OldPassword verification while PasswordReset is true.
+            var oldPassword = _oldPassword ?? string.Empty;
+            if (ChangePassword(user.Id, oldPassword, _newPassword) == false)
+            {
+                ClearEntryPinStatusMessage(true);
+                Mode = NumberPadPinMode.PasswordNew;
+                _newPassword = string.Empty;
+                return false;
+            }
 
-            ClearEntryPinStatusMessage(true);
-            Mode = NumberPadPinMode.PasswordNew;
-            _newPassword = string.Empty;
+            user.PasswordReset = false;
+            _oldPassword = null;
+
+            CustomAlerts.Information(SourceWindow)
+                  .WithTitleResource("window_title_dialog_change_password")
+                  .WithMessageResource("pos_pinpad_message_password_changed")
+                  .ShowAlert();
+
+            // Soft path: authenticate with the new PIN and continue into login.
+            return PasswordIsValid(user, _newPassword);
         }
 
         private void ProcessNewPassword(string password)
         {
-            if (password == _oldPassword)
+            // Only when the current PIN was collected (voluntary change) — forced reset has no old PIN step.
+            if (string.IsNullOrEmpty(_oldPassword) == false && password == _oldPassword)
             {
                 CustomAlerts.Error(SourceWindow)
                             .WithTitleResource("window_title_dialog_change_password")

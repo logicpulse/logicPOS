@@ -1,7 +1,6 @@
 using Gtk;
 using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Api.Entities;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.Windows;
@@ -101,16 +100,6 @@ namespace LogicPOS.UI.Components.Modals
         private void OnUserSelectd(User user)
         {
             User = user;
-
-            if (User.PasswordReset)
-            {
-                CustomAlerts.Information(this)
-                            .WithSize(new Size(500, 340))
-                            .WithTitleResource("global_information")
-                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_user_request_change_password"], User.Name, "0000"))
-                            .ShowAlert();
-            }
-
 
             UserPinModal pinModal = new UserPinModal(this, user);
             var pinModalResponse = (ResponseType)pinModal.Run();
