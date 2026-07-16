@@ -4,6 +4,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Licensing;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
@@ -21,17 +22,75 @@ namespace LogicPOS.UI.Application.Services
 
         public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "AutoUpdater.Net.dll");
 
+        public const string RetailInstallerUrl = "https://box.track.pt/files/latest/logicPOS_v1.5.exe";
+
         public static async Task<bool> UpdateZipFileIsAvailable(string url = "https://box.track.pt/files/latest/logicpos_1.5.zip")
+        {
+            return await RemoteFileIsAvailable(url).ConfigureAwait(false);
+        }
+
+        public static async Task<bool> InstallerIsAvailable(string url = RetailInstallerUrl)
+        {
+            return await RemoteFileIsAvailable(url).ConfigureAwait(false);
+        }
+
+        private static async Task<bool> RemoteFileIsAvailable(string url)
         {
             var client = new HttpClient();
 
             var request = new HttpRequestMessage(HttpMethod.Head, url);
-            var response = await client.SendAsync(request);
+            var response = await client.SendAsync(request).ConfigureAwait(false);
 
             return response.StatusCode == HttpStatusCode.OK;
         }
 
         public static void RunAutoUpdater(Gtk.Window instance = null)
+        {
+            _instance = instance;
+            if (!InstallerIsAvailable().GetAwaiter().GetResult())
+            {
+                Log.Error("The MSI installer is not available at the configured URL.");
+                CustomAlerts.Error()
+                    .WithMessage("Ocorreu um erro ao tentar obter o instalador de atualização. \n\nTente novamente mais tarde.")
+                    .ShowAlert();
+                return;
+            }
+
+            _ = RunInstallerSilentUpdateAsync();
+        }
+
+        private static async Task RunInstallerSilentUpdateAsync()
+        {
+            if (_instance != null)
+                _instance.Hide();
+
+            if (ApiHasUpdate)
+                SendUpdateSignalToApi();
+
+            const string installerUrl = RetailInstallerUrl;
+            var tempPath = Path.Combine(Path.GetTempPath(), $"logicPOS_update_{Guid.NewGuid():N}.exe");
+
+            using (var client = new HttpClient())
+            {
+                var bytes = await client.GetByteArrayAsync(installerUrl).ConfigureAwait(false);
+                File.WriteAllBytes(tempPath, bytes);
+            }
+
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = tempPath,
+                Arguments = "--pos-update",
+                UseShellExecute = true,
+                Verb = "runas"
+            });
+
+            Quit();
+        }
+
+        private static void Quit() => Program.Quit();
+
+        [Obsolete("Legacy zip updater retained for reference; retail MSI updates use RunInstallerSilentUpdateAsync.")]
+        public static void RunLegacyZipAutoUpdater(Gtk.Window instance = null)
         {
             _instance = instance;
             AutoUpdater.ShowSkipButton = false;
@@ -91,7 +150,7 @@ namespace LogicPOS.UI.Application.Services
                 new XDeclaration("1.0", "utf-8", "false"),
                 new XElement("item",
                     new XElement("version", SystemVersionService.LatestVersionFromLicense.ToString()),
-                    new XElement("url", "https://box.track.pt/files/latest/logicpos_1.5.zip"),
+                    new XElement("url", RetailInstallerUrl),
                     new XElement("mandatory", "true")
                 )
             );

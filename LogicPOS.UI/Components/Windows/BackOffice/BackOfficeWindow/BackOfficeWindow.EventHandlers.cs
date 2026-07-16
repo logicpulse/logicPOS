@@ -383,16 +383,6 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnUpdateSoftware_Clicked(object sender, EventArgs args)
         {
-            string updaterPath = SystemUpdateService.UpdaterPath;
-
-            if (!File.Exists(updaterPath))
-            {
-                CustomAlerts.Error(this)
-                            .WithMessage("O ficheiro de atualização não foi encontrado. Por favor, certifique-se de que o atualizador está presente na pasta de instalação.")
-                            .ShowAlert();
-                return;
-            }
-
             var responseType = new CustomAlert(this)
                                 .WithMessageResource("global_pos_update")
                                 .WithSize(new Size(600, 400))
