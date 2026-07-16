@@ -1,3 +1,4 @@
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Entities.Enums;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPrint;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
@@ -36,15 +37,23 @@ namespace LogicPOS.UI.Printing
         {
             try
             {
-                if (data.Items.Count == 1)
+                Api.Entities.Printer printer=null;
+                foreach (var item in data.Items)
                 {
-                    var printer = PrinterAssociationService.GetArticlePrinter(data.Items.First().Id);
-                    if (printer != null)
+                   var articlePrinter = PrinterAssociationService.GetArticlePrinter(item.Id);
+                    if (articlePrinter != null) 
                     {
-                        new PosTicketPrinter(new Printer(printer.Designation), data).Print();
-                        return;
+                        printer = articlePrinter;
                     }
+                    
                 }
+                
+                if (printer != null)
+                {
+                    new PosTicketPrinter(new Printer(printer.Designation), data).Print();
+                    return;
+                }
+                
 
                 if (Printer != null)
                 {

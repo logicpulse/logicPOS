@@ -45,7 +45,8 @@ namespace LogicPOS.UI.Services
         public static string SaftExportPath => GetPreferenceParameterValue("PATH_SAFTPT");
         public static bool CheckStocks => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS"));
         public static bool CheckStocksMessage => Convert.ToBoolean(GetPreferenceParameterValue("CHECK_STOCKS_MESSAGE"));
-        public static bool PrintTicket => Convert.ToBoolean(GetPreferenceParameterValue("TICKET_PRINT_TICKET"));
+        public static bool PrintTicket => Convert.ToBoolean(GetPreferenceParameterValue("TICKET_PRINT_TICKET")); 
+        public static bool PrintComercialName => Convert.ToBoolean(GetPreferenceParameterValue("TICKET_PRINT_COMERCIAL_NAME"));
         public static string SystemCurrency => GetPreferenceParameterValue("SYSTEM_CURRENCY");
         public static string AgtLogo => GetPreferenceParameterValue("AGT_FE_QRCODE_LOGO");
         public static int MaxAccountSplitterNumber => int.Parse(GetPreferenceParameterValue("SPLIT_PAYMENT_MAX_CLIENTS"));

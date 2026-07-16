@@ -21,7 +21,7 @@ namespace LogicPOS.UI.Application.Services
 
         public static string UpdaterPath => Path.Combine(Environment.CurrentDirectory, "AutoUpdater.Net.dll");
 
-        public static async Task<bool> UpdateZipFileIsAvailable(string url = "https://box.track.pt/files/latest/logicpos_1.5.zip")
+        public static async Task<bool> UpdateZipFileIsAvailable(string url = "https://box.track.pt/latest/logicpos_1.5.zip")
         {
             var client = new HttpClient();
 
@@ -46,11 +46,7 @@ namespace LogicPOS.UI.Application.Services
             AutoUpdater.CheckForUpdateEvent += AutoUpdaterOnCheckForUpdateEvent;
             if (UpdateZipFileIsAvailable().Result)
             {
-#if DEBUG
-                AutoUpdater.Start("https://box.track.pt/files/latest/update.xml");
-#else
                 AutoUpdater.Start(Directory.GetCurrentDirectory()+"\\update.xml");
-#endif
             }
             else
             {
@@ -95,7 +91,7 @@ namespace LogicPOS.UI.Application.Services
                 new XDeclaration("1.0", "utf-8", "false"),
                 new XElement("item",
                     new XElement("version", SystemVersionService.LatestVersionFromLicense.ToString()),
-                    new XElement("url", "https://box.track.pt/files/latest/logicpos_release.zip"),
+                    new XElement("url", "https://box.track.pt/latest/logicpos_.1.5.zip"),
                     new XElement("mandatory", "true")
                 )
             );

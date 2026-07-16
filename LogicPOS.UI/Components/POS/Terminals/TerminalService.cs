@@ -8,7 +8,6 @@ using LogicPOS.Api.Features.Terminals.GetTerminalById;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
-using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
@@ -26,7 +25,7 @@ namespace LogicPOS.UI.Components.Terminals
         private const string TERMINAL_HARDWAREID_FILE = "terminal.id";
         private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
         public static Terminal Terminal { get; private set; }
-        public static List<Terminal> _terminals;
+        private static List<Terminal> _terminals;
         public static bool HasThermalPrinter => Terminal != null && Terminal.ThermalPrinter != null;
         public static List<Terminal> Terminals
         {
@@ -40,6 +39,10 @@ namespace LogicPOS.UI.Components.Terminals
             }
         }
 
+        public static void RefreshTerminal()
+        {
+            Terminal = _mediator.Send(new GetTerminalByIdQuery(Terminal.Id)).Result.Value;
+        }
         private static ErrorOr<Guid> CreateTerminal(string hardwareId)
         {
             var command = new CreateTerminalCommand(hardwareId);

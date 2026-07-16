@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.PoleDisplays.GetAllPoleDisplays;
 using LogicPOS.Api.Features.Printers.GetAllPrinters;
 using LogicPOS.Api.Features.Terminals.UpdateTerminal;
 using LogicPOS.Api.Features.WeighingMachines.GetAllWeighingMachines;
+using LogicPOS.UI.Components.Terminals;
 using System;
 using System.Collections.Generic;
 
@@ -87,7 +88,14 @@ namespace LogicPOS.UI.Components.Modals
             _txtNotes.Value.Text = _entity.Notes;
         }
         protected override bool AddEntity() => false;
-        protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
-
+        protected override bool UpdateEntity() {
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
+            if (result.IsError)
+            {
+                return false;
+            }
+            TerminalService.RefreshTerminal();
+            return true;
+        }
     }
 }

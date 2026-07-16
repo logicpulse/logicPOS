@@ -32,6 +32,7 @@ namespace LogicPOS.UI.Printing
                 , _ticket.Number.ToString()
             );
             var mode = AppSettings.Instance.AppOperationModeTheme.ToLower();
+
             //Table|Order #2|Name/Zone
             _ticketSubTitle = string.Format("{0}: #{1}/{2}"
                 , LocalizedString.Instance[string.Format($"global_table_appmode_{mode}").ToLower()] /* IN008024 */

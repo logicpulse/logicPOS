@@ -82,7 +82,7 @@ namespace LogicPOS.UI.Printing
             var companyInformations = GetCompanyInformations();
             var logo = GetCompanyLogo();
             _printer.AlignCenter();
-            if (logo != null)
+            if (logo != null && !PreferenceParametersService.PrintComercialName)
             {
                 _printer.Image(logo);
             }
