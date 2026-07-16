@@ -91,7 +91,7 @@ namespace LogicPOS.UI.Application.Services
                 new XDeclaration("1.0", "utf-8", "false"),
                 new XElement("item",
                     new XElement("version", SystemVersionService.LatestVersionFromLicense.ToString()),
-                    new XElement("url", "https://box.track.pt/files/latest/logicpos_.1.5.zip"),
+                    new XElement("url", "https://box.track.pt/files/latest/logicpos_1.5.zip"),
                     new XElement("mandatory", "true")
                 )
             );
