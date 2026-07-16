@@ -16,6 +16,34 @@ function Fail {
     exit 1
 }
 
+function Set-AssemblyInfoVersion {
+    param (
+        [string]$AssemblyInfoPath,
+        [string]$Version
+    )
+
+    if (-not (Test-Path -LiteralPath $AssemblyInfoPath)) {
+        Fail "AssemblyInfo not found: $AssemblyInfoPath"
+    }
+
+    $content = Get-Content -LiteralPath $AssemblyInfoPath -Raw
+    $content = $content -replace '\[assembly: AssemblyVersion\("[^"]+"\)\]', "[assembly: AssemblyVersion(`"$Version`")]"
+    $content = $content -replace '\[assembly: AssemblyFileVersion\("[^"]+"\)\]', "[assembly: AssemblyFileVersion(`"$Version`")]"
+    Set-Content -LiteralPath $AssemblyInfoPath -Value $content -Encoding UTF8
+}
+
+function Clear-StaleBuildFolders {
+    param ([string]$ProjectPath)
+
+    $projectDir = Split-Path -Path $ProjectPath -Parent
+    foreach ($stale in @((Join-Path $projectDir "obj"), (Join-Path $projectDir "bin"))) {
+        if (Test-Path -LiteralPath $stale) {
+            Log "Cleaning stale build folder: $stale"
+            Remove-Item -LiteralPath $stale -Recurse -Force -ErrorAction SilentlyContinue
+        }
+    }
+}
+
 # --- Validate project/solution ---
 if (-not (Test-Path $SolutionOrProject)) {
     Fail "Project or solution not found: $SolutionOrProject"
@@ -41,6 +69,9 @@ if (-not [string]::IsNullOrWhiteSpace($ProductVersion)) {
     $v = $ProductVersion.Trim()
     $parts = $v.Split('.')
     $fileVersion = if ($parts.Count -eq 3) { "$v.0" } elseif ($parts.Count -ge 4) { $v } else { "$v.0.0" }
+    $assemblyInfoPath = Join-Path (Split-Path $SolutionOrProject -Parent) "Properties\AssemblyInfo.cs"
+    Set-AssemblyInfoVersion -AssemblyInfoPath $assemblyInfoPath -Version $v
+    Clear-StaleBuildFolders -ProjectPath $SolutionOrProject
     $versionProperties = @(
         "/p:ApplicationVersion=$fileVersion",
         "/p:AssemblyVersion=$fileVersion",

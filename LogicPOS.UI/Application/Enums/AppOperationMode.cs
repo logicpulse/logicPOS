@@ -94,7 +94,7 @@
             switch (apiModule.Trim().ToLowerInvariant())
             {
                 case "default":
-                    return nameof(AppOperationMode.Default);
+                    return nameof(AppOperationMode.BackOfficeMode);
                 case "parking":
                     return nameof(AppOperationMode.Parking);
                 case "bakery":
