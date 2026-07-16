@@ -1,6 +1,7 @@
 using Gtk;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Authentication;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.Users;
@@ -60,9 +61,16 @@ namespace LogicPOS.UI.Components.Windows
 
         private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
         {
-            if (args.Event.Key.ToString().Equals("Return"))
+            if (args.Event.Key.ToString().Equals("Return") == false)
             {
-                PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text);
+                return;
+            }
+
+            // Delegate to the same path as the OK button (includes ProcessLogin). The pin field
+            // stops propagation when it handles Return; this covers focus outside the pin entry.
+            if (MenuUsers.SelectedEntity != null && PinPanel.TxtPin.Validated)
+            {
+                PinPanel_BtnOK_Clicked(o, args);
             }
         }
 
@@ -82,6 +90,7 @@ namespace LogicPOS.UI.Components.Windows
 
         private void LoginWindow_Shown(object sender, EventArgs e)
         {
+            AuthenticationData.Token = null;
             MenuUsers.Refresh();
         }
     }

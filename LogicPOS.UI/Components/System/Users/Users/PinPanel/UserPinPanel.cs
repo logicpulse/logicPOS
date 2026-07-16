@@ -234,6 +234,11 @@ namespace LogicPOS.UI.Components
             switch (_mode)
             {
                 case NumberPadPinMode.Password:
+                    if (string.IsNullOrEmpty(password))
+                    {
+                        return false;
+                    }
+
                     return PasswordIsValid(user, password);
                 case NumberPadPinMode.PasswordOld:
                     ProcessOldPassword(user, password);
@@ -278,7 +283,7 @@ namespace LogicPOS.UI.Components
                 return false;
             }
 
-            // Forced reset: API skips OldPassword verification while PasswordReset is true.
+            // Forced reset: API skips OldPassword while PasswordReset is true.
             var oldPassword = _oldPassword ?? string.Empty;
             if (ChangePassword(user.Id, oldPassword, _newPassword) == false)
             {
@@ -290,14 +295,28 @@ namespace LogicPOS.UI.Components
 
             user.PasswordReset = false;
             _oldPassword = null;
+            var newPin = _newPassword;
+            _newPassword = null;
+
+            // Authenticate with the confirmed PIN. Never restart the new/confirm wizard after a
+            // successful change — that caused an infinite loop when login failed (error was cleared).
+            var loginResult = AuthenticationService.Authenticate(user.Id, newPin);
+            if (loginResult.IsError)
+            {
+                Mode = NumberPadPinMode.Password;
+                ErrorHandlingService.HandleApiError(loginResult, source: SourceWindow);
+                return false;
+            }
+
+            JwtToken = loginResult.Value;
+            Mode = NumberPadPinMode.Password;
 
             CustomAlerts.Information(SourceWindow)
                   .WithTitleResource("window_title_dialog_change_password")
                   .WithMessageResource("pos_pinpad_message_password_changed")
                   .ShowAlert();
 
-            // Soft path: authenticate with the new PIN and continue into login.
-            return PasswordIsValid(user, _newPassword);
+            return true;
         }
 
         private void ProcessNewPassword(string password)

@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Features.Common.Requests;
 using MediatR;
 using System.Net.Http;
@@ -16,6 +16,8 @@ namespace LogicPOS.Api.Features.Users.ResetPassword
 
         public async override Task<ErrorOr<Success>> Handle(ResetPasswordCommand command, CancellationToken cancellationToken = default)
         {
+            // Anonymous endpoint — never send a stale session token (would cause 401 on some hosts).
+            _httpClient.DefaultRequestHeaders.Authorization = null;
             return await HandleUpdateCommandAsync($"users/{command.UserId}/reset-password", command, cancellationToken);
         }
     }

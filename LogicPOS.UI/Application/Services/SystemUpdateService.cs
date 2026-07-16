@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using Gtk;
 
 namespace LogicPOS.UI.Application.Services
 {
@@ -61,30 +62,180 @@ namespace LogicPOS.UI.Application.Services
 
         private static async Task RunInstallerSilentUpdateAsync()
         {
-            if (_instance != null)
-                _instance.Hide();
+            Dialog progressDialog = null;
+            Label statusLabel = null;
+            ProgressBar progressBar = null;
 
-            if (ApiHasUpdate)
-                SendUpdateSignalToApi();
-
-            const string installerUrl = RetailInstallerUrl;
-            var tempPath = Path.Combine(Path.GetTempPath(), $"logicPOS_update_{Guid.NewGuid():N}.exe");
-
-            using (var client = new HttpClient())
+            try
             {
-                var bytes = await client.GetByteArrayAsync(installerUrl).ConfigureAwait(false);
-                File.WriteAllBytes(tempPath, bytes);
+                if (_instance != null)
+                    _instance.Hide();
+
+                CreateUpdateProgressDialog(out progressDialog, out statusLabel, out progressBar);
+                progressDialog.ShowAll();
+                PumpGtk();
+
+                if (ApiHasUpdate)
+                    SendUpdateSignalToApi();
+
+                const string installerUrl = RetailInstallerUrl;
+                var tempPath = Path.Combine(Path.GetTempPath(), $"logicPOS_update_{Guid.NewGuid():N}.exe");
+
+                UpdateProgressUi(statusLabel, progressBar, "A descarregar a atualização…", null);
+                PumpGtk();
+
+                await DownloadInstallerAsync(installerUrl, tempPath, (read, total) =>
+                {
+                    Gtk.Application.Invoke(delegate
+                    {
+                        if (total > 0)
+                        {
+                            var fraction = Math.Min(1.0, (double)read / total);
+                            var mbRead = read / (1024.0 * 1024.0);
+                            var mbTotal = total / (1024.0 * 1024.0);
+                            UpdateProgressUi(
+                                statusLabel,
+                                progressBar,
+                                string.Format("A descarregar… {0:0}% ({1:0.0}/{2:0.0} MB)", fraction * 100, mbRead, mbTotal),
+                                fraction);
+                        }
+                        else
+                        {
+                            progressBar.Pulse();
+                            statusLabel.Text = "A descarregar a atualização…";
+                        }
+
+                        PumpGtk();
+                    });
+                }).ConfigureAwait(true);
+
+                UpdateProgressUi(statusLabel, progressBar, "A iniciar o instalador…", 1.0);
+                PumpGtk();
+
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = tempPath,
+                    Arguments = "--pos-update",
+                    UseShellExecute = true,
+                    Verb = "runas"
+                });
+
+                progressDialog.Destroy();
+                progressDialog = null;
+                Quit();
             }
-
-            Process.Start(new ProcessStartInfo
+            catch (Exception ex)
             {
-                FileName = tempPath,
-                Arguments = "--pos-update",
-                UseShellExecute = true,
-                Verb = "runas"
-            });
+                Log.Error(ex, "Silent update failed.");
+                if (progressDialog != null)
+                    progressDialog.Destroy();
 
-            Quit();
+                if (_instance != null)
+                    _instance.Show();
+
+                CustomAlerts.Error()
+                    .WithMessage("Ocorreu um erro ao atualizar o logicPOS.\n\n" + ex.Message)
+                    .ShowAlert();
+            }
+        }
+
+        private static void CreateUpdateProgressDialog(out Dialog dialog, out Label statusLabel, out ProgressBar progressBar)
+        {
+            dialog = new Dialog(
+                "logicPOS",
+                _instance,
+                DialogFlags.Modal | DialogFlags.DestroyWithParent);
+
+            dialog.WindowPosition = WindowPosition.CenterAlways;
+            dialog.SetSizeRequest(420, 140);
+            dialog.Decorated = true;
+            dialog.Resizable = false;
+            dialog.KeepAbove = true;
+            dialog.ActionArea.Hide();
+
+            var box = new VBox(false, 12)
+            {
+                BorderWidth = 16
+            };
+
+            var title = new Label("A atualizar o logicPOS…")
+            {
+                Xalign = 0f
+            };
+            title.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 11 Bold"));
+
+            statusLabel = new Label("A preparar…")
+            {
+                Xalign = 0f
+            };
+            statusLabel.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 9"));
+
+            progressBar = new ProgressBar
+            {
+                Fraction = 0
+            };
+
+            box.PackStart(title, false, false, 0);
+            box.PackStart(statusLabel, false, false, 0);
+            box.PackStart(progressBar, false, false, 0);
+            dialog.VBox.PackStart(box, true, true, 0);
+        }
+
+        private static void UpdateProgressUi(Label statusLabel, ProgressBar progressBar, string text, double? fraction)
+        {
+            if (statusLabel != null)
+                statusLabel.Text = text;
+
+            if (progressBar == null)
+                return;
+
+            if (fraction.HasValue)
+                progressBar.Fraction = Math.Max(0, Math.Min(1.0, fraction.Value));
+            else
+                progressBar.Pulse();
+        }
+
+        private static void PumpGtk()
+        {
+            while (Gtk.Application.EventsPending())
+                Gtk.Application.RunIteration();
+        }
+
+        private static async Task DownloadInstallerAsync(
+            string url,
+            string destinationPath,
+            Action<long, long> onProgress)
+        {
+            using (var client = new HttpClient())
+            using (var response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
+            {
+                response.EnsureSuccessStatusCode();
+
+                var total = response.Content.Headers.ContentLength ?? -1L;
+                using (var remote = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var local = File.Create(destinationPath))
+                {
+                    var buffer = new byte[81920];
+                    long readTotal = 0;
+                    long lastReported = -1;
+                    var lastUi = DateTime.UtcNow.AddSeconds(-1);
+                    int read;
+                    while ((read = await remote.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) > 0)
+                    {
+                        await local.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+                        readTotal += read;
+
+                        var now = DateTime.UtcNow;
+                        var percent = total > 0 ? (readTotal * 100) / total : -1;
+                        if ((now - lastUi).TotalMilliseconds >= 200 || percent != lastReported || (total > 0 && readTotal >= total))
+                        {
+                            lastUi = now;
+                            lastReported = percent;
+                            onProgress?.Invoke(readTotal, total);
+                        }
+                    }
+                }
+            }
         }
 
         private static void Quit() => Program.Quit();

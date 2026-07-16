@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using logicpos;
 using logicpos.Classes.Enums.Widgets;
 using LogicPOS.UI.Buttons;
@@ -47,6 +47,9 @@ namespace LogicPOS.UI.Components
                 {
                     BtnOk.Click();
                 }
+
+                // Stop Enter from bubbling to LoginWindow (would re-run login with an empty PIN).
+                args.RetVal = true;
             }
         }
     }

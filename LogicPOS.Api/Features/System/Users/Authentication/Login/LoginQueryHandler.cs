@@ -1,4 +1,4 @@
-﻿using ErrorOr;
+using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common.Requests;
 using System.Net.Http;
@@ -23,7 +23,8 @@ namespace LogicPOS.Api.Features.Authentication.Login
 
                 if (response.IsSuccessStatusCode == false)
                 {
-                    return Error.Unauthorized();
+                    // Prefer API ProblemDetails (e.g. invalid PIN) over a blank Unauthorized().
+                    return await HandleNotSuccessfulHttpResponseAsync(response);
                 }
 
                 return (await response.Content.ReadAsStringAsync()).Trim('"');

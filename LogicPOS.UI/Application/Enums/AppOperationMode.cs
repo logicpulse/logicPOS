@@ -1,4 +1,4 @@
-﻿namespace LogicPOS.UI.Application.Enums
+namespace LogicPOS.UI.Application.Enums
 {
     public enum AppOperationMode
     {

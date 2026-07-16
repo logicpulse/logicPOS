@@ -42,7 +42,7 @@ namespace LogicPOS.Api.Features.Common.Requests
             }
         }
 
-        private async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
+        protected async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
         {
             ProblemDetails problemDetails;
             var url = httpResponse.RequestMessage.RequestUri.AbsolutePath.ToString();
