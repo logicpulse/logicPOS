@@ -1,4 +1,4 @@
-﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company.GetCompanyCurreny;
 using LogicPOS.Api.Features.Currencies.GetAllCurrencies;
 using LogicPOS.UI.Errors;
@@ -31,10 +31,10 @@ namespace LogicPOS.UI.Components.Finance.Currencies
             if (currencies.IsError)
             {
                 ErrorHandlingService.HandleApiError(currencies);
-                return null;
+                return new List<Currency>();
             }
 
-            return currencies.Value.ToList();
+            return currencies.Value?.ToList() ?? new List<Currency>();
         }
 
         public static Currency Default
@@ -57,10 +57,10 @@ namespace LogicPOS.UI.Components.Finance.Currencies
             if (currency.IsError)
             {
                 ErrorHandlingService.HandleApiError(currency);
-                return null;
+                return Currencies?.FirstOrDefault();
             }
 
-            return currency.Value;
+            return currency.Value ?? Currencies?.FirstOrDefault();
         }
          
         

@@ -80,8 +80,12 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             TxtCurrency.Entry.IsEditable = false;
 
-            TxtCurrency.Text = CurrenciesService.Default.Designation;
-            TxtCurrency.SelectedEntity = CurrenciesService.Default;
+            var defaultCurrency = CurrenciesService.Default;
+            if (defaultCurrency != null)
+            {
+                TxtCurrency.Text = defaultCurrency.Designation;
+                TxtCurrency.SelectedEntity = defaultCurrency;
+            }
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
 
             if (SystemInformationService.SystemInformation.IsAngola)

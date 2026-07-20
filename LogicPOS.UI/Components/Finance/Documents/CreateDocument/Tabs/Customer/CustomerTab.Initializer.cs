@@ -50,8 +50,14 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
         private void SelectDefaultCountry()
         {
-            TxtCountry.SelectedEntity = CountriesService.Default;
-            TxtCountry.Text = CountriesService.Default.Designation;
+            var defaultCountry = CountriesService.Default;
+            if (defaultCountry == null)
+            {
+                return;
+            }
+
+            TxtCountry.SelectedEntity = defaultCountry;
+            TxtCountry.Text = defaultCountry.Designation;
         }
 
         private void InitializeTxtCity()

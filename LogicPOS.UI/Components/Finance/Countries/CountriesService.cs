@@ -31,8 +31,17 @@ namespace LogicPOS.UI.Services
             {
                 if (_default == null)
                 {
-                    _default = Countries.FirstOrDefault(c => c.Code2.ToLower() == SystemInformationService.SystemInformation.CountryCode2.ToLower());
+                    var countryCode2 = SystemInformationService.SystemInformation?.CountryCode2;
+                    var countries = Countries ?? new List<Country>();
+
+                    if (!string.IsNullOrWhiteSpace(countryCode2))
+                    {
+                        _default = countries.FirstOrDefault(c =>
+                            !string.IsNullOrWhiteSpace(c.Code2) &&
+                            string.Equals(c.Code2, countryCode2, StringComparison.OrdinalIgnoreCase));
+                    }
                 }
+
                 return _default;
             }
         }
@@ -43,9 +52,9 @@ namespace LogicPOS.UI.Services
             if (countriesResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(countriesResult);
-                return null;
+                return new List<Country>();
             }
-            return countriesResult.Value.ToList();
+            return countriesResult.Value?.ToList() ?? new List<Country>();
         }
 
         public static List<AutoCompleteLine> AutocompleteLines => Countries.Select(c => new AutoCompleteLine
@@ -61,7 +70,14 @@ namespace LogicPOS.UI.Services
 
         public static Country GetByCode2(string code2)
         {
-            return Countries.FirstOrDefault(c => c.Code2.ToLower() == code2.ToLower());
+            if (string.IsNullOrWhiteSpace(code2))
+            {
+                return null;
+            }
+
+            return Countries.FirstOrDefault(c =>
+                !string.IsNullOrWhiteSpace(c.Code2) &&
+                string.Equals(c.Code2, code2, StringComparison.OrdinalIgnoreCase));
         }
     }
 }

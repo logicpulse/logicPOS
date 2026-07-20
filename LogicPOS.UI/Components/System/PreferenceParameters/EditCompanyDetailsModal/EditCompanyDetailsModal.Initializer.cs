@@ -155,8 +155,13 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtCountry.Entry.IsEditable = false;
             TxtCountry.SelectEntityClicked += BtnSelectCountry_Clicked;
-            TxtCountry.Text = CountriesService.Default.Designation;
-            TxtCountry.SelectedEntity = CountriesService.Default;
+
+            var defaultCountry = CountriesService.Default;
+            if (defaultCountry != null)
+            {
+                TxtCountry.Text = defaultCountry.Designation;
+                TxtCountry.SelectedEntity = defaultCountry;
+            }
         }
 
         private void InitializeTxtCurrency()
@@ -170,8 +175,12 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtCurrency.Entry.IsEditable = false;
 
-            TxtCurrency.Text = CurrenciesService.Default.Designation;
-            TxtCurrency.SelectedEntity = CurrenciesService.Default;
+            var defaultCurrency = CurrenciesService.Default;
+            if (defaultCurrency != null)
+            {
+                TxtCurrency.Text = defaultCurrency.Designation;
+                TxtCurrency.SelectedEntity = defaultCurrency;
+            }
 
             TxtCurrency.SelectEntityClicked += BtnSelectCurrency_Clicked;
         }

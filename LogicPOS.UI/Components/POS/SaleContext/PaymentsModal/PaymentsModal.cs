@@ -218,8 +218,12 @@ namespace LogicPOS.UI.Components.POS
             TxtLocality.Clear();
             TxtZipCode.Clear();
             TxtCity.Clear();
-            TxtCountry.Text = CountriesService.Default.Designation;
-            TxtCountry.SelectedEntity = CountriesService.Default;
+            var defaultCountry = CountriesService.Default;
+            if (defaultCountry != null)
+            {
+                TxtCountry.Text = defaultCountry.Designation;
+                TxtCountry.SelectedEntity = defaultCountry;
+            }
             TxtNotes.Clear();
             FreezeEditableFields(false);
             UpdateCustomerCardPaymentAvailability();

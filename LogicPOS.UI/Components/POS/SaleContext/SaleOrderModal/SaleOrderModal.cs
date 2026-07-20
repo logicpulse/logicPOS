@@ -117,7 +117,7 @@ namespace LogicPOS.UI.Components.Modals
 
             var country = CountriesService.Default;
             var customer = CustomersService.Default;
-            command.Type = (country.Code2.ToUpper() == "AO") ? "CM" : "DC";
+            command.Type = (country?.Code2?.ToUpper() == "AO") ? "CM" : "DC";
 
             if (customer != null)
                 command.CustomerId = customer.Id;
