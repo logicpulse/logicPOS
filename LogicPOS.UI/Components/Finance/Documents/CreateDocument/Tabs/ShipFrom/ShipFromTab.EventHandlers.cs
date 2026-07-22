@@ -1,10 +1,9 @@
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
-using LogicPOS.Utility;
 using System;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
 {

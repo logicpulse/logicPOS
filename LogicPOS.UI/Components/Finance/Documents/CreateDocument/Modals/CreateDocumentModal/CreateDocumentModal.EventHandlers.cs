@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
@@ -66,20 +67,20 @@ namespace LogicPOS.UI.Components.Modals
                     return;
                 }
 
-                var addCommand = CreateAddCommand();
+                var issueDocumentRequest = CreateAddCommand();
 
                 if (DraftMode == false)
                 {
                     var previewQuery = new GetDocumentPreviewDataQuery
                     {
-                        CurrencyId = addCommand.CurrencyId,
-                        Type = addCommand.Type,
-                        ShipFromAdress = addCommand.ShipFromAddress,
-                        ShipToAdress = addCommand.ShipToAddress,
-                        Discount = addCommand.Discount,
-                        Notes = addCommand.Notes,
-                        Details = addCommand.Details,
-                        ExchangeRate = addCommand.ExchangeRate,
+                        CurrencyId = issueDocumentRequest.CurrencyId,
+                        Type = issueDocumentRequest.Type,
+                        ShipFromAdress = issueDocumentRequest.ShipFromAddress,
+                        ShipToAdress = issueDocumentRequest.ShipToAddress,
+                        Discount = issueDocumentRequest.Discount,
+                        Notes = issueDocumentRequest.Notes,
+                        Details = issueDocumentRequest.Details,
+                        ExchangeRate = issueDocumentRequest.ExchangeRate,
                     };
 
                     var confirmModal = new DocumentPreviewModal(this, previewQuery);
@@ -93,21 +94,35 @@ namespace LogicPOS.UI.Components.Modals
                     }
                 }
 
-                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(addCommand);
+                if (SystemInformationService.SystemInformation.IsPortugal && 
+                    new DocumentTypeAnalyzer(issueDocumentRequest.Type).IsWayBill() &&
+                    issueDocumentRequest.ShipFromAddress.DeliveryDate is DateTime deliveryDate &&
+                    deliveryDate < DateTime.Now.AddMinutes(1))
+                {
+                    Log.Warning("Document of type {DocumentType} has shipping date less than the current time + 1 minute.", issueDocumentRequest.Type);
+                    CustomAlerts.Warning(this)
+                        .WithMessage("A data de envio tem de ser posterior à data atual em pelo menos 1 minuto.")
+                        .ShowAlert();
+                    Run();
+                    return;
+                }
+
+
+                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(issueDocumentRequest);
                 if (issueDocumentResponse == null)
                 {
                     Run();
                     return;
                 }
 
-                Log.Information("Document of type {DocumentType} created with ID {DocumentId}", addCommand.Type, issueDocumentResponse.Value.Id);
+                Log.Information("Document of type {DocumentType} created with ID {DocumentId}", issueDocumentRequest.Type, issueDocumentResponse.Value.Id);
 
                 if (_draftId != null)
                 {
                     DocumentsService.DeleteDraft(_draftId.Value);
                 }
 
-                bool requireAtRegistration = !DraftMode && AtService.DocumentTypeRequiresAtRegistration(addCommand.Type);
+                bool requireAtRegistration = !DraftMode && AtService.DocumentTypeRequiresAtRegistration(issueDocumentRequest.Type);
 
                 if (SystemInformationService.SystemInformation.IsPortugal && requireAtRegistration && issueDocumentResponse.Value.HasAtRegistration == false)
                 {
@@ -163,11 +178,11 @@ namespace LogicPOS.UI.Components.Modals
         {
             var type = DocumentTab.TxtDocumentType.SelectedEntity as DocumentType;
 
-            if (type != null && type.Analyzer.IsInvoice() && 
-                !(document.Type == "PP" || document.Type == "OR" || 
-                document.Type == "FP" || document.Type == "PF" || 
-                document.Type=="GT" || document.Type== "GR" || 
-                document.Type=="GD" || document.Type=="GA"))
+            if (type != null && type.Analyzer.IsInvoice() &&
+                !(document.Type == "PP" || document.Type == "OR" ||
+                document.Type == "FP" || document.Type == "PF" ||
+                document.Type == "GT" || document.Type == "GR" ||
+                document.Type == "GD" || document.Type == "GA"))
             {
                 new CustomAlert(this)
                     .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
