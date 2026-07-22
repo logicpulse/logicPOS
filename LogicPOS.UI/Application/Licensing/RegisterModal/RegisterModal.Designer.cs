@@ -119,7 +119,7 @@ namespace LogicPOS.UI.Components.Licensing
             _entryBoxHardwareId = new EntryBoxValidation(this, LocalizedString.Instance["global_hardware_id"], KeyboardMode.None, RegularExpressions.AlfaNumericExtended, true);
             _entryBoxHardwareId.EntryValidation.ModifyFont(FontDescription.FromString("Courier 6 bold"));
             _entryBoxHardwareId.EntryValidation.Text = _hardwareId;
-            _entryBoxHardwareId.EntryValidation.Sensitive = false;
+            _entryBoxHardwareId.EntryValidation.IsEditable = false;
             _entryBoxHardwareId.EntryValidation.HeightRequest = 30;
             vboxInnerLeft.PackStart(_entryBoxHardwareId, false, false, 0);
 

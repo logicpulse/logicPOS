@@ -210,7 +210,7 @@ namespace LogicPOS.UI
             }
 
             string message =
-                $"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosVersion}).\n" +
+                $"A versão da API ({SystemVersionService.ApiVersion}) difere da versão do aplicativo ({SystemVersionService.PosDisplayVersion}).\n" +
                 "Algumas partes do sistema podem não funcionar como esperado; convém usar versões iguais.";
 
             WinFormsMessageBox.Show(

@@ -304,7 +304,7 @@ namespace LogicPOS.UI.Components.Windows
             // If Update: "New Version..." | If No Update: Current App Version
             string topText = SystemUpdateService.PosHasUpdate
                 ? string.Format(LocalizedString.Instance["global_new_version"], SystemVersionService.LastestVersion)
-                : $"Versão: {SystemVersionService.PosVersion}";
+                : $"Versão: {SystemVersionService.PosDisplayVersion}";
 
             yTop = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yTop : yTop - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
             yBottom = AppSettings.Instance.OperationMode.IsBackOfficeMode() || AppSettings.Instance.AppScreenSize.Height >= 800 ? yBottom : yBottom - 40; // Move up for FrontOffice to avoid overlap with FrontOffice button
