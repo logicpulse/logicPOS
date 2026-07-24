@@ -3,15 +3,20 @@ using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.POS.Devices.Hardware;
+using LogicPOS.UI.Components.System.Users.Permissions;
 using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
+using Serilog;
 using System;
 
-using LogicPOS.UI.Components.System.Users.Permissions;
 namespace LogicPOS.UI.Components.Windows
 {
     public partial class POSWindow
@@ -205,16 +210,73 @@ namespace LogicPOS.UI.Components.Windows
 
         private void HWBarCodeReader_Captured(object sender, EventArgs e)
         {
-            switch (LogicPOSApp.BarCodeReader.Device)
+            try
             {
-                case InputReaderType.None:
-                    break;
-                case InputReaderType.BarCodeReader:
-                case InputReaderType.CardReader:
-                    throw new NotImplementedException();
-                default:
-                    break;
+                var reader = LogicPOSApp.BarCodeReader;
+                if (reader == null)
+                {
+                    return;
+                }
+
+                // Buffer is cleared by InputReader after this event returns — capture first.
+                var code = reader.Buffer?.Trim();
+                if (string.IsNullOrEmpty(code))
+                {
+                    return;
+                }
+
+                switch (reader.Device)
+                {
+                    case InputReaderType.None:
+                        break;
+                    case InputReaderType.BarCodeReader:
+                    case InputReaderType.CardReader:
+                        ProcessCapturedReaderCode(code);
+                        break;
+                    default:
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error processing barcode/card reader capture");
+                CustomAlerts.Warning(this)
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+            }
+        }
+
+        private void ProcessCapturedReaderCode(string code)
+        {
+            if (AppSettings.Instance.OperationMode.IsParkingMode())
+            {
+                GeneralUtils.ShowNotImplementedMessage();
+                return;
+            }
+
+            if (!WorkSessionsService.TerminalIsOpen() || SaleContext.CurrentTable == null)
+            {
+                var tableMessageKey = AppSettings.Instance.OperationMode.IsRetailMode()
+                    ? "status_message_select_order_or_table_appmode_retail"
+                    : "status_message_select_order_or_table_appmode_default";
+
+                CustomAlerts.Warning(this)
+                            .WithMessage(LocalizedString.Instance[tableMessageKey])
+                            .ShowAlert();
+                return;
+            }
+
+            var article = ArticlesService.GetArticleByCode(code);
+            if (article == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage(LocalizedString.Instance["global_invalid_code"])
+                            .ShowAlert();
+                return;
+            }
+
+            MenuArticles.BtnArticle_Clicked(article);
+            SaleOptionsPanel?.UpdateButtonsSensitivity();
         }
 
         private void ScrollTextViewLog(object o, SizeAllocatedArgs args)
