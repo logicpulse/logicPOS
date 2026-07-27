@@ -331,6 +331,7 @@ namespace LogicPOS.UI.Components.POS
                 command.Customer = GetDocumentCustomer();
             }
             command.Discount = decimal.Parse(TxtDiscount.Text);
+            command.Notes = string.IsNullOrWhiteSpace(TxtNotes.Text) ? null : TxtNotes.Text.Trim();
 
             var getCurrentFiscalYearResult = DependencyInjection.Mediator.Send(new GetCurrentFiscalYearQuery()).Result;
             var hasValidFiscalYear = getCurrentFiscalYearResult.Value != null && getCurrentFiscalYearResult.Value.Year == DateTime.Now.Year;
