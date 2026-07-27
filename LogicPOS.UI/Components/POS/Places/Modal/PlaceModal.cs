@@ -57,10 +57,17 @@ namespace LogicPOS.UI.Components.Modals
 
         private void DeleteImageInCache()
         {
-            if(_imagePicker.HasImage)
+            if (!_imagePicker.HasImage)
             {
-                ButtonImageCache.DeleteImage(_entity.Id,_entity.ImageExtension);
+                return;
             }
+
+            // Place.ImageExtension is fixed to "png" (readonly).
+            ButtonImageCache.DeleteImage(_entity.Id, _entity.ImageExtension);
+
+            var base64 = _imagePicker.GetBase64Image();
+            ButtonImageCache.AddBase64Image(_entity.Id, base64, _entity.ImageExtension);
+            _entity.ButtonImage = base64;
         }
 
         private UpdatePlaceCommand CreateUpdateCommand()

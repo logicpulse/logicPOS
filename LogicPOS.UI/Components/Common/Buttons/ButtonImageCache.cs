@@ -45,8 +45,16 @@ namespace LogicPOS.UI.Components.Articles
 
         public static void DeleteImage(Guid id, string extension)
         {
-           var path = CreateImagePath(id, extension);
-            File.Delete(path);
+            if (string.IsNullOrWhiteSpace(extension))
+            {
+                return;
+            }
+
+            var path = CreateImagePath(id, extension);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
         }
 
         private static void SaveImage(string base64Image, string path)

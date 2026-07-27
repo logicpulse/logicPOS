@@ -101,12 +101,28 @@ namespace LogicPOS.UI.Components.Modals
 
         private void UpdateImageInCache()
         {
-            if (_imagePicker.HasImage == true)
+            var previousExtension = _entity.Button?.ImageExtension;
+            if (!string.IsNullOrWhiteSpace(previousExtension))
             {
-                ButtonImageCache.DeleteImage(_entity.Id, _entity.Button.ImageExtension);
+                ButtonImageCache.DeleteImage(_entity.Id, previousExtension);
+            }
+
+            if (!_imagePicker.HasImage)
+            {
                 return;
             }
 
+            var extension = _imagePicker.GetImageExtension();
+            var base64 = _imagePicker.GetBase64Image();
+            ButtonImageCache.AddBase64Image(_entity.Id, base64, extension);
+
+            if (_entity.Button == null)
+            {
+                _entity.Button = new Api.ValueObjects.Button();
+            }
+
+            _entity.Button.Image = base64;
+            _entity.Button.ImageExtension = extension;
         }
         private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
         private IEnumerable<ArticleFamily> GetFamilies() => ExecuteGetEntitiesQuery(new GetAllArticleFamiliesQuery());
