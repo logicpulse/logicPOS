@@ -178,11 +178,9 @@ namespace LogicPOS.UI.Components.Modals
         {
             var type = DocumentTab.TxtDocumentType.SelectedEntity as DocumentType;
 
-            if (type != null && type.Analyzer.IsInvoice() &&
-                !(document.Type == "PP" || document.Type == "OR" ||
-                document.Type == "FP" || document.Type == "PF" ||
-                document.Type == "GT" || document.Type == "GR" ||
-                document.Type == "GD" || document.Type == "GA"))
+            if (type != null &&
+                (type.Analyzer.IsInvoice() || type.Analyzer.IsInvoiceReceipt() || type.Analyzer.IsSimplifiedInvoice()) &&
+                !IsValidOriginForSalesInvoiceFamily(document.Type))
             {
                 new CustomAlert(this)
                     .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
@@ -211,6 +209,35 @@ namespace LogicPOS.UI.Components.Modals
                 ShipToTab.ImportCustomerShipAddress(document.Customer);
             }
 
+        }
+
+        private static bool IsValidOriginForSalesInvoiceFamily(string originType)
+        {
+            switch (originType)
+            {
+                case "GR":
+                case "GT":
+                case "GA":
+                case "GC":
+                case "GD":
+                case "DC":
+                case "CM":
+                case "FC":
+                case "OR":
+                case "PF":
+                case "PP":
+                case "FP":
+                    return true;
+                case "FT":
+                case "FS":
+                case "FR":
+                    return string.Equals(
+                        SystemInformationService.SystemInformation.CountryCode2,
+                        "mz",
+                        StringComparison.OrdinalIgnoreCase);
+                default:
+                    return false;
+            }
         }
 
         private void OnCopyDocumentSelected(Document document)

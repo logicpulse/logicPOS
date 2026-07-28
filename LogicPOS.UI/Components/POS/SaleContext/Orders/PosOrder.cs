@@ -78,6 +78,11 @@ namespace LogicPOS.UI.Components.POS
             {
                 OrdersService.CloseOrder(Id.Value);
             }
+            else if (Table.Status == TableStatus.Open)
+            {
+                // Orphan open table (no persisted order) — release so Finish/CreateOrder can run again.
+                TablesService.FreeTable(Table);
+            }
 
             Clear();
         }

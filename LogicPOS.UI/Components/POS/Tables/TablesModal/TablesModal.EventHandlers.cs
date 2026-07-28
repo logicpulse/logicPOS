@@ -41,7 +41,12 @@ namespace LogicPOS.UI.Components.POS
 
         private void MenuTables_TableSelected(TableViewModel table)
         {
-            BtnReservation.Sensitive = (table.Status == TableStatus.Free || table.Status == TableStatus.Reserved) && table.Id != SaleContext.CurrentTable.Id;
+            // Free/Reserved: reserve toggle. Open: allow release when orphan (no open order) via FreeTable API.
+            BtnReservation.Sensitive =
+                (table.Status == TableStatus.Free
+                 || table.Status == TableStatus.Reserved
+                 || table.Status == TableStatus.Open)
+                && table.Id != SaleContext.CurrentTable.Id;
             BtnOk.Sensitive = table.Status != TableStatus.Reserved;
         }
 
@@ -56,7 +61,8 @@ namespace LogicPOS.UI.Components.POS
             {
                 TablesService.ReserveTable(MenuTables.SelectedEntity);
             }
-            else if (MenuTables.SelectedEntity.Status == TableStatus.Reserved)
+            else if (MenuTables.SelectedEntity.Status == TableStatus.Reserved
+                     || MenuTables.SelectedEntity.Status == TableStatus.Open)
             {
                 TablesService.FreeTable(MenuTables.SelectedEntity);
             }

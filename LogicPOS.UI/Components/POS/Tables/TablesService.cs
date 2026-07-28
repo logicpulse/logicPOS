@@ -104,7 +104,13 @@ namespace LogicPOS.UI.Services
 
         public static void FreeTable(TableViewModel table)
         {
-            if (table.Status != TableStatus.Reserved)
+            if (table.Status == TableStatus.Free)
+            {
+                return;
+            }
+
+            // Reserved → unreserve; Open without open order → orphan unlock (API validates).
+            if (table.Status != TableStatus.Reserved && table.Status != TableStatus.Open)
             {
                 return;
             }

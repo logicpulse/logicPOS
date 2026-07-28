@@ -100,7 +100,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
 
             if (DocumentTypeAnalyzer.Value.IsInvoiceReceipt() || DocumentTypeAnalyzer.Value.IsSimplifiedInvoice())
             {
-                TxtOriginDocument.Require(false, false);
+                TxtOriginDocument.Require(false);
                 TxtPaymentCondition.Require(false, false);
                 if (SinglePaymentMethod)
                 {
