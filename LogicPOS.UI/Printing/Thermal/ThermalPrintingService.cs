@@ -74,22 +74,24 @@ namespace LogicPOS.UI.Printing
         {
             try
             {
-                if (Printer != null)
+                if (Printer == null)
                 {
-                    new InvoicePrinter(Printer, data).Print();
-                    var printCopies = new List<int>();
-                    printCopies.Add(1);
-                    DocumentsService.RegisterPrint(data.DocumentId, printCopies, false, null, true);
+                    return false;
                 }
+
+                new InvoicePrinter(Printer, data).Print();
+                DocumentsService.RegisterPrint(data.DocumentId, new List<int> { 1 }, false, null, true);
                 return true;
             }
             catch (Exception ex)
             {
-                CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
-                            .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
-                            .ShowAlert();
-
                 Log.Error(ex, "Error printing...");
+                global::Gtk.Application.Invoke(delegate
+                {
+                    CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
+                                .WithMessage($"Erro ao imprimir. \n\n{ex.Message}")
+                                .ShowAlert();
+                });
                 return false;
             }
         }

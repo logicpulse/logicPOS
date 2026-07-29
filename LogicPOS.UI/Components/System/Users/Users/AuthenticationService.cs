@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using LogicPOS.Globalization;
+using Serilog;
 
 namespace LogicPOS.UI.Components.Users
 {
@@ -35,10 +36,23 @@ namespace LogicPOS.UI.Components.Users
                             .ShowAlert();
                  return;
             }
-            var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
-            printer.OpenDrawer();
-            printer.PrintDocument();
-            printer.Clear();
+            try
+            {
+                var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+                printer.OpenDrawer();
+                printer.PrintDocument();
+                printer.Clear();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error printing...");
+                global::Gtk.Application.Invoke(delegate
+                {
+                    CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
+                                .WithMessage($"Erro ao abrir caixa registradora. \n\n{ex.Message}")
+                                .ShowAlert();
+                });
+            }
         }
        
         public static bool UserHasPermission(string permission)

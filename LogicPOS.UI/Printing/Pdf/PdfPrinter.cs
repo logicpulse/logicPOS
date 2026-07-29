@@ -35,6 +35,8 @@ namespace LogicPOS.Printing.Services
             {
                 pdf.LoadFromFile(fileLocation);
                 ApplyPrintSettings(pdf, printerName);
+                // Avoid Windows "Sending to printer" status dialog blocking the UI thread.
+                pdf.PrintSettings.PrintController = new StandardPrintController();
                 pdf.Print();
             }
         }

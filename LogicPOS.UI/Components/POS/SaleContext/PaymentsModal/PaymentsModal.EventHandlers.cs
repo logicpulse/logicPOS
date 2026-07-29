@@ -1,22 +1,28 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Globalization;
+using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
 using LogicPOS.Utility;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using LogicPOS.Globalization;
+using System.Threading.Tasks;
+using static LogicPOS.UI.Printing.InvoicePrinter;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -74,12 +80,63 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
             ProcesPayment();
+            PrintIssuedDocument(printingData.Value);
+        }
 
-
-            if (ThermalPrintingService.PrintInvoice(printingData.Value))
+        private void PrintIssuedDocument(InvoicePrintingData printingData)
+        {
+            if (TerminalService.HasThermalPrinter)
             {
-                DocumentsService.RegisterPrint(printingData.Value.DocumentId, new List<int> { 1 }, false,null,true);
+                QueueDocumentPrint(() => ThermalPrintingService.PrintInvoice(printingData), printingData.DocumentId);
+                return;
             }
+
+            var a4Printer = TerminalService.Terminal?.Printer;
+            if (a4Printer != null)
+            {
+                var printerName = a4Printer.Designation;
+                QueueDocumentPrint(() =>
+                {
+                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(
+                        printingData.DocumentId,
+                        new List<int> { 1 },
+                        false);
+
+                    if (tempFile == null)
+                    {
+                        return;
+                    }
+
+                    PdfPrinter.Print(tempFile.Value.Path, printerName);
+                    DocumentsService.RegisterPrint(printingData.DocumentId, new List<int> { 1 }, false, null, false);
+                }, printingData.DocumentId);
+                return;
+            }
+
+            CustomAlerts.Warning(this)
+                        .WithMessage("Não foi possível encontrar a impressora configurada para o terminal.")
+                        .ShowAlert();
+        }
+
+        private void QueueDocumentPrint(global::System.Action printAction, Guid documentId)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    printAction();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error printing document {DocumentId}", documentId);
+                    global::Gtk.Application.Invoke(delegate
+                    {
+                        CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
+                                    .WithMessage($"Ocorreu um erro ao tentar imprimir o documento. {ex.Message}")
+                                    .ShowAlert();
+                    });
+                }
+            });
         }
 
 
