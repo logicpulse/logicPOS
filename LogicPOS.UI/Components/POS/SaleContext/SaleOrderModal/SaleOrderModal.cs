@@ -78,7 +78,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnPrintOrder_Clicked(object sender, EventArgs e)
         {
-            if (SaleContext.CurrentOrder.Tickets.Count() == 0 || SaleContext.CurrentOrder.Tickets == null)
+            if (SaleContext.CurrentOrder?.Tickets == null || SaleContext.CurrentOrder.Tickets.Count == 0)
             {
                 SimpleAlerts.Information(this)
                             .WithTitle("Mesa vazia")
@@ -86,13 +86,17 @@ namespace LogicPOS.UI.Components.Modals
                             .ShowAlert();
                 return;
             }
+
+            var lastTicket = SaleContext.CurrentOrder.Tickets.OrderBy(t => t.Number).Last();
+
             ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
             {
-                Number = SaleContext.CurrentOrder.Tickets.First().Number,
+                Number = lastTicket.Number,
                 Place = SaleContext.CurrentTable.Place,
                 Table = SaleContext.CurrentTable.Designation,
-                Items = SaleContext.CurrentOrder.Tickets.First().Items.Select(i => new Printing.Thermal.Printers.TicketItem
+                Items = lastTicket.Items.Select(i => new Printing.Thermal.Printers.TicketItem
                 {
+                    Id = i.Article.Id,
                     Article = i.Article.Designation,
                     Quantity = i.Quantity,
                     Unit = i.Article.Unit
