@@ -92,7 +92,7 @@ namespace LogicPOS.UI.Components.Modals
                     return false;
                 }
 
-                if (FiscalYearsService.CloseCurrentFiscalYear() == false)
+                if (FiscalYearsService.CloseCurrentFiscalYear(this) == false)
                 {
                     CustomAlerts.Error(this)
                                 .WithMessage("Não foi possível fechar o ano fiscal atual.")
