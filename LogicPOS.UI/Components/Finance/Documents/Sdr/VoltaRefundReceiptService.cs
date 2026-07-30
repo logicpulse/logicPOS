@@ -71,7 +71,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
                 }
             };
 
-            var printingData = DocumentsService.IssueDocumentForPrinting(command);
+            var printingData = DocumentsService.IssueDocumentForPrinting(command, parent);
             if (printingData == null)
             {
                 return false;

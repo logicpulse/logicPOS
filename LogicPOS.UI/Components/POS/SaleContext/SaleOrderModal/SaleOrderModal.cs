@@ -138,7 +138,7 @@ namespace LogicPOS.UI.Components.Modals
             }
             command.Details = details;
 
-            var printingDataResult = DocumentsService.IssueDocumentForPrinting(command);
+            var printingDataResult = DocumentsService.IssueDocumentForPrinting(command, this);
 
             if (printingDataResult == null)
             {

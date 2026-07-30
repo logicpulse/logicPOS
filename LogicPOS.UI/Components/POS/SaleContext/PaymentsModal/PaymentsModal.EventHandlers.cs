@@ -72,7 +72,7 @@ namespace LogicPOS.UI.Components.POS
                 Run();
                 return;
             }
-            var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand);
+            var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand, this);
 
             if (printingData == null)
             {

@@ -3,7 +3,7 @@ using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
-using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Sdr;
@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
-using LogicPOS.Globalization;
 
 
 namespace LogicPOS.UI.Components.POS
@@ -332,19 +331,6 @@ namespace LogicPOS.UI.Components.POS
             }
             command.Discount = decimal.Parse(TxtDiscount.Text);
             command.Notes = string.IsNullOrWhiteSpace(TxtNotes.Text) ? null : TxtNotes.Text.Trim();
-
-            var getCurrentFiscalYearResult = DependencyInjection.Mediator.Send(new GetCurrentFiscalYearQuery()).Result;
-            var hasValidFiscalYear = getCurrentFiscalYearResult.Value != null && getCurrentFiscalYearResult.Value.Year == DateTime.Now.Year;
-
-            if (!hasValidFiscalYear)
-            {
-                CustomAlerts.Information(this)
-                            .WithMessage($"{DateTime.Now.Year} não é um ano fiscal ativo no sistema")
-                            .ShowAlert();
-
-                IsValid = false;
-                return null;
-            }
 
             if (_paymentMode == PaymentMode.Splited && IsValid)
             {

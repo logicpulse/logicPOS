@@ -187,12 +187,7 @@ namespace LogicPOS.UI.Components.Licensing
             }
             catch (Exception ex)
             {
-                Log.Warning("Received invalid version format from server: " + "0.0.0");
-                Log.Warning(ex.Message);
-                SimpleAlerts.Error().WithTitle("Erro ao carregar a última versão (develop) disponível")
-                            .WithMessage(ex.Message)
-                            .ShowAlert();
-
+                Log.Warning(ex, "Could not load latest develop version from {Url}", url);
                 return new Version(0, 0, 0);
             }
         }

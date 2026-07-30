@@ -108,7 +108,7 @@ namespace LogicPOS.UI.Components.Modals
                 }
 
 
-                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(issueDocumentRequest);
+                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(issueDocumentRequest, this);
                 if (issueDocumentResponse == null)
                 {
                     Run();

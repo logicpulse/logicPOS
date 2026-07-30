@@ -102,6 +102,24 @@ namespace LogicPOS.UI.Components.FiscalYears
                        .ShowAlert();
         }
 
+
+        public static bool ConfirmProceedWhenActiveFiscalYearDiffersFromCalendarYear(Gtk.Window parent)
+        {
+            var fiscalYear = CurrentFiscalYear;
+            if (fiscalYear == null || fiscalYear.Year == DateTime.Now.Year)
+            {
+                return true;
+            }
+
+            return CustomAlerts.Question(parent)
+                .WithSize(new Size(600, 400))
+                .WithTitleResource("global_warning")
+                .WithMessage(
+                    $"O ano fiscal activo ({fiscalYear.Year}) não coincide com o ano actual ({DateTime.Now.Year}).\n\n" +
+                    "Deseja continuar mesmo assim?")
+                .ShowAlert() == Gtk.ResponseType.Yes;
+        }
+
         public static FiscalYearCreationData? GetCreationRelevantData()
         {
             var result = DependencyInjection.Mediator.Send(new GetFiscalYearCreationDataQuery()).Result;

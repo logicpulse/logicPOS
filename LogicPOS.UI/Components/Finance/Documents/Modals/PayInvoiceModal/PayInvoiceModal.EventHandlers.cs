@@ -1,14 +1,17 @@
 using Gtk;
 using LogicPOS.Api.Entities;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
 using LogicPOS.Utility;
 using Serilog;
 using System;
 using System.Linq;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Components.Modals
 {
@@ -25,6 +28,22 @@ namespace LogicPOS.UI.Components.Modals
             var documentsToPay = Invoices.Select(i => i.Number).ToList();
             try
             {
+                if (FiscalYearsService.ConfirmProceedWhenActiveFiscalYearDiffersFromCalendarYear(this) == false)
+                {
+                    Run();
+                    return;
+                }
+
+                var receiptDocumentType = SystemInformationService.SystemInformation?.IsPortugal == true
+                    ? "RC"
+                    : "RG";
+
+                if (DocumentsService.EnsureActiveSeriesExists(receiptDocumentType, this) == false)
+                {
+                    Run();
+                    return;
+                }
+
                 Log.Information("Issuing receipt for {Documents}", documentsToPay);
                 var result = _mediator.Send(CreateCommand()).Result;
 

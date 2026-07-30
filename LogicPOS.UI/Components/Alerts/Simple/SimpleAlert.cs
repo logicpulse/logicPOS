@@ -40,8 +40,14 @@ namespace LogicPOS.UI.Alerts
                     dialog.TransientFor = parentWindow;
                 }
 
-                dialog.Present();
-                return (ResponseType)dialog.RunWithDisabledParent(parentWindow);
+                try
+                {
+                    return (ResponseType)dialog.RunWithDisabledParent(parentWindow);
+                }
+                finally
+                {
+                    dialog.Destroy();
+                }
             }
         }
 
