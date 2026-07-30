@@ -1,6 +1,8 @@
 using ESC_POS_USB_NET.Enums;
 using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
@@ -17,7 +19,6 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
-using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
@@ -173,7 +174,7 @@ namespace LogicPOS.UI.Printing
                                     , DateTime.Now.ToLocalTime()
                                     , "LogicPulse"//"APP_COMPANY"
                                     , "LogicPOS"//"APP_NAME"
-                                    , "vs1.000.0"//"APP_VERSION"
+                                    , SystemVersionService.PosVersion//"APP_VERSION"
                                     ));
                 _printer.AlignLeft();
             }
@@ -242,23 +243,25 @@ namespace LogicPOS.UI.Printing
                 _printer.Append(LocalizedString.Instance["global_documentfinance_type_report_non_invoice_footer_at"]);
             }
             _printer.Separator(' ');
-            if (_data.CompanyInformations.IsPortugal)
+            if (PreferenceParametersService.PrintQrCode)
             {
-                _printer.Append($"ATCUD {_data.Document.ATCUD}");
-            }
+                if (_data.CompanyInformations.IsPortugal)
+                {
+                    _printer.Append($"ATCUD {_data.Document.ATCUD}");
+                }
 
-            if (!string.IsNullOrEmpty(_data.Document.ATQRCode))
-            {
-                _printer.Image(GetQRCode(_data.Document.ATQRCode));
-                _printer.NormalLineHeight();
+                if (!string.IsNullOrEmpty(_data.Document.ATQRCode))
+                {
+                    _printer.Image(GetQRCode(_data.Document.ATQRCode));
+                    _printer.NormalLineHeight();
+                }
+                else
+                {
+                    _printer.Image(GetQRCode(_data.Document.Number));
+                    _printer.NormalLineHeight();
+                    _printer.NewLine();
+                }
             }
-            else
-            {
-                _printer.Image(GetQRCode(_data.Document.Number));
-                _printer.NormalLineHeight();
-                _printer.NewLine();
-            }
-
             PrintFooter();
             if (_data.Document.Type.ToUpper() == "FR" || _data.Document.Type.ToUpper() == "FS" || _data.Document.Type.ToUpper() == "VD")
             {
