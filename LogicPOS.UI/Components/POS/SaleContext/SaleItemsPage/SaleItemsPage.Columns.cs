@@ -31,7 +31,8 @@ namespace LogicPOS.UI.Components.POS
             void RenderPrice(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
             {
                 var item = (SaleItem)model.GetValue(iter, 0);
-                (cell as CellRendererText).Text = item.UnitPrice.ToString("0.00");
+                var price = item.Article.PriceWithVat ? item.UnitPriceWithVat : item.UnitPrice;
+                (cell as CellRendererText).Text = price.ToString("0.00");
                 (cell as CellRendererText).Xalign = 1.0F;
             }
 
