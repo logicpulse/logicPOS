@@ -37,27 +37,45 @@ namespace LogicPOS.UI.Printing
         {
             try
             {
-                Api.Entities.Printer printer=null;
-                foreach (var item in data.Items)
+                if (data.Items == null || data.Items.Count == 0)
                 {
-                   var articlePrinter = PrinterAssociationService.GetArticlePrinter(item.Id);
-                    if (articlePrinter != null) 
-                    {
-                        printer = articlePrinter;
-                    }
-                    
-                }
-                
-                if (printer != null)
-                {
-                    new PosTicketPrinter(new Printer(printer.Designation), data).Print();
                     return;
                 }
-                
 
-                if (Printer != null)
+                // Group items by associated printer; items without association use the terminal printer.
+                var itemsByPrinter = new Dictionary<Guid, List<TicketItem>>();
+                var printersById = new Dictionary<Guid, Api.Entities.Printer>();
+                var itemsWithoutPrinter = new List<TicketItem>();
+
+                foreach (var item in data.Items)
                 {
-                    new PosTicketPrinter(Printer, data).Print();
+                    var articlePrinter = PrinterAssociationService.GetArticlePrinter(item.Id);
+                    if (articlePrinter == null)
+                    {
+                        itemsWithoutPrinter.Add(item);
+                        continue;
+                    }
+
+                    if (!itemsByPrinter.TryGetValue(articlePrinter.Id, out var printerItems))
+                    {
+                        printerItems = new List<TicketItem>();
+                        itemsByPrinter[articlePrinter.Id] = printerItems;
+                        printersById[articlePrinter.Id] = articlePrinter;
+                    }
+
+                    printerItems.Add(item);
+                }
+
+                foreach (var group in itemsByPrinter)
+                {
+                    PrintTicketOnPrinter(
+                        new Printer(printersById[group.Key].Designation),
+                        CreateTicketDataForItems(data, group.Value));
+                }
+
+                if (itemsWithoutPrinter.Count > 0 && Printer != null)
+                {
+                    PrintTicketOnPrinter(Printer, CreateTicketDataForItems(data, itemsWithoutPrinter));
                 }
             }
             catch (Exception ex)
@@ -68,6 +86,22 @@ namespace LogicPOS.UI.Printing
 
                 Log.Error(ex, "Error printing...");
             }
+        }
+
+        private static TicketPrintingData CreateTicketDataForItems(TicketPrintingData source, List<TicketItem> items)
+        {
+            return new TicketPrintingData
+            {
+                Number = source.Number,
+                Table = source.Table,
+                Place = source.Place,
+                Items = items
+            };
+        }
+
+        private static void PrintTicketOnPrinter(Printer printer, TicketPrintingData data)
+        {
+            new PosTicketPrinter(printer, data).Print();
         }
 
         public static bool PrintInvoice(InvoicePrintingData data)

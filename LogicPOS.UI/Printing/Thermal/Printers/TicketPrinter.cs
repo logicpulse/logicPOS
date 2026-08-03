@@ -5,7 +5,6 @@ using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Thermal.Printers;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
 using System;
 using System.Collections.Generic;
 using System.Data;
