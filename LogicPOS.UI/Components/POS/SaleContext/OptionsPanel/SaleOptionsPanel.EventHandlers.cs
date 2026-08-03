@@ -146,9 +146,24 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnFinishOrder_Clicked(object sender, EventArgs e)
         {
-            if (SaleContext.ItemsPage.Ticket == null || SaleContext.ItemsPage.Ticket.Items.Any() == false)
+            if (TryFinishOpenTicket(printThermalTicket: true) == false)
             {
                 return;
+            }
+
+            UpdateButtonsSensitivity();
+        }
+
+        /// <summary>
+        /// Persists and closes the current open ticket when it has items.
+        /// When paying without an explicit Finish Order, thermal ticket print is skipped (legacy behaviour).
+        /// </summary>
+        /// <returns>False if save failed or there was nothing to finish when required; true otherwise.</returns>
+        private bool TryFinishOpenTicket(bool printThermalTicket)
+        {
+            if (SaleContext.ItemsPage.Ticket == null || SaleContext.ItemsPage.Ticket.Items.Any() == false)
+            {
+                return true;
             }
 
             if (SaleContext.CurrentOrder.Id.HasValue == false)
@@ -160,7 +175,7 @@ namespace LogicPOS.UI.Components.POS
                     CustomAlerts.Error(POSWindow.Instance)
                                 .WithMessage("Não foi possível finalizar o pedido. Tente novamente.")
                                 .ShowAlert();
-                    return;
+                    return false;
                 }
             }
             else
@@ -172,11 +187,11 @@ namespace LogicPOS.UI.Components.POS
                     CustomAlerts.Error(POSWindow.Instance)
                                 .WithMessage("Não foi possível finalizar o pedido. Tente novamente.")
                                 .ShowAlert();
-                    return;
+                    return false;
                 }
             }
 
-            if (PreferenceParametersService.PrintTicket)
+            if (printThermalTicket && PreferenceParametersService.PrintTicket)
             {
                 ThermalPrintingService.PrintTicket(new Printing.Thermal.Printers.TicketPrintingData
                 {
@@ -194,8 +209,7 @@ namespace LogicPOS.UI.Components.POS
             }
 
             SaleContext.ItemsPage.FinishTicket();
-
-            UpdateButtonsSensitivity();
+            return true;
         }
 
         private void BtnPayments_Clicked(object sender, EventArgs e)
@@ -205,7 +219,10 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            if (SaleContext.ItemsPage.Ticket != null)
+            bool hasOpenTicketItems = SaleContext.ItemsPage.Ticket != null
+                && SaleContext.ItemsPage.Ticket.Items.Any();
+
+            if (hasOpenTicketItems)
             {
                 ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
                                                           .WithSize(new Size(400, 280))
@@ -213,12 +230,21 @@ namespace LogicPOS.UI.Components.POS
                                                           .WithMessage(LocalizedString.Instance["dialog_message_request_close_open_ticket"])
                                                           .ShowAlert();
 
-                if (dialogResponse != ResponseType.Yes)
+                if (dialogResponse != ResponseType.Yes && dialogResponse != ResponseType.Ok)
                 {
                     return;
                 }
 
-                SaleContext.ItemsPage.FinishTicket();
+
+                if (TryFinishOpenTicket(printThermalTicket: false) == false)
+                {
+                    return;
+                }
+            }
+
+            if (SaleContext.CurrentOrder.Tickets.Any() == false)
+            {
+                return;
             }
 
             var modal = new PaymentsModal(SourceWindow);

@@ -132,7 +132,9 @@ namespace LogicPOS.UI.Components.POS
             BtnSplitAccount.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnVoltaRefundReceipt.Sensitive = SystemInformationService.SystemInformation.IsPortugal
                 && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
-            BtnPayments.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
+            BtnPayments.Sensitive = hasOrder
+                && SaleContext.CurrentOrder.Tickets.Count > 0
+                && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_PAYMENT);
             BtnChangeTable.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems && AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ORDER_MOVE);
         }
 
