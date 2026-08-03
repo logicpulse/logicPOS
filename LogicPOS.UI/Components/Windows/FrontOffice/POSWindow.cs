@@ -6,6 +6,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Components.Licensing.Branding;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Components.POS;
 using LogicPOS.UI.Components.Terminals;
@@ -105,14 +106,17 @@ namespace LogicPOS.UI.Components.Windows
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
-            //LOGO
-            var imageLogoPath = AppSettings.Paths.Themes + @"Default\Images\logicPOS_logo.png";
-            Image imageLogo = new Image(imageLogoPath);
-
-            var bitmapLogoImage = new Bitmap(AppSettings.Paths.GetThemeFileLocation("Images\\logicPOS_logo.png"));
-            Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(bitmapLogoImage);
-            pixbufOriginal = pixbufOriginal.ScaleSimple(eventBoxImageLogoSize.Width - 180, eventBoxImageLogoSize.Height - 10, Gdk.InterpType.Bilinear);
-            imageLogo = new Image(pixbufOriginal);
+            //LOGO — same scale as before branding: ScaleSimple(eventBox.Width - 180, eventBox.Height - 10)
+            Image imageLogo;
+            using (var brandingLogo = BrandingImageService.CreateBitmap(BrandingLogoKind.FrontOffice))
+            {
+                Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(brandingLogo);
+                pixbufOriginal = pixbufOriginal.ScaleSimple(
+                    eventBoxImageLogoSize.Width - 180,
+                    eventBoxImageLogoSize.Height - 10,
+                    Gdk.InterpType.Bilinear);
+                imageLogo = new Image(pixbufOriginal);
+            }
 
             //UI
             EventBox eventBoxImageLogo = new EventBox();

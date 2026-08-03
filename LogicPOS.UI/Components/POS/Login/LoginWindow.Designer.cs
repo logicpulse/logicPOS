@@ -5,6 +5,7 @@ using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Licensing.Branding;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Settings;
@@ -154,8 +155,11 @@ namespace LogicPOS.UI.Components.Windows
                 //Put in Fix
                 fix.Put(labelVersion, labelVersionPosition.X, labelVersionPosition.Y);
 
-                Image imageLogo = new Image(AppSettings.Paths.GetThemeFileLocation("Images\\logicPOS_logo.png"));
-                fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
+                using (var brandingLogo = BrandingImageService.CreateBitmap(BrandingLogoKind.Login))
+                {
+                    Image imageLogo = new Image(Utils.ImageToPixbuf(brandingLogo));
+                    fix.Put(imageLogo, AppSettings.Instance.AppScreenSize.Width - 430, 80);
+                }
 
 
                 ScreenArea.Add(fix);

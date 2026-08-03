@@ -389,13 +389,12 @@ namespace logicpos
 
         public static void ShowChangeLog(Window parentWindow)
         {
-            WebClient wc = new WebClient();
-            byte[] raw = wc.DownloadData("http://box.logicpulse.pt/files/changelogs/pos.txt");
-
-            System.Text.Encoding iso = System.Text.Encoding.GetEncoding("ISO-8859-1");
-            System.Text.Encoding utf8 = System.Text.Encoding.UTF8;
-            byte[] isoBytes = System.Text.Encoding.Convert(utf8, iso, raw);
-            var message = iso.GetString(isoBytes);
+            string message;
+            using (var wc = new WebClient())
+            {
+                byte[] raw = wc.DownloadData("http://box.logicpulse.pt/files/changelogs/pos.txt");
+                message = System.Text.Encoding.UTF8.GetString(raw);
+            }
 
             CustomAlerts.Information(parentWindow)
                         .WithSize(new Size(700, 480))

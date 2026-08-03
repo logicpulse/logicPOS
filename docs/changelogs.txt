@@ -1,0 +1,562 @@
+#1.5.2 03 Agosto 2026
+- Fecho de ano fiscal com opção de repetir sem comunicação à AT (ForceAtCommunication)
+- Emissão de documentos sem bloquear quando o ano fiscal activo difere do ano civil (aviso no POS)
+- Validação de série activa antes de emitir documentos / recibos
+- Soft-delete: DeletedAt preenchido ao marcar IsDeleted (incl. séries no fecho de ano)
+- Talão Reembolso Volta (TRV): emissão sem exigir série comunicada à AT
+- TicketList: coluna Preço mostra valor com IVA quando o artigo tem preço com imposto incluído
+- Branding: logos por reseller da licença via plugin (LogicPOS.Plugins.Branding), com fallback LogicPulse
+- Changelog: leitura em UTF-8 (acentos) e versões mais recentes no topo
+- QR Code / ATCUD na impressão conforme preferência PrintQrCode (Portugal)
+- Melhorias na impressão (assíncrona, erros) e actualização retail (MSI)
+- Suporte SDR / embalagens e fluxo TRV no POS
+- Importação/exportação Excel de artigos e clientes
+
+#1.4.193 23 Setembro 2025
+- Filtros nos relatórios de famílias/sub-famílias
+
+#1.4.190 14 Julho 2025
+- Novo certificado AT
+
+#1.4.171 07 Agosto 2024
+- Correção para emissão de documentos sem produtos associados
+
+#1.4.154 11 Janeiro 2024
+- Correção impressão motivo isenção IVA para Taxas > 0
+
+#1.4.147 30 Novembro 2023
+- Edição de artigos com guia de transporte como documento de origem
+
+#1.4.138 29 Junho 2023
+- Imprimir pedidos na impressora do artigo por defeito se definido no artigo
+
+#1.4.137 22 Maio 2023
+- Relatório valorização stock
+
+#1.4.135 16 Maio 2023
+- Actualização certificado digital ChaveCifraPublicaAT2025.cer
+
+#1.4.133 17 Abril 2023
+- Actualização TABELA DOS CÓDIGOS DE MOTIVO DE ISENÇÃO OU NÃO LIQUIDAÇÃO DE IVA 2023
+
+#1.4.128 6 Março 2023
+- Correção e mensagem para falta de mesa/pedido ao abrir sessão
+
+#1.4.126 17 Jan 2023
+- Melhorias exportação SAF-T
+
+#1.4.124 13 Jan 2023
+- Melhorias MySql
+
+#1.4.121 10 Jan 2023
+- Posicionamento de impressão ATCUD
+
+#1.4.120 05 Jan 2023
+- Mensagens de erro na comunicação de séries à AT
+
+#1.4.119 04 Jan 2023
+- Correcções na exportação do SAF-T (Recibos)
+
+#1.4.116 03 Jan 2023
+- Correcções no update de MySql
+
+#1.4.115 25 Dez 2022
+- Melhorias no envio de séries
+- Correção na introdução de stock indevida após edição de artigo
+
+#1.4.108 20 Dez 2022
+- Melhorias na formatação do cabeçalho do talão
+- Possibilidade de introdução manual do Código de validação da Série
+
+#1.4.105 15 Dez 2022
+- Correção na exportação de artigos/clientes
+- Alterações no cabeçalho do talão de impressora térmica
+
+#1.4.101 12 Dez 2022
+- SAFT-PT Total Crédito / Débito arredondamento para 2 casas decimais
+- Melhorias na instalação e update de base dados mySql
+- Melhorias na formatação do cabeçalho nos documentos fiscais
+- Melhorias no preenchimento automático de dados a partir do NIF
+- ATCUD ao gerar SAF-T
+
+#1.4.98 06 Dez 2022
+- Implementação do ATCUD e comunicação com a AT para todos os documentos fiscais
+- Impressão do ATCUD em documentos A4 e térmicos
+
+#1.4.86 23 Ago 2022
+- Correção envio de Guias de transporte AT
+- Tipo de letra dos documentos A4 (colibri)
+
+#1.4.84 10 Ago 2022
+- Correção para documentos de conferência (SAFT)
+
+#1.4.83 28 Jul 2022
+- Actualização dos componentes mySql
+
+#1.4.82 26 Jul 2022
+- Correção da retira de stocks (simplificado)
+
+#1.4.80 20 Jul 2022
+- Impressão de documentos A4 anteriores ao QRCode
+
+#1.4.80 18 Jul 2022
+- Correção para valores Zero em faturas (saft)
+
+#1.4.79 20 Jun 2022
+- Certificado AT renovado
+
+#1.4.76 08 Jun 2022
+- Correcções e melhorias nas notas de crédito com artigos únicos
+
+#1.4.72 06 Jun 2022
+- Mostrar/ocultar registos desativos
+- PDF envio de emails com caracteres desconhecidos
+
+#1.4.71 15-03-2022
+- Optimização arranque backoffice
+- Melhorias linux
+
+#1.4.70
+- Documentos transporte com QRCode
+- Correcções e melhorias nos documentos fiscais e Qrcode
+
+#1.4.69
+- Correção de envio de email com pdf com formato incorreto
+
+#1.4.66 03 Jan 11:35
+- QRCode obrigatório para portugal
+- Escolha de método de impressão de QRCode
+- Aviso de abertura de novo ano fiscal
+
+#1.4.62 06 Dez 18:29
+- Alterações Kongo
+- Melhorias importação artigos
+
+#1.4.59 16 Nov 17:57
+- Novo idioma Alemão
+- Novo idioma Alemão (Suíça)
+- Optimizações de inserir, remover artigos à ticketList
+
+#1.4.48 14 Out 17:40
+- Alterações para Kongo
+
+#1.4.47 13 Out 15:35
+- Parâmetro de escolha de impressão de (COMPANY_BUSINESS_NAME) slogan nos tickets (Sim/Não)
+- Protecções máximo caracteres SAFT
+- Correcções de scripts BD
+
+#1.4.46 2 Out 09:30
+- Correcções na impressão de documentos de empresa sem a variável COMPANY_BUSINESS_NAME definida
+
+#1.4.45 6 Set 15:30
+- Correcções SAFT-AO
+
+#1.4.42 3 Set 16:15
+- Melhoria em cópia de documentos
+
+#1.4.41 1 Set 12:45
+- Correcções de resources e de bug da versão anterior
+- Mensagem de Stocks apenas é mostrada para artigos da classe "Produtos"
+
+#1.4.37 26 Ago 2:25
+- Relatório "Vendas por taxa de IVA", com os totais por taxa e documento
+- Relatório "Vendas por taxa de IVA / classe do artigo" (Produto (0%, 6% e 23%) ou Serviço (0%, 6%, 13% e 23%)) com os totais por taxa
+
+#1.4.35 25 Ago 09:25
+- Gestão de stocks - Inserir artigo com ultimo preço inserido por fornecedor
+
+#1.4.34 20 Ago 10:08
+- Filtros de listagens para items ocultos
+
+#1.4.32 19 Ago 10:08
+- Correção de bug para complemento de artigos
+
+#1.4.31 12 Ago 15:40
+- Correção do bug de inserção de artigos compostos (POS)
+- Melhorias na impressão de QRcode em impressoras térmicas
+- Correção da impressão da designação comercial demasiado grande em impressoras térmicas
+
+#1.4.30 09 Ago 10:50
+- correção do bug na liquidação de documentos com valores parciais
+- correção do bug eliminar na criação de documentos
+
+#1.4.29 28 Jul 11:10
+- correção do bug falta de logotipo
+
+#1.4.25 28 Jul 18:40
+- correção do layout documentos financeiros para Angola
+
+#1.4.24 28 Jul 15:40
+- Branding / NewTech
+
+#1.4.21 12 Jul 11:00
+- Melhorias para erros de saf-t
+- Emissão de Recibos - Mostrar notas de crédito apenas para clientes com saldo positivo
+
+#1.4.16 8 Jul 11:00
+- Abertura de gaveta com comando por defeito M, T1 e T2 (Colocar valores a 0)
+- Imagem logotipo do ticket escolhida pelo utilizador (Parâmetros da empresa -> Ticket :: Ficheiro do Logo)
+
+#1.4.14 7 Jul 11:00
+- Melhorias na abertura de caixa registadora
+- Logo logicPOS (Canto superior direito) abre caixa registadora (Com PIN)
+
+#1.4.13 16 Jun 11:50
+- Gestão Stocks : Numero de artigos para caixas de selecção e Criar movimentos para artigos filhos de compostos
+
+#1.4.12 26 Mai 17:10
+- Correção nos relatórios Saldo e Extrato Conta cliente [IN:020570]
+- Documentos - Filtro de liquidação com NC para FT não liquidadas [IN:020569]
+
+#1.4.11 17 Mai 18:15:00
+- Correção no relatório mapa de Iva Mensal Detalhado
+
+#1.4.8 13 Mai 16:00:00
+- Alteração do encoding para QRCode de impressoras térmicas
+- Alterações do loading da aplicação
+
+#1.4.7 12 Mai 16:00:00
+- Correção de scripts MySql
+- Filtro liquidação Faturas
+- Filtro Recibos
+
+#1.4.3 10 Mai 14:10:00
+- Correção Inserção artigos compostos
+- Proteção para motivos de nota de crédito/débito
+- Proteção eliminar métodos de pagamento
+- Loading em exportação/importação artigos/clientes
+- Correção de permissões de relatórios de gestão de stocks
+- Protecções para gestão de stocks
+
+#1.4.2 30 Abr 10:10:00
+- Correção Bug impressão tickets
+- Proteção para não esconder mesa por defeito
+
+#1.4.0 28 Abr 17:00:00
+Gestão de stocks
+- Edição de movimentos de entrada
+- Visualização de Documentos (Origem/Venda) na janela de movimentos de stock
+- Correção Bug Adicionar artigo composto único
+
+#1.3.83 20 Abr 18:00:00
+- Opção de saida de artigo único não vendido / trocado
+
+#1.3.82 14 Abr 11:00:00
+- Correcções relatório stock por artigo com valores unicos
+
+#1.3.81 12 Abr 17:40:00
+- Correcções no módulo de gestão de stocks
+
+#1.3.80 09 Abr 13:40:00
+- Relatório Vendas por Taxa de IVA
+
+#1.3.76 08 Abr 14:45:00
+- Gestão de Stocks - Relatórios
+
+#1.3.74 05 Abr 11:50:00
+- Acerto de arredondamentos
+
+#1.3.72 30 Mar 09:20:00
+- Proteção ao eliminar artigos - Alterar nome/código
+
+#1.3.71 18 Mar 10:20:00
+- Updates MySql
+
+#1.3.70 18 Mar 17:50:00
+- Gestão de Stocks : Edição de Movimentos de Entrada [IN:019527]
+- Gestão de Stocks : Troca de artigos após venda [IN:019528]
+
+#1.3.67 17 Mar 11:35:00
+- Gestão de Stocks : Correcções, melhorias e protecções
+- Correção pagamentos a zero
+- Notas de crédito com reposição de SN
+
+#1.3.61 10 Mar 16:00:00
+- Gestão de Stocks : Impressão Cód. Barras [IN:017531]
+
+#1.3.50 10 Mar 18:00:00
+- Correção do Módulo Stocks
+
+#1.3.49 10 Mar 11:00:00
+- Update scripts
+- Correção de bugs
+
+#1.3.46 09 Mar 17:00:00
+- Verificação de licença de Módulos
+- Verificação da versão da base de dados
+
+#1.3.44 09 Mar 12:30:00
+- Criação do Modulo Stocks
+
+#1.3.34 03 Mar 18:00:00
+- Pequenas correcções (Gestão de stocks)
+
+#1.3.33 02 Mar 17:00:00
+- Gestão de Stocks - Paginação e filtros [IN:017522]
+- Modificar localização (Janela de histórico artigo)
+- Protecções para artigos únicos na janela de artigos e nas listagens
+
+#1.3.32 02 Mar 12:50:00
+- Documentos - Aplicação de descontos com valores errados [IN:017521]
+
+#1.3.31 02 Mar 11:50:00
+- Correcções Gestão Stocks
+
+#1.3.27 01 Mar 16:00:00
+- Versão Final Gestão Stocks 1 Commit
+
+#1.3.26 28 Jan 21 11:13
+- Correção nos arredondamentos de preço na criação de documentos
+- Documentos com formato e idioma por defeito da chave do config "cultureFinancialRules"
+
+#1.3.24 27 Jan 21 15:23
+- Gestão de Stocks - Janela de Gestão de stocks com ajustes
+- Mensagens de Alerta de Stock na comercialização de artigos (Opção de ligar/desligar nas configurações)
+- Stock Minimo em artigos
+- Funcionamento em Windows Server para gerar documentos com Resx corretos
+
+#1.3.20 22 Jan 21 15:23
+- Melhorias - Gestão de Stocks - Ajuste de Stock diretamente no Artigo (BackOffice) [IN:016530]
+- Correcções - TicketPad - Modo Retalho - Mesa/ordem por defeito após cancelar pedido [IN:016529]
+- Base de dados
+
+#1.3.18 20 Jan 21 16:20
+- Gestão de Stocks [IN:016527]
+- Mensagem de ChangeLog [IN:016528]
+
+#1.3.16 18 Jan 21 18:12
+- Fix artigos compostos : Após cancelar/fechar
+- fix Tab Artigos compostos
+- Fix Base dados update sqlite
+
+#1.3.13 15 Jan 21 17:12
+- Artigos Compostos [IN:016522]
+
+#1.3.12 08 Jan 21 15:49
+- Correcções mySql
+
+#1.3.11 07 Jan 21 17:02
+- Fix update linux mySql
+
+#1.3.10 07 Jan 21 11:17
+- Enhancement : Ficha Cliente: Possibilidade de múltiplos email's [IN:016510]
+- Bug Fixed: Documentos - proteção para QRCode na criação de documentos antigos [IN:016511]
+- MySql - Bug no script Update [IN:016518]
+
+#1.3.9 04 Jan 21 15:42
+- Fix licença bloqueada
+
+#1.3.8 04 Jan 21 14:27
+- Schema sqlite fix
+
+#1.3.7 04 Jan 21 11:19
+- Layout talões PT - Preço Unitário em vez de Preço sem IVA [IN:016509]
+- Centrar QRCode em impressoras térmicas
+
+#1.3.6 31 Dez 20 11:47
+- Correcções no Update das BD's
+
+#1.3.5 31 Dez 20 10:37
+- Documentos - Criação do QRCode e ATCUD [IN:016508]
+- Financial.service - Envio de Documentos transporte AT (Estrangeiro) [IN:016502]
+- Front-End - Adicionar artigos na criação de Documentos - Verificar [IN:015510]
+
+#1.3.4 16 Dez 20 16:53
+- Fix dateFilter
+
+#1.3.3 16 Nov 20 11:58
+- Guias transporte - fix impressão do código AT
+
+#1.2.48 10 Nov 20 12:22
+- SaFT-T e update DB
+- Financial.service - Apenas envia documentos pendentes à hora definida no .config (Pode ser desativo no config)
+  (Apenas usado na logicpulse)
+- Disable das Keys na base de dados. Agora o envio de faturas em tempo real está desativo.
+- Envio de documentos de transporte em tempo real é ativo por defeito
+- Documentos (não transporte) anulados não sao comunicados em tempo real sem WS.
+- Documentos (transporte) anulados sao comunicados em tempo real sem WS.
+- Keys do config financeiro agora ficam no config da aplicação
+- UPDATE base de dados para esconder keys do serviço do utilizador (Disabled)
+
+#1.2.42 02 Nov 20 16:41
+- Correção Query clientes SAFT
+
+#1.2.41 02 Nov 20 12:25
+- Query envio de documentos AT - Excluir documentos anulados
+
+#1.2.40 26 Oct 20 12:49
+- Janela Pagamentos - Aplicação de desconto total ao utilizador consumidor-final
+
+#1.2.39 26 Oct 20 11:13
+- Relatórios - Formatação do rodapé e apresentação de valor negativo [IN:014366]
+- Front-end - Gravação de múltiplos clientes sem nome definido [IN:014367] + Caracteres Especiais VAT Auto-Complete
+- Exportação de artigos - VatDirectSelling (modo retalho)
+
+#1.2.37 22 Oct 20 17:04
+- Fixed Criação de Faturas (Janela Pagamentos) para limite acima de 100€ e para novos clientes criados na janela de pagamentos
+- Fixed Visualização janela artigos Campo IVA
+- Fixed Crash no update SQLite
+- LicenceUpdate no servidor quando nova versão
+- DocumentViewer -> alteração no nome para corrigir problema do LPUpdater
+
+#1.2.36 22 Oct 20 11:58
+- Fixed issue #Query para documentos não pagos no mes atual
+- Include logicpos.documentviewer.exe
+
+#1.2.31 21 Oct 20 10:24
+- fix bug query Inicio/Fecho Sessão
+
+#1.2.30 20 Oct 20 18:29
+Alteração no funcionamento do Inicio/fecho Sessão [IN:014330]
+- Recibos com impressão em impressora térmica
+
+#1.2.29 19 Oct 20 18:10
+- Titulo nas janelas de filtro de relatório [IN:014328]
+- Moçambique - Pedidos da reunião 13/10/2020 + Faturas no Front-Office [IN:014327]
+- Query SAFT -> Clientes a partir de documentos de pagamento
+
+#1.2.28 19 Oct 20 10:34
+- SAFT-PT - Lista de clientes com base em documentos de pagamento
+
+#1.2.27 19 Oct 20 10:06
+- Fix bug de alteração na janela de inserir artigos
+
+#1.2.26 16 Oct 20 18:03
+- Front-End - Adicionar artigos na criação de Documentos [IN:010335]
+
+#1.2.25 29 Sep 20 15:11
+- Criação de variável nas configurações para imprimir ou não ticket's [IN:013328]
+- Protecções de integridade das BD's e funcionamento da aplicação [IN:013327]
+- Pagamentos parciais - Escolher valor a pagar por artigo [TK:019295]
+- Proteção para artigos do tipo "Sem Preço" [IN:013329]
+- SAF-T Angola - Verificar funcionamento [IN:013330]
+
+Fixed issues
+- Correcções no funcionamento do Serviço LogicposFinancialService.exe (Serviço não para quando são enviados documentos pendentes)
+- BackOfficeMode no modo Retalho - Utiliza apenas VATDirectSelling e protege caso esteja nulo
+- Artigos novos com valor por defeito "Normal" nos campos VAT
+- Mesa com código "10" por defeito caso não haja mesa selecionada
+- Documentos do tipo Fatura(Guia) são criados como uma fatura normal, mas com campos de expedição e entrega
+- Notas de Documentos criados a partir de um documento de origem carregadas automaticamente
+- Adição de artigos repetidos ao ticketList com funcionamento normal
+
+#1.2.24 22 Sep 20 14:56
+Fatura(Guia) não aparecia nos documentos a liquidar (Criação de Recibos)
+
+#1.2.23 8 Sep 20 17:53
+Envio direto de documentos AT - Manter Service Host ativo após envio de documentos pendentes
+
+#1.2.22 17 Sep 20 18:25
+Reverter fix anterior para Preço do artigo c/ e s/ Valor do IVA vindo do Artigo
+Corrigido de outra forma (correção de uma verificação do tema da aplicação)
+
+#1.2.21 17 Sep 20 10:45
+Taxas de IVA por defeito (normal) na inserção de novos artigos
+Inserção de artigos na criação de documentos com referencia à variável bool PriceWithVat da configuração de artigos. (Por defeito era sempre sem IVA)
+
+#1.2.20 15 Sep 20 14:54
+Taxas de Iva por defeito na inserção de novos artigos
+
+#1.2.19 15 Sep 20 11:22
+Envio de documentos SAF-T após criação
+
+#1.2.18 11 Sep 20 12:57
+Fatura GUIA - Envio no WS e SAFT
+
+#1.2.17 09 Sep 20 12:22
+Impressora linux e resize de combobox
+
+#1.2.16 08 Sep 20 17:56
+Correção para artigos em stack na ticketlist com preço com e sem imposto
+
+#1.2.15 08 Sep 20 12:05
+Exportação e importação de artigos - Taxa de IVA
+Regex Caminho de Rede sem restrições para impressoras
+
+#1.2.12 07 Sep 20 12:17
+Envio auto de documentos de transporte para impressão do código AT
+
+#1.2.1 30/08/2020
+- Correção para artigos em stack na ticketlist com preço com e sem imposto
+- Exportação e importação de artigos - Taxa de IVA
+- Regex Caminho de Rede sem restrições para impressoras
+- Envio auto de documentos de transporte para impressão do código AT
+- Abertura de gaveta para impressoras USB e Rede
+- Edição de artigos na criação de documentos como base num documento de origem Orçamento
+- Removido o serviço financeiro. Apenas são enviados documentos de transporte em tempo real
+
+#1.2.0 18/08/2020
+- Financial Service para Todas as BD (x86 e x64)
+- No windows retoma serviço após suspensão da sessão
+- Backup e Restore da Base de Dados com mensagem no Loading correta
+- Update Nuggets e framework 4.8
+- Edição de artigos para faturas com origem em faturas pré-forma
+- SAFT-AO
+- Correção de artigos múltiplos para mais que 2 artigos iguais
+- Correção da criação do SAFT-PT para quando existe alteração de IVA nos artigos e Documentos com Zero de Total
+- Update Schema para SQLite e tamanho da janela do teclado virtual (Pequeno)
+- Ticketpad - correção de bugs em produtos repetidos
+- Inserção de clientes com código existente
+- Adicionar artigos ao ticklist por código artigo
+- Correção do Drop de datas no DashBoard
+- Correção do filtro de datas (inclusive os dias selecionados)
+- Correção de scripts
+- Display utilizador com configuração COM a funcionar
+- Formatação de textos de display remove nuggets
+- Correção no método de envio Documentos AT automático para uma hora especifica do dia.
+- Correcções query SAF-T PT e ChavePublicaAT 2023
+- Edição de Pedidos/Tickets finalizados
+- Eliminar Pedidos finalizados
+- Imagem Logo nos Documentos/Reports por parâmetro
+- Protecções Eliminar dados da BD em Mesas/Ordens
+- Abrir gaveta da caixa registadora Fix Bug
+- Renovação da certificação AGT Angola da reunião de 26/06/2020 (Documentos e SAFT-T)
+- Nome do ficheiro Gravação de PDF passado auto
+- Traduções Botões Janela PDF viewer
+- Certificado AT 2023 e renovação do Certificado AT 508278155
+- Alterações em alguns Resx
+- Envio automático de documentos SAF-T PT após criação - Parâmetro no logicpos.config (sendDocumentsATinRealTime = true)
+- Scripts SQL Revistos para BackOffice mode / cafe / restaurante / Padaria
+- Ajustes no texto dos totais no Dashboard
+- Alterações na Expressão regular dos código de barras (Sem restrições)
+- Alterações na Expressão regular para os NIF de Angola (Apenas letras e números sem restrição de tamanho)
+- Falta de funcionalidades em modo Retalho (Botões)
+- Query Clientes SAFT PT
+
+#1.1 16/12/2019
+- Modos aplicacionais restauração/retalho/Faturação
+- Conforme general data protection regulation (GDPR)
+- Aplicação multi-posto (apenas com servidor de bases de dados mysql e sqlserver)
+- Certificado pela AT Portugal e Angola
+- Serviço de comunicação de documentos e guias com a AT
+- Exportação do SAFT PT
+- Multilingue (PT, GB, FR)
+- Teclado virtual
+- Artigos com dois ivas, consumo interno e take-away/entrega ao domicilio
+- Artigos com promoções e descontos, valor variável e possibilidade de imposto incluído ou calculado
+- Códigos de barra
+- Cópias de segurança e restauro encriptadas e agendadas
+- Contas correntes
+- Entrada e saída de mercadoria (versão minimalista de stocks)
+- Temas personalizados por tipo de aplicacional e resolução
+- Backgrounds personalizados
+- Possibilidade de posicionamento de todos os componentes, mostrar, esconder etc
+- Login/branding personalizado
+- Múltiplos logins baseados em perfis
+- Gestão de mesas e zonas, com possibilidade de diferentes preços por zona, ex mesas na esplanada com preços diferentes, bar etc.
+- Múltiplos pedidos por mesa (Restauração), ou múltiplas ordens em simultâneo (Retalho)
+- Ver mesas abertas, livres, reserva de mesas, ver pedidos e totais por mesa
+- Possibilidade de mudar a mesa e ou zona, ex transferir a conta de um cliente do bar para a mesa, ao mudar de zona, os preços podem ser diferentes tendo em conta a zona e o preço atribuído a determinada zona
+- Inicio e fecho de dia, Inicio e fecho de caixas (sessões de trabalho), por ex cada dia aberto pode conter múltiplas sessões de trabalho, com vários postos de trabalho em simultâneo
+- Impressão de fecho de dia e caixa detalhada
+- Reimpressão de pedidos e consultas de mesa
+- Pagamentos parciais (múltiplos tipos de pagamentos)
+- Divisão de pagamentos/divisão de mesa (múltiplos tipos de pagamentos)
+- Venda de artigos a partir do peso da balança
+- Exportação do SAFT AO
+- Dashboard em modo BackOffice
+- Exportação de tabela de Clientes/Artigos para Folhas de Cálculo
+- Instalação em Windows e Linux
+- Imagens Demos para os diferentes modos operacionais
+- Modo de Faturação Simplificada
+- Actualização do Software através da cloud

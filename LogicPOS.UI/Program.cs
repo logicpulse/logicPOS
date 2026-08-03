@@ -6,6 +6,7 @@ using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Components.Licensing;
+using LogicPOS.UI.Components.Licensing.Branding;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -236,6 +237,8 @@ namespace LogicPOS.UI
             {
                 return;
             }
+
+            BrandingImageService.Initialize();
 
             var terminalResult = TerminalService.InitializeTerminal();
             if (terminalResult.IsError)

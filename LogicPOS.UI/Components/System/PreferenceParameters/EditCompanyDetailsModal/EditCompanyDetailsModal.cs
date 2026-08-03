@@ -1,4 +1,4 @@
-﻿using Gtk;
+using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Company.UpdateCompanyDetails;
 using LogicPOS.Globalization;
@@ -43,14 +43,13 @@ namespace LogicPOS.UI.Components.Modals
             base.OnResponse(response);
         }
 
-
         private void FillWithDemoData()
         {
             TxtCompany.Text = "LogicPulse";
-            TxtBusiness.Text = "Technologies, Ltda";
+            TxtBusiness.Text = "Technologies, Lda";
             TxtAddress.Text = "Rua Capitão Salgueiro Maia, 7";
             TxtCity.Text = "Figueira da Foz";
-            TxtZipCode.Text = "3080-000";
+            TxtZipCode.Text = "3080-245";
             TxtFiscalNumber.Text = "999999990";
             TxtStockCapital.Text = "1000";
             TxtEmail.Text = "comercial@logicpulse.com";
