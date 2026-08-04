@@ -389,17 +389,17 @@ namespace logicpos
 
         public static void ShowChangeLog(Window parentWindow)
         {
-            string message;
+            string changelogs;
             using (var wc = new WebClient())
             {
-                byte[] raw = wc.DownloadData("http://box.logicpulse.pt/files/changelogs/pos.txt");
-                message = System.Text.Encoding.UTF8.GetString(raw);
+                byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/logicpulse/logicPOS/refs/heads/main/docs/changelogs.txt");
+                changelogs = System.Text.Encoding.UTF8.GetString(raw);
             }
 
             CustomAlerts.Information(parentWindow)
                         .WithSize(new Size(700, 480))
                         .WithTitleResource("change_log")
-                        .WithMessage(message)
+                        .WithMessage(changelogs)
                         .ShowAlert();
         }
 
