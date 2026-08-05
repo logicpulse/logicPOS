@@ -124,7 +124,11 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             return GetPrintingData(issueDocumentReponse.Value.Id);
         }
 
-        public static InvoicePrintingData? GetPrintingData(Guid documentId)
+        public static InvoicePrintingData? GetPrintingData(
+            Guid documentId,
+            bool isSecondCopy = false,
+            int copyNumber = 1,
+            string reason = null)
         {
             var document = GetPrintingModel(documentId);
 
@@ -137,7 +141,10 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             {
                 DocumentId = documentId,
                 Document = document,
-                CompanyInformations = CompanyDetailsService.CompanyInformation
+                CompanyInformations = CompanyDetailsService.CompanyInformation,
+                IsSecondCopy = isSecondCopy,
+                CopyNumber = copyNumber > 0 ? copyNumber : 1,
+                Reason = reason
             };
         }
 

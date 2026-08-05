@@ -186,10 +186,18 @@ namespace LogicPOS.UI.Components.Modals
             {
                 if (printer.Type.ThermalPrinter)
                 {
-                    var thermalPrintingData = DocumentsService.GetPrintingData(Page.SelectedEntity.Id);
-                    if (thermalPrintingData != null)
+                    foreach (var copyNumber in copies.Distinct().OrderBy(c => c))
                     {
-                        ThermalPrintingService.PrintInvoice(thermalPrintingData.Value);
+                        var thermalPrintingData = DocumentsService.GetPrintingData(
+                            Page.SelectedEntity.Id,
+                            isSecondCopy,
+                            copyNumber,
+                            reason);
+
+                        if (thermalPrintingData != null)
+                        {
+                            ThermalPrintingService.PrintInvoice(thermalPrintingData.Value);
+                        }
                     }
                 }
                 else
@@ -200,8 +208,9 @@ namespace LogicPOS.UI.Components.Modals
                     {
                         PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
                     }
+
+                    DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason, printer.Type.ThermalPrinter);
                 }
-                DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason, printer.Type.ThermalPrinter);
             }
             catch (Exception ex)
             {

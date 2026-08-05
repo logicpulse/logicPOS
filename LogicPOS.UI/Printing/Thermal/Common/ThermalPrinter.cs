@@ -94,6 +94,9 @@ namespace LogicPOS.UI.Printing
                     companyInformations.BusinessName = companyInformations.Name;
                 }
                 _printer.Append(companyInformations.BusinessName);
+                _printer.NormalWidth();
+                _printer.NewLines(3);
+                _printer.BoldMode(companyInformations.Name);
                 _printer.NewLines(3);
 
             }   

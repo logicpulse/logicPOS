@@ -24,12 +24,16 @@ namespace LogicPOS.UI.Printing
 {
     public class InvoicePrinter : ThermalPrinter
     {
+        private static readonly byte[] EscSelectFontA = { 27, (byte)'M', 0 };
+
         private readonly InvoicePrintingData _data;
 
         public InvoicePrinter(Printer printer, InvoicePrintingData data) : base(printer)
         {
             _data = data;
         }
+
+        private void SetFontA() => _printer.Append(EscSelectFontA);
 
         public void PrintDocumentDetails()
         {
@@ -68,7 +72,9 @@ namespace LogicPOS.UI.Printing
         {
             string designation = (documentDetail.Designation.Length <= 48) ? documentDetail.Designation : documentDetail.Designation.Substring(0, 48);
 
-            _printer.Append(designation);
+            SetFontA();
+            _printer.BoldMode(designation);
+
             string exemptionReason = string.Empty;
             if (!string.IsNullOrEmpty(documentDetail.VatExemptionReason))
             {
@@ -180,6 +186,56 @@ namespace LogicPOS.UI.Printing
             }
         }
 
+        private void PrintDocumentTotals()
+        {
+            const int lineWidth = 48;
+
+            _printer.Separator(' ');
+            SetFontA();
+            _printer.AlignLeft();
+            _printer.SetLineHeight(30);
+
+            PrintTotalLine(LocalizedString.Instance["global_totalnet"], _data.Document.TotalNet, lineWidth);
+            PrintTotalLine(LocalizedString.Instance["global_documentfinance_totaltax"], _data.Document.TotalTax, lineWidth);
+            PrintTotalLine(LocalizedString.Instance["global_documentfinance_totalfinal"], _data.Document.TotalFinal, lineWidth);
+
+            _printer.Separator(' ');
+            _printer.SetLineHeight(10);
+            _printer.NewLine();
+        }
+
+        private void PrintTotalLine(string label, decimal value, int lineWidth)
+        {
+            _printer.BoldMode(FormatTotalLine(label, value, lineWidth));
+            _printer.NewLine();
+        }
+
+        private static string FormatTotalLine(string label, decimal value, int lineWidth)
+        {
+            var valueText = value.ToString("F2");
+            var left = $"{label}:";
+            var spaces = Math.Max(1, lineWidth - left.Length - valueText.Length);
+            return left + new string(' ', spaces) + valueText;
+        }
+
+        private void PrintCopyLabel()
+        {
+            if (_data.IsSecondCopy)
+            {
+                _printer.Append(LocalizedString.Instance["global_print_second_print"]);
+            }
+            else
+            {
+                var copyNumber = _data.CopyNumber > 0 ? _data.CopyNumber : 1;
+                _printer.Append(LocalizedString.Instance[$"global_print_copy_title{copyNumber}"]);
+            }
+
+            if (!string.IsNullOrWhiteSpace(_data.Reason))
+            {
+                _printer.Append(_data.Reason);
+            }
+        }
+
         public override void Print()
         {
             var typeAnalyzer = _data.Document.TypeAnalyzer;
@@ -188,7 +244,7 @@ namespace LogicPOS.UI.Printing
             documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
             _printer.AlignCenter();
             PrintHeader();
-            //_printer.NewLines(2);
+            _printer.NewLines(2);
             _printer.AlignLeft();
             if (string.IsNullOrEmpty(_data.CompanyInformations.Address) == false) _printer.Append($"{_data.CompanyInformations.Address} ");
             if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode) == false) _printer.Append($"{_data.CompanyInformations.PostalCode} {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
@@ -206,7 +262,7 @@ namespace LogicPOS.UI.Printing
             _printer.BoldMode(ToThermalText(LocalizedString.Instance[documentType]));
             _printer.Separator(' ');
             _printer.Append(_data.Document.Number);
-            _printer.Append($"Original");
+            PrintCopyLabel();
             _printer.Append(_data.Document.Date.ToShortDateString());
             if (!string.IsNullOrEmpty(_data.Table)) _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
             _printer.ExpandedMode(PrinterModeState.Off);
@@ -219,14 +275,7 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
             PrintDocumentDetails();
 
-            _printer.AlignLeft();
-            _printer.BoldMode($"{LocalizedString.Instance["global_totalnet"]}: {_data.Document.TotalNet:F2}");
-            _printer.NewLine();
-            _printer.BoldMode($"{LocalizedString.Instance["global_documentfinance_totaltax"]}: {_data.Document.TotalTax:F2}");
-            _printer.NewLine();
-            _printer.BoldMode($"{LocalizedString.Instance["global_documentfinance_totalfinal"]}: {_data.Document.TotalFinal:F2}");
-            _printer.Separator(' ');
-            _printer.NewLine();
+            PrintDocumentTotals();
             PrintTotalTax();
 
             _printer.AlignCenter();
@@ -333,6 +382,9 @@ namespace LogicPOS.UI.Printing
             public string Place { get; set; }
             public DocumentPrintingModel Document { get; set; }
             public CompanyInformation CompanyInformations { get; set; }
+            public bool IsSecondCopy { get; set; }
+            public int CopyNumber { get; set; }
+            public string Reason { get; set; }
         }
     }
 }

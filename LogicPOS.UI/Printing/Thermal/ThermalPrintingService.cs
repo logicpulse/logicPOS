@@ -114,7 +114,13 @@ namespace LogicPOS.UI.Printing
                 }
 
                 new InvoicePrinter(Printer, data).Print();
-                DocumentsService.RegisterPrint(data.DocumentId, new List<int> { 1 }, false, null, true);
+                var copyNumber = data.CopyNumber > 0 ? data.CopyNumber : 1;
+                DocumentsService.RegisterPrint(
+                    data.DocumentId,
+                    new List<int> { copyNumber },
+                    data.IsSecondCopy,
+                    data.Reason,
+                    true);
                 return true;
             }
             catch (Exception ex)
