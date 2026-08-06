@@ -5,6 +5,7 @@ using logicpos.Classes.Logic.Others;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application.Services;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Licensing.Branding;
 using LogicPOS.UI.Components.Menus;
 using LogicPOS.UI.Extensions;
@@ -143,7 +144,19 @@ namespace LogicPOS.UI.Components.Windows
                 }
 
 
-                Label labelVersion = new Label($"Powered by LogicPulse Technologies © Vers. v{SystemVersionService.PosDisplayVersion}");
+                // Same reseller rule as legacy StartupWindow / BackOffice status bar
+                string licenceReseller = LicensingService.Data?.Reseller;
+                bool showResellerBranding = LicensingService.Data != null
+                    && LicensingService.Data.IsLicensed
+                    && !string.IsNullOrWhiteSpace(licenceReseller)
+                    && !string.Equals(licenceReseller, "Logicpulse", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(licenceReseller, "LogicPulse", StringComparison.OrdinalIgnoreCase);
+
+                string versionLabelText = showResellerBranding
+                    ? $"Powered by {licenceReseller}© Vers. v{SystemVersionService.PosDisplayVersion}"
+                    : $"Powered by LogicPulse Technologies © Vers. v{SystemVersionService.PosDisplayVersion}";
+
+                Label labelVersion = new Label(versionLabelText);
                 Pango.FontDescription fontDescLabelVersion = Pango.FontDescription.FromString(labelVersionFont);
                 labelVersion.ModifyFg(StateType.Normal, labelVersionFontColor);
                 labelVersion.ModifyFont(fontDescLabelVersion);

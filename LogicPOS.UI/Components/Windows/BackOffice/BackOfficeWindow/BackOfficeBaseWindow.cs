@@ -101,16 +101,36 @@ namespace LogicPOS.UI.Components.Windows
             EventBox statusBar = new EventBox() { HeightRequest = 38 };
             statusBar.ModifyBg(StateType.Normal, colorBackOfficeStatusBarBackground.ToGdkColor());
 
-            //Reseller
+            string licenceReseller = LicensingService.Data?.Reseller;
+            bool showResellerBranding = LicensingService.Data != null
+                && LicensingService.Data.IsLicensed
+                && !string.IsNullOrWhiteSpace(licenceReseller)
+                && !string.Equals(licenceReseller, "Logicpulse", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(licenceReseller, "LogicPulse", StringComparison.OrdinalIgnoreCase);
+
+            // Reseller ("Powered by …") — same behaviour as legacy BackOfficeBaseWindow
             Reseller = new Label
             {
-                Text = $" Powered by Logicpulse Technologies ©"
+                Text = showResellerBranding
+                    ? $" Powered by {licenceReseller}©"
+                    : " Powered by Logicpulse Technologies ©"
             };
             Reseller.ModifyFont(Pango.FontDescription.FromString("Trebuchet MS 8 Bold"));
             Reseller.ModifyFg(StateType.Normal, colorBackOfficeStatusBarFont.ToGdkColor());
             Reseller.Justify = Justification.Left;
 
-            Logo = new Image(fileImageBackOfficeLogoLong);
+            try
+            {
+                // Non-Logicpulse: short logo; Logicpulse / empty: long logo (legacy)
+                string logoPath = showResellerBranding && File.Exists(fileImageBackOfficeLogo)
+                    ? fileImageBackOfficeLogo
+                    : fileImageBackOfficeLogoLong;
+                Logo = new Image(logoPath);
+            }
+            catch (Exception)
+            {
+                Logo = new Image(fileImageBackOfficeLogoLong);
+            }
 
             //Style StatusBarFont
             Pango.FontDescription fontDescriptionStatusBar = Pango.FontDescription.FromString(fontBackOfficeStatusBar);
@@ -147,6 +167,10 @@ namespace LogicPOS.UI.Components.Windows
             //Pack HBox StatusBar
             StatusBar = new HBox(false, 0) { BorderWidth = borderWidth };
             StatusBar.PackStart(Logo, false, false, 0);
+            if (showResellerBranding)
+            {
+                StatusBar.PackStart(Reseller, false, false, 0);
+            }
             if (!LicensingService.Data.IsLicensed) StatusBar.PackStart(labelRegister, false, false, 10);
             StatusBar.PackStart(LabelActivePage, false, false, 0);
             StatusBar.PackStart(LabelTerminalInfo, true, true, 0);
@@ -173,8 +197,6 @@ namespace LogicPOS.UI.Components.Windows
                 };
                 StatusBar.PackStart(eventBoxMinimize, false, false, 0);
             }
-
-            Logo.Dispose();
 
             BtnDashboard = new IconButtonWithText(
                 new ButtonSettings
