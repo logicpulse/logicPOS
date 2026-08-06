@@ -9,12 +9,12 @@ namespace LogicPOS.UI.Components.Licensing.Branding
     /// <summary>
     /// Resolves branding logos from license reseller and decodes them via the
     /// dynamically loaded LogicPOS.Plugins.Branding plugin.
-    /// Returns images at their native size — callers apply screen-specific scaling.
+    /// Always returns images at native pixel size (no stretch) — matches legacy Login/FO.
     /// </summary>
     public static class BrandingImageService
     {
-        private const string DefaultLoginFileName = "logicPOS_logicpulse_login.png";
-        private const string DefaultFrontOfficeFileName = "logicPOS_logicpulse_fo.png";
+        // Legacy FO and Login both use the *_login.png asset (not *_fo.png).
+        private const string DefaultBrandingFileName = "logicPOS_logicpulse_login.png";
         private const string DisplayFallbackFileName = "logicPOS_logo.png";
         private const string BrandingFolderName = "Branding";
 
@@ -28,7 +28,6 @@ namespace LogicPOS.UI.Components.Licensing.Branding
 
         /// <summary>
         /// Decodes the branding logo (or loads the display fallback) at native pixel size.
-        /// Do not stretch here — Login uses native size; FrontOffice scales with ScaleSimple.
         /// </summary>
         public static Bitmap CreateBitmap(BrandingLogoKind kind)
         {
@@ -37,7 +36,7 @@ namespace LogicPOS.UI.Components.Licensing.Branding
             {
                 try
                 {
-                    // width/height are part of the plugin API; legacy plugin ignores them for layout.
+                    // Plugin API accepts width/height but BrandingItens ignores them (native decode).
                     var decoded = BrandingPluginLoader.DecodeImage(logoPath, 0, 0);
                     if (decoded != null)
                     {
@@ -58,9 +57,9 @@ namespace LogicPOS.UI.Components.Licensing.Branding
 
         private static string ResolveLogoPath(BrandingLogoKind kind)
         {
-            var fileName = kind == BrandingLogoKind.FrontOffice
-                ? DefaultFrontOfficeFileName
-                : DefaultLoginFileName;
+            // kind kept for callers; both Login and FrontOffice use the same legacy login asset.
+            _ = kind;
+            var fileName = DefaultBrandingFileName;
 
             var imagesDirectory = AppSettings.Paths.GetThemeFileLocation("Images");
             var resellerFolder = ResolveResellerFolder(LicensingService.Data?.Reseller);

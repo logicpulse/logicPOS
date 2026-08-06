@@ -106,16 +106,14 @@ namespace LogicPOS.UI.Components.Windows
             bool eventBoxImageLogoVisibleWindow = Convert.ToBoolean(themeWindow.Objects.EventBoxImageLogo.VisibleWindow);
             Gdk.Color eventBoxImageLogoBackgroundColor = (themeWindow.Objects.EventBoxImageLogo.BackgroundColor as string).StringToGdkColor();
 
-            //LOGO — same scale as before branding: ScaleSimple(eventBox.Width - 180, eventBox.Height - 10)
+            // Same asset as legacy FO: logicPOS_logicpulse_login.png (via BrandingImageService).
+            // Fit EventBox preserving aspect ratio — do not squash with Width-180.
             Image imageLogo;
             using (var brandingLogo = BrandingImageService.CreateBitmap(BrandingLogoKind.FrontOffice))
             {
-                Gdk.Pixbuf pixbufOriginal = Utils.ImageToPixbuf(brandingLogo);
-                pixbufOriginal = pixbufOriginal.ScaleSimple(
-                    eventBoxImageLogoSize.Width - 180,
-                    eventBoxImageLogoSize.Height - 10,
-                    Gdk.InterpType.Bilinear);
-                imageLogo = new Image(pixbufOriginal);
+                Gdk.Pixbuf pixbuf = Utils.ImageToPixbuf(brandingLogo);
+                pixbuf = ScalePixbufToFit(pixbuf, eventBoxImageLogoSize.Width, eventBoxImageLogoSize.Height);
+                imageLogo = new Image(pixbuf);
             }
 
             //UI
@@ -127,8 +125,27 @@ namespace LogicPOS.UI.Components.Windows
             if (eventBoxImageLogoVisibleWindow) eventBoxImageLogo.ModifyBg(StateType.Normal, eventBoxImageLogoBackgroundColor);
             if (eventBoxImageLogoVisible) FixedWindow.Put(eventBoxImageLogo, eventBoxImageLogoPosition.X, eventBoxImageLogoPosition.Y);
 
+            var logoAlignment = new Alignment(0.5f, 0.5f, 0f, 0f);
+            logoAlignment.Add(imageLogo);
+            eventBoxImageLogo.Add(logoAlignment);
+        }
 
-            eventBoxImageLogo.Add(imageLogo);
+        private static Gdk.Pixbuf ScalePixbufToFit(Gdk.Pixbuf source, int maxWidth, int maxHeight)
+        {
+            if (source == null || maxWidth <= 0 || maxHeight <= 0)
+            {
+                return source;
+            }
+
+            if (source.Width <= maxWidth && source.Height <= maxHeight)
+            {
+                return source;
+            }
+
+            double scale = Math.Min((double)maxWidth / source.Width, (double)maxHeight / source.Height);
+            int width = Math.Max(1, (int)Math.Round(source.Width * scale));
+            int height = Math.Max(1, (int)Math.Round(source.Height * scale));
+            return source.ScaleSimple(width, height, Gdk.InterpType.Hyper);
         }
 
         private void InitUIEventBoxStatusBar1(dynamic pThemeWindow)
