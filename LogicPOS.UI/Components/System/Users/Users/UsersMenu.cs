@@ -5,6 +5,7 @@ using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Settings;
 using System.Drawing;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Menus
 {
@@ -34,7 +35,7 @@ namespace LogicPOS.UI.Components.Menus
 
             if (users != null)
             {
-                Entities.AddRange(users);
+                Entities.AddRange(users.Where(u => u.IsDeleted == false));
             }
         }
 

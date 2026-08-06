@@ -65,6 +65,8 @@ namespace LogicPOS.UI.Components.Licensing.Branding
             var imagesDirectory = AppSettings.Paths.GetThemeFileLocation("Images");
             var resellerFolder = ResolveResellerFolder(LicensingService.Data?.Reseller);
 
+            Log.Information("Resolving branding logo for kind {Kind} and reseller folder {ResellerFolder}", kind, resellerFolder);
+
             if (!string.IsNullOrWhiteSpace(resellerFolder))
             {
                 var resellerPath = Path.Combine(imagesDirectory, BrandingFolderName, resellerFolder, fileName);
