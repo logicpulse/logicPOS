@@ -260,15 +260,20 @@ namespace LogicPOS.UI.Printing
             _printer.DoubleWidth2();
             _printer.ExpandedMode(PrinterModeState.On);
             _printer.BoldMode(ToThermalText(LocalizedString.Instance[documentType]));
-            _printer.Separator(' ');
-            _printer.Append(_data.Document.Number);
+            _printer.BoldMode(_data.Document.Number);
+            _printer.ExpandedMode(PrinterModeState.Off);
             PrintCopyLabel();
             _printer.Append(_data.Document.Date.ToShortDateString());
-            if (!string.IsNullOrEmpty(_data.Table)) _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
-            _printer.ExpandedMode(PrinterModeState.Off);
-            _printer.Separator(' ');
+            if (!string.IsNullOrEmpty(_data.Table))
+            {
+                _printer.DoubleWidth2();
+                _printer.ExpandedMode(PrinterModeState.On);
+                _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
+                _printer.ExpandedMode(PrinterModeState.Off);
+            }
             _printer.NormalWidth();
             _printer.SetLineHeight(20);
+            _printer.Separator(' ');
             _printer.AlignLeft();
 
             PrintCustomer(_data.Document.Customer);
