@@ -28,6 +28,10 @@ namespace LogicPOS.Api.Features.Tables.GetAllTables
 
             if (PlaceId != null)
             {
+                if (Status != null)
+                {
+                    queryBuilder.Append("&");
+                }
                 queryBuilder.Append($"PlaceId={PlaceId}");
             }
 
