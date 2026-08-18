@@ -224,17 +224,19 @@ namespace LogicPOS.UI.Components.POS
 
             if (hasOpenTicketItems)
             {
-                ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
-                                                          .WithSize(new Size(400, 280))
-                                                          .WithTitleResource("global_warning")
-                                                          .WithMessage(LocalizedString.Instance["dialog_message_request_close_open_ticket"])
-                                                          .ShowAlert();
-
-                if (dialogResponse != ResponseType.Yes && dialogResponse != ResponseType.Ok)
+                if (PreferenceParametersService.PrintTicket)
                 {
-                    return;
-                }
+                    ResponseType dialogResponse = CustomAlerts.Question(POSWindow.Instance)
+                                                              .WithSize(new Size(400, 280))
+                                                              .WithTitleResource("global_warning")
+                                                              .WithMessage(LocalizedString.Instance["dialog_message_request_close_open_ticket"])
+                                                              .ShowAlert();
 
+                    if (dialogResponse != ResponseType.Yes && dialogResponse != ResponseType.Ok)
+                    {
+                        return;
+                    }
+                }
 
                 if (TryFinishOpenTicket(printThermalTicket: false) == false)
                 {

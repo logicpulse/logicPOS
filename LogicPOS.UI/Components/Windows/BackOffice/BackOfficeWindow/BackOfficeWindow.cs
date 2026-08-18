@@ -1,4 +1,5 @@
 using LogicPOS.UI.Application.Screen;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
@@ -60,6 +61,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             Instance.UpdateUI();
             Instance.Show();
+            FiscalYearsService.ShowActiveFiscalYearMismatchWarningIfNeeded(Instance);
         }
 
         #endregion

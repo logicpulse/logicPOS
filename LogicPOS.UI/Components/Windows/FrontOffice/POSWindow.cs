@@ -5,6 +5,7 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Licensing.Branding;
 using LogicPOS.UI.Components.Menus;
@@ -726,6 +727,7 @@ namespace LogicPOS.UI.Components.Windows
         {
             Instance.Show();
             SaleContext.Initialize();
+            FiscalYearsService.ShowActiveFiscalYearMismatchWarningIfNeeded(Instance);
         }
 
         public static string GetBackgroundImageFilePath()

@@ -4,10 +4,8 @@ using LogicPOS.Api.Features.Finance.FiscalYears.GetFiscalYearCreationData;
 using LogicPOS.Api.Features.FiscalYears.GetCurrentFiscalYear;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
-using LogicPOS.Utility;
 using System;
 using System.Drawing;
 
@@ -92,7 +90,7 @@ namespace LogicPOS.UI.Components.FiscalYears
 
             return true;
         }
-       
+
         public static void ShowOpenFiscalYearAlert(Gtk.Window parent)
         {
             CustomAlerts.Warning(parent)
@@ -103,21 +101,28 @@ namespace LogicPOS.UI.Components.FiscalYears
         }
 
 
-        public static bool ConfirmProceedWhenActiveFiscalYearDiffersFromCalendarYear(Gtk.Window parent)
+        private static bool _mismatchWarningShownThisSession;
+
+        public static void ShowActiveFiscalYearMismatchWarningIfNeeded(Gtk.Window parent)
         {
+            if (_mismatchWarningShownThisSession)
+            {
+                return;
+            }
+
             var fiscalYear = CurrentFiscalYear;
             if (fiscalYear == null || fiscalYear.Year == DateTime.Now.Year)
             {
-                return true;
+                return;
             }
 
-            return CustomAlerts.Question(parent)
+            _mismatchWarningShownThisSession = true;
+            CustomAlerts.Warning(parent)
                 .WithSize(new Size(600, 400))
                 .WithTitleResource("global_warning")
                 .WithMessage(
-                    $"O ano fiscal activo ({fiscalYear.Year}) não coincide com o ano actual ({DateTime.Now.Year}).\n\n" +
-                    "Deseja continuar mesmo assim?")
-                .ShowAlert() == Gtk.ResponseType.Yes;
+                    $"O ano fiscal activo ({fiscalYear.Year}) não coincide com o ano actual ({DateTime.Now.Year}).")
+                .ShowAlert();
         }
 
         public static FiscalYearCreationData? GetCreationRelevantData()

@@ -4,7 +4,6 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Documents.Services;
-using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Services;
@@ -28,12 +27,6 @@ namespace LogicPOS.UI.Components.Modals
             var documentsToPay = Invoices.Select(i => i.Number).ToList();
             try
             {
-                if (FiscalYearsService.ConfirmProceedWhenActiveFiscalYearDiffersFromCalendarYear(this) == false)
-                {
-                    Run();
-                    return;
-                }
-
                 var receiptDocumentType = SystemInformationService.SystemInformation?.IsPortugal == true
                     ? "RC"
                     : "RG";

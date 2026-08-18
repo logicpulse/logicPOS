@@ -8,7 +8,6 @@ using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPrint;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.Api.Features.Finance.Documents.Series.HasActiveSeries;
 using LogicPOS.UI.Alerts;
-using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.Printing;
@@ -38,11 +37,6 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
         {
             if (command.IsDraft == false)
             {
-                if (FiscalYearsService.ConfirmProceedWhenActiveFiscalYearDiffersFromCalendarYear(parent) == false)
-                {
-                    return null;
-                }
-
                 if (EnsureActiveSeriesExists(command.Type, parent) == false)
                 {
                     return null;
