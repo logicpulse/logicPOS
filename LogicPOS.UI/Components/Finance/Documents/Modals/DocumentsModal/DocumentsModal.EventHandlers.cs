@@ -4,13 +4,16 @@ using LogicPOS.Api.Features.Finance.Documents.Documents;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using LogicPOS.Globalization;
 
@@ -65,30 +68,8 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
-            ResponseType reponse = (ResponseType)modal.Run();
-            var copies = modal.Copies;
-            bool isSecondCopy = modal.SecondPrint;
-            string reason = modal.Reason;
-            modal.Destroy();
-
-            if (reponse != ResponseType.Ok)
-            {
-                return;
-            }
-
-            var printer = TerminalService.Terminal.Printer ?? TerminalService.Terminal.ThermalPrinter;
-
-            if (printer == null)
-            {
-                CustomAlerts.Warning(this)
-                            .WithMessage("Não foi possível encontrar a impressora configurada para o terminal.")
-                            .ShowAlert();
-                return;
-            }
-
-            bool canPrint = CheckPrinterCompatibility(printer);
-            if (!canPrint)
+            var documentType = DocumentTypesService.GetByAcronym(Page.SelectedEntity.Type);
+            if (!TryResolvePrintOptions(documentType, out var copies, out var isSecondCopy, out var reason))
             {
                 return;
             }
@@ -155,7 +136,7 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var printer = TerminalService.Terminal.Printer ?? TerminalService.Terminal.ThermalPrinter;
+            var printer = ResolveDocumentPrinter(Page.SelectedEntity.Id);
 
             if (printer == null)
             {
@@ -165,52 +146,138 @@ namespace LogicPOS.UI.Components.Modals
                 return;
             }
 
-            var modal = new RePrintDocumentModal(this, Page.SelectedEntity.Number);
-            ResponseType reponse = (ResponseType)modal.Run();
-            var copies = modal.Copies;
-            bool isSecondCopy = modal.SecondPrint;
-            string reason = modal.Reason;
-            modal.Destroy();
-
-            if (reponse != ResponseType.Ok)
-            {
-                return;
-            }
-            bool canPrint = CheckPrinterCompatibility(printer);
-            if (!canPrint)
+            if (!CheckPrinterCompatibility(printer))
             {
                 return;
             }
 
+            var documentType = DocumentTypesService.GetByAcronym(Page.SelectedEntity.Type);
+            if (!TryResolvePrintOptions(documentType, out var copies, out var isSecondCopy, out var reason))
+            {
+                return;
+            }
+
+            ExecuteDocumentPrint(printer, copies, isSecondCopy, reason, documentType?.PrintOpenDrawer == true && !isSecondCopy);
+        }
+
+        private bool TryResolvePrintOptions(
+            LogicPOS.Api.Features.Finance.Documents.Types.Common.DocumentType documentType,
+            out List<int> copies,
+            out bool isSecondCopy,
+            out string reason)
+        {
+            copies = null;
+            isSecondCopy = false;
+            reason = null;
+
+            var printCopies = GetPrintCopies(documentType);
+
+            if (DocumentsService.WasPrinted(Page.SelectedEntity.Id))
+            {
+                var modal = new RePrintDocumentModal(
+                    this,
+                    Page.SelectedEntity.Number,
+                    printCopies,
+                    documentType?.PrintRequestMotive == true);
+                ResponseType reponse = (ResponseType)modal.Run();
+                copies = modal.Copies;
+                isSecondCopy = modal.SecondPrint;
+                reason = modal.Reason;
+                modal.Destroy();
+
+                return reponse == ResponseType.Ok;
+            }
+
+            copies = Enumerable.Range(1, printCopies).ToList();
+            return true;
+        }
+
+        private static Api.Entities.Printer ResolveDocumentPrinter(Guid documentId)
+        {
+            var terminal = TerminalService.Terminal;
+            if (terminal == null)
+            {
+                return null;
+            }
+
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(documentId)
+                && terminal.ThermalPrinter != null)
+            {
+                return terminal.ThermalPrinter;
+            }
+
+            if (DocumentsService.IsFromOrder(documentId) && terminal.ThermalPrinter != null)
+            {
+                return terminal.ThermalPrinter;
+            }
+
+            return terminal.Printer ?? terminal.ThermalPrinter;
+        }
+
+        private static int GetPrintCopies(LogicPOS.Api.Features.Finance.Documents.Types.Common.DocumentType documentType)
+        {
+            var printCopies = documentType?.PrintCopies ?? 1;
+            return Math.Max(1, Math.Min(4, printCopies));
+        }
+
+        private void ExecuteDocumentPrint(
+            Api.Entities.Printer printer,
+            List<int> copies,
+            bool isSecondCopy,
+            string reason,
+            bool openDrawer)
+        {
             try
             {
                 if (printer.Type.ThermalPrinter)
                 {
-                    foreach (var copyNumber in copies.Distinct().OrderBy(c => c))
+                    var orderedCopies = copies.Distinct().OrderBy(c => c).ToList();
+                    for (var index = 0; index < orderedCopies.Count; index++)
                     {
+                        var copyNumber = orderedCopies[index];
                         var thermalPrintingData = DocumentsService.GetPrintingData(
                             Page.SelectedEntity.Id,
                             isSecondCopy,
                             copyNumber,
                             reason);
 
-                        if (thermalPrintingData != null)
+                        if (thermalPrintingData == null)
                         {
-                            ThermalPrintingService.PrintInvoice(thermalPrintingData.Value);
+                            return;
                         }
+
+                        var data = thermalPrintingData.Value;
+                        data.OpenDrawer = openDrawer && index == 0;
+                        ThermalPrintingService.PrintInvoice(data, registerPrint: false);
                     }
+
+                    DocumentsService.RegisterPrint(
+                        Page.SelectedEntity.Id,
+                        orderedCopies,
+                        isSecondCopy,
+                        reason,
+                        true);
+                    return;
                 }
-                else
+
+                var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
+
+                if (tempFile != null)
                 {
-                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(Page.SelectedEntity.Id, copies, isSecondCopy);
-
-                    if (tempFile != null)
-                    {
-                        PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
-                    }
-
-                    DocumentsService.RegisterPrint(Page.SelectedEntity.Id, copies, isSecondCopy, reason, printer.Type.ThermalPrinter);
+                    PdfPrinter.Print(tempFile.Value.Path, printer.Designation);
                 }
+
+                if (openDrawer)
+                {
+                    AuthenticationService.HardwareOpenDrawer();
+                }
+
+                DocumentsService.RegisterPrint(
+                    Page.SelectedEntity.Id,
+                    copies,
+                    isSecondCopy,
+                    reason,
+                    false);
             }
             catch (Exception ex)
             {
@@ -219,7 +286,6 @@ namespace LogicPOS.UI.Components.Modals
                             .WithMessage($"Ocorreu um erro ao tentar imprimir o documento. {ex.Message}")
                             .ShowAlert();
             }
-
         }
 
         private bool CheckPrinterCompatibility(Api.Entities.Printer printer)
@@ -233,7 +299,12 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && (!printer.Type?.ThermalPrinter==true))
+            if (!DocumentsService.WasPrinted(Page.SelectedEntity.Id))
+            {
+                return true;
+            }
+
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && printer.Type.ThermalPrinter != true)
             {
                 CustomAlerts.Warning(this)
                             .WithMessage("O documento que tentou imprimir foi Criado em uma impressora Térmica.")
@@ -241,7 +312,7 @@ namespace LogicPOS.UI.Components.Modals
                 return false;
             }
 
-            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) == false && (printer.Type?.ThermalPrinter == true))
+            if (!ThermalPrintingService.DocumentWasPrintedByThermalPrinter(Page.SelectedEntity.Id) && printer.Type.ThermalPrinter == true)
             {
                 CustomAlerts.Warning(this)
                             .WithMessage("O documento que tentou imprimir não foi Criado em uma impressora Térmica.")

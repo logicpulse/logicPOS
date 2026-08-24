@@ -238,6 +238,11 @@ namespace LogicPOS.UI.Printing
 
         public override void Print()
         {
+            if (_data.OpenDrawer)
+            {
+                AuthenticationService.HardwareOpenDrawer();
+            }
+
             var typeAnalyzer = _data.Document.TypeAnalyzer;
             var documentType = "global_documentfinance_type_title_fr";
             var documentTypeSuffix = _data.Document.Number.Substring(0, 2).ToLower() == "cm" ? "dc" : _data.Document.Number.Substring(0, 2).ToLower();
@@ -317,10 +322,6 @@ namespace LogicPOS.UI.Printing
                 }
             }
             PrintFooter();
-            if (_data.Document.Type.ToUpper() == "FR" || _data.Document.Type.ToUpper() == "FS" || _data.Document.Type.ToUpper() == "VD")
-            {
-                AuthenticationService.HardwareOpenDrawer();
-            }
             _printer.FullPaperCut();
             _printer.PrintDocument();
             _printer.Clear();
@@ -390,6 +391,7 @@ namespace LogicPOS.UI.Printing
             public bool IsSecondCopy { get; set; }
             public int CopyNumber { get; set; }
             public string Reason { get; set; }
+            public bool OpenDrawer { get; set; }
         }
     }
 }

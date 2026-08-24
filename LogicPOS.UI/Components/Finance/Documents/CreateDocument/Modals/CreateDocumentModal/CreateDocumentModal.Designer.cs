@@ -42,9 +42,11 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override Widget CreateLeftContent()
         {
-            var hbox = new HBox(true, 0);
+            var hbox = new HBox(false, 6);
             CheckIsDraft.Child.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
+            CheckHasTransportData.Child.ModifyFont(Pango.FontDescription.FromString(AppSettings.Instance.FontEntryBoxLabel));
             hbox.PackStart(CheckIsDraft, false, false, 0);
+            hbox.PackStart(CheckHasTransportData, false, false, 0);
             return hbox;
         }
     }

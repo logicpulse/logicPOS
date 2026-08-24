@@ -12,7 +12,7 @@ namespace LogicPOS.UI.Components.Modals
         private TextBox _txtCode = TextBox.CreateCodeField();
         private TextBox _txtDesignation = TextBox.CreateDesignationField();
         private TextBox _txtAcronym = TextBox.Simple("global_ConfigurationUnitMeasure_Acronym");
-        private TextBox _txtPrintCopies = TextBox.Simple("global_print_copies", true, true, RegularExpressions.IntegerNumber);
+        private TextBox _txtPrintCopies = TextBox.Simple("global_print_copies", true, true, @"^[1-4]$");
         private CheckButton _checkRequestPrintConfirmation = new CheckButton(LocalizedString.Instance["global_print_request_confirmation"]);
         private CheckButton _checkOpenDrawer = new CheckButton(LocalizedString.Instance["global_open_drawer"]);
         

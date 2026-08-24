@@ -55,7 +55,9 @@ namespace LogicPOS.Api.Features.Common.Requests
                     return await HandleNotSuccessfulHttpResponseAsync(response);
                 }
 
-                entity = await response.Content.ReadFromJsonAsync<TEntity>(cancellationToken);
+                entity = await response.Content.ReadFromJsonAsync<TEntity>(
+                    ApiJsonSerializerOptions.Default,
+                    cancellationToken);
 
                 if (useCache)
                 {

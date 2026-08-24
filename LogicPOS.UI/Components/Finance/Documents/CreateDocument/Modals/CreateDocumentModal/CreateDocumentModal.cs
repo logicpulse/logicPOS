@@ -1,4 +1,5 @@
 using Gtk;
+using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
@@ -10,6 +11,7 @@ using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
 using System;
 using System.Linq;
@@ -44,9 +46,13 @@ namespace LogicPOS.UI.Components.Modals
                 ShipFromTab.ImportDataFromDocument(fullDocument);
                 ShipToTab.ImportDataFromDocument(fullDocument);
             }
-
-            if (document.TypeAnalyzer.IsWayBill())
+            else if (document.TypeAnalyzer.IsSalesInvoiceFamily()
+                     && ShipAddress.HasCompleteTransportData(
+                         fullDocument.ShipToAddress,
+                         fullDocument.ShipFromAddress,
+                         SystemInformationService.SystemInformation.IsPortugal))
             {
+                CheckHasTransportData.Active = true;
                 ShipFromTab.ImportDataFromDocument(fullDocument);
                 ShipToTab.ImportDataFromDocument(fullDocument);
             }
@@ -89,6 +95,7 @@ namespace LogicPOS.UI.Components.Modals
             command.CustomerId = CustomerTab.CustomerId;
             command.Notes = DocumentTab.TxtNotes.Text;
             command.IsDraft = CheckIsDraft.Active;
+            command.IsWayBill = CheckHasTransportData.Active && analyzer.IsSalesInvoiceFamily();
 
             var customer = CustomerTab.GetCustomer();
 
@@ -101,7 +108,7 @@ namespace LogicPOS.UI.Components.Modals
             command.Discount = decimal.Parse(CustomerTab.TxtDiscount.Text);
             command.Details = DetailsTab.GetDocumentDetails();
 
-            if (analyzer.IsWayBill())
+            if (analyzer.IsWayBill() || command.IsWayBill)
             {
                 command.ShipToAddress = ShipToTab.GetAddress();
                 command.ShipFromAddress = ShipFromTab.GetAddress();
@@ -189,8 +196,15 @@ namespace LogicPOS.UI.Components.Modals
         private void UpdateTabsForDocumentType(DocumentType documentType)
         {
             var analyzer = documentType.Analyzer;
-            bool isTransportDocument = analyzer.IsWayBill(); 
-            ShipToTab.ShowTab = ShipFromTab.ShowTab = isTransportDocument;
+            CheckHasTransportData.Visible = analyzer.IsSalesInvoiceFamily();
+            if (!CheckHasTransportData.Visible)
+            {
+                CheckHasTransportData.Active = false;
+            }
+
+            bool showsTransportTabs = analyzer.IsWayBill()
+                                      || (CheckHasTransportData.Active && analyzer.IsSalesInvoiceFamily());
+            ShipToTab.ShowTab = ShipFromTab.ShowTab = showsTransportTabs;
             bool customerIsSelected = CustomerTab.CustomerId.HasValue && CustomerTab.CustomerId != Guid.Empty;
             Api.Features.Finance.Customers.Customers.Common.Customer customer = null;
             
@@ -199,7 +213,7 @@ namespace LogicPOS.UI.Components.Modals
                 customer = CustomersService.GetAllCustomers().FirstOrDefault(c => c.Id == CustomerTab.CustomerId.Value);
             }
 
-            if (isTransportDocument && customerIsSelected)
+            if (showsTransportTabs && customerIsSelected)
             {
                 ShipToTab.LoadCustomerAddress(customer);
             }

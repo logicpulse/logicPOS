@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Components.Modals
                 }
             }
 
-            if (docAnalyzer.Value.IsWayBill())
+            if (docAnalyzer.Value.IsWayBill() || (CheckHasTransportData.Active && docAnalyzer.Value.IsSalesInvoiceFamily()))
             {
                 validatableTabs.Add(ShipToTab);
                 validatableTabs.Add(ShipFromTab);

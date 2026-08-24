@@ -104,7 +104,7 @@ namespace LogicPOS.UI.Printing
             new PosTicketPrinter(printer, data).Print();
         }
 
-        public static bool PrintInvoice(InvoicePrintingData data)
+        public static bool PrintInvoice(InvoicePrintingData data, bool registerPrint = true)
         {
             try
             {
@@ -114,13 +114,16 @@ namespace LogicPOS.UI.Printing
                 }
 
                 new InvoicePrinter(Printer, data).Print();
-                var copyNumber = data.CopyNumber > 0 ? data.CopyNumber : 1;
-                DocumentsService.RegisterPrint(
-                    data.DocumentId,
-                    new List<int> { copyNumber },
-                    data.IsSecondCopy,
-                    data.Reason,
-                    true);
+                if (registerPrint)
+                {
+                    var copyNumber = data.CopyNumber > 0 ? data.CopyNumber : 1;
+                    DocumentsService.RegisterPrint(
+                        data.DocumentId,
+                        new List<int> { copyNumber },
+                        data.IsSecondCopy,
+                        data.Reason,
+                        true);
+                }
                 return true;
             }
             catch (Exception ex)

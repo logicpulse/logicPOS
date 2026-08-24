@@ -1,18 +1,21 @@
 using Gtk;
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Globalization;
 using LogicPOS.Printing.Services;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Buttons;
 using LogicPOS.UI.Components.Documents.Utilities;
 using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -20,6 +23,7 @@ using LogicPOS.Utility;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using static LogicPOS.UI.Printing.InvoicePrinter;
@@ -80,14 +84,74 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
             ProcesPayment();
-            PrintIssuedDocument(printingData.Value);
+
+            if (ShouldPrintIssuedDocument())
+            {
+                PrintIssuedDocument(printingData.Value);
+            }
+        }
+
+        private DocumentType GetIssuedDocumentType()
+        {
+            return DocumentTypesService.GetByAcronym(GetDocumentType());
+        }
+
+        private bool ShouldPrintIssuedDocument()
+        {
+            var documentType = GetIssuedDocumentType();
+            if (documentType?.PrintRequestConfirmation != true)
+            {
+                return true;
+            }
+
+            return CustomAlerts.Question(this)
+                .WithSize(new Size(500, 350))
+                .WithTitleResource("global_button_label_print")
+                .WithMessageResource("dialog_message_request_print_document_confirmation")
+                .ShowAlert() == ResponseType.Yes;
         }
 
         private void PrintIssuedDocument(InvoicePrintingData printingData)
         {
+            var documentType = GetIssuedDocumentType();
+            var printCopies = documentType?.PrintCopies ?? 1;
+            if (printCopies < 1)
+            {
+                printCopies = 1;
+            }
+            else if (printCopies > 4)
+            {
+                printCopies = 4;
+            }
+
+            var openDrawer = documentType?.PrintOpenDrawer == true;
+
             if (TerminalService.HasThermalPrinter)
             {
-                QueueDocumentPrint(() => ThermalPrintingService.PrintInvoice(printingData), printingData.DocumentId);
+                QueueDocumentPrint(() =>
+                {
+                    for (var copyNumber = 1; copyNumber <= printCopies; copyNumber++)
+                    {
+                        var copyData = DocumentsService.GetPrintingData(
+                            printingData.DocumentId,
+                            copyNumber: copyNumber);
+                        if (copyData == null)
+                        {
+                            return;
+                        }
+
+                        var data = copyData.Value;
+                        data.OpenDrawer = openDrawer && copyNumber == 1;
+                        ThermalPrintingService.PrintInvoice(data, registerPrint: false);
+                    }
+
+                    DocumentsService.RegisterPrint(
+                        printingData.DocumentId,
+                        Enumerable.Range(1, printCopies),
+                        false,
+                        null,
+                        true);
+                }, printingData.DocumentId);
                 return;
             }
 
@@ -99,7 +163,7 @@ namespace LogicPOS.UI.Components.POS
                 {
                     var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(
                         printingData.DocumentId,
-                        new List<int> { 1 },
+                        Enumerable.Range(1, printCopies).ToList(),
                         false);
 
                     if (tempFile == null)
@@ -107,8 +171,22 @@ namespace LogicPOS.UI.Components.POS
                         return;
                     }
 
-                    PdfPrinter.Print(tempFile.Value.Path, printerName);
-                    DocumentsService.RegisterPrint(printingData.DocumentId, new List<int> { 1 }, false, null, false);
+                    for (var copyNumber = 1; copyNumber <= printCopies; copyNumber++)
+                    {
+                        PdfPrinter.Print(tempFile.Value.Path, printerName);
+                    }
+
+                    if (openDrawer)
+                    {
+                        AuthenticationService.HardwareOpenDrawer();
+                    }
+
+                    DocumentsService.RegisterPrint(
+                        printingData.DocumentId,
+                        Enumerable.Range(1, printCopies),
+                        false,
+                        null,
+                        false);
                 }, printingData.DocumentId);
                 return;
             }

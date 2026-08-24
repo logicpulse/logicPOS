@@ -5,6 +5,8 @@ using LogicPOS.Api.Features.Finance.Documents.Documents.GetDetails;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.AddDocumentPrint;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentWasPrinted;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentFromOrder;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.Api.Features.Finance.Documents.Series.HasActiveSeries;
 using LogicPOS.UI.Alerts;
@@ -150,6 +152,30 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
             {
                 ErrorHandlingService.HandleApiError(result);
             }
+        }
+
+        public static bool WasPrinted(Guid documentId)
+        {
+            var result = DependencyInjection.Mediator.Send(new GetDocumentWasPrintedQuery(documentId)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return result.Value;
+        }
+
+        public static bool IsFromOrder(Guid documentId)
+        {
+            var result = DependencyInjection.Mediator.Send(new GetDocumentFromOrderQuery(documentId)).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return result.Value;
         }
 
         public static IEnumerable<Api.Entities.DocumentDetail> GetDocumentDetails(Guid documentId)

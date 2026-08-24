@@ -15,26 +15,14 @@ namespace LogicPOS.UI.Components.Modals
 
         protected override void AddSensitiveFields()
         {
-            SensitiveFields.Add(_txtOrder.Entry);
-            SensitiveFields.Add(_txtCode.Entry);
-            SensitiveFields.Add(_txtDesignation.Entry);
-            SensitiveFields.Add(_txtAcronym.Entry);
             SensitiveFields.Add(_txtPrintCopies.Entry);
-            SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkRequestPrintConfirmation);
             SensitiveFields.Add(_checkOpenDrawer);
         }
 
         protected override void AddValidatableFields()
         {
-            ValidatableFields.Add(_txtDesignation);
             ValidatableFields.Add(_txtPrintCopies);
-
-            if (_modalMode == EntityEditionModalMode.Update)
-            {
-                ValidatableFields.Add(_txtOrder);
-                ValidatableFields.Add(_txtCode);
-            }
         }
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()

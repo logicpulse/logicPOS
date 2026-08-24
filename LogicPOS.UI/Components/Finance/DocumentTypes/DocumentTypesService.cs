@@ -48,5 +48,16 @@ namespace LogicPOS.UI.Components.Finance.DocumentTypes
         {
             return GetAll().FirstOrDefault(dt => dt.Id == id);
         }
+
+        public static DocumentType GetByAcronym(string acronym)
+        {
+            if (string.IsNullOrWhiteSpace(acronym))
+            {
+                return null;
+            }
+
+            return GetAll()?.FirstOrDefault(dt =>
+                string.Equals(dt.Acronym, acronym, StringComparison.OrdinalIgnoreCase));
+        }
     }
 }

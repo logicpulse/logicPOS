@@ -25,5 +25,10 @@ namespace LogicPOS.Api.Features.Documents
         public bool IsVoltaRefundReceipt() => Type == "TRV";
         public bool IsInformative() => IsProform() || IsBudget() || IsVoltaRefundReceipt();
         public bool IsWayBill() => IsTransportGuide() || IsConsignmentGuide() || IsManagementOfFixedAssetsForm() || IsDeliveryNote() || IsReturnSlip();
+
+        public bool IsSalesInvoiceFamily() => IsInvoice() || IsInvoiceReceipt() || IsSimplifiedInvoice();
+
+        public bool RequiresTransportDataAtIssue(bool issueWithTransportData) =>
+            IsWayBill() || (issueWithTransportData && IsSalesInvoiceFamily());
     }
 }

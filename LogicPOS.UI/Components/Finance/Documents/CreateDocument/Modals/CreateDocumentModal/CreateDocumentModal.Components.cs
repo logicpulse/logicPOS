@@ -34,6 +34,7 @@ namespace LogicPOS.UI.Components.Modals
 
         private ModalTabsNavigator Navigator { get; set; }
         public CheckButton CheckIsDraft { get; private set; } = new CheckButton("Guardar como Rascunho") { };
+        public CheckButton CheckHasTransportData { get; private set; } = new CheckButton("Com dados de transporte") { Visible = false };
 
 
         IconButtonWithText BtnAgtNifInfo = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",

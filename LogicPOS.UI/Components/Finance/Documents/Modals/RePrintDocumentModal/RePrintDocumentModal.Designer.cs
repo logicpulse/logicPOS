@@ -24,6 +24,11 @@ namespace LogicPOS.UI.Components.Modals
                 BtnCopy3,
                 BtnCopy4
             };
+
+            // Reprint dialog: all copy options stay selectable (legacy UpdateUI Mode#2).
+            BtnCopy2.Sensitive = true;
+            BtnCopy3.Sensitive = true;
+            BtnCopy4.Sensitive = true;
         }
 
         protected override ActionAreaButtons CreateActionAreaButtons()

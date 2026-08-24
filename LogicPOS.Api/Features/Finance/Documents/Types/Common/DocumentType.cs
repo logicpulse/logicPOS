@@ -11,6 +11,7 @@ namespace LogicPOS.Api.Features.Finance.Documents.Types.Common
         public string Designation { get; set; }
         public string Acronym { get; set; }
         public int PrintCopies { get; set; }
+        public bool PrintRequestMotive { get; set; }
         public bool PrintRequestConfirmation { get; set; }
         public bool PrintOpenDrawer { get; set; }
         public SaftDocumentType SaftDocumentType { get; set; }

@@ -1,12 +1,11 @@
 ﻿using LogicPOS.Api.Features.DocumentTypes.UpdateDocumentType;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
-using System;
 
 namespace LogicPOS.UI.Components.Modals
 {
     public partial class DocumentTypeModal : EntityEditionModal<DocumentType>
     {
-        public DocumentTypeModal(EntityEditionModalMode modalMode, DocumentType entity = null) : base(EntityEditionModalMode.View, entity)
+        public DocumentTypeModal(EntityEditionModalMode modalMode, DocumentType entity = null) : base(modalMode, entity)
         {
         }
 
@@ -15,18 +14,14 @@ namespace LogicPOS.UI.Components.Modals
             return new UpdateDocumentTypeCommand
             {
                 Id = _entity.Id,
-                Order = uint.Parse(_txtOrder.Text),
-                Code = _txtCode.Text,
                 PrintCopies = int.Parse(_txtPrintCopies.Text),
                 PrintRequestConfirmation = _checkRequestPrintConfirmation.Active,
-                PrintOpenDrawer = _checkOpenDrawer.Active,
-                Notes = _txtNotes.Value.Text
+                PrintOpenDrawer = _checkOpenDrawer.Active
             };
         }
 
+        protected override bool AddEntity() => throw new global::System.NotImplementedException();
 
-        protected override bool AddEntity() => throw new NotImplementedException();
-        
         protected override bool UpdateEntity() => ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
 
         protected override void ShowEntityData()
@@ -39,7 +34,12 @@ namespace LogicPOS.UI.Components.Modals
             _checkOpenDrawer.Active = _entity.PrintOpenDrawer;
             _checkRequestPrintConfirmation.Active = _entity.PrintRequestConfirmation;
             _txtNotes.Value.Text = _entity.Notes;
-        }
 
+            _txtOrder.Entry.Sensitive = false;
+            _txtCode.Entry.Sensitive = false;
+            _txtDesignation.Entry.Sensitive = false;
+            _txtAcronym.Entry.Sensitive = false;
+            _txtNotes.TextView.Sensitive = false;
+        }
     }
 }

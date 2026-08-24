@@ -19,7 +19,7 @@ namespace LogicPOS.Api.Features.Common.Requests
             {
                 case HttpStatusCode.Created:
                 case HttpStatusCode.OK:
-                    var response = await httpResponse.Content.ReadFromJsonAsync<T>();
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>(ApiJsonSerializerOptions.Default);
                     return response;
                 case HttpStatusCode.NoContent:
                     return default(T);
@@ -33,7 +33,7 @@ namespace LogicPOS.Api.Features.Common.Requests
             switch (httpResponse.StatusCode)
             {
                 case HttpStatusCode.OK:
-                    var response = await httpResponse.Content.ReadFromJsonAsync<T>();
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>(ApiJsonSerializerOptions.Default);
                     return response;
                 case HttpStatusCode.NoContent:
                     return default(T);
@@ -55,7 +55,7 @@ namespace LogicPOS.Api.Features.Common.Requests
                     problemDetails = ProblemDetails.Forbidden(url);
                     return Error.Forbidden(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
                 default:
-                    problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>();
+                    problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>(ApiJsonSerializerOptions.Default);
                     break;
 
             }

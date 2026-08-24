@@ -23,5 +23,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
         public List<DocumentDetail> Details { get; set; }
         public decimal? ExchangeRate { get; set; }
         public bool IsDraft { get; set; }
+        public bool IsWayBill { get; set; }
     }
 }

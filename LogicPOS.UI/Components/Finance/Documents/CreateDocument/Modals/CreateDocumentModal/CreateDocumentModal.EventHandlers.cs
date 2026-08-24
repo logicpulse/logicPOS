@@ -43,6 +43,18 @@ namespace LogicPOS.UI.Components.Modals
             Navigator.CurrentTabChanged += t => UpdateUI();
             DetailsTab.Page.OnTotalChanged += t => UpdateUI();
             CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
+            CheckHasTransportData.StateChanged += CheckHasTransportData_StateChanged;
+        }
+
+        private void CheckHasTransportData_StateChanged(object o, StateChangedArgs args)
+        {
+            var documentType = DocumentTab.GetDocumentType();
+            if (documentType != null)
+            {
+                UpdateTabsForDocumentType(documentType);
+            }
+
+            Navigator.UpdateUI();
         }
 
         private void BtnAgtNifInfo_Clicked(object sender, EventArgs e)
@@ -94,14 +106,14 @@ namespace LogicPOS.UI.Components.Modals
                     }
                 }
 
-                if (SystemInformationService.SystemInformation.IsPortugal && 
-                    new DocumentTypeAnalyzer(issueDocumentRequest.Type).IsWayBill() &&
-                    issueDocumentRequest.ShipFromAddress.DeliveryDate is DateTime deliveryDate &&
-                    deliveryDate < DateTime.Now.AddMinutes(1))
+                if (SystemInformationService.SystemInformation.IsPortugal &&
+                    new DocumentTypeAnalyzer(issueDocumentRequest.Type).RequiresTransportDataAtIssue(issueDocumentRequest.IsWayBill) &&
+                    issueDocumentRequest.ShipFromAddress.DeliveryDate is DateTime expeditionDate &&
+                    expeditionDate < DateTime.Now.AddMinutes(1))
                 {
-                    Log.Warning("Document of type {DocumentType} has shipping date less than the current time + 1 minute.", issueDocumentRequest.Type);
+                    Log.Warning("Document of type {DocumentType} has expedition date before current time + 1 minute.", issueDocumentRequest.Type);
                     CustomAlerts.Warning(this)
-                        .WithMessage("A data de envio tem de ser posterior à data atual em pelo menos 1 minuto.")
+                        .WithMessage("A «Data de Expedição» na aba «Guia: Expedição» tem de ser pelo menos 1 minuto posterior à data e hora atuais.")
                         .ShowAlert();
                     Run();
                     return;
@@ -266,7 +278,13 @@ namespace LogicPOS.UI.Components.Modals
         {
             var docTypeAnalyzer = DocumentTab.DocumentTypeAnalyzer;
 
-            if (docTypeAnalyzer == null || docTypeAnalyzer.Value.IsWayBill() == false)
+            if (docTypeAnalyzer == null)
+            {
+                return;
+            }
+
+            if (!docTypeAnalyzer.Value.IsWayBill()
+                && !(CheckHasTransportData.Active && docTypeAnalyzer.Value.IsSalesInvoiceFamily()))
             {
                 return;
             }
