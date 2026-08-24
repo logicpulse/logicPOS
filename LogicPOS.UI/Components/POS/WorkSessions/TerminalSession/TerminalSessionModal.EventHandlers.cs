@@ -168,6 +168,7 @@ namespace LogicPOS.UI.Components.POS
                     ThermalPrintingService.PrintCashDrawerInMovement(totalInCashDrawer, amount, description);
                 }
 
+                AuthenticationService.HardwareOpenDrawer();
             }
         }
 
@@ -222,6 +223,11 @@ namespace LogicPOS.UI.Components.POS
                 {
                     ThermalPrintingService.PrintCashDrawerOutMovement(newTotalInCashDrawer, totalInCashDrawer - newTotalInCashDrawer, description);
                 }
+            }
+
+            if (amount != totalInCashDrawer)
+            {
+                AuthenticationService.HardwareOpenDrawer();
             }
 
             POSWindow.Instance.UpdateUI();

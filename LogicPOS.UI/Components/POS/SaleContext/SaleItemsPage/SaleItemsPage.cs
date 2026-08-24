@@ -218,7 +218,24 @@ namespace LogicPOS.UI.Components.POS
                 SelectedItem = null;
             }
 
+            if (Ticket.Items.Count == 0)
+            {
+                AbandonOpenTicket();
+                return;
+            }
+
             Refresh();
+        }
+
+        private void AbandonOpenTicket()
+        {
+            if (Ticket != null && SaleContext.CurrentOrder != null)
+            {
+                SaleContext.CurrentOrder.Tickets.Remove(Ticket);
+            }
+
+            Clear(true);
+            POSWindow.Instance.UpdateUI();
         }
 
         public void IncreaseQuantity(Guid articleId)

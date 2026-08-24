@@ -34,10 +34,6 @@ namespace LogicPOS.UI.Printing
             PrintHeader();
             PrintDocumentDetails();
             PrintFooter();
-            if(_movementType== WorkSessionMovementType.CashDrawerIn || _movementType== WorkSessionMovementType.CashDrawerOut)
-            {
-                AuthenticationService.HardwareOpenDrawer();
-            }
             _printer.FullPaperCut();
             _printer.PrintDocument();
             _printer.Clear();
