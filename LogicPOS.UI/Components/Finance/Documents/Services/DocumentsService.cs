@@ -111,13 +111,28 @@ namespace LogicPOS.UI.Components.Finance.Documents.Services
 
         public static InvoicePrintingData? IssueDocumentForPrinting(IssueDocumentCommand command, Gtk.Window parent)
         {
-            var issueDocumentReponse = IssueDocument(command,parent);
+            command.IncludePrintingModel = true;
+            var issueDocumentReponse = IssueDocument(command, parent);
             if (issueDocumentReponse == null)
             {
                 return null;
             }
 
-            return GetPrintingData(issueDocumentReponse.Value.Id);
+            var issued = issueDocumentReponse.Value;
+            if (issued.HasPrintingModel)
+            {
+                return new InvoicePrintingData
+                {
+                    DocumentId = issued.Id,
+                    Document = issued.PrintingModel,
+                    CompanyInformations = CompanyDetailsService.CompanyInformation,
+                    IsSecondCopy = false,
+                    CopyNumber = 1,
+                    Reason = null
+                };
+            }
+
+            return GetPrintingData(issued.Id);
         }
 
         public static InvoicePrintingData? GetPrintingData(

@@ -1,6 +1,5 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
-using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
 using System;
 
@@ -21,6 +20,6 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
             => PaymentMethodsService.GetByAcronym(PaymentMethodAcronym);
 
         public static ArticleViewModel ResolveDepositArticle()
-            => ArticlesService.GetArticleByCode(SdrConstants.SdrArticleCode);
+            => SdrDepositArticleCache.GetOrLoad();
     }
 }

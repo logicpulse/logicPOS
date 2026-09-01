@@ -50,8 +50,8 @@ namespace LogicPOS.UI.Components.POS
                 return;
             }
 
-            CurrentOrder = OrdersService.GetOpenPosOrders(table.Id)
-                                        .FirstOrDefault();
+            // Avoid GetOpenOrders after table change — we already know the order id.
+            CurrentOrder = OrdersService.GetPosOrder(orderId);
 
             if (CurrentOrder == null)
             {

@@ -20,17 +20,35 @@ namespace LogicPOS.UI.Printing
     public static class ThermalPrintingService
     {
         private static Printer _printer;
+        private static Guid? _printerConfigId;
+
         public static Printer Printer
         {
             get
             {
-                if (_printer == null && TerminalService.HasThermalPrinter)
+                var apiPrinter = TerminalService.HasThermalPrinter
+                    ? TerminalService.Terminal.ThermalPrinter
+                    : null;
+                if (apiPrinter == null)
                 {
-                    _printer = new Printer(TerminalService.Terminal.ThermalPrinter.Designation);
+                    return null;
+                }
+
+                if (_printer == null || _printerConfigId != apiPrinter.Id)
+                {
+                    _printer = ThermalPrinterTarget.CreateEscPosPrinter(apiPrinter);
+                    _printerConfigId = apiPrinter.Id;
                 }
 
                 return _printer;
             }
+        }
+
+        private static IDisposable UseTerminalThermalTarget()
+        {
+            return TerminalService.HasThermalPrinter
+                ? ThermalPrinterTarget.Use(TerminalService.Terminal.ThermalPrinter)
+                : null;
         }
 
         public static void PrintTicket(TicketPrintingData data)
@@ -68,14 +86,21 @@ namespace LogicPOS.UI.Printing
 
                 foreach (var group in itemsByPrinter)
                 {
-                    PrintTicketOnPrinter(
-                        new Printer(printersById[group.Key].Designation),
-                        CreateTicketDataForItems(data, group.Value));
+                    var apiPrinter = printersById[group.Key];
+                    using (ThermalPrinterTarget.Use(apiPrinter))
+                    {
+                        PrintTicketOnPrinter(
+                            ThermalPrinterTarget.CreateEscPosPrinter(apiPrinter),
+                            CreateTicketDataForItems(data, group.Value));
+                    }
                 }
 
                 if (itemsWithoutPrinter.Count > 0 && Printer != null)
                 {
-                    PrintTicketOnPrinter(Printer, CreateTicketDataForItems(data, itemsWithoutPrinter));
+                    using (UseTerminalThermalTarget())
+                    {
+                        PrintTicketOnPrinter(Printer, CreateTicketDataForItems(data, itemsWithoutPrinter));
+                    }
                 }
             }
             catch (Exception ex)
@@ -113,7 +138,10 @@ namespace LogicPOS.UI.Printing
                     return false;
                 }
 
-                new InvoicePrinter(Printer, data).Print();
+                using (UseTerminalThermalTarget())
+                {
+                    new InvoicePrinter(Printer, data).Print();
+                }
                 if (registerPrint)
                 {
                     var copyNumber = data.CopyNumber > 0 ? data.CopyNumber : 1;
@@ -148,7 +176,10 @@ namespace LogicPOS.UI.Printing
 
             try
             {
-                new WorkSessionPrinter(Printer, reportData).Print();
+                using (UseTerminalThermalTarget())
+                {
+                    new WorkSessionPrinter(Printer, reportData).Print();
+                }
             }
             catch (Exception ex)
             {
@@ -171,11 +202,14 @@ namespace LogicPOS.UI.Printing
             {
                 if (Printer != null)
                 {
-                    new CashDrawerMovementPrinter(Printer,
-                                                 totalAmountInCashDrawer,
-                                                 movementAmount,
-                                                 WorkSessionMovementType.CashDrawerOpen,
-                                                 movementDescription).Print();
+                    using (UseTerminalThermalTarget())
+                    {
+                        new CashDrawerMovementPrinter(Printer,
+                                                     totalAmountInCashDrawer,
+                                                     movementAmount,
+                                                     WorkSessionMovementType.CashDrawerOpen,
+                                                     movementDescription).Print();
+                    }
                 }
             }
             catch (Exception ex)
@@ -199,11 +233,14 @@ namespace LogicPOS.UI.Printing
             {
                 if (Printer != null)
                 {
-                    new CashDrawerMovementPrinter(Printer,
-                                                 totalAmountInCashDrawer,
-                                                 movementAmount,
-                                                 WorkSessionMovementType.CashDrawerClose,
-                                                 movementDescription).Print();
+                    using (UseTerminalThermalTarget())
+                    {
+                        new CashDrawerMovementPrinter(Printer,
+                                                     totalAmountInCashDrawer,
+                                                     movementAmount,
+                                                     WorkSessionMovementType.CashDrawerClose,
+                                                     movementDescription).Print();
+                    }
                 }
             }
             catch (Exception ex)
@@ -225,11 +262,17 @@ namespace LogicPOS.UI.Printing
 
             try
             {
-                new CashDrawerMovementPrinter(Printer,
+                if (Printer != null)
+                {
+                    using (UseTerminalThermalTarget())
+                    {
+                        new CashDrawerMovementPrinter(Printer,
                                               totalAmountInCashDrawer,
                                               movementAmount,
                                               WorkSessionMovementType.CashDrawerIn,
                                               movementDescription).Print();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -252,11 +295,14 @@ namespace LogicPOS.UI.Printing
             {
                 if (Printer != null)
                 {
-                    new CashDrawerMovementPrinter(Printer,
+                    using (UseTerminalThermalTarget())
+                    {
+                        new CashDrawerMovementPrinter(Printer,
                                               totalAmountInCashDrawer,
                                               movementAmount,
                                               WorkSessionMovementType.CashDrawerOut,
                                               movementDescription).Print();
+                    }
                 }
             }
             catch (Exception ex)

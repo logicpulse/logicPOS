@@ -132,15 +132,9 @@ namespace LogicPOS.UI.Components.POS
                 {
                     for (var copyNumber = 1; copyNumber <= printCopies; copyNumber++)
                     {
-                        var copyData = DocumentsService.GetPrintingData(
-                            printingData.DocumentId,
-                            copyNumber: copyNumber);
-                        if (copyData == null)
-                        {
-                            return;
-                        }
-
-                        var data = copyData.Value;
+                        // Reuse model from issue (IncludePrintingModel); avoid GET printing-model per copy.
+                        var data = printingData;
+                        data.CopyNumber = copyNumber;
                         data.OpenDrawer = openDrawer && copyNumber == 1;
                         ThermalPrintingService.PrintInvoice(data, registerPrint: false);
                     }
@@ -270,6 +264,8 @@ namespace LogicPOS.UI.Components.POS
         {
             SaleContext.ItemsPage.Clear(true);
             SaleContext.CurrentOrder.Close();
+            // Payment only happens with an open terminal — skip TerminalIsOpen GETs in UpdateUI.
+            WorkSessionsService.SetTerminalIsOpenCache(true);
             POSWindow.Instance.UpdateUI();
         }
 

@@ -24,6 +24,11 @@ namespace LogicPOS.UI.Services
 {
     public static class WorkSessionsService
     {
+        private static readonly object TerminalOpenCacheSync = new object();
+        private static bool? _terminalIsOpenCached;
+        private static DateTime _terminalIsOpenCachedUtc = DateTime.MinValue;
+        private static readonly TimeSpan TerminalIsOpenCacheTtl = TimeSpan.FromSeconds(30);
+
         public static bool DayIsOpen()
         {
             var getResult = DependencyInjection.Mediator.Send(new DayIsOpenQuery()).Result;
@@ -39,15 +44,48 @@ namespace LogicPOS.UI.Services
 
         public static bool TerminalIsOpen()
         {
+            lock (TerminalOpenCacheSync)
+            {
+                if (_terminalIsOpenCached.HasValue
+                    && DateTime.UtcNow - _terminalIsOpenCachedUtc < TerminalIsOpenCacheTtl)
+                {
+                    return _terminalIsOpenCached.Value;
+                }
+            }
+
             var getResult = DependencyInjection.Mediator.Send(new TerminalIsOpenQuery(TerminalService.Terminal.Id)).Result;
 
             if (getResult.IsError)
             {
                 ErrorHandlingService.HandleApiError(getResult, true);
+                SetTerminalIsOpenCache(false);
                 return false;
             }
 
+            SetTerminalIsOpenCache(getResult.Value);
             return getResult.Value;
+        }
+
+        /// <summary>
+        /// Avoids repeated TerminalIsOpen GETs (e.g. POSWindow.UpdateUI + SaleOptionsPanel).
+        /// Invalidate on open/close session.
+        /// </summary>
+        public static void SetTerminalIsOpenCache(bool isOpen)
+        {
+            lock (TerminalOpenCacheSync)
+            {
+                _terminalIsOpenCached = isOpen;
+                _terminalIsOpenCachedUtc = DateTime.UtcNow;
+            }
+        }
+
+        public static void InvalidateTerminalIsOpenCache()
+        {
+            lock (TerminalOpenCacheSync)
+            {
+                _terminalIsOpenCached = null;
+                _terminalIsOpenCachedUtc = DateTime.MinValue;
+            }
         }
 
         public static List<WorkSessionPeriod> GetOpenTerminalSessions()
@@ -100,6 +138,7 @@ namespace LogicPOS.UI.Services
                 return false;
             }
 
+            SetTerminalIsOpenCache(false);
             return true;
         }
 
@@ -127,6 +166,7 @@ namespace LogicPOS.UI.Services
                 return false;
             }
             OpenTotal = amount;
+            SetTerminalIsOpenCache(true);
             return true;
         }
 
@@ -141,6 +181,7 @@ namespace LogicPOS.UI.Services
                 return false;
             }
             CloseTotal = amount;
+            SetTerminalIsOpenCache(false);
             return true;
         }
 

@@ -104,7 +104,7 @@ namespace LogicPOS.UI.Printing
             PrintWorkSessionMovement(_reportData);
             PrintFooter();
             _printer.FullPaperCut();
-            _printer.PrintDocument();
+            ThermalPrinterTarget.Commit(_printer);
             _printer.Clear();
 
         }

@@ -7,6 +7,7 @@ using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.System.Users.Permissions;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Errors;
+using LogicPOS.UI.Printing;
 using LogicPOS.Utility;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,10 +39,13 @@ namespace LogicPOS.UI.Components.Users
             }
             try
             {
-                var printer = new ESC_POS_USB_NET.Printer.Printer(TerminalService.Terminal.ThermalPrinter.Designation);
-                printer.OpenDrawer();
-                printer.PrintDocument();
-                printer.Clear();
+                using (ThermalPrinterTarget.Use(TerminalService.Terminal.ThermalPrinter))
+                {
+                    var printer = ThermalPrinterTarget.CreateEscPosPrinter(TerminalService.Terminal.ThermalPrinter);
+                    printer.OpenDrawer();
+                    ThermalPrinterTarget.Commit(printer);
+                    printer.Clear();
+                }
             }
             catch (Exception ex)
             {

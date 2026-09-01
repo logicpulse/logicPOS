@@ -24,5 +24,10 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument
         public decimal? ExchangeRate { get; set; }
         public bool IsDraft { get; set; }
         public bool IsWayBill { get; set; }
+
+        /// <summary>
+        /// When true, the API embeds PrintingModel in the response (POS thermal / immediate print).
+        /// </summary>
+        public bool IncludePrintingModel { get; set; }
     }
 }

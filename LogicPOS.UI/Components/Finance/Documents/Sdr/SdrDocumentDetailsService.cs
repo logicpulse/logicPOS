@@ -69,7 +69,7 @@ namespace LogicPOS.UI.Components.Finance.Documents.Sdr
         }
 
         private static ArticleViewModel ResolveDepositArticle()
-            => ArticlesService.GetArticleByCode(SdrConstants.SdrArticleCode);
+            => SdrDepositArticleCache.GetOrLoad();
 
         private static Dictionary<Guid, bool> BuildPackagingMap(IEnumerable<DocumentDetail> details)
         {
