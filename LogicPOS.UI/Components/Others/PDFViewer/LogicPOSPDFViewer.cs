@@ -135,8 +135,54 @@ namespace LogicPOS.UI.PDFViewer
             else
             {
                 pageSettings.Landscape = pdfPageSize.Width > pdfPageSize.Height;
-                pageSettings.PaperSize = CreateA4PaperSize(pageSettings.PrinterSettings);
+                // A4 PDF + A5 printer default: use A5 paper; ShrinkToMargin already fits the page.
+                pageSettings.PaperSize = TryGetA5PaperSize(pageSettings.PrinterSettings, out var a5Paper)
+                    ? a5Paper
+                    : CreateA4PaperSize(pageSettings.PrinterSettings);
             }
+        }
+
+        private static bool TryGetA5PaperSize(PrinterSettings printerSettings, out PaperSize a5Paper)
+        {
+            a5Paper = null;
+            if (printerSettings == null)
+                return false;
+
+            var defaultPaper = printerSettings.DefaultPageSettings?.PaperSize;
+            if (!IsA5Paper(defaultPaper))
+                return false;
+
+            if (printerSettings.PaperSizes != null)
+            {
+                foreach (PaperSize size in printerSettings.PaperSizes)
+                {
+                    if (size.Kind == PaperKind.A5)
+                    {
+                        a5Paper = size;
+                        return true;
+                    }
+                }
+            }
+
+            a5Paper = defaultPaper;
+            return a5Paper != null;
+        }
+
+        private static bool IsA5Paper(PaperSize paper)
+        {
+            if (paper == null)
+                return false;
+
+            if (paper.Kind == PaperKind.A5)
+                return true;
+
+            const int a5Short = 583;
+            const int a5Long = 827;
+            const int tolerance = 40;
+            int shortSide = System.Math.Min(paper.Width, paper.Height);
+            int longSide = System.Math.Max(paper.Width, paper.Height);
+            return System.Math.Abs(shortSide - a5Short) <= tolerance
+                && System.Math.Abs(longSide - a5Long) <= tolerance;
         }
 
         private static PaperSize CreateA4PaperSize(PrinterSettings printerSettings)
