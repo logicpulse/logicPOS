@@ -4,9 +4,9 @@ using LogicPOS.Api.Features.Documents;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
 using LogicPOS.Globalization;
-using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.Documents.Sdr;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Modals.Common;
 using LogicPOS.UI.Components.Pages;
@@ -14,8 +14,6 @@ using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
-using LogicPOS.Utility;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -198,10 +196,11 @@ namespace LogicPOS.UI.Components.POS
             TxtZipCode.Text = customer.ZipCode;
             TxtCity.Text = customer.City;
             TxtCountry.Text = customer.Country.Designation;
-            TxtCountry.SelectedEntity = new Api.Entities.Country { 
-                Id = customer.Country.Id, 
-                Code2 = customer.Country.Code2, 
-                Designation = customer.Country.Designation 
+            TxtCountry.SelectedEntity = new Api.Entities.Country
+            {
+                Id = customer.Country.Id,
+                Code2 = customer.Country.Code2,
+                Designation = customer.Country.Designation
             };
             TxtNotes.Text = customer.Notes;
         }
@@ -361,6 +360,10 @@ namespace LogicPOS.UI.Components.POS
         {
             TxtCustomer.Text = customer.Name;
             TxtCustomer.SelectedEntity = customer;
+            if (SystemInformationService.SystemInformation.IsPortugal || !SystemInformationService.UseAgtFe)
+            {
+                TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(customer.Country.Code2);
+            }
             ShowCustomerData(customer);
             FreezeEditableFields(customer.IsFinalConsumer);
             UpdateCustomerCardPaymentAvailability();
