@@ -39,15 +39,16 @@ namespace LogicPOS.UI.Printing
                 , _ticket.Place
             );
             _printer.AlignCenter();
-            _printer.SetLineHeight(50);
             _printer.ExpandedMode(PrinterModeState.On);
             _printer.CondensedMode(PrinterModeState.On);
             _printer.DoubleWidth3();
             _printer.BoldMode(_ticketTitle);
+            _printer.NewLine();
             _printer.Append(_ticketSubTitle);
             _printer.NormalWidth();
             _printer.CondensedMode(PrinterModeState.Off);
             _printer.ExpandedMode(PrinterModeState.Off);
+            _printer.NormalLineHeight();
         }
 
         private void PrintDocumentDetails()
@@ -103,6 +104,10 @@ namespace LogicPOS.UI.Printing
 
         public override void Print()
         {
+            _printer.NormalLineHeight();
+            _printer.NormalWidth();
+            _printer.ExpandedMode(PrinterModeState.Off);
+
             PrintHeader();
             PrintTitle();
             PrintDocumentDetails();

@@ -35,6 +35,13 @@ namespace LogicPOS.UI.Printing
 
         private void SetFontA() => _printer.Append(EscSelectFontA);
 
+        private void ResetPrintModes()
+        {
+            _printer.NormalLineHeight();
+            _printer.NormalWidth();
+            _printer.ExpandedMode(PrinterModeState.Off);
+        }
+
         public void PrintDocumentDetails()
         {
             List<TicketColumn> columns = new List<TicketColumn>();
@@ -42,44 +49,33 @@ namespace LogicPOS.UI.Printing
             columns.Add(new TicketColumn("VatRate", LocalizedString.Instance["global_vat_rate"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
             columns.Add(new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             columns.Add(new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right));
-            if (_data.Document.Customer.Country.ToUpper() == "PT")
-            {
-                columns.Add(new TicketColumn("UnitPrice", LocalizedString.Instance["global_short_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            }
-            else
-            {
-                columns.Add(new TicketColumn("Price", LocalizedString.Instance["global_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            }
+            columns.Add(new TicketColumn("Price", LocalizedString.Instance["global_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             columns.Add(new TicketColumn("Discount", LocalizedString.Instance["global_discount_acronym"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             //columns.Add(new TicketColumn("TotalNet", LocalizedString.Instance["global_totalnet_acronym"], 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
             columns.Add(new TicketColumn("TotalFinal", LocalizedString.Instance["global_total_per_item"], 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
 
-            TicketTable ticketTable = new TicketTable(columns, 48);
-            string paddingLeftFormat = "  {0,-" + ticketTable.TableWidth + "}";//"  {0,-TableWidth}"
+            const int tableWidth = 48;
+            TicketTable ticketTable = new TicketTable(columns, tableWidth);
 
-            //Print Table Headers
+            // Headers and data rows must share the same table width (no left padding on values),
+            // otherwise columns drift relative to Taxa/Qnt/Un/Preço/Desc%/Total.
             ticketTable.Print(_printer);
 
             foreach (var item in _data.Document.Details)
             {
-                ticketTable = new TicketTable(columns, 48 - 2);
-                PrintDocumentDetail(ticketTable, item, paddingLeftFormat);
+                ticketTable = new TicketTable(columns, tableWidth);
+                PrintDocumentDetail(ticketTable, item);
             }
             _printer.NewLine();
         }
 
-        public void PrintDocumentDetail(TicketTable pTicketTable, Detail documentDetail, string pPaddingLeftFormat)
+        public void PrintDocumentDetail(TicketTable pTicketTable, Detail documentDetail)
         {
             string designation = (documentDetail.Designation.Length <= 48) ? documentDetail.Designation : documentDetail.Designation.Substring(0, 48);
 
             SetFontA();
             _printer.BoldMode(designation);
 
-            string exemptionReason = string.Empty;
-            if (!string.IsNullOrEmpty(documentDetail.VatExemptionReason))
-            {
-                exemptionReason = string.Format(pPaddingLeftFormat, documentDetail.VatExemptionReason);
-            }
             DataRow dataRow = pTicketTable.NewRow();
             dataRow[0] = documentDetail.Tax;
             dataRow[1] = documentDetail.Quantity;
@@ -89,8 +85,12 @@ namespace LogicPOS.UI.Printing
             dataRow[5] = documentDetail.TotalFinal;
             pTicketTable.Rows.Add(dataRow);
 
-            pTicketTable.Print(_printer, true, pPaddingLeftFormat);
-            _printer.Append(exemptionReason);
+            pTicketTable.Print(_printer, true, string.Empty);
+
+            if (!string.IsNullOrEmpty(documentDetail.VatExemptionReason))
+            {
+                _printer.Append(documentDetail.VatExemptionReason);
+            }
         }
 
         private void PrintTotalTax()
@@ -193,21 +193,18 @@ namespace LogicPOS.UI.Printing
             _printer.Separator(' ');
             SetFontA();
             _printer.AlignLeft();
-            _printer.SetLineHeight(30);
 
             PrintTotalLine(LocalizedString.Instance["global_totalnet"], _data.Document.TotalNet, lineWidth);
             PrintTotalLine(LocalizedString.Instance["global_documentfinance_totaltax"], _data.Document.TotalTax, lineWidth);
             PrintTotalLine(LocalizedString.Instance["global_documentfinance_totalfinal"], _data.Document.TotalFinal, lineWidth);
 
             _printer.Separator(' ');
-            _printer.SetLineHeight(10);
-            _printer.NewLine();
+            ResetPrintModes();
         }
 
         private void PrintTotalLine(string label, decimal value, int lineWidth)
         {
             _printer.BoldMode(FormatTotalLine(label, value, lineWidth));
-            _printer.NewLine();
         }
 
         private static string FormatTotalLine(string label, decimal value, int lineWidth)
@@ -238,6 +235,8 @@ namespace LogicPOS.UI.Printing
 
         public override void Print()
         {
+            ResetPrintModes();
+
             if (_data.OpenDrawer)
             {
                 AuthenticationService.HardwareOpenDrawer();
@@ -259,14 +258,15 @@ namespace LogicPOS.UI.Printing
             if (string.IsNullOrEmpty(_data.CompanyInformations.Email) == false) _printer.Append($"{LocalizedString.Instance["global_user_email"]}: {_data.CompanyInformations.Email} ");
             _printer.Append($"{LocalizedString.Instance["prefparam_company_fiscalnumber"]}: {_data.CompanyInformations.FiscalNumber} ");
             _printer.AlignCenter();
-            _printer.SetLineHeight(80);
             _printer.Separator(' ');
             _printer.AlignCenter();
             _printer.DoubleWidth2();
             _printer.ExpandedMode(PrinterModeState.On);
             _printer.BoldMode(ToThermalText(LocalizedString.Instance[documentType]));
-            _printer.BoldMode(_data.Document.Number);
+            _printer.NormalWidth();
             _printer.ExpandedMode(PrinterModeState.Off);
+            _printer.NewLine();
+            _printer.BoldMode(_data.Document.Number);
             PrintCopyLabel();
             _printer.Append(_data.Document.Date.ToShortDateString());
             if (!string.IsNullOrEmpty(_data.Table))
@@ -276,8 +276,7 @@ namespace LogicPOS.UI.Printing
                 _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
                 _printer.ExpandedMode(PrinterModeState.Off);
             }
-            _printer.NormalWidth();
-            _printer.SetLineHeight(20);
+            ResetPrintModes();
             _printer.Separator(' ');
             _printer.AlignLeft();
 

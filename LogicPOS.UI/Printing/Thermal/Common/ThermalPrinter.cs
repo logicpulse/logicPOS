@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,7 +32,7 @@ namespace LogicPOS.UI.Printing
         {
             var base64Logo = GetCompanyInformations().LogoBmp;
 
-            if (string.IsNullOrEmpty(base64Logo) || string.IsNullOrWhiteSpace(base64Logo))
+            if (string.IsNullOrEmpty(base64Logo))
             {
                 return null;
             }
@@ -42,7 +43,11 @@ namespace LogicPOS.UI.Printing
             }
             else
             {
-                return new Bitmap(base64Logo);
+                if(File.Exists(base64Logo))
+                {
+                    return new Bitmap(base64Logo);
+                }
+                return null;
             }
         }
 
