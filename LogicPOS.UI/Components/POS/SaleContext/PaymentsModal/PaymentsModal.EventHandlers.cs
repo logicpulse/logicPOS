@@ -11,6 +11,7 @@ using LogicPOS.UI.Components.Finance.Customers;
 using LogicPOS.UI.Components.Finance.DocumentTypes;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.PaymentMethods;
+using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Pages;
 using LogicPOS.UI.Components.POS.Enums;
@@ -357,6 +358,19 @@ namespace LogicPOS.UI.Components.POS
             {
                 TxtCountry.Text = page.SelectedEntity.Designation;
                 TxtCountry.SelectedEntity = page.SelectedEntity;
+                
+                // ✅ Atualiza o regex do NIF para o país selecionado
+                UpdateFiscalNumberRegexForCountry(page.SelectedEntity.Code2);
+            }
+        }
+
+        // ✅ Atualiza regex do NIF quando o país muda
+        private void UpdateFiscalNumberRegexForCountry(string countryCode2)
+        {
+            if (SystemInformationService.SystemInformation.IsPortugal || !SystemInformationService.UseAgtFe)
+            {
+                TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+                TxtFiscalNumber.UpdateValidationColors();
             }
         }
 
