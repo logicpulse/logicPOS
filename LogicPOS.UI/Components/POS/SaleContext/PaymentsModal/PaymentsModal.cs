@@ -269,8 +269,8 @@ namespace LogicPOS.UI.Components.POS
                 Locality = TxtLocality.Text,
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
-                Country = country.Code2,
-                CountryId = country.Id
+                Country = country?.Code2,
+                CountryId = country?.Id ?? System.Guid.Empty
             };
         }
 
@@ -374,8 +374,8 @@ namespace LogicPOS.UI.Components.POS
             TxtFiscalNumber.BtnKeyboard.Sensitive = TxtFiscalNumber.Entry.Sensitive = !freeze;
             TxtCardNumber.BtnKeyboard.Sensitive = TxtCardNumber.Entry.Sensitive = !freeze;
             TxtCustomer.BtnKeyboard.Sensitive = TxtCustomer.Entry.Sensitive = !freeze;
-            TxtAddress.BtnKeyboard.Sensitive = TxtAddress.Entry.Sensitive = !freeze;
             TxtAddress.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
+            TxtLocality.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
             TxtCountry.BtnKeyboard.Sensitive = TxtCountry.Entry.Sensitive = !freeze;
             TxtCity.BtnKeyboard.Sensitive = TxtCity.Entry.Sensitive = !freeze;
             TxtNotes.BtnKeyboard.Sensitive = TxtNotes.Entry.Sensitive = !freeze;
