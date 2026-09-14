@@ -14,6 +14,7 @@ using LogicPOS.UI.Components.POS.Enums;
 using LogicPOS.UI.Extensions;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -270,7 +271,7 @@ namespace LogicPOS.UI.Components.POS
                 ZipCode = TxtZipCode.Text,
                 City = TxtCity.Text,
                 Country = country?.Code2,
-                CountryId = country?.Id ?? System.Guid.Empty
+                CountryId = country?.Id ?? Guid.Empty
             };
         }
 
