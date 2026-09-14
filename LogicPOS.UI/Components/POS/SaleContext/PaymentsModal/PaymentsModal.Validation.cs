@@ -39,39 +39,43 @@ namespace LogicPOS.UI.Components.POS
         {
             var country = TxtCountry.SelectedEntity as Api.Entities.Country;
             bool isForeignCustomer = country != null && country.Code2 != "PT";
+            string customerName = TxtCustomer.Text?.Trim() ?? string.Empty;
+            string fiscalNumber = TxtFiscalNumber.Text?.Trim() ?? string.Empty;
 
-            // Se for estrangeiro e o NIF estiver em branco, removemos temporariamente 
-            // o TxtFiscalNumber das validações obrigatórias da UI para evitar erros visuais.
-            if (isForeignCustomer && string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            // ✅ SOLUÇÃO COMPLETA: Ajusta o NIF para estrangeiros SEM exigir preenchimento
+            // Para estrangeiros SEM NIF: torna opcional
+            // Para portugueses OU estrangeiros COM NIF: mantém obrigatório
+            bool isForeignWithoutNif = isForeignCustomer && string.IsNullOrWhiteSpace(fiscalNumber);
+            
+            if (isForeignWithoutNif)
             {
+                // Estrangeiro SEM NIF: Remove das validações
                 ValidatableFields.Remove(TxtFiscalNumber);
+                TxtFiscalNumber.IsRequired = false;
+                TxtFiscalNumber.IsValidatable = false;
+                TxtFiscalNumber.UpdateValidationColors();
             }
             else
             {
+                // Português OU estrangeiro COM NIF: Mantém obrigatório
                 if (!ValidatableFields.Contains(TxtFiscalNumber))
                 {
                     ValidatableFields.Add(TxtFiscalNumber);
                 }
+                TxtFiscalNumber.IsRequired = true;
+                TxtFiscalNumber.IsValidatable = true;
+                TxtFiscalNumber.UpdateValidationColors();
             }
 
+            // Valida com a configuração correta
             if (AllFieldsAreValid() == false)
             {
                 ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
-                if (!ValidatableFields.Contains(TxtFiscalNumber))
-                {
-                    ValidatableFields.Add(TxtFiscalNumber);
-                }
                 return false;
-            }
-
-            if (!ValidatableFields.Contains(TxtFiscalNumber))
-            {
-                ValidatableFields.Add(TxtFiscalNumber);
             }
 
             if (_selectedPaymentMethod?.Token == "CUSTOMER_CARD")
             {
-                // ... (restante código mantém-se igual)
                 var customerCardCheck = GetSelectedCustomer();
                 if (CustomersService.CanPayWithCustomerCard(customerCardCheck) == false)
                 {
@@ -95,10 +99,11 @@ namespace LogicPOS.UI.Components.POS
                 string currentDocType = GetDocumentType();
                 var customer = GetSelectedCustomer();
                 
-                // Determinar se é considerado Consumidor Final / Inválido para Fatura nominativa (FT/FR)
+                // ✅ Para estrangeiros, apenas verifica NOME (sem NIF)
+                // Para portugueses, verifica NIF válido
                 bool isInvalidForInvoice = isForeignCustomer 
-                    ? string.IsNullOrWhiteSpace(TxtCustomer.Text) 
-                    : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber || string.IsNullOrWhiteSpace(TxtFiscalNumber.Text));
+                    ? string.IsNullOrWhiteSpace(customerName)
+                    : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber || string.IsNullOrWhiteSpace(fiscalNumber));
 
                 // Bloqueio estrito para Fatura (FT) ou Fatura-Recibo (FR) a Consumidor Final / dados inválidos
                 if ((currentDocType == "FT" || currentDocType == "FR") && isInvalidForInvoice)
@@ -127,7 +132,11 @@ namespace LogicPOS.UI.Components.POS
                     _documentType = "FR";
                     
                     // Revalidar se após a mudança para FR os dados continuam inválidos
-                    if (isForeignCustomer ? string.IsNullOrWhiteSpace(TxtCustomer.Text) : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber))
+                    bool isInvalidForFr = isForeignCustomer
+                        ? string.IsNullOrWhiteSpace(customerName)
+                        : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber);
+
+                    if (isInvalidForFr)
                     {
                         CustomAlerts.Error(this)
                             .WithMessageResource("dialog_message_cant_create_cc_document_with_default_entity")
