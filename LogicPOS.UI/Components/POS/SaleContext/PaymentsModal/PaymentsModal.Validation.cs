@@ -37,16 +37,43 @@ namespace LogicPOS.UI.Components.POS
 
         protected bool Validate()
         {
+            var country = TxtCountry.SelectedEntity as Api.Entities.Country;
+            bool isForeignCustomer = country != null && country.Code2 != "PT";
+
+            // Se for estrangeiro e o NIF estiver em branco, removemos temporariamente 
+            // o TxtFiscalNumber das validações obrigatórias da UI para evitar erros visuais.
+            if (isForeignCustomer && string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                ValidatableFields.Remove(TxtFiscalNumber);
+            }
+            else
+            {
+                if (!ValidatableFields.Contains(TxtFiscalNumber))
+                {
+                    ValidatableFields.Add(TxtFiscalNumber);
+                }
+            }
+
             if (AllFieldsAreValid() == false)
             {
                 ValidationUtilities.ShowValidationErrors(ValidatableFields, this);
+                if (!ValidatableFields.Contains(TxtFiscalNumber))
+                {
+                    ValidatableFields.Add(TxtFiscalNumber);
+                }
                 return false;
+            }
+
+            if (!ValidatableFields.Contains(TxtFiscalNumber))
+            {
+                ValidatableFields.Add(TxtFiscalNumber);
             }
 
             if (_selectedPaymentMethod?.Token == "CUSTOMER_CARD")
             {
-                var customer = GetSelectedCustomer();
-                if (CustomersService.CanPayWithCustomerCard(customer) == false)
+                // ... (restante código mantém-se igual)
+                var customerCardCheck = GetSelectedCustomer();
+                if (CustomersService.CanPayWithCustomerCard(customerCardCheck) == false)
                 {
                     CustomAlerts.Warning(this)
                         .WithMessage("Cliente inválido!")
@@ -54,10 +81,10 @@ namespace LogicPOS.UI.Components.POS
                     return false;
                 }
 
-                if (CustomersService.HasSufficientCardBalance(customer, TotalFinal) == false)
+                if (CustomersService.HasSufficientCardBalance(customerCardCheck, TotalFinal) == false)
                 {
                     CustomAlerts.Warning(this)
-                        .WithMessage(string.Format(LocalizedString.Instance["dialog_message_value_exceed_customer_card_credit"],customer.CardCredit.ToString("N2"),TotalFinal.ToString("N2")))
+                        .WithMessage(string.Format(LocalizedString.Instance["dialog_message_value_exceed_customer_card_credit"],customerCardCheck.CardCredit.ToString("N2"),TotalFinal.ToString("N2")))
                         .ShowAlert();
                     return false;
                 }
@@ -65,10 +92,26 @@ namespace LogicPOS.UI.Components.POS
 
             if (SystemInformationService.SystemInformation.IsPortugal)
             {
+                string currentDocType = GetDocumentType();
+                var customer = GetSelectedCustomer();
+                
+                // Determinar se é considerado Consumidor Final / Inválido para Fatura nominativa (FT/FR)
+                bool isInvalidForInvoice = isForeignCustomer 
+                    ? string.IsNullOrWhiteSpace(TxtCustomer.Text) 
+                    : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber || string.IsNullOrWhiteSpace(TxtFiscalNumber.Text));
 
-                if (DocTypeAnalyzer.IsSimplifiedInvoice() && (TotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal || ServicesTotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal))
+                // Bloqueio estrito para Fatura (FT) ou Fatura-Recibo (FR) a Consumidor Final / dados inválidos
+                if ((currentDocType == "FT" || currentDocType == "FR") && isInvalidForInvoice)
                 {
-                   
+                    CustomAlerts.Error(this)
+                        .WithMessageResource("dialog_message_cant_create_cc_document_with_default_entity")
+                        .ShowAlert();
+                    return false;
+                }
+
+                // Validação de limites para Fatura Simplificada (FS)
+                if (DocTypeAnalyzer.IsSimplifiedInvoice() && (TotalFinal > DocumentRules.Portugal.SimplifiedInvoiceMaxTotal || ServicesTotalFinal > DocumentRules.Portugal.SimplifiedInvoiceServicesMaxTotal))
+                {
                     string message = GetInvalidSimplifiedInvoiceMessage();
                     var response = CustomAlerts.Warning(this)
                         .WithSize(new global::System.Drawing.Size(550,440))
@@ -82,11 +125,21 @@ namespace LogicPOS.UI.Components.POS
                     }
 
                     _documentType = "FR";
+                    
+                    // Revalidar se após a mudança para FR os dados continuam inválidos
+                    if (isForeignCustomer ? string.IsNullOrWhiteSpace(TxtCustomer.Text) : (customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber))
+                    {
+                        CustomAlerts.Error(this)
+                            .WithMessageResource("dialog_message_cant_create_cc_document_with_default_entity")
+                            .ShowAlert();
+                        return false;
+                    }
                 }
 
-                if (GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber && TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal)
+                // Validação do limite de Consumidor Final puro em FS
+                bool isFinalConsumerCheck = customer == null || customer.IsFinalConsumer || GetDocumentCustomer().FiscalNumber == CustomersService.Default.FiscalNumber;
+                if (isFinalConsumerCheck && TotalFinal > DocumentRules.Portugal.FinalConsumerMaxTotal)
                 {
-
                     string message = GetInvalidTotalForFinalConsumerMessage();
                     var response = CustomAlerts.Warning(this)
                         .WithSize(new global::System.Drawing.Size(550, 480))
@@ -95,7 +148,6 @@ namespace LogicPOS.UI.Components.POS
 
                     return false;
                 }
-
             }
 
             return true;
