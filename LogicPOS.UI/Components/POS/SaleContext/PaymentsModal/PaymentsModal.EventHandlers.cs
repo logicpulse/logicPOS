@@ -89,6 +89,21 @@ namespace LogicPOS.UI.Components.POS
             {
                 PrintIssuedDocument(printingData.Value);
             }
+            else
+            {
+                // PrintOpenDrawer must still run when the user declines printing.
+                OpenDrawerAfterPaymentIfConfigured();
+            }
+        }
+
+        private void OpenDrawerAfterPaymentIfConfigured()
+        {
+            if (GetIssuedDocumentType()?.PrintOpenDrawer != true)
+            {
+                return;
+            }
+
+            AuthenticationService.HardwareOpenDrawer();
         }
 
         private DocumentType GetIssuedDocumentType()
@@ -165,10 +180,8 @@ namespace LogicPOS.UI.Components.POS
                         return;
                     }
 
-                    for (var copyNumber = 1; copyNumber <= printCopies; copyNumber++)
-                    {
-                        PdfPrinter.Print(tempFile.Value.Path, printerName);
-                    }
+                    // PDF already contains all vias (Original..N); print the file once.
+                    PdfPrinter.Print(tempFile.Value.Path, printerName);
 
                     if (openDrawer)
                     {

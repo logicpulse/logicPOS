@@ -1,5 +1,6 @@
 using Gtk;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Articles;
 using LogicPOS.UI.Components.Finance.Documents.Sdr;
 using LogicPOS.UI.Components.Finance.Documents.Services;
 using LogicPOS.UI.Components.Finance.VatExemptionReasons;
@@ -48,6 +49,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                 Page.Items.Add(new DocumentDetail
                 {
                     ArticleId = detail.ArticleId,
+                    Article = ArticlesService.GetArticleViewModel(detail.ArticleId),
                     Designation = detail.Designation,
                     Code = detail.Code,
                     Quantity = detail.Quantity,

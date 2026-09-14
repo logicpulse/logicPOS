@@ -3,14 +3,36 @@ using LogicPOS.Api.Features.Documents.Documents.GetDocumentPreviewPdf;
 using LogicPOS.Api.Features.Documents.Receipts.GetReceiptPdf;
 using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.UI.PDFViewer;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Documents.Utilities
 {
     public static class DocumentPdfUtils
     {
+        public static List<int> GetPrintCopyNumbers(DocumentType documentType)
+        {
+            return GetPrintCopyNumbers(documentType == null ? (int?)null : documentType.PrintCopies);
+        }
+
+        public static List<int> GetPrintCopyNumbers(int? printCopies)
+        {
+            var count = printCopies ?? 1;
+            if (count < 1)
+            {
+                count = 1;
+            }
+            else if (count > 4)
+            {
+                count = 4;
+            }
+
+            return Enumerable.Range(1, count).ToList();
+        }
+
         public static TempFile? GetDocumentPdfFileLocation(Guid documentId, IEnumerable<int> copies, bool isSecondCopy)
         {
             var mediator = DependencyInjection.Mediator;
@@ -25,9 +47,14 @@ namespace LogicPOS.UI.Components.Documents.Utilities
             return result.Value;
         }
 
-        public static void ViewDocumentPdf(Gtk.Window source, Guid documentId)
+        public static void ViewDocumentPdf(
+            Gtk.Window source,
+            Guid documentId,
+            IEnumerable<int> copies = null,
+            bool isSecondCopy = false)
         {
-            var tempFile = GetDocumentPdfFileLocation(documentId, new int[] { 1 }, false);
+            var copyList = copies ?? new[] { 1 };
+            var tempFile = GetDocumentPdfFileLocation(documentId, copyList, isSecondCopy);
 
             if (tempFile == null)
             {

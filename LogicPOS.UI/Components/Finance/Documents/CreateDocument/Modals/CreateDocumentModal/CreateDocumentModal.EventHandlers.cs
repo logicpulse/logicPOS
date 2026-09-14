@@ -148,7 +148,10 @@ namespace LogicPOS.UI.Components.Modals
                     }
                 }
 
-                DocumentPdfUtils.ViewDocumentPdf(this, issueDocumentResponse.Value.Id);
+                DocumentPdfUtils.ViewDocumentPdf(
+                    this,
+                    issueDocumentResponse.Value.Id,
+                    DocumentPdfUtils.GetPrintCopyNumbers(DocumentTab.GetDocumentType()));
             }
             catch (Exception ex)
             {

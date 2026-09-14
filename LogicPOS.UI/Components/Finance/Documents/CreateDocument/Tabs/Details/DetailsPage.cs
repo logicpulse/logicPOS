@@ -14,7 +14,9 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public List<DocumentDetail> Items => _entities;
         public event Action<decimal> OnTotalChanged;
         public decimal TotalFinal => _entities.Sum(x => x.TotalFinal);
-        public decimal ServicesTotalFinal => _entities.Where(detail => detail.Article.ClassAcronym == "S").Sum(detail => detail.TotalFinal);
+        public decimal ServicesTotalFinal => _entities
+            .Where(detail => detail.Article?.ClassAcronym == "S")
+            .Sum(detail => detail.TotalFinal);
         public Func<string> GetDocumentType { get; set; }
         
         public DetailsPage(Window parent) : base(parent)
