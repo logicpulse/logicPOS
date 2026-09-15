@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
+builder.Services.AddScoped<SystemVersionService>();
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<BootstrapUserSeeder>();

@@ -10,15 +10,18 @@ public sealed class HealthService
     private readonly ApplicationDbContext _dbContext;
     private readonly IWebHostEnvironment _environment;
     private readonly ILogger<HealthService> _logger;
+    private readonly SystemVersionService _systemVersionService;
 
     public HealthService(
         ApplicationDbContext dbContext,
         IWebHostEnvironment environment,
-        ILogger<HealthService> logger)
+        ILogger<HealthService> logger,
+        SystemVersionService systemVersionService)
     {
         _dbContext = dbContext;
         _environment = environment;
         _logger = logger;
+        _systemVersionService = systemVersionService;
     }
 
     public async Task<ErrorOr<HealthResponse>> GetHealthAsync(CancellationToken cancellationToken = default)
@@ -40,7 +43,7 @@ public sealed class HealthService
             DatabaseAvailable = databaseAvailable,
             Environment = _environment.EnvironmentName,
             TimestampUtc = DateTime.UtcNow,
-            Version = typeof(Program).Assembly.GetName().Version?.ToString() ?? "1.0.0"
+            Version = _systemVersionService.GetApiVersion()
         };
     }
 }
