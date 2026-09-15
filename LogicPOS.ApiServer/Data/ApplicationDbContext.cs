@@ -19,7 +19,9 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.Entity<ApiUser>(entity =>
         {
             entity.HasKey(user => user.Id);
-            entity.Property(user => user.Username).HasMaxLength(128);
+            entity.Property(user => user.Username).HasMaxLength(128).IsRequired();
+            entity.Property(user => user.PinHash).HasMaxLength(256).IsRequired();
+            entity.Property(user => user.PinSalt).HasMaxLength(256).IsRequired();
             entity.Property(user => user.CreatedUtc).IsRequired();
         });
     }

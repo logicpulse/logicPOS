@@ -14,7 +14,20 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Services(services)
     .Enrich.FromLogContext());
 
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>() ?? new JwtSettings();
+if (string.IsNullOrWhiteSpace(jwtSettings.SigningKey) || jwtSettings.SigningKey.Length < 32)
+{
+    throw new InvalidOperationException("Configure Jwt__SigningKey with at least 32 characters before starting LogicPOS.ApiServer.");
+}
+
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
+if (allowedOrigins.Length == 0)
+{
+    throw new InvalidOperationException("Configure at least one Cors:AllowedOrigins entry before starting LogicPOS.ApiServer.");
+}
+
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
+builder.Services.Configure<BootstrapUserSettings>(builder.Configuration.GetSection(BootstrapUserSettings.SectionName));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -23,18 +36,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("PosClient", policy =>
     {
-        var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? Array.Empty<string>();
-
-        if (allowedOrigins.Length == 0)
-        {
-            policy.AllowAnyOrigin();
-        }
-        else
-        {
-            policy.WithOrigins(allowedOrigins);
-        }
-
-        policy.AllowAnyHeader()
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
               .AllowAnyMethod();
     });
 });
@@ -42,7 +45,6 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>() ?? new JwtSettings();
 var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SigningKey));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -65,14 +67,20 @@ builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<BootstrapUserSeeder>();
+builder.Services.AddScoped<DatabaseInitializer>();
 builder.Services.AddSingleton<JwtTokenGenerator>();
+builder.Services.AddSingleton<PinHasher>();
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated();
+    var databaseInitializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+    await databaseInitializer.InitializeAsync();
+
+    var bootstrapUserSeeder = scope.ServiceProvider.GetRequiredService<BootstrapUserSeeder>();
+    await bootstrapUserSeeder.SeedAsync();
 }
 
 app.UseSerilogRequestLogging();

@@ -1,6 +1,7 @@
 using ErrorOr;
 using LogicPOS.Api.Errors;
 using LogicPOS.Api.Features.Common.Requests;
+using System.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -27,11 +28,30 @@ namespace LogicPOS.Api.Features.Authentication.Login
                     return await HandleNotSuccessfulHttpResponseAsync(response);
                 }
 
-                return (await response.Content.ReadAsStringAsync()).Trim('"');
+                var responseContent = await response.Content.ReadAsStringAsync();
+                using (var document = JsonDocument.Parse(responseContent))
+                {
+                    if (document.RootElement.ValueKind == JsonValueKind.String)
+                    {
+                        return document.RootElement.GetString() ?? string.Empty;
+                    }
+
+                    if (document.RootElement.ValueKind == JsonValueKind.Object &&
+                        document.RootElement.TryGetProperty("token", out var tokenElement))
+                    {
+                        return tokenElement.GetString() ?? string.Empty;
+                    }
+
+                    return Error.Unexpected("auth.invalid_response", "Resposta de autenticação inválida.");
+                }
             }
             catch (HttpRequestException)
             {
                 return ApiErrors.APICommunication;
+            }
+            catch (JsonException)
+            {
+                return Error.Unexpected("auth.invalid_response", "Resposta de autenticação inválida.");
             }
         }
     }

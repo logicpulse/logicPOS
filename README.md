@@ -59,7 +59,7 @@ Optional: **Visual Studio Code** or **Cursor** with the **C#** extension for edi
 
 4. **Build** (see next section). The **`LogicPOS.Api`** project copies **`apisettings.json`** into the output folder next to **`logicpos.exe`** when you build the UI.
 
-5. **Run the backend API** (`dotnet run --project LogicPOS.ApiServer/LogicPOS.ApiServer.csproj` for the new scaffold), then start **`logicpos.exe`** from the [build output folder](#where-build-output-goes).
+5. **Run the backend API** (`Jwt__SigningKey=<32+ chars> dotnet run --project LogicPOS.ApiServer/LogicPOS.ApiServer.csproj` for the new scaffold), then start **`logicpos.exe`** from the [build output folder](#where-build-output-goes).
 
 ---
 
@@ -111,7 +111,7 @@ After a successful build you should see **`logicpos.exe`**, **`GtkRuntime\`**, *
 ## Run locally
 
 1. Start your **backend API** (matching **`apisettings.json`**).
-   - In-repo option: `dotnet run --project LogicPOS.ApiServer/LogicPOS.ApiServer.csproj`
+   - In-repo option: `Jwt__SigningKey=<32+ chars> dotnet run --project LogicPOS.ApiServer/LogicPOS.ApiServer.csproj`
 2. Run **`logicpos.exe`** from the **Debug** (or **Release**) output folder above.
 3. **Logs** roll under **`Logs\log.txt`** next to the executable (see `Program.cs`).
 
@@ -186,9 +186,13 @@ ExecStart=/usr/bin/dotnet /opt/logicpos/api/LogicPOS.ApiServer.dll
 Restart=always
 RestartSec=5
 Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=Jwt__SigningKey=<32+ chars>
 
 [Install]
 WantedBy=multi-user.target
 ```
 
-The server listens on port **5001** by default through Kestrel configuration in `LogicPOS.ApiServer/appsettings.json`.
+The server listens on port **5001** by default through Kestrel configuration in `LogicPOS.ApiServer/appsettings.json`. Supply the JWT signing key outside source control, for example with `Jwt__SigningKey=<32+ chars>` locally or an environment-specific file / systemd environment entry in Linux deployments.
+
+
+For authenticated manual testing, you can also provide bootstrap credentials outside source control (for example `BootstrapUser__UserId`, `BootstrapUser__TerminalId`, `BootstrapUser__Username`, and `BootstrapUser__Pin`) so the server seeds a single SQLite user during startup.

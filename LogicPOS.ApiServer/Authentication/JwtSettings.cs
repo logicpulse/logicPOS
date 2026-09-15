@@ -6,6 +6,6 @@ public sealed class JwtSettings
 
     public string Issuer { get; set; } = "LogicPOS.ApiServer";
     public string Audience { get; set; } = "LogicPOS.Client";
-    public string SigningKey { get; set; } = "development-signing-key-must-be-overridden-before-production";
+    public string SigningKey { get; set; } = string.Empty;
     public int ExpirationMinutes { get; set; } = 480;
 }

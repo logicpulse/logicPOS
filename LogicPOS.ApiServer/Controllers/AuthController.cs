@@ -25,6 +25,9 @@ public sealed class AuthController : ApiControllerBase
             return CreateProblem(result.Errors);
         }
 
-        return Ok(result.Value);
+        return Ok(new LoginResponse
+        {
+            Token = result.Value
+        });
     }
 }
