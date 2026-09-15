@@ -11,6 +11,7 @@ public sealed class ApplicationDbContext : DbContext
     }
 
     public DbSet<ApiUser> ApiUsers => Set<ApiUser>();
+    public DbSet<ApiCompanyInfo> ApiCompanyInfos => Set<ApiCompanyInfo>();
     public DbSet<ApiLicense> ApiLicenses => Set<ApiLicense>();
     public DbSet<ApiTerminal> ApiTerminals => Set<ApiTerminal>();
 
@@ -26,6 +27,35 @@ public sealed class ApplicationDbContext : DbContext
             entity.Property(user => user.PinSalt).HasMaxLength(256).IsRequired();
             entity.Property(user => user.CreatedUtc).IsRequired();
         });
+
+        modelBuilder.Entity<ApiCompanyInfo>(entity =>
+        {
+            entity.HasKey(company => company.Id);
+            entity.Property(company => company.Name).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.BusinessName).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.CommercialName).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.LogoPng).IsRequired();
+            entity.Property(company => company.LogoBmp).IsRequired();
+            entity.Property(company => company.Address).HasMaxLength(512).IsRequired();
+            entity.Property(company => company.City).HasMaxLength(128).IsRequired();
+            entity.Property(company => company.PostalCode).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.CountryCode2).HasMaxLength(8).IsRequired();
+            entity.Property(company => company.Phone).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.MobilePhone).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.Email).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.Website).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.FiscalNumber).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.StockCapital).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.DocumentFinalLine1).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.DocumentFinalLine2).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.TaxEntity).HasMaxLength(128).IsRequired();
+            entity.Property(company => company.Fax).HasMaxLength(64).IsRequired();
+            entity.Property(company => company.TicketFinalLine1).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.TicketFinalLine2).HasMaxLength(256).IsRequired();
+            entity.Property(company => company.CurrencyCode).HasMaxLength(16).IsRequired();
+            entity.Property(company => company.AgtLogo).IsRequired();
+        });
+
 
         modelBuilder.Entity<ApiLicense>(entity =>
         {

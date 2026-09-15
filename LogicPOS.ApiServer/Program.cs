@@ -68,6 +68,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<SystemVersionService>();
+builder.Services.AddScoped<UsersService>();
+builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<LicensingService>();
 builder.Services.AddScoped<TerminalService>();
 builder.Services.AddScoped<ApiSystemInformationService>();
