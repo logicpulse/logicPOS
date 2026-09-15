@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Application.Services;
 
 namespace LogicPOS.UI.Printing
 {
@@ -70,16 +71,12 @@ namespace LogicPOS.UI.Printing
 
         public void PrintFooter()
         {
-            _printer.Separator(' ');
+            BlankSeparator();
             _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
             _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
-            _printer.Separator(' ');
-            _printer.NewLine();
             _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
-            _printer.Separator(' ');
             _printer.NewLine();
             _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
-            _printer.NewLine();
             //Printed On | Company|App|Version
             _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                 , Environment.NewLine
@@ -87,7 +84,7 @@ namespace LogicPOS.UI.Printing
                 , DateTime.Now.ToLocalTime()
                 , "LogicPulse"//_customVars["APP_COMPANY"]
                 , "LogicPOS"//_customVars["APP_NAME"]
-                , "vs1.010.1"//_customVars["APP_VERSION"]
+                , $"vs {SystemVersionService.ApiVersion}"//_customVars["APP_VERSION"]
                 ));
         }
 
@@ -96,9 +93,11 @@ namespace LogicPOS.UI.Printing
             PrintHeader();
             _printer.AlignCenter();
             _printer.DoubleWidth2();
-            _printer.BoldMode(_Title);
-            _printer.BoldMode(_SubTitle);
-            _printer.NewLine();
+            AppendBoldLine(_printer, _Title);
+            if (!string.IsNullOrEmpty(_SubTitle))
+            {
+                AppendBoldLine(_printer, _SubTitle);
+            }
             _printer.NormalWidth();
 
             PrintWorkSessionMovement(_reportData);
@@ -115,43 +114,46 @@ namespace LogicPOS.UI.Printing
 
 
             //Print Header Summary
+            var currency = PreferenceParametersService.SystemCurrency;
+            var openCash = (dayReportData.OpeningCashTotal).ToString("F2") + $" {currency}";
+            var closeCash = (dayReportData.GetTotalPerFamily().Sum(t => t.Total)).ToString("F2") + $" {currency}";
+            var moneyIn = (dayReportData.CashDrawerIn).ToString("F2") + $" {currency}";
+            var moneyOut = (dayReportData.CashDrawerOut).ToString("F2") + $" {currency}";
+            var openDate = dayReportData.Day.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
+            var closeDate = dayReportData.Day.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
 
-            List<TicketColumn> columns = new List<TicketColumn>
-                    {
-                        new TicketColumn("Label", "", Convert.ToInt16(48 / 2) - 2, TicketColumnsAlignment.Right),
-                        new TicketColumn("Value", "", Convert.ToInt16(48/ 2) - 2, TicketColumnsAlignment.Left)
-                    };
+            List<TicketColumn> columns = CreateHeaderSummaryColumns(new[] { openDate, closeDate, openCash, closeCash, moneyIn, moneyOut });
             DataRow dataRow = null;
-            TicketTable ticketTable = new TicketTable(columns);
+            TicketTable ticketTable = new TicketTable(columns, Layout.Columns);
             //Open DateTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_open_datetime"]);
-            dataRow[1] = dayReportData.Day.StartDate.ToString(AppSettings.Culture.DateTimeFormat);
+            dataRow[1] = openDate;
             ticketTable.Rows.Add(dataRow);
             //Close DataTime
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_close_datetime"]);
-            dataRow[1] = dayReportData.Day.EndDate?.ToString(AppSettings.Culture.DateTimeFormat);
+            dataRow[1] = closeDate;
             ticketTable.Rows.Add(dataRow);
             //Open Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_open_total_cashdrawer"]);
-            dataRow[1] = (dayReportData.OpeningCashTotal).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
+            dataRow[1] = openCash;
             ticketTable.Rows.Add(dataRow);
             //Close Total CashDrawer
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_close_total_cashdrawer"]);
-            dataRow[1] = (dayReportData.GetTotalPerFamily().Sum(t=>t.Total)).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
+            dataRow[1] = closeCash;
             ticketTable.Rows.Add(dataRow);
             //Total Money In
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_total_money_in"]);
-            dataRow[1] = (dayReportData.CashDrawerIn).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
+            dataRow[1] = moneyIn;
             ticketTable.Rows.Add(dataRow);
             //Total Money Out
             dataRow = ticketTable.NewRow();
             dataRow[0] = string.Format("{0}:", LocalizedString.Instance["global_worksession_total_money_out"]);
-            dataRow[1] = (dayReportData.CashDrawerOut).ToString("F2") + $" {PreferenceParametersService.SystemCurrency}";
+            dataRow[1] = moneyOut;
             ticketTable.Rows.Add(dataRow);
 
 
@@ -172,24 +174,21 @@ namespace LogicPOS.UI.Printing
             if (groupPosition == 0)
             {
                 _printer.DoubleWidth2();
-                _printer.BoldMode(LocalizedString.Instance["global_worksession_resume_finance_documents"]);
+                AppendBoldLine(_printer, LocalizedString.Instance["global_worksession_resume_finance_documents"]);
                 _printer.NormalWidth();
-                _printer.Separator(' ');
+                BlankSeparator();
             }
 
             summaryTotalQuantity = 0.0m;
             summaryTotal = 0.0m;
 
-            columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_family"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                //columns.Add(new TicketColumn("UnitMeasure", string.Empty, 3));
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var familyRows = dayReportData.GetTotalPerFamily();
+            var familyQuantities = familyRows.Select(x => x.Quantity).Concat(new[] { familyRows.Sum(x => x.Quantity) });
+            var familyTotals = familyRows.Select(x => x.Total).Concat(new[] { familyRows.Sum(x => x.Total) });
+            columns = CreateGroupTotalColumns(LocalizedString.Instance["global_family"], familyQuantities, familyTotals);
 
             //Init DataTable
-            ticketTable = new TicketTable(columns);
+            ticketTable = new TicketTable(columns, Layout.Columns);
 
             //If Has data
             if (dayReportData.GetTotalPerFamily().Count > 0)
@@ -239,12 +238,12 @@ namespace LogicPOS.UI.Printing
             {
                 if (x == 0)
                 {
-                    _printer.BoldMode(tableCustomPrint[x]);
+                    AppendBoldLine(_printer, tableCustomPrint[x]);
                     _printer.NormalWidth();
                 }
                 else
                 {
-                    _printer.Append(tableCustomPrint[x]);
+                    _printer.Append(ToThermalText(tableCustomPrint[x]));
                 }
             }
 
@@ -283,14 +282,14 @@ namespace LogicPOS.UI.Printing
             _printer.NewLine();
 
             //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop
-            _printer.BoldMode(tableCustomPrint[tableCustomPrint.Count - 1]);
+            AppendBoldLine(_printer, tableCustomPrint[tableCustomPrint.Count - 1]);
 
 
             _printer.NewLine();
             _printer.DoubleWidth2();
-            _printer.BoldMode(LocalizedString.Instance["global_worksession_resume_paymens_documents"]);
+            AppendBoldLine(_printer, LocalizedString.Instance["global_worksession_resume_paymens_documents"]);
             _printer.NormalWidth();
-            _printer.Separator(' ');
+            BlankSeparator();
 
             //summaryTotal = workSessionReceiptsData.Total;
             //summaryTotalQuantity = workSessionReceiptsData.UserReportItems.Sum(x => x.Quantity);
@@ -307,7 +306,7 @@ namespace LogicPOS.UI.Printing
             //{
             //    PrintUsersTotal(workSessionReceiptsData);
             //}
-            //ticketTable = new TicketTable(columns);
+            //ticketTable = new TicketTable(columns, Layout.Columns);
             //dataRow = ticketTable.NewRow();
             //dataRow[0] = LocalizedString.Instance["global_total"];
             //dataRow[1] = summaryTotalQuantity;
@@ -319,11 +318,11 @@ namespace LogicPOS.UI.Printing
             tableCustomPrint = ticketTable.GetTable();
 
             //Line Feed
-            _printer.Separator(' ');
+            BlankSeparator();
 
             //When finish all groups, print Last Row, the Summary Totals Row, Ommited in Custom Print Loop
            
-            _printer.BoldMode(tableCustomPrint[tableCustomPrint.Count - 1]);
+            AppendBoldLine(_printer, tableCustomPrint[tableCustomPrint.Count - 1]);
             _printer.NewLine();
             _printer.NormalWidth();
             return true;

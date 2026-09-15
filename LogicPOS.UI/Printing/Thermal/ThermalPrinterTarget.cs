@@ -17,6 +17,10 @@ namespace LogicPOS.UI.Printing
         private static readonly FieldInfo BufferField =
             typeof(EscPosPrinter).GetField("_buffer", BindingFlags.Instance | BindingFlags.NonPublic);
 
+        public static ApiPrinter Current => CurrentConfig.Value;
+
+        public static ThermalLayout CurrentLayout => ThermalLayout.Resolve(CurrentConfig.Value);
+
         public static IDisposable Use(ApiPrinter printer)
         {
             var previous = CurrentConfig.Value;

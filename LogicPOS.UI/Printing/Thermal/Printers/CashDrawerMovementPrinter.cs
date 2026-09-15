@@ -6,6 +6,7 @@ using LogicPOS.UI.Extensions;
 using LogicPOS.Utility;
 using System;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Application.Services;
 
 namespace LogicPOS.UI.Printing
 {
@@ -46,75 +47,72 @@ namespace LogicPOS.UI.Printing
             {
                 case WorkSessionMovementType.CashDrawerOut:
                     _printer.DoubleWidth2();
-                    _printer.BoldMode(LocalizedString.Instance["ticket_title_worksession_money_out"]);
+                    AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_money_out"]);
                     _printer.NormalWidth();
-                    _printer.Separator(' ');
+                    BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerIn:
                     _printer.DoubleWidth2();
-                    _printer.BoldMode(LocalizedString.Instance["ticket_title_worksession_money_in"]);
+                    AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_money_in"]);
                     _printer.NormalWidth();
-                    _printer.Separator(' ');
+                    BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerClose:
                     _printer.DoubleWidth2();
-                    _printer.BoldMode(LocalizedString.Instance["ticket_title_worksession_terminal_close"]);
+                    AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_terminal_close"]);
                     _printer.NormalWidth();
-                    _printer.Separator(' ');
+                    BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerOpen:
                     _printer.DoubleWidth2();
-                    _printer.BoldMode(LocalizedString.Instance["ticket_title_worksession_terminal_open"]);
+                    AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_terminal_open"]);
                     _printer.NormalWidth();
-                    _printer.Separator(' ');
+                    BlankSeparator();
                     break;
             }
 
-            _printer.Append(LocalizedString.Instance["global_total_cashdrawer"]);
-            _printer.Separator(' ');
+            _printer.Append(ToThermalText(LocalizedString.Instance["global_total_cashdrawer"]));
+            BlankSeparator();
             _printer.DoubleWidth2();
-            _printer.BoldMode(_totalAmountInCashDrawer.ToString("F2"));
+            AppendBoldLine(_printer, _totalAmountInCashDrawer.ToString("F2"));
             _printer.NormalWidth();
-            _printer.Separator(' ');
+            BlankSeparator();
 
             if (_movementType == WorkSessionMovementType.CashDrawerIn || _movementType == WorkSessionMovementType.CashDrawerOut)
             {
-                _printer.Append(LocalizedString.Instance["global_movement_amount"]);
-                _printer.Separator(' ');
+                _printer.Append(ToThermalText(LocalizedString.Instance["global_movement_amount"]));
+                BlankSeparator();
                 _printer.DoubleWidth2();
-                _printer.BoldMode(_movementAmount.ToString("F2"));
-                _printer.Separator(' ');
+                AppendBoldLine(_printer, _movementAmount.ToString("F2"));
+                BlankSeparator();
                 _printer.NormalWidth();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";
-            _printer.Append(LocalizedString.Instance["global_description"]);
-            _printer.Append(description);
+            _printer.Append(ToThermalText(LocalizedString.Instance["global_description"]));
+            _printer.Append(ToThermalText(description));
             _printer.NewLine();
         }
 
         private void PrintFooter()
         {
-            _printer.Separator(' ');
+            BlankSeparator();
             _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
             _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
-            _printer.Separator(' ');
-            _printer.NewLine();
             _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
-            _printer.Separator(' ');
+            BlankSeparator();
             _printer.NewLine();
             _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
-            _printer.NewLine();
             _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                 , Environment.NewLine
                 , LocalizedString.Instance["global_printed_on_date"]
                 , DateTime.Now.ToLocalTime()
                 , "LogicPulse"
                 , "LogicPOS"
-                , "vs1.010.1"
+                , $"vs {SystemVersionService.ApiVersion}"
                 ));
         }
 
