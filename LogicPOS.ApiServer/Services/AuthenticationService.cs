@@ -43,6 +43,13 @@ public sealed class AuthenticationService
             .AsNoTracking()
             .SingleOrDefaultAsync(candidate => candidate.Id == request.UserId && candidate.TerminalId == request.TerminalId, cancellationToken);
 
+        if (user is null)
+        {
+            user = await _dbContext.ApiUsers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(candidate => candidate.Id == request.UserId && candidate.TerminalId == Guid.Empty, cancellationToken);
+        }
+
         if (user is null || !_pinHasher.Verify(request.Pin, user.PinHash, user.PinSalt))
         {
             return Error.Unauthorized("auth.invalid_credentials", "Credenciais inválidas.");

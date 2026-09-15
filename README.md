@@ -112,6 +112,7 @@ After a successful build you should see **`logicpos.exe`**, **`GtkRuntime\`**, *
 
 1. Start your **backend API** (matching **`apisettings.json`**).
    - In-repo option: `Jwt__SigningKey=<32+ chars> dotnet run --project LogicPOS.ApiServer/LogicPOS.ApiServer.csproj`
+   - The Development profile seeds a default login user for first-run testing: **Admin / 1234**.
 2. Run **`logicpos.exe`** from the **Debug** (or **Release**) output folder above.
 3. **Logs** roll under **`Logs\log.txt`** next to the executable (see `Program.cs`).
 
@@ -195,4 +196,4 @@ WantedBy=multi-user.target
 The server listens on port **5001** by default through Kestrel configuration in `LogicPOS.ApiServer/appsettings.json`. Supply the JWT signing key outside source control, for example with `Jwt__SigningKey=<32+ chars>` locally or an environment-specific file / systemd environment entry in Linux deployments.
 
 
-For authenticated manual testing, you can also provide bootstrap credentials outside source control (for example `BootstrapUser__UserId`, `BootstrapUser__TerminalId`, `BootstrapUser__Username`, and `BootstrapUser__Pin`) so the server seeds a single SQLite user during startup.
+For authenticated manual testing, you can also provide bootstrap credentials outside source control (for example `BootstrapUser__UserId`, `BootstrapUser__TerminalId`, `BootstrapUser__Username`, and `BootstrapUser__Pin`) so the server seeds a single SQLite user during startup. `BootstrapUser__TerminalId` is optional; if omitted or set to `00000000-0000-0000-0000-000000000000`, the bootstrap user can log into any terminal created by the scaffold.

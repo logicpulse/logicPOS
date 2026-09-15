@@ -11,7 +11,6 @@ public sealed class BootstrapUserSettings
 
     public bool IsConfigured =>
         UserId != Guid.Empty &&
-        TerminalId != Guid.Empty &&
         string.IsNullOrWhiteSpace(Username) == false &&
         string.IsNullOrWhiteSpace(Pin) == false;
 }
