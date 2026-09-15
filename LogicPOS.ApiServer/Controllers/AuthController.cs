@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LogicPOS.ApiServer.Controllers;
 
 [AllowAnonymous]
+[Route("auth")]
 [Route("api/auth")]
 public sealed class AuthController : ApiControllerBase
 {

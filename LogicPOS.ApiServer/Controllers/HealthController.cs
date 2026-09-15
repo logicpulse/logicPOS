@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace LogicPOS.ApiServer.Controllers;
 
 [AllowAnonymous]
+[Route("health")]
 [Route("api/health")]
 public sealed class HealthController : ApiControllerBase
 {

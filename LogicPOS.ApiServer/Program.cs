@@ -1,6 +1,7 @@
 using System.Text;
 using LogicPOS.ApiServer.Authentication;
 using LogicPOS.ApiServer.Data;
+using LogicPOS.ApiServer.DTOs;
 using LogicPOS.ApiServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ if (allowedOrigins.Length == 0)
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 builder.Services.Configure<BootstrapUserSettings>(builder.Configuration.GetSection(BootstrapUserSettings.SectionName));
+builder.Services.Configure<SystemInformationResponse>(builder.Configuration.GetSection("SystemInformation"));
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -66,6 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<SystemVersionService>();
+builder.Services.AddScoped<ApiSystemInformationService>();
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<BootstrapUserSeeder>();
