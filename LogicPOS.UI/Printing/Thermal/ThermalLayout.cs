@@ -24,8 +24,10 @@ namespace LogicPOS.UI.Printing
             Columns = columns > 0 ? columns : DefaultColumns;
             ColumnsBold = columnsBold > 0 ? columnsBold : DefaultColumnsBold;
             ColumnsSmall = columnsSmall > 0 ? columnsSmall : DefaultColumnsSmall;
+
+            // Physical paper (same axis as ESC/POS AlignCenter on footer text).
             PaperWidthMm = Columns <= 32 ? 58 : 80;
-            ImageDots = Columns <= 32 ? 384 : 576;
+            ImageDots = PaperWidthMm <= 58 ? 384 : 576;
         }
 
         public static ThermalLayout Resolve(ApiPrinter printer = null)

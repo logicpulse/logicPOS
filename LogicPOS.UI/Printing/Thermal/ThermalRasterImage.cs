@@ -41,11 +41,13 @@ namespace LogicPOS.UI.Printing
             using (var g = Graphics.FromImage(mono))
             {
                 g.Clear(Color.White);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                // Keep content centred when padding to a multiple of 8.
-                var offsetX = (targetWidth - Math.Min(source.Width, width)) / 2;
-                g.DrawImage(source, Math.Max(0, offsetX), 0, Math.Min(source.Width, width), height);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
+                var drawWidth = Math.Min(source.Width, width);
+                g.DrawImage(source, 0, 0, drawWidth, height);
             }
 
             return mono;

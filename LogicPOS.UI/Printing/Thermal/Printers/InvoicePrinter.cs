@@ -422,8 +422,13 @@ namespace LogicPOS.UI.Printing
 
         private void PrintThermalQr(string qrContent)
         {
-            // Full-width white canvas with centered QR (avoids drivers stretching a narrow raster).
+            // GS v 0 ignores AlignCenter. Emulate the same axis as "Obrigado...":
+            // a paper-wide canvas (58mm=384 / 80mm=576) with the QR in the geometric centre,
+            // printed from the left margin.
+            ResetPrintModes();
             _printer.AlignLeft();
+            _printer.Append(new byte[] { 0x1B, 0x24, 0x00, 0x00 }); // ESC $ x=0
+            _printer.Append(new byte[] { 0x1D, 0x4C, 0x00, 0x00 }); // GS L left margin = 0
 
             using (var qrImage = CreateThermalQrBitmap(qrContent))
             {
@@ -441,18 +446,14 @@ namespace LogicPOS.UI.Printing
 
         private Bitmap CreateThermalQrBitmap(string text)
         {
-            var withLogo = ShouldUseAgtLogoQr();
-
-            // ~40% of paper width, multiple of 8 → ~3–4 dots/module on typical fiscal QR.
-            var qrSize = Math.Min(240, Math.Max(168, Layout.ImageDots * 40 / 100));
+            var paperDots = Layout.ImageDots;
+            var qrSize = Math.Min(paperDots * 40 / 100, paperDots - 32);
+            qrSize = Math.Max(160, qrSize);
             qrSize = Math.Max(8, (qrSize + 7) / 8 * 8);
-
-            // High when logo (covers centre); Quartile otherwise — denser modules, better scans.
-            var ecc = withLogo ? ErrorCorrectionLevel.High : ErrorCorrectionLevel.Quartile;
 
             var qrCode = QrCodeGenerator.Generate(
                 plainText: text,
-                eccLevel: ecc,
+                eccLevel: ErrorCorrectionLevel.Quartile,
                 forceUtf8: true,
                 utf8Bom: false,
                 eciMode: ExtendedChannelInterpolationMode.Utf8);
@@ -464,14 +465,6 @@ namespace LogicPOS.UI.Printing
                 FileFormat = FileFormat.Png,
                 PixelSizeFactor = 0
             };
-
-            if (withLogo)
-            {
-                // Keep logo small so finder/timing patterns stay readable.
-                settings.IconBorderWidth = 2;
-                settings.IconSizePercent = 15;
-                settings.IconBytes = Convert.FromBase64String(PreferenceParametersService.AgtLogo);
-            }
 
             var qrBytes = new SkiaSharpRenderer().RenderToBytes(qrCode, settings);
             using (var skBitmap = SKBitmap.Decode(qrBytes))
@@ -487,55 +480,34 @@ namespace LogicPOS.UI.Printing
                 using (var original = new Bitmap(ms))
                 using (var square = ToThermalMonoBitmap(original, qrSize))
                 {
-                    return CenterQrOnPaperCanvas(square, Layout.ImageDots, Layout.PaperWidthMm);
+                    return CenterQrOnPaperCanvas(square, paperDots);
                 }
             }
         }
 
         /// <summary>
-        /// Centres QR on a paper-wide white canvas, then shifts 4 mm to the right.
+        /// Paper-wide white canvas; QR centred the same way AlignCenter centres footer text.
         /// </summary>
-        private static Bitmap CenterQrOnPaperCanvas(Bitmap qr, int paperDots, int paperWidthMm)
+        private static Bitmap CenterQrOnPaperCanvas(Bitmap qr, int paperDots)
         {
             var width = Math.Max(8, (paperDots + 7) / 8 * 8);
             const int quietZone = 16;
             var height = qr.Height + (quietZone * 2);
-            var mm = paperWidthMm > 0 ? paperWidthMm : 80;
-            var shiftRight = (int)Math.Round(4.0 * paperDots / mm);
+            var qrWidth = Math.Min(qr.Width, width);
+            var x = (width - qrWidth) / 2;
 
             var canvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             using (var g = Graphics.FromImage(canvas))
             {
                 g.Clear(Color.White);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
                 g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-                var x = ((width - qr.Width) / 2) + shiftRight;
-                if (x + qr.Width > width)
-                {
-                    x = Math.Max(0, width - qr.Width);
-                }
-                if (x < 0)
-                {
-                    x = 0;
-                }
-
-                g.DrawImageUnscaled(qr, x, quietZone);
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.DrawImage(qr, x, quietZone, qrWidth, qr.Height);
             }
 
             return canvas;
-        }
-
-        private bool ShouldUseAgtLogoQr()
-        {
-            var country = _data.CompanyInformations?.CountryCode2;
-            if (string.IsNullOrWhiteSpace(country))
-            {
-                country = CompanyDetailsService.CompanyInformation?.CountryCode2;
-            }
-
-            return string.Equals(country, "AO", StringComparison.OrdinalIgnoreCase)
-                && !string.IsNullOrWhiteSpace(PreferenceParametersService.AgtLogo)
-                && IsBase64String(PreferenceParametersService.AgtLogo);
         }
 
         private static Bitmap ToThermalMonoBitmap(Bitmap source, int size)
