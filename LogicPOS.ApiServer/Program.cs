@@ -4,6 +4,7 @@ using LogicPOS.ApiServer.Data;
 using LogicPOS.ApiServer.DTOs;
 using LogicPOS.ApiServer.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
@@ -33,6 +34,7 @@ builder.Services.Configure<SystemInformationResponse>(builder.Configuration.GetS
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddOpenApi();
 
 builder.Services.AddCors(options =>
 {
@@ -72,6 +74,30 @@ builder.Services.AddScoped<UsersService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<LicensingService>();
 builder.Services.AddScoped<TerminalService>();
+builder.Services.AddScoped<MovementTypeService>();
+builder.Services.AddScoped<PlaceService>();
+builder.Services.AddScoped<TableService>();
+builder.Services.AddScoped<HolidayService>();
+builder.Services.AddScoped<ArticleClassService>();
+builder.Services.AddScoped<ArticleFamilyService>();
+builder.Services.AddScoped<ArticleSubfamilyService>();
+builder.Services.AddScoped<ArticleTypeService>();
+builder.Services.AddScoped<MeasurementUnitService>();
+builder.Services.AddScoped<SizeUnitService>();
+builder.Services.AddScoped<VatRateService>();
+builder.Services.AddScoped<ArticleService>();
+builder.Services.AddScoped<WarehouseService>();
+builder.Services.AddScoped<WarehouseArticleService>();
+builder.Services.AddScoped<StockMovementService>();
+builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<ArticleHierarchyService>();
+builder.Services.AddScoped<PaymentMethodService>();
+builder.Services.AddScoped<FiscalYearService>();
+builder.Services.AddScoped<DocumentTypeService>();
+builder.Services.AddScoped<DocumentTypeSeeder>();
+builder.Services.AddScoped<DocumentSeriesService>();
+builder.Services.AddScoped<DocumentService>();
+builder.Services.AddScoped<ReceiptService>();
 builder.Services.AddScoped<ApiSystemInformationService>();
 builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<AuthenticationService>();
@@ -89,12 +115,36 @@ using (var scope = app.Services.CreateScope())
 
     var bootstrapUserSeeder = scope.ServiceProvider.GetRequiredService<BootstrapUserSeeder>();
     await bootstrapUserSeeder.SeedAsync();
+
+    var documentTypeSeeder = scope.ServiceProvider.GetRequiredService<DocumentTypeSeeder>();
+    await documentTypeSeeder.SeedAsync();
 }
+
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var error = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+        if (error is DbUpdateException)
+        {
+            // Every catalog Delete in this API is a hard delete; dependent rows are configured with
+            // DeleteBehavior.Restrict, so deleting a still-referenced row (e.g. a Place with Tables, an
+            // Article that's been sold/stocked) throws here instead of succeeding silently.
+            context.Response.StatusCode = StatusCodes.Status409Conflict;
+            await context.Response.WriteAsJsonAsync(new { error = "Não é possível eliminar: o registo está a ser utilizado por outro registo." });
+            return;
+        }
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsJsonAsync(new { error = "Ocorreu um erro inesperado." });
+    });
+});
 
 app.UseSerilogRequestLogging();
 app.UseCors("PosClient");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapOpenApi();
 
 app.Run();

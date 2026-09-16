@@ -10,5 +10,28 @@ namespace LogicPOS.ApiServer.Controllers;
 [Route("api/receipts")]
 public sealed class ReceiptsController : ApiControllerBase
 {
-    // O Copilot irá sugerir a injeção do ReceiptsService e os endpoints aqui dentro
+    private readonly ReceiptService _receiptService;
+
+    public ReceiptsController(ReceiptService receiptService)
+    {
+        _receiptService = receiptService;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll([FromQuery] int? page, [FromQuery] int? pageSize, [FromQuery(Name = "CustomerId")] Guid? customerId, [FromQuery(Name = "PaymentMethodId")] Guid? paymentMethodId, CancellationToken cancellationToken)
+    {
+        return Ok(await _receiptService.GetPagedAsync(page ?? 1, pageSize ?? 25, customerId, paymentMethodId, cancellationToken));
+    }
+
+    [HttpPut("{id:guid}/cancel")]
+    public async Task<IActionResult> Cancel(Guid id, [FromBody] CancelDocumentRequest request, CancellationToken cancellationToken)
+    {
+        var (success, error) = await _receiptService.CancelAsync(id, request.Reason, cancellationToken);
+        if (!success)
+        {
+            return error == "Document não encontrado." ? NotFound() : BadRequest(new { errors = new[] { new { name = "id", reason = error } } });
+        }
+
+        return NoContent();
+    }
 }
