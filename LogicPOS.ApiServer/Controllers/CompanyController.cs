@@ -29,7 +29,8 @@ public sealed class CompanyController : ApiControllerBase
     public async Task<IActionResult> GetCurrency(CancellationToken cancellationToken)
     {
         var company = await _companyService.GetAsync(cancellationToken);
-        return Ok(_referenceDataService.GetCurrencyByCode(company.CurrencyCode));
+        var currency = _referenceDataService.GetCurrencyByCode(company.CurrencyCode);
+        return currency is null ? NotFound() : Ok(currency);
     }
 
     [HttpPut("details")]

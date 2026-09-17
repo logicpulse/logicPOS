@@ -89,16 +89,15 @@ public sealed class ReferenceDataService
         return Currencies;
     }
 
-    public CurrencyResponse GetCurrencyByCode(string? code)
+    public CurrencyResponse? GetCurrencyByCode(string? code)
     {
         if (string.IsNullOrWhiteSpace(code))
         {
-            return Currencies[0];
+            return null;
         }
 
         return Currencies.FirstOrDefault(currency =>
                    string.Equals(currency.Code, code, StringComparison.OrdinalIgnoreCase) ||
-                   string.Equals(currency.Acronym, code, StringComparison.OrdinalIgnoreCase)) ??
-               Currencies[0];
+                   string.Equals(currency.Acronym, code, StringComparison.OrdinalIgnoreCase));
     }
 }
