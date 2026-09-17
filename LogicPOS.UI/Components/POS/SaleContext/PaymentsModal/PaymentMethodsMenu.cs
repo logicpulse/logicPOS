@@ -1,0 +1,120 @@
+﻿using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.PaymentMethods.GetAllPaymentMethods;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
+using LogicPOS.UI.Settings;
+using MediatR;
+using System.Drawing;
+
+namespace LogicPOS.UI.Components.Menus
+{
+    public class PaymentMethodsMenu : Menu<PaymentMethod>
+    {
+        public uint Rows { get; set; } = 1;
+        public uint Columns { get; set; } = 4;
+        public Size ButtonSize => AppSettings.Instance.SizeBaseDialogDefaultButton;
+        public string ButtonName => "touchButton_Green";
+
+        public PaymentMethodsMenu(CustomButton btnPrevious,
+                                  CustomButton btnNext,
+                                  Window sourceWindow) : base(rows: 1,
+                                                              columns: 4,
+                                                              btnPrevious,
+                                                              btnNext,
+                                                              sourceWindow)
+        {
+            Refresh();
+        }
+
+
+        private IconButtonWithText CreatePaymentMethodButton(string text, string iconPath)
+        {
+            var font = AppSettings.Instance.FontBaseDialogButton;
+            var fontColor = AppSettings.Instance.ColorBaseDialogDefaultButtonFont;
+            var buttonIconSize = AppSettings.Instance.SizeBaseDialogDefaultButtonIcon;
+            var buttonSize = AppSettings.Instance.SizeBaseDialogDefaultButton;
+
+            return new IconButtonWithText(
+                new ButtonSettings
+                {
+                    Name = "touchButton_Green",
+                    Text = text,
+                    Font = font,
+                    FontColor = fontColor,
+                    Icon = iconPath,
+                    IconSize = buttonIconSize,
+                    ButtonSize = buttonSize
+                });
+        }
+
+        protected override CustomButton CreateButtonForEntity(PaymentMethod entity)
+        {
+            return CreatePaymentMethodButton(entity.Designation, GetIconByAcronym(entity.Acronym));
+        }
+
+        private string GetIconByAcronym(string acronym)
+        {
+            switch (acronym)
+            {
+                case "LS":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_comecial_paper.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "CD":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_debit_card.png";
+                case "DE":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_virtual_money.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "CA":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_customer_card.png";
+                case "OU":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_other.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "TR":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_transfer.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "MB":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_cash_machine.png";
+                case "NU":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_money.png";
+                case "TB":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_bank_transfer.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "CC":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_visa.png";
+                case "CS":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_netting_of_balance.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "CO":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_bank_check_or_offer_card.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                case "CH":
+                    return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_bank_check.png";
+                case "PR":
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_exchange_of_property.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+                default:
+                    //return AppSettings.Paths.Images + @"Icons\icon_pos_payment_type_other.png";
+                    return AppSettings.Paths.Images + @"Icons\no_image_icon.png";
+            }
+
+        }
+
+
+        protected override void LoadEntities()
+        {
+            Entities.Clear();
+
+            var paymentMethods = PaymentMethodsService.PaymentMethods;
+
+            if (paymentMethods == null)
+            {
+                return;
+            }
+
+            Entities.AddRange(paymentMethods);
+        }
+
+
+    }
+}

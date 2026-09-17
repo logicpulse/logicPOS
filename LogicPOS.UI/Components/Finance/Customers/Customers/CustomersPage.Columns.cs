@@ -1,0 +1,48 @@
+﻿using Gtk;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.Globalization;
+using LogicPOS.Utility;
+
+namespace LogicPOS.UI.Components.Pages
+{
+    public partial class CustomersPage
+    {
+        private TreeViewColumn CreateNameColumn()
+        {
+            void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var user = (Customer)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = user.Name;
+            }
+
+            var title = LocalizedString.Instance["global_customers"];
+            return Columns.CreateColumn(title, 1, RenderValue);
+        }
+
+        private TreeViewColumn CreateCardNumberColumn()
+        {
+            void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var customer = (Customer)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = customer.CardNumber;
+            }
+
+            var title = LocalizedString.Instance["global_card_number"];
+            return Columns.CreateColumn(title, 3, RenderValue);
+        }
+
+        private TreeViewColumn CreateFiscalNumberColumn()
+        {
+            void RenderValue(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var user = (Customer)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = user.FiscalNumber;
+            }
+
+            var title = LocalizedString.Instance["global_fiscal_number"];
+            return Columns.CreateColumn(title, 2, RenderValue);
+        }
+
+    }
+}

@@ -1,0 +1,78 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Printers.DeletePrinter;
+using LogicPOS.Api.Features.Printers.GetAllPrinters;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
+using MediatR;
+using System.Collections.Generic;
+using Printer = LogicPOS.Api.Entities.Printer;
+
+using LogicPOS.UI.Components.System.Users.Permissions;
+namespace LogicPOS.UI.Components.Pages
+{
+    public partial class PrintersPage : Page<Printer>
+    {
+        public PrintersPage(Window parent) : base(parent)
+        {
+            DisableCommonFilterButtons();
+        }
+
+        protected override IRequest<ErrorOr<IEnumerable<Printer>>> GetAllQuery => new GetAllPrintersQuery();
+
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            var modal = new PrinterModal(mode, SelectedEntity);
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(2));
+            GridView.AppendColumn(CreatePrinterTypeColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(4));
+        }
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(2);
+            AddPrinterTypeSorting();
+            AddUpdatedAtSorting(4);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeletePrinterCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.BACKOFFICE_MAN_CONFIGURATIONPRINTERS_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.BACKOFFICE_MAN_CONFIGURATIONPRINTERS_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.BACKOFFICE_MAN_CONFIGURATIONPRINTERS_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Printers.BACKOFFICE_MAN_CONFIGURATIONPRINTERS_VIEW);
+        }
+
+        #region Signleton
+        private static PrintersPage _instance;
+        public static PrintersPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new PrintersPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
+    }
+}

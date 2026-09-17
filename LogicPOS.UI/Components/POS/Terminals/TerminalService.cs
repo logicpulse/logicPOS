@@ -1,0 +1,172 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Terminals.CreateTerminal;
+using LogicPOS.Api.Features.Terminals.GetAllTerminals;
+using LogicPOS.Api.Features.Terminals.GetTerminalByHardwareId;
+using LogicPOS.Api.Features.Terminals.GetTerminalById;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Errors;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Terminals
+{
+    public static class TerminalService
+    {
+        private const string TERMINAL_HARDWAREID_FILE = "terminal.id";
+        private static readonly ISender _mediator = DependencyInjection.Services.GetRequiredService<IMediator>();
+        public static Terminal Terminal { get; private set; }
+        private static List<Terminal> _terminals;
+        public static bool HasThermalPrinter => Terminal != null && Terminal.ThermalPrinter != null;
+        public static List<Terminal> Terminals
+        {
+            get
+            {
+                if (_terminals == null)
+                {
+                    _terminals = GetAllTerminals();
+                }
+                return _terminals;
+            }
+        }
+
+        public static void RefreshTerminal()
+        {
+            Terminal = _mediator.Send(new GetTerminalByIdQuery(Terminal.Id)).Result.Value;
+        }
+        private static ErrorOr<Guid> CreateTerminal(string hardwareId)
+        {
+            var command = new CreateTerminalCommand(hardwareId);
+            return _mediator.Send(command).Result;
+        }
+
+        public static bool HardwareIdFileExists()
+        {
+            return File.Exists(TERMINAL_HARDWAREID_FILE);
+        }
+
+        private static string GetHardwareIdFromFile()
+        {
+            return File.ReadAllText(TERMINAL_HARDWAREID_FILE);
+        }
+
+        private static void CreateHardwareIdFile(string hardwareId)
+        {
+            File.WriteAllText(TERMINAL_HARDWAREID_FILE, hardwareId);
+        }
+
+        public static ErrorOr<Terminal> InitializeTerminal()
+        {
+            string hardwareId = GetTerminalHardwareId();
+
+            if (string.IsNullOrWhiteSpace(hardwareId))
+            {
+                return Error.NotFound(description: $"HardwareId '{hardwareId}' não encontrado.");
+            }
+
+            var getTerminalResult = _mediator.Send(new GetTerminalByHardwareIdQuery(hardwareId)).Result;
+
+            if (getTerminalResult.IsError)
+            {
+                return getTerminalResult.Errors;
+            }
+
+            Terminal = getTerminalResult.Value;
+
+            if (Terminal == null)
+            {
+                var createTerminalResult = CreateTerminal(hardwareId);
+
+                if (createTerminalResult.IsError)
+                {
+                    return createTerminalResult.Errors;
+                }
+
+                var getCreatedTerminal = _mediator.Send(new GetTerminalByIdQuery(createTerminalResult.Value)).Result;
+
+                if (getCreatedTerminal.IsError)
+                {
+                    return getCreatedTerminal.FirstError;
+                }
+
+                Terminal = getCreatedTerminal.Value;
+            }
+
+            return Terminal;
+        }
+
+        public static string GetTerminalHardwareId()
+        {
+            if (!HardwareIdFileExists())
+            {
+                var terminals = GetAllTerminals();
+                if (terminals == null || !terminals.Any())
+                {
+                    string newHardwareId = Guid.NewGuid().ToString().ToUpper();
+                    CreateHardwareIdFile(newHardwareId);
+                    return newHardwareId;
+                }
+
+                string existingHardwareId = SelectCurrentTermialHardwareId();
+                
+                if(!string.IsNullOrWhiteSpace(existingHardwareId))
+                {
+                    CreateHardwareIdFile(existingHardwareId);
+                    return existingHardwareId;
+                }
+            }
+
+            string hardwareId = GetHardwareIdFromFile();
+            return hardwareId;
+        }
+
+        private static string SelectCurrentTermialHardwareId()
+        {
+            LogicPOSApp.ConfigureUI();
+            var page = new TerminalsPage(null, PageOptions.SelectionPageOptions);
+            var selectTerminalModal = new EntitySelectionModal<Terminal>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectTerminalModal.Run();
+            string hardwareId = selectTerminalModal.Page.SelectedEntity?.HardwareId;
+
+            if (response != ResponseType.Ok)
+            {
+                CustomAlerts.Warning(selectTerminalModal)
+                            .WithMessage("Nenhum terminal selecionado")
+                            .ShowAlert();
+
+                selectTerminalModal.Destroy();
+                Program.Quit();
+                return null;
+            }
+
+            selectTerminalModal.Destroy();
+
+            return hardwareId;
+        }
+
+        public static List<Terminal> GetAllTerminals()
+        {
+            var terminals = _mediator.Send(new GetAllTerminalsQuery()).Result;
+
+            if (terminals.IsError)
+            {
+                ErrorHandlingService.HandleApiError(terminals);
+                return null;
+            }
+
+            return terminals.Value
+                .OrderByDescending(t => t.IsDefault)
+                .ThenBy(t => t.Order)
+                .ToList();
+        }
+    }
+}

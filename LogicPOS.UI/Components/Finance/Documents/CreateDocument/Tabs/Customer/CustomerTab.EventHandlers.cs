@@ -1,0 +1,131 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.PaymentConditions;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.Utility;
+using System;
+using System.Linq;
+using LogicPOS.Globalization;
+
+namespace LogicPOS.UI.Components.Documents.CreateDocument
+{
+    public partial class CustomerTab
+    {
+        private void TxtDiscount_Changed(object sender, EventArgs e)
+        {
+            DiscountChanged?.Invoke(TxtDiscount.IsValid() ? decimal.Parse(TxtDiscount.Text) : 0);
+        }
+
+        private void BtnSelectCountry_Clicked(object sender, EventArgs e)
+        {
+            var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
+            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectCountryModal.Run();
+            selectCountryModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtCountry.Text = page.SelectedEntity.Designation;
+                TxtCountry.SelectedEntity = page.SelectedEntity;
+                UpdateTxtFiscalNumberRegex(page.SelectedEntity.Code2);
+            }
+        }
+
+        private void UpdateTxtFiscalNumberRegex(string countryCode2)
+        {
+            TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+            TxtFiscalNumber.UpdateValidationColors();
+        }
+
+        private void BtnSelectCurrency_Clicked(object sender, EventArgs e)
+        {
+            var page = new CurrenciesPage(null, PageOptions.SelectionPageOptions);
+            var selectCurrencyModal = new EntitySelectionModal<Currency>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectCurrencyModal.Run();
+            selectCurrencyModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtDiscount.Text = page.SelectedEntity.Designation;
+            }
+        }
+
+        private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
+        {
+            var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                SelectCustomer(page.SelectedEntity);
+            }
+        }
+
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCustomer.Text))
+            {
+                Clear();
+            }
+
+        }
+
+        private void TxtCustomer_ClipboardPasted(object sender, EventArgs e)
+        {
+            Clear();
+            var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
+            if (customer != null)
+            {
+                CustomAlerts.Warning(SourceWindow).WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
+                                    .ShowAlert();
+            }
+        }
+
+        private void TxtFiscalNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                Clear();
+            }
+
+            var customer = CustomersService.Customers.FirstOrDefault(x => x.FiscalNumber == TxtFiscalNumber.Text && x.Name != TxtCustomer.Text);
+            if (customer != null)
+            {
+                CustomAlerts.Warning(SourceWindow).WithMessage($"Cliente com o mesmo NIF ({TxtFiscalNumber.Text}), mas nomes diferentes ({customer.Name} e {TxtCustomer.Text})!")
+                                    .ShowAlert();
+            }
+        }
+
+        private void TxtCardNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCardNumber.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void OnTxtCardNumberEnterPressed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtCardNumber.Text))
+            {
+                var customer = CustomersService.Customers.FirstOrDefault(c => c.CardNumber == TxtCardNumber.Text);
+                if (customer != null)
+                {
+                    SelectCustomer(customer);
+                }
+                else
+                {
+                    TxtCardNumber.Clear();
+                }
+            }
+        }
+    }
+}

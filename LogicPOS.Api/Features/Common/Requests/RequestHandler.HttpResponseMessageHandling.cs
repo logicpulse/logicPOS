@@ -1,0 +1,92 @@
+using ErrorOr;
+using LogicPOS.Api.Errors;
+using MediatR;
+using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Common.Requests
+{
+    public abstract partial class RequestHandler<TRequest, TResponse> : IRequestHandler<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    {
+        protected async Task<ErrorOr<T>> HandlePostHttpResponseAsync<T>(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.Created:
+                case HttpStatusCode.OK:
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>(ApiJsonSerializerOptions.Default);
+                    return response;
+                case HttpStatusCode.NoContent:
+                    return default(T);
+                default:
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
+            }
+        }
+
+        protected async Task<ErrorOr<T>> HandlePutHttpResponseAsync<T>(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    var response = await httpResponse.Content.ReadFromJsonAsync<T>(ApiJsonSerializerOptions.Default);
+                    return response;
+                case HttpStatusCode.NoContent:
+                    return default(T);
+                default:
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
+            }
+        }
+
+        protected async Task<Error> HandleNotSuccessfulHttpResponseAsync(HttpResponseMessage httpResponse)
+        {
+            ProblemDetails problemDetails;
+            var url = httpResponse.RequestMessage.RequestUri.AbsolutePath.ToString();
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                    problemDetails = ProblemDetails.Unauthorized(url);
+                    return Error.Unauthorized(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+                case HttpStatusCode.Forbidden:
+                    problemDetails = ProblemDetails.Forbidden(url);
+                    return Error.Forbidden(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+                default:
+                    problemDetails = await httpResponse.Content.ReadFromJsonAsync<ProblemDetails>(ApiJsonSerializerOptions.Default);
+                    break;
+
+            }
+
+            return Error.Unexpected(httpResponse.StatusCode.ToString(), problemDetails.Detail, metadata: new Dictionary<string, object> { { "problem", problemDetails } });
+        }
+
+
+        private async Task<ErrorOr<Success>> HandleNoContentHttpResponseAsync(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                case HttpStatusCode.Created:
+                case HttpStatusCode.NoContent:
+                    return Result.Success;
+                default:
+                    return await HandleNotSuccessfulHttpResponseAsync(httpResponse);
+            }
+        }
+
+        protected ErrorOr<bool> HandleDeleteEntityHttpResponse(HttpResponseMessage httpResponse)
+        {
+            switch (httpResponse.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+    }
+}

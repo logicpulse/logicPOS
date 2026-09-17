@@ -1,0 +1,386 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.POS.Enums;
+using LogicPOS.UI.Extensions;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
+
+
+namespace LogicPOS.UI.Components.POS
+{
+    public partial class PaymentsModal : Modal
+    {
+        private PaymentCondition _selectedPaymentCondition;
+        private string _documentType = GetDefaultDocumentType();
+        private PaymentMode _paymentMode = PaymentMode.Full;
+        private List<SaleItem> _partialPaymentItems = new List<SaleItem>();
+        public bool IsValid;
+        public PaymentMethod PaymentMethod => _selectedPaymentMethod;
+        private PaymentMethod _selectedPaymentMethod;
+        private decimal OrderTotalFinal { get; } = SaleContext.CurrentOrder.TotalFinal;
+        private decimal TotalFinal { get; set; } = SaleContext.CurrentOrder.TotalFinal;
+        private decimal ServicesTotalFinal { get; } = SaleContext.CurrentOrder.ServicesTotalFinal;
+        private decimal TotalDelivery { get; set; }
+        private decimal TotalChange { get; set; }
+        public static int InitialSplittersNumber { get; set; } = 0;
+        private int SplittersNumber;
+
+        public PaymentsModal(Window parent) : base(parent,
+                                                   LocalizedString.Instance["window_title_dialog_payments"],
+                                                   new Size(633, 680),
+                                                   AppSettings.Paths.Images + @"Icons\Windows\icon_window_payments.png")
+        {
+            UpdateLabels();
+            SetDefaultCustomer();
+        }
+
+        private void SetDefaultCustomer()
+        {
+            if (CustomersService.Default != null)
+            {
+                SelectCustomer(CustomersService.Default);
+            }
+        }
+
+        public string GetCustomerName()
+        {
+            return TxtCustomer.Text;
+        }
+        public void SplitAccount(int splittersNumber = 2)
+        {
+            SplitModeInitilizer(splittersNumber);
+            UpdateLabels();
+            UpdateTotals();
+        }
+
+        private void SplitModeInitilizer(int splittersNumber)
+        {
+            SplittersNumber = splittersNumber;
+            if (InitialSplittersNumber == 0)
+            {
+                InitialSplittersNumber = SplittersNumber;
+            }
+            _paymentMode = PaymentMode.Splited;
+            BtnPartialPayment.Visible = false;
+        }
+
+        private void UpdateLabels()
+        {
+            LabelTotalValue.Text = TotalFinal.ToString("C");
+            LabelDeliveryValue.Text = TotalDelivery.ToString("C");
+            LabelChangeValue.Text = TotalChange.ToString("C");
+        }
+
+        private void InitializeLabels()
+        {
+            //Colors
+            LabelTotal.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+            LabelDelivery.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+            LabelChange.ModifyFg(StateType.Normal, Color.FromArgb(101, 137, 171).ToGdkColor());
+            LabelTotalValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+            LabelDeliveryValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+            LabelChangeValue.ModifyFg(StateType.Normal, Color.White.ToGdkColor());
+
+            // Alignments — caption on its own row, amount below (right-aligned)
+            LabelTotal.SetAlignment(0, 0);
+            LabelDelivery.SetAlignment(0, 0);
+            LabelChange.SetAlignment(0, 0);
+            LabelTotalValue.SetAlignment(1, 0.5F);
+            LabelDeliveryValue.SetAlignment(1, 0.5F);
+            LabelChangeValue.SetAlignment(1, 0.5F);
+
+            var captionFont = Pango.FontDescription.FromString("Bold 11");
+            LabelTotal.ModifyFont(captionFont);
+            LabelDelivery.ModifyFont(captionFont);
+            LabelChange.ModifyFont(captionFont);
+
+            LabelTotalValue.ModifyFont(Pango.FontDescription.FromString("Bold 16"));
+            var amountFont = Pango.FontDescription.FromString("Bold 13");
+            LabelDeliveryValue.ModifyFont(amountFont);
+            LabelChangeValue.ModifyFont(amountFont);
+        }
+
+        private bool SelectPaymentCondition()
+        {
+            var page = new PaymentConditionsPage(this, PageOptions.SelectionPageOptions);
+            var selectPaymentConditionModal = new EntitySelectionModal<PaymentCondition>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectPaymentConditionModal.Run();
+            var selectedPaymentCondition = page.SelectedEntity;
+            selectPaymentConditionModal.Destroy();
+
+            if (response == ResponseType.Ok && selectedPaymentCondition != null)
+            {
+                _selectedPaymentCondition = selectedPaymentCondition;
+                return true;
+
+            }
+
+            return false;
+        }
+
+        private void UpdateTotals()
+        {
+            UpdateTotalFinal();
+
+            if (PaymentMethod == null || PaymentMethod.Acronym != "NU")
+            {
+                TotalDelivery = TotalFinal;
+                TotalChange = 0;
+            }
+            else
+            {
+                TotalChange = TotalDelivery - TotalFinal;
+            }
+
+            UpdateLabels();
+        }
+
+        private void UpdateTotalFinal()
+        {
+            switch (_paymentMode)
+            {
+                case PaymentMode.Full:
+                    TotalFinal = OrderTotalFinal;
+                    break;
+                case PaymentMode.Partial:
+                    TotalFinal = _partialPaymentItems.Sum(x => x.TotalFinal)
+                        + SdrDocumentDetailsService.CalculateDepositTotal(_partialPaymentItems);
+                    break;
+                case PaymentMode.Splited:
+                    if (InitialSplittersNumber != 0 && InitialSplittersNumber == SplittersNumber)
+                    {
+                        TotalFinal = OrderTotalFinal / InitialSplittersNumber;
+                    }
+                    else
+                    {
+                        TotalFinal = OrderTotalFinal;
+                    }
+                    break;
+            }
+
+            ApplyGlobalDiscount();
+        }
+
+        private void ApplyGlobalDiscount()
+        {
+            if (!decimal.TryParse(TxtDiscount.Text, out decimal discount))
+            {
+                discount = 0;
+            }
+
+            var discountPrice = TotalFinal * discount / 100;
+            TotalFinal = TotalFinal - discountPrice;
+        }
+
+        public void ShowCustomerData(Customer customer)
+        {
+            TxtFiscalNumber.Text = customer.FiscalNumber;
+            TxtCardNumber.Text = customer.CardNumber;
+            TxtDiscount.Text = customer.Discount.ToString("F2");
+            TxtAddress.Text = customer.Address;
+            TxtLocality.Text = customer.Locality;
+            TxtZipCode.Text = customer.ZipCode;
+            TxtCity.Text = customer.City;
+            TxtCountry.Text = customer.Country.Designation;
+            TxtCountry.SelectedEntity = new Api.Entities.Country
+            {
+                Id = customer.Country.Id,
+                Code2 = customer.Country.Code2,
+                Designation = customer.Country.Designation
+            };
+            TxtNotes.Text = customer.Notes;
+        }
+
+        private void Clear()
+        {
+            TxtCustomer.Clear();
+            TxtFiscalNumber.Clear();
+            TxtCardNumber.Clear();
+            TxtDiscount.Clear();
+            TxtDiscount.Text = "0";
+            TxtAddress.Clear();
+            TxtLocality.Clear();
+            TxtZipCode.Clear();
+            TxtCity.Clear();
+            var defaultCountry = CountriesService.Default;
+            if (defaultCountry != null)
+            {
+                TxtCountry.Text = defaultCountry.Designation;
+                TxtCountry.SelectedEntity = defaultCountry;
+            }
+            TxtNotes.Clear();
+            FreezeEditableFields(false);
+            UpdateCustomerCardPaymentAvailability();
+        }
+
+        private Customer GetSelectedCustomer() => TxtCustomer?.SelectedEntity as Customer;
+
+        private void UpdateCustomerCardPaymentAvailability()
+        {
+            if (BtnCustomerCard == null)
+            {
+                return;
+            }
+
+            BtnCustomerCard.Sensitive = CustomersService.CanPayWithCustomerCard(GetSelectedCustomer());
+
+            if (BtnCustomerCard.Sensitive == false)
+            {
+                ClearCustomerCardPaymentSelectionIfNeeded();
+            }
+        }
+
+        private void ClearCustomerCardPaymentSelectionIfNeeded()
+        {
+            if (_selectedPaymentMethod?.Token != "CUSTOMER_CARD")
+            {
+                return;
+            }
+
+            _selectedPaymentMethod = null;
+            TotalDelivery = 0;
+            TotalChange = 0;
+            UpdateLabels();
+        }
+
+        private DocumentCustomer GetDocumentCustomer()
+        {
+            var country = TxtCountry.SelectedEntity as Api.Entities.Country;
+
+            return new DocumentCustomer
+            {
+                Name = TxtCustomer.Text,
+                FiscalNumber = TxtFiscalNumber.Text,
+                Address = TxtAddress.Text,
+                Locality = TxtLocality.Text,
+                ZipCode = TxtZipCode.Text,
+                City = TxtCity.Text,
+                Country = country?.Code2,
+                CountryId = country?.Id ?? Guid.Empty
+            };
+        }
+
+        private string GetDocumentType()
+        {
+            return (BtnInvoice.Sensitive == true) ? _documentType : "FT";
+        }
+
+        private DocumentTypeAnalyzer DocTypeAnalyzer => new DocumentTypeAnalyzer(GetDocumentType());
+
+        private static string GetDefaultDocumentType()
+        {
+            return SystemInformationService.SystemInformation.IsPortugal ? "FS" : "FR";
+        }
+
+        private IEnumerable<DocumentDetailDto> GetDocumentDetails()
+        {
+            if (_paymentMode == PaymentMode.Full)
+            {
+                return SaleContext.CurrentOrder.GetDocumentDetails();
+            }
+
+            return SdrDocumentDetailsService.EnrichFromSaleItems(_partialPaymentItems);
+        }
+
+        private IEnumerable<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod> GetPaymentMethodsDtos()
+        {
+            var paymentMethods = new List<Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod>();
+
+            if (PaymentMethod == null)
+            {
+                return null;
+            }
+
+            paymentMethods.Add(new Api.Features.Finance.Documents.Documents.IssueDocument.DocumentPaymentMethod
+            {
+                PaymentMethodId = PaymentMethod.Id,
+                Amount = TotalFinal
+            });
+
+            return paymentMethods;
+
+        }
+
+        private IssueDocumentCommand CreateAddDocumentCommand()
+        {
+            var command = new IssueDocumentCommand();
+
+            command.Type = GetDocumentType();
+            command.PaymentMethods = GetPaymentMethodsDtos();
+            command.PaymentConditionId = _selectedPaymentCondition?.Id;
+            command.CustomerId = (TxtCustomer.SelectedEntity as Customer)?.Id;
+            command.OrderId = SaleContext.CurrentOrder.Id;
+            if (command.CustomerId == null)
+            {
+                command.Customer = GetDocumentCustomer();
+            }
+            command.Discount = decimal.Parse(TxtDiscount.Text);
+            command.Notes = string.IsNullOrWhiteSpace(TxtNotes.Text) ? null : TxtNotes.Text.Trim();
+
+            if (_paymentMode == PaymentMode.Splited && IsValid)
+            {
+                if (InitialSplittersNumber == SplittersNumber)
+                {
+                    SplitTickets(SplittersNumber);
+                }
+                if (SplittersNumber == 1)
+                {
+                    InitialSplittersNumber = 0;
+                }
+                var details = SaleContext.CurrentOrder.GetDocumentDetails().ToList();
+                command.Details = details;
+                return command;
+            }
+            command.Details = GetDocumentDetails().ToList();
+
+            return command;
+        }
+
+        private void UncheckInvoiceMode()
+        {
+            _selectedPaymentCondition = null;
+            BtnInvoice.Sensitive = true;
+        }
+
+        private void SelectCustomer(Customer customer)
+        {
+            TxtCustomer.Text = customer.Name;
+            TxtCustomer.SelectedEntity = customer;
+            if (SystemInformationService.SystemInformation.IsPortugal || !SystemInformationService.UseAgtFe)
+            {
+                TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(customer.Country.Code2);
+            }
+            ShowCustomerData(customer);
+            FreezeEditableFields(customer.IsFinalConsumer);
+            UpdateCustomerCardPaymentAvailability();
+        }
+
+        private void FreezeEditableFields(bool freeze = true)
+        {
+            TxtFiscalNumber.BtnKeyboard.Sensitive = TxtFiscalNumber.Entry.Sensitive = !freeze;
+            TxtCardNumber.BtnKeyboard.Sensitive = TxtCardNumber.Entry.Sensitive = !freeze;
+            TxtCustomer.BtnKeyboard.Sensitive = TxtCustomer.Entry.Sensitive = !freeze;
+            TxtAddress.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
+            TxtLocality.BtnKeyboard.Sensitive = TxtLocality.Entry.Sensitive = !freeze;
+            TxtCountry.BtnKeyboard.Sensitive = TxtCountry.Entry.Sensitive = !freeze;
+            TxtCity.BtnKeyboard.Sensitive = TxtCity.Entry.Sensitive = !freeze;
+            TxtNotes.BtnKeyboard.Sensitive = TxtNotes.Entry.Sensitive = !freeze;
+            TxtZipCode.BtnKeyboard.Sensitive = TxtZipCode.Entry.Sensitive = !freeze;
+        }
+    }
+}

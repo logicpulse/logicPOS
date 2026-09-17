@@ -1,0 +1,76 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.MovementTypes.DeleteMovementType;
+using LogicPOS.Api.Features.MovementTypes.GetAllMovementTypes;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
+using MediatR;
+using System.Collections.Generic;
+
+using LogicPOS.UI.Components.System.Users.Permissions;
+namespace LogicPOS.UI.Components.Pages
+{
+    public class MovementTypesPage : Page<MovementType>
+    {
+        protected override IRequest<ErrorOr<IEnumerable<MovementType>>> GetAllQuery => new GetAllMovementTypesQuery();
+        public MovementTypesPage(Window parent) : base(parent)
+        {
+            DisableCommonFilterButtons();
+        }
+
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            var modal = new MovementTypeModal(mode, SelectedEntity);
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
+        }
+
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
+            AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteMovementTypeCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.MovementTypes.BACKOFFICE_MAN_CONFIGURATIONPLACEMOVEMENTTYPE_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.MovementTypes.BACKOFFICE_MAN_CONFIGURATIONPLACEMOVEMENTTYPE_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.MovementTypes.BACKOFFICE_MAN_CONFIGURATIONPLACEMOVEMENTTYPE_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.MovementTypes.BACKOFFICE_MAN_CONFIGURATIONPLACEMOVEMENTTYPE_VIEW);
+        }
+
+        #region Singleton
+        private static MovementTypesPage _instance;
+        public static MovementTypesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new MovementTypesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+        #endregion
+    }
+}

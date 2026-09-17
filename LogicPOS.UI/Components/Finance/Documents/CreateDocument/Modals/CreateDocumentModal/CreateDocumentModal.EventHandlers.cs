@@ -1,0 +1,299 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Documents;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Documents.GetDocumentPreviewData;
+using LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.At;
+using LogicPOS.UI.Components.Finance.Documents.CreateDocument.Modals.CreateDocumentModal.DocumentPreviewModal;
+using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
+using LogicPOS.UI.Services;
+using Serilog;
+using System;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class CreateDocumentModal
+    {
+        private void AddTabsEventHandlers()
+        {
+            DocumentTab.OriginDocumentSelected += OnOriginDocumentSelected;
+            DocumentTab.DocumentTypeSelected += OnDocumentTypeSelected;
+            DocumentTab.CopyDocumentSelected += OnCopyDocumentSelected;
+            if (SinglePaymentMethod == false)
+            {
+                DetailsTab.Page.OnTotalChanged += t => PaymentMethodsTab.PaymentMethodsBox.UpdateDocumentTotal(GetTotalFinal());
+            }
+            DetailsTab.Page.OnTotalChanged += t => UpdateTitle();
+            CustomerTab.CustomerSelected += CustomerTab_CustomerSelected;
+            CustomerTab.DiscountChanged += d => UpdateTitle();
+        }
+
+        private void AddEventHandlers()
+        {
+            BtnOk.Clicked += BtnOk_Clicked;
+            BtnPreview.Clicked += BtnPreview_Clicked;
+            BtnClear.Clicked += BtnClear_Clicked;
+            BtnAgtNifInfo.Clicked += BtnAgtNifInfo_Clicked;
+            Navigator.CurrentTabChanged += t => UpdateUI();
+            DetailsTab.Page.OnTotalChanged += t => UpdateUI();
+            CheckIsDraft.StateChanged += CheckIsDraft_StateChanged;
+            CheckHasTransportData.StateChanged += CheckHasTransportData_StateChanged;
+        }
+
+        private void CheckHasTransportData_StateChanged(object o, StateChangedArgs args)
+        {
+            var documentType = DocumentTab.GetDocumentType();
+            if (documentType != null)
+            {
+                UpdateTabsForDocumentType(documentType);
+            }
+
+            Navigator.UpdateUI();
+        }
+
+        private void BtnAgtNifInfo_Clicked(object sender, EventArgs e)
+        {
+            CustomerTab.ShowAgtNifInfo();
+            Run();
+        }
+
+        private void CheckIsDraft_StateChanged(object o, Gtk.StateChangedArgs args)
+        {
+            UpdateTitle();
+        }
+
+        private void BtnOk_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                Log.Information("Attempting to create document of type {DocumentType}", DocumentTab.GetDocumentType());
+                if (Validate() == false)
+                {
+                    Run();
+                    return;
+                }
+
+                var issueDocumentRequest = CreateAddCommand();
+
+                if (DraftMode == false)
+                {
+                    var previewQuery = new GetDocumentPreviewDataQuery
+                    {
+                        CurrencyId = issueDocumentRequest.CurrencyId,
+                        Type = issueDocumentRequest.Type,
+                        ShipFromAdress = issueDocumentRequest.ShipFromAddress,
+                        ShipToAdress = issueDocumentRequest.ShipToAddress,
+                        Discount = issueDocumentRequest.Discount,
+                        Notes = issueDocumentRequest.Notes,
+                        Details = issueDocumentRequest.Details,
+                        ExchangeRate = issueDocumentRequest.ExchangeRate,
+                    };
+
+                    var confirmModal = new DocumentPreviewModal(this, previewQuery);
+                    var confirmation = (ResponseType)confirmModal.Run();
+                    confirmModal.Destroy();
+
+                    if (confirmation != ResponseType.Yes)
+                    {
+                        Run();
+                        return;
+                    }
+                }
+
+                if (SystemInformationService.SystemInformation.IsPortugal &&
+                    new DocumentTypeAnalyzer(issueDocumentRequest.Type).RequiresTransportDataAtIssue(issueDocumentRequest.IsWayBill) &&
+                    issueDocumentRequest.ShipFromAddress.DeliveryDate is DateTime expeditionDate &&
+                    expeditionDate < DateTime.Now.AddMinutes(1))
+                {
+                    Log.Warning("Document of type {DocumentType} has expedition date before current time + 1 minute.", issueDocumentRequest.Type);
+                    CustomAlerts.Warning(this)
+                        .WithMessage("A «Data de Expedição» na aba «Guia: Expedição» tem de ser pelo menos 1 minuto posterior à data e hora atuais.")
+                        .ShowAlert();
+                    Run();
+                    return;
+                }
+
+
+                IssueDocumentResponse? issueDocumentResponse = DocumentsService.IssueDocument(issueDocumentRequest, this);
+                if (issueDocumentResponse == null)
+                {
+                    Run();
+                    return;
+                }
+
+                Log.Information("Document of type {DocumentType} created with ID {DocumentId}", issueDocumentRequest.Type, issueDocumentResponse.Value.Id);
+
+                if (_draftId != null)
+                {
+                    DocumentsService.DeleteDraft(_draftId.Value);
+                }
+
+                bool requireAtRegistration = !DraftMode && AtService.DocumentTypeRequiresAtRegistration(issueDocumentRequest.Type);
+
+                if (SystemInformationService.SystemInformation.IsPortugal && requireAtRegistration && issueDocumentResponse.Value.HasAtRegistration == false)
+                {
+                    bool advance = CustomAlerts.Question(this)
+                         .WithMessage("Não foi possível registar o documento na AT. Deseja abrir o documento para impressão mesmo assim?")
+                         .ShowAlert() == ResponseType.Yes;
+
+                    if (advance == false)
+                    {
+                        return;
+                    }
+                }
+
+                DocumentPdfUtils.ViewDocumentPdf(
+                    this,
+                    issueDocumentResponse.Value.Id,
+                    DocumentPdfUtils.GetPrintCopyNumbers(DocumentTab.GetDocumentType()));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error while creating document");
+                CustomAlerts.Error(this)
+                    .WithMessage($"Ocorreu um erro ao criar o documento. Por favor, tente novamente.\n\n{ex.Message}")
+                    .ShowAlert();
+            }
+        }
+
+        private void BtnClear_Clicked(object sender, EventArgs e)
+        {
+            CustomerTab.Clear();
+            Run();
+        }
+
+        private void BtnPreview_Clicked(object sender, EventArgs e)
+        {
+            if (!TabsForPreviewAreValid())
+            {
+                ShowValidationErrors();
+            }
+            else
+            {
+                var query = CreateDocumentPreviewQuery();
+                DocumentPdfUtils.PreviewDocument(this, query);
+            }
+
+            Run();
+        }
+
+        private void OnDocumentTypeSelected(DocumentType documentType)
+        {
+            UpdateTabsForDocumentType(documentType);
+            Navigator.UpdateUI();
+        }
+
+        private void OnOriginDocumentSelected(Document document)
+        {
+            var type = DocumentTab.TxtDocumentType.SelectedEntity as DocumentType;
+
+            if (type != null &&
+                (type.Analyzer.IsInvoice() || type.Analyzer.IsInvoiceReceipt() || type.Analyzer.IsSimplifiedInvoice()) &&
+                !IsValidOriginForSalesInvoiceFamily(document.Type))
+            {
+                new CustomAlert(this)
+                    .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
+                    .WithTitle("Documento inválido")
+                    .ShowAlert();
+                DocumentTab.TxtOriginDocument.Clear();
+                return;
+            }
+
+            if (type != null && type.Analyzer.IsCreditNote() && !(document.Type == "FT" || document.Type == "FR" || document.Type == "FS"))
+            {
+                new CustomAlert(this)
+                    .WithMessage($"Documento do tipo {document.Type} não pode servir como documento de origem de {type.Designation}.")
+                    .WithTitle("Documento inválido")
+                    .ShowAlert();
+                DocumentTab.TxtOriginDocument.Clear();
+                return;
+            }
+
+
+            CustomerTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
+            if ((DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsTransportGuide() ||
+               (DocumentTab.TxtDocumentType.SelectedEntity as DocumentType).Analyzer.IsDeliveryNote())
+            {
+                ShipToTab.ImportCustomerShipAddress(document.Customer);
+            }
+
+        }
+
+        private static bool IsValidOriginForSalesInvoiceFamily(string originType)
+        {
+            switch (originType)
+            {
+                case "GR":
+                case "GT":
+                case "GA":
+                case "GC":
+                case "GD":
+                case "DC":
+                case "CM":
+                case "FC":
+                case "OR":
+                case "PF":
+                case "PP":
+                case "FP":
+                    return true;
+                case "FT":
+                case "FS":
+                case "FR":
+                    return string.Equals(
+                        SystemInformationService.SystemInformation.CountryCode2,
+                        "mz",
+                        StringComparison.OrdinalIgnoreCase);
+                default:
+                    return false;
+            }
+        }
+
+        private void OnCopyDocumentSelected(Document document)
+        {
+            CustomerTab.ImportDataFromDocument(document);
+            DetailsTab.ImportDataFromDocument(document.Id, document.Discount);
+
+            if (document.TypeAnalyzer.IsWayBill())
+            {
+                ShipFromTab.ImportDataFromDocument(document);
+                ShipToTab.ImportDataFromDocument(document);
+            }
+
+            if (document.PaymentMethods != null && document.PaymentMethods.Any() && SinglePaymentMethod == false)
+            {
+                PaymentMethodsTab.ImportDataFromDocument(document);
+            }
+
+            var documentType = DocumentTypesService.GetActive().Where(docType => docType.Acronym == document.Type).FirstOrDefault()
+                ?? DocumentTypesService.Default;
+
+            OnDocumentTypeSelected(documentType);
+        }
+
+        private void CustomerTab_CustomerSelected(Customer customer)
+        {
+            var docTypeAnalyzer = DocumentTab.DocumentTypeAnalyzer;
+
+            if (docTypeAnalyzer == null)
+            {
+                return;
+            }
+
+            if (!docTypeAnalyzer.Value.IsWayBill()
+                && !(CheckHasTransportData.Active && docTypeAnalyzer.Value.IsSalesInvoiceFamily()))
+            {
+                return;
+            }
+
+            ShipToTab.ImportCustomerShipAddress(customer);
+        }
+
+    }
+}

@@ -1,0 +1,120 @@
+using ESC_POS_USB_NET.Enums;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Printing.Enums;
+using LogicPOS.UI.Printing.Thermal.Printers;
+using LogicPOS.UI.Printing.Tickets;
+using LogicPOS.UI.Settings;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using Printer = ESC_POS_USB_NET.Printer.Printer;
+using LogicPOS.Globalization;
+
+namespace LogicPOS.UI.Printing
+{
+    public class PosTicketPrinter : ThermalPrinter
+    {
+        private readonly TicketPrintingData _ticket;
+        private string _ticketTitle = string.Empty;
+        private string _ticketSubTitle = string.Empty;
+        public PosTicketPrinter(Printer printer, TicketPrintingData ticket) : base(printer)
+        {
+            _ticket = ticket;
+        }
+
+        private void PrintTitle()
+        {
+
+            _ticketTitle = string.Format("{0}: #{1}"
+                , LocalizedString.Instance["global_order_request"]
+                , _ticket.Number.ToString()
+            );
+            var mode = AppSettings.Instance.AppOperationModeTheme.ToLower();
+
+            //Table|Order #2|Name/Zone
+            _ticketSubTitle = string.Format("{0}: #{1}/{2}"
+                , LocalizedString.Instance[string.Format($"global_table_appmode_{mode}").ToLower()] /* IN008024 */
+                , _ticket.Table
+                , _ticket.Place
+            );
+            _printer.AlignCenter();
+            _printer.ExpandedMode(PrinterModeState.On);
+            _printer.CondensedMode(PrinterModeState.On);
+            _printer.DoubleWidth3();
+            _printer.BoldMode(_ticketTitle);
+            _printer.NewLine();
+            _printer.Append(_ticketSubTitle);
+            _printer.NormalWidth();
+            _printer.CondensedMode(PrinterModeState.Off);
+            _printer.ExpandedMode(PrinterModeState.Off);
+            _printer.NormalLineHeight();
+        }
+
+        private void PrintDocumentDetails()
+        {
+            _printer.NormalLineHeight();
+            _printer.NewLine();
+            List<TicketColumn> columns = new List<TicketColumn>
+            {
+                new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left),
+                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right)
+            };
+
+            //Prepare Table with Padding
+            DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
+            TicketTable ticketTable = new TicketTable(columns);
+
+            DataRow dataRow;
+            foreach (var item in _ticket.Items)
+            {
+                dataRow = ticketTable.NewRow();
+                dataRow[0] = item.Article;
+                dataRow[1] = item.Quantity;
+                dataRow[2] = item.Unit;
+                ticketTable.Rows.Add(dataRow);
+            }
+
+            ticketTable.Print(_printer);
+        }
+
+        private void PrintFooter()
+        {
+            _printer.Separator(' ');
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
+            _printer.Separator(' ');
+            _printer.NewLine();
+            _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
+            _printer.Separator(' ');
+            _printer.NewLine();
+            _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
+            _printer.NewLine();
+            //Printed On | Company|App|Version
+            _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
+                , Environment.NewLine
+                , LocalizedString.Instance["global_printed_on_date"]
+                , DateTime.Now.ToLocalTime()
+                , "LogicPulse"//_customVars["APP_COMPANY"]
+                , "LogicPOS"//_customVars["APP_NAME"]
+                , "vs1.010.1"//_customVars["APP_VERSION"]
+                ));
+        }
+
+        public override void Print()
+        {
+            _printer.NormalLineHeight();
+            _printer.NormalWidth();
+            _printer.ExpandedMode(PrinterModeState.Off);
+
+            PrintHeader();
+            PrintTitle();
+            PrintDocumentDetails();
+            PrintFooter();
+            _printer.FullPaperCut();
+            ThermalPrinterTarget.Commit(_printer);
+            _printer.Clear();
+        }
+    }
+}

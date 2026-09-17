@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<keyboard>
+  <info>
+    <kbdid>163</kbdid>
+    <source>KBD163.pdf</source>
+    <description>Portugal Status: Registered National Layout: Yes Regions: Portugal</description>
+    <registrationdate>1991-01-01</registrationdate>
+    <lastrevisiondate>1998-05-08</lastrevisiondate>
+    <notes>Required for Portugal added euro 98.04.21</notes>
+    <url>ftp://ftp.software.ibm.com/software/globalization/keyboards/KBD163.pdf</url>
+  </info>
+  <keys>
+    <key row="0" col="1" level="1" glyph="|" charactername="Vertical Line/Logical OR" unicodeid="007C" ibmid="SM13" />
+    <key row="0" col="1" level="0" glyph="\" charactername="Backslash" unicodeid="005C" ibmid="SM07" />
+    <key row="0" col="2" level="1" glyph="!" charactername="Exclamation Point" unicodeid="0021" ibmid="SP02" />
+    <key row="0" col="2" level="0" glyph="1" charactername="One" unicodeid="0031" ibmid="ND01" />
+    <key row="0" col="3" level="1" glyph="&#34;" charactername="Quotation Marks" unicodeid="0022" ibmid="SP04" />
+    <key row="0" col="3" level="0" glyph="2" charactername="Two" unicodeid="0032" ibmid="ND02" />
+    <key row="0" col="3" level="2" glyph="@" charactername="At Sign" unicodeid="0040" ibmid="SM05" />
+    <key row="0" col="4" level="1" glyph="#" charactername="Number Sign" unicodeid="0023" ibmid="SM01" />
+    <key row="0" col="4" level="0" glyph="3" charactername="Three" unicodeid="0033" ibmid="ND03" />
+    <key row="0" col="4" level="2" glyph="£" charactername="Pound Sterling Sign" unicodeid="00A3" ibmid="SC02" />
+    <key row="0" col="5" level="1" glyph="$" charactername="Dollar Sign" unicodeid="0024" ibmid="SC03" />
+    <key row="0" col="5" level="0" glyph="4" charactername="Four" unicodeid="0034" ibmid="ND04" />
+    <key row="0" col="5" level="2" glyph="§" charactername="Section Symbol (USA)/Paragraph Symbol" unicodeid="00A7" ibmid="SM24" />
+    <key row="0" col="6" level="1" glyph="%" charactername="Percent Sign" unicodeid="0025" ibmid="SM02" />
+    <key row="0" col="6" level="0" glyph="5" charactername="Five" unicodeid="0035" ibmid="ND05" />
+    <key row="0" col="7" level="1" glyph="&#38;" charactername="Ampersand" unicodeid="0026" ibmid="SM03" />
+    <key row="0" col="7" level="0" glyph="6" charactername="Six" unicodeid="0036" ibmid="ND06" />
+    <key row="0" col="8" level="1" glyph="/" charactername="Slash" unicodeid="002F" ibmid="SP12" />
+    <key row="0" col="8" level="0" glyph="7" charactername="Seven" unicodeid="0037" ibmid="ND07" />
+    <key row="0" col="8" level="2" glyph="{" charactername="Left Brace" unicodeid="007B" ibmid="SM11" />
+    <key row="0" col="9" level="1" glyph="(" charactername="Left Parenthesis" unicodeid="0028" ibmid="SP06" />
+    <key row="0" col="9" level="0" glyph="8" charactername="Eight" unicodeid="0038" ibmid="ND08" />
+    <key row="0" col="9" level="2" glyph="[" charactername="Left Bracket" unicodeid="005B" ibmid="SM06" />
+    <key row="0" col="10" level="1" glyph=")" charactername="Right Parenthesis" unicodeid="0029" ibmid="SP07" />
+    <key row="0" col="10" level="0" glyph="9" charactername="Nine" unicodeid="0039" ibmid="ND09" />
+    <key row="0" col="10" level="2" glyph="]" charactername="Right Bracket" unicodeid="005D" ibmid="SM08" />
+    <key row="0" col="11" level="1" glyph="=" charactername="Equal Sign" unicodeid="003D" ibmid="SA04" />
+    <key row="0" col="11" level="0" glyph="0" charactername="Zero" unicodeid="0030" ibmid="ND10" />
+    <key row="0" col="11" level="2" glyph="}" charactername="Right Brace" unicodeid="007D" ibmid="SM14" />
+    <key row="0" col="12" level="1" glyph="?" charactername="Question Mark" unicodeid="003F" ibmid="SP15" />
+    <key row="0" col="12" level="0" glyph="&#39;" charactername="Apostrophe" unicodeid="0027" ibmid="SP05" />
+
+
+    <key row="1" col="1" level="1" glyph="Q" charactername="Q Capital" unicodeid="0051" ibmid="LQ02" />
+    <key row="1" col="1" level="0" glyph="q" charactername="q Small" unicodeid="0071" ibmid="LQ01" hidel2="true" bold="true" />
+    <key row="1" col="2" level="1" glyph="W" charactername="W Capital" unicodeid="0057" ibmid="LW02" />
+    <key row="1" col="2" level="0" glyph="w" charactername="w Small" unicodeid="0077" ibmid="LW01" hidel2="true" bold="true" />
+    <key row="1" col="3" level="1" glyph="E" charactername="E Capital" unicodeid="0045" ibmid="LE02" />
+    <key row="1" col="3" level="0" glyph="e" charactername="e Small" unicodeid="0065" ibmid="LE01" hidel2="true" bold="true" />
+    <key row="1" col="3" level="2" glyph="€" charactername="Euro symbol" unicodeid="20AC" ibmid="SC20" />
+    <key row="1" col="4" level="1" glyph="R" charactername="R Capital" unicodeid="0052" ibmid="LR02" />
+    <key row="1" col="4" level="0" glyph="r" charactername="r Small" unicodeid="0072" ibmid="LR01" hidel2="true" bold="true" />
+    <key row="1" col="5" level="1" glyph="T" charactername="T Capital" unicodeid="0054" ibmid="LT02" />
+    <key row="1" col="5" level="0" glyph="t" charactername="t Small" unicodeid="0074" ibmid="LT01" hidel2="true" bold="true" />
+    <key row="1" col="6" level="1" glyph="Y" charactername="Y Capital" unicodeid="0059" ibmid="LY02" />
+    <key row="1" col="6" level="0" glyph="y" charactername="y Small" unicodeid="0079" ibmid="LY01" hidel2="true" bold="true" />
+    <key row="1" col="7" level="1" glyph="U" charactername="U Capital" unicodeid="0055" ibmid="LU02" />
+    <key row="1" col="7" level="0" glyph="u" charactername="u Small" unicodeid="0075" ibmid="LU01" hidel2="true" bold="true" />
+    <key row="1" col="8" level="1" glyph="I" charactername="I Capital" unicodeid="0049" ibmid="LI02" />
+    <key row="1" col="8" level="0" glyph="i" charactername="i Small" unicodeid="0069" ibmid="LI01" hidel2="true" bold="true" />
+    <key row="1" col="9" level="1" glyph="O" charactername="O Capital" unicodeid="004F" ibmid="LO02" />
+    <key row="1" col="9" level="0" glyph="o" charactername="o Small" unicodeid="006F" ibmid="LO01" hidel2="true" bold="true" />
+    <key row="1" col="10" level="1" glyph="P" charactername="P Capital" unicodeid="0050" ibmid="LP02" />
+    <key row="1" col="10" level="0" glyph="p" charactername="p Small" unicodeid="0070" ibmid="LP01" hidel2="true" bold="true" />
+    <key row="1" col="11" level="1" glyph="*" charactername="Asterisk" unicodeid="002A" ibmid="SM04" />
+    <key row="1" col="11" level="0" glyph="+" charactername="Plus Sign" unicodeid="002B" ibmid="SA01" />
+    <key row="1" col="11" level="2" glyph="¨" charactername="Diaeresis/Umlaut Accent" unicodeid="00A8" ibmid="SD17" deadkey="true" diacritical="0308" />
+    <key row="1" col="12" level="1" glyph="" charactername="Grave Accent" unicodeid="0060" ibmid="SD13" deadkey="true" diacritical="0300" />
+    <key row="1" col="12" level="0" glyph="´" charactername="Acute Accent" unicodeid="00B4" ibmid="SD11" deadkey="true" diacritical="0301" />
+    <key row="2" col="1" level="1" glyph="A" charactername="A Capital" unicodeid="0041" ibmid="LA02" />
+    <key row="2" col="1" level="0" glyph="a" charactername="a Small" unicodeid="0061" ibmid="LA01" hidel2="true" bold="true" />
+    <key row="2" col="2" level="1" glyph="S" charactername="S Capital" unicodeid="0053" ibmid="LS02" />
+    <key row="2" col="2" level="0" glyph="s" charactername="s Small" unicodeid="0073" ibmid="LS01" hidel2="true" bold="true" />
+    <key row="2" col="3" level="1" glyph="D" charactername="D Capital" unicodeid="0044" ibmid="LD02" />
+    <key row="2" col="3" level="0" glyph="d" charactername="d Small" unicodeid="0064" ibmid="LD01" hidel2="true" bold="true" />
+    <key row="2" col="4" level="1" glyph="F" charactername="F Capital" unicodeid="0046" ibmid="LF02" />
+    <key row="2" col="4" level="0" glyph="f" charactername="f Small" unicodeid="0066" ibmid="LF01" hidel2="true" bold="true" />
+    <key row="2" col="5" level="1" glyph="G" charactername="G Capital" unicodeid="0047" ibmid="LG02" />
+    <key row="2" col="5" level="0" glyph="g" charactername="g Small" unicodeid="0067" ibmid="LG01" hidel2="true" bold="true" />
+    <key row="2" col="6" level="1" glyph="H" charactername="H Capital" unicodeid="0048" ibmid="LH02" />
+    <key row="2" col="6" level="0" glyph="h" charactername="h Small" unicodeid="0068" ibmid="LH01" hidel2="true" bold="true" />
+    <key row="2" col="7" level="1" glyph="J" charactername="J Capital" unicodeid="004A" ibmid="LJ02" />
+    <key row="2" col="7" level="0" glyph="j" charactername="j Small" unicodeid="006A" ibmid="LJ01" hidel2="true" bold="true" />
+    <key row="2" col="8" level="1" glyph="K" charactername="K Capital" unicodeid="004B" ibmid="LK02" />
+    <key row="2" col="8" level="0" glyph="k" charactername="k Small" unicodeid="006B" ibmid="LK01" hidel2="true" bold="true" />
+    <key row="2" col="9" level="1" glyph="L" charactername="L Capital" unicodeid="004C" ibmid="LL02" />
+    <key row="2" col="9" level="0" glyph="l" charactername="l Small" unicodeid="006C" ibmid="LL01" hidel2="true" bold="true" />
+    <key row="2" col="10" level="1" glyph="Ç" charactername="C Cedilla Capital" unicodeid="00C7" ibmid="LC42" />
+    <key row="2" col="10" level="0" glyph="ç" charactername="c Cedilla Small" unicodeid="00E7" ibmid="LC41" hidel2="true" bold="true" />
+    <key row="2" col="11" level="1" glyph="ª" charactername="Ordinal Indicator, Feminine" unicodeid="00AA" ibmid="SM21" />
+    <key row="2" col="11" level="0" glyph="º" charactername="Ordinal Indicator, Masculine" unicodeid="00BA" ibmid="SM20" />
+
+
+    <key row="3" col="1" level="1" glyph="&#62;" charactername="Greater Than Sign/Less Than Sign (Arabic)" unicodeid="003E" ibmid="SA05" />
+    <key row="3" col="1" level="0" glyph="&#60;" charactername="Less Than Sign/Greater Than Sign (Arabic)" unicodeid="003C" ibmid="SA03" />
+    <key row="3" col="2" level="1" glyph="Z" charactername="Z Capital" unicodeid="005A" ibmid="LZ02" />
+    <key row="3" col="2" level="0" glyph="z" charactername="z Small" unicodeid="007A" ibmid="LZ01" hidel2="true" bold="true" />
+    <key row="3" col="3" level="1" glyph="X" charactername="X Capital" unicodeid="0058" ibmid="LX02" />
+    <key row="3" col="3" level="0" glyph="x" charactername="x Small" unicodeid="0078" ibmid="LX01" hidel2="true" bold="true" />
+    <key row="3" col="4" level="1" glyph="C" charactername="C Capital" unicodeid="0043" ibmid="LC02" />
+    <key row="3" col="4" level="0" glyph="c" charactername="c Small" unicodeid="0063" ibmid="LC01" hidel2="true" bold="true" />
+    <key row="3" col="5" level="1" glyph="V" charactername="V Capital" unicodeid="0056" ibmid="LV02" />
+    <key row="3" col="5" level="0" glyph="v" charactername="v Small" unicodeid="0076" ibmid="LV01" hidel2="true" bold="true" />
+    <key row="3" col="6" level="1" glyph="B" charactername="B Capital" unicodeid="0042" ibmid="LB02" />
+    <key row="3" col="6" level="0" glyph="b" charactername="b Small" unicodeid="0062" ibmid="LB01" hidel2="true" bold="true" />
+    <key row="3" col="7" level="1" glyph="N" charactername="N Capital" unicodeid="004E" ibmid="LN02" />
+    <key row="3" col="7" level="0" glyph="n" charactername="n Small" unicodeid="006E" ibmid="LN01" hidel2="true" bold="true" />
+    <key row="3" col="8" level="1" glyph="M" charactername="M Capital" unicodeid="004D" ibmid="LM02" />
+    <key row="3" col="8" level="0" glyph="m" charactername="m Small" unicodeid="006D" ibmid="LM01" hidel2="true" bold="true" />
+    <key row="3" col="9" level="1" glyph=";" charactername="Semicolon" unicodeid="003B" ibmid="SP14" />
+    <key row="3" col="9" level="0" glyph="," charactername="Comma" unicodeid="002C" ibmid="SP08" />
+    <key row="3" col="10" level="1" glyph=":" charactername="Colon" unicodeid="003A" ibmid="SP13" />
+    <key row="3" col="10" level="0" glyph="." charactername="Period/Full Stop" unicodeid="002E" ibmid="SP11" />
+    <key row="3" col="11" level="1" glyph="_" charactername="Underline/Continuous Underscore" unicodeid="005F" ibmid="SP09" />
+    <key row="3" col="11" level="0" glyph="-" charactername="Hyphen/Minus Sign" unicodeid="002D" ibmid="SP10" />
+    <key row="0" col="0" level="0" glyph="Esc" type="esc" charactername="Left Escape" halign="left" />
+    <key row="0" col="13" level="0" glyph="Back" type="back" charactername="Left Back" keywidth="100" />
+    <key row="0" col="14" level="0" glyph="7" charactername="Number Pad 7" unicodeid="0037" numpad="true" bold="true" />
+    <key row="0" col="15" level="0" glyph="8" charactername="Number Pad 8" unicodeid="0038" numpad="true" bold="true" />
+    <key row="0" col="16" level="0" glyph="9" charactername="Number Pad 9" unicodeid="0039" numpad="true" bold="true" />
+    <key row="0" col="17" level="0" glyph="Esc" type="esc" charactername="Escape" numpad="true" />
+    <key row="1" col="0" level="0" glyph="Tab" type="tab" charactername="Tab" keywidth="64" halign="left" />
+    <key row="1" col="13" level="1" glyph="^" charactername="Circumflex Accent" unicodeid="005E" ibmid="SD15" deadkey="true" diacritical="0302" />
+    <key row="1" col="13" level="0" glyph="~" charactername="Tilde Accent" unicodeid="007E" ibmid="SD19" deadkey="true" diacritical="0303" keywidth="82" />
+    <key row="1" col="14" level="0" glyph="4" charactername="Four" unicodeid="0034" numpad="true" bold="true" />
+    <key row="1" col="15" level="0" glyph="5" charactername="Five" unicodeid="0035" numpad="true" bold="true" />
+    <key row="1" col="16" level="0" glyph="6" charactername="Six" unicodeid="0036" numpad="true" bold="true" />
+    <key row="1" col="17" level="0" glyph="*" charactername="Asterisk" unicodeid="002A" numpad="true" />
+    <key row="2" col="0" level="0" glyph="Caps" type="caps" charactername="Caps Lock" keywidth="82" halign="left" />
+    <key row="2" col="12" level="0" glyph="Enter" type="enter" charactername="Left Enter" keywidth="110" />
+    <key row="2" col="13" level="0" glyph="1" charactername="One" unicodeid="0031" numpad="true" bold="true" />
+    <key row="2" col="14" level="0" glyph="2" charactername="Two" unicodeid="0032" numpad="true" bold="true" />
+    <key row="2" col="15" level="0" glyph="3" charactername="Three" unicodeid="0033" numpad="true" bold="true" />
+    <key row="2" col="16" level="0" glyph="-" charactername="Hyphen/Minus Sign" unicodeid="002D" numpad="true" />
+    <key row="3" col="0" level="0" glyph="Shift" type="shift" charactername="Left Shift" keywidth="100" halign="left" />
+    <key row="3" col="12" level="0" glyph="↑" type="up" charactername="Up Cursor" />
+    <key row="3" col="13" level="0" glyph="Shf" type="shift" charactername="Right Shift" />
+    <key row="3" col="14" level="0" glyph="0" charactername="Zero" unicodeid="0030" numpad="true" bold="true" />
+    <key row="3" col="15" level="0" glyph="." charactername="Period/Full Stop" unicodeid="002E" numpad="true" />
+    <key row="3" col="16" level="0" glyph="/" charactername="Slash" unicodeid="002F" numpad="true" />
+    <key row="3" col="17" level="0" glyph="+" charactername="Plus Sign" unicodeid="002B" numpad="true" />
+    <key row="4" col="0" level="0" glyph="E.Key" type="ekey" charactername="Swap" keywidth="59" halign="left" />
+    <key row="4" col="1" level="0" glyph="Ctrl" type="ctrl" charactername="Left Control" keywidth="62" />
+    <key row="4" col="2" level="0" glyph="Alt" type="alt" charactername="Left Alt" keywidth="52" />
+    <key row="4" col="3" level="0" glyph="" type="space" charactername="Space" unicodeid="0020" keywidth="255" />
+    <key row="4" col="4" level="0" glyph="Home" type="home" charactername="Home" keywidth="66" />
+    <key row="4" col="5" level="0" glyph="End" type="end" charactername="End" keywidth="66" />
+    <key row="4" col="6" level="0" glyph="←" type="left" charactername="Left Cursor" />
+    <key row="4" col="7" level="0" glyph="↓" type="down" charactername="Down Cursor" />
+    <key row="4" col="8" level="0" glyph="→" type="right" charactername="Right Cursor" />
+    <key row="4" col="9" level="0" glyph="Enter" type="enter" charactername="Right Enter" keywidth="92" numpad="true" />
+    <key row="4" col="10" level="0" glyph="Back" type="back" charactername="Rigth Back" keywidth="92" numpad="true" />
+  </keys>
+</keyboard>

@@ -1,0 +1,546 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.Globalization;
+using LogicPOS.Printing.Services;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.Finance.DocumentTypes;
+using LogicPOS.UI.Components.Finance.Documents.Services;
+using LogicPOS.UI.Components.Finance.PaymentMethods;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.POS.Enums;
+using LogicPOS.UI.Components.Terminals;
+using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Printing;
+using LogicPOS.UI.Services;
+using LogicPOS.Utility;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Threading.Tasks;
+using static LogicPOS.UI.Printing.InvoicePrinter;
+
+namespace LogicPOS.UI.Components.POS
+{
+    public partial class PaymentsModal
+    {
+        private void AddEventHandlers()
+        {
+            BtnClearCustomer.Clicked += BtnClearCustomer_Clicked;
+            BtnInvoice.Clicked += BtnInvoice_Clicked;
+            BtnNewCustomer.Clicked += BtnNewCustomer_Clicked;
+            BtnOk.Clicked += BtnOk_Clicked;
+            BtnPartialPayment.Clicked += BtnPartialPayment_Clicked;
+            BtnFullPayment.Clicked += BtnFullPayment_Clicked;
+            BtnMoney.Clicked += BtnMoney_Clicked;
+            BtnCheck.Clicked += BtnCheck_Clicked;
+            BtnMB.Clicked += BtnMB_Clicked;
+            BtnCreditCard.Clicked += BtnCreditCard_Clicked;
+            BtnDebitCard.Clicked += BtnDebitCard_Clicked;
+            BtnVisa.Clicked += BtnVisa_Clicked;
+            BtnCustomerCard.Clicked += BtnCustomerCard_Clicked;
+            BtnCurrentAccountMethod.Clicked += BtnCurrentAccountMethod_Clicked;
+            PaymentMethodButtons.ForEach(button => { button.Clicked += BtnPaymentMethod_Clicked; });
+        }
+
+        private void BtnOk_Clicked(object sender, EventArgs e)
+        {
+            if (Validate() == false)
+            {
+                Run();
+                return;
+            }
+
+            if (BtnInvoice.Sensitive == true && PaymentMethod == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage("Selecione um Método de Pagamento")
+                            .ShowAlert();
+                Run();
+                return;
+            }
+
+
+            IsValid = Validate();
+            var addDocumentCommand = CreateAddDocumentCommand();
+            if (addDocumentCommand == null)
+            {
+                Run();
+                return;
+            }
+            var printingData = DocumentsService.IssueDocumentForPrinting(addDocumentCommand, this);
+
+            if (printingData == null)
+            {
+                Run();
+                return;
+            }
+            ProcesPayment();
+
+            if (ShouldPrintIssuedDocument())
+            {
+                PrintIssuedDocument(printingData.Value);
+            }
+            else
+            {
+                // PrintOpenDrawer must still run when the user declines printing.
+                OpenDrawerAfterPaymentIfConfigured();
+            }
+        }
+
+        private void OpenDrawerAfterPaymentIfConfigured()
+        {
+            if (GetIssuedDocumentType()?.PrintOpenDrawer != true)
+            {
+                return;
+            }
+
+            AuthenticationService.HardwareOpenDrawer();
+        }
+
+        private DocumentType GetIssuedDocumentType()
+        {
+            return DocumentTypesService.GetByAcronym(GetDocumentType());
+        }
+
+        private bool ShouldPrintIssuedDocument()
+        {
+            var documentType = GetIssuedDocumentType();
+            if (documentType?.PrintRequestConfirmation != true)
+            {
+                return true;
+            }
+
+            return CustomAlerts.Question(this)
+                .WithSize(new Size(500, 350))
+                .WithTitleResource("global_button_label_print")
+                .WithMessageResource("dialog_message_request_print_document_confirmation")
+                .ShowAlert() == ResponseType.Yes;
+        }
+
+        private void PrintIssuedDocument(InvoicePrintingData printingData)
+        {
+            var documentType = GetIssuedDocumentType();
+            var printCopies = documentType?.PrintCopies ?? 1;
+            if (printCopies < 1)
+            {
+                printCopies = 1;
+            }
+            else if (printCopies > 4)
+            {
+                printCopies = 4;
+            }
+
+            var openDrawer = documentType?.PrintOpenDrawer == true;
+
+            if (TerminalService.HasThermalPrinter)
+            {
+                QueueDocumentPrint(() =>
+                {
+                    for (var copyNumber = 1; copyNumber <= printCopies; copyNumber++)
+                    {
+                        // Reuse model from issue (IncludePrintingModel); avoid GET printing-model per copy.
+                        var data = printingData;
+                        data.CopyNumber = copyNumber;
+                        data.OpenDrawer = openDrawer && copyNumber == 1;
+                        ThermalPrintingService.PrintInvoice(data, registerPrint: false);
+                    }
+
+                    DocumentsService.RegisterPrint(
+                        printingData.DocumentId,
+                        Enumerable.Range(1, printCopies),
+                        false,
+                        null,
+                        true);
+                }, printingData.DocumentId);
+                return;
+            }
+
+            var a4Printer = TerminalService.Terminal?.Printer;
+            if (a4Printer != null)
+            {
+                var printerName = a4Printer.Designation;
+                QueueDocumentPrint(() =>
+                {
+                    var tempFile = DocumentPdfUtils.GetDocumentPdfFileLocation(
+                        printingData.DocumentId,
+                        Enumerable.Range(1, printCopies).ToList(),
+                        false);
+
+                    if (tempFile == null)
+                    {
+                        return;
+                    }
+
+                    // PDF already contains all vias (Original..N); print the file once.
+                    PdfPrinter.Print(tempFile.Value.Path, printerName);
+
+                    if (openDrawer)
+                    {
+                        AuthenticationService.HardwareOpenDrawer();
+                    }
+
+                    DocumentsService.RegisterPrint(
+                        printingData.DocumentId,
+                        Enumerable.Range(1, printCopies),
+                        false,
+                        null,
+                        false);
+                }, printingData.DocumentId);
+                return;
+            }
+
+            CustomAlerts.Warning(this)
+                        .WithMessage("Não foi possível encontrar a impressora configurada para o terminal.")
+                        .ShowAlert();
+        }
+
+        private void QueueDocumentPrint(global::System.Action printAction, Guid documentId)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    printAction();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "Error printing document {DocumentId}", documentId);
+                    global::Gtk.Application.Invoke(delegate
+                    {
+                        CustomAlerts.Error(CustomAlerts.ResolveParentWindow())
+                                    .WithMessage($"Ocorreu um erro ao tentar imprimir o documento. {ex.Message}")
+                                    .ShowAlert();
+                    });
+                }
+            });
+        }
+
+
+        private void ProcesPayment()
+        {
+            if (_paymentMode == PaymentMode.Full)
+            {
+                ProcessFullPayment();
+                return;
+            }
+
+            if (_paymentMode == PaymentMode.Splited)
+            {
+                if (InitialSplittersNumber != SplittersNumber)
+                {
+                    OrdersService.SavePosTicket(SaleContext.CurrentOrder, SaleContext.CurrentOrder.Tickets.FirstOrDefault());
+                }
+                UpdateLabels();
+                return;
+            }
+
+            ProcessPartialPayment();
+        }
+
+        private List<SaleItem> SplitTickets(int splittersNumber)
+        {
+            List<SaleItem> itemsToUpdate = null;
+            if (SaleContext.CurrentOrder.Tickets.Any())
+            {
+
+                foreach (var ticket in SaleContext.CurrentOrder.Tickets)
+                {
+                    foreach (var item in ticket.Items)
+                    {
+                        item.Quantity = (item.Quantity / splittersNumber);
+
+
+                    }
+                    itemsToUpdate = ticket.Items;
+                }
+            }
+            SaleContext.CurrentOrder.SplitTicket(itemsToUpdate, splittersNumber);
+            return itemsToUpdate;
+        }
+       
+        private void ProcessPartialPayment()
+        {
+            SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);
+            SaleContext.ReloadCurrentOrder();
+        }
+
+        private void ProcessFullPayment()
+        {
+            SaleContext.ItemsPage.Clear(true);
+            SaleContext.CurrentOrder.Close();
+            // Payment only happens with an open terminal — skip TerminalIsOpen GETs in UpdateUI.
+            WorkSessionsService.SetTerminalIsOpenCache(true);
+            POSWindow.Instance.UpdateUI();
+        }
+
+        private void BtnNewCustomer_Clicked(object sender, EventArgs e)
+        {
+            Clear();
+        }
+
+        private void PaymentMethodSelected(PaymentMethod paymentMethod)
+        {
+            if (paymentMethod.Acronym == "NU")
+            {
+                InsertMoneyModalResponse result = InsertMoneyModal.RequestDecimalValue(this, TotalFinal);
+
+                if (result.Response == ResponseType.Ok)
+                {
+                    TotalDelivery = result.Value;
+                    TotalChange = TotalDelivery - TotalFinal;
+                }
+                else
+                {
+                    TotalDelivery = TotalFinal;
+                    TotalChange = 0;
+                }
+            }
+            UncheckInvoiceMode();
+            UpdateTotals();
+        }
+
+        private void BtnInvoice_Clicked(object sender, EventArgs e)
+        {
+            if(TxtCustomer.SelectedEntity == null || (TxtCustomer.SelectedEntity as Customer).IsFinalConsumer)
+            {
+                CustomAlerts.Error(this).WithMessageResource("dialog_message_cant_create_cc_document_with_default_entity").ShowAlert();
+                return;
+            }
+
+
+            if (SelectPaymentCondition() == false)
+            {
+                _selectedPaymentCondition = null;
+                return;
+            }
+
+            EnableAllPaymentMethodButtons();
+            BtnInvoice.Sensitive = false;
+            UpdateTotals();
+        }
+
+        private void BtnClearCustomer_Clicked(object sender, EventArgs e)
+        {
+            Clear();
+        }
+
+        private void BtnSelectCustomer_Clicked(object sender, EventArgs e)
+        {
+            var page = new CustomersPage(null, CustomersPage.CustomerSelectionOptions);
+            var selectDocumentTypeModal = new EntitySelectionModal<Customer>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectDocumentTypeModal.Run();
+            selectDocumentTypeModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                SelectCustomer(page.SelectedEntity);
+            }
+        }
+
+        private void BtnSelectCountry_Clicked(object sender, EventArgs e)
+        {
+            var page = new CountriesPage(null, PageOptions.SelectionPageOptions);
+            var selectCountryModal = new EntitySelectionModal<Api.Entities.Country>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType response = (ResponseType)selectCountryModal.Run();
+            selectCountryModal.Destroy();
+
+            if (response == ResponseType.Ok && page.SelectedEntity != null)
+            {
+                TxtCountry.Text = page.SelectedEntity.Designation;
+                TxtCountry.SelectedEntity = page.SelectedEntity;
+                
+                // ✅ Atualiza o regex do NIF para o país selecionado
+                UpdateFiscalNumberRegexForCountry(page.SelectedEntity.Code2);
+            }
+        }
+
+        // ✅ Atualiza regex do NIF quando o país muda
+        private void UpdateFiscalNumberRegexForCountry(string countryCode2)
+        {
+            if (SystemInformationService.SystemInformation.IsPortugal || !SystemInformationService.UseAgtFe)
+            {
+                TxtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+                TxtFiscalNumber.UpdateValidationColors();
+            }
+        }
+
+        protected override void OnResponse(ResponseType response)
+        {
+            if (response != ResponseType.Ok && response != ResponseType.Cancel && response != ResponseType.Close)
+            {
+                Run();
+                return;
+            }
+
+            base.OnResponse(response);
+        }
+
+        private void BtnPartialPayment_Clicked(object sender, EventArgs e)
+        {
+            var partialPaymentModal = new PartialPaymentModal(this);
+            ResponseType response = (ResponseType)partialPaymentModal.Run();
+
+            if (response == ResponseType.Ok && partialPaymentModal.Page.SelectedItems.Any())
+            {
+                _partialPaymentItems = partialPaymentModal.Page.SelectedItems;
+                TotalDelivery = _partialPaymentItems.Sum(x => x.TotalFinal);
+                TotalChange = 0;
+                _paymentMode = (TotalDelivery >= TotalFinal) ? PaymentMode.Full : PaymentMode.Partial;
+            }
+            partialPaymentModal.Destroy();
+
+            UncheckInvoiceMode();
+            UpdateButtons();
+            UpdateTotals();
+        }
+
+        private void BtnFullPayment_Clicked(object sender, EventArgs e)
+        {
+            _paymentMode = PaymentMode.Full;
+            TotalFinal = OrderTotalFinal;
+            TotalDelivery = OrderTotalFinal;
+            TotalChange = 0;
+            UncheckInvoiceMode();
+            UpdateButtons();
+            UpdateTotals();
+        }
+
+        private void UpdateButtons()
+        {
+            BtnPartialPayment.Sensitive = _paymentMode == PaymentMode.Full;
+            BtnFullPayment.Sensitive = _paymentMode == PaymentMode.Partial;
+        }
+
+        private void TxtCustomer_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtCustomer.Text))
+            {
+                Clear();
+            }
+        }
+        private void OnTxtCardNumberEnterPressed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(TxtCardNumber.Text))
+            {
+                var customer = CustomersService.Customers.FirstOrDefault(c => c.CardNumber == TxtCardNumber.Text);
+                if (customer != null)
+                {
+                    SelectCustomer(customer);
+                }
+                else
+                {
+                    TxtCardNumber.Clear();
+                }
+            }
+        }
+        private void TxtCardNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(TxtCardNumber.Text))
+            {
+                Clear();
+            }
+        }
+        private void TxtFiscalNumber_Changed(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtFiscalNumber.Text))
+            {
+                Clear();
+            }
+        }
+
+        private void EnableAllPaymentMethodButtons()
+        {
+            foreach (var button in PaymentMethodButtons)
+            {
+                if (button == BtnCustomerCard)
+                {
+                    continue;
+                }
+
+                button.Sensitive = true;
+            }
+
+            UpdateCustomerCardPaymentAvailability();
+        }
+
+        private void BtnCurrentAccountMethod_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CURRENT_ACCOUNT");
+        }
+
+        private void BtnCustomerCard_Clicked(object sender, EventArgs e)
+        {
+            if (TrySelectCustomerCardPayment() == false)
+            {
+                return;
+            }
+        }
+
+        private bool TrySelectCustomerCardPayment()
+        {
+            if (CustomersService.CanPayWithCustomerCard(GetSelectedCustomer()) == false)
+            {
+                CustomAlerts.Warning(this)
+                    .WithMessage(LocalizedString.Instance["dialog_message_invalid_customer_card_detected"])
+                    .ShowAlert();
+                return false;
+            }
+
+            SelectPaymentMethodByToken("CUSTOMER_CARD");
+            return true;
+        }
+
+        private void BtnVisa_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("VISA");
+        }
+
+        private void BtnDebitCard_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("DEBIT_CARD");
+        }
+
+        private void BtnCreditCard_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CREDIT_CARD");
+        }
+
+        private void BtnMB_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("CASH_MACHINE");
+        }
+
+        private void BtnCheck_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("BANK_CHECK");
+        }
+
+        private void BtnMoney_Clicked(object sender, EventArgs e)
+        {
+            SelectPaymentMethodByToken("MONEY");
+        }
+
+        private void SelectPaymentMethodByToken(string token)
+        {
+            _selectedPaymentMethod = PaymentMethodsService.PaymentMethods.FirstOrDefault(x => x.Token == token);
+            PaymentMethodSelected(_selectedPaymentMethod);
+        }
+
+        private void BtnPaymentMethod_Clicked(object sender, EventArgs e)
+        {
+            EnableAllPaymentMethodButtons();
+            (sender as IconButtonWithText).Sensitive = false;
+            UpdateTotals();
+        }
+    }
+}

@@ -1,0 +1,120 @@
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Families.AddArticleFamily;
+using LogicPOS.Api.Features.Articles.Families.UpdateArticleFamily;
+using LogicPOS.Api.Features.CommissionGroups.GetAllCommissionGroups;
+using LogicPOS.Api.Features.Printers.GetAllPrinters;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.POS.Devices.Printers.PrinterAssociation;
+using System;
+using System.Collections.Generic;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class ArticleFamilyModal : EntityEditionModal<ArticleFamily>
+    {
+        public ArticleFamilyModal(EntityEditionModalMode modalMode, ArticleFamily entity = null) : base(modalMode, entity)
+        {
+        }
+
+        private AddArticleFamilyCommand CreateAddCommand()
+        {
+            return new AddArticleFamilyCommand
+            {
+                Designation = _txtDesignation.Text,
+                Button = GetButton(),
+                CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id,
+                Notes = _txtNotes.Value.Text
+
+            };
+        }
+
+        private UpdateArticleFamilyCommand CreateUpdateCommand()
+        {
+            if (_comboPrinters.SelectedEntity != null)
+            {
+                PrinterAssociationService.Set(_entity.Id, _comboPrinters.SelectedEntity.Id);
+            }
+            else
+            {
+                PrinterAssociationService.Set(_entity.Id);
+            }
+            return new UpdateArticleFamilyCommand
+            {
+                Id = _entity.Id,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                CommissionGroupId = _comboCommissionGroups.SelectedEntity?.Id ?? Guid.Empty,
+                Designation = _txtDesignation.Text,
+                Button = GetButton(),
+                Notes = _txtNotes.Value.Text,
+                IsDeleted = _checkDisabled.Active
+            };
+        }
+
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+
+        protected override void ShowEntityData()
+        {
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtCode.Text = _entity.Code;
+            _txtDesignation.Text = _entity.Designation;
+            _txtButtonName.Text = _entity.Button?.Label;
+            if (EntityHasImage)
+            {
+                ShowImage();
+            }
+            _comboPrinters.SelectedEntity = PrinterAssociationService.GetEntityPrinter(_entity.Id);
+            _checkDisabled.Active = _entity.IsDeleted;
+            _txtNotes.Value.Text = _entity.Notes;
+        }
+
+        private bool EntityHasImage => string.IsNullOrWhiteSpace(_entity.Button?.Image) == false && string.IsNullOrWhiteSpace(_entity.Button?.ImageExtension) == false;
+
+        private void ShowImage()
+        {
+            string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.Button.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.Button.Image, _entity.Button.ImageExtension);
+            _imagePicker.SetImage(imagePath);
+        }
+
+        private void UpdateImageInCache()
+        {
+            var previousExtension = _entity.Button?.ImageExtension;
+            if (!string.IsNullOrWhiteSpace(previousExtension))
+            {
+                ButtonImageCache.DeleteImage(_entity.Id, previousExtension);
+            }
+
+            if (!_imagePicker.HasImage)
+            {
+                return;
+            }
+
+            var extension = _imagePicker.GetImageExtension();
+            var base64 = _imagePicker.GetBase64Image();
+            ButtonImageCache.AddBase64Image(_entity.Id, base64, extension);
+
+            if (_entity.Button == null)
+            {
+                _entity.Button = new Api.ValueObjects.Button();
+            }
+
+            _entity.Button.Image = base64;
+            _entity.Button.ImageExtension = extension;
+        }
+
+        protected override bool UpdateEntity()
+        {
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
+            if (result.IsError)
+            {
+                return false;
+            }
+            UpdateImageInCache();
+            return true;
+        }
+
+        private IEnumerable<Printer> GetPrinters() => ExecuteGetEntitiesQuery(new GetAllPrintersQuery());
+        private IEnumerable<CommissionGroup> GetCommissionGroups() => ExecuteGetEntitiesQuery(new GetAllCommissionGroupsQuery());
+
+    }
+}

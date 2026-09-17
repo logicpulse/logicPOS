@@ -1,0 +1,116 @@
+using Gtk;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Menus;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Dialogs;
+using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
+using System.Drawing;
+using LogicPOS.Globalization;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    internal class ChangeUserModal : BaseDialog
+    {
+        private Size _sizePosSmallButtonScroller = AppSettings.Instance.SizePosSmallButtonScroller;
+        private Size _sizePosUserButton = AppSettings.Instance.SizePosUserButton;
+        private Size _sizeIconScrollLeftRight = new Size(62, 31);
+        private readonly string _fileScrollLeftImage = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_left.png";
+        private readonly string _fileScrollRightImage = AppSettings.Paths.Images + @"Buttons\Pos\button_subfamily_article_scroll_right.png";
+        private readonly Fixed _fixedContent;
+        private UsersMenu UsersMenu { get; set; }
+        private readonly IconButtonWithText _buttonCancel;
+        public User User { get; set; }
+
+        public ChangeUserModal(Window parentWindow)
+            : base(parentWindow, DialogFlags.DestroyWithParent)
+        {
+            //Init Local Vars
+            string windowTitle = LocalizedString.Instance["window_title_dialog_change_user"];
+            Size windowSize = new Size(559, 562);
+            string fileDefaultWindowIcon = AppSettings.Paths.Images + @"Icons\Windows\icon_window_users.png";
+
+            _fixedContent = new Fixed();
+
+            InitUsersMenu();
+
+            _buttonCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(_buttonCancel, ResponseType.Cancel)
+            };
+
+            Initialize(this,
+                       DialogFlags.DestroyWithParent,
+                       fileDefaultWindowIcon,
+                       windowTitle,
+                       windowSize,
+                       _fixedContent,
+                       actionAreaButtons);
+
+            UsersMenu.Refresh();
+        }
+
+        private void InitUsersMenu()
+        {
+            IconButton btnPrevious = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTablePrev",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollLeftImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = _sizePosSmallButtonScroller
+                });
+
+            IconButton btnNext = new IconButton(
+                new ButtonSettings
+                {
+                    Name = "buttonPosScrollersTableNext",
+                    BackgroundColor = Color.White,
+                    Icon = _fileScrollRightImage,
+                    IconSize = _sizeIconScrollLeftRight,
+                    ButtonSize = _sizePosSmallButtonScroller
+                });
+
+            btnPrevious.Relief = ReliefStyle.None;
+            btnNext.Relief = ReliefStyle.None;
+            btnPrevious.BorderWidth = 0;
+            btnNext.BorderWidth = 0;
+            btnPrevious.CanFocus = false;
+            btnNext.CanFocus = false;
+            HBox hboxPlaceScrollers = new HBox(true, 0);
+            hboxPlaceScrollers.PackStart(btnPrevious);
+            hboxPlaceScrollers.PackStart(btnNext);
+
+            UsersMenu = new UsersMenu(rows: 5,
+                                      columns: 4,
+                                      btnPrevious: btnPrevious,
+                                      btnNext: btnNext,
+                                      sourceWindow: this);
+
+            UsersMenu.OnEntitySelected += OnUserSelectd;
+            _fixedContent.Put(UsersMenu, 0, 0);
+            _fixedContent.Put(hboxPlaceScrollers, 0, 411);
+        }
+
+        private void OnUserSelectd(User user)
+        {
+            User = user;
+
+            UserPinModal pinModal = new UserPinModal(this, user);
+            var pinModalResponse = (ResponseType)pinModal.Run();
+
+            if (pinModalResponse == ResponseType.Ok)
+            {
+                POSWindow.Instance.UpdateUI();
+                BackOfficeWindow.Instance.UpdateUI();
+            }
+
+            pinModal.Destroy();
+        }
+    }
+}

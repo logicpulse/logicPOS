@@ -1,0 +1,70 @@
+using Gtk;
+using LogicPOS.Api.Features.Finance.Documents.Documents.Common;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Documents.Utilities;
+using LogicPOS.UI.Printing;
+using LogicPOS.Utility;
+using System;
+using System.Linq;
+using LogicPOS.Globalization;
+
+namespace LogicPOS.UI.Components.Pages
+{
+    public partial class DocumentsPage
+    {
+        public event EventHandler PageChanged;
+
+        private void AddEventHandlers()
+        {
+            SelectedEntityConfirmed += OnSelectedEntityConfirmed;
+        }
+
+        private void OnSelectedEntityConfirmed(DocumentViewModel document)
+        {
+            if (ThermalPrintingService.DocumentWasPrintedByThermalPrinter(SelectedEntity.Id))
+            {
+                var message = string.Format(LocalizedString.Instance["window_dialog_cant_open_document"], SelectedEntity.Number);
+                CustomAlerts.Warning(SourceWindow)
+                             .WithMessage(message)
+                             .ShowAlert();
+                return;
+
+            }
+            DocumentPdfUtils.ViewDocumentPdf(SourceWindow, document.Id);
+        }
+
+        private void CheckBox_Clicked(object o, ToggledArgs args)
+        {
+            if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
+            {
+                var document = (DocumentViewModel)GridView.Model.GetValue(iterator, 0);
+
+                if (SelectedDocuments.Count > 0 && !SelectedDocuments.Any(c => c.Customer.FiscalNumber == document.Customer.FiscalNumber))
+                {
+                    var checkButton = (CellRendererToggle)o;
+                    checkButton.Active = false;
+                    SelectedEntity = null;
+                    return;
+                }
+
+                if (SelectedDocuments.Contains(document))
+                {
+                    SelectedDocuments.Remove(document);
+                }
+                else
+                {
+                    SelectedDocuments.Add(document);
+                }
+
+                SelectedDocumentsTotalFinal = CalculateSelectedDocumentsTotalFinal();
+
+                PageChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+
+        }
+    }
+}

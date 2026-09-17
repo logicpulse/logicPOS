@@ -1,0 +1,427 @@
+using Gtk;
+using logicpos;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Api.Features.Common.Responses;
+using LogicPOS.Api.Features.Database;
+using LogicPOS.Api.Features.Finance.Saft.GetSaft;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application.Services;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Finance.Customers;
+using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Components.Pickers;
+using LogicPOS.UI.Errors;
+using LogicPOS.UI.Services;
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+
+namespace LogicPOS.UI.Components.Windows
+{
+    public partial class BackOfficeWindow
+    {
+        private void Window_Show(object sender, EventArgs e)
+        {
+            UpdateUI();
+        }
+
+        #region Documents
+        private void BtnNewDocument_Clicked(object sender, EventArgs e)
+        {
+            CreateDocumentModal.ShowModal(this);
+        }
+
+        private void BtnDocuments_Clicked(object sender, EventArgs e)
+        {
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.Default);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void BtnReceiptsEmission_Clicked(object sender, EventArgs e)
+        {
+            var modal = new DocumentsModal(this, Finance.Documents.Modals.DocumentsModal.DocumentsModalMode.UnpaidInvoices);
+            modal.Run();
+            modal.Destroy();
+        }
+        private void BtnReceipts_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReceiptsModal(this);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void BtnCurrentAccount_Clicked(object sender, EventArgs e)
+        {
+            CustomerCurrentAccountFilterModal.ShowModal(this);
+        }
+
+        #endregion
+
+        #region Reports
+        private void BtnReports_Clicked(object sender, EventArgs e)
+        {
+            ReportsModal.ShowModal(this);
+        }
+        #endregion
+
+        #region Articles 
+        private void BtnStock_Clicked(object sender, EventArgs e)
+        {
+            StockManagementModal.ShowModal(this);
+        }
+        #endregion
+
+        #region System
+        private void BtnLogout_Clicked(object sender, EventArgs e)
+        {
+            Hide();
+            LoginWindow.Instance.ShowAll();
+        }
+
+        private void BtnPOS_Clicked(object sender, EventArgs e)
+        {
+            Hide();
+            POSWindow.Instance.ShowAll();
+        }
+
+        private void BtnChangeLog_Clicked(object sender, EventArgs e)
+        {
+            Utils.ShowChangeLog(this);
+        }
+
+        private void BtnNotifications_Clicked(object sender, EventArgs e)
+        {
+            SystemNotificationsService.ShowNotifications();
+        }
+        private void BtnBackupDb_Clicked(object sender, EventArgs e)
+        {
+            var createBackupResponse = CustomAlerts.Question(this)
+                                                   .WithTitle("Backup")
+                                                   .WithMessage("Tem a certeza que pretende fazer o backup da base de dados?")
+                                                   .ShowAlert();
+
+            if (createBackupResponse != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var backupResult = DependencyInjection.Mediator.Send(new BackupDatabaseCommand()).Result;
+
+            if (backupResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(backupResult, source: this);
+                return;
+            }
+
+            CustomAlerts.Information(this)
+                         .WithMessage("Backup criado com sucesso.")
+                         .ShowAlert();
+        }
+
+        private void BtnRestoreDb_Clicked(object sender, EventArgs e)
+        {
+            var restoreDatabaseResponse = CustomAlerts.Question(this)
+                                                      .WithTitle("Restauro")
+                                                      .WithMessage("Tem a certeza que pretende restaurar a base de dados?\n")
+                                                      .ShowAlert();
+
+            if (restoreDatabaseResponse != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var restoreResult = DependencyInjection.Mediator.Send(new RestoreDatabaseCommand()).Result;
+
+            if (restoreResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(restoreResult, source: this);
+                return;
+            }
+
+            CustomAlerts.Information(this)
+                         .WithMessage("Por favor reinicie completamente o sistema (API, Aplicação)!")
+                         .ShowAlert();
+        }
+        #endregion
+
+
+        #region Export
+        private void BtnExportCustomSaft_Clicked(object sender, EventArgs e)
+        {
+            PosDatePickerStartEndDateDialog dateRangeModal = new PosDatePickerStartEndDateDialog(this, DialogFlags.DestroyWithParent);
+            ResponseType response = (ResponseType)dateRangeModal.Run();
+            if (response != ResponseType.Ok)
+            {
+                dateRangeModal.Destroy();
+                return;
+            }
+
+            var startDate = dateRangeModal.DateStart;
+            var endDate = dateRangeModal.DateEnd;
+            dateRangeModal.Destroy();
+
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_custom"]);
+        }
+
+        private void ExportSaftByPeriod(DateTime startDate, DateTime endDate, string modalTitle)
+        {
+            string defaultSaftFileName = $"saft_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}";
+            string destinationFilePath = FilePicker.GetSaveFilePath(this,
+                                                                    modalTitle,
+                                                                    defaultSaftFileName,
+                                                                    PreferenceParametersService.SaftExportPath);
+
+            if (destinationFilePath == null)
+            {
+                return;
+            }
+
+            var getSaft = DependencyInjection.Mediator.Send(new GetSaftQuery(startDate, endDate)).Result;
+
+            if (getSaft.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getSaft, source: this);
+                return;
+            }
+
+            string saftFileDestination = destinationFilePath + ".xml";
+
+            File.Copy(getSaft.Value.Path, saftFileDestination, true);
+        }
+
+        private void BtnExportYearlySaft_Clicked(object sender, EventArgs e)
+        {
+            DateTime startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            DateTime endDate = new DateTime(DateTime.Now.Year, 12, 31);
+
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_whole_year"]);
+        }
+
+        private void BtnExportLastMonthSaft_Clicked(object sender, EventArgs e)
+        {
+            DateTime startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(-1);
+            DateTime endDate = startDate.AddMonths(1).AddDays(-1);
+            ExportSaftByPeriod(startDate, endDate, LocalizedString.Instance["global_export_saftpt_last_month"]);
+        }
+
+        private void BtnExportArticles_Clicked(object sender, EventArgs e)
+        {
+            var tempPath = ArticlesService.ExportArticlesToExcel();
+            if (tempPath == null)
+            {
+                return;
+            }
+
+            var destination = FilePicker.GetSaveFilePath(
+                this,
+                LocalizedString.Instance["global_export_articles"],
+                global::System.IO.Path.GetFileNameWithoutExtension(tempPath));
+
+            if (destination == null)
+            {
+                return;
+            }
+
+            if (!destination.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                destination += ".xlsx";
+            }
+
+            File.Copy(tempPath, destination, true);
+            OpenExcelFile(destination);
+        }
+
+        private void BtnExportCustomers_Clicked(object sender, EventArgs e)
+        {
+            var tempPath = CustomersService.ExportCustomersToExcel();
+            if (tempPath == null)
+            {
+                return;
+            }
+
+            var destination = FilePicker.GetSaveFilePath(
+                this,
+                LocalizedString.Instance["global_export_costumers"],
+                global::System.IO.Path.GetFileNameWithoutExtension(tempPath));
+
+            if (destination == null)
+            {
+                return;
+            }
+
+            if (!destination.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                destination += ".xlsx";
+            }
+
+            File.Copy(tempPath, destination, true);
+            OpenExcelFile(destination);
+        }
+
+        private void BtnImportArticles_Clicked(object sender, EventArgs e)
+        {
+            var filePath = FilePicker.GetOpenFilePath(
+                this,
+                LocalizedString.Instance["global_import_articles"],
+                FilePicker.GetFileFilterImportExport());
+
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var result = ArticlesService.ImportArticlesFromExcel(filePath);
+            ShowExcelImportResult(result, "artigos");
+        }
+
+        private void BtnImportCustomers_Clicked(object sender, EventArgs e)
+        {
+            var filePath = FilePicker.GetOpenFilePath(
+                this,
+                LocalizedString.Instance["global_import_costumers"],
+                FilePicker.GetFileFilterImportExport());
+
+            if (filePath == null)
+            {
+                return;
+            }
+
+            var result = CustomersService.ImportCustomersFromExcel(filePath);
+            ShowExcelImportResult(result, "clientes");
+        }
+
+        private void ShowExcelImportResult(ExcelImportResponse result, string entityLabel)
+        {
+            if (result == null)
+            {
+                return;
+            }
+
+            var message = new StringBuilder();
+            message.AppendLine($"Importação de {entityLabel} concluída.");
+            message.AppendLine();
+            message.AppendLine($"Linhas: {result.RowsFound}");
+            message.AppendLine($"Criados: {result.Created}");
+            message.AppendLine($"Ignorados: {result.Skipped}");
+            message.AppendLine($"Falhados: {result.Failed}");
+
+            if (result.Failed > 0 && result.Items != null)
+            {
+                message.AppendLine();
+                message.AppendLine("Erros:");
+                foreach (var item in result.Items.Where(i => i.Action == "failed").Take(10))
+                {
+                    message.AppendLine($"Linha {item.RowNumber}: {item.Message}");
+                }
+            }
+
+            if (result.Failed > 0)
+            {
+                CustomAlerts.Warning(this).WithMessage(message.ToString()).ShowAlert();
+                return;
+            }
+
+            CustomAlerts.Information(this).WithMessage(message.ToString()).ShowAlert();
+        }
+
+        #endregion
+
+        private void BtnDocumentSeries_Clicked(object sender, EventArgs e)
+        {
+            if (FiscalYearsService.HasActiveFiscalYear() == false)
+            {
+                FiscalYearsService.ShowOpenFiscalYearAlert(this);
+                return;
+            }
+
+            ShowPage(DocumentSeriesPage.Instance, LocalizedString.Instance["global_documentfinance_series"]);
+        }
+
+        private void OpenExcelFile(string filePath)
+        {
+            if (filePath == null)
+            {
+                return;
+            }
+
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = filePath
+                };
+
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                CustomAlerts.Error(this).WithMessage($"Não foi possível abrir o Excel.\n\nMais detalhes:\n\n {ex.Message}").ShowAlert();
+            }
+        }
+
+        private void BtnExit_Clicked(object sender, EventArgs args)
+        {
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Program.Quit();
+            }
+        }
+
+        private void BtnDashBoard_Clicked(object sender, EventArgs args)
+        {
+            BtnDashboard.Page = new DashBoardPage(this);
+            MenuBtn_Clicked(BtnDashboard, null);
+        }
+
+        private void BtnUpdateSoftware_Clicked(object sender, EventArgs args)
+        {
+            var responseType = new CustomAlert(this)
+                                .WithMessageResource("global_pos_update")
+                                .WithSize(new Size(600, 400))
+                                .WithMessageType(MessageType.Question)
+                                .WithButtonsType(ButtonsType.YesNo)
+                                .WithTitle(string.Format(LocalizedString.Instance["window_title_dialog_update_POS"], SystemVersionService.LastestVersion))
+                                .ShowAlert();
+
+            if (responseType == ResponseType.Yes)
+            {
+                if (SystemUpdateService.ApiHasUpdate)
+                {
+                    SystemUpdateService.SendUpdateSignalToApi();
+                }
+                SystemUpdateService.RunAutoUpdater(Instance);
+            }
+        }
+
+        public void MenuBtn_Clicked(object sender, EventArgs e)
+        {
+            IconButtonWithText button = (IconButtonWithText)sender;
+
+            if (button.Page == null)
+            {
+                return;
+            }
+
+            if (CurrentPage != null)
+            {
+                PageContainer.Remove(CurrentPage);
+            }
+
+            CurrentPage = button.Page;
+
+            LabelActivePage.Text = button.Label;
+
+            CurrentPage.Visible = true;
+
+            PageContainer.PackStart(CurrentPage);
+        }
+    }
+}

@@ -1,0 +1,72 @@
+﻿using Gtk;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.Pages;
+using LogicPOS.UI.Settings;
+using System;
+using System.Drawing;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public class EntitySelectionModal<TEntity> : Modal where TEntity : ApiEntity
+    {
+        public Size SelectionPageSize => new Size(WindowSettings.Size.Width - 14, WindowSettings.Size.Height - 124);
+        public Page<TEntity> Page { get; private set; }
+
+        public EntitySelectionModal(Page<TEntity> page,
+                                    string title) : base(page.SourceWindow,
+                                                         title,
+                                                         AppSettings.MaxWindowSize,
+                                                         $"{AppSettings.Paths.Images}{@"Icons/Windows/icon_window_select_record.png"}",
+                                                         render: false)
+        {
+            Page = page;
+            Page.SetSizeRequest(SelectionPageSize.Width, SelectionPageSize.Height);
+            AddEventHandlers();
+            Render();
+        }
+
+        private void AddEventHandlers()
+        {
+            Page.SelectedEntityConfirmed += Page_SelectedEntityConfirmed;
+        }
+
+        private void Page_SelectedEntityConfirmed(TEntity entity)
+        {
+             Respond(ResponseType.Ok);
+        }
+
+        protected override ActionAreaButtons CreateActionAreaButtons()
+        {
+            var btnOk = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+            var btnCancel = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+
+            ActionAreaButtons actionAreaButtons = new ActionAreaButtons
+            {
+                new ActionAreaButton(btnOk, ResponseType.Ok),
+                new ActionAreaButton(btnCancel, ResponseType.Cancel)
+            };
+            return actionAreaButtons;
+        }
+
+        protected override Widget CreateBody()
+        {
+            Fixed fixedContent = new Fixed();
+            fixedContent.Put(Page, 0, 0);
+            return fixedContent;
+        }
+
+        protected override Widget CreateLeftContent()
+        {
+            return CreateSearchBox();
+        }
+
+        private Widget CreateSearchBox()
+        {
+            Page.Navigator.Bar.Remove(Page.Navigator.SearchBox);
+            return Page.Navigator.SearchBox;
+        }
+
+    }
+}

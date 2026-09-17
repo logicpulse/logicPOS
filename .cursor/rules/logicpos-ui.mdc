@@ -1,0 +1,15 @@
+---
+description: Conventions for LogicPOS.UI GTK desktop application
+globs: LogicPOS.UI/**/*.cs
+alwaysApply: false
+---
+
+# LogicPOS.UI patterns
+
+- UI is **GTK#** — widgets, dialogs, and `Gtk.Application` lifecycle. Follow existing component folder layout (`Components/`, `Application/`).
+- **MediatR** access: **`DependencyInjection.Mediator`** (`ISender`). Prefer async-aware usage where handlers support it; existing code often uses `.Result` — match local style in the same file.
+- **Settings**: **`AppSettings`** reads **`appsettings.json`** at startup; do not hardcode paths that belong in JSON.
+- **Partial classes** and split files (`*.Components.cs`, `*.Validation.cs`) are common — extend the same pattern when adding substantial code.
+- **Designer / generated**: avoid manual edits to auto-generated regions unless fixing a specific bug; coordinate with how GTK designer files are maintained.
+- **Resources**: images and themes under **`Assets/`**; keyboards under **`Resources/Keyboards/`**. Copy-to-output is defined in the csproj.
+- Do not introduce new UI frameworks (WPF, MAUI, etc.) without an explicit product decision.

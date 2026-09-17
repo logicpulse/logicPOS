@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build",
+      "type": "shell",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/.vscode/build-solution.ps1\" -Target Build -Configuration Debug",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build (Release)",
+      "type": "shell",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/.vscode/build-solution.ps1\" -Target Build -Configuration Release",
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "rebuild",
+      "type": "shell",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/.vscode/build-solution.ps1\" -Target Rebuild -Configuration Debug",
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

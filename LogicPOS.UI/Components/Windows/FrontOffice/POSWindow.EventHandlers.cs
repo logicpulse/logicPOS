@@ -1,0 +1,295 @@
+using Gtk;
+using logicpos.Classes.Gui.Gtk.Pos.Dialogs;
+using LogicPOS.Globalization;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Application.Enums;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.FiscalYears;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.POS;
+using LogicPOS.UI.Components.POS.Devices.Hardware;
+using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
+using LogicPOS.Utility;
+using Serilog;
+using System;
+
+namespace LogicPOS.UI.Components.Windows
+{
+    public partial class POSWindow
+    {
+        private static int _activityTimer = InactityTimeout;
+        private static bool _controlActivity = true;
+        private static bool UseInactityTimeout => AppSettings.Instance.InactivityTimeout.HasValue && AppSettings.Instance.InactivityTimeout.Value > 0;
+        private static int InactityTimeout => AppSettings.Instance.InactivityTimeout ?? 0;
+
+        private void ResetActivityTimer()
+        {
+            _activityTimer = InactityTimeout;
+        }
+
+        private void HookWidgetAndChildren(Widget widget)
+        {
+            widget.ButtonPressEvent += (o, args) => ResetActivityTimer();
+            widget.KeyPressEvent += (o, args) => ResetActivityTimer();
+            widget.FocusInEvent += (o, args) => ResetActivityTimer();
+            widget.MotionNotifyEvent += (o, args) => ResetActivityTimer();
+
+            if (widget is Button btn)
+            {
+                btn.Clicked += (o, args) => ResetActivityTimer();
+            }
+
+            if (widget is Container container)
+            {
+                foreach (Widget child in container.Children)
+                {
+                    HookWidgetAndChildren(child);
+                }
+            }
+        }
+
+        private bool UpdateClock()
+        {
+            if (Visible == false)
+            {
+                return true;
+            }
+
+            if (UseInactityTimeout && _controlActivity)
+            {
+                if (_activityTimer-- <= 0)
+                {
+                    ResetActivityTimer();
+                    BtnLogOut_Clicked(this, EventArgs.Empty);
+                }
+            }
+
+            LabelClock.Text = DateTime.Now.ToString(LocalizedString.Instance["frontoffice_datetime_format_status_bar"]);
+            
+            if (UseInactityTimeout)
+            {
+                LabelClock.Text += $"<{_activityTimer}>";
+            }
+
+            return true;
+        }
+
+        private void AddEventHandlers()
+        {
+            WindowStateEvent += Window_StateEvent;
+            this.KeyReleaseEvent += Window_KeyReleaseEvent;
+            this.Shown += POSWindow_Shown;
+
+            BtnQuit.Clicked += BtnQuit_Clicked;
+            BtnBackOffice.Clicked += BtnBackOffice_Clicked;
+            BtnReports.Clicked += BtnReports_Clicked;
+            BtnLogOut.Clicked += BtnLogOut_Clicked;
+            BtnChangeUser.Clicked += BtnChangeUser_Clicked;
+            BtnSessionOpening.Clicked += BtnCashDrawer_Clicked;
+            BtnNewDocument.Clicked += BtnNewDocument_Clicked;
+            BtnDocuments.Clicked += BtnDocuments_Clicked;
+
+            if (UseInactityTimeout)
+            {
+                HookWidgetAndChildren(this);
+            }
+
+            this.FocusInEvent += (s,e) => _controlActivity = true; 
+            this.FocusOutEvent += (s,e) => _controlActivity = false;
+        }
+
+        private void POSWindow_Shown(object sender, EventArgs e)
+        {
+            ResetActivityTimer();
+            UpdateUI();
+        }
+
+        private void Window_StateEvent(object o, WindowStateEventArgs args)
+        {
+
+        }
+
+        private void ImageLogo_Clicked(object o, ButtonPressEventArgs args)
+        {
+            if (args.Event.Type == Gdk.EventType.TwoButtonPress)
+            {
+                UserPinModal pinModal = new UserPinModal(this, AuthenticationService.User);
+                var pinModalResponse = (ResponseType)pinModal.Run();
+
+                if (pinModalResponse == ResponseType.Ok)
+                {
+                    AuthenticationService.HardwareOpenDrawer();
+                }
+
+                pinModal.Destroy();
+            }
+        }
+
+        private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        {
+            if (LogicPOSApp.BarCodeReader != null)
+            {
+                LogicPOSApp.BarCodeReader.KeyReleaseEvent(this, o, args);
+            }
+        }
+
+        private void BtnQuit_Clicked(object sender, EventArgs e)
+        {
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Program.Quit();
+            }
+        }
+
+        private void BtnBackOffice_Clicked(object sender, EventArgs e)
+        {
+            Hide();
+            BackOfficeWindow.ShowBackOffice();
+        }
+
+        private void BtnReports_Clicked(object sender, EventArgs e)
+        {
+            ReportsModal.ShowModal(this);
+        }
+
+        private void BtnLogOut_Clicked(object sender, EventArgs e)
+        {
+            Hide();
+            LoginWindow.Instance.ShowAll();
+        }
+
+        private void BtnCashDrawer_Clicked(object sender, EventArgs e)
+        {
+            if (FiscalYearsService.HasActiveFiscalYear() == false)
+            {
+                FiscalYearsService.ShowOpenFiscalYearAlert(this);
+                return;
+            }
+
+            SessionOpeningModal modal = new SessionOpeningModal(this);
+            modal.Run();
+            modal.Destroy();
+        }
+
+        private void BtnNewDocument_Clicked(object sender, EventArgs e)
+        {
+            CreateDocumentModal.ShowModal(this);
+        }
+
+        private void BtnDocuments_Clicked(object sender, EventArgs e)
+        {
+            var documentsMenu = new DocumentsMenuModal(this);
+            documentsMenu.Run();
+            documentsMenu.Destroy();
+        }
+
+        private void BtnChangeUser_Clicked(object sender, EventArgs e)
+        {
+            ChangeUserModal changeUserModal = new ChangeUserModal(this);
+            changeUserModal.Run();
+            changeUserModal.Destroy();
+        }
+
+        private void BtnFavorites_Clicked(object sender, EventArgs e)
+        {
+            if (MenuFamilies.SelectedButton != null &&
+                MenuFamilies.SelectedButton.Sensitive == false && !MenuArticles.PresentFavorites)
+            {
+                MenuSubfamilies.SelectedButton.Sensitive = true;
+                MenuSubfamilies.SelectedButton = null;
+            }
+
+            MenuArticles.PresentFavorites = true;
+
+            MenuArticles.Refresh();
+        }
+
+        private void HWBarCodeReader_Captured(object sender, EventArgs e)
+        {
+            try
+            {
+                var reader = LogicPOSApp.BarCodeReader;
+                if (reader == null)
+                {
+                    return;
+                }
+
+                // Buffer is cleared by InputReader after this event returns — capture first.
+                var code = reader.Buffer?.Trim();
+                if (string.IsNullOrEmpty(code))
+                {
+                    return;
+                }
+
+                switch (reader.Device)
+                {
+                    case InputReaderType.None:
+                        break;
+                    case InputReaderType.BarCodeReader:
+                    case InputReaderType.CardReader:
+                        ProcessCapturedReaderCode(code);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error processing barcode/card reader capture");
+                CustomAlerts.Warning(this)
+                            .WithMessage(ex.Message)
+                            .ShowAlert();
+            }
+        }
+
+        private void ProcessCapturedReaderCode(string code)
+        {
+            if (AppSettings.Instance.OperationMode.IsParkingMode())
+            {
+                GeneralUtils.ShowNotImplementedMessage();
+                return;
+            }
+
+            if (!WorkSessionsService.TerminalIsOpen() || SaleContext.CurrentTable == null)
+            {
+                var tableMessageKey = AppSettings.Instance.OperationMode.IsRetailMode()
+                    ? "status_message_select_order_or_table_appmode_retail"
+                    : "status_message_select_order_or_table_appmode_default";
+
+                CustomAlerts.Warning(this)
+                            .WithMessage(LocalizedString.Instance[tableMessageKey])
+                            .ShowAlert();
+                return;
+            }
+
+            var article = ArticlesService.GetArticleByCode(code);
+            if (article == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithMessage(LocalizedString.Instance["global_invalid_code"])
+                            .ShowAlert();
+                return;
+            }
+
+            MenuArticles.BtnArticle_Clicked(article);
+            SaleOptionsPanel?.UpdateButtonsSensitivity();
+        }
+
+        private void ScrollTextViewLog(object o, SizeAllocatedArgs args)
+        {
+            TextViewLog.ScrollToIter(TextViewLog.Buffer.EndIter, 0, false, 0, 0);
+        }
+
+        public void UpdatePrivileges()
+        {
+            BtnBackOffice.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.BACKOFFICE_ACCESS);
+            BtnSessionOpening.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.WorkSessions.WORKSESSION_ALL);
+            BtnReports.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Reports.REPORT_ACCESS);
+            BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Types.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE);
+        }
+    }
+}

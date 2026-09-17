@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // .NET Framework — use "clr". Do not use "dotnet" / Core profiles (hostpolicy/runtimeconfig errors).
+    // Desktop CLR in VS Code is x64-only; Debug builds set Prefer32Bit=false on LogicPOS.UI.
+    {
+      "name": "Launch LogicPOS (.NET Framework CLR)",
+      "type": "clr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}\\..\\artifacts\\logicpos\\Debug\\logicpos.exe",
+      "cwd": "${workspaceFolder}\\..\\artifacts\\logicpos\\Debug",
+      "args": []
+    },
+    {
+      "name": "Attach to logicpos (CLR)",
+      "type": "clr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    }
+  ]
+}

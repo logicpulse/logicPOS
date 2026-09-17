@@ -1,0 +1,20 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.Utility;
+using LogicPOS.Globalization;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class ArticleFamilyModal
+    {
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtDesignation = TextBox.CreateDesignationField();
+        private TextBox _txtButtonName = TextBox.Simple("global_button_name");
+        private ImagePicker _imagePicker = new ImagePicker(LocalizedString.Instance["global_button_image"]);
+        private EntityComboBox<CommissionGroup> _comboCommissionGroups;
+        private EntityComboBox<Api.Entities.Printer> _comboPrinters;
+
+    }
+}

@@ -1,0 +1,57 @@
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Classes.AddArticleClass;
+using LogicPOS.Api.Features.Articles.Classes.UpdateArticleClass;
+
+
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class ArticleClassModal : EntityEditionModal<ArticleClass>
+    {
+        public ArticleClassModal(EntityEditionModalMode modalMode, ArticleClass entity = null) : base(modalMode, entity)
+        {
+            _txtAcronym.Entry.Sensitive = false;
+        }
+
+        private AddArticleClassCommand CreateAddCommand()
+        {
+            return new AddArticleClassCommand
+            {
+                Designation = _txtDesignation.Text,
+                Acronym = _txtAcronym.Text,
+                WorkInStock = _checkWorkInStock.Active,
+                Notes = _txtNotes.Value.Text
+            };
+        }
+
+        private UpdateArticleClassCommand CreateUpdateCommand()
+        {
+            return new UpdateArticleClassCommand
+            {
+                Id = _entity.Id,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Acronym = _txtAcronym.Text,
+                WorkInStock = _checkWorkInStock.Active,
+                Notes = _txtNotes.Value.Text,
+                IsDeleted = _checkDisabled.Active
+            };
+        }
+
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+
+        protected override void ShowEntityData()
+        {
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtCode.Text = _entity.Code;
+            _txtDesignation.Text = _entity.Designation;
+            _txtAcronym.Text = _entity.Acronym;
+            _checkWorkInStock.Active = _entity.WorkInStock;
+            _checkDisabled.Active = _entity.IsDeleted;
+            _txtNotes.Value.Text = _entity.Notes;
+        }
+
+        protected override bool UpdateEntity()=> ExecuteUpdateCommand(CreateUpdateCommand()).IsError == false;
+    }
+}

@@ -1,0 +1,97 @@
+using Gtk;
+using logicpos.Classes.Enums.Widgets;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Authentication;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Application.Enums;
+using LogicPOS.UI.Components.Users;
+using LogicPOS.UI.Settings;
+using System;
+using System.Drawing;
+
+namespace LogicPOS.UI.Components.Windows
+{
+    public partial class LoginWindow
+    {
+        private void PinPanel_BtnOK_Clicked(object sender, EventArgs e)
+        {
+            if (MenuUsers.SelectedEntity == null)
+            {
+                CustomAlerts.Warning(this)
+                            .WithSize(new Size(500, 340))
+                            .WithTitleResource("global_warning")
+                            .WithMessage("Usuário não selecionado!")
+                            .ShowAlert();
+                return;
+            }
+
+            if (!PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text))
+            {
+                return;
+            }
+
+            ProcessLogin();
+        }
+
+        private void BtnResetPassword_Clicked(object sender, EventArgs e)
+        {
+            string currentPin = PinPanel.TxtPin.Text;
+            PinPanel.Mode = NumberPadPinMode.PasswordReset;
+            PinPanel.TxtPin.Text = currentPin;
+
+            PinPanel.ProcessPassword(MenuUsers.SelectedEntity, PinPanel.TxtPin.Text);
+        }
+
+        private void ProcessLogin()
+        {
+            AuthenticationService.LoginUser(MenuUsers.SelectedEntity, PinPanel.JwtToken);
+            PinPanel.Mode = NumberPadPinMode.Password;
+
+            if (AppSettings.Instance.OperationMode.IsBackOfficeMode())
+            {
+                BackOfficeWindow.ShowBackOffice();
+            }
+            else
+            {
+                POSWindow.ShowPOS();
+            }
+
+            Hide();
+        }
+
+        private void Window_KeyReleaseEvent(object o, KeyReleaseEventArgs args)
+        {
+            if (args.Event.Key.ToString().Equals("Return") == false)
+            {
+                return;
+            }
+
+            // Delegate to the same path as the OK button (includes ProcessLogin). The pin field
+            // stops propagation when it handles Return; this covers focus outside the pin entry.
+            if (MenuUsers.SelectedEntity != null && PinPanel.TxtPin.Validated)
+            {
+                PinPanel_BtnOK_Clicked(o, args);
+            }
+        }
+
+        private void BtnQuit_Clicked(object sender, EventArgs e)
+        {
+            if (CustomAlerts.ShowQuitConfirmationAlert(this))
+            {
+                Program.Quit();
+            }
+        }
+
+        private void OnUserSelected(User user)
+        {
+            PinPanel.PrepareModeForUser(user);
+            PinPanel.TxtPin.GrabFocus();
+        }
+
+        private void LoginWindow_Shown(object sender, EventArgs e)
+        {
+            AuthenticationData.Token = null;
+            MenuUsers.Refresh();
+        }
+    }
+}
