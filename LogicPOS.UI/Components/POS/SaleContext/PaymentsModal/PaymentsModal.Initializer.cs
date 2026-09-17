@@ -157,8 +157,6 @@ namespace LogicPOS.UI.Components.POS
 
         private void InitializeTxtFiscalNumber()
         {
-            // ✅ CORRIGIDO: Inicializa com isRequired=true por padrão
-            // O Validate() vai ajustar dinamicamente conforme o país
             TxtFiscalNumber = new TextBox(this,
                                               LocalizedString.Instance["global_fiscal_number"],
                                               isRequired: true,
@@ -168,10 +166,7 @@ namespace LogicPOS.UI.Components.POS
                                               includeKeyBoardButton: true,
                                               includeClearButton: false);
 
-            // ✅ Adiciona à lista de campos validáveis
-            // O Validate() remove se for estrangeiro sem NIF
             ValidatableFields.Add(TxtFiscalNumber);
-            
             TxtFiscalNumber.WithAutoCompletion(CustomersService.FiscalNumberAutocompleteLines, id => CustomersService.GetById(id));
             TxtFiscalNumber.OnCompletionSelected += c => SelectCustomer(c as Customer);
             TxtFiscalNumber.Entry.Changed += TxtFiscalNumber_Changed;

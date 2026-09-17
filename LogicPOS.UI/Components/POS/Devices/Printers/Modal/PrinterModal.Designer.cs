@@ -14,13 +14,94 @@ namespace LogicPOS.UI.Components.Modals
 {
     public partial class PrinterModal
     {
-        public override Size ModalSize => new Size(500, 420);
+        private Notebook _notebook;
+        private VBox _thermalTab;
+        private string _thermalTabTitle;
+
+        public override Size ModalSize => new Size(500, 560);
         public override string ModalTitleResourceName => "dialog_edit_DialogConfigurationPrinters_tab1_label";
 
         protected override void Initialize()
         {
             InitializePrinterTypesComboBox();
             _comboDesignation = CreatePrinterDesignationCombobox();
+            ApplyThermalCharsDefaults();
+            _comboPrinterTypes.ComboBox.Changed += OnPrinterTypeChanged;
+        }
+
+        private void OnPrinterTypeChanged(object sender, EventArgs e)
+        {
+            UpdateThermalTabVisibility();
+        }
+
+        private bool IsThermalTypeSelected() =>
+            _comboPrinterTypes?.SelectedEntity?.ThermalPrinter == true;
+
+        private void UpdateThermalTabVisibility()
+        {
+            if (_notebook == null || _thermalTab == null)
+            {
+                return;
+            }
+
+            var showThermal = IsThermalTypeSelected();
+            var pageIndex = _notebook.PageNum(_thermalTab);
+
+            if (showThermal && pageIndex < 0)
+            {
+                // Insert before the notes tab (always last).
+                var insertAt = Math.Max(1, _notebook.NPages - 1);
+                _notebook.InsertPage(_thermalTab, new Label(_thermalTabTitle), insertAt);
+                _thermalTab.ShowAll();
+            }
+            else if (!showThermal && pageIndex >= 0)
+            {
+                if (_notebook.CurrentPage == pageIndex)
+                {
+                    _notebook.CurrentPage = 0;
+                }
+
+                _notebook.RemovePage(pageIndex);
+            }
+
+            SyncThermalValidation(showThermal);
+        }
+
+        private void SyncThermalValidation(bool isThermal)
+        {
+            if (_modalMode == EntityEditionModalMode.View)
+            {
+                return;
+            }
+
+            if (isThermal)
+            {
+                ValidatableFields.Add(_txtThermalMaxCharsPerLineNormal);
+                ValidatableFields.Add(_txtThermalMaxCharsPerLineNormalBold);
+                ValidatableFields.Add(_txtThermalMaxCharsPerLineSmall);
+            }
+            else
+            {
+                ValidatableFields.Remove(_txtThermalMaxCharsPerLineNormal);
+                ValidatableFields.Remove(_txtThermalMaxCharsPerLineNormalBold);
+                ValidatableFields.Remove(_txtThermalMaxCharsPerLineSmall);
+            }
+        }
+
+        private void ApplyThermalCharsDefaults()
+        {
+            if (_entity == null || _entity.ThermalMaxCharsPerLineNormal.GetValueOrDefault() <= 0)
+            {
+                _txtThermalMaxCharsPerLineNormal.Text = LogicPOS.Api.Entities.Printer.DefaultThermalMaxCharsPerLineNormal.ToString();
+            }
+            if (_entity == null || _entity.ThermalMaxCharsPerLineNormalBold.GetValueOrDefault() <= 0)
+            {
+                _txtThermalMaxCharsPerLineNormalBold.Text = LogicPOS.Api.Entities.Printer.DefaultThermalMaxCharsPerLineNormalBold.ToString();
+            }
+            if (_entity == null || _entity.ThermalMaxCharsPerLineSmall.GetValueOrDefault() <= 0)
+            {
+                _txtThermalMaxCharsPerLineSmall.Text = LogicPOS.Api.Entities.Printer.DefaultThermalMaxCharsPerLineSmall.ToString();
+            }
         }
 
         private void InitializePrinterTypesComboBox()
@@ -42,6 +123,9 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_labelDesignation);
             SensitiveFields.Add(_comboDesignation);
             SensitiveFields.Add(_txtNetworkName.Entry);
+            SensitiveFields.Add(_txtThermalMaxCharsPerLineNormal.Entry);
+            SensitiveFields.Add(_txtThermalMaxCharsPerLineNormalBold.Entry);
+            SensitiveFields.Add(_txtThermalMaxCharsPerLineSmall.Entry);
             SensitiveFields.Add(_txtNotes.TextView);
             SensitiveFields.Add(_checkDisabled);
             SensitiveFields.Add(_comboPrinterTypes.ComboBox);
@@ -52,20 +136,38 @@ namespace LogicPOS.UI.Components.Modals
             switch (_modalMode)
             {
                 case EntityEditionModalMode.Insert:
-                    ValidatableFields.Add(_comboPrinterTypes);
-                    ValidatableFields.Add(_txtNetworkName);
-                    break;
                 case EntityEditionModalMode.Update:
                     ValidatableFields.Add(_comboPrinterTypes);
                     ValidatableFields.Add(_txtNetworkName);
+                    SyncThermalValidation(IsThermalTypeSelected());
                     break;
             }
         }
 
         protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
         {
+            // Thermal tab is managed separately in CreateNoteBook / UpdateThermalTabVisibility.
             yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
             yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
+        }
+
+        protected override Notebook CreateNoteBook()
+        {
+            _notebook = new Notebook { BorderWidth = 3 };
+            _thermalTab = CreateThermalTab();
+            _thermalTabTitle = LocalizedString.Instance["global_printer_thermal_printer"];
+
+            foreach (var tab in CreateTabs())
+            {
+                _notebook.AppendPage(tab.Page, new Label(tab.Title));
+            }
+
+            if (IsThermalTypeSelected())
+            {
+                _notebook.InsertPage(_thermalTab, new Label(_thermalTabTitle), 1);
+            }
+
+            return _notebook;
         }
 
         private VBox CreateDetailsTab()
@@ -88,6 +190,15 @@ namespace LogicPOS.UI.Components.Modals
             }
 
             return detailsTab;
+        }
+
+        private VBox CreateThermalTab()
+        {
+            var thermalTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+            thermalTab.PackStart(_txtThermalMaxCharsPerLineNormal.Component, false, false, 0);
+            thermalTab.PackStart(_txtThermalMaxCharsPerLineNormalBold.Component, false, false, 0);
+            thermalTab.PackStart(_txtThermalMaxCharsPerLineSmall.Component, false, false, 0);
+            return thermalTab;
         }
 
         private ComboBox CreatePrinterDesignationCombobox()

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Data;
 using Printer = ESC_POS_USB_NET.Printer.Printer;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Application.Services;
 
 namespace LogicPOS.UI.Printing
 {
@@ -42,19 +43,17 @@ namespace LogicPOS.UI.Printing
             _printer.ExpandedMode(PrinterModeState.On);
             _printer.CondensedMode(PrinterModeState.On);
             _printer.DoubleWidth3();
-            _printer.BoldMode(_ticketTitle);
-            _printer.NewLine();
-            _printer.Append(_ticketSubTitle);
+            AppendBoldLine(_printer, _ticketTitle);
+            BlankSeparator();
+            _printer.Append(ToThermalText(_ticketSubTitle));
             _printer.NormalWidth();
             _printer.CondensedMode(PrinterModeState.Off);
             _printer.ExpandedMode(PrinterModeState.Off);
-            _printer.NormalLineHeight();
+            ResetPrintModes();
         }
 
         private void PrintDocumentDetails()
         {
-            _printer.NormalLineHeight();
-            _printer.NewLine();
             List<TicketColumn> columns = new List<TicketColumn>
             {
                 new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left),
@@ -62,9 +61,7 @@ namespace LogicPOS.UI.Printing
                 new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right)
             };
 
-            //Prepare Table with Padding
-            DataTable dataTable = TicketTable.InitDataTableFromTicketColumns(columns);
-            TicketTable ticketTable = new TicketTable(columns);
+            TicketTable ticketTable = new TicketTable(columns, Layout.Columns);
 
             DataRow dataRow;
             foreach (var item in _ticket.Items)
@@ -81,24 +78,18 @@ namespace LogicPOS.UI.Printing
 
         private void PrintFooter()
         {
-            _printer.Separator(' ');
             _printer.Append(LocalizedString.Instance["global_internal_document_footer1"]);
             _printer.Append(LocalizedString.Instance["global_internal_document_footer2"]);
-            _printer.Separator(' ');
-            _printer.NewLine();
             _printer.Append(LocalizedString.Instance["global_internal_document_footer3"]);
-            _printer.Separator(' ');
             _printer.NewLine();
             _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
-            _printer.NewLine();
-            //Printed On | Company|App|Version
             _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
                 , Environment.NewLine
                 , LocalizedString.Instance["global_printed_on_date"]
                 , DateTime.Now.ToLocalTime()
                 , "LogicPulse"//_customVars["APP_COMPANY"]
                 , "LogicPOS"//_customVars["APP_NAME"]
-                , "vs1.010.1"//_customVars["APP_VERSION"]
+                , $"vs {SystemVersionService.ApiVersion}"//_customVars["APP_VERSION"]
                 ));
         }
 
@@ -110,7 +101,10 @@ namespace LogicPOS.UI.Printing
 
             PrintHeader();
             PrintTitle();
+            BlankSeparator();
             PrintDocumentDetails();
+            _printer.AlignCenter();
+            _printer.NewLine();
             PrintFooter();
             _printer.FullPaperCut();
             ThermalPrinterTarget.Commit(_printer);

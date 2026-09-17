@@ -14,6 +14,8 @@ namespace LogicPOS.Api.Features.Printers.UpdatePrinter
         public string NetworkName { get; set; }
         public string Notes { get; set; }
         public bool IsDeleted { get; set; }
-
+        public int ThermalMaxCharsPerLineNormal { get; set; }
+        public int ThermalMaxCharsPerLineNormalBold { get; set; }
+        public int ThermalMaxCharsPerLineSmall { get; set; }
     }
 }

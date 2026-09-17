@@ -1,5 +1,6 @@
 ﻿
 using ESC_POS_USB_NET.Printer;
+using LogicPOS.UI.Printing;
 using LogicPOS.UI.Printing.Enums;
 using System;
 using System.Collections.Generic;
@@ -129,6 +130,51 @@ namespace LogicPOS.UI.Printing.Tickets
             ConfigColumns(_columnsProperties, TableWidth);
         }
 
+        private void ShrinkFixedColumns(int availableForFixed, ref int checkTableWidth)
+        {
+            if (checkTableWidth <= 0 || availableForFixed <= 0)
+            {
+                return;
+            }
+
+            var scale = (double)availableForFixed / checkTableWidth;
+            checkTableWidth = 0;
+
+            for (var i = 0; i < Columns.Count; i++)
+            {
+                var ticketColumn = Columns[i].ExtendedProperties["Ticket"] as TicketColumn;
+                if (ticketColumn == null || ticketColumn.Width <= 0)
+                {
+                    continue;
+                }
+
+                ticketColumn.Width = Math.Max(1, (int)Math.Floor(ticketColumn.Width * scale));
+                checkTableWidth += ticketColumn.Width;
+            }
+
+            while (checkTableWidth > availableForFixed)
+            {
+                var shrunk = false;
+                for (var i = 0; i < Columns.Count && checkTableWidth > availableForFixed; i++)
+                {
+                    var ticketColumn = Columns[i].ExtendedProperties["Ticket"] as TicketColumn;
+                    if (ticketColumn == null || ticketColumn.Width <= 1)
+                    {
+                        continue;
+                    }
+
+                    ticketColumn.Width--;
+                    checkTableWidth--;
+                    shrunk = true;
+                }
+
+                if (!shrunk)
+                {
+                    break;
+                }
+            }
+        }
+
         //Can be used Outside
         private void ConfigColumns(List<TicketColumn> pColumnsProperties, int pTableWidth)
         {
@@ -155,15 +201,18 @@ namespace LogicPOS.UI.Printing.Tickets
                     this.Columns[i].ExtendedProperties.Add("Ticket", new TicketColumn(item.Name, item.Title, item.Width, item.Align, item.DataType, item.Format));
                 }
 
-                //Check if final Table Width is bigger than pTableWidth
+                // Shrink fixed columns when printer width is narrower than the template.
                 if (checkTableWidth > pTableWidth)
                 {
-                    throw new Exception($"Error columns to large to fit{Environment.NewLine}checkTableWidth: [{checkTableWidth}] > [{pTableWidth}]");
+                    var reservedForDynamic = dynamicColumn > -1 ? Math.Min(4, Math.Max(1, pTableWidth / 5)) : 0;
+                    var availableForFixed = Math.Max(pTableWidth - reservedForDynamic, pColumnsProperties.Count);
+                    ShrinkFixedColumns(availableForFixed, ref checkTableWidth);
                 }
-                else if (dynamicColumn > -1)//0
+
+                if (dynamicColumn > -1)
                 {
-                    //Calc and Assign Dynamic Width
-                    (this.Columns[dynamicColumn].ExtendedProperties["Ticket"] as TicketColumn).Width = pTableWidth - checkTableWidth;
+                    (this.Columns[dynamicColumn].ExtendedProperties["Ticket"] as TicketColumn).Width =
+                        Math.Max(1, pTableWidth - checkTableWidth);
                 }
             }
         }
@@ -215,29 +264,52 @@ namespace LogicPOS.UI.Printing.Tickets
                     }
                 }
 
-                //Add Divider and Trim Column if not last Column
+                // Build each cell to exact Width: pad content first, then add divider on non-last columns.
                 if (i < this.Columns.Count - 1)
                 {
-                    if (formatedColumn.Length > ticketColumn.Width - 1) formatedColumn = formatedColumn.Substring(0, ticketColumn.Width - 1);
+                    var contentWidth = Math.Max(1, ticketColumn.Width - 1);
+                    if (formatedColumn.Length > contentWidth)
+                    {
+                        formatedColumn = formatedColumn.Substring(0, contentWidth);
+                    }
+
+                    switch (ticketColumn.Align)
+                    {
+                        case TicketColumnsAlignment.Left:
+                            formatedColumn = formatedColumn.PadRight(contentWidth);
+                            break;
+                        case TicketColumnsAlignment.Right:
+                            formatedColumn = formatedColumn.PadLeft(contentWidth);
+                            break;
+                    }
+
                     formatedColumn += _columnDivider;
                 }
                 else
                 {
-                    if (formatedColumn.Length > ticketColumn.Width) formatedColumn = formatedColumn.Substring(0, ticketColumn.Width);
-                }
+                    if (formatedColumn.Length > ticketColumn.Width)
+                    {
+                        formatedColumn = formatedColumn.Substring(0, ticketColumn.Width);
+                    }
 
-                //Padding after Substr
-                switch (ticketColumn.Align)
-                {
-                    case TicketColumnsAlignment.Left:
-                        formatedColumn = formatedColumn.PadRight(ticketColumn.Width);
-                        break;
-                    case TicketColumnsAlignment.Right:
-                        formatedColumn = formatedColumn.PadLeft(ticketColumn.Width);
-                        break;
+                    switch (ticketColumn.Align)
+                    {
+                        case TicketColumnsAlignment.Left:
+                            formatedColumn = formatedColumn.PadRight(ticketColumn.Width);
+                            break;
+                        case TicketColumnsAlignment.Right:
+                            formatedColumn = formatedColumn.PadLeft(ticketColumn.Width);
+                            break;
+                    }
                 }
 
                 result += formatedColumn;
+            }
+
+            // Never exceed table width (avoids wrap of the last character).
+            if (TableWidth > 0 && result.Length > TableWidth)
+            {
+                result = result.Substring(0, TableWidth);
             }
 
             return result;
@@ -272,22 +344,22 @@ namespace LogicPOS.UI.Printing.Tickets
 
             for (int i = startRow; i < table.Count; i++)
             {
-                //Apply Format to Row
-                if (lineFormat != string.Empty) table[i] = string.Format(lineFormat, table[i]);
+                var line = table[i];
+                if (lineFormat != string.Empty)
+                {
+                    line = string.Format(lineFormat, line);
+                }
 
-                //Print Row
+                // Header row (titles) in bold.
                 if (i == 0)
                 {
-                    thermalPrinter.Append(table[i]);
-                    thermalPrinter.NewLine();
+                    ThermalPrinter.AppendBoldLine(thermalPrinter, line);
                 }
                 else
                 {
-                    thermalPrinter.Append(table[i]);
+                    thermalPrinter.Append(ThermalPrinter.ToThermalText(line));
                 }
-                
             }
-
         }
 
         //Debug Output

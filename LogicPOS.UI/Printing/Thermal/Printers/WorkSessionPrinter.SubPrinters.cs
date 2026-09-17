@@ -1,199 +1,114 @@
-
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
-using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
-using LogicPOS.Utility;
 using System.Collections.Generic;
+using System.Linq;
 using LogicPOS.Globalization;
 
 namespace LogicPOS.UI.Printing
 {
     public partial class WorkSessionPrinter
     {
-
         void PrintSubfamilyTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_subfamily"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerSubfamily();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_subfamily"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
-
-
-            foreach (var item in workSessionData.GetTotalPerSubfamily())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal += item.Total;
-
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Subfamily;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            //Dynamic Print All except Last One (Totals), Double Height in Titles
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintArticleTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_article"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerArticle();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_article"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
-
-
-            foreach (var item in workSessionData.GetTotalPerArticle())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Article;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            //Dynamic Print All except Last One (Totals), Double Height in Titles
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintTaxTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_tax"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerTax();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_tax"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
-
-
-            foreach (var item in workSessionData.GetTotalPerTax())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Tax;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintPaymentMethodsTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_payment_method"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerPaymentMethod();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_payment_method"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            foreach (var item in workSessionData.GetTotalPerPaymentMethod())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Method;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintDocumentTypeTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_documentfinance_type"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerDocumentType();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_documentfinance_type"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-
-            foreach (var item in workSessionData.GetTotalPerDocumentType())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
                 var documentType = "global_documentfinance_type_title_fr";
                 var documentTypeSuffix = (SystemInformationService.SystemInformation.IsAngola && item.DocumentType.ToLower() == "cm") ? "dc" : item.DocumentType.ToLower();
                 documentTypeSuffix = (SystemInformationService.SystemInformation.IsAngola && item.DocumentType.ToLower() == "pp") ? "fp" : documentTypeSuffix;
@@ -206,105 +121,70 @@ namespace LogicPOS.UI.Printing
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintHoursTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_hour"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerHour();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_hour"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
-
-
-            foreach (var item in workSessionData.GetTotalPerHour())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
-                var hour = item.Hour;
-
                 var dataRow = ticketTable.NewRow();
-                dataRow[0] = hour;
+                dataRow[0] = item.Hour;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            for (int x = 0; x < tableCustomPrint.Count; x++)
-            {
-                if (x == 0)
-                {
-                    _printer.BoldMode(tableCustomPrint[x]);
-                }
-                else
-                {
-                    _printer.Append(tableCustomPrint[x]);
-                }
-            }
-            _printer.Separator(' ');
+            PrintGroupTable(ticketTable);
         }
 
         void PrintUsersTotal(DayReportData workSessionData)
         {
-            var columns = new List<TicketColumn>
-                            {
-                                new TicketColumn("GroupTitle", LocalizedString.Instance["global_user"], 0, TicketColumnsAlignment.Left),
-                                new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
-                                new TicketColumn("Total", LocalizedString.Instance["global_totalfinal_acronym"], 10, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
-                            };
+            var rows = workSessionData.GetTotalPerUser();
+            var columns = CreateGroupTotalColumns(
+                LocalizedString.Instance["global_user"],
+                rows.Select(x => x.Quantity),
+                rows.Select(x => x.Total));
 
-            var ticketTable = new TicketTable(columns);
+            var ticketTable = new TicketTable(columns, Layout.Columns);
 
-            decimal summaryTotalQuantity = 0, summaryTotal = 0;
-
-
-            foreach (var item in workSessionData.GetTotalPerUser())
+            foreach (var item in rows)
             {
-                summaryTotalQuantity = item.Quantity;
-                summaryTotal = item.Total;
-
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.User;
                 dataRow[1] = item.Quantity;
                 dataRow[2] = item.Total;
                 ticketTable.Rows.Add(dataRow);
             }
-            var tableCustomPrint = ticketTable.GetTable();
 
-            for (int x = 0; x < tableCustomPrint.Count; x++)
+            PrintGroupTable(ticketTable);
+        }
+
+        private void PrintGroupTable(TicketTable ticketTable)
+        {
+            var tableCustomPrint = ticketTable.GetTable();
+            for (var x = 0; x < tableCustomPrint.Count; x++)
             {
                 if (x == 0)
                 {
-                    _printer.BoldMode(tableCustomPrint[x]);
+                    AppendBoldLine(_printer, tableCustomPrint[x]);
                 }
                 else
                 {
-                    _printer.Append(tableCustomPrint[x]);
+                    _printer.Append(ToThermalText(tableCustomPrint[x]));
                 }
             }
-            _printer.Separator(' ');
+
+            BlankSeparator();
         }
     }
-
 }

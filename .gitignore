@@ -401,4 +401,3 @@ FodyWeavers.xsd
 
 #GTKRuntime
 !libs/GtkRuntime/bin/
-LogicPOS.ApiServer/*.db

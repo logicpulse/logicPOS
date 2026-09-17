@@ -3,12 +3,10 @@ using LogicPOS.Api.Features.Company;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingModel;
 using LogicPOS.Globalization;
 using LogicPOS.UI.Application.Services;
-using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Printing.Enums;
 using LogicPOS.UI.Printing.Tickets;
 using LogicPOS.UI.Services;
-using LogicPOS.Utility;
 using QrCodes;
 using QrCodes.Renderers;
 using QrCodes.Renderers.Abstractions;
@@ -22,90 +20,307 @@ using Printer = ESC_POS_USB_NET.Printer.Printer;
 
 namespace LogicPOS.UI.Printing
 {
+    /// <summary>
+    /// Thermal finance document template (legacy ThermalPrinterFinanceDocumentMaster / BaseFinanceTemplate).
+    /// </summary>
     public class InvoicePrinter : ThermalPrinter
     {
-        private static readonly byte[] EscSelectFontA = { 27, (byte)'M', 0 };
-
         private readonly InvoicePrintingData _data;
+        private readonly int _ticketTablePaddingLeftLength = 2;
+        private string _copyName = string.Empty;
 
         public InvoicePrinter(Printer printer, InvoicePrintingData data) : base(printer)
         {
             _data = data;
         }
 
-        private void SetFontA() => _printer.Append(EscSelectFontA);
-
-        private void ResetPrintModes()
+        public override void Print()
         {
-            _printer.NormalLineHeight();
-            _printer.NormalWidth();
-            _printer.ExpandedMode(PrinterModeState.Off);
+            if (_data.OpenDrawer)
+            {
+                AuthenticationService.HardwareOpenDrawer();
+            }
+
+            ResetPrintModes();
+            PrintCompanyHeader(isOrder: false);
+            PrintExtendedHeader();
+            ResolveCopyName();
+            PrintContent();
+            PrintFooterExtended();
+            PrintStandardFooter();
+            _printer.FullPaperCut();
+            ThermalPrinterTarget.Commit(_printer);
+            _printer.Clear();
         }
 
-        public void PrintDocumentDetails()
+        private void ResolveCopyName()
         {
-            List<TicketColumn> columns = new List<TicketColumn>();
+            if (_data.IsSecondCopy)
+            {
+                var original = LocalizedString.Instance["global_print_copy_title1"];
+                _copyName = $"{original}/{LocalizedString.Instance["global_print_second_print"]}";
+                return;
+            }
 
-            columns.Add(new TicketColumn("VatRate", LocalizedString.Instance["global_vat_rate"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"));
-            columns.Add(new TicketColumn("Quantity", LocalizedString.Instance["global_quantity_acronym"], 8, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("UnitMeasure", LocalizedString.Instance["global_unit_measure_acronym"], 3, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("Price", LocalizedString.Instance["global_price"], 11, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("Discount", LocalizedString.Instance["global_discount_acronym"] + "%", 6, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            //columns.Add(new TicketColumn("TotalNet", LocalizedString.Instance["global_totalnet_acronym"], 9, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
-            columns.Add(new TicketColumn("TotalFinal", LocalizedString.Instance["global_total_per_item"], 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"));
+            var copyNumber = _data.CopyNumber > 0 ? _data.CopyNumber : 1;
+            _copyName = LocalizedString.Instance[$"global_print_copy_title{copyNumber}"];
+            if (!string.IsNullOrWhiteSpace(_data.Reason))
+            {
+                _copyName = $"{_copyName} {_data.Reason}";
+            }
+        }
 
-            const int tableWidth = 48;
-            TicketTable ticketTable = new TicketTable(columns, tableWidth);
+        public void PrintContent()
+        {
+            var documentTypeKey = ResolveDocumentTypeResourceKey();
+            PrintDocumentMaster(
+                ToThermalText(LocalizedString.Instance[documentTypeKey]),
+                _data.Document.Number,
+                _data.Document.Date.ToShortDateString());
 
-            // Headers and data rows must share the same table width (no left padding on values),
-            // otherwise columns drift relative to Taxa/Qnt/Un/Preço/Desc%/Total.
-            ticketTable.Print(_printer);
+            PrintDocumentMasterDocumentType();
+            PrintCustomer(_data.Document.Customer);
+            PrintDocumentDetails();
+            PrintMasterTotals();
+            PrintMasterTotalTax();
+            PrintDocumentPaymentDetails();
+            PrintDocumentTypeFooterString();
+            PrintAtcudAndQrCode();
+        }
+
+        private string ResolveDocumentTypeResourceKey()
+        {
+            var documentType = "global_documentfinance_type_title_fr";
+            var suffix = _data.Document.Number.Substring(0, 2).ToLower() == "cm"
+                ? "dc"
+                : _data.Document.Number.Substring(0, 2).ToLower();
+            return documentType.Substring(0, documentType.Length - 2) + suffix;
+        }
+
+        private void PrintExtendedHeader()
+        {
+            var company = _data.CompanyInformations;
+            ResetPrintModes();
+            SetFontSmall();
+
+            if (!string.IsNullOrEmpty(company.Address))
+            {
+                WriteLineSmall(company.Address);
+            }
+
+            var cityLine = string.IsNullOrEmpty(company.PostalCode)
+                ? $"0000-000 {company.City} - {company.CountryCode2}"
+                : $"{company.PostalCode} {company.City} - {company.CountryCode2}";
+            WriteLineSmall(cityLine);
+
+            if (!string.IsNullOrEmpty(company.Phone))
+            {
+                WriteLineSmall($"{LocalizedString.Instance["prefparam_company_telephone"]}: {company.Phone} ({LocalizedString.Instance["report_phonenumber_label"]})");
+            }
+            if (!string.IsNullOrEmpty(company.MobilePhone))
+            {
+                WriteLineSmall($"{LocalizedString.Instance["global_mobile_phone"]}: {company.MobilePhone} ({LocalizedString.Instance["report_mobilephonenumber_label"]})");
+            }
+            if (!string.IsNullOrEmpty(company.Email))
+            {
+                WriteLineSmall($"{LocalizedString.Instance["global_email"]}: {company.Email}");
+            }
+            if (!string.IsNullOrEmpty(company.Website))
+            {
+                WriteLineSmall(company.Website);
+            }
+
+            WriteLineSmall($"{LocalizedString.Instance["prefparam_company_fiscalnumber"]}: {company.FiscalNumber}");
+            SetFontNormal();
+        }
+
+        private void PrintDocumentMaster(string documentTypeTitle, string documentNumber, string documentDate)
+        {
+            PrintTitles(documentTypeTitle, documentNumber);
+            _printer.AlignCenter();
+            WriteLine(_copyName);
+            WriteLine(documentDate);
+            LineFeed();
+            ResetPrintModes();
+        }
+
+        private void PrintDocumentMasterDocumentType()
+        {
+            if (string.IsNullOrEmpty(_data.Table))
+            {
+                return;
+            }
+
+            _printer.AlignCenter();
+            WriteLine($"Mesa: {_data.Table} / {_data.Place}");
+            LineFeed();
+            ResetPrintModes();
+        }
+
+        private void PrintCustomer(Customer customer)
+        {
+            WriteLabeledLine(LocalizedString.Instance["global_customer"], customer.Name, skipWhenEmpty: false);
+            WriteLabeledLine(LocalizedString.Instance["global_address"], customer.Address, skipWhenEmpty: false);
+
+            string addressDetails = customer.Country;
+            if (!string.IsNullOrEmpty(customer.ZipCode) && !string.IsNullOrEmpty(customer.City))
+            {
+                addressDetails = $"{customer.ZipCode} {customer.City} - {customer.Country}";
+            }
+            else if (!string.IsNullOrEmpty(customer.ZipCode))
+            {
+                addressDetails = $"{customer.ZipCode} - {customer.Country}";
+            }
+            else if (!string.IsNullOrEmpty(customer.City))
+            {
+                addressDetails = $"{customer.City} - {customer.Country}";
+            }
+
+            WriteLine(addressDetails);
+            WriteLabeledLine(LocalizedString.Instance["global_fiscal_number"], customer.FiscalNumber);
+            LineFeed();
+        }
+
+        private void PrintDocumentDetails()
+        {
+            var columns = CreateDetailColumns();
+            var tableWidth = Math.Max(16, MaxCharsPerLineNormal - _ticketTablePaddingLeftLength);
+            var paddingLeftFormat = new string(' ', _ticketTablePaddingLeftLength) + "{0,-" + tableWidth + "}";
+
+            var headerTable = new TicketTable(columns, tableWidth);
+            headerTable.Print(_printer, false, paddingLeftFormat);
 
             foreach (var item in _data.Document.Details)
             {
-                ticketTable = new TicketTable(columns, tableWidth);
-                PrintDocumentDetail(ticketTable, item);
+                var rowTable = new TicketTable(columns, tableWidth);
+                PrintDocumentDetail(rowTable, item, paddingLeftFormat);
             }
-            _printer.NewLine();
+
+            LineFeed();
         }
 
-        public void PrintDocumentDetail(TicketTable pTicketTable, Detail documentDetail)
+        private List<TicketColumn> CreateDetailColumns()
         {
-            string designation = (documentDetail.Designation.Length <= 48) ? documentDetail.Designation : documentDetail.Designation.Substring(0, 48);
+            GetDetailColumnWidths(out var vat, out var qty, out var unit, out var price, out var discount);
 
-            SetFontA();
-            _printer.BoldMode(designation);
+            return new List<TicketColumn>
+            {
+                new TicketColumn("VatRate", ToThermalText(LocalizedString.Instance["global_vat_rate"] + "%"), vat, TicketColumnsAlignment.Right, typeof(decimal), "{0:00.00}"),
+                new TicketColumn("Quantity", ToThermalText(LocalizedString.Instance["global_quantity_acronym"]), qty, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("UnitMeasure", ToThermalText(LocalizedString.Instance["global_unit_measure_acronym"]), unit, TicketColumnsAlignment.Right),
+                new TicketColumn("Price", ToThermalText(LocalizedString.Instance["global_price"]), price, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("Discount", ToThermalText(LocalizedString.Instance["global_discount_acronym"] + "%"), discount, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}"),
+                new TicketColumn("TotalFinal", ToThermalText(LocalizedString.Instance["global_total_per_item"]), 0, TicketColumnsAlignment.Right, typeof(decimal), "{0:0.00}")
+            };
+        }
 
-            DataRow dataRow = pTicketTable.NewRow();
+        private void GetDetailColumnWidths(out int vat, out int qty, out int unit, out int price, out int discount)
+        {
+            var width = Math.Max(16, MaxCharsPerLineNormal - _ticketTablePaddingLeftLength);
+            // Leave room for TotalFinal (dynamic column).
+            var budget = Math.Max(10, width - Math.Max(4, width / 5));
+
+            vat = 6; qty = 8; unit = 3; price = 11; discount = 6;
+            if (vat + qty + unit + price + discount <= budget)
+            {
+                return;
+            }
+
+            vat = 5; qty = 6; unit = 2; price = 8; discount = 5;
+            if (vat + qty + unit + price + discount <= budget)
+            {
+                return;
+            }
+
+            vat = 4; qty = 5; unit = 2; price = 7; discount = 4;
+            if (vat + qty + unit + price + discount <= budget)
+            {
+                return;
+            }
+
+            vat = 3; qty = 4; unit = 2; price = 5; discount = 3;
+        }
+
+        private void PrintDocumentDetail(TicketTable ticketTable, Detail documentDetail, string paddingLeftFormat)
+        {
+            var maxLen = MaxCharsPerLineNormalBold;
+            var designation = documentDetail.Designation.Length <= maxLen
+                ? documentDetail.Designation
+                : documentDetail.Designation.Substring(0, maxLen);
+
+            WriteLineBold(designation);
+
+            var dataRow = ticketTable.NewRow();
             dataRow[0] = documentDetail.Tax;
             dataRow[1] = documentDetail.Quantity;
             dataRow[2] = documentDetail.Unit;
             dataRow[3] = documentDetail.UnitPrice;
             dataRow[4] = documentDetail.Discount;
             dataRow[5] = documentDetail.TotalFinal;
-            pTicketTable.Rows.Add(dataRow);
-
-            pTicketTable.Print(_printer, true, string.Empty);
+            ticketTable.Rows.Add(dataRow);
+            ticketTable.Print(_printer, true, paddingLeftFormat);
 
             if (!string.IsNullOrEmpty(documentDetail.VatExemptionReason))
             {
-                _printer.Append(documentDetail.VatExemptionReason);
+                WriteLineSmall(string.Format(paddingLeftFormat, documentDetail.VatExemptionReason));
             }
         }
 
-        private void PrintTotalTax()
+        private void PrintMasterTotals()
         {
-            var TaxResume = _data.Document.GetTaxResumes();
-            List<TicketColumn> columns = new List<TicketColumn>();
+            // Same width as the rest of the document so amounts share the right margin.
+            var width = MaxCharsPerLineNormal;
 
-            columns.Add(new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left));
-            columns.Add(new TicketColumn("Tax", LocalizedString.Instance["global_tax"], 8, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("TotalBase", LocalizedString.Instance["global_total_tax_base"], 12, TicketColumnsAlignment.Right));
-            columns.Add(new TicketColumn("Total", LocalizedString.Instance["global_documentfinance_totaltax_acronym"], 10, TicketColumnsAlignment.Right));
+            var rows = new[]
+            {
+                (Label: ToThermalText(LocalizedString.Instance["global_totalnet"]),
+                    Value: _data.Document.TotalNet.ToString("F2")),
+                (Label: ToThermalText(LocalizedString.Instance["global_documentfinance_totaltax"]),
+                    Value: _data.Document.TotalTax.ToString("F2")),
+                (Label: ToThermalText(LocalizedString.Instance["global_documentfinance_totalfinal"]),
+                    Value: _data.Document.TotalFinal.ToString("F2"))
+            };
 
-            TicketTable ticketTable = new TicketTable(columns, 48);
+            foreach (var item in rows)
+            {
+                var value = item.Value ?? string.Empty;
+                var label = item.Label ?? string.Empty;
+                var valueWidth = value.Length;
+                var labelWidth = Math.Max(1, width - valueWidth);
 
-            foreach (var item in TaxResume)
+                if (label.Length > labelWidth)
+                {
+                    label = label.Substring(0, labelWidth);
+                }
+
+                // Label left, value flush to the right edge — no inter-column gap.
+                WriteLineBold(label.PadRight(labelWidth) + value);
+            }
+
+            LineFeed();
+        }
+
+        private void PrintMasterTotalTax()
+        {
+            var narrow = MaxCharsPerLineNormal <= 32;
+            var tax = narrow ? 5 : 8;
+            var totalBase = narrow ? 8 : 12;
+            var total = narrow ? 7 : 10;
+            if (tax + totalBase + total >= MaxCharsPerLineNormal)
+            {
+                tax = 4; totalBase = 6; total = 5;
+            }
+
+            var columns = new List<TicketColumn>
+            {
+                new TicketColumn("Designation", LocalizedString.Instance["global_designation"], 0, TicketColumnsAlignment.Left),
+                new TicketColumn("Tax", LocalizedString.Instance["global_tax"], tax, TicketColumnsAlignment.Right),
+                new TicketColumn("TotalBase", LocalizedString.Instance["global_total_tax_base"], totalBase, TicketColumnsAlignment.Right),
+                new TicketColumn("Total", LocalizedString.Instance["global_documentfinance_totaltax_acronym"], total, TicketColumnsAlignment.Right)
+            };
+
+            var ticketTable = new TicketTable(columns, MaxCharsPerLineNormal);
+            foreach (var item in _data.Document.GetTaxResumes())
             {
                 var dataRow = ticketTable.NewRow();
                 dataRow[0] = item.Designation;
@@ -114,270 +329,212 @@ namespace LogicPOS.UI.Printing
                 dataRow[3] = $"{item.Total:F2}";
                 ticketTable.Rows.Add(dataRow);
             }
+
             ticketTable.Print(_printer);
-            _printer.NewLine();
+            LineFeed();
         }
 
-        protected void PrintDocumentPaymentDetails()
+        private void PrintDocumentPaymentDetails()
         {
             _printer.AlignCenter();
-            if (!string.IsNullOrEmpty(_data.Document.PaymentCondition))
+
+            void WritePaymentLine(string label, string value)
             {
-                _printer.Append(LocalizedString.Instance["global_payment_conditions"] + ": " + _data.Document.PaymentCondition);
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    return;
+                }
+
+                var cleanLabel = ToThermalText(label ?? string.Empty).Trim().TrimEnd(':').Trim();
+                WriteLine($"{cleanLabel}: {ToThermalText(value)}");
             }
+
+            WritePaymentLine(LocalizedString.Instance["global_payment_conditions"], _data.Document.PaymentCondition);
             if (_data.Document.PaymentMethods != null)
             {
                 foreach (var paymentMethod in _data.Document.PaymentMethods)
                 {
-                    _printer.Append(LocalizedString.Instance["global_payment_method_field"] + ": " + paymentMethod);
+                    WritePaymentLine(LocalizedString.Instance["global_payment_method_field"], paymentMethod);
                 }
             }
-            _printer.Append(LocalizedString.Instance["global_currency_field"] + ": " + _data.Document.Currency);
-            _printer.NewLine();
+            WritePaymentLine(LocalizedString.Instance["global_currency_field"], _data.Document.Currency);
+            LineFeed();
         }
 
-        protected void PrintCustomer(Customer customer)
+        private void PrintDocumentTypeFooterString()
         {
-            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_customer"], customer.Name));
-            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_address"], customer.Address));
-
-            string addressDetails = customer.Country;
-
-            if (!string.IsNullOrEmpty(customer.ZipCode) && !string.IsNullOrEmpty(customer.City))
-            {
-                addressDetails = string.Format("{0} {1} - {2}", customer.ZipCode, customer.City, customer.Country);
-            }
-            else if (!string.IsNullOrEmpty(customer.ZipCode))
-            {
-                addressDetails = string.Format("{0} - {1}", customer.ZipCode, customer.Country);
-            }
-            else if (!string.IsNullOrEmpty(customer.City))
-            {
-                addressDetails = string.Format("{0} - {1}", customer.City, customer.Country);
-            }
-            _printer.Append(addressDetails);
-            _printer.Append(string.Format("{0}: {1}", LocalizedString.Instance["global_fiscal_number"], customer.FiscalNumber));
-
-            _printer.AlignLeft();
-            _printer.Separator(' ');
-        }
-
-        public void PrintFooter()
-        {
-            if (_data.CompanyInformations.TicketFinalLine1 != string.Empty || _data.CompanyInformations.TicketFinalLine1 != string.Empty)
-            {
-                _printer.AlignCenter();
-                if (_data.CompanyInformations.TicketFinalLine1 != string.Empty) _printer.Append(_data.CompanyInformations.TicketFinalLine1);
-                if (_data.CompanyInformations.TicketFinalLine2 != string.Empty) _printer.Append(_data.CompanyInformations.TicketFinalLine2);
-                _printer.Separator(' ');
-                _printer.Separator(' ');
-                _printer.NewLine();
-                _printer.Append(string.Format("{0} - {1}", AuthenticationService.User.Name, TerminalService.Terminal.Designation));
-                _printer.NewLine();
-                _printer.Append(string.Format("{1}: {2}{0}{3}: {4} {5}"
-                                    , Environment.NewLine
-                                    , LocalizedString.Instance["global_printed_on_date"]
-                                    , DateTime.Now.ToLocalTime()
-                                    , "LogicPulse"//"APP_COMPANY"
-                                    , "LogicPOS"//"APP_NAME"
-                                    , SystemVersionService.PosVersion//"APP_VERSION"
-                                    ));
-                _printer.AlignLeft();
-            }
-        }
-
-        private void PrintDocumentTotals()
-        {
-            const int lineWidth = 48;
-
-            _printer.Separator(' ');
-            SetFontA();
-            _printer.AlignLeft();
-
-            PrintTotalLine(LocalizedString.Instance["global_totalnet"], _data.Document.TotalNet, lineWidth);
-            PrintTotalLine(LocalizedString.Instance["global_documentfinance_totaltax"], _data.Document.TotalTax, lineWidth);
-            PrintTotalLine(LocalizedString.Instance["global_documentfinance_totalfinal"], _data.Document.TotalFinal, lineWidth);
-
-            _printer.Separator(' ');
-            ResetPrintModes();
-        }
-
-        private void PrintTotalLine(string label, decimal value, int lineWidth)
-        {
-            _printer.BoldMode(FormatTotalLine(label, value, lineWidth));
-        }
-
-        private static string FormatTotalLine(string label, decimal value, int lineWidth)
-        {
-            var valueText = value.ToString("F2");
-            var left = $"{label}:";
-            var spaces = Math.Max(1, lineWidth - left.Length - valueText.Length);
-            return left + new string(' ', spaces) + valueText;
-        }
-
-        private void PrintCopyLabel()
-        {
-            if (_data.IsSecondCopy)
-            {
-                _printer.Append(LocalizedString.Instance["global_print_second_print"]);
-            }
-            else
-            {
-                var copyNumber = _data.CopyNumber > 0 ? _data.CopyNumber : 1;
-                _printer.Append(LocalizedString.Instance[$"global_print_copy_title{copyNumber}"]);
-            }
-
-            if (!string.IsNullOrWhiteSpace(_data.Reason))
-            {
-                _printer.Append(_data.Reason);
-            }
-        }
-
-        public override void Print()
-        {
-            ResetPrintModes();
-
-            if (_data.OpenDrawer)
-            {
-                AuthenticationService.HardwareOpenDrawer();
-            }
-
             var typeAnalyzer = _data.Document.TypeAnalyzer;
-            var documentType = "global_documentfinance_type_title_fr";
-            var documentTypeSuffix = _data.Document.Number.Substring(0, 2).ToLower() == "cm" ? "dc" : _data.Document.Number.Substring(0, 2).ToLower();
-            documentType = documentType.Substring(0, documentType.Length - 2) + documentTypeSuffix;
-            _printer.AlignCenter();
-            PrintHeader();
-            _printer.NewLines(2);
-            _printer.AlignLeft();
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Address) == false) _printer.Append($"{_data.CompanyInformations.Address} ");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode) == false) _printer.Append($"{_data.CompanyInformations.PostalCode} {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.PostalCode)) _printer.Append($"0000-000 {_data.CompanyInformations.City} - {_data.CompanyInformations.CountryCode2} ");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Phone) == false) _printer.Append($"{LocalizedString.Instance["global_phone"]}: {_data.CompanyInformations.Phone} ({LocalizedString.Instance["report_phonenumber_label"]})");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.MobilePhone) == false) _printer.Append($"{LocalizedString.Instance["global_mobile_phone"]}: {_data.CompanyInformations.MobilePhone} ({LocalizedString.Instance["report_mobilephonenumber_label"]})");
-            if (string.IsNullOrEmpty(_data.CompanyInformations.Email) == false) _printer.Append($"{LocalizedString.Instance["global_user_email"]}: {_data.CompanyInformations.Email} ");
-            _printer.Append($"{LocalizedString.Instance["prefparam_company_fiscalnumber"]}: {_data.CompanyInformations.FiscalNumber} ");
-            _printer.AlignCenter();
-            _printer.Separator(' ');
-            _printer.AlignCenter();
-            _printer.DoubleWidth2();
-            _printer.ExpandedMode(PrinterModeState.On);
-            _printer.BoldMode(ToThermalText(LocalizedString.Instance[documentType]));
-            _printer.NormalWidth();
-            _printer.ExpandedMode(PrinterModeState.Off);
-            _printer.NewLine();
-            _printer.BoldMode(_data.Document.Number);
-            PrintCopyLabel();
-            _printer.Append(_data.Document.Date.ToShortDateString());
-            if (!string.IsNullOrEmpty(_data.Table))
-            {
-                _printer.DoubleWidth2();
-                _printer.ExpandedMode(PrinterModeState.On);
-                _printer.Append($"Mesa: {_data.Table} / {_data.Place}");
-                _printer.ExpandedMode(PrinterModeState.Off);
-            }
-            ResetPrintModes();
-            _printer.Separator(' ');
-            _printer.AlignLeft();
-
-            PrintCustomer(_data.Document.Customer);
-            _printer.Separator(' ');
-            PrintDocumentDetails();
-
-            PrintDocumentTotals();
-            PrintTotalTax();
+            var resource = typeAnalyzer.IsInvoice()
+                || typeAnalyzer.IsSimplifiedInvoice()
+                || typeAnalyzer.IsInvoiceReceipt()
+                || typeAnalyzer.IsConsignmentInvoice()
+                ? "global_documentfinance_type_report_invoice_footer_at"
+                : "global_documentfinance_type_report_non_invoice_footer_at";
 
             _printer.AlignCenter();
-            _printer.Separator(' ');
-            PrintDocumentPaymentDetails();
-            _printer.Separator(' ');
-
-            if (typeAnalyzer.IsInvoice() || typeAnalyzer.IsSimplifiedInvoice() || typeAnalyzer.IsInvoiceReceipt() || typeAnalyzer.IsConsignmentInvoice())
-            {
-                _printer.Append(LocalizedString.Instance["global_documentfinance_type_report_invoice_footer_at"]);
-            }
-            else
-            {
-                _printer.Append(LocalizedString.Instance["global_documentfinance_type_report_non_invoice_footer_at"]);
-            }
-            _printer.Separator(' ');
-            if (PreferenceParametersService.PrintQrCode)
-            {
-                if (_data.CompanyInformations.IsPortugal)
-                {
-                    _printer.Append($"ATCUD {_data.Document.ATCUD}");
-                }
-
-                if (!string.IsNullOrEmpty(_data.Document.ATQRCode))
-                {
-                    _printer.Image(GetQRCode(_data.Document.ATQRCode));
-                    _printer.NormalLineHeight();
-                }
-                else
-                {
-                    _printer.Image(GetQRCode(_data.Document.Number));
-                    _printer.NormalLineHeight();
-                    _printer.NewLine();
-                }
-            }
-            PrintFooter();
-            _printer.FullPaperCut();
-            ThermalPrinterTarget.Commit(_printer);
-            _printer.Clear();
-
+            WriteLine(LocalizedString.Instance[resource]);
+            LineFeed();
         }
-        static Bitmap GetQRCode(string text)
-        {
-            var qrCode = QrCodeGenerator.Generate(plainText: text,
-                                                  eccLevel: ErrorCorrectionLevel.Medium,
-                                                  forceUtf8: true,
-                                                  utf8Bom: true,
-                                                  eciMode: ExtendedChannelInterpolationMode.Utf8);
 
-            var renderer = new SkiaSharpRenderer();
+        private void PrintAtcudAndQrCode()
+        {
+            if (!PreferenceParametersService.PrintQrCode)
+            {
+                return;
+            }
+
+            if (_data.CompanyInformations.IsPortugal)
+            {
+                LineFeed();
+                _printer.AlignCenter();
+                WriteLineSmall($"ATCUD: {_data.Document.ATCUD}");
+                SetFontNormal();
+            }
+
+            var qrContent = !string.IsNullOrEmpty(_data.Document.ATQRCode)
+                ? _data.Document.ATQRCode
+                : _data.Document.Number;
+
+            PrintThermalQr(qrContent);
+        }
+
+        private void PrintFooterExtended()
+        {
+            var line1 = _data.CompanyInformations.TicketFinalLine1;
+            var line2 = _data.CompanyInformations.TicketFinalLine2;
+            if (string.IsNullOrEmpty(line1) && string.IsNullOrEmpty(line2))
+            {
+                return;
+            }
+
+            _printer.AlignCenter();
+            if (!string.IsNullOrEmpty(line1))
+            {
+                WriteLine(line1);
+            }
+            if (!string.IsNullOrEmpty(line2))
+            {
+                WriteLine(line2);
+            }
+            LineFeed();
+            ResetPrintModes();
+        }
+
+        private void PrintThermalQr(string qrContent)
+        {
+            // GS v 0 ignores AlignCenter. Emulate the same axis as "Obrigado...":
+            // a paper-wide canvas (58mm=384 / 80mm=576) with the QR in the geometric centre,
+            // printed from the left margin.
+            ResetPrintModes();
+            _printer.AlignLeft();
+            _printer.Append(new byte[] { 0x1B, 0x24, 0x00, 0x00 }); // ESC $ x=0
+            _printer.Append(new byte[] { 0x1D, 0x4C, 0x00, 0x00 }); // GS L left margin = 0
+
+            using (var qrImage = CreateThermalQrBitmap(qrContent))
+            {
+                if (qrImage == null)
+                {
+                    return;
+                }
+
+                ThermalRasterImage.Print(_printer, qrImage, Layout.ImageDots);
+            }
+
+            ResetPrintModes();
+            _printer.NewLine();
+        }
+
+        private Bitmap CreateThermalQrBitmap(string text)
+        {
+            var paperDots = Layout.ImageDots;
+            var qrSize = Math.Min(paperDots * 40 / 100, paperDots - 32);
+            qrSize = Math.Max(160, qrSize);
+            qrSize = Math.Max(8, (qrSize + 7) / 8 * 8);
+
+            var qrCode = QrCodeGenerator.Generate(
+                plainText: text,
+                eccLevel: ErrorCorrectionLevel.Quartile,
+                forceUtf8: true,
+                utf8Bom: false,
+                eciMode: ExtendedChannelInterpolationMode.Utf8);
 
             var settings = new RendererSettings
             {
-                PixelsPerModule = 30,
+                PixelsPerModule = 4,
                 DrawQuietZones = true,
-                IconBorderWidth = 100,
-                IconSizePercent = 30,
                 FileFormat = FileFormat.Png,
                 PixelSizeFactor = 0
             };
 
-            if (!string.IsNullOrEmpty(PreferenceParametersService.AgtLogo) && IsBase64String(PreferenceParametersService.AgtLogo) && CompanyDetailsService.CompanyInformation.CountryCode2.ToUpper() == "AO")
+            var qrBytes = new SkiaSharpRenderer().RenderToBytes(qrCode, settings);
+            using (var skBitmap = SKBitmap.Decode(qrBytes))
             {
-                settings.IconBytes = Convert.FromBase64String(PreferenceParametersService.AgtLogo);
+                if (skBitmap == null)
+                {
+                    return null;
+                }
+
+                using (var skImage = SKImage.FromBitmap(skBitmap))
+                using (var png = skImage.Encode(SKEncodedImageFormat.Png, 100))
+                using (var ms = new MemoryStream(png.ToArray()))
+                using (var original = new Bitmap(ms))
+                using (var square = ToThermalMonoBitmap(original, qrSize))
+                {
+                    return CenterQrOnPaperCanvas(square, paperDots);
+                }
             }
-
-            var qrBytes = renderer.RenderToBytes(qrCode, settings);
-
-            var bitmap = SKBitmap.Decode(qrBytes);
-            if (bitmap == null)
-            {
-                return null;
-            }
-
-            var img = SKImage.FromBitmap(bitmap);
-            var png = img.Encode(SKEncodedImageFormat.Png, 100);
-            var bytes = png.ToArray();
-
-            var ms = new MemoryStream(bytes);
-            Bitmap bitmapOriginal = new Bitmap(ms);
-
-            var bitmapFinal = new Bitmap(bitmapOriginal, 350, 350);
-            return ResizeQrToPrint(bitmapFinal, 200);
         }
 
-        static Bitmap ResizeQrToPrint(Bitmap originalImage, int horizontalPadding)
+        /// <summary>
+        /// Paper-wide white canvas; QR centred the same way AlignCenter centres footer text.
+        /// </summary>
+        private static Bitmap CenterQrOnPaperCanvas(Bitmap qr, int paperDots)
         {
-            int newWidth = originalImage.Width + horizontalPadding * 2;
-            Bitmap resizedImage = new Bitmap(newWidth, originalImage.Height - 2);
-            Graphics g = Graphics.FromImage(resizedImage);
-            g.Clear(Color.White);
-            g.DrawImage(originalImage, horizontalPadding, 0);
-            return resizedImage;
+            var width = Math.Max(8, (paperDots + 7) / 8 * 8);
+            const int quietZone = 16;
+            var height = qr.Height + (quietZone * 2);
+            var qrWidth = Math.Min(qr.Width, width);
+            var x = (width - qrWidth) / 2;
+
+            var canvas = new Bitmap(width, height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(canvas))
+            {
+                g.Clear(Color.White);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.DrawImage(qr, x, quietZone, qrWidth, qr.Height);
+            }
+
+            return canvas;
+        }
+
+        private static Bitmap ToThermalMonoBitmap(Bitmap source, int size)
+        {
+            var mono = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            using (var g = Graphics.FromImage(mono))
+            {
+                g.Clear(Color.White);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                g.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighSpeed;
+                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+                g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+                g.DrawImage(source, 0, 0, size, size);
+            }
+
+            for (var y = 0; y < mono.Height; y++)
+            {
+                for (var x = 0; x < mono.Width; x++)
+                {
+                    var c = mono.GetPixel(x, y);
+                    var luminance = (c.R * 299 + c.G * 587 + c.B * 114) / 1000;
+                    mono.SetPixel(x, y, luminance < 140 ? Color.Black : Color.White);
+                }
+            }
+
+            return mono;
         }
 
         public struct InvoicePrintingData

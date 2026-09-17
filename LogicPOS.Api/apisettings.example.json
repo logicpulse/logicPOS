@@ -1,4 +1,4 @@
 {
-  "BaseAddress": "http://localhost:5001/api/",
+  "BaseAddress": "http://localhost:5011/",
   "DefaultPageSize": 40
 }
