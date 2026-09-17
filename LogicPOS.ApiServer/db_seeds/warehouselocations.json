@@ -1,0 +1,18 @@
+[
+  {
+    "Id": "61783965-f341-4431-b51c-a932bd502ea0",
+    "Designation": "Localização Padrão",
+    "IsDefault": true,
+    "WarehouseId": "5b93fdc1-e254-414d-ae82-9bf9f161c603",
+    "Warehouse": null,
+    "Notes": null,
+    "CreatedAt": "2025-08-18T19:23:30.6376449+01:00",
+    "CreatedBy": "00000000-0000-0000-0000-000000000000",
+    "CreatedWhere": "00000000-0000-0000-0000-000000000000",
+    "UpdatedAt": "2025-08-18T19:23:30.6402429+01:00",
+    "UpdatedBy": "00000000-0000-0000-0000-000000000000",
+    "UpdatedWhere": "00000000-0000-0000-0000-000000000000",
+    "IsDeleted": false,
+    "DeletedAt": "0001-01-01T00:00:00"
+  }
+]
