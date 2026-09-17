@@ -77,6 +77,7 @@ builder.Services.AddScoped<HealthService>();
 builder.Services.AddScoped<AuthenticationService>();
 builder.Services.AddScoped<BootstrapUserSeeder>();
 builder.Services.AddScoped<DatabaseInitializer>();
+builder.Services.AddSingleton<ReferenceDataService>();
 builder.Services.AddSingleton<JwtTokenGenerator>();
 builder.Services.AddSingleton<PinHasher>();
 

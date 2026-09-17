@@ -11,16 +11,26 @@ namespace LogicPOS.ApiServer.Controllers;
 public sealed class CompanyController : ApiControllerBase
 {
     private readonly CompanyService _companyService;
+    private readonly ReferenceDataService _referenceDataService;
 
-    public CompanyController(CompanyService companyService)
+    public CompanyController(CompanyService companyService, ReferenceDataService referenceDataService)
     {
         _companyService = companyService;
+        _referenceDataService = referenceDataService;
     }
 
     [HttpGet("info")]
     public async Task<IActionResult> GetInfo(CancellationToken cancellationToken)
     {
         return Ok(await _companyService.GetAsync(cancellationToken));
+    }
+
+    [HttpGet("currency")]
+    public async Task<IActionResult> GetCurrency(CancellationToken cancellationToken)
+    {
+        var company = await _companyService.GetAsync(cancellationToken);
+        var currency = _referenceDataService.GetCurrencyByCode(company.CurrencyCode);
+        return currency is null ? NotFound() : Ok(currency);
     }
 
     [HttpPut("details")]
