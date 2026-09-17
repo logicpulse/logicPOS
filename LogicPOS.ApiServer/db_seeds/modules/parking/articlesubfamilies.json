@@ -1,0 +1,32 @@
+[
+  {
+    "Family": null,
+    "FamilyId": "60c79f04-418c-42b8-98ac-7dae714f2ced",
+    "CommissionGroup": null,
+    "CommissionGroupId": null,
+    "DiscountGroup": null,
+    "DiscountGroupId": null,
+    "VatOnTable": null,
+    "VatOnTableId": null,
+    "VatDirectSelling": null,
+    "VatDirectSellingId": null,
+    "Button": {
+      "Label": null,
+      "Image": "iVBORw0KGgoAAAANSUhEUgAAAKcAAABqCAYAAADZYEGGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAP4SURBVHhe7d1BqFRVHMfxV2m20bRyU2guCqWiVZSgRYsMNAiVKAwqiqCodkXposCFFrTUIhB0mwpFEbRIjGijiC1yK5HVyiKUaqFm9ftFhw6H/3133pvrzJ0z3w98F85431w4f2benbl33gwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOib5eoFtX2eva4eVlcpoDMerL876rICOnGXioZsmE4pYGjvqGjAhumiAob2nooGbK96Kutp9bx6U32m/lTRdo6XdnSiaTivV22\u002BU9G2DCc60TScS1XykHpU\u002BWjcR/WJB9gv4eW2DCc6Mchwlvfdr5KvVHk/w4lOzGc4X1HJR6q8n\u002BFEJ\u002BY6nH\u002BplSo5qfL7HcOJTgwynIvVDeq6f//1v1uUh7XcluFEJwYZzsgiFW3nGE50YpDh9Hue\u002B9UB9bH6QUXbpBhOdGI\u002BB0RtMZzoBMOJ3mI40chHvM\u002BpV69gT6glKtI0nP4MfaPamt02aAxnBb5V0eJeqd5XpXdV9H\u002BH6ZLChLpafa/SYv6m3lJblJ\u002Bpuuox9YHKB\u002Beoyt2j8vu76LTChPJLbVrIUbwE\u002BgSNfHjWqdweld8/bJhg\u002BUJu8g0jsE\u002Blx/zaNxTWqLeV388s\u002B1Clbc/\u002Bd1uZf/4zaoHChNqm0kL7o79RWaXS47pb1aBWqLTdMd\u002BAOvn3sbTQb/iGETqh0mP72W5QDOcUuE\u002BlRfazZtvn1127W6XHd4NiOCvjEyO8kL\u002BqT9WTykfKaZEPq3H4XaV92K1eVt4vv2NwSEW/MzKclTmo0oJG3azG4UEV7U/Kb0GVGM7KfKHyRc87o8bFz4x/qGi/nK\u002BwLDGclflc5Yuel59JPg47VLRfzpcAlxjOytym8kVP\u002BXe\u002BcbtJRdedn1fLVInhrNBC9Zq6oPIhGLd7Vb4/P6uXVBOGs1KbVT4Ife0a1YThrFR0XXcf26maMJwVulbN9p1CfcpH8E0YzgrdqPIB6HOzfc7PcFZorcoHwPkZygvcVH6e5zB9o6Kf7/wZu0/VK7fxUXyE4ayQvzowX3znU9Nm46\u002BtPqfK7ebSEdUmOgN\u002BtYownBV6VuWL725XbX5R5XZz6RPVZpcqt7tTRRjOCjGc6K1xDafPgmrDcE65aDi/VOvVA0H\u002B3ktfkltuM58eUdFjuA3Kp/KV2zCcUyQazj7HcE4RhhO9xXCitxhO9FbbcPpSjlH6UUX7kWI4p0jbcI76IrefVLQfKYZzikzacN6hIgxnhcpv2Sh7UY3ScRXth/NZST5zP8JwVupxFf19cl8WMeq/Te7hi/bF\u002BQyqJv5uz/T/ogvgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADorZmZfwD70Zt5N2xZDAAAAABJRU5ErkJggg==",
+      "ImageExtension": "PNG"
+    },
+    "Designation": "Parqueamento",
+    "Order": 310,
+    "Code": "310",
+    "Id": "d0c8169b-a5bc-46cb-b8ff-186b0ba39929",
+    "Notes": null,
+    "CreatedAt": "2014-02-28T14:02:28",
+    "CreatedBy": "090c5684-52ba-4d7a-8bc3-a00320ef503d",
+    "CreatedWhere": "00000000-0000-0000-0000-000000000000",
+    "UpdatedAt": "2019-03-11T23:16:18",
+    "UpdatedBy": "090c5684-52ba-4d7a-8bc3-a00320ef503d",
+    "UpdatedWhere": "00000000-0000-0000-0000-000000000000",
+    "IsDeleted": false,
+    "DeletedAt": "2025-09-18T15:50:25.4422805"
+  }
+]
