@@ -11,41 +11,37 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    # 1. Baixa o código do repositório
     - uses: actions/checkout@v4
 
-    # 2. Configura a versão correta do NuGet
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
-    # 3. Corrige a ação para actions/setup-dotnet e garante suporte
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
 
-    # 4. Garante que o .NET Framework 4.8 Developer Pack está instalado
     - name: Install .NET Framework 4.8 Targeting Pack
       run: |
         choco install netfx-4.8-devpack -y
 
-    # 5. Configura o MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # 6. Restaura os pacotes NuGet do projeto
+    # Importante: Limpa e restaura antes de começar
     - name: Restore NuGet Packages
       run: nuget restore LogicPOS.sln
 
-    # 7. Compila a Solução Completa
+    # CORREÇÃO: Compila a solução sem forçar a plataforma "Any CPU", permitindo que o MSBuild use o mapeamento correto do .sln
     - name: Build Solution
-      run: msbuild LogicPOS.sln /p:Configuration=Release /p:Platform="Any CPU"
+      run: msbuild LogicPOS.sln /p:Configuration=Release
 
-    # 8. Guarda os ficheiros gerados em formato ZIP para download
+    # Garante que a pasta bin da UI também entra nos Artifacts
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
         name: LogicPOS-Compiled
         path: |
           **/bin/Release/
-          **/bin/Any CPU/Release/
+          **/bin/x86/Release/
+          **/bin/x64/Release/
