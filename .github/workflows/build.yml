@@ -1,0 +1,23 @@
+name: Build LogicPOS
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore NuGet Packages
+      run: nuget restore LogicPOS.sln
+
+    - name: Build Solution
+      run: msbuild LogicPOS.sln /p:Configuration=Release /p:Platform="Any CPU"
