@@ -271,12 +271,14 @@ namespace LogicPOS.UI.Components.POS
         {
             SaleContext.CurrentOrder.ReduceItems(_partialPaymentItems);
             SaleContext.ReloadCurrentOrder();
+            SaleContext.ShowOrderTotalOnPoleDisplay();
         }
 
         private void ProcessFullPayment()
         {
             SaleContext.ItemsPage.Clear(true);
             SaleContext.CurrentOrder.Close();
+            SaleContext.ShowPoleDisplayStandBy();
             // Payment only happens with an open terminal — skip TerminalIsOpen GETs in UpdateUI.
             WorkSessionsService.SetTerminalIsOpenCache(true);
             POSWindow.Instance.UpdateUI();

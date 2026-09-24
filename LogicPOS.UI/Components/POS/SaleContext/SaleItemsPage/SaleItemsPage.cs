@@ -252,6 +252,7 @@ namespace LogicPOS.UI.Components.POS
 
             Refresh();
             SelectItem(item);
+            SaleContext.ShowItemOnPoleDisplay(item);
         }
 
         public void AddItem(SaleItem item)
@@ -272,6 +273,7 @@ namespace LogicPOS.UI.Components.POS
             PresentLastItem();
             SelectItem(item);
             UpdateLabelTotalValue();
+            SaleContext.ShowItemOnPoleDisplay(item);
         }
 
         private void OpenTicket(SaleItem item)
@@ -282,6 +284,7 @@ namespace LogicPOS.UI.Components.POS
             PresentLastItem();
             SelectItem(item);
             UpdateLabelTotalValue();
+            SaleContext.ShowItemOnPoleDisplay(item);
             TicketOpened?.Invoke(this, EventArgs.Empty);
             POSWindow.Instance.UpdateUI();
         }
@@ -291,6 +294,7 @@ namespace LogicPOS.UI.Components.POS
             Clear(true);
             SaleContext.SetCurrentTable(SaleContext.CurrentTable);
             UpdateLabelTotalValue();
+            SaleContext.ShowOrderTotalOnPoleDisplay();
             POSWindow.Instance.UpdateUI();
         }
 

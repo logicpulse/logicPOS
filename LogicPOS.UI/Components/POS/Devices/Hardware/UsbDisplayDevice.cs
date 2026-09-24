@@ -28,6 +28,7 @@ namespace logicpos.Classes.Logic.Hardware
         private string _writeAfterLine1 = string.Empty;
         private string _writeAfterLine2 = string.Empty;
         private bool _writeAfterCentered = false;
+        private bool _writeAfterCancelled = false;
 
         /// <summary>
         /// POS Display Device
@@ -271,6 +272,7 @@ namespace logicpos.Classes.Logic.Hardware
             _writeAfterLine1 = pLine1;
             _writeAfterLine2 = pLine2;
             _writeAfterCentered = pCentered;
+            _writeAfterCancelled = false;
 
             //Start Clock Work if not started Yet
             if (!_timerRunning) StartClock();
@@ -281,10 +283,40 @@ namespace logicpos.Classes.Logic.Hardware
             WriteAfterSeconds(_standByInSeconds, _standByLine1, _standByLine2, true);
         }
 
+        public void CancelStandBy()
+        {
+            _writeAfterCancelled = true;
+        }
+
         public void WriteStandBy()
         {
-            WriteCentered(_standByLine1, 1);
-            WriteCentered(_standByLine2, 2);
+            CancelStandBy();
+            WriteLines(_standByLine1, _standByLine2, true);
+        }
+
+        /// <summary>
+        /// Clears the display and writes both lines in a single sequence (line 1 wraps into line 2),
+        /// so it does not depend on cursor positioning support.
+        /// </summary>
+        public void WriteLines(string pLine1, string pLine2, bool pCentered = false)
+        {
+            string line1 = pLine1 ?? string.Empty;
+            string line2 = pLine2 ?? string.Empty;
+
+            if (pCentered)
+            {
+                line1 = TextCentered(line1.Trim(), _charactersPerLine);
+                line2 = TextCentered(line2.Trim(), _charactersPerLine);
+            }
+
+            Write(RemoveAccents(FitLine(line1) + FitLine(line2)));
+        }
+
+        private string FitLine(string pText)
+        {
+            return pText.Length > _charactersPerLine
+                ? pText.Substring(0, _charactersPerLine)
+                : pText.PadRight(_charactersPerLine);
         }
 
         private void StartClock()
@@ -297,19 +329,20 @@ namespace logicpos.Classes.Logic.Hardware
 
         private bool UpdateClock()
         {
-            _writeAfterSecondsRemain = _writeAfterSecondsRemain - 1000;
+            if (_writeAfterCancelled)
+            {
+                _timerRunning = false;
+                return false;
+            }
+
+            _writeAfterSecondsRemain = _writeAfterSecondsRemain > 1000 ? _writeAfterSecondsRemain - 1000 : 0;
             bool result;
             //Log.Debug(string.Format("_writeAfterSecondsRemain: [{0}]", _writeAfterSecondsRemain));
 
             if (_writeAfterSecondsRemain <= 0)
             {
-                if (_writeAfterCentered)
-                {
-                    _writeAfterLine1 = TextCentered(_writeAfterLine1, _charactersPerLine);
-                    _writeAfterLine2 = TextCentered(_writeAfterLine2, _charactersPerLine);
-                }
-                Write(_writeAfterLine1, 0);
-                Write(_writeAfterLine2, 1);
+                _timerRunning = false;
+                WriteLines(_writeAfterLine1, _writeAfterLine2, _writeAfterCentered);
 
                 result = false;
             }
@@ -518,8 +551,8 @@ namespace logicpos.Classes.Logic.Hardware
             try
             {
                 //Init
-                UsbDisplayDevice displayDevice = new UsbDisplayDevice(int.Parse(TerminalService.Terminal.PoleDisplay.VendorId),
-                                                                      int.Parse(TerminalService.Terminal.PoleDisplay.ProductId),
+                UsbDisplayDevice displayDevice = new UsbDisplayDevice(Convert.ToInt32(TerminalService.Terminal.PoleDisplay.VendorId,16),
+                                                                      Convert.ToInt32(TerminalService.Terminal.PoleDisplay.ProductId,16),
                                                                       TerminalService.Terminal.PoleDisplay.EndPoint,
                                                                       TerminalService.Terminal.PoleDisplay.COMPort);
                 //Initializers
@@ -567,6 +600,57 @@ namespace logicpos.Classes.Logic.Hardware
             Write(RemoveAccents(line1), 1);
             WriteJustified(RemoveAccents(LocalizedString.Instance["global_pole_display_global_total"]), pTotal.ToString(), 2);
             EnableStandBy();
+        }
+
+        public void ShowSaleItem(string pArticle, decimal pQuantity, decimal pPrice, decimal pTotal, string pCurrencyAcronym)
+        {
+            try
+            {
+                string article = string.Format("{0:0.###} x {1}", pQuantity, pArticle);
+                string line1 = JustifyLine(article, pPrice.ToString("F2"));
+                string line2 = JustifyLine(LocalizedString.Instance["global_pole_display_global_total"], FormatAmount(pTotal, pCurrencyAcronym));
+
+                CancelStandBy();
+                WriteLines(line1, line2);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Exception");
+            }
+        }
+
+        public void ShowTotal(string pTitle, decimal pTotal, string pCurrencyAcronym)
+        {
+            try
+            {
+                string line1 = TextCentered((pTitle ?? string.Empty).Trim(), _charactersPerLine);
+                string line2 = JustifyLine(LocalizedString.Instance["global_pole_display_global_total"], FormatAmount(pTotal, pCurrencyAcronym));
+
+                CancelStandBy();
+                WriteLines(line1, line2);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Exception");
+            }
+        }
+
+        private static string FormatAmount(decimal pAmount, string pCurrencyAcronym)
+        {
+            return string.IsNullOrEmpty(pCurrencyAcronym)
+                ? pAmount.ToString("F2")
+                : string.Format("{0:F2} {1}", pAmount, pCurrencyAcronym);
+        }
+
+        private string JustifyLine(string pLeft, string pRight)
+        {
+            int maxLeft = Math.Max(0, _charactersPerLine - pRight.Length - 1);
+            if (pLeft.Length > maxLeft)
+            {
+                pLeft = pLeft.Substring(0, maxLeft);
+            }
+
+            return pLeft.PadRight(Math.Max(0, _charactersPerLine - pRight.Length)) + pRight;
         }
 
         public void ShowPayment(string pPaymentType, decimal pTotalDelivery, decimal pTotalChange)

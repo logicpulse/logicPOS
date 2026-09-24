@@ -1,6 +1,8 @@
 using LogicPOS.Api.Features.Orders.ChangeOrderTable;
 using LogicPOS.Api.Features.POS.Orders.Orders.GetOrderById;
 using LogicPOS.Api.Features.POS.Tables.Common;
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Finance.Currencies;
 using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Errors;
@@ -93,6 +95,35 @@ namespace LogicPOS.UI.Components.POS
         }
 
         public static bool HasOpenTicket() => ItemsPage.Ticket != null;
+
+        public static void ShowItemOnPoleDisplay(SaleItem item)
+        {
+            var poleDisplay = LogicPOSApp.UsbDisplay;
+            if (poleDisplay == null || item?.Article == null)
+            {
+                return;
+            }
+
+            poleDisplay.ShowSaleItem(item.Article.Designation, item.Quantity, item.UnitPriceWithVat, item.TotalFinal, PoleDisplayCurrency);
+        }
+
+        public static void ShowOrderTotalOnPoleDisplay()
+        {
+            var poleDisplay = LogicPOSApp.UsbDisplay;
+            if (poleDisplay == null || CurrentOrder == null)
+            {
+                return;
+            }
+
+            poleDisplay.ShowTotal(CurrentTable?.Designation, CurrentOrder.TotalFinal, PoleDisplayCurrency);
+        }
+
+        public static void ShowPoleDisplayStandBy()
+        {
+            LogicPOSApp.UsbDisplay?.WriteStandBy();
+        }
+
+        private static string PoleDisplayCurrency => CurrenciesService.Default?.Acronym ?? PreferenceParametersService.SystemCurrency;
 
     }
 }
