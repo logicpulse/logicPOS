@@ -18,30 +18,30 @@ jobs:
     - name: Setup NuGet
       uses: NuGet/setup-nuget@v2
 
-    # 3. Garante que o .NET Framework 4.8 Developer Pack está disponível
-    - name: Setup .NET Framework 4.8 Developer Pack
-      uses: microsoft/setup-dotnet@v4
+    # 3. Corrige a ação para actions/setup-dotnet e garante suporte
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Mantém o ecossistema atualizado se necessário
+        dotnet-version: '8.0.x'
 
-    # Nota: O windows-latest usa o VS2022. Caso falte o SDK 4.8, instalamos via Chocolatey (gerenciador do Windows)
+    # 4. Garante que o .NET Framework 4.8 Developer Pack está instalado
     - name: Install .NET Framework 4.8 Targeting Pack
       run: |
         choco install netfx-4.8-devpack -y
 
-    # 4. Configura o MSBuild (Visual Studio Build Tools)
+    # 5. Configura o MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # 5. Restaura os pacotes NuGet do projeto
+    # 6. Restaura os pacotes NuGet do projeto
     - name: Restore NuGet Packages
       run: nuget restore LogicPOS.sln
 
-    # 6. Compila a Solução Completa
+    # 7. Compila a Solução Completa
     - name: Build Solution
       run: msbuild LogicPOS.sln /p:Configuration=Release /p:Platform="Any CPU"
 
-    # 7. Guarda os ficheiros gerados em formato ZIP para download
+    # 8. Guarda os ficheiros gerados em formato ZIP para download
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
