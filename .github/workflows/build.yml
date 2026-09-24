@@ -21,22 +21,24 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+    # Garante o Developer Pack do .NET Framework 4.8
     - name: Install .NET Framework 4.8 Targeting Pack
       run: |
         choco install netfx-4.8-devpack -y
 
+    # Configura o MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Importante: Limpa e restaura antes de começar
+    # Restaura os pacotes da solução inteira para garantir as dependências
     - name: Restore NuGet Packages
       run: nuget restore LogicPOS.sln
 
-    # CORREÇÃO: Compila a solução sem forçar a plataforma "Any CPU", permitindo que o MSBuild use o mapeamento correto do .sln
-    - name: Build Solution
-      run: msbuild LogicPOS.sln /p:Configuration=Release
+    # CORREÇÃO CRUCIAL: Aponta diretamente para o .csproj da UI para forçar a compilação
+    - name: Build UI Project
+      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release
 
-    # Garante que a pasta bin da UI também entra nos Artifacts
+    # Captura os ficheiros de todas as pastas bin possíveis
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
