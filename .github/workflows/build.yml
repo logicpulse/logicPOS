@@ -1,3 +1,4 @@
+
 name: Build LogicPOS
 
 on:
@@ -21,3 +22,12 @@ jobs:
 
     - name: Build Solution
       run: msbuild LogicPOS.sln /p:Configuration=Release /p:Platform="Any CPU"
+
+    # NOVO PASSO: Guarda os ficheiros gerados para conseguir fazer o download
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: LogicPOS-Compiled
+        path: |
+          **/bin/Release/
+          **/bin/Any CPU/Release/
