@@ -21,28 +21,24 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    # Garante o Developer Pack do .NET Framework 4.8
     - name: Install .NET Framework 4.8 Targeting Pack
-      run: |
-        choco install netfx-4.8-devpack -y
+      run: choco install netfx-4.8-devpack -y
 
-    # Configura o MSBuild
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Restaura os pacotes da solução inteira
-    - name: Restore NuGet Packages
-      run: nuget restore LogicPOS.sln
+    - name: Restore
+      run: msbuild LogicPOS.sln /t:Restore /p:Configuration=Release
 
-    # Compila a solução e envia todos os binários para uma pasta centralizada 'publish'
-    - name: Build and Publish Solution
-      run: msbuild LogicPOS.sln /p:Configuration=Release /p:OutDir="${{ github.workspace }}\publish\"
+    - name: Build UI (Release|x64)
+      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release /p:Platform=x64
 
-    # (Opcional) Lista os ficheiros na consola para debug, caso precises de inspecionar
-    - name: List compiled files
-      run: Get-ChildItem -Path publish -Recurse
+    - name: Collect UI output
+      shell: powershell
+      run: |
+        New-Item -ItemType Directory -Force -Path publish | Out-Null
+        Copy-Item "LogicPOS.UI\bin\x64\Release\*" "publish\" -Recurse -Force
 
-    # Faz o upload de toda a pasta centralizada como artefacto
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
       with:
