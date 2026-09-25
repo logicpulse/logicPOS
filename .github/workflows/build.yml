@@ -40,7 +40,7 @@ jobs:
 
     # (Opcional) Lista os ficheiros na consola para debug, caso precises de inspecionar
     - name: List compiled files
-      run: dir /s publish
+      run: Get-ChildItem -Path publish -Recurse
 
     # Faz o upload de toda a pasta centralizada como artefacto
     - name: Upload Build Artifacts
