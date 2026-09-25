@@ -246,10 +246,7 @@ namespace LogicPOS.UI.Components.Modals
                 case "FT":
                 case "FS":
                 case "FR":
-                    return string.Equals(
-                        SystemInformationService.SystemInformation.CountryCode2,
-                        "mz",
-                        StringComparison.OrdinalIgnoreCase);
+                    return SystemInformationService.SystemInformation.IsMozambique;
                 default:
                     return false;
             }

@@ -149,7 +149,7 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
                                               LocalizedString.Instance["global_fiscal_number"],
                                               isRequired: true,
                                               isValidatable: true,
-                                              regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2),
+                                              regex: RegularExpressions.GetFiscalNumberRegexForSystemCountry(),
                                               includeSelectButton: false,
                                               includeKeyBoardButton: true);
             

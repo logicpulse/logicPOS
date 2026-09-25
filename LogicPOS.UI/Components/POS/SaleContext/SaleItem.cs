@@ -42,9 +42,13 @@ namespace LogicPOS.UI.Components.POS
         public decimal Quantity { get; set; }
         public decimal Vat { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
-        public decimal TotalNet =>Quantity * UnitPrice - DiscountPrice;
+        public decimal TotalNet => AgtLineRounding.Applies(Article)
+            ? AgtLineRounding.Truncate2(Quantity * UnitPrice - DiscountPrice)
+            : Quantity * UnitPrice - DiscountPrice;
         public decimal DiscountPrice => Quantity * UnitPrice * Discount/100M;
-        public decimal VatPrice => TotalNet * Vat / 100M;
+        public decimal VatPrice => AgtLineRounding.Applies(Article)
+            ? AgtLineRounding.Ceiling2(TotalNet * Vat / 100M)
+            : TotalNet * Vat / 100M;
         public string Code => Article.Code;
         public decimal UnitPriceWithVat => UnitPrice + (UnitPrice * (Vat / 100M));
 

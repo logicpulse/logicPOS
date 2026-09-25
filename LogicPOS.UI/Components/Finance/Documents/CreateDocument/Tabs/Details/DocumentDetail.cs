@@ -1,6 +1,7 @@
 using LogicPOS.Api.Entities;
 using LogicPOS.Api.Features.Articles.Common;
 using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.Finance;
 using System;
 
 namespace LogicPOS.UI.Components.Documents.CreateDocument
@@ -22,9 +23,13 @@ namespace LogicPOS.UI.Components.Documents.CreateDocument
         public VatExemptionReason VatExemptionReason { get; set; }
         public decimal Discount { get; set; }
         public decimal TotalFinal => TotalNet + VatPrice;
-        public decimal TotalNet => Quantity * UnitPrice - DiscountPrice;
+        public decimal TotalNet => AgtLineRounding.Applies(Article)
+            ? AgtLineRounding.Truncate2(Quantity * UnitPrice - DiscountPrice)
+            : Quantity * UnitPrice - DiscountPrice;
         public decimal DiscountPrice => Quantity * UnitPrice * Discount / 100M;
-        public decimal VatPrice => TotalNet * Vat / 100M;
+        public decimal VatPrice => AgtLineRounding.Applies(Article)
+            ? AgtLineRounding.Ceiling2(TotalNet * Vat / 100M)
+            : TotalNet * Vat / 100M;
         public string SerialNumber { get; set; }
 
     }

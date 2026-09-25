@@ -25,7 +25,6 @@ namespace LogicPOS.Api.Features.Company
         public string TicketFinalLine2 { get; set; }
         public string CurrencyCode { get; set; }
         public string AgtLogo { get; set; }
-        public bool IsPortugal => CountryCode2.ToLower() == "pt";
     }
 
 }

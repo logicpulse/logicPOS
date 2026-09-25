@@ -383,7 +383,7 @@ namespace LogicPOS.UI.Printing
                 return;
             }
 
-            if (_data.CompanyInformations.IsPortugal)
+            if (SystemInformationService.SystemInformation.IsPortugal)
             {
                 LineFeed();
                 _printer.AlignCenter();

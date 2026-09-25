@@ -46,15 +46,32 @@ namespace LogicPOS.UI.Components.InputFields.Validation
         }
         public static string GetFiscalNumberRegexForCountry(string countryCode2)
         {
-            switch(countryCode2.ToLower())
+            switch (countryCode2?.ToLower())
             {
                 case "pt":
-                return PortugueseFiscalNumber;
+                    return PortugueseFiscalNumber;
                 case "ao":
                     return AngolanFiscalNumber;
                 default:
-                return "^[A-Za-z0-9]{5,}$";
+                    return "^[A-Za-z0-9]{5,}$";
             }
+        }
+
+        public static string GetFiscalNumberRegexForSystemCountry()
+        {
+            var systemInformation = SystemInformationService.SystemInformation;
+
+            if (systemInformation.IsPortugal)
+            {
+                return PortugueseFiscalNumber;
+            }
+
+            if (systemInformation.IsAngola)
+            {
+                return AngolanFiscalNumber;
+            }
+
+            return "^[A-Za-z0-9]{5,}$";
         }
     }
 }

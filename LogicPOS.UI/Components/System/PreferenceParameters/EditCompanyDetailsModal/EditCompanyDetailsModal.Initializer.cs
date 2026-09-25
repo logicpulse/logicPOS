@@ -119,7 +119,7 @@ namespace LogicPOS.UI.Components.Modals
                                              isValidatable: true,
                                              includeSelectButton: false,
                                              includeKeyBoardButton: true,
-                                             regex: RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2), includeClearButton: false);
+                                             regex: RegularExpressions.GetFiscalNumberRegexForSystemCountry(), includeClearButton: false);
         }
 
         private void InitializeTxtBusiness()
