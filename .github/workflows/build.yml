@@ -30,10 +30,21 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    # Restaura os pacotes da solução inteira para garantir as dependências
+    # Restaura os pacotes da solução inteira
     - name: Restore NuGet Packages
       run: nuget restore LogicPOS.sln
 
-    # Compila a solução inteira garantindo a ordem de dependências
-    - name: Build Solution
-      run: msbuild LogicPOS.sln /t:Build /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+    # Compila a solução e envia todos os binários para uma pasta centralizada 'publish'
+    - name: Build and Publish Solution
+      run: msbuild LogicPOS.sln /p:Configuration=Release /p:OutDir="${{ github.workspace }}\publish\"
+
+    # (Opcional) Lista os ficheiros na consola para debug, caso precises de inspecionar
+    - name: List compiled files
+      run: dir /s publish
+
+    # Faz o upload de toda a pasta centralizada como artefacto
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: LogicPOS-Compiled
+        path: publish/
