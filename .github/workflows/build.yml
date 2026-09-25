@@ -34,7 +34,6 @@ jobs:
     - name: Restore NuGet Packages
       run: nuget restore LogicPOS.sln
 
-    # CORREÇÃO CRUCIAL: Aponta diretamente para o .csproj da UI para forçar a compilação
-    # Restaura e compila a solução inteira garantindo a ordem de dependências
-    - name: Restore and Build Solution
-      run: msbuild LogicPOS.sln /t:Restore;Build /p:Configuration=Release /p:Platform="Any CPU"
+    # Compila a solução inteira garantindo a ordem de dependências
+    - name: Build Solution
+      run: msbuild LogicPOS.sln /t:Build /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
