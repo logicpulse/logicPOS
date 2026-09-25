@@ -35,15 +35,6 @@ jobs:
       run: nuget restore LogicPOS.sln
 
     # CORREÇÃO CRUCIAL: Aponta diretamente para o .csproj da UI para forçar a compilação
-    - name: Build UI Project
-      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release
-
-    # Captura os ficheiros de todas as pastas bin possíveis
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: LogicPOS-Compiled
-        path: |
-          **/bin/Release/
-          **/bin/x86/Release/
-          **/bin/x64/Release/
+    # Restaura e compila a solução inteira garantindo a ordem de dependências
+    - name: Restore and Build Solution
+      run: msbuild LogicPOS.sln /t:Restore;Build /p:Configuration=Release /p:Platform="Any CPU"
