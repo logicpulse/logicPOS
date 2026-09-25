@@ -19,8 +19,6 @@ jobs:
     - name: Descarregar o código do repositório
       uses: actions/checkout@v4
 
-    # PASSO ESSENCIAL: Cria o ficheiro apisettings.json exigido pelo LogicPOS.Api
-    # Usamos o exemplo padrão do repositório para a compilação não falhar
     - name: Criar ficheiro de configuração da API
       run: |
         copy LogicPOS.Api\apisettings.example.json LogicPOS.Api\apisettings.json
@@ -36,14 +34,17 @@ jobs:
     - name: Restaurar pacotes NuGet
       run: nuget restore ${{ env.SOLUTION_FILE_PATH }}
 
-    # Executa o seu comando exato do Visual Studio
     - name: Compilar com o MSBuild
       run: msbuild ${{ env.SOLUTION_FILE_PATH }} /t:Build /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" /verbosity:minimal
 
-    # CORREÇÃO DO ARTEFACTO: Vai buscar os ficheiros à pasta "artifacts" externa
+    # PASSO NOVO: Copia a pasta externa "artifacts" para dentro da pasta atual do repositório
+    - name: Trazer os ficheiros compilados para o repositório
+      run: |
+        xcopy "..\artifacts\logicpos\Debug" ".\compilacao_final\" /E /I /H /Y
+
+    # Agora o caminho é válido porque aponta para uma pasta interna
     - name: Guardar o executável e ficheiros do LogicPOS
       uses: actions/upload-artifact@v4
       with:
         name: LogicPOS-Instalador-Debug
-        path: |
-          ../artifacts/logicpos/Debug/
+        path: compilacao_final/
