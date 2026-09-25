@@ -11,7 +11,8 @@ jobs:
     runs-on: windows-latest
 
     env:
-      SOLUTION_FILE_PATH: github.com/logicpulse/logicPOS/LogicPOS.sln
+      REPO_ALVO: 'logicpulse/logicPOS'
+      SOLUTION_FILE_PATH: LogicPOS.sln
       BUILD_CONFIGURATION: Debug
       BUILD_PLATFORM: "Any CPU"
 
