@@ -13,7 +13,7 @@ jobs:
 
     variables:
       # Caminho para a sua solução (.sln) ou projeto (.csproj)
-      SOLUTION_FILE_PATH: .
+      SOLUTION_FILE_PATH: LogicPOS.sln
 
       # Configuração da compilação (Release ou Debug)
       BUILD_CONFIGURATION: Release
