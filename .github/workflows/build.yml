@@ -11,7 +11,7 @@ jobs:
     # Usa uma máquina Windows do GitHub que já tem o MSBuild instalado
     runs-on: windows-latest
 
-    variables:
+    env:
       # Caminho para a sua solução (.sln) ou projeto (.csproj)
       SOLUTION_FILE_PATH: LogicPOS.sln
 
