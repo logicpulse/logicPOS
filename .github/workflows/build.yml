@@ -1,4 +1,4 @@
-name: MSBuild
+name: MSBuild .NET 4.8
 
 on:
   push:
@@ -11,7 +11,6 @@ jobs:
     runs-on: windows-latest
 
     env:
-      # Definido exatamente como no seu comando do Visual Studio
       SOLUTION_FILE_PATH: LogicPOS.sln
       BUILD_CONFIGURATION: Debug
       BUILD_PLATFORM: "Any CPU"
@@ -20,21 +19,29 @@ jobs:
     - name: Descarregar o código do repositório
       uses: actions/checkout@v4
 
+    # Garante que o ambiente tem suporte correto para .NET Framework 4.8
+    - name: Configurar o comando NuGet
+      uses: nuget/setup-nuget@v2
+      with:
+        nuget-version: 'latest'
+
     - name: Adicionar o MSBuild ao PATH
       uses: microsoft/setup-msbuild@v2
 
-    # Nota: O seu comando do MSBuild já tem o parâmetro /restore, 
-    # por isso o passo separado do NuGet deixa de ser obrigatório.
+    # Projetos .NET Framework 4.8 costumam precisar deste restauro explícito
+    # antes do MSBuild para evitar que faltem referências na pasta principal
+    - name: Restaurar pacotes NuGet
+      run: nuget restore ${{ env.SOLUTION_FILE_PATH }}
 
-    # Executa exatamente o comando que forneceu
-    - name: Compilar com o MSBuild (Igual ao Visual Studio)
-      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /restore /t:Build /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" /verbosity:minimal
+    # Executa o seu comando exato do Visual Studio
+    - name: Compilar com o MSBuild
+      run: msbuild ${{ env.SOLUTION_FILE_PATH }} /t:Build /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" /verbosity:minimal
 
-    # Guarda o resultado da pasta Debug (onde o projeto principal será gerado)
+    # Guarda todas as pastas bin/Debug criadas na solução
     - name: Guardar o ficheiro compilado
       uses: actions/upload-artifact@v4
       with:
-        name: logicpos-compilado
+        name: logicpos-compilado-net48
         path: |
           **/bin/Debug/
           **/bin/Any CPU/Debug/
