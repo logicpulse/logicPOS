@@ -30,14 +30,14 @@ jobs:
     - name: Restore
       run: msbuild LogicPOS.sln /t:Restore /p:Configuration=Release
 
-    - name: Build UI (Release|x64)
-      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release /p:Platform=x64
+    - name: Build UI (Release|Any CPU)
+      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release /p:Platform="Any CPU"
 
     - name: Collect UI output
       shell: powershell
       run: |
         New-Item -ItemType Directory -Force -Path publish | Out-Null
-        Copy-Item "LogicPOS.UI\bin\x64\Release\*" "publish\" -Recurse -Force
+        Copy-Item "..\artifacts\logicpos\Release\*" "publish\" -Recurse -Force
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v4
