@@ -1,4 +1,4 @@
-name: MSBuild .NET 4.8
+name: MSBuild LogicPOS
 
 on:
   push:
@@ -19,7 +19,12 @@ jobs:
     - name: Descarregar o código do repositório
       uses: actions/checkout@v4
 
-    # Garante que o ambiente tem suporte correto para .NET Framework 4.8
+    # PASSO ESSENCIAL: Cria o ficheiro apisettings.json exigido pelo LogicPOS.Api
+    # Usamos o exemplo padrão do repositório para a compilação não falhar
+    - name: Criar ficheiro de configuração da API
+      run: |
+        copy LogicPOS.Api\apisettings.example.json LogicPOS.Api\apisettings.json
+
     - name: Configurar o comando NuGet
       uses: nuget/setup-nuget@v2
       with:
@@ -28,8 +33,6 @@ jobs:
     - name: Adicionar o MSBuild ao PATH
       uses: microsoft/setup-msbuild@v2
 
-    # Projetos .NET Framework 4.8 costumam precisar deste restauro explícito
-    # antes do MSBuild para evitar que faltem referências na pasta principal
     - name: Restaurar pacotes NuGet
       run: nuget restore ${{ env.SOLUTION_FILE_PATH }}
 
@@ -37,11 +40,10 @@ jobs:
     - name: Compilar com o MSBuild
       run: msbuild ${{ env.SOLUTION_FILE_PATH }} /t:Build /p:Configuration=${{ env.BUILD_CONFIGURATION }} /p:Platform="${{ env.BUILD_PLATFORM }}" /verbosity:minimal
 
-    # Guarda todas as pastas bin/Debug criadas na solução
-    - name: Guardar o ficheiro compilado
+    # CORREÇÃO DO ARTEFACTO: Vai buscar os ficheiros à pasta "artifacts" externa
+    - name: Guardar o executável e ficheiros do LogicPOS
       uses: actions/upload-artifact@v4
       with:
-        name: logicpos-compilado-net48
+        name: LogicPOS-Instalador-Debug
         path: |
-          **/bin/Debug/
-          **/bin/Any CPU/Debug/
+          ../artifacts/logicpos/Debug/
