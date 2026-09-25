@@ -1,46 +1,32 @@
-name: Build LogicPOS
+name: MSBuild
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ "main" ]
 
 jobs:
   build:
+    # Usa uma máquina Windows do GitHub que já tem o MSBuild instalado
     runs-on: windows-latest
 
+    variables:
+      # Caminho para a sua solução (.sln) ou projeto (.csproj)
+      SOLUTION_FILE_PATH: .
+
+      # Configuração da compilação (Release ou Debug)
+      BUILD_CONFIGURATION: Release
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Descarregar o código do repositório
+      uses: actions/checkout@v4
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.0.x'
-
-    - name: Install .NET Framework 4.8 Targeting Pack
-      run: choco install netfx-4.8-devpack -y
-
-    - name: Setup MSBuild
+    - name: Adicionar o MSBuild ao comando de linha (PATH)
       uses: microsoft/setup-msbuild@v2
 
-    - name: Restore
-      run: msbuild LogicPOS.sln /t:Restore /p:Configuration=Release
+    - name: Restaurar pacotes NuGet (se o seu projeto usar)
+      run: nuget restore ${{ env.SOLUTION_FILE_PATH }}
 
-    - name: Build UI (Release|Any CPU)
-      run: msbuild LogicPOS.UI/LogicPOS.UI.csproj /p:Configuration=Release /p:Platform="Any CPU"
-
-    - name: Collect UI output
-      shell: powershell
-      run: |
-        New-Item -ItemType Directory -Force -Path publish | Out-Null
-        Copy-Item "..\artifacts\logicpos\Release\*" "publish\" -Recurse -Force
-
-    - name: Upload Build Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: LogicPOS-Compiled
-        path: publish/
+    - name: Compilar com o MSBuild
+      run: msbuild /m /p:Configuration=${{ env.BUILD_CONFIGURATION }} ${{ env.SOLUTION_FILE_PATH }}
