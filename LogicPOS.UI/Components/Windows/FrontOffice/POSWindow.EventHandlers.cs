@@ -4,7 +4,9 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
+using LogicPOS.Api.Features.Parking.QuoteParkTicket;
 using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Errors;
 using LogicPOS.UI.Components.FiscalYears;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.POS;
@@ -16,6 +18,7 @@ using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
 using Serilog;
 using System;
+using System.Linq;
 
 namespace LogicPOS.UI.Components.Windows
 {
@@ -246,6 +249,43 @@ namespace LogicPOS.UI.Components.Windows
             }
         }
 
+        private bool TryAddParkTicketFromScan(string code)
+        {
+            var payload = code?.Trim() ?? string.Empty;
+            var isAccess = payload.StartsWith("ACCESS_", StringComparison.OrdinalIgnoreCase);
+            var isDigits = payload.Length >= 1 && payload.Length <= 8 && payload.All(char.IsDigit);
+            if (!isAccess && !isDigits)
+                return false;
+
+            var quoted = LogicPOS.UI.DependencyInjection.Mediator.Send(new QuoteParkTicketQuery { Payload = payload }).Result;
+            if (quoted.IsError)
+            {
+                ErrorHandlingService.HandleApiError(quoted);
+                return true;
+            }
+
+            if (!quoted.Value.Success)
+            {
+                CustomAlerts.Warning(this)
+                    .WithMessage(string.IsNullOrWhiteSpace(quoted.Value.Error) ? LocalizedString.Instance["global_invalid_code"] : quoted.Value.Error)
+                    .ShowAlert();
+                return true;
+            }
+
+            var article = ArticlesService.GetArticleByCode(quoted.Value.ArticleCode);
+            if (article == null)
+            {
+                CustomAlerts.Warning(this)
+                    .WithMessage(LocalizedString.Instance["global_invalid_code"])
+                    .ShowAlert();
+                return true;
+            }
+
+            MenuArticles.BtnArticle_Clicked(article);
+            SaleOptionsPanel?.UpdateButtonsSensitivity();
+            return true;
+        }
+
         private void ProcessCapturedReaderCode(string code)
         {
             if (AppSettings.Instance.OperationMode.IsParkingMode())
@@ -265,6 +305,9 @@ namespace LogicPOS.UI.Components.Windows
                             .ShowAlert();
                 return;
             }
+
+            if (TryAddParkTicketFromScan(code))
+                return;
 
             var article = ArticlesService.GetArticleByCode(code);
             if (article == null)

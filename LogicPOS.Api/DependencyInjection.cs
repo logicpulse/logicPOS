@@ -1,4 +1,5 @@
-﻿using LogicPOS.Api.Features.Common;
+﻿using LogicPOS.Api.Features.Authentication;
+using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Common.Caching;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -13,12 +14,14 @@ namespace LogicPOS.Api
         {
             InitializeApiSettings();
 
+            services.AddTransient<BearerTokenDelegatingHandler>();
             services.AddHttpClient("Default", config =>
             {
                 config.Timeout = TimeSpan.FromDays(1);
                 config.DefaultRequestHeaders.Add("Accept", "application/json");
                 config.BaseAddress = new Uri(ApiSettings.Default.BaseAddress);
-            });
+            })
+            .AddHttpMessageHandler<BearerTokenDelegatingHandler>();
 
             services.AddMediatR(config =>
             {

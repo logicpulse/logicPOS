@@ -40,6 +40,7 @@ namespace LogicPOS.Api.Features.Articles.AddArticle
         public bool IsComposed { get; set; } 
         public bool UniqueArticles { get; set; }
         public bool IsSdrPackaging { get; set; }
+        public bool IsTicketing { get; set; }
         public string Notes { get; set; }
         public string BarcodeLabelPrintModel { get; set; }
     }

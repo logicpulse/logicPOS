@@ -47,6 +47,7 @@ namespace LogicPOS.Api.Entities
         public bool IsComposed { get; set; }
         public bool UniqueArticles { get; set; }
         public bool IsSdrPackaging { get; set; }
+        public bool IsTicketing { get; set; }
         public string BarcodeLabelPrintModel { get; set; }
         #endregion
     }

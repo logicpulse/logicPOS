@@ -1,6 +1,5 @@
 ﻿using ErrorOr;
 using LogicPOS.Api.Errors;
-using LogicPOS.Api.Features.Authentication;
 using MediatR;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
@@ -23,10 +22,7 @@ namespace LogicPOS.Api.Features.Common.Requests
         public RequestHandler(IHttpClientFactory httpFactory)
         {
             _httpClient = httpFactory.CreateClient("Default");
-            if (AuthenticationData.Token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new global::System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AuthenticationData.Token);
-            }
+            // Bearer token is attached per-request by BearerTokenDelegatingHandler.
         }
 
         public RequestHandler(IHttpClientFactory httpFactory, IMemoryCache cache) : this(httpFactory) 

@@ -39,6 +39,7 @@ namespace LogicPOS.UI.Components.Modals
         private readonly CheckButton _checkPriceWithVat = new CheckButton(LocalizedString.Instance["global_price_with_vat"]);
         private readonly CheckButton _checkPVPVariable = new CheckButton(LocalizedString.Instance["global_variable_price"]);
         private readonly CheckButton _checkIsSdrPackaging = new CheckButton("Embalagem Volta");
+        private readonly CheckButton _checkIsTicketing = new CheckButton("Artigo de parque / ticketing");
         private readonly TextBox _txtSdrVoltaPrice = new TextBox(
             null,
             "Valor Volta",
@@ -94,6 +95,7 @@ namespace LogicPOS.UI.Components.Modals
             SensitiveFields.Add(_comboClasses.ComboBox);
             SensitiveFields.Add(_checkIsComposed);
             SensitiveFields.Add(_checkIsSdrPackaging);
+            SensitiveFields.Add(_checkIsTicketing);
             SensitiveFields.Add(_checkUniqueArticles);
             SensitiveFields.Add(_checkFavorite);
             SensitiveFields.Add(_checkUseWeighingBalance);

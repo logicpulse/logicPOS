@@ -93,6 +93,7 @@ namespace LogicPOS.UI.Components.Modals
             financeDetailsTab.PackStart(_checkPVPVariable, false, false, 0);
             financeDetailsTab.PackStart(_checkPriceWithVat, false, false, 0);
             financeDetailsTab.PackStart(_checkIsSdrPackaging, false, false, 0);
+            financeDetailsTab.PackStart(_checkIsTicketing, false, false, 0);
             financeDetailsTab.PackStart(_txtDiscount.Component, false, false, 0);
             financeDetailsTab.PackStart(_comboClasses.Component, false, false, 0);
             financeDetailsTab.PackStart(_comboVatDirectSelling.Component, false, false, 0);

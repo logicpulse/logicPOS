@@ -73,6 +73,7 @@ namespace LogicPOS.UI.Components.Modals
             addArticleCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity.Model;
             addArticleCommand.UniqueArticles = _checkUniqueArticles.Active;
             addArticleCommand.IsSdrPackaging = _checkIsSdrPackaging.Active;
+            addArticleCommand.IsTicketing = _checkIsTicketing.Active;
             addArticleCommand.Notes = _txtNotes.Value.Text;
 
 
@@ -149,6 +150,7 @@ namespace LogicPOS.UI.Components.Modals
             updateCommand.BarcodeLabelPrintModel = _comboPrintModels.SelectedEntity?.Model;
             updateCommand.UniqueArticles = _checkUniqueArticles.Active;
             updateCommand.IsSdrPackaging = _checkIsSdrPackaging.Active;
+            updateCommand.IsTicketing = _checkIsTicketing.Active;
             updateCommand.Notes = _txtNotes.Value.Text;
             updateCommand.IsDeleted = _checkDisabled.Active;
 
@@ -237,6 +239,7 @@ namespace LogicPOS.UI.Components.Modals
             _checkDisabled.Active = _entity.IsDeleted;
             _checkUniqueArticles.Active = _entity.UniqueArticles;
             _checkIsSdrPackaging.Active = _entity.IsSdrPackaging;
+            _checkIsTicketing.Active = _entity.IsTicketing;
 
             if (IsSdrDepositArticle)
             {
