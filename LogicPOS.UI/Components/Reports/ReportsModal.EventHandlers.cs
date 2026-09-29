@@ -1,0 +1,640 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
+using LogicPOS.Api.Features.Finance.Documents.Types.Common;
+using LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf;
+using LogicPOS.UI.Services;
+using System;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class ReportsModal
+    {
+        private void BtnCompanyBillingReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowCompanyBillingReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnCustomersCurrentAccountSummaryReport_Clicked(object sender, EventArgs e)
+        {
+            CustomerCurrentAccountFilterModal.ShowModal(this);
+        }
+
+        private void BtnSalesByDocumentReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByDocumentTypeReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByDateReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByDateReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByUserReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByUserReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByTerminalReport_Clicked(object sender, EventArgs e)
+        {
+            ReportsFilterModal modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByTerminalReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        public static ReportsFilterModal DefaultFilterModal(Window parentWindow)
+        {
+            var modal = new ReportsFilterModal(parentWindow);
+
+            modal.TxtArticle.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtFamily.Component.Visible = false;
+            modal.TxtSubfamily.Component.Visible = false;
+            return modal;
+        }
+
+        private void BtnSalesByCustomerReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByCustomerReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnArticleTotalSoldReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowArticleTotalSoldReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByPaymentMethodReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByPaymentConditionReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByCurrencyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByCurrencyReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByCountryReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByCountryReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByVatAndArticleTypeReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = true;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByVatAndArticleTypeReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate)?.Id);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnSalesByVatAndArticleClassReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = true;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByVatAndArticleClassReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate)?.Id);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCustomerReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowDetailedSalesByCustomerReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnCustomerBalanceDetailsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtCustomer.Component.Visible = true;
+            modal.TxtCustomer.IsRequired = true;
+            modal.TxtCustomer.UpdateValidationColors();
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                if (modal.TxtCustomer.SelectedEntity != null)
+                {
+                    ReportsService.ShowCustomerBalanceDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as ApiEntity).Id);
+                }
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByDocumentReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByDocumentDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByDateReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByDateDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByUserReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByUserDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByTerminalReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByTerminalDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPaymentConditionReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByPaymentConditionDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPaymentMethodReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByPaymentMethodDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCurrencyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByCurrencyDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByCountryReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByCountryDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByFamilyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByFamilyDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesBySubfamilyReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = new ReportsFilterModal(this);
+
+            modal.TxtCustomer.Component.Visible = false;
+            modal.TxtDocumentNumber.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtSerialNumber.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = false;
+            modal.TxtWarehouse.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            var query = new GetSalesBySubFamilyDetailedReportPdfQuery(modal.StartDate, modal.EndDate);
+
+            if (modal.TxtFamily.SelectedEntity != null)
+            {
+                query.FamilyCode = (modal.TxtFamily.SelectedEntity as ArticleFamily).Code;
+            }
+            if (modal.TxtSubfamily.SelectedEntity != null)
+            {
+                query.SubfamilyCode = (modal.TxtSubfamily.SelectedEntity as ArticleSubfamily).Code;
+            }
+            if (modal.TxtArticle.SelectedEntity != null)
+            {
+                query.ArticleCode = (modal.TxtArticle.SelectedEntity as Article)?.Code;
+            }
+
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesBySubfamilyDetailsReport(query);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByPlaceReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByPlaceDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByTableReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowSalesByTableDetailsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDetailedSalesByVatGroupReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtVatRate.Component.Visible = true;
+
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowSalesByVatGroupDetailsReport(modal.StartDate, modal.EndDate, (modal.TxtVatRate.SelectedEntity as VatRate)?.Id);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnArticlesReport_Clicked(object sender, EventArgs e)
+        {
+            ReportsService.ShowArticlesReport();
+        }
+
+        private void BtnCustomersReport_Clicked(object sender, EventArgs e)
+        {
+            ReportsService.ShowCustomersReport();
+        }
+
+        private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowCommissionsReport(modal.StartDate, modal.EndDate);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockMovementsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
+                var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
+                ReportsService.ShowStockMovementsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByWarehouseReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtSerialNumber.Component.Visible = true;
+            modal.TxtWarehouse.Component.Visible = true;
+            modal.TxtArticle.Component.Visible = true;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+
+                ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
+                                                (modal.TxtArticle.SelectedEntity as ArticleViewModel)?.Id,
+                                                (modal.TxtWarehouse.SelectedEntity as Warehouse)?.Id,
+                                                modal.TxtSerialNumber.Text);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByArticleReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtArticle.Component.Visible = true;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate, (modal.TxtArticle.SelectedEntity as Article)?.Id);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockBySupplierReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtCustomer.Component.Visible = true;
+            modal.TxtDocumentNumber.Component.Visible = true;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowStockBySupplierReport(modal.StartDate, modal.EndDate, (modal.TxtCustomer.SelectedEntity as Customer)?.Id, modal.TxtDocumentNumber.Text);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnStockByArticleGainReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtArticle.Component.Visible = true;
+            modal.TxtCustomer.Component.Visible = true;
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowStockByArticleGainReport(modal.StartDate, modal.EndDate,
+                                                           (modal.TxtArticle.SelectedEntity as Article)?.Id,
+                                                           (modal.TxtCustomer.SelectedEntity as Customer)?.Id);
+
+            }
+            modal.Destroy();
+        }
+
+        private void BtnDeletedOrdersReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtDocumentType.Component.Visible = false;
+
+            var response = (ResponseType)modal.Run();
+
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowDeletedOrdersReport(modal.StartDate, modal.EndDate);
+            }
+            modal.Destroy();
+        }
+
+        private void BtnAuditReport_Clicked(object sender, EventArgs e)
+        {
+            SystemAuditFilterModal.ShowModal(this);
+        }
+
+        private void BtnSuppliersReport_Clicked(object sender, EventArgs e)
+        {
+            ReportsService.ShowSuppliersReport();
+        }
+    }
+}

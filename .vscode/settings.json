@@ -1,0 +1,6 @@
+{
+  "dotnet.preferCSharpExtension": true,
+  "dotnet.unitTestDebuggingOptions": {
+    "type": "clr"
+  }
+}

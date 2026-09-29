@@ -1,0 +1,15 @@
+---
+description: LogicPOS solution boundaries and toolchain for all AI sessions
+alwaysApply: true
+---
+
+# LogicPOS — core context
+
+- **LogicPOS.UI** is **.NET Framework 4.8** **GTK#** (`logicpos.exe`). Not ASP.NET Core.
+- **LogicPOS.Api** is **netstandard2.0**: **MediatR** + outbound **`HttpClient`** only — **no** in-process API host.
+- **LogicPOS.Globalization**: **RESX** strings; edit `.resx` with care across cultures.
+- **Config**: UI **`appsettings.json`**; API client **`apisettings.json`** (gitignored — template **`LogicPOS.Api/apisettings.example.json`**).
+- **Build**: Use **Visual Studio MSBuild** or **`.vscode/build-solution.ps1`**. Avoid **`dotnet msbuild`** for the **full solution** (`LogicPOS.Globalization` / AL issues).
+- **VS Code debug**: **`"type": "clr"`** only; **Debug** uses **`Prefer32Bit>false`** for **x64** Desktop CLR debugger.
+- **Output**: UI writes to **`..\artifacts\logicpos\<Configuration>\`** relative to repo parent (see README).
+- Keep changes **minimal** and consistent with surrounding code.

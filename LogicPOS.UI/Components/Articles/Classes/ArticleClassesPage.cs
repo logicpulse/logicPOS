@@ -1,0 +1,115 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Classes.DeleteArticleClass;
+using LogicPOS.Api.Features.Articles.Classes.GetAllArticleClasses;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.Utility;
+using MediatR;
+using System.Collections.Generic;
+
+using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.Globalization;
+namespace LogicPOS.UI.Components.Pages
+{
+    public class ArticleClassesPage : Page<ArticleClass>
+    {
+        public ArticleClassesPage(Window parent) : base(parent)
+        {
+            Navigator.BtnInsert.Visible = false;
+            Navigator.BtnDelete.Visible = false;
+            DisableCommonFilterButtons();
+        }
+
+      
+        protected override IRequest<ErrorOr<IEnumerable<ArticleClass>>> GetAllQuery => new GetAllArticleClassesQuery();
+
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            var modal = new ArticleClassModal(mode, SelectedEntity);
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(CreateAcronymColumn());
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(3));
+        }
+
+        private TreeViewColumn CreateAcronymColumn()
+        {
+            void RenderMonth(TreeViewColumn column, CellRenderer cell, TreeModel model, TreeIter iter)
+            {
+                var articleClass = (ArticleClass)model.GetValue(iter, 0);
+                (cell as CellRendererText).Text = articleClass.Acronym.ToString();
+            }
+
+            var title = LocalizedString.Instance["global_acronym"];
+            return Columns.CreateColumn(title, 2, RenderMonth);
+        }
+
+        protected override void InitializeSort()
+        {
+
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
+            AddAcronymSorting();
+            AddUpdatedAtSorting(3);
+        }
+
+        private void AddAcronymSorting()
+        {
+            GridViewSettings.Sort.SetSortFunc(2, (model, left, right) =>
+            {
+                var leftArticleClass = (ArticleClass)model.GetValue(left, 0);
+                var rightArticleClass = (ArticleClass)model.GetValue(right, 0);
+
+                if (leftArticleClass == null || rightArticleClass == null)
+                {
+                    return 0;
+                }
+
+                return leftArticleClass.Acronym.CompareTo(rightArticleClass.Acronym);
+            });
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteArticleClassCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.Classes.BACKOFFICE_MAN_ARTICLECLASS_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.Classes.BACKOFFICE_MAN_ARTICLECLASS_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.Classes.BACKOFFICE_MAN_ARTICLECLASS_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.Classes.BACKOFFICE_MAN_ARTICLECLASS_VIEW);
+        }
+
+        #region Singleton   
+        private static ArticleClassesPage _instance;
+       
+        public static ArticleClassesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ArticleClassesPage(BackOfficeWindow.Instance);
+                }
+
+                return _instance;
+            }
+        }
+        #endregion
+    }
+}

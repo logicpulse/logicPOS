@@ -1,0 +1,69 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Components.Documents.Utilities;
+using System;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Pages
+{
+    public partial class ReceiptsPage
+    {
+        private void AddEventHandlers()
+        {
+            SelectedEntityConfirmed += OnSelectedEntityConfirmed;
+        }
+
+        private void OnSelectedEntityConfirmed(ReceiptViewModel receipt)
+        {
+            DocumentPdfUtils.ViewReceiptPdf(SourceWindow, receipt.Id);
+        }
+
+        public void MoveToNextPage()
+        {
+            Query.Page = Receipts.Page + 1;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public void MoveToPreviousPage()
+        {
+            Query.Page = Receipts.Page - 1;
+            Refresh();
+            PageChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void CheckBox_Clicked(object o, ToggledArgs args)
+        {
+            if (GridView.Model.GetIter(out TreeIter iterator, new TreePath(args.Path)))
+            {
+                var receipt = (ReceiptViewModel)GridView.Model.GetValue(iterator, 0);
+                if (SelectedReceipts.Count > 0 && !SelectedReceipts.Any(c=>c.CustomerFiscalNumber == receipt.CustomerFiscalNumber))
+                {
+                    var checkButton = (CellRendererToggle)o;
+                    checkButton.Active = false;
+                    SelectedEntity=null;
+                    return;
+                }
+
+                if (SelectedReceipts.Contains(receipt))
+                {
+                    SelectedReceipts.Remove(receipt);
+                    SelectedReceiptsTotalAmount -= receipt.Amount;
+                }
+                else
+                {
+                    SelectedReceipts.Add(receipt);
+                    SelectedReceiptsTotalAmount += receipt.Amount;
+                }
+
+                PageChanged?.Invoke(this, EventArgs.Empty);
+            }
+
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            //these buttons are not used in this page, so we do nothing here
+        }
+    }
+}

@@ -1,0 +1,22 @@
+﻿using ErrorOr;
+using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Common.Responses;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Reports.POS.SalesByTerminal.GetSalesByTerminalReportPdf
+{
+    public class GetSalesByTerminalReportPdfQueryHandler :
+        RequestHandler<GetSalesByTerminalReportPdfQuery, ErrorOr<TempFile>>
+    {
+        public GetSalesByTerminalReportPdfQueryHandler(IHttpClientFactory factory) : base(factory)
+        {
+        }
+
+        public async override Task<ErrorOr<TempFile>> Handle(GetSalesByTerminalReportPdfQuery query, CancellationToken cancellationToken = default)
+        {
+            return await HandleGetFileQueryAsync($"reports/sales-by-terminal/pdf{query.GetUrlQuery()}");
+        }
+    }
+}

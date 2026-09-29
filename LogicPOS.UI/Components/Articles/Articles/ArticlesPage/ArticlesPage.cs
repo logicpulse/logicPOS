@@ -1,0 +1,156 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.Common;
+using LogicPOS.Api.Features.Articles.DeleteArticle;
+using LogicPOS.Api.Features.Articles.GetArticles;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Common.Pagination;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Components.Articles;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Windows;
+using LogicPOS.UI.Errors;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using LogicPOS.UI.Components.System.Users.Permissions;
+namespace LogicPOS.UI.Components.Pages
+{
+    public partial class ArticlesPage : Page<ArticleViewModel>
+    {
+        public GetArticlesQuery CurrentQuery { get; private set; } = GetDefaultQuery();
+        public PaginatedResult<ArticleViewModel> Articles { get; private set; }
+        private Dictionary<Guid, decimal> _articleStocks = new Dictionary<Guid, decimal>();
+
+        public ArticlesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
+        {
+            AddEventHandlers();
+            DisableCommonFilterButtons();
+            Navigator.SearchBox.BtnMore.Visible = true;
+        }
+
+        protected override void LoadEntities()
+        {
+            CurrentQuery.IncludeDeleted = _showHiddenData ? true : (bool?)null;
+
+            var getArticles = _mediator.Send(CurrentQuery).Result;
+
+            if (getArticles.IsError)
+            {
+                ErrorHandlingService.HandleApiError(getArticles,
+                                                    source: SourceWindow);
+                return;
+            }
+
+            Articles = getArticles.Value;
+
+            _entities.Clear();
+
+            if (Articles.Items.Any())
+            {
+                _entities.AddRange(Articles.Items);
+            }
+
+            LoadCurrentArticlesStocks();
+        }
+
+        private void LoadCurrentArticlesStocks()
+        {
+            if (Articles.Items.Count() > 0)
+            {
+                ArticlesService.GetArticlesTotalStocks(Articles.Items.Select(a => a.Id)).ForEach(ts =>
+                {
+                    _articleStocks[ts.ArticleId] = ts.Quantity;
+                });
+            }
+        }
+
+        public Article GetSelectedArticle()
+        {
+            if (SelectedEntity == null)
+            {
+                return null;
+            }
+
+            var article = ArticlesService.GetArticlebById(SelectedEntity.Id);
+            return article;
+        }
+
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            var modal = new ArticleModal(mode, GetSelectedArticle());
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        public override void Search(string searchText)
+        {
+            CurrentQuery = new GetArticlesQuery { Search = searchText };
+            Refresh();
+        }
+
+        private static GetArticlesQuery GetDefaultQuery()
+        {
+            return new GetArticlesQuery();
+
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            var result = new DeleteArticleCommand(SelectedEntity.Id);
+            return result;
+        }
+
+        public override bool DeleteEntity()
+        {
+            var command = GetDeleteCommand();
+
+            if (command == null)
+            {
+                return false;
+            }
+
+            var result = _mediator.Send(GetDeleteCommand()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result, source: SourceWindow);
+                return false;
+            }
+
+            if (result.Value == false)
+            {
+                CustomAlerts.ShowCannotDeleteEntityErrorAlert(SourceWindow);
+            }
+
+            return result.Value;
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_VIEW);
+        }
+
+        #region Singleton
+        private static ArticlesPage _instance;
+
+        public static ArticlesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new ArticlesPage(BackOfficeWindow.Instance);
+                }
+                return _instance;
+            }
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,31 @@
+using LogicPOS.Api.Features.Common.Responses;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Components.Modals.Common;
+using System.Collections.Generic;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class AddArticleModal : Modal
+    {
+        public IconButtonWithText BtnOk { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Ok);
+        public IconButtonWithText BtnCancel { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.Cancel);
+        public IconButtonWithText BtnClear { get; set; } = ActionAreaButton.FactoryGetDialogButtonType(DialogButtonType.CleanFilter);
+        public HashSet<IValidatableField> ValidatableFields { get; private set; } = new HashSet<IValidatableField>();
+        public TextBox TxtSerialNumber { get; set; }
+        public TextBox TxtCode { get; set; }
+        public TextBox TxtArticle { get; set; }
+        public TextBox TxtQuantity { get; set; }
+        public TextBox TxtPrice { get; set; }
+        public TextBox TxtDiscount { get; set; }
+        public TextBox TxtTotal { get; set; }
+        public TextBox TxtTotalWithTax { get; set; }
+        public TextBox TxtVatRate { get; set; }
+        public TextBox TxtVatExemptionReason { get; set; }
+        public TextBox TxtNotes { get; set; }    
+        public TextBox TxtFamily { get; set; }
+        public TextBox TxtSubFamily { get; set; }
+        private List<AutoCompleteLine> _serialNumberAutocompleteLines;
+    }
+}

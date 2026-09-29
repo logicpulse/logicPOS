@@ -1,0 +1,195 @@
+using LogicPOS.Api.Features.System.Licensing.ActivateLicense;
+using LogicPOS.Api.Features.System.Licensing.ConnectToWs;
+using LogicPOS.Api.Features.System.Licensing.GetCountries;
+using LogicPOS.Api.Features.System.Licensing.GetHardwareId;
+using LogicPOS.Api.Features.System.Licensing.GetLicenseData;
+using LogicPOS.Api.Features.System.Licensing.GetSystemLatestVersion;
+using LogicPOS.Api.Features.System.Licensing.RefreshLicense;
+using LogicPOS.UI.Alerts;
+using LogicPOS.UI.Errors;
+using Newtonsoft.Json;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml;
+
+namespace LogicPOS.UI.Components.Licensing
+{
+    public static class LicensingService
+    {
+        public static string OFFLINE_ACTIVATION_FILE => "OfflineActivation.json";
+
+        public static LicenseData Data { get; private set; } = new LicenseData();
+
+        public static List<string> GetCountries()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetLicensingCountriesQuery()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return Enumerable.Empty<string>().ToList();
+            }
+
+            return result.Value.ToList();
+        }
+
+        public static string GetHardwareId()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetHardwareIdQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value.HardwareId;
+        }
+
+        public static ActivateLicenseResponse? ActivateLicense(ActivateLicenseCommand licenseData)
+        {
+            var result = DependencyInjection.Mediator.Send(licenseData).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+
+            return result.Value;
+        }
+
+        private static bool RefreshLicense()
+        {
+            var result = DependencyInjection.Mediator.Send(new RefreshLicenseCommand()).Result;
+
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool ActivateFromFile()
+        {
+            if (!File.Exists(OFFLINE_ACTIVATION_FILE))
+            {
+                return false;
+            }
+            var jsonText = File.ReadAllText(OFFLINE_ACTIVATION_FILE);
+            var activationCommand = JsonConvert.DeserializeObject<ActivateLicenseCommand>(jsonText);
+
+            var result = DependencyInjection.Mediator.Send(activationCommand).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+            File.Delete(OFFLINE_ACTIVATION_FILE);
+            return true;
+        }
+
+        private static LicenseData GetLicenseData()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetLicenseDataQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return null;
+            }
+            return result.Value.Data;
+        }
+
+        public static bool ConnectToWs()
+        {
+            var result = DependencyInjection.Mediator.Send(new ConnectToWsQuery()).Result;
+
+            if (result.IsError)
+            {
+
+                ErrorHandlingService.HandleApiError(result);
+                return false;
+            }
+
+            return result.Value.Connected;
+        }
+
+        private static void LoadLicenseData()
+        {
+            Data = GetLicenseData();
+        }
+
+        public static bool Initialize()
+        {
+            try
+            {
+                RefreshLicense();
+                LoadLicenseData();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error initializing licensing service: " + ex.Message, ex);
+
+                CustomAlerts.Error()
+                        .WithTitle("Erro de Licença")
+                        .WithMessage("Não foi possível inicializar a licença. Contacte o suporte técnico.")
+                        .ShowAlert();
+
+                return false;
+            }
+        }
+
+        public static Version GetLatestSystemVersion()
+        {
+#if DEBUG
+            return GetLastestVersionFromDevelopment();
+#else
+            return GetLatestVersionFromLicense();
+#endif
+        }
+
+        public static Version GetLatestVersionFromLicense()
+        {
+            var result = DependencyInjection.Mediator.Send(new GetSystemLatestVersionQuery()).Result;
+            if (result.IsError)
+            {
+                ErrorHandlingService.HandleApiError(result);
+                return new Version(0, 0, 0);
+            }
+
+            if (Version.TryParse(result.Value.Version, out var latestVersion))
+            {
+                return latestVersion;
+            }
+            else
+            {
+                Log.Warning("Received invalid version format from API: " + result.Value.Version);
+                return new Version(0, 0, 0);
+            }
+        }
+
+        private static Version GetLastestVersionFromDevelopment()
+        {
+            string url = "https://box.track.pt/files/latest/update.xml";
+
+            XmlDocument xml = new XmlDocument();
+            try
+            {
+                xml.Load(url);
+                XmlNode version = xml.SelectSingleNode("//version");
+                Version.TryParse(version.InnerText, out var lastDevelopVersion);
+                return lastDevelopVersion;
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "Could not load latest develop version from {Url}", url);
+                return new Version(0, 0, 0);
+            }
+        }
+    }
+}

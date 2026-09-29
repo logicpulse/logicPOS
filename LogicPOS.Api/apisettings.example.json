@@ -1,0 +1,4 @@
+{
+  "BaseAddress": "http://localhost:5011/",
+  "DefaultPageSize": 40
+}

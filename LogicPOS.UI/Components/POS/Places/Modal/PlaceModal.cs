@@ -1,0 +1,104 @@
+﻿using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Articles.PriceTypes.GetAllPriceTypes;
+using LogicPOS.Api.Features.MovementTypes.GetAllMovementTypes;
+using LogicPOS.Api.Features.Places.AddPlace;
+using LogicPOS.Api.Features.Places.UpdatePlace;
+using LogicPOS.UI.Components.Articles;
+using System.Collections.Generic;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class PlaceModal : EntityEditionModal<Place>
+    {
+        public PlaceModal(EntityEditionModalMode modalMode, Place entity = null) : base(modalMode, entity)
+        {
+        }
+        private IEnumerable<PriceType> GetPriceTypes() => ExecuteGetEntitiesQuery(new GetAllPriceTypesQuery());
+
+        private IEnumerable<MovementType> GetMovementTypes() => ExecuteGetEntitiesQuery(new GetAllMovementTypesQuery());
+
+        protected override void Initialize()
+        {
+            InitializePriceTypesComboBox();
+            InitializeMovementTypesComboBox();
+        }
+        protected override void ShowEntityData()
+        {
+            _txtCode.Text = _entity.Code;
+            _txtDesignation.Text = _entity.Designation;
+            _txtOrder.Text = _entity.Order.ToString();
+            _txtNotes.Value.Text = _entity.Notes;
+            if (EntityHasImage)
+            {
+                ShowImage();
+            }
+            _checkDisabled.Active = _entity.IsDeleted;
+        }
+
+        private bool EntityHasImage => string.IsNullOrWhiteSpace(_entity.ButtonImage) == false;
+
+        private void ShowImage()
+        {
+            string imagePath = ButtonImageCache.GetImageLocation(_entity.Id, _entity.ImageExtension) ?? ButtonImageCache.AddBase64Image(_entity.Id, _entity.ButtonImage, _entity.ImageExtension);
+            _imagePicker.SetImage(imagePath);
+        }
+
+        protected override bool UpdateEntity()
+        {
+            var result = ExecuteUpdateCommand(CreateUpdateCommand());
+            if(result.IsError == false)
+            {
+                DeleteImageInCache();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void DeleteImageInCache()
+        {
+            if (!_imagePicker.HasImage)
+            {
+                return;
+            }
+
+            // Place.ImageExtension is fixed to "png" (readonly).
+            ButtonImageCache.DeleteImage(_entity.Id, _entity.ImageExtension);
+
+            var base64 = _imagePicker.GetBase64Image();
+            ButtonImageCache.AddBase64Image(_entity.Id, base64, _entity.ImageExtension);
+            _entity.ButtonImage = base64;
+        }
+
+        private UpdatePlaceCommand CreateUpdateCommand()
+        {
+            return new UpdatePlaceCommand
+            {
+                Id = _entity.Id,
+                Order = uint.Parse(_txtOrder.Text),
+                Code = _txtCode.Text,
+                Designation = _txtDesignation.Text,
+                Notes = _txtNotes.Value.Text,
+                ButtonImage = _imagePicker.GetBase64Image(),
+                IsDeleted = _checkDisabled.Active,
+                PriceTypeId = _comboPriceTypes.SelectedEntity.Id,
+                MovementTypeId = _comboMovementTypes.SelectedEntity.Id
+            };
+        }
+
+        private AddPlaceCommand CreateAddCommand()
+        {
+            return new AddPlaceCommand
+            {
+                Designation = _txtDesignation.Text,
+                Notes = _txtNotes.Value.Text,
+                PriceTypeId = _comboPriceTypes.SelectedEntity.Id,
+                MovementTypeId = _comboMovementTypes.SelectedEntity.Id,
+                ButtonImage = _imagePicker.GetBase64Image(),
+            };
+        }
+
+        protected override bool AddEntity() => ExecuteAddCommand(CreateAddCommand()).IsError == false;
+
+    }
+}

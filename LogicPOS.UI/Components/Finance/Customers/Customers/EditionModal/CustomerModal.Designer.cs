@@ -1,0 +1,139 @@
+
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
+using LogicPOS.Globalization;
+using LogicPOS.Utility;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class CustomerModal
+    {
+        public override Size ModalSize => new Size(400, 550);
+        public override string ModalTitleResourceName => "window_title_edit_customer";
+
+        private void ComboBoxCountries_Changed(object sender, EventArgs e)
+        {
+            var selectedCountry = _comboCountries.SelectedEntity as Country;
+            if (selectedCountry != null)
+            {
+                UpdateTxtFiscalNumberRegex(selectedCountry.Code2);
+            }
+        }
+
+        private void UpdateTxtFiscalNumberRegex(string countryCode2)
+        {
+            _txtFiscalNumber.Regex = RegularExpressions.GetFiscalNumberRegexForCountry(countryCode2);
+            _txtFiscalNumber.UpdateValidationColors();
+        }
+
+        protected override void AddSensitiveFields()
+        {
+            SensitiveFields.Add(_txtOrder.Entry);
+            SensitiveFields.Add(_txtCode.Entry);
+            SensitiveFields.Add(_txtName.Entry);
+            SensitiveFields.Add(_comboPriceTypes.ComboBox);
+            SensitiveFields.Add(_comboCustomerTypes.ComboBox);
+            SensitiveFields.Add(_txtBirthDate.Entry);
+            SensitiveFields.Add(_txtAddress.Entry);
+            SensitiveFields.Add(_txtLocality.Entry);
+            SensitiveFields.Add(_txtCity.Entry);
+            SensitiveFields.Add(_txtPostalCode.Entry);
+            SensitiveFields.Add(_txtPhone.Entry);
+            SensitiveFields.Add(_txtMobile.Entry);
+            SensitiveFields.Add(_txtEmail.Entry);
+            SensitiveFields.Add(_txtFiscalNumber.Entry);
+            SensitiveFields.Add(_txtCardNumber.Entry);
+            SensitiveFields.Add(_comboCardMode);
+            SensitiveFields.Add(_checkDisabled);
+            SensitiveFields.Add(_checkSupplier);
+            SensitiveFields.Add(_txtDiscount.Entry);
+            SensitiveFields.Add(_comboCountries.ComboBox);
+            SensitiveFields.Add(_txtNotes);
+        }
+
+        protected override void AddValidatableFields()
+        {
+            ValidatableFields.Add(_txtName);
+            ValidatableFields.Add(_comboPriceTypes);
+            ValidatableFields.Add(_txtFiscalNumber);
+            ValidatableFields.Add(_txtDiscount);
+            ValidatableFields.Add(_txtBirthDate);
+            ValidatableFields.Add(_comboCountries);
+
+            if (_modalMode == EntityEditionModalMode.Update)
+            {
+                ValidatableFields.Add(_txtOrder);
+                ValidatableFields.Add(_txtCode);
+            }
+        }
+
+        protected override IEnumerable<(VBox Page, string Title)> CreateTabs()
+        {
+            yield return (CreateDetailsTab(), LocalizedString.Instance["global_record_main_detail"]);
+            yield return (CreateContactsTab(), LocalizedString.Instance["global_contacts"]);
+            yield return (CreateOthersTab(), LocalizedString.Instance["global_others"]);
+            yield return (CreateNotesTab(), LocalizedString.Instance["global_notes"]);
+        }
+
+        private VBox CreateDetailsTab()
+        {
+            var detailsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            if (_modalMode != EntityEditionModalMode.Insert)
+            {
+                detailsTab.PackStart(_txtOrder.Component, false, false, 0);
+                detailsTab.PackStart(_txtCode.Component, false, false, 0);
+            }
+
+            detailsTab.PackStart(_txtFiscalNumber.Component, false, false, 0);
+            detailsTab.PackStart(_txtName.Component, false, false, 0);
+            detailsTab.PackStart(_txtDiscount.Component, false, false, 0);
+            detailsTab.PackStart(_comboPriceTypes.Component, false, false, 0);
+            detailsTab.PackStart(_comboCustomerTypes.Component, false, false, 0);
+            detailsTab.PackStart(_checkSupplier, false, false, 0);
+
+            if (_modalMode != EntityEditionModalMode.Insert)
+            {
+                detailsTab.PackStart(_checkDisabled, false, false, 0);
+            }
+
+            return detailsTab;
+        }
+
+        private VBox CreateContactsTab()
+        {
+            var contactsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            contactsTab.PackStart(_txtAddress.Component, false, false, 0);
+            contactsTab.PackStart(_txtLocality.Component, false, false, 0);
+            contactsTab.PackStart(_txtPostalCode.Component, false, false, 0);
+            contactsTab.PackStart(_txtCity.Component, false, false, 0);
+            contactsTab.PackStart(_comboCountries.Component, false, false, 0);
+            contactsTab.PackStart(_txtPhone.Component, false, false, 0);
+            contactsTab.PackStart(_txtMobile.Component, false, false, 0);
+            contactsTab.PackStart(_txtEmail.Component, false, false, 0);
+
+            return contactsTab;
+        }
+
+        private VBox CreateOthersTab()
+        {
+            var contactsTab = new VBox(false, _boxSpacing) { BorderWidth = (uint)_boxSpacing };
+
+            contactsTab.PackStart(_txtCardNumber.Component, false, false, 0);
+            contactsTab.PackStart(_cardModeComponent, false, false, 0);
+            contactsTab.PackStart(_txtCardCredit.Component, false, false, 0);
+            contactsTab.PackStart(_txtBirthDate.Component, false, false, 0);
+
+            return contactsTab;
+        }
+    }
+}

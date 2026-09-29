@@ -1,0 +1,96 @@
+﻿using LogicPOS.Api.Features.POS.Orders.Orders.Common;
+using LogicPOS.Api.Features.POS.Tables.Common;
+using LogicPOS.UI.Components.Finance.Documents.Sdr;
+using LogicPOS.UI.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using DocumentDetailDto = LogicPOS.Api.Features.Finance.Documents.Documents.IssueDocument.DocumentDetail;
+
+
+namespace LogicPOS.UI.Components.POS
+{
+    public class PosOrder
+    {
+        public Guid? Id { get; set; } = null;
+        public TableViewModel Table { get; }
+
+        public List<PosTicket> Tickets { get; } = new List<PosTicket>();
+
+        public PosOrder(TableViewModel table) => Table = table;
+
+        public PosOrder(Order order)
+        {
+            Id = order.Id;
+            Table = order.Table;
+            AddTickets(order);
+        }
+
+        public List<SaleItem> GetOrderItems(bool excludeOpenTicket = false)
+        {
+            var tickets = Tickets.AsEnumerable();
+
+            if (excludeOpenTicket && SaleContext.HasOpenTicket())
+            {
+                tickets = tickets.Where(t => t != SaleContext.ItemsPage.Ticket);
+            }
+
+            return SaleItem.Compact(tickets.SelectMany(t => t.Items)).ToList();
+        }
+
+        public PosTicket AddTicket(IEnumerable<SaleItem> items)
+        {
+            var ticket = new PosTicket(Tickets.Count + 1);
+            ticket.Items.AddRange(items);
+            Tickets.Add(ticket);
+            return ticket;
+        }
+
+        public void AddTickets(Order order)
+        {
+            foreach (var ticket in order.Tickets)
+            {
+                var posTicket = new PosTicket(ticket.TicketId);
+                var saleItems = ticket.Details.Select(d => new SaleItem(d));
+                posTicket.Items.AddRange(saleItems);
+                Tickets.Add(posTicket);
+            }
+        }
+
+        public decimal TotalFinal => Tickets.Sum(t => t.TotalFinal) + SdrDocumentDetailsService.CalculateDepositTotal(GetOrderItems());
+        public decimal ServicesTotalFinal => Tickets.Sum(_ => _.ServicesTotalFinal);
+
+        public IEnumerable<DocumentDetailDto> GetDocumentDetails()
+            => SdrDocumentDetailsService.EnrichFromSaleItems(GetOrderItems());
+
+        public bool ReduceItems(IEnumerable<SaleItem> items)
+        {
+            return OrdersService.ReduceOrderItems(Id.Value, items);
+        }
+
+        public bool SplitTicket(IEnumerable<SaleItem> items, int splittersNumber)
+        {
+            return OrdersService.SplitTicket(Id.Value, items, splittersNumber);
+        }
+        public void Close()
+        {
+            if (Id != null)
+            {
+                OrdersService.CloseOrder(Id.Value);
+            }
+            else if (Table.Status == TableStatus.Open)
+            {
+                // Orphan open table (no persisted order) — release so Finish/CreateOrder can run again.
+                TablesService.FreeTable(Table);
+            }
+
+            Clear();
+        }
+
+        private void Clear()
+        {
+            Tickets.Clear();
+            Id = null;
+        }
+    }
+}

@@ -1,0 +1,66 @@
+using LogicPOS.UI.Application;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
+using System;
+
+namespace LogicPOS.UI.Components.Windows
+{
+    public partial class LoginWindow : POSBaseWindow
+    {
+        public LoginWindow(string backgroundImage)
+            : base(backgroundImage)
+        {
+            AddEventHandlers();
+            InitializeUI();
+
+            if (CompanyDetailsService.CompanyIsConfigured() == false)
+            {
+                EditCompanyDetailsModal.ShowModal(this);
+            }
+        }
+
+        private void AddEventHandlers()
+        {
+            this.KeyReleaseEvent += Window_KeyReleaseEvent;
+            this.Shown += LoginWindow_Shown;
+        }
+
+        private dynamic GetTheme()
+        {
+            var predicate = (Predicate<dynamic>)((dynamic x) => x.ID == "StartupWindow");
+            var theme = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+            return theme;
+        }
+
+        #region Static 
+        private static LoginWindow _instance;
+        
+        public static bool HasInstance => _instance != null;
+
+        public static LoginWindow Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = CreateLoginWindow();
+                }
+                return _instance;
+            }
+        }
+
+        private static LoginWindow CreateLoginWindow()
+        {
+            var predicate = (Predicate<dynamic>)((x) => x.ID == "StartupWindow");
+            var themeWindow = LogicPOSApp.Theme.Theme.Frontoffice.Window.Find(predicate);
+
+            string windowImageFileName = string.Format(themeWindow.Globals.ImageFileName,
+                                                       AppSettings.Instance.AppScreenSize.Width,
+                                                       AppSettings.Instance.AppScreenSize.Height);
+
+            return new LoginWindow(windowImageFileName);
+        }
+        #endregion
+    }
+}

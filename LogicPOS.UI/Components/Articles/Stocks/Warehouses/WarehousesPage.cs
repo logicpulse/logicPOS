@@ -1,0 +1,76 @@
+using ErrorOr;
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.Api.Features.Common;
+using LogicPOS.Api.Features.Warehouses.DeleteWarehouse;
+using LogicPOS.Api.Features.Warehouses.GetAllWarehouses;
+using LogicPOS.UI.Components.Modals;
+using LogicPOS.UI.Components.Pages.GridViews;
+using MediatR;
+using System.Collections.Generic;
+
+using LogicPOS.UI.Components.System.Users.Permissions;
+namespace LogicPOS.UI.Components.Pages
+{
+    public class WarehousesPage : Page<Warehouse>
+    {
+        protected override IRequest<ErrorOr<IEnumerable<Warehouse>>> GetAllQuery => new GetAllWarehousesQuery();
+
+        public WarehousesPage(Window parent, Dictionary<string, string> options = null) : base(parent, options)
+        {
+            DisableCommonFilterButtons();
+        }
+
+        public override int RunModal(EntityEditionModalMode mode)
+        {
+            var modal = new WarehouseModal(mode, SelectedEntity);
+            var response = modal.Run();
+            modal.Destroy();
+            return response;
+        }
+
+        protected override void AddColumns()
+        {
+            GridView.AppendColumn(Columns.CreateCodeColumn(0));
+            GridView.AppendColumn(Columns.CreateDesignationColumn(1));
+            GridView.AppendColumn(Columns.CreateUpdatedAtColumn(2));
+        }
+
+        protected override void InitializeSort()
+        {
+            GridViewSettings.Sort = new TreeModelSort(GridViewSettings.Filter);
+
+            AddCodeSorting(0);
+            AddDesignationSorting(1);
+            AddUpdatedAtSorting(2);
+        }
+
+        protected override DeleteCommand GetDeleteCommand()
+        {
+            return new DeleteWarehouseCommand(SelectedEntity.Id);
+        }
+
+        public override void UpdateButtonPrevileges()
+        {
+            this.Navigator.BtnInsert.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_WAREHOUSE_CREATE);
+            this.Navigator.BtnUpdate.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_WAREHOUSE_EDIT);
+            this.Navigator.BtnDelete.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_WAREHOUSE_DELETE);
+            this.Navigator.BtnView.Sensitive = Users.AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.Warehouses.BACKOFFICE_MAN_WAREHOUSE_VIEW);
+        }
+
+        #region Singleton
+        private static WarehousesPage _instance;
+        public static WarehousesPage Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new WarehousesPage(null);
+                }
+                return _instance;
+            }
+        }
+        #endregion
+    }
+}

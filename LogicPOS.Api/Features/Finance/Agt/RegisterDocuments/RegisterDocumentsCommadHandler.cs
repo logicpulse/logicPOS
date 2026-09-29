@@ -1,0 +1,34 @@
+using ErrorOr;
+using LogicPOS.Api.Features.Common.Caching;
+using LogicPOS.Api.Features.Common.Requests;
+using LogicPOS.Api.Features.Finance.Documents.Documents;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace LogicPOS.Api.Features.Finance.Agt.RegisterDocuments
+{
+    public class RegisterDocumentsCommadHandler : RequestHandler<RegisterDocumentsCommand, ErrorOr<Success>>
+    {
+        private readonly IKeyedMemoryCache _keyedMemoryCache;
+
+        public RegisterDocumentsCommadHandler(IHttpClientFactory factory, IKeyedMemoryCache cache) : base(factory)
+        {
+            _keyedMemoryCache = cache;
+        }
+
+        public override async Task<ErrorOr<Success>> Handle(RegisterDocumentsCommand request, CancellationToken cancellationToken = default)
+        {
+
+            var result = await HandlePostCommandAsync<Success>("agt/fe/documents/bulk", request, cancellationToken);
+
+            if (result.IsError == false)
+            {
+                DocumentsCache.Clear(_keyedMemoryCache);
+                ReceiptsCache.Clear(_keyedMemoryCache);
+            }
+
+            return result;
+        }
+    }
+}

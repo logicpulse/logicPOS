@@ -1,0 +1,46 @@
+using Gtk;
+using LogicPOS.Api.Entities;
+using LogicPOS.UI.Buttons;
+using LogicPOS.UI.Components.InputFields;
+using LogicPOS.UI.Components.InputFields.Validation;
+using LogicPOS.UI.Services;
+using LogicPOS.UI.Settings;
+using LogicPOS.Globalization;
+using LogicPOS.Utility;
+
+namespace LogicPOS.UI.Components.Modals
+{
+    public partial class CustomerModal
+    {
+        private TextBox _txtOrder = TextBox.CreateOrderField();
+        private TextBox _txtCode = TextBox.CreateCodeField();
+        private TextBox _txtName = TextBox.Simple("global_name", true);
+        private EntityComboBox<PriceType> _comboPriceTypes;
+        private EntityComboBox<CustomerType> _comboCustomerTypes;
+        private EntityComboBox<Country> _comboCountries;
+        private TextBox _txtBirthDate = TextBox.Simple("global_dob", false, true, @"^\d{4}/\d{2}/\d{2}$");
+
+        private TextBox _txtAddress = TextBox.Simple("global_address");
+        private TextBox _txtLocality = TextBox.Simple("global_locality");
+        private TextBox _txtCity = TextBox.Simple("global_city");
+        private TextBox _txtPostalCode = TextBox.Simple("global_postal_code");
+        private TextBox _txtPhone = TextBox.Simple("global_phone", false, true, RegularExpressions.PhoneNumber);
+        private TextBox _txtMobile = TextBox.Simple("global_mobile_phone", false, true, RegularExpressions.PhoneNumber);
+        private TextBox _txtEmail = TextBox.Simple("global_email_separator");
+
+        private TextBox _txtDiscount = TextBox.Simple("global_discount", true, true, RegularExpressions.NullableMoney).WithText("0");
+        private TextBox _txtFiscalNumber = TextBox.Simple("global_fiscal_number", true, true, RegularExpressions.GetFiscalNumberRegexForCountry(SystemInformationService.SystemInformation.CountryCode2));
+        private TextBox _txtCardNumber = TextBox.Simple("global_card_number", false, true, RegularExpressions.AlphaNumeric);
+        private TextBox _txtCardCredit = TextBox.Simple("global_card_credit_amount", true, true, RegularExpressions.DecimalNumber).WithText("0");
+        private Label _lblCardMode;
+        private ComboBox _comboCardMode;
+        private VBox _cardModeComponent;
+        private CheckButton _checkSupplier = new CheckButton(LocalizedString.Instance["global_supplier"]);
+
+        IconButtonWithText BtnFillCustomerData = ActionAreaButton.FactoryGetDialogButtonTypeDocuments("touchButton_DialogActionArea",
+                                                                                                      "Agt. Preench.",
+                                                                                                      AppSettings.Paths.Images + @"Icons\icon_pos_toolbar_show_change_user_dialog.png");
+
+
+    }
+}
