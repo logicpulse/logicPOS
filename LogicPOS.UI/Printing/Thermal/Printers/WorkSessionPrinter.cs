@@ -98,11 +98,11 @@ namespace LogicPOS.UI.Printing
             {
                 AppendBoldLine(_printer, _SubTitle);
             }
-            _printer.NormalWidth();
+            NormalWidth();
 
             PrintWorkSessionMovement(_reportData);
             PrintFooter();
-            _printer.FullPaperCut();
+            CutPaper();
             ThermalPrinterTarget.Commit(_printer);
             _printer.Clear();
 
@@ -175,7 +175,7 @@ namespace LogicPOS.UI.Printing
             {
                 _printer.DoubleWidth2();
                 AppendBoldLine(_printer, LocalizedString.Instance["global_worksession_resume_finance_documents"]);
-                _printer.NormalWidth();
+                NormalWidth();
                 BlankSeparator();
             }
 
@@ -239,7 +239,7 @@ namespace LogicPOS.UI.Printing
                 if (x == 0)
                 {
                     AppendBoldLine(_printer, tableCustomPrint[x]);
-                    _printer.NormalWidth();
+                    NormalWidth();
                 }
                 else
                 {
@@ -288,7 +288,7 @@ namespace LogicPOS.UI.Printing
             _printer.NewLine();
             _printer.DoubleWidth2();
             AppendBoldLine(_printer, LocalizedString.Instance["global_worksession_resume_paymens_documents"]);
-            _printer.NormalWidth();
+            NormalWidth();
             BlankSeparator();
 
             //summaryTotal = workSessionReceiptsData.Total;
@@ -324,7 +324,7 @@ namespace LogicPOS.UI.Printing
            
             AppendBoldLine(_printer, tableCustomPrint[tableCustomPrint.Count - 1]);
             _printer.NewLine();
-            _printer.NormalWidth();
+            NormalWidth();
             return true;
         }
     }

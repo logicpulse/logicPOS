@@ -46,7 +46,7 @@ namespace LogicPOS.UI.Printing
             AppendBoldLine(_printer, _ticketTitle);
             BlankSeparator();
             _printer.Append(ToThermalText(_ticketSubTitle));
-            _printer.NormalWidth();
+            NormalWidth();
             _printer.CondensedMode(PrinterModeState.Off);
             _printer.ExpandedMode(PrinterModeState.Off);
             ResetPrintModes();
@@ -96,7 +96,7 @@ namespace LogicPOS.UI.Printing
         public override void Print()
         {
             _printer.NormalLineHeight();
-            _printer.NormalWidth();
+            NormalWidth();
             _printer.ExpandedMode(PrinterModeState.Off);
 
             PrintHeader();
@@ -106,7 +106,7 @@ namespace LogicPOS.UI.Printing
             _printer.AlignCenter();
             _printer.NewLine();
             PrintFooter();
-            _printer.FullPaperCut();
+            CutPaper();
             ThermalPrinterTarget.Commit(_printer);
             _printer.Clear();
         }
