@@ -1,4 +1,5 @@
 ﻿using LogicPOS.UI.Application.Enums;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
@@ -57,6 +58,12 @@ namespace LogicPOS.UI.Settings
         public bool AppShowMinimize { get; set; }
         public bool UseBaseDialogWindowMask { get; set; }
         public int PosBaseButtonMaxCharsPerLabel { get; set; }
+
+        /// <summary>
+        /// Optional override of the thermal ESC/POS left margin (GS L) in dots, keyed by printer designation
+        /// (case-insensitive). Custom printers get a margin automatically; use 0 to disable it.
+        /// </summary>
+        public Dictionary<string, int> ThermalLeftMarginDots { get; set; }
 
         public string PathImages { get; set; }
         public string PathThemes { get; set; }

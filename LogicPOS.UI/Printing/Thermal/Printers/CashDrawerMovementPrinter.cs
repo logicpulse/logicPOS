@@ -35,7 +35,7 @@ namespace LogicPOS.UI.Printing
             PrintHeader();
             PrintDocumentDetails();
             PrintFooter();
-            _printer.FullPaperCut();
+            CutPaper();
             ThermalPrinterTarget.Commit(_printer);
             _printer.Clear();
         }
@@ -48,28 +48,28 @@ namespace LogicPOS.UI.Printing
                 case WorkSessionMovementType.CashDrawerOut:
                     _printer.DoubleWidth2();
                     AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_money_out"]);
-                    _printer.NormalWidth();
+                    NormalWidth();
                     BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerIn:
                     _printer.DoubleWidth2();
                     AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_money_in"]);
-                    _printer.NormalWidth();
+                    NormalWidth();
                     BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerClose:
                     _printer.DoubleWidth2();
                     AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_terminal_close"]);
-                    _printer.NormalWidth();
+                    NormalWidth();
                     BlankSeparator();
                     break;
 
                 case WorkSessionMovementType.CashDrawerOpen:
                     _printer.DoubleWidth2();
                     AppendBoldLine(_printer, LocalizedString.Instance["ticket_title_worksession_terminal_open"]);
-                    _printer.NormalWidth();
+                    NormalWidth();
                     BlankSeparator();
                     break;
             }
@@ -78,7 +78,7 @@ namespace LogicPOS.UI.Printing
             BlankSeparator();
             _printer.DoubleWidth2();
             AppendBoldLine(_printer, _totalAmountInCashDrawer.ToString("F2"));
-            _printer.NormalWidth();
+            NormalWidth();
             BlankSeparator();
 
             if (_movementType == WorkSessionMovementType.CashDrawerIn || _movementType == WorkSessionMovementType.CashDrawerOut)
@@ -88,7 +88,7 @@ namespace LogicPOS.UI.Printing
                 _printer.DoubleWidth2();
                 AppendBoldLine(_printer, _movementAmount.ToString("F2"));
                 BlankSeparator();
-                _printer.NormalWidth();
+                NormalWidth();
             }
 
             string description = (_movementDescription != string.Empty) ? _movementDescription : "________________________________";

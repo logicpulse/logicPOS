@@ -48,7 +48,7 @@ namespace LogicPOS.UI.Printing
             PrintContent();
             PrintFooterExtended();
             PrintStandardFooter();
-            _printer.FullPaperCut();
+            CutPaper();
             ThermalPrinterTarget.Commit(_printer);
             _printer.Clear();
         }
@@ -428,7 +428,7 @@ namespace LogicPOS.UI.Printing
             ResetPrintModes();
             _printer.AlignLeft();
             _printer.Append(new byte[] { 0x1B, 0x24, 0x00, 0x00 }); // ESC $ x=0
-            _printer.Append(new byte[] { 0x1D, 0x4C, 0x00, 0x00 }); // GS L left margin = 0
+            ApplyLeftMargin(force: true);
 
             using (var qrImage = CreateThermalQrBitmap(qrContent))
             {

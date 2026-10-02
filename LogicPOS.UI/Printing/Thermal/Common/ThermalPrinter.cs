@@ -24,6 +24,7 @@ namespace LogicPOS.UI.Printing
     {
         private static readonly byte[] EscSelectFontA = { 27, (byte)'M', 0 };
         private static readonly byte[] EscSelectFontB = { 27, (byte)'M', 1 };
+        private const byte SmallFontLineHeightDots = 40;
 
         protected readonly Printer _printer;
         protected readonly ThermalLayout Layout;
@@ -53,14 +54,54 @@ namespace LogicPOS.UI.Printing
             _printer.Append(new byte[] { 0x1B, 0x21, 0x00 });
             _printer.Append(EscSelectFontA);
             _printer.NormalLineHeight();
-            _printer.NormalWidth();
+            NormalWidth();
             _printer.ExpandedMode(PrinterModeState.Off);
             _printer.AlignLeft();
         }
 
-        protected void SetFontNormal() => _printer.Append(EscSelectFontA);
+        /// <summary>
+        /// ESC ! and ESC M reset the GS L left margin on Custom printers, so the configured margin is re-applied.
+        /// </summary>
+        protected void NormalWidth()
+        {
+            _printer.NormalWidth();
+            ApplyLeftMargin();
+        }
 
-        protected void SetFontSmall() => _printer.Append(EscSelectFontB);
+        protected void CutPaper()
+        {
+            if (Layout.CutFeedDots > 0)
+            {
+                _printer.Append(new byte[] { 0x1B, 0x4A, (byte)Layout.CutFeedDots });
+            }
+
+            _printer.FullPaperCut();
+        }
+
+        protected void ApplyLeftMargin(bool force = false)
+        {
+            var dots = Layout.LeftMarginDots;
+            if (dots <= 0 && !force)
+            {
+                return;
+            }
+
+            _printer.Append(new byte[] { 0x1D, 0x4C, (byte)(dots & 0xFF), (byte)((dots >> 8) & 0xFF) });
+        }
+
+        protected void SetFontNormal()
+        {
+            _printer.Append(EscSelectFontA);
+            _printer.NormalLineHeight();
+            ApplyLeftMargin();
+        }
+
+        protected void SetFontSmall()
+        {
+            _printer.Append(EscSelectFontB);
+            _printer.Append(new byte[] { 0x1B, 0x33, SmallFontLineHeightDots });
+            ApplyLeftMargin();
+        }
 
         protected void LineFeed() => _printer.NewLine();
 
