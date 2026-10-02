@@ -1,4 +1,5 @@
 using Gtk;
+using LogicPOS.Api.Features.Database;
 using LogicPOS.Api.Features.POS.WorkSessions.Movements.GetDayReportData;
 using LogicPOS.Api.Features.WorkSessions.GetLastClosedDay;
 using LogicPOS.Globalization;
@@ -87,6 +88,22 @@ namespace LogicPOS.UI.Components.POS
                 .WithTitleResource("global_information")
                 .ShowAlert();
 
+            if (responseType != ResponseType.Yes)
+            {
+                return;
+            }
+
+            var backupResult = DependencyInjection.Mediator.Send(new BackupDatabaseCommand()).Result;
+
+            if (backupResult.IsError)
+            {
+                ErrorHandlingService.HandleApiError(backupResult, source: this);
+                return;
+            }
+
+            CustomAlerts.Information(this)
+                        .WithMessage("Backup criado com sucesso.")
+                        .ShowAlert();
         }
 
         private void CloseDay()
