@@ -3072,16 +3072,16 @@ To proceed you must change the old password!</value>
     <value>Ticket :: Método de impressão QRCode</value>
   </data>
   <data name="prefparam_track_api_url" xml:space="preserve">
-    <value>track.API :: URL</value>
+    <value>track.API :: URL da track.API</value>
   </data>
   <data name="prefparam_track_api_username" xml:space="preserve">
-    <value>track.API :: Username</value>
+    <value>track.API :: Utilizador da track.API</value>
   </data>
   <data name="prefparam_track_api_password" xml:space="preserve">
-    <value>track.API :: Password</value>
+    <value>track.API :: Palavra-passe da track.API</value>
   </data>
   <data name="prefparam_track_api_client_id" xml:space="preserve">
-    <value>track.API :: Client ID</value>
+    <value>track.API :: Client ID da track.API</value>
   </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documents :: Print QRCode</value>

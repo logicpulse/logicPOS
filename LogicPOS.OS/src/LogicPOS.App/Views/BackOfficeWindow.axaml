@@ -1,0 +1,202 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+        xmlns:views="using:LogicPOS.App.Views"
+        x:Class="LogicPOS.App.Views.BackOfficeWindow"
+        Classes="bo_window"
+        Title="logicpos"
+        Icon="avares://logicpos/Assets/application.ico"
+        WindowState="FullScreen"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen">
+    <Panel>
+    <DockPanel>
+        <Border Classes="bo_status" DockPanel.Dock="Top" PointerPressed="OnStatusPointerPressed">
+            <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                <TextBlock x:Name="TerminalLabel" Classes="bo_status_text bo_status_terminal" />
+                <TextBlock x:Name="PageTitle" Grid.Column="1" Classes="bo_status_text" />
+                <TextBlock x:Name="ClockLabel" Grid.Column="2" Classes="bo_status_text" />
+                <StackPanel Grid.Column="3" Classes="bo_window_buttons">
+                    <Button Classes="bo_window_button" Click="OnMinimizeClick" ToolTip.Tip="Minimizar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_minimizar_w.svg" />
+                    </Button>
+                    <Button Classes="bo_window_button" Click="OnMaximizeClick" ToolTip.Tip="Maximizar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                    </Button>
+                    <Button Classes="bo_window_button" Click="OnRestoreClick" ToolTip.Tip="Redimensionar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" />
+                    </Button>
+                    <Button Classes="bo_window_button" Click="OnWindowCloseClick" ToolTip.Tip="Fechar">
+                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Classes="bo_sidebar" DockPanel.Dock="Left">
+            <DockPanel>
+                <Button Classes="bo_sidebar_brand" DockPanel.Dock="Top" Click="OnDashboardClick">
+                    <Image Classes="bo_sidebar_logo" Source="avares://logicpos/Assets/Images/logicpos_logo_simple.png" />
+                </Button>
+                <StackPanel Classes="bo_sidebar_footer" DockPanel.Dock="Bottom">
+                    <Button Classes="bo_nav" Click="OnExitClick">
+                        <StackPanel Classes="bo_menu_row">
+                            <Border Classes="bo_menu_glyph">
+                                <Border.OpacityMask>
+                                    <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_pos_close_backoffice.png" />
+                                </Border.OpacityMask>
+                            </Border>
+                            <TextBlock VerticalAlignment="Center" Text="Sair da Aplicação" />
+                        </StackPanel>
+                    </Button>
+                    <Border Classes="bo_sidebar_line" />
+                    <StackPanel x:Name="FlagBar" Classes="bo_sidebar_flags">
+                        <Border Classes="bo_sidebar_flag" Tag="pt-PT" ClipToBounds="True" PointerPressed="OnFlagClick">
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/PT.svg" />
+                        </Border>
+                        <Border Classes="bo_sidebar_flag" Tag="en-GB" ClipToBounds="True" PointerPressed="OnFlagClick">
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/EN.svg" />
+                        </Border>
+                        <Border Classes="bo_sidebar_flag" Tag="fr-FR" ClipToBounds="True" PointerPressed="OnFlagClick">
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/FR.svg" />
+                        </Border>
+                        <Border Classes="bo_sidebar_flag" Tag="es-ES" ClipToBounds="True" PointerPressed="OnFlagClick">
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/ES.svg" />
+                        </Border>
+                    </StackPanel>
+                    <Border Classes="bo_sidebar_line" />
+                    <Button Classes="bo_sidebar_about" Click="OnAboutClick">
+                        <StackPanel Classes="bo_menu_row">
+                            <TextBlock Classes="bo_sidebar_about_mark" Text="i" />
+                            <TextBlock VerticalAlignment="Center" Text="Acerca" />
+                        </StackPanel>
+                    </Button>
+                    <Border Classes="bo_sidebar_line" />
+                    <TextBlock x:Name="CopyrightLabel" Classes="bo_sidebar_copyright" />
+                </StackPanel>
+                <ScrollViewer>
+                    <StackPanel>
+                        <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick">
+                            <StackPanel Classes="bo_menu_row">
+                                <Border Classes="bo_menu_glyph">
+                                    <Border.OpacityMask>
+                                        <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_dashboard.png" />
+                                    </Border.OpacityMask>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" Text="Dashboard" />
+                            </StackPanel>
+                        </Button>
+                        <StackPanel x:Name="MenuHost" />
+                        <Button x:Name="FrontOfficeButton" Classes="bo_nav" Click="OnPosClick">
+                            <StackPanel Classes="bo_menu_row">
+                                <Border Classes="bo_menu_glyph">
+                                    <Border.OpacityMask>
+                                        <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_pos_front_office.png" />
+                                    </Border.OpacityMask>
+                                </Border>
+                                <TextBlock VerticalAlignment="Center" Text="FrontOffice" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <Panel>
+            <views:DashboardView x:Name="DashboardHost" />
+
+            <Grid x:Name="PageHost" IsVisible="False">
+                <Border x:Name="PlaceholderHost" Classes="bo_page">
+                    <TextBlock x:Name="PageMessage" Classes="bo_page_message" />
+                </Border>
+                <views:DocumentsListing x:Name="DocumentsHost" IsVisible="False" />
+                <views:ReceiptEmissionView x:Name="ReceiptHost" IsVisible="False" />
+                <Panel x:Name="StockHost" IsVisible="False" />
+                <views:EntityListing x:Name="EntityHost" IsVisible="False" />
+                <views:SettingsPage x:Name="SettingsHost" IsVisible="False" />
+            </Grid>
+        </Panel>
+    </DockPanel>
+
+            <Panel x:Name="QuitOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <Border Classes="login_alert_frame" Width="400" Height="300">
+                    <DockPanel Classes="login_alert_inner">
+                        <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                <TextBlock Classes="login_alert_title" Text="Sair" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button Classes="login_alert_action" Click="OnQuitConfirmClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Sim" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action" Click="OnQuitDismissClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Não" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <Grid Classes="login_alert_body">
+                            <Image Classes="login_alert_symbol"
+                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                            <TextBlock Classes="login_alert_message" Text="Sair da Aplicação?" />
+                        </Grid>
+                    </DockPanel>
+                </Border>
+            </Panel>
+
+            <Panel x:Name="AboutOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <Border Classes="login_alert_frame bo_about">
+                    <DockPanel Classes="login_alert_inner">
+                        <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <TextBlock Classes="login_alert_title" Text="Acerca" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button Classes="login_alert_action" Click="OnAboutCloseClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Classes="bo_about_body">
+                            <Border Classes="bo_about_logo_band">
+                                <Image Classes="bo_about_logo" Source="avares://logicpos/Assets/Images/logicpos_logo_simple.png" />
+                            </Border>
+                            <TextBlock x:Name="VersionLabel" Classes="bo_about_text" />
+                            <TextBlock x:Name="AboutCopyright" Classes="bo_about_text" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </Panel>
+
+            <Panel x:Name="NewDocumentOverlay" Classes="login_alert_overlay bo_clear_overlay" IsVisible="False">
+                <views:NewDocumentWindow x:Name="NewDocumentHost" />
+            </Panel>
+
+            <Panel x:Name="PdfOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <views:PdfDocumentView x:Name="PdfHost" />
+            </Panel>
+
+            <Panel x:Name="ReportsOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <views:ReportsWindow x:Name="ReportsHost" />
+            </Panel>
+    </Panel>
+</Window>

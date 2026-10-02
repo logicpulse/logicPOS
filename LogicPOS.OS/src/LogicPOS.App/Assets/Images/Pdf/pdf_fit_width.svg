@@ -1,0 +1,10 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <clipPath id="pdf_fit_width">
+      <path d="M2.2 10.2h3.1L3.4 8.1 5 6.6l4.2 4.6v1.6L5 17.4 3.4 15.9l1.9-2.1H2.2zM21.8 10.2h-3.1l1.9-2.1L19 6.6 14.8 11.2v1.6l4.2 4.6 1.6-1.5-1.9-2.1h3.1zM11 4.2h2v15.6h-2z" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pdf_fit_width)">
+    <rect width="24" height="24" fill="#343537" />
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.SettingsPage">
+    <Border Classes="bo_doc_page">
+        <DockPanel>
+            <StackPanel Classes="bo_doc_header" DockPanel.Dock="Top">
+                <Border Classes="bo_page_header">
+                    <DockPanel>
+                        <Button Classes="bo_page_action" DockPanel.Dock="Right" Click="OnSaveClick" Content="Guardar" />
+                        <TextBlock x:Name="TitleText" Classes="bo_page_title" />
+                    </DockPanel>
+                </Border>
+                <TextBlock x:Name="Notice" Classes="bo_entity_notice" />
+                <StackPanel x:Name="TabBar" Classes="bo_entity_tab_headers" />
+            </StackPanel>
+            <ScrollViewer>
+                <Panel x:Name="FieldsHost" Margin="8,4,8,12" />
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,20 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.ListingBusy"
+             Classes="bo_listing_busy_host"
+             IsVisible="False"
+             IsHitTestVisible="True">
+    <Panel Classes="bo_listing_busy">
+        <StackPanel Classes="bo_listing_busy_box">
+            <Panel Classes="bo_listing_spinner_host">
+                <Ellipse Classes="bo_listing_spinner_track" />
+                <Path Classes="bo_listing_spinner" Data="M18,3 A15,15 0 1 1 3,18">
+                    <Path.RenderTransform>
+                        <RotateTransform />
+                    </Path.RenderTransform>
+                </Path>
+            </Panel>
+            <TextBlock Classes="bo_listing_busy_label" Text="A carregar..." />
+        </StackPanel>
+    </Panel>
+</UserControl>

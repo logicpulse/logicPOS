@@ -1,0 +1,67 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             x:Class="LogicPOS.App.Views.PdfDocumentView">
+    <Border Classes="login_alert_frame" Width="1200" Height="860">
+        <DockPanel>
+            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                <StackPanel Classes="login_alert_title_row">
+                    <Image Classes="login_alert_title_icon"
+                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                    <TextBlock x:Name="TitleText" Classes="login_alert_title" Text="Documento" />
+                </StackPanel>
+            </Border>
+            <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                <StackPanel Classes="login_alert_action_buttons">
+                    <Button Classes="login_alert_action" Click="OnCloseClick">
+                        <StackPanel Classes="login_alert_action_content">
+                            <Image Classes="login_alert_action_icon"
+                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                            <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+            <Border Classes="bo_pdf_bar" DockPanel.Dock="Top">
+                <DockPanel>
+                    <StackPanel Classes="bo_pdf_tools" DockPanel.Dock="Right">
+                        <Button x:Name="PreviousButton" Classes="bo_listing_icon_button" Click="OnPreviousClick" ToolTip.Tip="Anterior">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_prev.svg" />
+                        </Button>
+                        <TextBlock x:Name="PageLabel" Classes="bo_pdf_meta" Text="" />
+                        <Button x:Name="NextButton" Classes="bo_listing_icon_button" Click="OnNextClick" ToolTip.Tip="Seguinte">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_next.svg" />
+                        </Button>
+                    </StackPanel>
+                    <StackPanel Classes="bo_pdf_tools">
+                        <Button Classes="bo_listing_icon_button" Click="OnPrintClick" ToolTip.Tip="Imprimir">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_print.svg" />
+                        </Button>
+                        <Button Classes="bo_listing_icon_button" Click="OnExportClick" ToolTip.Tip="Exportar">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_export.svg" />
+                        </Button>
+                        <Border Classes="bo_pdf_split" />
+                        <Button Classes="bo_listing_icon_button" Click="OnZoomOutClick" ToolTip.Tip="Reduzir">
+                            <Image Classes="bo_pdf_zoom" Source="avares://logicpos/Assets/Images/Pdf/zoom_out.png" />
+                        </Button>
+                        <TextBlock x:Name="ZoomLabel" Classes="bo_pdf_meta" Text="" />
+                        <Button Classes="bo_listing_icon_button" Click="OnZoomInClick" ToolTip.Tip="Ampliar">
+                            <Image Classes="bo_pdf_zoom" Source="avares://logicpos/Assets/Images/Pdf/zoom_in.png" />
+                        </Button>
+                        <Border Classes="bo_pdf_split" />
+                        <Button x:Name="FitPageButton" Classes="bo_listing_icon_button bo_pdf_tool_on" Click="OnFitPageClick" ToolTip.Tip="Ajustar à página">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_fit_page.svg" />
+                        </Button>
+                        <Button x:Name="FitWidthButton" Classes="bo_listing_icon_button" Click="OnFitWidthClick" ToolTip.Tip="Ajustar à largura">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_fit_width.svg" />
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+            <TextBlock x:Name="StatusText" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" IsVisible="False" />
+            <ScrollViewer x:Name="PageScroll" Classes="bo_pdf_scroll">
+                <StackPanel x:Name="PagesHost" Classes="bo_pdf_pages" />
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

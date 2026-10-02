@@ -5251,6 +5251,18 @@ Um fortzufahren, müssen Sie das alte Passwort ändern!</value>
   <data name="prefparam_qrcode_method" xml:space="preserve">
     <value>Fahrkarte :: QRcode-Druckmethode</value>
   </data>
+  <data name="prefparam_track_api_url" xml:space="preserve">
+    <value>track.API :: track.API-URL</value>
+  </data>
+  <data name="prefparam_track_api_username" xml:space="preserve">
+    <value>track.API :: track.API-Benutzername</value>
+  </data>
+  <data name="prefparam_track_api_password" xml:space="preserve">
+    <value>track.API :: track.API-Passwort</value>
+  </data>
+  <data name="prefparam_track_api_client_id" xml:space="preserve">
+    <value>track.API :: track.API-Client-ID</value>
+  </data>
   <data name="prefparam_report_filename_logo" xml:space="preserve">
     <value>Dateiname des Meldelogos</value>
   </data>

@@ -3066,6 +3066,18 @@ To proceed you must change the old password!</value>
   <data name="prefparam_qrcode_method" xml:space="preserve">
     <value>Ticket :: QRCode printing method</value>
   </data>
+  <data name="prefparam_track_api_url" xml:space="preserve">
+    <value>track.API :: track.API URL</value>
+  </data>
+  <data name="prefparam_track_api_username" xml:space="preserve">
+    <value>track.API :: track.API Username</value>
+  </data>
+  <data name="prefparam_track_api_password" xml:space="preserve">
+    <value>track.API :: track.API Password</value>
+  </data>
+  <data name="prefparam_track_api_client_id" xml:space="preserve">
+    <value>track.API :: track.API Client ID</value>
+  </data>
   <data name="prefparam_use_cached_images" xml:space="preserve">
     <value>Application :: Use Cached Images</value>
   </data>

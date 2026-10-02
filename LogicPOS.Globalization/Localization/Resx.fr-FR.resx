@@ -3071,6 +3071,18 @@ Pour continuer, vous devez changer l'ancien mot de passe!</value>
   <data name="prefparam_qrcode_method" xml:space="preserve">
     <value>Ticket :: Méthode d'impression QRCode</value>
   </data>
+  <data name="prefparam_track_api_url" xml:space="preserve">
+    <value>track.API :: URL de track.API</value>
+  </data>
+  <data name="prefparam_track_api_username" xml:space="preserve">
+    <value>track.API :: Nom d&apos;utilisateur track.API</value>
+  </data>
+  <data name="prefparam_track_api_password" xml:space="preserve">
+    <value>track.API :: Mot de passe track.API</value>
+  </data>
+  <data name="prefparam_track_api_client_id" xml:space="preserve">
+    <value>track.API :: ID client track.API</value>
+  </data>
   <data name="prefparam_print_qrcode" xml:space="preserve">
     <value>Documents :: Imprimer QRCode</value>
   </data>

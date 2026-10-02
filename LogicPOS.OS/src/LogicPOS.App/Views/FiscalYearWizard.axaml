@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.FiscalYearWizard">
+    <Border Classes="login_alert_frame bo_fiscal_wizard">
+        <DockPanel Classes="login_alert_inner">
+            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                <StackPanel Classes="login_alert_title_row">
+                    <Image Classes="login_alert_title_icon"
+                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                    <TextBlock Classes="login_alert_title" Text="Criar ano fiscal" />
+                </StackPanel>
+            </Border>
+            <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+                        <Button x:Name="BackButton" Classes="login_alert_action" Click="OnBackClick">
+                            <TextBlock Classes="login_alert_action_text" Text="Voltar" />
+                        </Button>
+                        <Button x:Name="NextButton" Classes="login_alert_action" Click="OnNextClick">
+                            <TextBlock Classes="login_alert_action_text" Text="Seguinte" />
+                        </Button>
+                        <Button x:Name="FinishButton" Classes="login_alert_action" Click="OnFinishClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Criar" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action" Click="OnCloseClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock x:Name="Notice" Classes="bo_entity_error" Margin="12,0,12,0"
+                               VerticalAlignment="Center" TextWrapping="Wrap" />
+                </DockPanel>
+            </Border>
+            <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" DockPanel.Dock="Top" />
+            <ScrollViewer>
+                <Panel>
+                    <StackPanel x:Name="YearStep" Classes="bo_fiscal_wizard_form">
+                        <StackPanel x:Name="CloseRow">
+                            <CheckBox x:Name="CloseCurrent" Classes="bo_entity_input" />
+                        </StackPanel>
+                        <TextBlock Classes="bo_new_doc_caption" Text="Ano fiscal" />
+                        <TextBox x:Name="YearBox" Classes="bo_entity_input" IsReadOnly="True" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Designação" />
+                        <TextBox x:Name="DesignationBox" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Acrónimo" />
+                        <TextBox x:Name="AcronymBox" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                        <TextBox x:Name="NotesBox" Classes="bo_entity_multiline" AcceptsReturn="True" />
+                    </StackPanel>
+                    <StackPanel x:Name="SeriesStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <CheckBox x:Name="CreateSeries" Classes="bo_entity_input" Content="Selecionar todas" IsChecked="True" />
+                        <CheckBox x:Name="PerTerminal" Classes="bo_entity_input" Content="Uma série por terminal" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Séries a criar" />
+                        <StackPanel x:Name="SeriesList" />
+                    </StackPanel>
+                    <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock x:Name="TerminalsHint" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
+                        <StackPanel x:Name="TerminalList" />
+                    </StackPanel>
+                    <StackPanel x:Name="AtStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <CheckBox x:Name="Communicate" Classes="bo_entity_input" Content="Comunicar as séries com a AT" />
+                        <TextBlock Classes="bo_new_doc_caption" TextWrapping="Wrap"
+                                   Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores." />
+                        <StackPanel x:Name="AtPanel" Classes="bo_fiscal_wizard_at" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Parâmetros de comunicação com a AT" />
+                            <StackPanel x:Name="AtFields" Classes="bo_fiscal_wizard_at" />
+                            <Button x:Name="TestAtButton" Classes="login_alert_action" Click="OnTestAtClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Testar" />
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </Panel>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

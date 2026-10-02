@@ -1,0 +1,105 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.DashboardView"
+             Classes="dash_root">
+    <Border Classes="bo_doc_page">
+    <ScrollViewer Classes="dash_scroll">
+        <StackPanel Classes="dash_page">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel>
+                    <TextBlock Classes="dash_eyebrow" Text="DASHBOARD" />
+                    <TextBlock Classes="dash_title" Text="Faturação" />
+                    <TextBlock Classes="dash_subtitle" Text="Resumo diário, trimestral e anual da empresa." />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Classes="dash_controls" Orientation="Horizontal">
+                    <StackPanel Classes="dash_control_group">
+                        <TextBlock Classes="dash_control_label" Text="APRESENTAÇÃO DOS VALORES" />
+                        <Border Classes="dash_segmented">
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="VatOn" Classes="dash_segment active" Content="Com IVA" Click="OnVatOnClick" />
+                                <Button x:Name="VatOff" Classes="dash_segment" Content="Sem IVA" Click="OnVatOffClick" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Classes="dash_control_group">
+                        <TextBlock Classes="dash_control_label" Text="ANO" />
+                        <ComboBox x:Name="YearBox" Classes="dash_year" SelectionChanged="OnYearChanged" />
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+
+            <TextBlock x:Name="StatusText" Classes="dash_status" IsVisible="False" />
+
+            <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
+                <Border Classes="dash_kpi dash_kpi_today">
+                    <StackPanel>
+                        <TextBlock Classes="dash_kpi_label" Text="Faturação de hoje" />
+                        <TextBlock x:Name="TodayValue" Classes="dash_kpi_value" Text="0,00 €" />
+                        <TextBlock x:Name="TodayHint" Classes="dash_kpi_hint" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="1" Classes="dash_kpi dash_kpi_month">
+                    <StackPanel>
+                        <TextBlock Classes="dash_kpi_label" Text="Faturação do mês" />
+                        <TextBlock x:Name="MonthValue" Classes="dash_kpi_value" Text="0,00 €" />
+                        <TextBlock x:Name="MonthHint" Classes="dash_kpi_hint" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="2" Classes="dash_kpi dash_kpi_year">
+                    <StackPanel>
+                        <TextBlock Classes="dash_kpi_label" Text="Faturação do ano" />
+                        <TextBlock x:Name="YearValue" Classes="dash_kpi_value" Text="0,00 €" />
+                        <TextBlock x:Name="YearHint" Classes="dash_kpi_hint" />
+                    </StackPanel>
+                </Border>
+                <Border Grid.Column="3" Classes="dash_kpi dash_kpi_best">
+                    <StackPanel>
+                        <TextBlock x:Name="BestLabel" Classes="dash_kpi_label" Text="Melhor mês" />
+                        <TextBlock x:Name="BestValue" Classes="dash_kpi_value" Text="0,00 €" />
+                        <TextBlock x:Name="BestHint" Classes="dash_kpi_hint" Text="—" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border Classes="dash_panel">
+                <StackPanel>
+                    <TextBlock Classes="dash_panel_title" Text="Faturação diária" />
+                    <TextBlock Classes="dash_panel_hint" Text="Últimos 7 dias" />
+                    <views:ColumnChart x:Name="DailyChart" Classes="dash_chart" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend">
+                        <Ellipse Classes="dash_legend_swatch dash_legend_billing" />
+                        <TextBlock Classes="dash_legend_text" Text="Faturação" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*" Classes="dash_charts">
+                <Border Classes="dash_panel">
+                    <Grid RowDefinitions="Auto,*">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel>
+                                <TextBlock Classes="dash_panel_title" Text="Faturação anual" />
+                                <TextBlock x:Name="AnnualHint" Classes="dash_panel_hint" Text="Evolução mensal em 2026" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="dash_total_caption" Text="TOTAL ILÍQUIDO" />
+                                <TextBlock x:Name="AnnualTotal" Classes="dash_total_value" Text="0,00 €" />
+                            </StackPanel>
+                        </Grid>
+                        <views:AreaChart x:Name="AnnualChart" Grid.Row="1" Classes="dash_chart" />
+                    </Grid>
+                </Border>
+                <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
+                    <StackPanel>
+                        <TextBlock Classes="dash_panel_title" Text="Faturação trimestral" />
+                        <TextBlock x:Name="QuarterHint" Classes="dash_panel_hint" Text="Distribuição por trimestre em 2026" />
+                        <views:DonutChart x:Name="QuarterChart" Classes="dash_chart dash_chart_donut" />
+                        <StackPanel x:Name="QuarterLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+    </Border>
+</UserControl>

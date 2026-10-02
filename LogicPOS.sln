@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Globalization", "L
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Api", "LogicPOS.Api\LogicPOS.Api.csproj", "{267C627F-2248-4500-9247-CE7F30431A25}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "logicpos", "LogicPOS.OS\src\LogicPOS.App\logicpos.csproj", "{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Core", "LogicPOS.OS\src\LogicPOS.Core\LogicPOS.Core.csproj", "{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +30,14 @@ Global
 		{267C627F-2248-4500-9247-CE7F30431A25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{267C627F-2248-4500-9247-CE7F30431A25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{267C627F-2248-4500-9247-CE7F30431A25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

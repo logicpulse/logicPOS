@@ -62,7 +62,8 @@ namespace LogicPOS.Api.Features.Documents
                 return false;
             }
 
-            return shipTo.DeliveryDate.Value >= shipFrom.DeliveryDate.Value;
+            // Full date/time: delivery must be strictly after dispatch.
+            return shipTo.DeliveryDate.Value > shipFrom.DeliveryDate.Value;
         }
     }
 }
