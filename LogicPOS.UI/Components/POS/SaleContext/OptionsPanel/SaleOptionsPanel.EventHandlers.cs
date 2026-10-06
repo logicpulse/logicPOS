@@ -6,6 +6,7 @@ using LogicPOS.UI.Components.Common.Menus;
 using LogicPOS.UI.Components.InputFields.Validation;
 using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Finance.Documents.Sdr;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Printing;
 using LogicPOS.UI.Services;
@@ -14,7 +15,9 @@ using LogicPOS.Utility;
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using LogicPOS.Globalization;
+using LogicPOS.UI.Application;
 
 namespace LogicPOS.UI.Components.POS
 {
@@ -346,8 +349,50 @@ namespace LogicPOS.UI.Components.POS
 
         private void BtnWeight_Clicked(object sender, EventArgs e)
         {
-            GeneralUtils.ShowNotImplementedMessage();
-            UpdateButtonsSensitivity();
+            var item = SaleContext.ItemsPage.SelectedItem;
+
+            if (item == null)
+            {
+                return;
+            }
+
+            var balance = LogicPOSApp.EnsureWeighingBalance();
+
+            if (balance == null)
+            {
+                var machine = TerminalService.Terminal?.WeighingMachine;
+                CustomAlerts.Error(POSWindow.Instance)
+                            .WithMessage(string.Format(LocalizedString.Instance["dialog_message_error_initializing_weighing_balance"],
+                                                       machine?.Designation,
+                                                       machine?.PortName))
+                            .ShowAlert();
+                return;
+            }
+
+            decimal pricePerKg = Math.Round(item.UnitPriceWithVat, 2, MidpointRounding.AwayFromZero);
+            BtnWeight.Sensitive = false;
+
+            Task.Run(() =>
+            {
+                bool success = balance.TryWeigh(pricePerKg, out decimal weight);
+
+                global::Gtk.Application.Invoke(delegate
+                {
+                    if (success)
+                    {
+                        SaleContext.ItemsPage.ChangeItemQuantity(item, weight);
+                        SaleContext.ShowItemOnPoleDisplay(SaleContext.ItemsPage.SelectedItem ?? item);
+                    }
+                    else
+                    {
+                        CustomAlerts.Warning(POSWindow.Instance)
+                                    .WithMessageResource("dialog_message_weighing_balance_no_weight")
+                                    .ShowAlert();
+                    }
+
+                    UpdateButtonsSensitivity();
+                });
+            });
         }
 
         private void BtnSelectTable_Clicked(object sender, EventArgs e)

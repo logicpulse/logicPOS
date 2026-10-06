@@ -29,6 +29,7 @@ namespace LogicPOS.UI.Application
         public static UsbDisplayDevice UsbDisplay { get; set; }
         public static InputReader BarCodeReader { get; set; }
         public static WeighingBalance WeighingBalance { get; set; }
+        private static string _weighingBalanceSettings;
 
         public void Start()
         {
@@ -109,23 +110,53 @@ namespace LogicPOS.UI.Application
                 BarCodeReader = new InputReader();
             }
 
-            if (TerminalService.Terminal.WeighingMachine != null)
+            EnsureWeighingBalance();
+        }
+
+        /// <summary>
+        /// Creates (or recreates) the weighing balance from the current terminal configuration,
+        /// so a balance associated or changed after startup is picked up without restarting.
+        /// </summary>
+        public static WeighingBalance EnsureWeighingBalance()
+        {
+            var machine = TerminalService.Terminal?.WeighingMachine;
+            string settings = machine == null
+                ? null
+                : $"{machine.PortName}|{machine.BaudRate}|{machine.Parity}|{machine.StopBits}|{machine.DataBits}";
+
+            if (WeighingBalance != null && settings == _weighingBalanceSettings)
             {
-
-                if (TerminalService.Terminal.WeighingMachine.PortName == TerminalService.Terminal.PoleDisplay.COMPort)
-                {
-                    Log.Debug(string.Format("Port " + TerminalService.Terminal.WeighingMachine.PortName + "Already taken by pole display"));
-                }
-                else
-                {
-                    if (logicpos.Utils.IsPortOpen(TerminalService.Terminal.WeighingMachine.PortName))
-                    {
-                        WeighingBalance = new WeighingBalance(TerminalService.Terminal.WeighingMachine);
-                    }
-
-                }
-
+                return WeighingBalance;
             }
+
+            if (WeighingBalance != null && WeighingBalance.IsPortOpen())
+            {
+                WeighingBalance.ClosePort();
+            }
+
+            WeighingBalance = null;
+            _weighingBalanceSettings = null;
+
+            if (machine == null)
+            {
+                return null;
+            }
+
+            if (machine.PortName == TerminalService.Terminal.PoleDisplay?.COMPort)
+            {
+                Log.Warning("Weighing balance port {Port} already taken by pole display", machine.PortName);
+                return null;
+            }
+
+            if (!logicpos.Utils.IsPortOpen(machine.PortName))
+            {
+                Log.Warning("Weighing balance port {Port} is not available", machine.PortName);
+                return null;
+            }
+
+            WeighingBalance = new WeighingBalance(machine);
+            _weighingBalanceSettings = settings;
+            return WeighingBalance;
         }
 
         private static void InitializeTheme()

@@ -1,6 +1,8 @@
 using Gtk;
+using LogicPOS.UI.Application;
 using LogicPOS.UI.Application.Enums;
 using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.UI.Components.Terminals;
 using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -125,7 +127,7 @@ namespace LogicPOS.UI.Components.POS
             BtnDecrease.Sensitive = hasTicketItems && presentTicketMode;
             BtnPrice.Sensitive = hasTicketItems && presentTicketMode && AuthenticationService.UserHasPermission(UserProfilePermissions.Tickets.TICKETLIST_CHANGE_PRICE);
             BtnQuantity.Sensitive = hasTicketItems && presentTicketMode;
-            BtnWeight.Sensitive = hasTicketItems && presentTicketMode;
+            BtnWeight.Sensitive = hasTicketItems && presentTicketMode && TerminalService.Terminal?.WeighingMachine != null;
             BtnFinishOrder.Sensitive = hasTicketItems && presentTicketMode;
             BtnDelete.Sensitive = (hasTicketItems || (hasOrder && SaleContext.CurrentOrder.Id != null)) && AuthenticationService.UserHasPermission(UserProfilePermissions.Tickets.TICKETLIST_DELETE);
             BtnListOrder.Sensitive = hasOrder && SaleContext.CurrentOrder.Tickets.Count > 0 && !hasTicketItems;
