@@ -16,7 +16,8 @@ namespace LogicPOS.Api.Features.Database
 
         public override async Task<ErrorOr<Success>> Handle(RestoreDatabaseCommand command, CancellationToken cancellationToken = default)
         {
-            return  await HandleGetCommandAsync("database/restore", cancellationToken);
+            var endpoint = command.BackupId.HasValue ? $"database/restore?id={command.BackupId.Value}" : "database/restore";
+            return await HandleGetCommandAsync(endpoint, cancellationToken);
         }
     }
 }

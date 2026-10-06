@@ -128,9 +128,21 @@ namespace LogicPOS.UI.Components.Windows
 
         private void BtnRestoreDb_Clicked(object sender, EventArgs e)
         {
+            var page = new DatabaseBackupsPage(this);
+            var selectBackupModal = new EntitySelectionModal<DatabaseBackup>(page, LocalizedString.Instance["window_title_dialog_select_record"]);
+            ResponseType selectBackupResponse = (ResponseType)selectBackupModal.Run();
+            var backup = page.SelectedEntity;
+            selectBackupModal.Destroy();
+
+            if (selectBackupResponse != ResponseType.Ok || backup == null)
+            {
+                return;
+            }
+
             var restoreDatabaseResponse = CustomAlerts.Question(this)
                                                       .WithTitle("Restauro")
-                                                      .WithMessage("Tem a certeza que pretende restaurar a base de dados?\n")
+                                                      .WithMessage($"Tem a certeza que pretende restaurar o backup de {backup.CreatedAt}?\n" +
+                                                                   "Tudo o que foi registado depois será perdido.\n")
                                                       .ShowAlert();
 
             if (restoreDatabaseResponse != ResponseType.Yes)
@@ -138,7 +150,7 @@ namespace LogicPOS.UI.Components.Windows
                 return;
             }
 
-            var restoreResult = DependencyInjection.Mediator.Send(new RestoreDatabaseCommand()).Result;
+            var restoreResult = DependencyInjection.Mediator.Send(new RestoreDatabaseCommand { BackupId = backup.Id }).Result;
 
             if (restoreResult.IsError)
             {
