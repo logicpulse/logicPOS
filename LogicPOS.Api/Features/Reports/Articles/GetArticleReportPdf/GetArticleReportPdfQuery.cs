@@ -6,7 +6,7 @@ using System;
 
 namespace LogicPOS.Api.Features.Reports.GetArticleReportPdf
 {
-    public class GetArticleReportPdfQuery : IRequest<ErrorOr<TempFile>>
+    public class GetArticleReportPdfQuery : OptionalDateSpanReportQuery
     {
         public GetArticleReportPdfQuery()
         {

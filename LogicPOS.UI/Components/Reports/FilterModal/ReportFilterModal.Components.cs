@@ -11,6 +11,7 @@ namespace LogicPOS.UI.Components.Modals
         public TextBox TxtCustomer { get; set; }
         public TextBox TxtTerminal { get; set; }
         public TextBox TxtWarehouse { get; set; }
+        public TextBox TxtWarehouseLocation { get; set; }
         public TextBox TxtFamily{ get; set; }
         public TextBox TxtSubfamily{ get; set; }
         public TextBox TxtArticle { get; set; }

@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetCustomerReportPdf
 
         public async override Task<ErrorOr<TempFile>> Handle(GetCustomersListReportPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/customers/list/pdf");
+            return await HandleGetFileQueryAsync($"reports/customers/list/pdf{query.GetUrlQuery()}");
         }
     }
 }

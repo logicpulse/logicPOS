@@ -16,7 +16,7 @@ namespace LogicPOS.Api.Features.Reports.GetStockByArticleReportPdf
 
         public async override Task<ErrorOr<TempFile>> Handle(GetStockByArticleReportPdfQuery query, CancellationToken cancellationToken = default)
         {
-            return await HandleGetFileQueryAsync($"reports/stock-by-article/pdf{query.GetUrlQuery()}&articleId={query.ArticleId}");
+            return await HandleGetFileQueryAsync($"reports/stock-by-article/pdf{query.GetUrlQuery()}");
         }
     }
 }

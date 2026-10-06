@@ -207,34 +207,38 @@ namespace LogicPOS.UI.Services
             ShowReport(new GetSalesByTaxGroupDetailedReportPdfQuery(startDate, endDate, taxId));
         }
 
-        public static void ShowArticlesReport()
+        public static void ShowArticlesReport(DateTime? startDate = null, DateTime? endDate = null)
         {
-            ShowReport(new GetArticleReportPdfQuery());
+            ShowReport(new GetArticleReportPdfQuery { StartDate = startDate, EndDate = endDate });
         }
 
-        public static void ShowCustomersReport()
+        public static void ShowCustomersReport(DateTime? startDate = null, DateTime? endDate = null)
         {
-            ShowReport(new GetCustomersListReportPdfQuery());
+            ShowReport(new GetCustomersListReportPdfQuery { StartDate = startDate, EndDate = endDate });
         }
 
-        public static void ShowSuppliersReport()
+        public static void ShowSuppliersReport(DateTime? startDate = null, DateTime? endDate = null)
         {
-            ShowReport(new GetSuppliersListReportPdfQuery());
+            ShowReport(new GetSuppliersListReportPdfQuery { StartDate = startDate, EndDate = endDate });
         }
 
-        public static void ShowCommissionsReport(DateTime startDate, DateTime endDate)
+        public static void ShowCommissionsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
         {
-            ShowReport(new GetSalesByCommissionReportPdfQuery(startDate, endDate));
+            ShowReport(new GetSalesByCommissionReportPdfQuery(startDate, endDate, documentType, terminalId));
         }
 
-        public static void ShowStockMovementsReport(DateTime startDate, DateTime endDate, string documentType = null, Guid? terminalId = null)
+        public static void ShowStockMovementsReport(DateTime startDate, DateTime endDate, Guid? articleId = null, Guid? customerId = null)
         {
-            ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate, documentType, terminalId));
+            ShowReport(new GetStockMovementsReportPdfQuery(startDate, endDate, null, null)
+            {
+                ArticleId = articleId,
+                CustomerId = customerId
+            });
         }
 
-        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? warehouseId, string serialNumber = null)
+        public static void ShowStockByWarehouseReport(DateTime startDate, DateTime endDate, Guid? articleId, Guid? warehouseLocationId, string serialNumber = null)
         {
-            ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseId, serialNumber));
+            ShowReport(new GetStockByWarehouseReportPdfQuery(startDate, endDate, articleId, warehouseLocationId, serialNumber));
         }
 
         public static void ShowStockByArticleReport(DateTime startDate, DateTime endDate, Guid? articleId = null)

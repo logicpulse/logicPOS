@@ -3996,4 +3996,10 @@ Tem a certeza que deseja continuar e fechar ano fiscal activo e criar um novo?
   <data name="global_short_price" xml:space="preserve">
     <value>Pr. Unit</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Não foi possível obter o peso da balança. Verifique se o artigo está sobre a balança e se o peso está estável.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Localização</value>
+  </data>
 </root>

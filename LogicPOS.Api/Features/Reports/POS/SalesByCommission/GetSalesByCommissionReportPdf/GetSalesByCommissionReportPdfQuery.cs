@@ -6,7 +6,10 @@ namespace LogicPOS.Api.Features.Reports.POS.SalesByCommission.GetSalesByCommissi
 {
     public class GetSalesByCommissionReportPdfQuery : ReportFileQuery
     {
-        public GetSalesByCommissionReportPdfQuery(DateTime startDate, DateTime endDate) : base(startDate, endDate, null, null)
+        public GetSalesByCommissionReportPdfQuery(DateTime startDate,
+                                                  DateTime endDate,
+                                                  string documentType = null,
+                                                  Guid? terminalId = null) : base(startDate, endDate, documentType, terminalId)
         {
 
         }

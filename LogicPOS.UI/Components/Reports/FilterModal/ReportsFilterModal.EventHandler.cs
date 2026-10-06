@@ -27,11 +27,17 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnClear_Clicked(object sender, EventArgs e)
         {
-            TxtStartDate.Clear();
-            TxtEndDate.Clear();
+            // Hidden dates still feed StartDate/EndDate, so they must keep a valid value.
+            if (TxtStartDate.Component.Visible)
+            {
+                TxtStartDate.Clear();
+                TxtEndDate.Clear();
+            }
+
             TxtDocumentType.Clear();
             TxtCustomer.Clear();
             TxtWarehouse.Clear();
+            SetWarehouseLocations(null);
             TxtVatRate.Clear();
             TxtFamily.Clear();
             TxtSubfamily.Clear();
@@ -91,6 +97,7 @@ namespace LogicPOS.UI.Components.Modals
             {
                 TxtWarehouse.Text = page.SelectedEntity.Designation;
                 TxtWarehouse.SelectedEntity = page.SelectedEntity;
+                SetWarehouseLocations(page.SelectedEntity);
             }
         }
 

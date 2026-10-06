@@ -3769,4 +3769,10 @@ Hinweis: Sie können nur Dokumente auf A4-Drucker oder Export in PDF eröffnen</
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>Keine Hay Tablas/Pedidos Activos. Agregue o Active EN BackOffice / Otras Taba / Tablas</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Das Gewicht konnte nicht von der Waage gelesen werden. Prüfen Sie, ob der Artikel auf der Waage liegt und das Gewicht stabil ist.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Lagerort</value>
+  </data>
 </root>

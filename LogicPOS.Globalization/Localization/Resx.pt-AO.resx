@@ -3987,4 +3987,10 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="global_source_document_NC_ND" xml:space="preserve">
     <value>Anulação ou rectificação do documento de origem</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Não foi possível obter o peso da balança. Verifique se o artigo está sobre a balança e se o peso está estável.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Localização</value>
+  </data>
 </root>

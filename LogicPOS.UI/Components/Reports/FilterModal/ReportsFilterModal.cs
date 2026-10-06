@@ -66,6 +66,7 @@ namespace LogicPOS.UI.Components.Modals
             vbox.PackStart(TxtTerminal.Component, false, false, 0);
             vbox.PackStart(TxtCustomer.Component, false, false, 0);
             vbox.PackStart(TxtWarehouse.Component, false, false, 0);
+            vbox.PackStart(TxtWarehouseLocation.Component, false, false, 0);
             vbox.PackStart(TxtVatRate.Component, false, false, 0);
             vbox.PackStart(TxtArticle.Component, false, false, 0);
             vbox.PackStart(TxtSerialNumber.Component, false, false, 0);
@@ -79,6 +80,8 @@ namespace LogicPOS.UI.Components.Modals
         public DateTime StartDate => DateTime.ParseExact(TxtStartDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
 
         public DateTime EndDate => DateTime.ParseExact(TxtEndDate.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        public DateTime? OptionalStartDate => string.IsNullOrWhiteSpace(TxtStartDate.Text) ? (DateTime?)null : StartDate;
+        public DateTime? OptionalEndDate => string.IsNullOrWhiteSpace(TxtEndDate.Text) ? (DateTime?)null : EndDate;
 
 
     }

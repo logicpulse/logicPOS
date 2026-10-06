@@ -6,6 +6,9 @@ namespace LogicPOS.Api.Features.Reports.GetStockMovementReportPdf
 {
     public class GetStockMovementsReportPdfQuery : ReportFileQuery
     {
+        public Guid? ArticleId { get; set; }
+        public Guid? CustomerId { get; set; }
+
         public GetStockMovementsReportPdfQuery(DateTime startDate, 
                                                DateTime endDate,
                                                string documentType,
@@ -16,6 +19,15 @@ namespace LogicPOS.Api.Features.Reports.GetStockMovementReportPdf
 
         protected override void BuildQuery(StringBuilder urlQueryBuilder)
         {
+            if (ArticleId.HasValue)
+            {
+                urlQueryBuilder.Append($"&ArticleId={ArticleId}");
+            }
+
+            if (CustomerId.HasValue)
+            {
+                urlQueryBuilder.Append($"&CustomerId={CustomerId}");
+            }
         }
     }
 }

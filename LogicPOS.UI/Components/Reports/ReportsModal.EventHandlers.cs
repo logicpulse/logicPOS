@@ -5,6 +5,7 @@ using LogicPOS.Api.Features.Common;
 using LogicPOS.Api.Features.Finance.Customers.Customers.Common;
 using LogicPOS.Api.Features.Finance.Documents.Types.Common;
 using LogicPOS.Api.Features.Reports.GetSalesBySubFamilyDetailedReportPdf;
+using LogicPOS.Globalization;
 using LogicPOS.UI.Services;
 using System;
 
@@ -137,6 +138,12 @@ namespace LogicPOS.UI.Components.Modals
             modal.TxtFamily.Component.Visible = false;
             modal.TxtSubfamily.Component.Visible = false;
             return modal;
+        }
+
+        private static void HideDates(ReportsFilterModal modal)
+        {
+            modal.TxtStartDate.Component.Visible = false;
+            modal.TxtEndDate.Component.Visible = false;
         }
 
         private void BtnSalesByCustomerReport_Clicked(object sender, EventArgs e)
@@ -502,31 +509,44 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnArticlesReport_Clicked(object sender, EventArgs e)
         {
-            ReportsService.ShowArticlesReport();
+            if (RunOptionalDatesFilterModal(out var startDate, out var endDate))
+            {
+                ReportsService.ShowArticlesReport(startDate, endDate);
+            }
         }
 
         private void BtnCustomersReport_Clicked(object sender, EventArgs e)
         {
-            ReportsService.ShowCustomersReport();
+            if (RunOptionalDatesFilterModal(out var startDate, out var endDate))
+            {
+                ReportsService.ShowCustomersReport(startDate, endDate);
+            }
         }
 
-        private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
+        private bool RunOptionalDatesFilterModal(out DateTime? startDate, out DateTime? endDate)
         {
             var modal = DefaultFilterModal(this);
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
+            modal.TxtStartDate.Clear();
+            modal.TxtEndDate.Clear();
 
             var response = (ResponseType)modal.Run();
-            if (response == ResponseType.Ok)
-            {
-
-                ReportsService.ShowCommissionsReport(modal.StartDate, modal.EndDate);
-
-            }
+            startDate = modal.OptionalStartDate;
+            endDate = modal.OptionalEndDate;
             modal.Destroy();
+
+            // Empty dates list everything; a single date is treated as an open-ended period.
+            if (startDate.HasValue || endDate.HasValue)
+            {
+                startDate = startDate ?? DateTime.MinValue;
+                endDate = endDate ?? DateTime.Today;
+            }
+
+            return response == ResponseType.Ok;
         }
 
-        private void BtnStockMovementsReport_Clicked(object sender, EventArgs e)
+        private void BtnCommissionsReport_Clicked(object sender, EventArgs e)
         {
             var modal = DefaultFilterModal(this);
 
@@ -535,8 +555,25 @@ namespace LogicPOS.UI.Components.Modals
             {
                 var documentType = (modal.TxtDocumentType.SelectedEntity as DocumentType)?.Acronym;
                 var terminalId = (modal.TxtTerminal.SelectedEntity as Terminal)?.Id;
-                ReportsService.ShowStockMovementsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+                ReportsService.ShowCommissionsReport(modal.StartDate, modal.EndDate, documentType, terminalId);
+            }
+            modal.Destroy();
+        }
 
+        private void BtnStockMovementsReport_Clicked(object sender, EventArgs e)
+        {
+            var modal = DefaultFilterModal(this);
+            modal.TxtDocumentType.Component.Visible = false;
+            modal.TxtTerminal.Component.Visible = false;
+            modal.TxtArticle.Component.Visible = true;
+            modal.TxtCustomer.Component.Visible = true;
+
+            var response = (ResponseType)modal.Run();
+            if (response == ResponseType.Ok)
+            {
+                ReportsService.ShowStockMovementsReport(modal.StartDate, modal.EndDate,
+                                                        (modal.TxtArticle.SelectedEntity as ApiEntity)?.Id,
+                                                        (modal.TxtCustomer.SelectedEntity as ApiEntity)?.Id);
             }
             modal.Destroy();
         }
@@ -555,8 +592,8 @@ namespace LogicPOS.UI.Components.Modals
             {
 
                 ReportsService.ShowStockByWarehouseReport(modal.StartDate, modal.EndDate,
-                                                (modal.TxtArticle.SelectedEntity as ArticleViewModel)?.Id,
-                                                (modal.TxtWarehouse.SelectedEntity as Warehouse)?.Id,
+                                                (modal.TxtArticle.SelectedEntity as ApiEntity)?.Id,
+                                                (modal.TxtWarehouseLocation.SelectedEntity as WarehouseLocation)?.Id,
                                                 modal.TxtSerialNumber.Text);
 
             }
@@ -566,6 +603,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnStockByArticleReport_Clicked(object sender, EventArgs e)
         {
             var modal = DefaultFilterModal(this);
+            HideDates(modal);
             modal.TxtArticle.Component.Visible = true;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
@@ -573,7 +611,7 @@ namespace LogicPOS.UI.Components.Modals
             var response = (ResponseType)modal.Run();
             if (response == ResponseType.Ok)
             {
-                ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate, (modal.TxtArticle.SelectedEntity as Article)?.Id);
+                ReportsService.ShowStockByArticleReport(modal.StartDate, modal.EndDate, (modal.TxtArticle.SelectedEntity as ApiEntity)?.Id);
             }
             modal.Destroy();
         }
@@ -581,7 +619,9 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnStockBySupplierReport_Clicked(object sender, EventArgs e)
         {
             var modal = DefaultFilterModal(this);
+            HideDates(modal);
             modal.TxtCustomer.Component.Visible = true;
+            modal.TxtCustomer.Label.Text = LocalizedString.Instance["global_supplier"];
             modal.TxtDocumentNumber.Component.Visible = true;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtTerminal.Component.Visible = false;
@@ -597,6 +637,7 @@ namespace LogicPOS.UI.Components.Modals
         private void BtnStockByArticleGainReport_Clicked(object sender, EventArgs e)
         {
             var modal = DefaultFilterModal(this);
+            HideDates(modal);
             modal.TxtTerminal.Component.Visible = false;
             modal.TxtDocumentType.Component.Visible = false;
             modal.TxtArticle.Component.Visible = true;
@@ -605,8 +646,8 @@ namespace LogicPOS.UI.Components.Modals
             if (response == ResponseType.Ok)
             {
                 ReportsService.ShowStockByArticleGainReport(modal.StartDate, modal.EndDate,
-                                                           (modal.TxtArticle.SelectedEntity as Article)?.Id,
-                                                           (modal.TxtCustomer.SelectedEntity as Customer)?.Id);
+                                                           (modal.TxtArticle.SelectedEntity as ApiEntity)?.Id,
+                                                           (modal.TxtCustomer.SelectedEntity as ApiEntity)?.Id);
 
             }
             modal.Destroy();
@@ -634,7 +675,10 @@ namespace LogicPOS.UI.Components.Modals
 
         private void BtnSuppliersReport_Clicked(object sender, EventArgs e)
         {
-            ReportsService.ShowSuppliersReport();
+            if (RunOptionalDatesFilterModal(out var startDate, out var endDate))
+            {
+                ReportsService.ShowSuppliersReport(startDate, endDate);
+            }
         }
     }
 }

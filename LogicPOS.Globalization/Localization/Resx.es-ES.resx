@@ -3986,4 +3986,10 @@ Por favor, ingrese otro número e intente nuevamente.</value>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>No hay tablas/pedidos activos. Agregue o active en BackOffice / otras tablas / tablas</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>No se ha podido obtener el peso de la báscula. Compruebe que el artículo está sobre la báscula y que el peso es estable.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Ubicación</value>
+  </data>
 </root>

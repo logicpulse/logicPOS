@@ -28,6 +28,7 @@ namespace LogicPOS.UI.Components.Modals
             InitializeTxtDocumentType();
             InitializeTxtCustomer();
             InitializeTxtWarehouse();
+            InitializeTxtWarehouseLocation();
             InitializeTxtVatRate();
             InitializeTxtArticle();
             InitializeTxtSubfamily();
@@ -92,6 +93,23 @@ namespace LogicPOS.UI.Components.Modals
 
             TxtWarehouse.Entry.IsEditable = true;
             TxtWarehouse.SelectEntityClicked += BtnSelectWarehouse_Clicked;
+        }
+
+        private void InitializeTxtWarehouseLocation()
+        {
+            TxtWarehouseLocation = new TextBox(this,
+                                               LocalizedString.Instance["global_warehouse_location"],
+                                               isRequired: false,
+                                               isValidatable: false,
+                                               includeSelectButton: false,
+                                               includeKeyBoardButton: false);
+
+            TxtWarehouseLocation.Entry.IsEditable = true;
+            TxtWarehouseLocation.Component.Sensitive = false;
+
+            // The location is only meaningful together with the warehouse field.
+            TxtWarehouse.Component.Shown += (sender, e) => TxtWarehouseLocation.Component.Show();
+            TxtWarehouse.Component.Hidden += (sender, e) => TxtWarehouseLocation.Component.Hide();
         }
 
         private void InitializeTxtStartDate()
