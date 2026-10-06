@@ -19,6 +19,7 @@ namespace LogicPOS.UI.Components.System.Users.Permissions
         {
             public const string STOCK_MERCHANDISE_ENTRY_ACCESS = "STOCK_MERCHANDISE_ENTRY_ACCESS";
             public const string BACKOFFICE_MAN_ARTICLESTOCK_MENU = "BACKOFFICE_MAN_ARTICLESTOCK_MENU";
+            public const string BACKOFFICE_MAN_ARTICLESTOCK_CREATE = "BACKOFFICE_MAN_ARTICLESTOCK_CREATE";
 
             public static class Warehouses
             {

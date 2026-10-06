@@ -1,4 +1,6 @@
 using Gtk;
+using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Dialogs;
 using LogicPOS.UI.Settings;
 using LogicPOS.Utility;
@@ -16,6 +18,7 @@ namespace LogicPOS.UI.Components.Modals
             WindowSettings.Source = parentWindow;
 
             InitializeButtons();
+            BtnAddStock.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.STOCK_MERCHANDISE_ENTRY_ACCESS);
 
             uint tablePadding = 10;
             Table table = new Table(1, 1, true);

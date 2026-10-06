@@ -1,5 +1,7 @@
 using LogicPOS.Api.Features.Articles.Stocks.Movements.GetStockMovementById;
 using LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetDocumentPdf;
+using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Errors;
 using LogicPOS.UI.PDFViewer;
 using System;
@@ -77,7 +79,9 @@ namespace LogicPOS.UI.Components.Pages
 
         public override void UpdateButtonPrevileges()
         {
-            //these buttons are always enabled in this page
+            var canMoveStock = AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.BACKOFFICE_MAN_ARTICLESTOCK_CREATE);
+            Navigator.BtnInsert.Sensitive = canMoveStock;
+            Navigator.BtnUpdate.Sensitive = Navigator.BtnUpdate.Sensitive && canMoveStock;
         }
     }
 }

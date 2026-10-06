@@ -1,3 +1,4 @@
+using LogicPOS.UI.Components.Modals;
 using LogicPOS.UI.Components.Users;
 
 using LogicPOS.UI.Components.System.Users.Permissions;
@@ -20,7 +21,7 @@ namespace LogicPOS.UI.Components.Pages
             BtnDocuments.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Types.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_MENU);
             BtnNewDocument.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.Documents.Types.BACKOFFICE_MAN_DOCUMENTFINANCETYPE_CREATE);
             BtnPayments.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Finance.FiscalYears.BACKOFFICE_MAN_DOCUMENTFINANCEYEARS_VIEW);
-            BtnArticleStock.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.STOCK_MERCHANDISE_ENTRY_ACCESS);
+            BtnArticleStock.Sensitive = StockManagementModal.UserCanOpen;
 
             BtnReportsMenu.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Reports.REPORT_ACCESS);
             BtnPrintReportRouter.Sensitive = AuthenticationService.UserHasPermission(UserProfilePermissions.Reports.REPORT_COMPANY_BILLING);

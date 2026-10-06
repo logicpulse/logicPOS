@@ -3,6 +3,8 @@ using LogicPOS.Globalization;
 using LogicPOS.UI.Alerts;
 using LogicPOS.UI.Components.Licensing;
 using LogicPOS.UI.Components.Modals.Common;
+using LogicPOS.UI.Components.System.Users.Permissions;
+using LogicPOS.UI.Components.Users;
 using LogicPOS.UI.Components.Windows;
 using LogicPOS.UI.Services;
 using LogicPOS.UI.Settings;
@@ -20,6 +22,8 @@ namespace LogicPOS.UI.Components.Modals
                                                           windowMode: true)
         {
         }
+
+        public static bool UserCanOpen => AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.BACKOFFICE_MAN_ARTICLESTOCK_MENU);
 
         public static void ShowModal(Window parent)
         {
@@ -54,6 +58,12 @@ namespace LogicPOS.UI.Components.Modals
                     Process.Start("https://logic-pos.com/");
                     return;
                 }
+            }
+
+            // Without the stocks module the BackOffice falls back to the simple stock entry, the same modal as the FrontOffice.
+            if (!AuthenticationService.UserHasPermission(UserProfilePermissions.Stocks.STOCK_MERCHANDISE_ENTRY_ACCESS))
+            {
+                return;
             }
 
             AddSimpleStockMovementModal.ShowModal(parent);
