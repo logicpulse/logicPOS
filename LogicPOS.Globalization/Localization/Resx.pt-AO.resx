@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -657,9 +657,9 @@ Todas as séries relacionadas com os terminais selecionados vão ser apagadas e 
 
 Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
 
-As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+ 
 
-Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+
 </value>
   </data>
   <data name="dialog_message_series_create_document_type_series" xml:space="preserve">
@@ -668,9 +668,9 @@ Ao continuar está a tomar conhecimento e a concordar com o processo de comunica
   <data name="dialog_message_series_create_document_type_series_pt" xml:space="preserve">
     <value>Deseja criar séries para todos os tipos de documentos fiscais/terminais?
 	       Irão ser criadas novas séries que irão susbtituir as atuais.
-	       As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
-		   As novas séries serão comunicadas á AT para obtenção do código obrigatório para gerar o ATCUD nos novos documentos emitidos.
-           Ao continuar está a tomar conhecimento e a concordar com o processo de comunicação de séries documentais segundo o Decreto-Lei n.º 28/2019, artigo 35º.
+	        
+		   
+           
 	</value>
   </data>
   <data name="dialog_message_series_create_document_type_series_already_exist" xml:space="preserve">

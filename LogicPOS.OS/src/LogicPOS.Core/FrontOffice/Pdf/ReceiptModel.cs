@@ -288,15 +288,6 @@ public class ReceiptModel : IDocument
             finalTable.Cell().PaddingLeft(6).Table(tb =>
             {
                 tb.ColumnsDefinition(columns => { columns.RelativeColumn(); });
-                if (Data.Country.IsPortugal)
-                {
-                    tb.Cell().PaddingLeft(7).PaddingBottom(3).Text(text =>
-                    {
-                        text.DefaultTextStyle(t => t.FontSize(6));
-                        text.Span("ATCUD: ").Bold();
-                        text.Span(Data.Receipt!.Atcud);
-                    });
-                }
                 tb.Cell().PaddingLeft(7).PaddingVertical(3).AlignRight().Image(GetQrCode(Data.Receipt!.QrCode!)).FitArea();
             });
             if (!Data.Country.IsAngola)

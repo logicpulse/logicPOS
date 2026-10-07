@@ -81,8 +81,6 @@ public class GuideModel : DocumentModel
                 
                 txt.DefaultTextStyle(ts => ts.FontSize(7));
                 txt.Span("Notas\n").Bold();
-                txt.Span($"Código de Identificação: ");
-                txt.Span($"{Data.Document!.AtDocCodeId}").Bold();
 
                 if (Data.Document!.RelatedDocuments?.Count() != 0)
                 {

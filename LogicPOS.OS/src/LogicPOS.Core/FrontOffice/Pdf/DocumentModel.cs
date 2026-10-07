@@ -678,19 +678,6 @@ public abstract class DocumentModel : IDocument
             {
                 tb.ColumnsDefinition(c => c.RelativeColumn());
 
-                if (hasAtQrCode && Data.Country.IsPortugal)
-                {
-                    tb.Cell()
-                        .PaddingLeft(20)
-                        .PaddingBottom(3)
-                        .Text(text =>
-                        {
-                            text.DefaultTextStyle(t => t.FontSize(6));
-                            text.Span("ATCUD: ").Bold();
-                            text.Span(Data.Document.Atcud);
-                        });
-                }
-
                 tb.Cell().AlignRight()
                     .Padding(1)
                     .Image(GetQrCode(hasAtQrCode ? Data.Document.AtQRCode! : Data.Document.Number))

@@ -3,6 +3,7 @@ using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
+using LogicPOS.Core.Licensing;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Persistence.Database;
 using LogicPOS.Persistence.DependencyInjection;
@@ -54,6 +55,13 @@ public static class AppComposition
                     .Build();
             }
 
+            var license = LicenseModuleLoader.Load(configuration, baseDirectory, out var licenseError);
+            if (licenseError is not null)
+            {
+                StartupError = licenseError;
+                return;
+            }
+
             var culture = CultureInfo.GetCultureInfo(UiCulture.Read(configuration["Culture"]));
             CultureInfo.DefaultThreadCurrentCulture = culture;
             CultureInfo.DefaultThreadCurrentUICulture = culture;
@@ -66,6 +74,7 @@ public static class AppComposition
                 var cloudServices = new ServiceCollection();
                 cloudServices.AddLogging();
                 cloudServices.AddSingleton<IConfiguration>(configuration);
+                cloudServices.AddSingleton(license);
                 if (CloudModuleLoader.TryRegister(cloudServices, configuration, baseDirectory))
                 {
                     Services = cloudServices.BuildServiceProvider();
@@ -95,6 +104,7 @@ public static class AppComposition
             var services = new ServiceCollection();
             services.AddLogging();
             services.AddSingleton<IConfiguration>(configuration);
+            services.AddSingleton(license);
             services.AddSingleton<ISystemInformationService, DesktopSystemInformationService>();
             services.AddSingleton<IAuditingInformationService, DesktopAuditingInformationService>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();

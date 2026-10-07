@@ -85,7 +85,7 @@ namespace LogicPOS.UI.Printing
             PrintMasterTotalTax();
             PrintDocumentPaymentDetails();
             PrintDocumentTypeFooterString();
-            PrintAtcudAndQrCode();
+            PrintQrCode();
         }
 
         private string ResolveDocumentTypeResourceKey()
@@ -376,19 +376,11 @@ namespace LogicPOS.UI.Printing
             LineFeed();
         }
 
-        private void PrintAtcudAndQrCode()
+        private void PrintQrCode()
         {
             if (!PreferenceParametersService.PrintQrCode)
             {
                 return;
-            }
-
-            if (SystemInformationService.SystemInformation.IsPortugal)
-            {
-                LineFeed();
-                _printer.AlignCenter();
-                WriteLineSmall($"ATCUD: {_data.Document.ATCUD}");
-                SetFontNormal();
             }
 
             var qrContent = !string.IsNullOrEmpty(_data.Document.ATQRCode)

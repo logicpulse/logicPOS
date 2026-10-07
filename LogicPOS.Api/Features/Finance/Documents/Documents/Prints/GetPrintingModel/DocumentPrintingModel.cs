@@ -20,7 +20,6 @@ namespace LogicPOS.Api.Features.Finance.Documents.Documents.Prints.GetPrintingMo
         public decimal TotalTax { get; set; }
         public decimal TotalFinal { get; set; }
         public DocumentTypeAnalyzer TypeAnalyzer => new DocumentTypeAnalyzer(Type);
-        public string ATCUD { get; set; }
         public string ATQRCode { get; set; }
         public List<TaxResume> GetTaxResumes()
         {

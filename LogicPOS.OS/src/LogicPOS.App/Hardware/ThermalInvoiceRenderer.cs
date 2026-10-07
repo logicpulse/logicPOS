@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using System.Text;
 using LogicPOS.Core.FrontOffice;
 
@@ -59,7 +59,7 @@ internal sealed class ThermalInvoiceRenderer
         PrintTaxResume();
         PrintPayments();
         PrintTypeFooter();
-        PrintAtcudAndQrCode();
+        PrintQrCode();
         PrintFooterExtended();
         PrintStandardFooter();
         Raw(0x1B, 0x64, 0x04);
@@ -331,7 +331,7 @@ internal sealed class ThermalInvoiceRenderer
         Feed();
     }
 
-    private void PrintAtcudAndQrCode()
+    private void PrintQrCode()
     {
         if (_job.PrintQrCode == false)
         {
@@ -340,13 +340,6 @@ internal sealed class ThermalInvoiceRenderer
 
         var document = _job.Document;
         Center();
-        if (string.IsNullOrWhiteSpace(document.Atcud) == false)
-        {
-            Small();
-            Line($"ATCUD: {document.Atcud}");
-            Normal();
-        }
-
         var content = string.IsNullOrWhiteSpace(document.AtQrCode) ? document.Number : document.AtQrCode;
         var data = Encoding.UTF8.GetBytes(content);
         var length = data.Length + 3;

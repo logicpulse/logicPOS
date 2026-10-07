@@ -9,6 +9,8 @@
     <AssemblyName>logicpos</AssemblyName>
     <Product>logicpos</Product>
     <AssemblyTitle>logicpos</AssemblyTitle>
+    <Version>1.6.2</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <ApplicationIcon>Assets\application.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
@@ -20,12 +22,27 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
     <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.2" />
     <PackageReference Include="PDFtoImage" Version="5.4.0" />
+    <PackageReference Include="System.IO.Ports" Version="9.0.9" />
     <PackageReference Include="Svg.Controls.Skia.Avalonia" Version="12.0.0.17" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.Core\LogicPOS.Core.csproj" />
   </ItemGroup>
+
+  <Target Name="AttachPrivatePieces" AfterTargets="Publish">
+    <ItemGroup>
+      <PrivatePieceDir Include="$(MSBuildProjectDirectory)\..\..\..\..\logicpos-apiclient\src\LogicPOS.Cloud\bin\$(Configuration)\net10.0" />
+      <PrivatePieceDir Include="$(MSBuildProjectDirectory)\..\..\..\..\logicpos-fiscal\src\LogicPOS.Fiscal\bin\$(Configuration)\net10.0" />
+      <PrivatePieceDir Include="$(MSBuildProjectDirectory)\..\..\..\..\logicpos-api\src\LogicPOS.Licence\bin\$(Configuration)\net9.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <PrivatePieceFile Include="%(PrivatePieceDir.Identity)\*.dll" Condition="Exists('%(PrivatePieceDir.Identity)')" />
+      <PrivatePieceFile Include="%(PrivatePieceDir.Identity)\*.json" Condition="Exists('%(PrivatePieceDir.Identity)')" />
+      <_PrivatePieceToCopy Include="@(PrivatePieceFile)" Condition="!Exists('$(PublishDir)%(Filename)%(Extension)')" />
+    </ItemGroup>
+    <Copy SourceFiles="@(_PrivatePieceToCopy)" DestinationFolder="$(PublishDir)" />
+  </Target>
 
   <ItemGroup>
     <None Update="appsettings.json">

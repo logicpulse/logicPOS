@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\logicpos-api\src\LogicPOS.Licence\LogicPOS.Licence.csproj" />
     <ProjectReference Include="..\..\..\..\logicpos-api\src\Persistence\LogicPOS.Persistence\LogicPOS.Persistence.csproj" />
     <ProjectReference Include="..\..\..\..\logicpos-api\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLite\LogicPOS.Persistence.Migrators.SQLite.csproj" />
   </ItemGroup>

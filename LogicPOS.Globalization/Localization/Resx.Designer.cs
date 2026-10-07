@@ -1543,7 +1543,7 @@ namespace LogicPOS.Globalization.Localization {
         ///
         ///Ao aceitar as condições está a responsabilizar-se pela criação das séries. Relembramos que ao abrigo da lei em vigor não pode usar séries que já foram usadas no passado.
         ///
-        ///As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
+        /// 
         ///
         ///Ao continua [rest of string was truncated]&quot;;.
         /// </summary>
@@ -1584,8 +1584,8 @@ namespace LogicPOS.Globalization.Localization {
         /// <summary>
         ///   Looks up a localized string similar to Deseja criar séries para todos os tipos de documentos fiscais/terminais?
         ///	       Irão ser criadas novas séries que irão susbtituir as atuais.
-        ///	       As séries comunicadas á AT serão agora sujeitas a anulação/finalização.As séries que tenham documentos emitidos serão finalizadas e as séries sem documentos emitidos serão anuladas. 
-        ///		   As novas séries serão comunicadas á AT para obtenção do código obrigatório para gerar o ATCUD nos novos documentos emitidos.
+        ///	        
+        ///		   
         ///           Ao continuar está a tomar conhecim [rest of string was truncated]&quot;;.
         /// </summary>
         public static string dialog_message_series_create_document_type_series_pt {
