@@ -15,6 +15,7 @@ O repositório público `logicPOS` publica só a edição pública: base de dado
 
 - [Fronteira do opensource antigo](tickets/01-fronteira-legado.md): o legado público já continha a certificação (AT, ATCUD, hash, QR, SAF-T); fora ficavam os segredos LogicPulse, a licença e os stocks.
 - [Persistência da base de dados direta](tickets/07-persistencia-direta.md): a edição pública usa SQLite, MySQL e SQL Server sobre o mesmo modelo; o arranque deixa de recusar os servidores.
+- [Edição pública sem as peças](tickets/04-edicao-publica-sem-pecas.md): não pede licença; o documento leva só o número da fatura (`sigla/n`), sem ATCUD nem série certificada.
 - [Superfície certificada no repo público](tickets/02-superficie-no-publico.md): na Avalonia as chamadas à autoridade estão no plugin fiscal da base direta; rodapé, QR, hash, série de teste e ecrãs SAF-T/AT continuam no público. No GTK isso sai pelo cliente HTTP.
 
 ## Not yet specified

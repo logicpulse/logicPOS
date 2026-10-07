@@ -15,3 +15,7 @@ _Avoid_: versão paga, a mesma app com um DLL de cloud, versão interna
 **Certificação**:
 A comunicação com a AT e a AGT, e o que só existe por causa dela: ATCUD, séries certificadas, SAF-T, hash, QR e a linha do programa certificado no documento.
 _Avoid_: licença, cloud, ligação à API, registo
+
+**Número da fatura**:
+A identificação do documento na edição pública: a sigla da série e o próximo número (`sigla/n`).
+_Avoid_: ATCUD, código de série certificada, número local
