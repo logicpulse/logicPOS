@@ -83,7 +83,6 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 TotalNet = doc.TotalNet,
                 TotalTax = doc.TotalTax,
                 TotalFinal = doc.TotalFinal,
-                Atcud = doc.ATCUD,
                 AtQrCode = doc.ATQRCode
             })
             .FirstOrDefaultAsync(cancellationToken);

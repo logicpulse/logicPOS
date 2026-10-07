@@ -1080,8 +1080,6 @@ public sealed class PosDocumentService : IPosDocumentService
                 TotalTax = doc.TotalTax,
                 WithholdingTaxAmount = doc.WithholdingTaxAmount,
                 Notes = doc.Notes,
-                Atcud = doc.ATCUD,
-                AtDocCodeId = doc.ATDocCodeID,
                 AtQRCode = doc.ATQRCode,
                 ShipFromAddress = doc.ShipFromAddress,
                 ShipToAddress = doc.ShipToAddress,
