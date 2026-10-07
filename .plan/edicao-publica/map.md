@@ -9,7 +9,7 @@ Uma regra fechada: o que pode viver no repositório público `logicPOS`, o que f
 - Cloud, certificação e licença entram da mesma forma: o contrato e o carregador ficam no público; a peça em si fica de fora. Sem a peça, a edição pública usa base de dados direta, não certifica e não pede registo de licença. A edição LogicPulse traz as peças e pode usar cloud ou base de dados direta.
 - Certificação inclui as ligações à AT e à AGT e também o ATCUD, as séries certificadas e o que o documento mostra por causa delas. Não é a licença nem a cloud.
 - Este mapa não implementa. Quando não houver tickets abertos, a regra está pronta para outra sessão a pôr no código.
-- Skills: `domain-modeling`, `research`. Termos em `GLOSSARY.md`. Conversação em português.
+- Skills: `wayfinder`, `domain-modeling`, `research`. Termos em `GLOSSARY.md`. Conversação em português.
 
 ## Decisions so far
 
