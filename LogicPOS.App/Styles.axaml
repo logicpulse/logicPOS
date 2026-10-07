@@ -1,0 +1,4118 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia">
+    <Style Selector="Window.login_window">
+        <Setter Property="Background" Value="#111111" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+    </Style>
+
+    <Style Selector="Image.app_background">
+        <Setter Property="Stretch" Value="None" />
+        <Setter Property="Width" Value="1920" />
+        <Setter Property="Height" Value="1080" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Button.login_minimize">
+        <Setter Property="Width" Value="27" />
+        <Setter Property="Height" Value="27" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0,10,10,0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Image Source="avares://logicpos/Assets/Images/icon_window_minimize.png"
+                       Width="27"
+                       Height="27"
+                       Stretch="None" />
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.login_logo">
+        <Setter Property="Width" Value="460" />
+        <Setter Property="Height" Value="157" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0,16,48,0" />
+    </Style>
+
+    <Style Selector="Border.login_users_frame">
+        <Setter Property="Width" Value="148" />
+        <Setter Property="Height" Value="861" />
+        <Setter Property="Margin" Value="108,105,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Background" Value="#38FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.login_pinpad_frame">
+        <Setter Property="Width" Value="344" />
+        <Setter Property="Height" Value="466" />
+        <Setter Property="Margin" Value="0,0,104,0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="#38FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.login_version_frame">
+        <Setter Property="Width" Value="344" />
+        <Setter Property="Height" Value="89" />
+        <Setter Property="Margin" Value="0,0,104,109" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Background" Value="#38FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="StackPanel.login_users_column">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="120,120,0,0" />
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="Width" Value="120" />
+    </Style>
+
+    <Style Selector="Button.login_scroll">
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Height" Value="60" />
+        <Setter Property="Padding" Value="1" />
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.login_scroll_icon">
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+
+    <Style Selector="ItemsControl.login_users">
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Panel.login_user_slot">
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Height" Value="102" />
+    </Style>
+
+    <Style Selector="Button.login_user">
+        <Setter Property="Width" Value="120" />
+        <Setter Property="Height" Value="102" />
+        <Setter Property="Padding" Value="7" />
+        <Setter Property="Background" Value="#AAAAAA" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.login_user:pointerover">
+        <Setter Property="Background" Value="#C4C4C4" />
+    </Style>
+
+    <Style Selector="Button.login_user.selected">
+        <Setter Property="Background" Value="#2B2B2B" />
+    </Style>
+
+    <Style Selector="Button.login_user.selected:pointerover">
+        <Setter Property="Background" Value="#3A3A3A" />
+    </Style>
+
+    <Style Selector="Image.login_user_icon">
+        <Setter Property="Stretch" Value="UniformToFill" />
+    </Style>
+
+    <Style Selector="Border.login_user_caption">
+        <Setter Property="Height" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Background" Value="#FAFFFFFF" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TextBlock.login_user_name">
+        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style Selector="Border.login_pinpad">
+        <Setter Property="Width" Value="315" />
+        <Setter Property="Height" Value="466" />
+        <Setter Property="Padding" Value="0,49,0,12" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,120,0" />
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Grid.login_pinpad_keys">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Button.login_pin_key">
+        <Setter Property="Background" Value="#AAAAAA" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.login_pin_key:pointerover">
+        <Setter Property="Background" Value="#C4C4C4" />
+    </Style>
+
+    <Style Selector="Button.login_pin_key:pressed">
+        <Setter Property="Background" Value="#999999" />
+    </Style>
+
+    <Style Selector="Button.login_pin_key:disabled">
+        <Setter Property="Opacity" Value="0.55" />
+    </Style>
+
+    <Style Selector="Button.login_pin_digit">
+        <Setter Property="Width" Value="99" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ce">
+        <Setter Property="Background" Value="#C25E4F" />
+        <Setter Property="Width" Value="99" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ce:pointerover">
+        <Setter Property="Background" Value="#D17A6C" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ce:pressed">
+        <Setter Property="Background" Value="#A84E42" />
+    </Style>
+
+    <Style Selector="Button.login_pin_quit">
+        <Setter Property="Background" Value="#485460" />
+        <Setter Property="Width" Value="99" />
+    </Style>
+
+    <Style Selector="Button.login_pin_quit:pointerover">
+        <Setter Property="Background" Value="#5C6B78" />
+    </Style>
+
+    <Style Selector="Button.login_pin_quit:pressed">
+        <Setter Property="Background" Value="#323A42" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ok">
+        <Setter Property="Background" Value="#8BA844" />
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Width" Value="309" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ok:pointerover">
+        <Setter Property="Background" Value="#A4C45A" />
+    </Style>
+
+    <Style Selector="Button.login_pin_ok:pressed">
+        <Setter Property="Background" Value="#738C38" />
+    </Style>
+
+    <Style Selector="TextBox.login_pin_entry">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,0,36,0" />
+        <Setter Property="CaretBrush" Value="#000000" />
+    </Style>
+
+    <Style Selector="TextBox.login_pin_entry.error">
+        <Setter Property="Foreground" Value="#FF0000" />
+        <Setter Property="CaretBrush" Value="#FF0000" />
+    </Style>
+
+    <Style Selector="StackPanel.login_pin_tools">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="ZIndex" Value="2" />
+    </Style>
+
+    <Style Selector="Button.login_pin_reveal">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="ZIndex" Value="2" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.login_pin_reveal:pointerover">
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="svg|Svg.login_pin_eye">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Ellipse.login_pin_eye_outline">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="Stroke" Value="#343537" />
+        <Setter Property="StrokeThickness" Value="1.8" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Ellipse.login_pin_eye_pupil">
+        <Setter Property="Width" Value="6" />
+        <Setter Property="Height" Value="6" />
+        <Setter Property="Fill" Value="#343537" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Path.login_pin_eye_slash">
+        <Setter Property="Stroke" Value="#343537" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="StrokeLineCap" Value="Round" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.login_pin_reset">
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="Background" Value="#AAAAAA" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <Image Source="avares://logicpos/Assets/Images/pinpad_password_reset.png"
+                           Width="22"
+                           Height="22"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.login_pin_reset:disabled">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
+    <Style Selector="TextBlock.login_pin_status">
+        <Setter Property="Foreground" Value="#C8C8C8" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="3" />
+    </Style>
+
+    <Style Selector="TextBlock.login_version">
+        <Setter Property="Width" Value="307" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Margin" Value="0,0,124,128" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="8" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Padding" Value="0,16,0,0" />
+    </Style>
+
+    <Style Selector="Panel.login_alert_overlay">
+        <Setter Property="Background" Value="#99000000" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Panel.login_alert_overlay.bo_clear_overlay">
+        <Setter Property="Background" Value="#33000000" />
+    </Style>
+
+    <Style Selector="Border.login_alert_frame">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D6D6D6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BoxShadow" Value="0 12 28 0 #66000000" />
+    </Style>
+
+    <Style Selector="DockPanel.login_alert_inner">
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Border.login_alert_titlebar">
+        <Setter Property="Height" Value="42" />
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="CornerRadius" Value="8,8,0,0" />
+        <Setter Property="Padding" Value="8,0,8,0" />
+    </Style>
+
+    <Style Selector="StackPanel.login_alert_title_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="Margin" Value="2,0,2,0" />
+    </Style>
+
+    <Style Selector="Image.login_alert_title_icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="TextBlock.login_alert_title">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.login_alert_body">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Image.login_alert_symbol">
+        <Setter Property="Width" Value="96" />
+        <Setter Property="Height" Value="96" />
+        <Setter Property="Margin" Value="18,16,0,0" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Border.bo_update_frame">
+        <Setter Property="Width" Value="480" />
+        <Setter Property="Height" Value="340" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_update_status">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#4D6610" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Margin" Value="132,150,18,8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="TextBlock.login_alert_message">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Margin" Value="132,44,18,8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Border.login_alert_actions">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Padding" Value="0,4,12,8" />
+        <Setter Property="CornerRadius" Value="0,0,8,8" />
+    </Style>
+
+    <Style Selector="StackPanel.login_alert_action_buttons">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="Button.login_alert_action">
+        <Setter Property="Width" Value="84" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="#4477A4" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="8" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.login_alert_action:pointerover">
+        <Setter Property="Background" Value="#5A8BB8" />
+    </Style>
+
+    <Style Selector="Button.login_alert_action:disabled">
+        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Opacity" Value="0.55" />
+    </Style>
+
+    <Style Selector="StackPanel.login_alert_action_content">
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.login_alert_action_icon">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.login_alert_action_icon">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.login_alert_action_text">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Window.pos_window">
+        <Setter Property="Background" Value="#111111" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+    </Style>
+
+    <Style Selector="Border.pos_logo_box">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Image.pos_logo">
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Border.pos_status_bar_1">
+        <Setter Property="Background" Value="#585858" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="Border.pos_status_bar_2">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="Grid.pos_status_bar_content">
+        <Setter Property="Margin" Value="8,0" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_status_text">
+        <Setter Property="Foreground" Value="#EEEEEE" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_status_text_small">
+        <Setter Property="Foreground" Value="#DADADA" />
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_list">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#6A6A6A" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_header_row">
+        <Setter Property="Background" Value="#E4E4E4" />
+        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="4,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_header">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_header_right">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_total">
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="BorderBrush" Value="#2E2E2E" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Height" Value="48" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_total_label">
+        <Setter Property="Foreground" Value="#EEEEEE" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_total_value">
+        <Setter Property="Foreground" Value="#EEEEEE" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="ScrollViewer.pos_ticket_lines">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
+    <Style Selector="ScrollViewer.pos_ticket_lines.order">
+        <Setter Property="Background" Value="#EBFFEB" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_row">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Padding" Value="4,0,4,0" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_row.selected">
+        <Setter Property="Background" Value="#D7D7D7" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_cell">
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_cell_right">
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="TextAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_ticket_keypad">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="4,4,4,0" />
+    </Style>
+
+    <Style Selector="Grid.pos_price_pad">
+        <Setter Property="Margin" Value="10,8,10,4" />
+    </Style>
+
+    <Style Selector="TextBox.pos_price_entry">
+        <Setter Property="Height" Value="42" />
+        <Setter Property="Margin" Value="2,0,2,8" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="CaretBrush" Value="#000000" />
+    </Style>
+
+    <Style Selector="Button.pos_price_money">
+        <Setter Property="Background" Value="#A3C749" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_price_money:pointerover">
+        <Setter Property="Background" Value="#B5D45C" />
+    </Style>
+
+    <Style Selector="Button.pos_price_digit">
+        <Setter Property="Background" Value="#455A70" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="2" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_price_digit:pointerover">
+        <Setter Property="Background" Value="#5C738C" />
+    </Style>
+
+    <Style Selector="Border.pos_menu_slot">
+        <Setter Property="Background" Value="#3A3A3A" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button">
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_green">
+        <Setter Property="Background" Value="#8BA844" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_grey">
+        <Setter Property="Background" Value="#AAAAAA" />
+        <Setter Property="Foreground" Value="#000000" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button.pos_menu_button_selected">
+        <Setter Property="Background" Value="#2B2B2B" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_menu_caption">
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="MaxHeight" Value="32" />
+    </Style>
+
+    <Style Selector="Image.pos_favorites_image">
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Margin" Value="8,8,8,28" />
+    </Style>
+
+    <Style Selector="Button.pos_scroll">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" ClipToBounds="True">
+                    <ContentPresenter Content="{TemplateBinding Content}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_scroll:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <Style Selector="Image.pos_scroll_icon">
+        <Setter Property="Stretch" Value="Fill" />
+    </Style>
+
+    <Style Selector="Button.pos_pad_button">
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_pad_button_grey">
+        <Setter Property="Background" Value="#AAAAAA" />
+    </Style>
+
+    <Style Selector="Button.pos_pad_button_green">
+        <Setter Property="Background" Value="#8BA844" />
+    </Style>
+
+    <Style Selector="Button.pos_pad_button:disabled">
+        <Setter Property="Opacity" Value="0.6" />
+    </Style>
+
+    <Style Selector="Button.pos_pad_button_green:disabled">
+        <Setter Property="Background" Value="#999999" />
+    </Style>
+
+    <Style Selector="Button.pos_toolbar_button">
+        <Setter Property="Background" Value="#485460" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_toolbar_button_close">
+        <Setter Property="Background" Value="#C25E4F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.pos_button_icon">
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_button_caption">
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="MaxWidth" Value="110" />
+    </Style>
+
+    <Style Selector="Window.pos_pay_window">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="SizeToContent" Value="Manual" />
+    </Style>
+
+    <Style Selector="Grid.pos_pay_body">
+        <Setter Property="Margin" Value="8,8,8,4" />
+    </Style>
+
+    <Style Selector="Button.pos_pay_method">
+        <Setter Property="Width" Value="108" />
+        <Setter Property="Height" Value="67" />
+        <Setter Property="Background" Value="#A3C749" />
+        <Setter Property="Foreground" Value="#3B3B39" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Padding" Value="2" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_pay_method.selected">
+        <Setter Property="BorderBrush" Value="#2F4A10" />
+        <Setter Property="BorderThickness" Value="3" />
+    </Style>
+
+    <Style Selector="Button.pos_pay_method_wide">
+        <Setter Property="Width" Value="328" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="Image.pos_pay_method_icon">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_method_text">
+        <Setter Property="Foreground" Value="#3B3B39" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.pos_pay_totals">
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_caption">
+        <Setter Property="Foreground" Value="#6589AB" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_total">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_amount">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_label">
+        <Setter Property="Foreground" Value="#3B3B39" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Margin" Value="0,6,0,2" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_volta_form">
+        <Setter Property="Margin" Value="16,6,16,0" />
+    </Style>
+
+    <Style Selector="TextBox.pos_pay_field">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_pay_actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="Margin" Value="4,0,8,8" />
+    </Style>
+
+    <Style Selector="Button.login_alert_action.selected">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
+    <Style Selector="Border.pos_header">
+        <Setter Property="Background" Value="#000000" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="6,0,16,0" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_header_text">
+        <Setter Property="Foreground" Value="#F0F0F0" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_header_text.pos_header_clock">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Border.pos_order_bar">
+        <Setter Property="Background" Value="#2B2B2B" />
+        <Setter Property="BorderBrush" Value="#1F1F1F" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Padding" Value="16,0" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_order_bar_text">
+        <Setter Property="Foreground" Value="#E8E8E8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_order_bar_text.pos_order_bar_total">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="DockPanel.pos_catalog">
+        <Setter Property="Margin" Value="12,8,6,8" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_breadcrumb_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_breadcrumb_label">
+        <Setter Property="Foreground" Value="#ECECEC" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_breadcrumb">
+        <Setter Property="Foreground" Value="#B8B8B8" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_breadcrumb_active">
+        <Setter Property="Foreground" Value="#9BBE1D" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.pos_selector">
+        <Setter Property="Background" Value="#1A1A1A" />
+        <Setter Property="BorderBrush" Value="#2A2A2A" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_selector_rows">
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="Border.pos_selector_label">
+        <Setter Property="Background" Value="#1A2A10" />
+        <Setter Property="BorderBrush" Value="#3D5A16" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinWidth" Value="96" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_selector_label_text">
+        <Setter Property="Foreground" Value="#C8E86A" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_chip_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="6,0" />
+    </Style>
+
+    <Style Selector="Grid.pos_article_row">
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="UniformGrid.pos_articles">
+        <Setter Property="Margin" Value="6,0" />
+    </Style>
+
+    <Style Selector="DockPanel.pos_sidebar">
+        <Setter Property="Margin" Value="6,8,12,8" />
+    </Style>
+
+    <Style Selector="Image.pos_sidebar_logo">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,0,4,8" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_caption">
+        <Setter Property="Background" Value="#1A1A1A" />
+        <Setter Property="BorderBrush" Value="#333333" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_ticket_caption_text">
+        <Setter Property="Foreground" Value="#9BBE1D" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="Border.pos_ticket_subtotals">
+        <Setter Property="Background" Value="#F3F3F3" />
+        <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_subtotal">
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_subtotal.pos_subtotal_right">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_subtotal_muted">
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_subtotal_muted.pos_subtotal_right">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Grid.pos_pad">
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_pad_main">
+        <Setter Property="Spacing" Value="5" />
+        <Setter Property="Margin" Value="5,0,0,0" />
+    </Style>
+
+    <Style Selector="UniformGrid.pos_quick">
+        <Setter Property="Margin" Value="0,6,0,0" />
+    </Style>
+
+    <Style Selector="Border.pos_bottom">
+        <Setter Property="Background" Value="#151515" />
+        <Setter Property="BorderBrush" Value="#222222" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style Selector="Button.pos_flat">
+        <Setter Property="Padding" Value="4,2" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Background" Value="#252525" />
+        <Setter Property="Foreground" Value="#F2F2F2" />
+        <Setter Property="BorderBrush" Value="#3A3A3A" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_flat:disabled">
+        <Setter Property="Opacity" Value="0.4" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_nav">
+        <Setter Property="Width" Value="56" />
+        <Setter Property="Height" Value="56" />
+        <Setter Property="MinWidth" Value="56" />
+        <Setter Property="MinHeight" Value="56" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="28" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_grid_nav">
+        <Setter Property="Width" Value="56" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="MinWidth" Value="56" />
+        <Setter Property="MinHeight" Value="72" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="#1E1E1E" />
+        <Setter Property="BorderBrush" Value="#444444" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_chip">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="MinWidth" Value="132" />
+        <Setter Property="MinHeight" Value="52" />
+        <Setter Property="Padding" Value="18,10" />
+        <Setter Property="CornerRadius" Value="26" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Background" Value="#2A2A2A" />
+        <Setter Property="BorderBrush" Value="#3A3A3A" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_chip.pos_chip_active">
+        <Setter Property="Background" Value="#9BBE1D" />
+        <Setter Property="Foreground" Value="#101010" />
+        <Setter Property="BorderBrush" Value="#8FB01A" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_tile">
+        <Setter Property="Background" Value="#ECECEC" />
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="VerticalContentAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="Border.pos_tile_empty">
+        <Setter Property="BorderBrush" Value="#333333" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Margin" Value="2" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_tile_label">
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="MaxHeight" Value="48" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_tile_price">
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="Opacity" Value="0.85" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_fn">
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MinHeight" Value="76" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_main">
+        <Setter Property="Background" Value="#99CC33" />
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="MinHeight" Value="84" />
+        <Setter Property="Margin" Value="0,3" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_quick">
+        <Setter Property="Margin" Value="3" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="MinHeight" Value="60" />
+    </Style>
+
+    <Style Selector="Button.pos_flat.pos_bottom_btn">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Background" Value="#2A2A2A" />
+        <Setter Property="BorderBrush" Value="#333333" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MinHeight" Value="84" />
+    </Style>
+
+    <Style Selector="Button.pos_list_item.pos_list_on">
+        <Setter Property="Background" Value="#9bbe1d" />
+    </Style>
+
+    <Style Selector="Button.pos_list_item">
+        <Setter Property="Background" Value="#EEEEEE" />
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="52" />
+        <Setter Property="Margin" Value="8,4" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_table_button">
+        <Setter Property="Background" Value="#EEEEEE" />
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Width" Value="110" />
+        <Setter Property="Height" Value="88" />
+        <Setter Property="Margin" Value="6" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_table_button:pointerover">
+        <Setter Property="Background" Value="#E0E0E0" />
+    </Style>
+
+    <Style Selector="Button.pos_table_button.selected">
+        <Setter Property="BorderBrush" Value="#2F4A10" />
+        <Setter Property="BorderThickness" Value="3" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_table_content">
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_table_name">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,12,0,2" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_table_time">
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Height" Value="14" />
+    </Style>
+
+    <Style Selector="Border.pos_table_status">
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Border.pos_table_status_open">
+        <Setter Property="Background" Value="#64B964" />
+    </Style>
+
+    <Style Selector="Border.pos_table_status_reserved">
+        <Setter Property="Background" Value="#B96464" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_table_status_text">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.pos_doc_menu">
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.pos_doc_menu">
+        <Setter Property="Background" Value="#A3C749" />
+        <Setter Property="Foreground" Value="#3B3B39" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Margin" Value="10" />
+        <Setter Property="Padding" Value="6,4" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_doc_menu:disabled">
+        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Opacity" Value="0.6" />
+    </Style>
+
+    <Style Selector="Button.pos_doc_menu.selected">
+        <Setter Property="BorderBrush" Value="#2F4A10" />
+        <Setter Property="BorderThickness" Value="3" />
+    </Style>
+
+    <Style Selector="Button.pos_tables_action">
+        <Setter Property="Width" Value="84" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <Style Selector="Grid.pos_tables_body">
+        <Setter Property="Height" Value="396" />
+    </Style>
+
+    <Style Selector="Button.pos_tables_place">
+        <Setter Property="Width" Value="110" />
+        <Setter Property="Height" Value="88" />
+        <Setter Property="Margin" Value="6" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_tables_scroller">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="Margin" Value="6,0,6,4" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="Button.pos_tables_scroll">
+        <Setter Property="Width" Value="56" />
+        <Setter Property="Height" Value="31" />
+    </Style>
+
+    <Style Selector="Image.pos_tables_filter_icon">
+        <Setter Property="Width" Value="26" />
+        <Setter Property="Height" Value="26" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.pos_doc_menu_icon">
+        <Setter Property="Width" Value="50" />
+        <Setter Property="Height" Value="50" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_doc_menu_caption">
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="MaxWidth" Value="150" />
+    </Style>
+
+    <Style Selector="Button.pos_dialog_close">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="4,0,6,0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.pos_dialog_close_icon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="Window.bo_window">
+        <Setter Property="Background" Value="#585858" />
+        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+    </Style>
+
+    <Style Selector="Border.bo_status">
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="Padding" Value="8,0" />
+    </Style>
+
+    <Style Selector="Image.bo_logo">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_status_terminal">
+        <Setter Property="Margin" Value="4,0,16,0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_status_text">
+        <Setter Property="Foreground" Value="#DADADA" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_window_buttons">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_window_button">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="5" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_window_button:pointerover">
+        <Setter Property="Background" Value="#555555" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_window_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar">
+        <Setter Property="Width" Value="238" />
+        <Setter Property="Background" Value="#323537" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar.bo_sidebar_collapsed">
+        <Setter Property="Width" Value="64" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_sidebar_toggle_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="21" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_header">
+        <Setter Property="Background" Value="#9bbe1d" />
+    </Style>
+
+    <Style Selector="Button.bo_sidebar_toggle">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_sidebar_toggle:pointerover">
+        <Setter Property="Background" Value="#86ad1a" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Border.bo_sidebar_header">
+        <Setter Property="MinHeight" Value="64" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Button.bo_sidebar_toggle">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Button.bo_sidebar_brand">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Image.bo_sidebar_logo">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed TextBlock.bo_menu_label">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed TextBlock.bo_sidebar_copyright">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed StackPanel.bo_sidebar_flags">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed StackPanel.bo_menu_children">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Border.bo_sidebar_line">
+        <Setter Property="Margin" Value="8,8" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed StackPanel.bo_menu_row">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Border.bo_menu_glyph">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Button.bo_nav">
+        <Setter Property="Margin" Value="4,1" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Button.bo_menu_parent">
+        <Setter Property="Margin" Value="4,1" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed Button.bo_sidebar_about">
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_collapsed TextBlock.bo_sidebar_about_mark">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Button.bo_sidebar_brand">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="Padding" Value="8,8,0,8" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.bo_sidebar_logo">
+        <Setter Property="Width" Value="168" />
+        <Setter Property="Height" Value="46" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_menu_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_menu_glyph">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_on Border.bo_menu_glyph">
+        <Setter Property="Background" Value="#323537" />
+    </Style>
+
+    <Style Selector="Button.bo_nav">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Light" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Margin" Value="6,1" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_nav:pointerover">
+        <Setter Property="Background" Value="#3C4043" />
+    </Style>
+
+    <Style Selector="Button.bo_nav.bo_menu_on">
+        <Setter Property="Background" Value="#D5DAE2" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="Button.bo_nav_exit">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_version">
+        <Setter Property="Foreground" Value="#AAAEB3" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_sidebar_footer">
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_line">
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Margin" Value="8,12" />
+        <Setter Property="Background" Value="#AAAEB3" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_sidebar_flags">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_flag">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Border.bo_sidebar_flag_on">
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_sidebar_flag_icon">
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Width" Value="24" />
+    </Style>
+
+    <Style Selector="Button.bo_sidebar_about">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Light" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Margin" Value="6,0" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_sidebar_about:pointerover">
+        <Setter Property="Background" Value="#3C4043" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_sidebar_about_mark">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_sidebar_copyright">
+        <Setter Property="Foreground" Value="#AAAEB3" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="Margin" Value="8,0,8,4" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Light" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Margin" Value="6,1" />
+        <Setter Property="Padding" Value="8,0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent:pointerover">
+        <Setter Property="Background" Value="#3C4043" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent.open">
+        <Setter Property="Background" Value="#3C3F42" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_menu_children">
+        <Setter Property="Background" Value="#2B2E30" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Margin" Value="18,1,6,1" />
+        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_menu_child:pointerover">
+        <Setter Property="Background" Value="#3C4043" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child.bo_menu_on">
+        <Setter Property="Background" Value="#D5DAE2" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="Image.bo_menu_icon">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_about">
+        <Setter Property="Width" Value="420" />
+        <Setter Property="MinHeight" Value="280" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_about_body">
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Margin" Value="24,20" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_about_logo_band">
+        <Setter Property="Background" Value="#9bbe1d" />
+        <Setter Property="Padding" Value="16,10" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.bo_about_logo">
+        <Setter Property="Width" Value="260" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_about_text">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.bo_dashboard">
+        <Setter Property="Margin" Value="24,20,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Button.bo_shortcut">
+        <Setter Property="Background" Value="#9CBF2A" />
+        <Setter Property="Foreground" Value="#4C4846" />
+        <Setter Property="FontSize" Value="8" />
+        <Setter Property="Width" Value="105" />
+        <Setter Property="Height" Value="70" />
+        <Setter Property="Margin" Value="6" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Image.bo_shortcut_icon">
+        <Setter Property="Width" Value="35" />
+        <Setter Property="Height" Value="35" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_shortcut_caption">
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="MaxWidth" Value="96" />
+        <Setter Property="Margin" Value="0,2,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_totals">
+        <Setter Property="Margin" Value="28,8,0,0" />
+        <Setter Property="Spacing" Value="4" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_totals_caption">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_totals_value">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+
+    <Style Selector="UserControl.dash_root">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="ScrollViewer.dash_scroll">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Padding" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_page">
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_stock">
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="Margin" Value="0,18,0,0" />
+    </Style>
+
+    <Style Selector="Button.dash_stock_open">
+        <Setter Property="Background" Value="#6B9E2E" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="14,8" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.dash_stock_open:pointerover">
+        <Setter Property="Background" Value="#4D6610" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_eyebrow">
+        <Setter Property="Foreground" Value="#6B9E2E" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_title">
+        <Setter Property="Foreground" Value="#2B2F2C" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_subtitle">
+        <Setter Property="Foreground" Value="#6D6D6D" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_controls">
+        <Setter Property="Spacing" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="16,0,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_control_group">
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_control_label">
+        <Setter Property="Foreground" Value="#7A7A7A" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Border.dash_segmented">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="3" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="Button.dash_segment">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#5F6368" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Padding" Value="5,6" />
+        <Setter Property="MinWidth" Value="88" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      TextBlock.Foreground="{TemplateBinding Foreground}"
+                                      TextBlock.FontSize="{TemplateBinding FontSize}"
+                                      TextBlock.FontWeight="{TemplateBinding FontWeight}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.dash_segment.active">
+        <Setter Property="Background" Value="#8CC63F" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="ComboBox.dash_year">
+        <Setter Property="MinWidth" Value="120" />
+        <Setter Property="MinHeight" Value="34" />
+        <Setter Property="Height" Value="34" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_status">
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Grid.dash_kpis">
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Border.dash_kpi">
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14,12,14,10" />
+        <Setter Property="MinHeight" Value="88" />
+        <Setter Property="Margin" Value="0,0,10,0" />
+        <Setter Property="BoxShadow" Value="0 8 18 0 #14000000" />
+    </Style>
+
+    <Style Selector="Border.dash_kpi_today">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#8CC63F" Offset="0" />
+                <GradientStop Color="#6B9E2E" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.dash_kpi_month">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#6B9E2E" Offset="0" />
+                <GradientStop Color="#4D6610" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.dash_kpi_year">
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#4D6610" Offset="0" />
+                <GradientStop Color="#3A4D0C" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="Border.dash_kpi_best">
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Background">
+            <LinearGradientBrush StartPoint="0%,0%" EndPoint="100%,100%">
+                <GradientStop Color="#323537" Offset="0" />
+                <GradientStop Color="#4A4F52" Offset="1" />
+            </LinearGradientBrush>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBlock.dash_kpi_label">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_kpi_value">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="20" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_kpi_hint">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Opacity" Value="0.85" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="Border.dash_panel">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#E8E8E8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="16,12,16,8" />
+        <Setter Property="BoxShadow" Value="0 6 16 0 #0A000000" />
+    </Style>
+
+    <Style Selector="Border.dash_panel_right">
+        <Setter Property="Margin" Value="10,0,0,0" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_panel_title">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_panel_hint">
+        <Setter Property="Foreground" Value="#8A8A8A" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Margin" Value="0,2,0,8" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_total_caption">
+        <Setter Property="Foreground" Value="#8A8A8A" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_total_value">
+        <Setter Property="Foreground" Value="#4D6610" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Control.dash_chart">
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.dash_legend">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="Ellipse.dash_legend_swatch">
+        <Setter Property="Width" Value="8" />
+        <Setter Property="Height" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Ellipse.dash_legend_billing">
+        <Setter Property="Fill" Value="#8CC63F" />
+    </Style>
+
+    <Style Selector="TextBlock.dash_legend_text">
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,10,0" />
+    </Style>
+
+    <Style Selector="Border.bo_page">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="24" />
+        <Setter Property="Padding" Value="24" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_page_message">
+        <Setter Property="Foreground" Value="#3D3D3D" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_list_empty">
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="Margin" Value="16" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    <Style Selector="Border.bo_doc_page">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Margin" Value="12" />
+        <Setter Property="Padding" Value="12" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_title">
+        <Setter Property="Foreground" Value="#222222" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,12" />
+    </Style>
+
+    <Style Selector="Border.bo_page_header">
+        <Setter Property="BorderBrush" Value="#EDEDED" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="0,0,0,8" />
+        <Setter Property="Margin" Value="0,0,0,10" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_page_title">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_page_actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_page_action">
+        <Setter Property="Background" Value="#323537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Height" Value="30" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_page_action:pointerover">
+        <Setter Property="Background" Value="#242729" />
+    </Style>
+
+    <Style Selector="Button.bo_page_action TextBlock.bo_doc_action_text">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <Style Selector="Button.bo_page_action Image.bo_doc_action_icon, Button.bo_page_action svg|Svg.bo_doc_action_icon">
+        <Setter Property="Width" Value="15" />
+        <Setter Property="Height" Value="15" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_doc_toolbar">
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_filters">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="12" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_filters Button">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_date_field">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_filters > ComboBox">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_actions">
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_label">
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,3" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker.bo_doc_date">
+        <Setter Property="Width" Value="150" />
+    </Style>
+
+    <Style Selector="ComboBox.bo_doc_filter_combo">
+        <Setter Property="Width" Value="200" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox.bo_doc_filter_search">
+        <Setter Property="Width" Value="260" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="MaxDropDownHeight" Value="360" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Watermark" Value="Nome, NIF ou código" />
+        <Setter Property="MinimumPrefixLength" Value="0" />
+        <Setter Property="IsTextCompletionEnabled" Value="False" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_filter_search_name">
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_filter_search_meta">
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="11" />
+    </Style>
+
+    <Style Selector="Button.bo_doc_filter">
+        <Setter Property="Background" Value="#343537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="14,6" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_action_content">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.bo_doc_action_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_doc_action_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_action_text">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_line_icons">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="2" />
+    </Style>
+
+    <Style Selector="Button.bo_line_icon">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="8"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_line_icon:pointerover">
+        <Setter Property="Background" Value="#EEEEEE" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_line_icon_image, Image.bo_line_icon_image">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_line_icon.bo_toolbar_icon">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_line_icon_image.bo_toolbar_icon, Image.bo_line_icon_image.bo_toolbar_icon">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+    </Style>
+
+    <Style Selector="Button.bo_line_icon.bo_transport_icon">
+        <Setter Property="Width" Value="40" />
+        <Setter Property="Height" Value="40" />
+        <Setter Property="MinWidth" Value="40" />
+        <Setter Property="MinHeight" Value="40" />
+        <Setter Property="Padding" Value="2" />
+    </Style>
+
+    <Style Selector="Image.bo_line_icon_image.bo_transport_icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+    </Style>
+
+    <Style Selector="Button.bo_doc_action">
+        <Setter Property="Background" Value="#343537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,6" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_count">
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="8,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_count_inline">
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="MaxWidth" Value="360" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_doc_tools">
+        <Setter Property="Margin" Value="0,0,0,20" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_listing_tools">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_icon_button">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_listing_icon_button:pointerover">
+        <Setter Property="Background" Value="#EEEEEE" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_listing_icon">
+        <Setter Property="Width" Value="20" />
+        <Setter Property="Height" Value="20" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_columns">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#222222" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_listing_columns:pointerover">
+        <Setter Property="Background" Value="#EEEEEE" />
+    </Style>
+
+    <Style Selector="Border.bo_listing_search">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#D0D0D0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Width" Value="220" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_listing_search.bo_listing_search_wide">
+        <Setter Property="Width" Value="360" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_search_clear">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Margin" Value="0,0,4,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_listing_search_clear:pointerover">
+        <Setter Property="Background" Value="#EEEEEE" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_listing_search_clear_mark">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.bo_listing_search_box">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="MinHeight" Value="30" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.bo_doc_search">
+        <Setter Property="Width" Value="220" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="ComboBox.bo_doc_page_size">
+        <Setter Property="Width" Value="70" />
+        <Setter Property="MinHeight" Value="32" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_import_preview">
+        <Setter Property="Margin" Value="12,8" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_import_notice">
+        <Setter Property="Margin" Value="12,0,12,8" />
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_doc_grid">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="#E6E6E6" />
+        <Setter Property="GridLinesVisibility" Value="Horizontal" />
+        <Setter Property="HorizontalGridLinesBrush" Value="#EEEEEE" />
+        <Setter Property="RowHeight" Value="36" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_doc_grid DataGridColumnHeader">
+        <Setter Property="Background" Value="#F7F7F7" />
+        <Setter Property="Foreground" Value="#222222" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_line_grid DataGridColumnHeader TextBlock">
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+    <Style Selector="DataGrid.bo_line_grid DataGridCell TextBlock">
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+    </Style>
+
+
+    <Style Selector="Border.bo_doc_pager">
+        <Setter Property="Background" Value="#FAFAFA" />
+        <Setter Property="BorderBrush" Value="#E6E6E6" />
+        <Setter Property="BorderThickness" Value="1,0,1,1" />
+        <Setter Property="Padding" Value="8" />
+    </Style>
+
+    <Style Selector="Button.bo_doc_page_button">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#222222" />
+        <Setter Property="BorderBrush" Value="#D0D0D0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinWidth" Value="32" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Padding" Value="6,2" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_page_label">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="6,0" />
+        <Setter Property="Foreground" Value="#333333" />
+    </Style>
+
+    <Style Selector="Border.bo_doc_chooser">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Width" Value="280" />
+        <Setter Property="MaxHeight" Value="420" />
+        <Setter Property="Margin" Value="16" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_doc_chooser_body">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_doc_chooser_actions">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,12,0,0" />
+    </Style>
+
+    <Style Selector="Button.bo_doc_icon_button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_doc_icon_button:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_doc_row_icon">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+    </Style>
+
+    <Style Selector="CheckBox.bo_doc_pick">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="CheckBox.bo_doc_column_check">
+        <Setter Property="Margin" Value="16,4,0,4" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_doc_empty">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_body">
+        <Setter Property="Margin" Value="16" />
+    </Style>
+
+    <Style Selector="Grid.bo_new_doc_fields">
+        <Setter Property="Margin" Value="0,0,0,8" />
+        <Setter Property="ColumnSpacing" Value="12" />
+        <Setter Property="RowSpacing" Value="8" />
+    </Style>
+
+    <Style Selector="Grid.bo_new_doc_editor">
+        <Setter Property="Margin" Value="16,8,16,12" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_customer_actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="12,0,0,0" />
+    </Style>
+
+    <Style Selector="ScrollViewer.bo_new_doc_transport">
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_ship_actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker.bo_new_doc_date">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="CalendarDatePicker.bo_new_doc_date_invalid">
+        <Setter Property="Background" Value="#FDECEA" />
+        <Setter Property="BorderBrush" Value="#C0392B" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Foreground" Value="#C0392B" />
+    </Style>
+
+    <Style Selector="TimePicker.bo_new_doc_time">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_ship">
+        <Setter Property="Spacing" Value="0" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_ship_title">
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Margin" Value="0,4,0,2" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_caption">
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,8,0,3" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_options">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="12,0,0,0" />
+    </Style>
+
+    <Style Selector="CheckBox.bo_new_doc_draft">
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.login_alert_action.bo_new_doc_preview">
+        <Setter Property="Width" Value="118" />
+    </Style>
+
+    <Style Selector="TextBox.bo_new_doc_notes">
+        <Setter Property="MinHeight" Value="52" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_total">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="Foreground" Value="#222222" />
+    </Style>
+
+    <Style Selector="Border.bo_line_editor">
+        <Setter Property="Background" Value="#99000000" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_line_editor_frame">
+        <Setter Property="Width" Value="980" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.bo_line_editor_fields">
+        <Setter Property="Margin" Value="16,12,16,8" />
+        <Setter Property="ColumnSpacing" Value="12" />
+        <Setter Property="RowSpacing" Value="8" />
+    </Style>
+
+    <Style Selector="TextBox.bo_line_editor_input">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.bo_line_editor_notes">
+        <Setter Property="MinHeight" Value="64" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,6" />
+    </Style>
+
+    <Style Selector="ComboBox.bo_new_doc_combo">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_value_box">
+        <Setter Property="Background" Value="#F4F6F8" />
+        <Setter Property="BorderBrush" Value="#D5DCE3" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_value">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_new_doc_error">
+        <Setter Property="Foreground" Value="#C25E4F" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_search">
+        <Setter Property="Margin" Value="0,12,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_article_tools">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_new_doc_tool">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="MinWidth" Value="64" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_line_actions">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_new_doc_suggest">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="MaxHeight" Value="180" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_new_doc_pad">
+        <Setter Property="Margin" Value="12" />
+    </Style>
+
+    <Style Selector="ScrollViewer.bo_new_doc_pad_scroll">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="Height" Value="84" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_new_doc_pad_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="WrapPanel.bo_new_doc_pad">
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button.bo_new_doc_pad_button">
+        <Setter Property="MinWidth" Value="148" />
+        <Setter Property="MinHeight" Value="72" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button.bo_new_doc_pad_button TextBlock.pos_menu_caption">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="MaxHeight" Value="64" />
+    </Style>
+
+    <Style Selector="Border.bo_pdf_bar">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#EDEDED" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_pdf_tools">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="2" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_pdf_split">
+        <Setter Property="Width" Value="1" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="Background" Value="#D8D8D8" />
+        <Setter Property="Margin" Value="8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.bo_pdf_zoom">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_pdf_meta">
+        <Setter Property="MinWidth" Value="52" />
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_icon_button.bo_pdf_tool_on">
+        <Setter Property="Background" Value="#E4F0C4" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_icon_button.bo_pdf_tool_on:pointerover">
+        <Setter Property="Background" Value="#D5E8A8" />
+    </Style>
+
+    <Style Selector="Button.bo_listing_icon_button:disabled">
+        <Setter Property="Opacity" Value="0.35" />
+    </Style>
+
+    <Style Selector="ScrollViewer.bo_pdf_scroll">
+        <Setter Property="Background" Value="#E6E8EA" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_pdf_pages">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="24,20,24,28" />
+    </Style>
+
+    <Style Selector="Border.bo_pdf_sheet">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,16" />
+        <Setter Property="BoxShadow" Value="0 8 22 0 #2A000000" />
+    </Style>
+
+    <Style Selector="Image.bo_pdf_page">
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="ComboBox.bo_entity_mode">
+        <Setter Property="Width" Value="180" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_entity_form">
+        <Setter Property="Margin" Value="16" />
+    </Style>
+
+    <Style Selector="TextBox.bo_entity_input">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.bo_entity_multiline">
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="ComboBox.bo_entity_input">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox.bo_entity_input">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="MaxDropDownHeight" Value="360" />
+        <Setter Property="PlaceholderText" Value="Código, designação ou código de barras" />
+        <Setter Property="IsTextCompletionEnabled" Value="False" />
+    </Style>
+
+    <Style Selector="AutoCompleteBox.bo_article_search">
+        <Setter Property="Width" Value="260" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="MaxDropDownHeight" Value="360" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="PlaceholderText" Value="Código, designação ou código de barras" />
+        <Setter Property="IsTextCompletionEnabled" Value="False" />
+    </Style>
+
+    <Style Selector="CheckBox.bo_entity_input">
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#15202B" />
+    </Style>
+
+    <Style Selector="Grid.bo_entity_tab_bar">
+        <Setter Property="Margin" Value="12,4,12,0" />
+        <Setter Property="ColumnSpacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_entity_tab_headers">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="0,0,0,16" />
+    </Style>
+
+    <Style Selector="Button.bo_entity_tab">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Padding" Value="0,8,16,6" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_entity_tab:pointerover">
+        <Setter Property="Foreground" Value="#15202B" />
+    </Style>
+
+    <Style Selector="Button.bo_entity_tab.bo_entity_tab_on">
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderBrush" Value="#343537" />
+    </Style>
+
+    <Style Selector="Grid.bo_entity_tab_bar Button.bo_image_browse">
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.bo_entity_tab_bar Grid.bo_image_photo_wrap">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TabControl.bo_entity_tabs">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="TabControl.bo_entity_tabs > TabItem">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Padding" Value="0,8,16,6" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Header}"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="TabControl.bo_entity_tabs > TabItem:pointerover">
+        <Setter Property="Foreground" Value="#15202B" />
+    </Style>
+
+    <Style Selector="TabControl.bo_entity_tabs > TabItem:selected">
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="BorderBrush" Value="#343537" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_picker">
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_corner">
+        <Setter Property="Width" Value="120" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_corner Grid.bo_image_photo_wrap">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_corner Border.bo_image_drop">
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="Padding" Value="6,4" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_corner StackPanel.bo_image_drop_row">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="Spacing" Value="4" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_corner TextBlock.bo_image_hint">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Grid.bo_image_photo_wrap">
+        <Setter Property="Width" Value="96" />
+        <Setter Property="Height" Value="96" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="Border.bo_image_frame">
+        <Setter Property="Width" Value="96" />
+        <Setter Property="Height" Value="96" />
+        <Setter Property="CornerRadius" Value="48" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Image.bo_image_photo">
+        <Setter Property="Width" Value="96" />
+        <Setter Property="Height" Value="96" />
+        <Setter Property="Stretch" Value="UniformToFill" />
+    </Style>
+
+    <Style Selector="Button.bo_image_remove">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="#343537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="4" />
+    </Style>
+
+    <Style Selector="Border.bo_image_drop">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#B8B8B8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="MinHeight" Value="52" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_image_drop_row">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.bo_image_browse">
+        <Setter Property="Background" Value="#6B7280" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Padding" Value="12,6" />
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_image_hint">
+        <Setter Property="Foreground" Value="#8A8A8A" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_logo_picker">
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="Grid.bo_logo_photo_wrap">
+        <Setter Property="Width" Value="160" />
+        <Setter Property="Height" Value="80" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="Border.bo_logo_frame">
+        <Setter Property="Width" Value="160" />
+        <Setter Property="Height" Value="80" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Image.bo_logo_photo">
+        <Setter Property="Width" Value="160" />
+        <Setter Property="Height" Value="80" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_entity_error">
+        <Setter Property="Margin" Value="0,4,0,0" />
+        <Setter Property="Foreground" Value="#B42318" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="Grid.bo_entity_columns">
+        <Setter Property="Margin" Value="12,4,12,8" />
+        <Setter Property="ColumnSpacing" Value="16" />
+        <Setter Property="RowSpacing" Value="2" />
+    </Style>
+
+    <Style Selector="Grid.bo_price_table">
+        <Setter Property="Margin" Value="12,8,12,4" />
+        <Setter Property="ColumnSpacing" Value="8" />
+        <Setter Property="RowSpacing" Value="4" />
+    </Style>
+
+    <Style Selector="WrapPanel.bo_entity_flags">
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="WrapPanel.bo_entity_flags > CheckBox">
+        <Setter Property="Margin" Value="0,2,18,2" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.app_toast_host">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0,48,16,0" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Width" Value="360" />
+    </Style>
+
+    <Style Selector="Border.app_toast">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BoxShadow" Value="0 0 10 0 #66D9D9D9" />
+        <Setter Property="BorderBrush" Value="#E5E5E5" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Border.app_toast > DockPanel > Grid">
+        <Setter Property="Margin" Value="12,10,6,10" />
+    </Style>
+
+    <Style Selector="Image.app_toast_icon">
+        <Setter Property="Width" Value="32" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Margin" Value="0,0,10,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.app_toast_title">
+        <Setter Property="Foreground" Value="#545454" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.app_toast_close">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="6,0,0,0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#CCCCCC" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.app_toast_close:pointerover">
+        <Setter Property="Foreground" Value="#F27474" />
+    </Style>
+
+    <Style Selector="Border.app_toast_progress">
+        <Setter Property="Height" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Background" Value="#66000000" />
+    </Style>
+
+    <Style Selector="Border.app_toast_success Border.app_toast_progress">
+        <Setter Property="Background" Value="#A5DC86" />
+    </Style>
+
+    <Style Selector="Border.app_toast_error Border.app_toast_progress">
+        <Setter Property="Background" Value="#F27474" />
+    </Style>
+
+    <Style Selector="Border.app_toast_warning Border.app_toast_progress">
+        <Setter Property="Background" Value="#F8BB86" />
+    </Style>
+
+    <Style Selector="Border.app_toast_info Border.app_toast_progress">
+        <Setter Property="Background" Value="#3FC3EE" />
+    </Style>
+
+    <Style Selector="Image.bo_printer_pick_icon">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+    </Style>
+
+    <Style Selector="MenuItem.bo_printer_pick_item">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="MinWidth" Value="280" />
+        <Setter Property="FontSize" Value="13" />
+    </Style>
+
+    <Style Selector="MenuItem.bo_printer_pick_item.selected">
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="DockPanel.bo_touch_row">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="Button.bo_touch_key">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="svg|Svg.bo_touch_key_icon">
+        <Setter Property="Width" Value="16" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_fiscal_wizard">
+        <Setter Property="Width" Value="640" />
+        <Setter Property="Height" Value="480" />
+        <Setter Property="MaxHeight" Value="480" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_fiscal_wizard_tabs">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Margin" Value="24,8,24,0" />
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_fiscal_wizard_form">
+        <Setter Property="Margin" Value="24,12,24,16" />
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_fiscal_wizard_at">
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="TextBox.bo_entity_multiline.bo_fiscal_wizard_preview">
+        <Setter Property="Height" Value="220" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor">
+        <Setter Property="Width" Value="1080" />
+        <Setter Property="Height" Value="720" />
+        <Setter Property="MaxHeight" Value="720" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor.bo_stock_editor">
+        <Setter Property="Width" Value="760" />
+        <Setter Property="Height" Value="680" />
+        <Setter Property="MaxHeight" Value="680" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor.bo_entity_editor_fit">
+        <Setter Property="Height" Value="NaN" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_editor.bo_entity_editor_narrow">
+        <Setter Property="Width" Value="640" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_stock_editor_body">
+        <Setter Property="Margin" Value="16" />
+        <Setter Property="Spacing" Value="8" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_stock_lines">
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_stock_line">
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="Margin" Value="0,0,0,8" />
+    </Style>
+
+    <Style Selector="Border.bo_pay_dialog">
+        <Setter Property="Width" Value="520" />
+        <Setter Property="MaxHeight" Value="560" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_prompt">
+        <Setter Property="Width" Value="420" />
+        <Setter Property="Height" Value="240" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_email_dialog">
+        <Setter Property="Width" Value="640" />
+        <Setter Property="MinHeight" Value="520" />
+        <Setter Property="MaxHeight" Value="640" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBox.bo_email_body">
+        <Setter Property="Height" Value="180" />
+        <Setter Property="AcceptsReturn" Value="True" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_entity_notice">
+        <Setter Property="Margin" Value="0,8,0,0" />
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="TextBox.bo_new_doc_search_box">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="PlaceholderForeground" Value="#9AA3AD" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_report_group">
+        <Setter Property="Background" Value="#9bbe1d" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Margin" Value="0,8,0,0" />
+        <Setter Property="CornerRadius" Value="8" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_report_group_text">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="Button.bo_report_row">
+        <Setter Property="Background" Value="#F4F6F8" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Margin" Value="0,2,0,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_report_row:pointerover">
+        <Setter Property="Background" Value="#E4E8EC" />
+    </Style>
+
+    <Style Selector="Button.bo_report_row.bo_report_row_on">
+        <Setter Property="Background" Value="#9bbe1d" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="UserControl.bo_listing_busy_host">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Panel.bo_listing_busy">
+        <Setter Property="Background" Value="#E6FFFFFF" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_listing_busy_box">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="10" />
+    </Style>
+
+    <Style Selector="Panel.bo_listing_spinner_host">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Ellipse.bo_listing_spinner_track">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Stroke" Value="#E4E8EC" />
+        <Setter Property="StrokeThickness" Value="3" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Path.bo_listing_spinner">
+        <Setter Property="Width" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Stroke" Value="#9bbe1d" />
+        <Setter Property="StrokeThickness" Value="3" />
+        <Setter Property="StrokeLineCap" Value="Round" />
+        <Setter Property="StrokeJoin" Value="Round" />
+        <Setter Property="Fill" Value="Transparent" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+        <Style.Animations>
+            <Animation Duration="0:0:0.8" IterationCount="Infinite">
+                <KeyFrame Cue="0%">
+                    <Setter Property="RotateTransform.Angle" Value="0" />
+                </KeyFrame>
+                <KeyFrame Cue="100%">
+                    <Setter Property="RotateTransform.Angle" Value="360" />
+                </KeyFrame>
+            </Animation>
+        </Style.Animations>
+    </Style>
+
+    <Style Selector="TextBlock.bo_listing_busy_label">
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+</Styles>

@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Open-source logic. Portuguese AT certification (webservice, certificates and series communication) does not belong in this repository. -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>LogicPOS.Core</RootNamespace>
+    <AssemblyName>LogicPOS.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.11" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.11" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.11" />
+    <PackageReference Include="Oscore.QrCodes.SkiaSharp" Version="1.1.1" />
+    <PackageReference Include="QuestPDF" Version="2025.7.3" />
+    <PackageReference Include="ZXing.Net.Bindings.SkiaSharp" Version="0.16.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\Persistence\LogicPOS.Persistence\LogicPOS.Persistence.csproj" />
+    <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLite\LogicPOS.Persistence.Migrators.SQLite.csproj" />
+    <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.MySQL\LogicPOS.Persistence.Migrators.MySQL.csproj" />
+    <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLServer\LogicPOS.Persistence.Migrators.SQLServer.csproj" />
+  </ItemGroup>
+
+</Project>

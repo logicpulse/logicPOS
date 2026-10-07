@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <defs>
+    <clipPath id="pdf_print">
+      <path d="M8 2.4h8v4.2H8zM3.2 8.2h17.6v7.4H3.2zM7 13.4h10v8.2H7zM16.2 10.2h1.8v1.8h-1.8z" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#pdf_print)">
+    <rect width="24" height="24" fill="#343537" />
+  </g>
+</svg>

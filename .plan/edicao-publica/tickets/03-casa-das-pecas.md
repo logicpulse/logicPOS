@@ -1,4 +1,4 @@
-﻿---
+---
 type: grilling
 blocked_by: [01, 02]
 ---
@@ -7,4 +7,8 @@ blocked_by: [01, 02]
 
 ## Question
 
-Entre os repositórios privados que já existem, qual fica com a cloud, qual fica com a certificação e qual fica com a licença, sem criar um repositório novo enquanto um dos atuais servir?
+Entre os repositórios privados que já existem, qual é o anfitrião da edição LogicPulse?
+
+## Note
+
+O opensource fica só no `logicPOS`. API, cliente, cloud, fiscal, migradores, web e instalador ficam juntos em `logicPOS-internal`. O SVN antigo fica de fora.

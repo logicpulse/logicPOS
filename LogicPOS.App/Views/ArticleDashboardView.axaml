@@ -1,0 +1,81 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.ArticleDashboardView"
+             Classes="dash_root">
+    <Border Classes="bo_doc_page">
+        <ScrollViewer Classes="dash_scroll">
+            <StackPanel Classes="dash_page">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel>
+                        <TextBlock Classes="dash_eyebrow" Text="STOCKS" />
+                        <TextBlock Classes="dash_title" Text="Gestão de Stocks" />
+                        <TextBlock x:Name="StockHint" Classes="dash_subtitle" Text="Artigos únicos, armazéns e vendas do ano selecionado." />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Classes="dash_controls">
+                        <StackPanel Classes="dash_control_group">
+                            <TextBlock Classes="dash_control_label" Text="ANO" />
+                            <ComboBox x:Name="YearBox" Classes="dash_year" SelectionChanged="OnYearChanged" />
+                        </StackPanel>
+                        <Button Classes="dash_stock_open" Content="Abrir gestão de stocks" Click="OnOpenStockClick" />
+                    </StackPanel>
+                </Grid>
+                <TextBlock x:Name="StockStatus" Classes="dash_status" IsVisible="False" />
+                <Grid Classes="dash_kpis" ColumnDefinitions="*,*,*,*">
+                    <Border Classes="dash_kpi dash_kpi_today">
+                        <StackPanel>
+                            <TextBlock Classes="dash_kpi_label" Text="Abaixo do mínimo" />
+                            <TextBlock x:Name="BelowMinimumValue" Classes="dash_kpi_value" Text="0" />
+                            <TextBlock Classes="dash_kpi_hint" Text="Stock atual inferior ao mínimo" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Classes="dash_kpi dash_kpi_month">
+                        <StackPanel>
+                            <TextBlock Classes="dash_kpi_label" Text="Únicos em stock" />
+                            <TextBlock x:Name="UniqueStockValue" Classes="dash_kpi_value" Text="0" />
+                            <TextBlock Classes="dash_kpi_hint" Text="Números de série por vender" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Classes="dash_kpi dash_kpi_year">
+                        <StackPanel>
+                            <TextBlock Classes="dash_kpi_label" Text="Vendidos no ano" />
+                            <TextBlock x:Name="UniqueSoldValue" Classes="dash_kpi_value" Text="0" />
+                            <TextBlock x:Name="UniqueSoldHint" Classes="dash_kpi_hint" Text="Séries vendidas no ano" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="3" Classes="dash_kpi dash_kpi_best">
+                        <StackPanel>
+                            <TextBlock Classes="dash_kpi_label" Text="Valor em stock" />
+                            <TextBlock x:Name="StockValue" Classes="dash_kpi_value" Text="0,00 €" />
+                            <TextBlock Classes="dash_kpi_hint" Text="Preço de compra dos únicos em stock" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Grid ColumnDefinitions="*,*" Classes="dash_charts">
+                    <Border Classes="dash_panel">
+                        <StackPanel>
+                            <TextBlock Classes="dash_panel_title" Text="Stock por armazém" />
+                            <TextBlock Classes="dash_panel_hint" Text="Quantidade atual" />
+                            <views:ColumnChart x:Name="WarehouseChart" Classes="dash_chart" />
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="1" Classes="dash_panel dash_panel_right">
+                        <StackPanel>
+                            <TextBlock Classes="dash_panel_title" Text="Artigos únicos" />
+                            <TextBlock x:Name="UniqueHint" Classes="dash_panel_hint" Text="Em stock, compostos e vendidos no ano" />
+                            <views:DonutChart x:Name="UniqueChart" Classes="dash_chart dash_chart_donut" />
+                            <StackPanel x:Name="UniqueLegend" Orientation="Horizontal" HorizontalAlignment="Center" Classes="dash_legend" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <Border Classes="dash_panel">
+                    <StackPanel>
+                        <TextBlock Classes="dash_panel_title" Text="Produtos mais vendidos" />
+                        <TextBlock x:Name="TopSoldHint" Classes="dash_panel_hint" Text="Saídas do ano" />
+                        <views:ColumnChart x:Name="TopSoldChart" Classes="dash_chart" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

@@ -1,0 +1,43 @@
+using LogicPOS.Domain.Entities.Common;
+using LogicPOS.Domain.ValueObjects;
+
+namespace LogicPOS.Domain.Entities.Dtos;
+
+public record UpdateArticleDto(
+    uint Order,
+    string Code,
+    string? CodeDealer,
+    string Designation,
+    Button Button,
+    ArticlePrice Price1,
+    ArticlePrice Price2,
+    ArticlePrice Price3,
+    ArticlePrice Price4,
+    ArticlePrice Price5,
+    bool PriceWithVat,
+    decimal Discount,
+    decimal DefaultQuantity,
+    decimal MinimumStock,
+    float Tare,
+    float Weight,
+    string? Barcode,
+    bool PVPVariable,
+    bool Favorite,
+    bool UseWeighingBalance,
+    Guid SubfamilyId,
+    Guid TypeId,
+    Guid ClassId,
+    Guid MeasurementUnitId,
+    Guid SizeUnitId,
+    Guid? CommissionGroupId,
+    Guid? DiscountGroupId,
+    Guid? VatOnTableId,
+    Guid VatDirectSellingId,
+    Guid? VatExemptionReasonId,
+    bool IsComposed,
+    bool UniqueArticles,
+    bool IsSdrPackaging,
+    string? Notes,
+    bool IsDeleted,
+    string? BarcodeLabelPrintModel,
+    bool IsTicketing = false);

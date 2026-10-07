@@ -1,10 +1,10 @@
-﻿---
+---
 type: grilling
-blocked_by: [03, 04]
+blocked_by: [02]
 ---
 
-# Contrato público e carregador
+# Contrato do encaixe de certificação
 
 ## Question
 
-Qual é o contrato mínimo que o repositório público expõe para a cloud, a certificação e a licença, partilhado ou não pela app Avalonia e pela app GTK, e o que o carregador faz quando a peça não está presente?
+Qual é o contrato mínimo do encaixe de certificação (`plugins\*Plugin.dll`) para um terceiro certificar sem o público conhecer a AT ou a AGT, e o que o público faz quando esse encaixe está vazio? A cloud e a licença não têm contrato no público.

@@ -1,4 +1,4 @@
-﻿---
+---
 type: grilling
 blocked_by: [01]
 ---

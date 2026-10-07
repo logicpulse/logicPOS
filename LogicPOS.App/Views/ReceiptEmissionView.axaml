@@ -1,0 +1,160 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.ReceiptEmissionView">
+    <Panel>
+        <Border Classes="bo_doc_page">
+            <DockPanel>
+                <StackPanel Classes="bo_doc_header" DockPanel.Dock="Top">
+                    <Border Classes="bo_page_header">
+                        <DockPanel>
+                            <StackPanel Classes="bo_page_actions" DockPanel.Dock="Right">
+                                <Button Classes="bo_page_action" Click="OnPayClick" ToolTip.Tip="Liquidar">
+                                    <TextBlock Classes="bo_doc_action_text" Text="Liquidar" />
+                                </Button>
+                                <Button Classes="bo_page_action" Click="OnOpenClick" ToolTip.Tip="Abrir">
+                                    <StackPanel Classes="bo_doc_action_content">
+                                        <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_open_w.png" />
+                                        <TextBlock Classes="bo_doc_action_text" Text="Abrir" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Classes="bo_page_title" Text="Emissão Recibos" />
+                        </DockPanel>
+                    </Border>
+                    <DockPanel Classes="bo_doc_tools">
+                        <StackPanel Classes="bo_doc_filters" DockPanel.Dock="Left">
+                            <StackPanel Classes="bo_doc_date_field">
+                                <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
+                                <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
+                            </StackPanel>
+                            <StackPanel Classes="bo_doc_date_field">
+                                <TextBlock Classes="bo_doc_label" Text="Data Final" />
+                                <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
+                            </StackPanel>
+                            <StackPanel Classes="bo_doc_date_field">
+                                <TextBlock Classes="bo_doc_label" Text="Cliente" />
+                                <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />
+                            </StackPanel>
+                            <Button Classes="bo_listing_icon_button" Click="OnFilterClick" ToolTip.Tip="Filtrar">
+                                <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_filtro_b.svg" />
+                            </Button>
+                            <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="(0) = 0,00" />
+                        </StackPanel>
+                        <StackPanel Classes="bo_listing_tools">
+                            <Border Classes="bo_listing_search">
+                                <DockPanel>
+                                    <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                    </Button>
+                                    <TextBox x:Name="SearchBox"
+                                             Classes="bo_listing_search_box"
+                                             PlaceholderText="Procurar"
+                                             TextChanged="OnSearchChanged"
+                                             KeyUp="OnSearchKeyUp" />
+                                </DockPanel>
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+                    <TextBlock x:Name="Notice" Classes="bo_entity_error" IsVisible="False" Text="" />
+                </StackPanel>
+
+                <Border Classes="bo_doc_pager" DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
+                        <ComboBox x:Name="PageSizeBox" Classes="bo_doc_page_size" SelectedIndex="1" SelectionChanged="OnPageSizeChanged">
+                            <ComboBoxItem Content="10" />
+                            <ComboBoxItem Content="20" />
+                            <ComboBoxItem Content="50" />
+                        </ComboBox>
+                        <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" />
+                        <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" />
+                        <TextBlock x:Name="PageLabel" Classes="bo_doc_page_label" Text="1 / 1" />
+                        <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" />
+                        <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" />
+                    </StackPanel>
+                </Border>
+
+                <Panel>
+                <DataGrid x:Name="DocumentGrid"
+                          x:CompileBindings="False"
+                          Classes="bo_doc_grid"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="False"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          SelectionMode="Single"
+                          GridLinesVisibility="Horizontal"
+                          HeadersVisibility="Column"
+                          DoubleTapped="OnGridDoubleTapped">
+                    <DataGrid.Columns>
+                        <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, Mode=TwoWay}" Width="36" CanUserSort="False" CanUserReorder="False" />
+                        <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="190" MinWidth="190" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Entidade" Binding="{Binding CustomerName}" Width="*" MinWidth="140" IsReadOnly="True" />
+                        <DataGridTextColumn Header="NIF" Binding="{Binding FiscalNumber}" Width="120" MinWidth="80" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Total Final" Binding="{Binding TotalFinalText}" Width="140" MinWidth="140" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Valor Pago" Binding="{Binding TotalPaidText}" Width="140" MinWidth="140" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Valor em Débito" Binding="{Binding TotalToPayText}" Width="170" MinWidth="170" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Documentos Associados" Binding="{Binding RelatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
+                        <DataGridTemplateColumn Header="" Width="36" MinWidth="36" MaxWidth="36" CanUserSort="False" CanUserReorder="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" ToolTip.Tip="Ver">
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://logicpos/Assets/Images/Documents/botao_ver_b.svg" />
+                                    </Button>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <views:ListingBusy x:Name="Busy" />
+                </Panel>
+            </DockPanel>
+        </Border>
+
+        <Panel x:Name="PayOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_pay_dialog">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <TextBlock x:Name="PayTitle" Classes="login_alert_title" Text="Liquidar Faturas" />
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button x:Name="PayOkButton" Classes="login_alert_action" Click="OnPayOkClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="OK" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnPayCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <TextBlock x:Name="PayError" Classes="bo_entity_error" DockPanel.Dock="Bottom" Text="" />
+                    <StackPanel Classes="bo_entity_form" Spacing="8">
+                        <TextBlock Classes="bo_doc_label" Text="Método de Pagamento" />
+                        <ComboBox x:Name="PaymentMethodBox" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_doc_label" Text="Moeda" />
+                        <ComboBox x:Name="CurrencyBox" Classes="bo_entity_input" SelectionChanged="OnCurrencyChanged" />
+                        <TextBlock Classes="bo_doc_label" Text="Câmbio" />
+                        <TextBox x:Name="ExchangeRate" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                        <TextBlock Classes="bo_doc_label" Text="Total entregue" />
+                        <TextBox x:Name="TotalPaid" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                        <TextBox x:Name="SystemAmount" Classes="bo_entity_input" IsReadOnly="True" />
+                        <TextBlock Classes="bo_doc_label" Text="Data" />
+                        <TextBox x:Name="PayDate" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_doc_label" Text="Notas" />
+                        <TextBox x:Name="PayNotes" Classes="bo_entity_input" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Panel>
+    </Panel>
+</UserControl>

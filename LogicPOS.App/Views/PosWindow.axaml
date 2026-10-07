@@ -1,0 +1,560 @@
+    <Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+        xmlns:views="using:LogicPOS.App.Views"
+        x:Class="LogicPOS.App.Views.PosWindow"
+        Classes="pos_window"
+        Title="logicpos"
+        Icon="avares://logicpos/Assets/application.ico"
+        WindowState="FullScreen"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen">
+    <Panel>
+        <Image Classes="app_background"
+               Source="avares://logicpos/Assets/Images/background_logicpos.png"
+               RenderOptions.BitmapInterpolationMode="HighQuality" />
+        <Canvas x:Name="Surface" />
+
+        <Panel x:Name="ListOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="ListFrame" Classes="login_alert_frame" Width="560" MaxHeight="360">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image x:Name="ListTitleIcon" Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_show_change_user_dialog.png" />
+                                <TextBlock x:Name="ListTitle" Classes="login_alert_title" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnListDismissClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="TablesBar" Classes="login_alert_actions" DockPanel.Dock="Bottom" IsVisible="False">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="pos_doc_menu pos_tables_action" IsVisible="False" Click="OnTablesFilterClick" Tag="all">
+                                <StackPanel>
+                                    <Image Classes="pos_tables_filter_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_filter_all.png" />
+                                    <TextBlock Classes="pos_doc_menu_caption" Text="Todas" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="pos_doc_menu pos_tables_action" IsVisible="False" Click="OnTablesFilterClick" Tag="free">
+                                <StackPanel>
+                                    <Image Classes="pos_tables_filter_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_filter_free.png" />
+                                    <TextBlock Classes="pos_doc_menu_caption" Text="Livres" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="pos_doc_menu pos_tables_action" IsVisible="False" Click="OnTablesFilterClick" Tag="open">
+                                <StackPanel>
+                                    <Image Classes="pos_tables_filter_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_filter_open.png" />
+                                    <TextBlock Classes="pos_doc_menu_caption" Text="Abertas" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="pos_doc_menu pos_tables_action" IsVisible="False" Click="OnTablesFilterClick" Tag="reserved">
+                                <StackPanel>
+                                    <Image Classes="pos_tables_filter_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_filter_reserved.png" />
+                                    <TextBlock Classes="pos_doc_menu_caption" Text="Reservadas" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesOrdersClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_view_order.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ver pedidos" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="TablesChangeButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnChangeTableClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Mudar ordem" />
+                            </Button>
+                            <Button x:Name="TablesMoveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnMoveLineClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Mover linha" />
+                            </Button>
+                            <Button x:Name="TablesReserveButton" Classes="login_alert_action pos_tables_action" IsVisible="False" Click="OnTablesReserveClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_table_reservation.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Reservar" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="TablesOkButton" Classes="login_alert_action pos_tables_action" Click="OnTablesOkClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action pos_tables_action" Click="OnListDismissClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Border x:Name="ListActions" Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <Button Classes="login_alert_action" Click="OnListDismissClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock x:Name="ListDismissText" Classes="login_alert_action_text" Text="Cancelar" />
+                            </StackPanel>
+                        </Button>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel x:Name="ListHost" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="OrdersOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame" Width="560" MaxHeight="360">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_window_orders.png" />
+                                <TextBlock x:Name="OrdersTitle" Classes="login_alert_title" Text="Ordens" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnOrdersDismissClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <Button Classes="login_alert_action" Click="OnOrdersDismissClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                            </StackPanel>
+                        </Button>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel x:Name="OrdersHost" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="VoltaOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame" Width="620" MaxHeight="430">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/Payments/icon_window_payments.png" />
+                                <TextBlock x:Name="VoltaTitle" Classes="login_alert_title" Text="Talão Reembolso Volta" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnVoltaDismissClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button x:Name="VoltaConfirm" Classes="login_alert_action" Click="OnVoltaConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnVoltaDismissClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Classes="pos_volta_form">
+                        <TextBlock Classes="pos_pay_label" Text="Cliente *" />
+                        <TextBox x:Name="VoltaCustomer" Classes="pos_pay_field" KeyDown="OnVoltaCustomerKeyDown" LostFocus="OnVoltaCustomerLostFocus" />
+                        <StackPanel x:Name="VoltaCustomerMatches" />
+                        <TextBlock Classes="pos_pay_label" Text="Quantidade *" />
+                        <TextBox x:Name="VoltaQuantity" Classes="pos_pay_field" Text="1" TextChanged="OnVoltaQuantityChanged" />
+                        <TextBlock Classes="pos_pay_label" Text="Método de pagamento *" />
+                        <TextBox x:Name="VoltaPaymentMethod" Classes="pos_pay_field" IsReadOnly="True" IsEnabled="False" />
+                        <TextBlock Classes="pos_pay_label" Text="Documento de origem" />
+                        <ComboBox x:Name="VoltaOrigin" Classes="bo_new_doc_combo" />
+                        <TextBlock x:Name="VoltaNotice" Classes="pos_pay_label" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="SessionOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="SessionFrame" Classes="login_alert_frame" Width="428" Height="205">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                                <TextBlock x:Name="SessionTitle" Classes="login_alert_title" Text="Sessão de Trabalho" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnSessionCloseClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Panel>
+                    <Grid x:Name="SessionHome" Classes="pos_doc_menu" ColumnDefinitions="*,*">
+                        <Button x:Name="DaySessionButton" Classes="pos_doc_menu" Click="OnDaySessionClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_start_stop_worksession_period_day.png" />
+                                <TextBlock x:Name="DaySessionCaption" Classes="pos_doc_menu_caption" Text="Abertura do dia" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="SessionMenuButton" Grid.Column="1" Classes="pos_doc_menu" Click="OnShowCashDrawerClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Sessão" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <DockPanel x:Name="SessionCash" IsVisible="False">
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button x:Name="SessionPrint" Classes="login_alert_action" Click="OnSessionPrintClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Imprimir" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="SessionConfirm" Classes="login_alert_action" Click="OnSessionAmountClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action" Click="OnSessionCloseClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Margin="12">
+                            <Grid Classes="pos_doc_menu" ColumnDefinitions="*,*,*,*">
+                                <Button x:Name="SessionOpen" Classes="pos_doc_menu" Click="OnOpenSessionClick">
+                                    <StackPanel>
+                                        <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                                        <TextBlock Classes="pos_doc_menu_caption" Text="Abrir" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="SessionClose" Grid.Column="1" Classes="pos_doc_menu" Click="OnCloseSessionClick">
+                                    <StackPanel>
+                                        <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                                        <TextBlock Classes="pos_doc_menu_caption" Text="Fecho" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="SessionIn" Grid.Column="2" Classes="pos_doc_menu" Click="OnCashInClick">
+                                    <StackPanel>
+                                        <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_payment_type_money.png" />
+                                        <TextBlock Classes="pos_doc_menu_caption" Text="Entrada" />
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="SessionOut" Grid.Column="3" Classes="pos_doc_menu" Click="OnCashOutClick">
+                                    <StackPanel>
+                                        <Image Classes="pos_doc_menu_icon" Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_payment_type_money.png" />
+                                        <TextBlock Classes="pos_doc_menu_caption" Text="Saída" />
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                            <TextBlock Classes="pos_pay_label" Text="Dinheiro" />
+                            <TextBox x:Name="SessionAmount" Classes="pos_pay_field" Text="0,00" TextChanged="OnSessionFieldChanged" />
+                            <TextBlock x:Name="SessionDescLabel" Classes="pos_pay_label" Text="Descrição" />
+                            <TextBox x:Name="SessionNote" Classes="pos_pay_field" TextChanged="OnSessionFieldChanged" />
+                            <TextBlock x:Name="SessionNotice" Classes="pos_pay_label" />
+                        </StackPanel>
+                    </DockPanel>
+                    </Panel>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="DocumentsMenuOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame" Width="581" Height="286">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                                <TextBlock Classes="login_alert_title" Text="Documentos" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="pos_dialog_close" Click="OnDocumentsMenuCloseClick">
+                                <Image Classes="pos_dialog_close_icon"
+                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_window_window_close.png" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Grid Classes="pos_doc_menu" ColumnDefinitions="*,*,*" RowDefinitions="*,*">
+                        <Button Grid.Row="0" Grid.Column="0" Classes="pos_doc_menu" Tag="documents" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Documentos" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="0" Grid.Column="1" Classes="pos_doc_menu" Tag="receipts-emission" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Emissão Recibos" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="0" Grid.Column="2" Classes="pos_doc_menu" Tag="receipts" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Recibos" />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="0" Classes="pos_doc_menu" Tag="current-account" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_reports.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Conta.Corr." />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="1" Classes="pos_doc_menu" Tag="sessions" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Sessões de Trab." />
+                            </StackPanel>
+                        </Button>
+                        <Button Grid.Row="1" Grid.Column="2" Classes="pos_doc_menu" Tag="stock" Click="OnDocumentsMenuClick">
+                            <StackPanel>
+                                <Image Classes="pos_doc_menu_icon"
+                                       Source="avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_merchandise_entry.png" />
+                                <TextBlock Classes="pos_doc_menu_caption" Text="Entrada/Saída de Stock" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="QuitOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame" Width="400" Height="300">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                            <TextBlock Classes="login_alert_title" Text="Sair" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnQuitConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Sim" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnQuitDismissClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Não" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Grid Classes="login_alert_body">
+                        <Image Classes="login_alert_symbol"
+                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                        <TextBlock Classes="login_alert_message" Text="Sair da Aplicação?" />
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="DocumentsOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="DocumentsFrame" Classes="login_alert_frame" Width="1100" Height="700">
+                <DockPanel>
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="login_alert_title" Text="Documentos" />
+                            <StackPanel Grid.Column="1" Classes="bo_window_buttons">
+                                <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="DocumentsFrame" ToolTip.Tip="Redimensionar">
+                                    <Panel>
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" IsVisible="False" />
+                                    </Panel>
+                                </Button>
+                                <Button Classes="bo_window_button" Click="OnCloseNamedOverlayClick" Tag="DocumentsOverlay" ToolTip.Tip="Fechar">
+                                    <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <views:DocumentsListing x:Name="DocumentsHost" />
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="ReceiptOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="ReceiptFrame" Classes="login_alert_frame" Width="1100" Height="700">
+                <DockPanel>
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="login_alert_title" Text="Emissão Recibos" />
+                            <StackPanel Grid.Column="1" Classes="bo_window_buttons">
+                                <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="ReceiptFrame" ToolTip.Tip="Redimensionar">
+                                    <Panel>
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" IsVisible="False" />
+                                    </Panel>
+                                </Button>
+                                <Button Classes="bo_window_button" Click="OnCloseNamedOverlayClick" Tag="ReceiptOverlay" ToolTip.Tip="Fechar">
+                                    <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <views:ReceiptEmissionView x:Name="ReceiptHost" />
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="EntityOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="EntityFrame" Classes="login_alert_frame" Width="1100" Height="700">
+                <DockPanel>
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock x:Name="EntityTitle" Classes="login_alert_title" Text="Listagem" />
+                            <StackPanel Grid.Column="1" Classes="bo_window_buttons">
+                                <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="EntityFrame" ToolTip.Tip="Redimensionar">
+                                    <Panel>
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" IsVisible="False" />
+                                    </Panel>
+                                </Button>
+                                <Button Classes="bo_window_button" Click="OnCloseNamedOverlayClick" Tag="EntityOverlay" ToolTip.Tip="Fechar">
+                                    <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <views:EntityListing x:Name="EntityHost" />
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="StockOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="StockFrame" Classes="login_alert_frame" Width="1100" Height="700">
+                <DockPanel>
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Classes="login_alert_title" Text="Gestão de Stocks" />
+                            <StackPanel Grid.Column="1" Classes="bo_window_buttons">
+                                <Button Classes="bo_window_button" Click="OnTogglePopupSizeClick" Tag="StockFrame" ToolTip.Tip="Redimensionar">
+                                    <Panel>
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" IsVisible="False" />
+                                    </Panel>
+                                </Button>
+                                <Button Classes="bo_window_button" Click="OnCloseNamedOverlayClick" Tag="StockOverlay" ToolTip.Tip="Fechar">
+                                    <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Panel x:Name="StockHost" />
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="NewDocumentOverlay" Classes="login_alert_overlay bo_clear_overlay" IsVisible="False">
+            <views:NewDocumentWindow x:Name="NewDocumentHost" />
+        </Panel>
+
+        <Panel x:Name="ReportsOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:ReportsWindow x:Name="ReportsHost" />
+        </Panel>
+
+        <Panel x:Name="TicketOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border x:Name="TicketFrame" Classes="login_alert_frame" Width="400" Height="300">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image x:Name="TicketDialogIcon" Classes="login_alert_title_icon" />
+                                <TextBlock x:Name="TicketDialogTitle" Classes="login_alert_title" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnTicketDialogDismissClick" ToolTip.Tip="Fechar">
+                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                            </Button>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="TicketDialogActions" Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnTicketDialogConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image x:Name="TicketDialogConfirmIcon" Classes="login_alert_action_icon" />
+                                    <TextBlock x:Name="TicketDialogConfirmText" Classes="login_alert_action_text" Text="Sim" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="TicketDialogCancel" Classes="login_alert_action" Click="OnTicketDialogDismissClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock x:Name="TicketDialogCancelText" Classes="login_alert_action_text" Text="Não" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Grid>
+                        <Grid x:Name="TicketQuestionBody" Classes="login_alert_body">
+                            <Image x:Name="TicketDialogSymbol" Classes="login_alert_symbol" />
+                            <TextBlock x:Name="TicketDialogMessage" Classes="login_alert_message" />
+                        </Grid>
+                        <StackPanel x:Name="TicketKeypad" Classes="pos_ticket_keypad" IsVisible="False" />
+                        <Grid x:Name="PricePad" Classes="pos_price_pad" IsVisible="False" RowDefinitions="Auto,*" ColumnDefinitions="108,*,108">
+                            <TextBox x:Name="PriceEntry" Grid.ColumnSpan="3" Classes="pos_price_entry" IsReadOnly="True" />
+                            <Grid Grid.Row="1" RowDefinitions="*,*,*,*,*">
+                                <Button Classes="pos_price_money" Content="0,05 €" Tag="0.05" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="1" Content="0,10 €" Tag="0.10" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="2" Content="0,20 €" Tag="0.20" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="3" Content="0,50 €" Tag="0.50" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="4" Content="1,00 €" Tag="1.00" Click="OnPriceMoneyClick" />
+                            </Grid>
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="6,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
+                                <Button Classes="pos_price_digit" Content="7" Tag="7" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Column="1" Content="8" Tag="8" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Column="2" Content="9" Tag="9" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="1" Content="4" Tag="4" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="1" Grid.Column="1" Content="5" Tag="5" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="1" Grid.Column="2" Content="6" Tag="6" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="2" Content="1" Tag="1" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="2" Grid.Column="1" Content="2" Tag="2" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="2" Grid.Column="2" Content="3" Tag="3" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="3" Content="0" Tag="0" Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="1" Content="," Tag="," Click="OnPriceDigitClick" />
+                                <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="2" Content="CE" Click="OnPriceClearClick" />
+                            </Grid>
+                            <Grid Grid.Row="1" Grid.Column="2" RowDefinitions="*,*,*,*,*">
+                                <Button Classes="pos_price_money" Content="5,00 €" Tag="5.00" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="1" Content="10,00 €" Tag="10.00" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="2" Content="20,00 €" Tag="20.00" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="3" Content="50,00 €" Tag="50.00" Click="OnPriceMoneyClick" />
+                                <Button Classes="pos_price_money" Grid.Row="4" Content="100,00 €" Tag="100.00" Click="OnPriceMoneyClick" />
+                            </Grid>
+                        </Grid>
+                        <TextBox x:Name="TicketBarcode" Classes="login_pin_entry" IsVisible="False" />
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="PdfOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:PdfDocumentView x:Name="PdfHost" />
+        </Panel>
+    </Panel>
+</Window>

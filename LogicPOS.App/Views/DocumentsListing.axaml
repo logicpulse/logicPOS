@@ -1,0 +1,283 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.DocumentsListing">
+    <Panel>
+    <Border Classes="bo_doc_page">
+    <DockPanel>
+        <StackPanel Classes="bo_doc_header" DockPanel.Dock="Top">
+            <Border Classes="bo_page_header">
+                <DockPanel>
+                    <StackPanel Classes="bo_page_actions" DockPanel.Dock="Right">
+                        <Button Classes="bo_page_action" Click="OnNewClick" ToolTip.Tip="Novo">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <svg:Svg Classes="bo_doc_action_icon" Path="avares://logicpos/Assets/Images/Listing/botao_novo_w.svg" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Novo" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnEditDraftClick" ToolTip.Tip="Editar rascunho">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_edit_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Editar" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnCancelClick" ToolTip.Tip="Anular">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_void_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Anular" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnPrintClick" ToolTip.Tip="Imprimir">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_print_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Imprimir" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnPrintAsClick" ToolTip.Tip="Imp.Como">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_print_as_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Imp.Como" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnOpenA4Click" ToolTip.Tip="Abrir">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_open_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Abrir" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="bo_page_action" Click="OnEmailClick" ToolTip.Tip="Enviar Email">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_email_w.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Email" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                    <TextBlock Classes="bo_page_title" Text="Documentos" />
+                </DockPanel>
+            </Border>
+            <DockPanel Classes="bo_doc_tools">
+                <StackPanel Classes="bo_doc_filters" DockPanel.Dock="Left">
+                    <StackPanel Classes="bo_doc_date_field">
+                        <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
+                        <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
+                    </StackPanel>
+                    <StackPanel Classes="bo_doc_date_field">
+                        <TextBlock Classes="bo_doc_label" Text="Data Final" />
+                        <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
+                    </StackPanel>
+                    <StackPanel Classes="bo_doc_date_field">
+                        <TextBlock Classes="bo_doc_label" Text="Cliente" />
+                        <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />
+                    </StackPanel>
+                    <StackPanel Classes="bo_doc_date_field">
+                        <TextBlock Classes="bo_doc_label" Text="Tipo" />
+                        <ComboBox x:Name="TypeBox" Classes="bo_doc_filter_combo" SelectionChanged="OnTypeFilterChanged" />
+                    </StackPanel>
+                    <Button Classes="bo_listing_icon_button" Click="OnFilterClick" ToolTip.Tip="Filtrar">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_filtro_b.svg" />
+                    </Button>
+                    <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="0 documento(s) selecionado(s)" />
+                </StackPanel>
+                <StackPanel Classes="bo_listing_tools">
+                    <Button Classes="bo_listing_icon_button" Click="OnClearFilterClick" ToolTip.Tip="Limpar filtro">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_filtro_b.svg" />
+                    </Button>
+                    <Button Classes="bo_listing_icon_button" Click="OnResetClick" ToolTip.Tip="Repor">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_repor_b.svg" />
+                    </Button>
+                    <Button Classes="bo_listing_columns" Content="Colunas ▾" Click="OnChooseColumnsClick" ToolTip.Tip="Colunas" />
+                    <Border Classes="bo_listing_search">
+                        <DockPanel>
+                            <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                            </Button>
+                            <TextBox x:Name="SearchBox"
+                                     Classes="bo_listing_search_box"
+                                     PlaceholderText="Procurar"
+                                     TextChanged="OnSearchChanged"
+                                     KeyUp="OnSearchKeyUp" />
+                        </DockPanel>
+                    </Border>
+                    <Button Classes="bo_listing_icon_button" Click="OnExportExcelClick" ToolTip.Tip="Exportar para Excel">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_xlsx.svg" />
+                    </Button>
+                    <Button Classes="bo_listing_icon_button" Click="OnExportPdfClick" ToolTip.Tip="Exportar para PDF">
+                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_pdf.svg" />
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+            <TextBlock x:Name="ActionNotice" Classes="bo_doc_count" IsVisible="False" Text="" />
+        </StackPanel>
+
+        <Border Classes="bo_doc_pager" DockPanel.Dock="Bottom">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Spacing="6">
+                <ComboBox x:Name="PageSizeBox" Classes="bo_doc_page_size" SelectedIndex="1" SelectionChanged="OnPageSizeChanged">
+                    <ComboBoxItem Content="10" />
+                    <ComboBoxItem Content="20" />
+                    <ComboBoxItem Content="50" />
+                </ComboBox>
+                <Button Classes="bo_doc_page_button" Content="&lt;&lt;" Click="OnFirstPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&lt;" Click="OnPreviousPageClick" />
+                <TextBlock x:Name="PageLabel" Classes="bo_doc_page_label" Text="1 / 1" />
+                <Button Classes="bo_doc_page_button" Content="&gt;" Click="OnNextPageClick" />
+                <Button Classes="bo_doc_page_button" Content="&gt;&gt;" Click="OnLastPageClick" />
+            </StackPanel>
+        </Border>
+
+        <Panel>
+            <DataGrid x:Name="DocumentGrid"
+                      x:CompileBindings="False"
+                      Classes="bo_doc_grid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="False"
+                      CanUserReorderColumns="True"
+                      CanUserResizeColumns="True"
+                      CanUserSortColumns="True"
+                      SelectionMode="Extended"
+                      GridLinesVisibility="Horizontal"
+                      HeadersVisibility="Column"
+                      SelectionChanged="OnSelectionChanged"
+                      DoubleTapped="OnGridDoubleTapped">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Width="42" MinWidth="42" MaxWidth="42" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn.Header>
+                            <CheckBox x:Name="PickAll" Classes="bo_doc_pick" IsThreeState="True" Click="OnPickAllClick" />
+                        </DataGridTemplateColumn.Header>
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <CheckBox Classes="bo_doc_pick" IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="Data do documento" Binding="{Binding DocumentDateText}" Width="190" MinWidth="190" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Entidade" Binding="{Binding EntityName}" Width="*" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="NIF" Binding="{Binding TaxId}" Width="120" MinWidth="80" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Total Final" Binding="{Binding FinalTotalText}" Width="140" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" Width="140" MinWidth="140" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" Width="170" MinWidth="170" IsReadOnly="True" />
+                    <DataGridTextColumn Header="Documentos Associados" Binding="{Binding AssociatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
+                    <DataGridTemplateColumn Header="" Width="36" MinWidth="36" MaxWidth="36" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate x:CompileBindings="False">
+                                <Panel>
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="Ver">
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://logicpos/Assets/Images/Documents/botao_ver_b.svg" />
+                                    </Button>
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="Editar">
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://logicpos/Assets/Images/Documents/botao_editar_b.svg" />
+                                    </Button>
+                                </Panel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <views:ListingBusy x:Name="Busy" />
+            <TextBlock x:Name="EmptyLabel" Classes="bo_doc_empty" Text="Não existem documentos neste período." IsVisible="False" />
+            <Border x:Name="ColumnChooser" Classes="login_alert_frame bo_doc_chooser" IsVisible="False">
+                <DockPanel Classes="bo_doc_chooser_body">
+                    <TextBlock Classes="bo_doc_title" DockPanel.Dock="Top" Text="Escolher coluna" />
+                    <TextBox x:Name="ColumnSearch"
+                             Classes="bo_doc_search"
+                             DockPanel.Dock="Top"
+                             PlaceholderText="Procurar"
+                             TextChanged="OnColumnSearchChanged" />
+                    <StackPanel Classes="bo_doc_chooser_actions" DockPanel.Dock="Bottom" Orientation="Horizontal" Spacing="8">
+                        <Button Classes="bo_doc_filter" Content="OK" Click="OnColumnsOkClick" />
+                        <Button Classes="bo_doc_page_button" Content="Cancelar" Click="OnColumnsCancelClick" />
+                    </StackPanel>
+                    <ScrollViewer>
+                        <StackPanel x:Name="ColumnChecks" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+    </DockPanel>
+    </Border>
+        <Panel x:Name="PromptOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_entity_prompt">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                            <TextBlock x:Name="PromptTitle" Classes="login_alert_title" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnPromptConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnPromptCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Classes="bo_entity_form">
+                        <TextBlock x:Name="PromptLabel" Classes="bo_new_doc_caption" />
+                        <ComboBox x:Name="PrinterBox" Classes="bo_entity_input" IsVisible="False" />
+                        <TextBox x:Name="PromptValue" Classes="bo_entity_input" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Panel>
+        <Panel x:Name="EmailOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_email_dialog">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                            <TextBlock Classes="login_alert_title" Text="Enviar Email" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnEmailConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnEmailCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel Classes="bo_entity_form">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Assunto" />
+                            <TextBox x:Name="EmailSubject" Classes="bo_entity_input" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Para" />
+                            <TextBox x:Name="EmailTo" Classes="bo_entity_input" PlaceholderText="Vários emails separados por vírgula" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Cc" />
+                            <TextBox x:Name="EmailCc" Classes="bo_entity_input" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Bcc" />
+                            <TextBox x:Name="EmailBcc" Classes="bo_entity_input" />
+                            <TextBlock Classes="bo_new_doc_caption" Text="Corpo" />
+                            <TextBox x:Name="EmailBody" Classes="bo_entity_input bo_email_body" />
+                            <TextBlock x:Name="EmailNotice" Classes="bo_entity_notice" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+    </Panel>
+</UserControl>

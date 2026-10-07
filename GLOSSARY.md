@@ -1,17 +1,17 @@
-﻿# LogicPOS
+# LogicPOS
 
-O produto de ponto de venda e back-office, nas duas edições que partilham o mesmo repositório público.
+O produto de ponto de venda e back-office. A edição pública é o que o GitHub publica. A edição LogicPulse vive fora desse repositório.
 
 ## Language
 
 **Edição pública**:
-A edição do LogicPOS que é o repositório GitHub `logicPOS`: base de dados direta, sem certificação e sem obrigação de registar licença.
+A edição publicada no GitHub `logicPOS`: só base de dados direta, sem ligação à API, sem certificação e sem registo de licença, com um encaixe para uma certificação de terceiros.
 _Avoid_: versão free, versão GitHub, open source
 
 **Edição LogicPulse**:
-A edição do LogicPOS que acrescenta as peças privadas: cloud ou base de dados direta, certificação e registo de licença.
-_Avoid_: versão paga, versão interna, versão completa
+O anfitrião fechado que usa a edição pública e acrescenta a ligação à API, a certificação LogicPulse e o registo de licença.
+_Avoid_: versão paga, a mesma app com um DLL de cloud, versão interna
 
 **Certificação**:
-A parte fiscal da LogicPulse: a comunicação com a AT e a AGT, o ATCUD, e as séries e campos do documento que existem por causa dessa comunicação.
-_Avoid_: licença, cloud, registo
+A comunicação com a AT e a AGT, e o que só existe por causa dela: ATCUD, séries certificadas, SAF-T, hash, QR e a linha do programa certificado no documento.
+_Avoid_: licença, cloud, ligação à API, registo
