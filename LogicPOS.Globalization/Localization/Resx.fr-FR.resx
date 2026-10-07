@@ -3982,4 +3982,10 @@ Veuillez entrer un autre numéro et réessayer.</value>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>Il n'y a pas de tables / commandes actives. Veuillez ajouter ou activer dans Backoffice / autres tables / tableaux</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Impossible de lire le poids de la balance. Vérifiez que l'article est sur la balance et que le poids est stable.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Emplacement</value>
+  </data>
 </root>

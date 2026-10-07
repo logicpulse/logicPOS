@@ -3984,4 +3984,10 @@ Por favor, insira outro número e tente novamente.</value>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>Não tem mesas/ordens ativas. Por favor adicione ou ative no backoffice / Outras Tabelas / Mesas</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Não foi possível obter o peso da balança. Verifique se o produto está sobre a balança e se o peso está estável.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Localização</value>
+  </data>
 </root>

@@ -3983,4 +3983,10 @@ Note: You can only open documents issued on A4 printer or Export to PDF</value>
   <data name="dialog_message_no_tables" xml:space="preserve">
     <value>There are no active tables/orders. Please add or activate in backoffice / Other Tables / Tables</value>
   </data>
+  <data name="dialog_message_weighing_balance_no_weight" xml:space="preserve">
+    <value>Unable to read the weight from the weighing balance. Check that the item is on the scale and the weight is stable.</value>
+  </data>
+  <data name="global_warehouse_location" xml:space="preserve">
+    <value>Location</value>
+  </data>
 </root>
