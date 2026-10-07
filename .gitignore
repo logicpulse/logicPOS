@@ -401,3 +401,10 @@ FodyWeavers.xsd
 
 #GTKRuntime
 !libs/GtkRuntime/bin/
+
+# Local-only Matt Pocock engineering skills (do not commit)
+docs/agents/
+.scratch/
+.cursor/rules/matt-pocock-local.mdc
+.agents/
+skills-lock.json
