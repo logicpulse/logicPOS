@@ -1,4 +1,3 @@
-using LogicPOS.Domain.Errors;
 using LogicPOS.Domain.Results;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +5,9 @@ using Microsoft.Extensions.Logging;
 
 namespace LogicPOS.Persistence.Services.DatabaseBackup;
 
+/// <summary>
+/// Backup files are given only a name, without a folder, so SQL Server writes them to its own default backup directory.
+/// </summary>
 public class SqlServerBackupService
 {
     private readonly LogicPOSDbContext _database;
@@ -17,51 +19,55 @@ public class SqlServerBackupService
         _logger = logger;
     }
     
-    public async Task<Result> BackupAsync(CancellationToken ct)
+    public async Task<Result<string>> BackupAsync(string backupFileName, CancellationToken ct)
     {
         try
         {
-            BackupSettings.DeleteBackupFile();
-            var databaseName = GetDatabaseName();
-            var sql = $"BACKUP DATABASE {databaseName} TO DISK = '{BackupSettings.BackupFileName}' WITH INIT;";
+            var sql = $"BACKUP DATABASE {GetQuotedDatabaseName()} TO DISK = {QuoteLiteral(backupFileName)} WITH INIT;";
             await _database.Database.ExecuteSqlRawAsync(sql, ct);
-            _logger.LogInformation("Sql server backup completed.");
+            _logger.LogInformation("Sql server backup completed: {BackupFileName}", backupFileName);
+            return backupFileName;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,"Error while trying to backup database (sql server).");
-            return Result.Failure(Error.Unexpected(ex.Message));
+            return Result.Unexpected<string>(ex.Message);
         }
-
-        return Result.Success();
     }
     
-    public async Task<Result> RestoreAsync(CancellationToken ct)
+    public async Task<Result<string>> RestoreAsync(string backupFileName, CancellationToken ct)
     {
         try
         {
-            var backupFilePath = BackupSettings.BackupFilePath;
-            var databaseName = GetDatabaseName();
+            var databaseName = GetQuotedDatabaseName();
+            var backupDiskFileName = QuoteLiteral(backupFileName);
 
             var sql = $@"
                   USE MASTER; 
                   ALTER DATABASE {databaseName} SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
-                  RESTORE DATABASE {databaseName} FROM DISK = '{BackupSettings.BackupFileName}';
+                  BEGIN TRY
+                      RESTORE DATABASE {databaseName} FROM DISK = {backupDiskFileName} WITH REPLACE;
+                  END TRY
+                  BEGIN CATCH
+                      ALTER DATABASE {databaseName} SET MULTI_USER;
+                      THROW;
+                  END CATCH;
                   ALTER DATABASE {databaseName} SET MULTI_USER;
                   USE {databaseName};
                   ";
 
             await _database.Database.ExecuteSqlRawAsync(sql, ct);
-            _logger.LogInformation("Sql server restore completed.");
+            _logger.LogInformation("Sql server restore completed from {BackupFileName}.", backupFileName);
+            return backupFileName;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,"Error while trying to restore database (sql server).");
-            return Result.Failure(Error.Unexpected(ex.Message));
+            return Result.Unexpected<string>(ex.Message);
         }
-
-        return Result.Success();
     }
-    
-    private string GetDatabaseName() => BackupSettings.ParseConnectionString(_database.Database.GetConnectionString()!)["Database"];
+
+    private static string QuoteLiteral(string value) => $"N'{value.Replace("'", "''")}'";
+
+    private string GetQuotedDatabaseName() => $"[{_database.Database.GetDbConnection().Database.Replace("]", "]]")}]";
 }
