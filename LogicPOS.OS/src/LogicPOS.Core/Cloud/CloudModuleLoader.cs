@@ -15,9 +15,13 @@ public static class CloudModuleLoader
     private static string? _cloudDirectory;
     private static bool _resolving;
 
-    public static void Register(IServiceCollection services, IConfiguration configuration)
+    public static bool TryRegister(IServiceCollection services, IConfiguration configuration, string baseDirectory)
     {
-        var path = ResolvePath(configuration);
+        var path = ResolvePath(configuration, baseDirectory);
+        if (path is null)
+        {
+            return false;
+        }
         _cloudDirectory = Path.GetDirectoryName(path);
         _dependencies = new AssemblyDependencyResolver(path);
         if (_resolving == false)
@@ -40,9 +44,11 @@ public static class CloudModuleLoader
         {
             throw exception.InnerException;
         }
+
+        return true;
     }
 
-    private static string ResolvePath(IConfiguration configuration)
+    private static string? ResolvePath(IConfiguration configuration, string baseDirectory)
     {
         var configured = configuration["LogicPOS:Cloud:AssemblyPath"];
         if (string.IsNullOrWhiteSpace(configured) == false)
@@ -56,13 +62,13 @@ public static class CloudModuleLoader
             throw new FileNotFoundException("Não encontrei LogicPOS.Cloud.dll em LogicPOS:Cloud:AssemblyPath.", full);
         }
 
-        var beside = Path.Combine(AppContext.BaseDirectory, "LogicPOS.Cloud.dll");
+        var beside = Path.Combine(baseDirectory, "LogicPOS.Cloud.dll");
         if (File.Exists(beside))
         {
             return beside;
         }
 
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        var directory = new DirectoryInfo(baseDirectory);
         while (directory is not null)
         {
             foreach (var build in new[] { "Debug", "Release" })
@@ -85,8 +91,7 @@ public static class CloudModuleLoader
             directory = directory.Parent;
         }
 
-        throw new FileNotFoundException(
-            "Não encontrei LogicPOS.Cloud.dll. Compila o projeto no repositório logicpos-apiclient ou indica LogicPOS:Cloud:AssemblyPath.");
+        return null;
     }
 
     private static Assembly? ResolveDependency(AssemblyLoadContext context, AssemblyName assemblyName)

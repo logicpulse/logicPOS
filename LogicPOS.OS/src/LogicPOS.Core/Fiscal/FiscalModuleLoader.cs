@@ -10,9 +10,9 @@ namespace LogicPOS.Core.Fiscal;
 /// </summary>
 public static class FiscalModuleLoader
 {
-    public static bool TryRegister(IServiceCollection services)
+    public static bool TryRegister(IServiceCollection services, string baseDirectory)
     {
-        var path = ResolvePath();
+        var path = ResolvePath(baseDirectory);
         if (path is null)
         {
             return false;
@@ -30,15 +30,15 @@ public static class FiscalModuleLoader
         return true;
     }
 
-    private static string? ResolvePath()
+    private static string? ResolvePath(string baseDirectory)
     {
-        var beside = Path.Combine(AppContext.BaseDirectory, "LogicPOS.Fiscal.dll");
+        var beside = Path.Combine(baseDirectory, "LogicPOS.Fiscal.dll");
         if (File.Exists(beside))
         {
             return beside;
         }
 
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        var directory = new DirectoryInfo(baseDirectory);
         while (directory is not null)
         {
             foreach (var build in new[] { "Debug", "Release" })

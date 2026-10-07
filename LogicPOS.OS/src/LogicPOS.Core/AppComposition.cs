@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
@@ -20,11 +20,14 @@ public static class AppComposition
 
     public static string? StartupError { get; private set; }
 
-    public static void Configure()
+    public static void Configure() => Configure(AppContext.BaseDirectory);
+
+    public static void Configure(string baseDirectory)
     {
+        StartupError = null;
+        Services = null;
         try
         {
-            var baseDirectory = AppContext.BaseDirectory;
             var settingsPath = Path.Combine(baseDirectory, "appsettings.json");
             if (File.Exists(settingsPath) == false)
             {
@@ -32,18 +35,24 @@ public static class AppComposition
                 return;
             }
 
-            var seedPath = DatabaseStartup.ResolveSeedPath();
-
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(baseDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    ["DatabaseSettings:SeedPath"] = seedPath,
-                    ["DatabaseSettings:UseSeed"] = "true",
-                    ["DatabaseSettings:Module"] = "default"
-                })
                 .Build();
+
+            if (IsCloud(configuration) == false)
+            {
+                configuration = new ConfigurationBuilder()
+                    .SetBasePath(baseDirectory)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(),
+                        ["DatabaseSettings:UseSeed"] = "true",
+                        ["DatabaseSettings:Module"] = "default"
+                    })
+                    .Build();
+            }
 
             var culture = CultureInfo.GetCultureInfo(UiCulture.Read(configuration["Culture"]));
             CultureInfo.DefaultThreadCurrentCulture = culture;
@@ -57,9 +66,24 @@ public static class AppComposition
                 var cloudServices = new ServiceCollection();
                 cloudServices.AddLogging();
                 cloudServices.AddSingleton<IConfiguration>(configuration);
-                CloudModuleLoader.Register(cloudServices, configuration);
-                Services = cloudServices.BuildServiceProvider();
-                return;
+                if (CloudModuleLoader.TryRegister(cloudServices, configuration, baseDirectory))
+                {
+                    Services = cloudServices.BuildServiceProvider();
+                    return;
+                }
+
+                configuration = new ConfigurationBuilder()
+                    .SetBasePath(baseDirectory)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        ["DatabaseSettings:UseCloud"] = "false",
+                        ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(),
+                        ["DatabaseSettings:UseSeed"] = "true",
+                        ["DatabaseSettings:Module"] = "default"
+                    })
+                    .Build();
+                databaseSettings = DatabaseSettings.GetFromConfiguration(configuration);
             }
 
             if (databaseSettings.IsValid() == false)
@@ -100,7 +124,7 @@ public static class AppComposition
             services.AddSingleton<IFiscalYearWizard>(provider => provider.GetRequiredService<LocalFiscalYearWizard>());
             services.AddSingleton<ITicketPrinter, EscPosTicketPrinter>();
             services.AddSingleton<IThermalPrintSource, LocalThermalPrintSource>();
-            if (FiscalModuleLoader.TryRegister(services) == false)
+            if (FiscalModuleLoader.TryRegister(services, baseDirectory) == false)
             {
                 services.AddSingleton<IFiscalModule, NullFiscalModule>();
             }
@@ -117,4 +141,7 @@ public static class AppComposition
             StartupError = exception.Message;
         }
     }
+
+    private static bool IsCloud(IConfiguration configuration)
+        => bool.TryParse(configuration["DatabaseSettings:UseCloud"], out var useCloud) && useCloud;
 }
