@@ -8,6 +8,23 @@ namespace LogicPOS.App.Hardware;
 
 internal static class FrontOfficePrinting
 {
+    private static Encoding? _cp860;
+
+    private static Encoding Cp860
+    {
+        get
+        {
+            if (_cp860 is not null)
+            {
+                return _cp860;
+            }
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            _cp860 = Encoding.GetEncoding(860, new EncoderReplacementFallback("?"), new DecoderReplacementFallback("?"));
+            return _cp860;
+        }
+    }
+
     private static string? PrintBlockedMessage()
     {
         var license = AppComposition.Services?.GetService<ILicenseModule>();
@@ -183,7 +200,7 @@ internal static class FrontOfficePrinting
         text.AppendLine();
         text.AppendLine();
         var payload = new List<byte> { 0x1B, 0x40, 0x1B, 0x74, 0x03 };
-        payload.AddRange(Encoding.GetEncoding(860).GetBytes(text.ToString()));
+        payload.AddRange(Cp860.GetBytes(text.ToString()));
         payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
         return payload.ToArray();
     }
@@ -343,7 +360,7 @@ internal static class FrontOfficePrinting
         }
 
         var payload = new List<byte> { 0x1B, 0x40, 0x1B, 0x74, 0x03 };
-        payload.AddRange(Encoding.GetEncoding(860).GetBytes(text.ToString()));
+        payload.AddRange(Cp860.GetBytes(text.ToString()));
         payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
         return payload.ToArray();
     }
