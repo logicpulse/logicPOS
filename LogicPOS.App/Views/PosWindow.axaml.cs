@@ -221,10 +221,20 @@ public partial class PosWindow : Window, IOfficeSurface
         _padButtons.Clear();
         var layout = _layout;
 
+        Avalonia.Media.IImage? logoSource = null;
+        try
+        {
+            logoSource = AppBranding.LoadLoginLogo();
+        }
+        catch
+        {
+            // BrandingItens / missing assets must not block POS after login.
+        }
+
         var logoImage = new Image
         {
             Classes = { "pos_logo" },
-            Source = AppBranding.LoadLoginLogo()
+            Source = logoSource
         };
         RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
         var logo = new Border { Classes = { "pos_logo_box" } };
@@ -603,23 +613,19 @@ public partial class PosWindow : Window, IOfficeSurface
             Classes = { "pos_menu_button", article ? "pos_menu_button_grey" : "pos_menu_button_green" }
         };
 
-        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: true);
+        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
         if (image is not null)
         {
-            // GTK ButtonImage already includes the product art + caption strip.
-            // Fill the tile; only overlay text for asset icons that have no baked-in label.
-            if (string.IsNullOrWhiteSpace(imageBase64) == false || article)
+            var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
+            var content = new Grid
             {
-                button.Content = image;
-            }
-            else
-            {
-                var caption = new TextBlock { Classes = { "pos_menu_caption", "pos_menu_caption_overlay" }, Text = text };
-                var content = new Panel { ClipToBounds = true };
-                content.Children.Add(image);
-                content.Children.Add(caption);
-                button.Content = content;
-            }
+                RowDefinitions = new RowDefinitions("*,Auto")
+            };
+            Grid.SetRow(image, 0);
+            Grid.SetRow(caption, 1);
+            content.Children.Add(image);
+            content.Children.Add(caption);
+            button.Content = content;
         }
         else
         {

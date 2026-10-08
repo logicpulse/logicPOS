@@ -42,12 +42,12 @@ public static class AppBranding
 
     public static Bitmap LoadLoginLogo()
         => BrandCode == DefaultBrandCode
-            ? LoadAvaresBitmap(DefaultLoginUri)
+            ? LoadAvaresBitmap(DefaultLoginUri, applyBrandingDecoder: false)
             : LoadBrandBitmap("login.png", DefaultLoginUri);
 
     public static Bitmap LoadSimpleLogo()
         => BrandCode == DefaultBrandCode
-            ? LoadAvaresBitmap(DefaultSimpleUri)
+            ? LoadAvaresBitmap(DefaultSimpleUri, applyBrandingDecoder: false)
             : LoadBrandBitmap("front.png", DefaultSimpleUri);
 
     public static string ResolveBrandCode(string? reseller)
@@ -87,7 +87,7 @@ public static class AppBranding
         var brandUri = $"avares://LogicPOS.App/Assets/Images/Branding/{BrandCode}/{fileName}";
         try
         {
-            return LoadAvaresBitmap(brandUri);
+            return LoadAvaresBitmap(brandUri, applyBrandingDecoder: true);
         }
         catch
         {
@@ -108,26 +108,74 @@ public static class AppBranding
             // Ignore and use default.
         }
 
-        return LoadAvaresBitmap(fallbackAvares);
+        return LoadAvaresBitmap(fallbackAvares, applyBrandingDecoder: false);
     }
 
-    private static Bitmap LoadAvaresBitmap(string avaresUri)
+    private static Bitmap LoadAvaresBitmap(string avaresUri, bool applyBrandingDecoder)
     {
         using var stream = AssetLoader.Open(new Uri(avaresUri));
         using var memory = new MemoryStream();
         stream.CopyTo(memory);
-        return BitmapFromBytes(DecodeBrandingBytes(memory.ToArray()));
+        var raw = memory.ToArray();
+        if (applyBrandingDecoder == false)
+        {
+            return BitmapFromBytes(raw);
+        }
+
+        return BitmapFromBytes(DecodeBrandingBytes(raw));
     }
 
     private static Bitmap BitmapFromBytes(byte[] bytes)
         => new(new MemoryStream(bytes));
 
     /// <summary>
-    /// GTK used BrandingItens.Conversor.EncodeObj on themed PNGs. Current assets are plain PNG
-    /// (EncodeObj is identity); still run the converter when BrandingItens.dll is present.
+    /// GTK used BrandingItens.Conversor.EncodeObj on encrypted themed PNGs.
+    /// Default LogicPulse assets are plain PNG — EncodeObj corrupts them, so only keep the
+    /// result when it still looks like an image.
     /// </summary>
     private static byte[] DecodeBrandingBytes(byte[] bytes)
-        => TryBrandingItensEncode(bytes) ?? bytes;
+    {
+        var encoded = TryBrandingItensEncode(bytes);
+        if (encoded is null || encoded.Length == 0)
+        {
+            return bytes;
+        }
+
+        if (LooksLikeImage(encoded))
+        {
+            return encoded;
+        }
+
+        return bytes;
+    }
+
+    private static bool LooksLikeImage(byte[] bytes)
+    {
+        if (bytes.Length < 8)
+        {
+            return false;
+        }
+
+        // PNG
+        if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47)
+        {
+            return true;
+        }
+
+        // JPEG
+        if (bytes[0] == 0xFF && bytes[1] == 0xD8)
+        {
+            return true;
+        }
+
+        // BMP
+        if (bytes[0] == 0x42 && bytes[1] == 0x4D)
+        {
+            return true;
+        }
+
+        return false;
+    }
 
     private static byte[]? TryBrandingItensEncode(byte[] bytes)
     {
