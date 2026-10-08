@@ -1,4 +1,5 @@
-using System.Globalization;
+﻿using System.Globalization;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -7,6 +8,7 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using LogicPOS.App.Branding;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
@@ -83,6 +85,7 @@ public partial class PosWindow : Window, IOfficeSurface
     private bool _replaceKeypad;
     private bool _priceTyping;
     private decimal _priceMoney;
+    private PosArticle? _pendingPriceArticle;
     private TicketPrompt _prompt = TicketPrompt.None;
     private StockManagementView? _stockView;
 
@@ -221,7 +224,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var logoImage = new Image
         {
             Classes = { "pos_logo" },
-            Source = LoadBitmap("avares://logicpos/Assets/Images/logicpos_logo.png")
+            Source = AppBranding.LoadLoginLogo()
         };
         RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
         var logo = new Border { Classes = { "pos_logo_box" } };
@@ -277,12 +280,12 @@ public partial class PosWindow : Window, IOfficeSurface
         PlaceTicketPad(layout);
         PlaceToolbar(layout);
 
-        _familyPrevious = CreateScroll("avares://logicpos/Assets/Images/button_family_scroll_up.png", () => ChangePage(ref _familyPage, -1, FamilyPageCount()));
-        _familyNext = CreateScroll("avares://logicpos/Assets/Images/button_family_scroll_down.png", () => ChangePage(ref _familyPage, 1, FamilyPageCount()));
-        _subfamilyPrevious = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _subfamilyPage, -1, SubfamilyPageCount()));
-        _subfamilyNext = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _subfamilyPage, 1, SubfamilyPageCount()));
-        _articlePrevious = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
-        _articleNext = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
+        _familyPrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png", () => ChangePage(ref _familyPage, -1, FamilyPageCount()));
+        _familyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png", () => ChangePage(ref _familyPage, 1, FamilyPageCount()));
+        _subfamilyPrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _subfamilyPage, -1, SubfamilyPageCount()));
+        _subfamilyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _subfamilyPage, 1, SubfamilyPageCount()));
+        _articlePrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
+        _articleNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
         Place(_familyPrevious, layout.FamilyPreviousX, layout.FamilyPreviousY, layout.ButtonWidth, layout.StatusBar1Height);
         Place(_familyNext, layout.FamilyNextX, layout.FamilyNextY, layout.ButtonWidth, layout.StatusBar1Height);
         Place(_subfamilyPrevious, layout.SubfamilyPreviousX, layout.SubfamilyPreviousY, layout.ScrollWidth, layout.StatusBar1Height);
@@ -376,7 +379,7 @@ public partial class PosWindow : Window, IOfficeSurface
             var button = new Button
             {
                 Classes = { item.Style },
-                Content = CreateIconContent($"avares://logicpos/Assets/Images/Pos/{item.Icon}", item.Text, layout.ToolbarIconSize)
+                Content = CreateIconContent($"avares://LogicPOS.App/Assets/Images/Pos/{item.Icon}", item.Text, layout.ToolbarIconSize)
             };
             if (item.Click is not null)
             {
@@ -402,29 +405,29 @@ public partial class PosWindow : Window, IOfficeSurface
         _menuControls.Clear();
         var layout = _layout;
 
-        var favoritesButton = CreateMenuButton("Favoritos", false, _showFavorites, () =>
-        {
-            _showFavorites = true;
-            _articlePage = 0;
-            RefreshMenus();
-        });
-        var favoritesImage = new Image
-        {
-            Classes = { "pos_favorites_image" },
-            Source = LoadBitmap("avares://logicpos/Assets/Images/Pos/button_favorites.png")
-        };
-        var favoritesCaption = new TextBlock { Classes = { "pos_menu_caption" }, Text = "Favoritos" };
-        var favorites = new Grid();
-        favorites.Children.Add(favoritesImage);
-        favorites.Children.Add(favoritesCaption);
-        favoritesButton.Content = favorites;
+        var favoritesButton = CreateMenuButton(
+            "Favoritos",
+            false,
+            _showFavorites,
+            () =>
+            {
+                _showFavorites = true;
+                _articlePage = 0;
+                RefreshMenus();
+            },
+            assetImageUri: "avares://LogicPOS.App/Assets/Images/Pos/button_favorites.png");
         PlaceMenu(favoritesButton, layout.FavoritesX, layout.FavoritesY, layout.ButtonWidth, layout.ButtonHeight);
 
         var families = Page(_catalog.Families, _familyPage, layout.FamilyRows);
         for (var index = 0; index < families.Count; index++)
         {
             var family = families[index];
-            var button = CreateMenuButton(family.Text, false, family.Id == _familyId && _showFavorites == false, () => SelectFamily(family.Id));
+            var button = CreateMenuButton(
+                family.Text,
+                false,
+                family.Id == _familyId && _showFavorites == false,
+                () => SelectFamily(family.Id),
+                imageBase64: family.ImageBase64);
             PlaceMenu(button, layout.FamilyX, layout.FamilyY + (index * layout.ButtonHeight), layout.ButtonWidth, layout.ButtonHeight);
         }
 
@@ -435,7 +438,12 @@ public partial class PosWindow : Window, IOfficeSurface
         for (var index = 0; index < subfamilies.Count; index++)
         {
             var subfamily = subfamilies[index];
-            var button = CreateMenuButton(subfamily.Text, false, subfamily.Id == _subfamilyId && _showFavorites == false, () => SelectSubfamily(subfamily.Id));
+            var button = CreateMenuButton(
+                subfamily.Text,
+                false,
+                subfamily.Id == _subfamilyId && _showFavorites == false,
+                () => SelectSubfamily(subfamily.Id),
+                imageBase64: subfamily.ImageBase64);
             PlaceMenu(button, layout.SubfamilyX + (index * layout.ButtonWidth), layout.SubfamilyY, layout.ButtonWidth, layout.ButtonHeight);
         }
 
@@ -448,7 +456,12 @@ public partial class PosWindow : Window, IOfficeSurface
             var column = index % layout.ArticleColumns;
             var row = index / layout.ArticleColumns;
             var article = articles[index];
-            var button = CreateMenuButton(article.Text, true, false, () => AddArticle(article));
+            var button = CreateMenuButton(
+                article.Text,
+                true,
+                false,
+                () => AddArticle(article),
+                imageBase64: article.ImageBase64);
             PlaceMenu(
                 button,
                 layout.ArticleX + (column * layout.ButtonWidth),
@@ -577,13 +590,43 @@ public partial class PosWindow : Window, IOfficeSurface
         }
     }
 
-    private Button CreateMenuButton(string text, bool article, bool selected, Action? click)
+    private Button CreateMenuButton(
+        string text,
+        bool article,
+        bool selected,
+        Action? click,
+        string? imageBase64 = null,
+        string? assetImageUri = null)
     {
         var button = new Button
         {
-            Classes = { "pos_menu_button", article ? "pos_menu_button_grey" : "pos_menu_button_green" },
-            Content = new TextBlock { Classes = { "pos_menu_caption" }, Text = text }
+            Classes = { "pos_menu_button", article ? "pos_menu_button_grey" : "pos_menu_button_green" }
         };
+
+        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
+        if (image is not null)
+        {
+            var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
+            var content = new Grid
+            {
+                RowDefinitions = new RowDefinitions("*,Auto")
+            };
+            Grid.SetRow(image, 0);
+            Grid.SetRow(caption, 1);
+            content.Children.Add(image);
+            content.Children.Add(caption);
+            button.Content = content;
+        }
+        else
+        {
+            button.Content = new TextBlock
+            {
+                Classes = { "pos_menu_caption" },
+                Text = text,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+        }
+
         if (selected)
         {
             button.Classes.Add("pos_menu_button_selected");
@@ -600,6 +643,66 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         return button;
+    }
+
+    private Image? TryLoadMenuImage(string? imageBase64, string? assetImageUri, bool fill)
+    {
+        var imageClass = fill ? "pos_menu_image_fill" : "pos_menu_image";
+
+        if (string.IsNullOrWhiteSpace(assetImageUri) == false)
+        {
+            return new Image
+            {
+                Classes = { "pos_menu_image" },
+                Source = LoadBitmap(assetImageUri)
+            };
+        }
+
+        var bitmap = TryLoadBitmapFromBase64(imageBase64);
+        if (bitmap is null)
+        {
+            return null;
+        }
+
+        return new Image
+        {
+            Classes = { imageClass },
+            Source = bitmap,
+            ClipToBounds = true
+        };
+    }
+
+    private Bitmap? TryLoadBitmapFromBase64(string? imageBase64)
+    {
+        if (string.IsNullOrWhiteSpace(imageBase64))
+        {
+            return null;
+        }
+
+        var payload = imageBase64.Trim();
+        var comma = payload.IndexOf(',');
+        if (payload.StartsWith("data:", StringComparison.OrdinalIgnoreCase) && comma > 0)
+        {
+            payload = payload[(comma + 1)..];
+        }
+
+        if (_bitmaps.TryGetValue(payload, out var cached))
+        {
+            return cached;
+        }
+
+        try
+        {
+            var bytes = Convert.FromBase64String(payload);
+            using var stream = new MemoryStream(bytes);
+            var bitmap = new Bitmap(stream);
+            _bitmaps[payload] = bitmap;
+            return bitmap;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private Button CreateScroll(string iconUri, Action click)
@@ -623,7 +726,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var button = new Button
         {
             Classes = { "pos_pad_button", styleClass },
-            Content = CreateIconContent($"avares://logicpos/Assets/Images/Pos/{iconFile}", text, layout.TicketIconSize)
+            Content = CreateIconContent($"avares://LogicPOS.App/Assets/Images/Pos/{iconFile}", text, layout.TicketIconSize)
         };
         button.Click += (_, _) => click();
         _padButtons[text] = button;
@@ -1155,6 +1258,13 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         _orderListMode = false;
+        if (article.RequiresPriceEntry)
+        {
+            _pendingPriceArticle = article;
+            ShowKeypad(TicketPrompt.Price, "Preço do Produto", 0m);
+            return;
+        }
+
         _ticket.Add(article);
         RefreshTicket();
     }
@@ -1553,7 +1663,7 @@ public partial class PosWindow : Window, IOfficeSurface
         TablesChangeButton.IsVisible = _openOrderId is not null;
         TablesMoveButton.IsVisible = _orderListMode && SelectedOrderLine is not null;
         ListTitleIcon.IsVisible = true;
-        ListTitleIcon.Source = LoadBitmap("avares://logicpos/Assets/Images/Dialogs/icon_window_tables_retail.png");
+        ListTitleIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_tables_retail.png");
         ListFrame.Width = 760;
         ListFrame.Height = 520;
         ListFrame.MaxHeight = double.PositiveInfinity;
@@ -1610,7 +1720,7 @@ public partial class PosWindow : Window, IOfficeSurface
                         new Image
                         {
                             Classes = { "pos_doc_menu_icon" },
-                            Source = LoadBitmap("avares://logicpos/Assets/Images/BackOffice/icon_other_tables.png")
+                            Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/BackOffice/icon_other_tables.png")
                         },
                         new TextBlock { Classes = { "pos_doc_menu_caption" }, Text = place.Name }
                     }
@@ -1700,8 +1810,8 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private StackPanel CreateTablesScroller(Action previous, Action next, bool canPrevious, bool canNext)
     {
-        var previousButton = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_left.png", previous);
-        var nextButton = CreateScroll("avares://logicpos/Assets/Images/Pos/button_subfamily_article_scroll_right.png", next);
+        var previousButton = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", previous);
+        var nextButton = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", next);
         previousButton.Classes.Add("pos_tables_scroll");
         nextButton.Classes.Add("pos_tables_scroll");
         previousButton.IsEnabled = canPrevious;
@@ -2205,7 +2315,7 @@ public partial class PosWindow : Window, IOfficeSurface
         if (title == "Ordens")
         {
             ListTitleIcon.IsVisible = true;
-            ListTitleIcon.Source = LoadBitmap("avares://logicpos/Assets/Images/Dialogs/icon_window_orders.png");
+            ListTitleIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_orders.png");
         }
 
         ListHost.Children.Clear();
@@ -2242,7 +2352,7 @@ public partial class PosWindow : Window, IOfficeSurface
         RestoreListChrome();
         ListTitle.Text = title;
         ListTitleIcon.IsVisible = true;
-        ListTitleIcon.Source = LoadBitmap("avares://logicpos/Assets/Images/Dialogs/icon_window_tables.png");
+        ListTitleIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_tables.png");
         ListDismissText.Text = "Fechar";
         ListHost.Children.Clear();
         if (items.Count == 0)
@@ -2267,8 +2377,8 @@ public partial class PosWindow : Window, IOfficeSurface
             {
                 Classes = { "login_user_icon" },
                 Source = LoadBitmap(title == "Mesas"
-                    ? "avares://logicpos/Assets/Images/BackOffice/icon_other_tables.png"
-                    : "avares://logicpos/Assets/Images/icon_user_default.png")
+                    ? "avares://LogicPOS.App/Assets/Images/BackOffice/icon_other_tables.png"
+                    : "avares://LogicPOS.App/Assets/Images/icon_user_default.png")
             });
             panel.Children.Add(new Border
             {
@@ -2433,7 +2543,7 @@ public partial class PosWindow : Window, IOfficeSurface
         RestoreListChrome();
         ListTitle.Text = "Mudar de utilizador";
         ListTitleIcon.IsVisible = true;
-        ListTitleIcon.Source = LoadBitmap("avares://logicpos/Assets/Images/Pos/icon_pos_toolbar_show_change_user_dialog.png");
+        ListTitleIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_show_change_user_dialog.png");
         ListDismissText.Text = "Cancelar";
         ListHost.Children.Clear();
         var wrap = new WrapPanel { Orientation = Orientation.Horizontal };
@@ -2968,7 +3078,7 @@ public partial class PosWindow : Window, IOfficeSurface
             TicketKeypad.IsVisible = false;
             PricePad.IsVisible = true;
             TicketDialogCancelText.Text = "Cancelar";
-            TicketDialogIcon.Source = LoadBitmap("avares://logicpos/Assets/Images/Pos/Payments/icon_window_payments.png");
+            TicketDialogIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png");
             TicketFrame.Width = 540;
             TicketFrame.Height = 530;
             return;
@@ -2988,11 +3098,11 @@ public partial class PosWindow : Window, IOfficeSurface
         TicketDialogConfirmText.Text = confirmText;
         TicketDialogCancel.IsVisible = showCancel;
         var icon = question ? "question" : "info";
-        TicketDialogIcon.Source = LoadBitmap($"avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
-        TicketDialogSymbol.Source = LoadBitmap($"avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
+        TicketDialogIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
+        TicketDialogSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
         TicketDialogConfirmIcon.Source = LoadBitmap(showCancel
-            ? "avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png"
-            : "avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png");
+            ? "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png"
+            : "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png");
         TicketDialogActions.IsVisible = true;
         TicketOverlay.IsVisible = true;
     }
@@ -3177,22 +3287,32 @@ public partial class PosWindow : Window, IOfficeSurface
 
                 break;
             case TicketPrompt.Price:
-                if (TryReadKeypad(out var price))
+                if (TryReadKeypad(out var price) == false || price <= 0m)
                 {
-                    if (SelectedOrderLine is { } priceLine)
-                    {
-                        CloseTicketDialog();
-                        await ChangeOrderLineAsync(
-                            priceLine,
-                            priceLine.Quantity,
-                            PosTicketLine.ToNetUnitPrice(price, priceLine.VatPercentage, priceLine.PriceIncludesVat));
-                        return;
-                    }
-
-                    _ticket.SetSelectedDisplayPrice(price);
-                    RefreshTicket();
+                    return;
                 }
 
+                if (_pendingPriceArticle is { } pendingPriceArticle)
+                {
+                    _pendingPriceArticle = null;
+                    CloseTicketDialog();
+                    _ticket.Add(pendingPriceArticle, price);
+                    RefreshTicket();
+                    return;
+                }
+
+                if (SelectedOrderLine is { } priceLine)
+                {
+                    CloseTicketDialog();
+                    await ChangeOrderLineAsync(
+                        priceLine,
+                        priceLine.Quantity,
+                        PosTicketLine.ToNetUnitPrice(price, priceLine.VatPercentage, priceLine.PriceIncludesVat));
+                    return;
+                }
+
+                _ticket.SetSelectedDisplayPrice(price);
+                RefreshTicket();
                 break;
             case TicketPrompt.Barcode:
                 if (TryAddArticleByCode(TicketBarcode.Text) == false)
@@ -3222,6 +3342,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private void OnTicketDialogDismissClick(object? sender, RoutedEventArgs e)
     {
+        _pendingPriceArticle = null;
         CloseTicketDialog();
     }
 

@@ -78,9 +78,16 @@ public sealed class PosTicket
 
     public bool HasLines => _lines.Count > 0;
 
-    public void Add(PosArticle article)
+    public void Add(PosArticle article, decimal? displayUnitPrice = null)
     {
-        var existing = _lines.FindIndex(line => line.ArticleId == article.Id);
+        var line = new PosTicketLine(article);
+        if (displayUnitPrice is decimal price)
+        {
+            line.SetDisplayPrice(price);
+        }
+
+        var existing = _lines.FindIndex(item =>
+            item.ArticleId == article.Id && item.NetUnitPrice == line.NetUnitPrice);
         if (existing >= 0)
         {
             _lines[existing].Quantity += article.QuantityStep;
@@ -88,7 +95,7 @@ public sealed class PosTicket
             return;
         }
 
-        _lines.Add(new PosTicketLine(article));
+        _lines.Add(line);
         SelectedIndex = _lines.Count - 1;
     }
 
