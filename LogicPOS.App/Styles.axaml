@@ -4000,7 +4000,7 @@
 
     <Style Selector="Border.bo_entity_prompt.bo_reprint_prompt">
         <Setter Property="Width" Value="460" />
-        <Setter Property="MinHeight" Value="360" />
+        <Setter Property="MinHeight" Value="420" />
     </Style>
 
     <Style Selector="Border.bo_email_dialog">

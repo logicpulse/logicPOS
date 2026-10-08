@@ -93,10 +93,11 @@
                         </StackPanel>
                     </Border>
                     <StackPanel Classes="bo_entity_form" Spacing="10">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Cópias" />
-                        <TextBox x:Name="ReprintCopies" Classes="bo_entity_input" Text="1" />
-                        <TextBlock Classes="bo_new_doc_caption" Text="Motivo da reimpressão" />
-                        <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado / Danificado" />
+                        <TextBlock x:Name="ReprintCopiesLabel" Classes="bo_new_doc_caption" Text="Cópias" />
+                        <StackPanel x:Name="ReprintCopyChecks" Spacing="4" />
+                        <CheckBox x:Name="ReprintSecondCopy" Classes="bo_entity_input" Content="Segunda via" IsChecked="True" />
+                        <TextBlock x:Name="ReprintMotiveLabel" Classes="bo_new_doc_caption" Text="Motivo da re-impressão do original" />
+                        <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Danificado" />
                     </StackPanel>
                 </DockPanel>
             </Border>

@@ -1292,6 +1292,41 @@ public sealed class PosDocumentService : IPosDocumentService
         return path;
     }
 
+    public async Task<DocumentPrintDialogOptions?> GetPrintDialogOptionsAsync(
+        Guid documentId,
+        CancellationToken cancellationToken = default)
+    {
+        if (documentId == Guid.Empty)
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var row = await database.Documents
+            .AsNoTracking()
+            .Where(item => item.Id == documentId)
+            .Select(item => new { item.Number, item.Type })
+            .FirstOrDefaultAsync(cancellationToken);
+        if (row is null)
+        {
+            return null;
+        }
+
+        var type = await database.DocumentTypes
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Acronym == row.Type)
+            .Select(item => new { item.PrintCopies, item.PrintRequestMotive })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        return new DocumentPrintDialogOptions
+        {
+            Number = row.Number,
+            PrintCopies = Math.Clamp(type is null || type.PrintCopies <= 0 ? 1 : type.PrintCopies, 1, 4),
+            PrintRequestMotive = type?.PrintRequestMotive ?? true
+        };
+    }
+
     private static async Task<CompanyInformation> ReadCompanyAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
     {
         var parameters = await database.PreferenceParameters

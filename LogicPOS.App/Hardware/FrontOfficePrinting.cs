@@ -37,7 +37,11 @@ internal static class FrontOfficePrinting
     /// Prints the issued document on the terminal thermal printer (GTK ThermalPrintingService.PrintInvoice).
     /// Returns an error message, or null when printed or when the terminal has no thermal printer.
     /// </summary>
-    public static async Task<(bool Handled, string? Error)> TryReprintInvoiceAsync(Guid documentId, int copies, string reason)
+    public static async Task<(bool Handled, string? Error)> TryReprintInvoiceAsync(
+        Guid documentId,
+        int copies,
+        string reason,
+        bool isSecondCopy = true)
     {
         var blocked = PrintBlockedMessage();
         if (blocked is not null)
@@ -60,7 +64,7 @@ internal static class FrontOfficePrinting
             }
 
             var count = Math.Max(1, copies);
-            var payload = ThermalInvoiceRenderer.Render(job, isSecondCopy: true);
+            var payload = ThermalInvoiceRenderer.Render(job, isSecondCopy);
             for (var copy = 0; copy < count; copy++)
             {
                 await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, payload);
@@ -68,7 +72,10 @@ internal static class FrontOfficePrinting
 
             try
             {
-                await source.RegisterReprintAsync(documentId, count, reason);
+                var motive = string.IsNullOrWhiteSpace(reason)
+                    ? (isSecondCopy ? "Segunda via" : "Reimpressão")
+                    : reason.Trim();
+                await source.RegisterReprintAsync(documentId, count, motive);
             }
             catch
             {

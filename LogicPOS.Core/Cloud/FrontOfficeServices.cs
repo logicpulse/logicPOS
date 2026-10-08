@@ -72,6 +72,19 @@ public interface IPosDocumentService
         CancellationToken cancellationToken = default);
 
     Task<string?> CreateA4FileAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>GTK PosDocumentFinancePrintDialog options for an already-printed document.</summary>
+    Task<DocumentPrintDialogOptions?> GetPrintDialogOptionsAsync(Guid documentId, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Copy/motive options from the document type (GTK PrintCopies / PrintRequestMotive).</summary>
+public sealed class DocumentPrintDialogOptions
+{
+    public string Number { get; init; } = string.Empty;
+
+    public int PrintCopies { get; init; } = 1;
+
+    public bool PrintRequestMotive { get; init; } = true;
 }
 
 public sealed class PosWorkSessionState

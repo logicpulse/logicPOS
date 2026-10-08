@@ -197,11 +197,10 @@ public partial class PdfDocumentView : UserControl
                 var source = AppComposition.Services?.GetService<IThermalPrintSource>();
                 if (source is not null && await source.WasPrintedAsync(documentId))
                 {
-                    ReprintTitle.Text = string.IsNullOrWhiteSpace(_documentTitle)
-                        ? "Segunda via"
-                        : $"Segunda via — {_documentTitle}";
-                    ReprintCopies.Text = "1";
-                    ReprintMotive.Text = string.Empty;
+                    ReprintTitle.Text = string.Format(
+                        PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"),
+                        string.IsNullOrWhiteSpace(_documentTitle) ? "—" : _documentTitle);
+                    await BuildReprintOptionsAsync(documentId);
                     ReprintOverlay.IsVisible = true;
                     return;
                 }
@@ -232,6 +231,69 @@ public partial class PdfDocumentView : UserControl
         }
     }
 
+    private async Task BuildReprintOptionsAsync(Guid documentId)
+    {
+        ReprintCopyChecks.Children.Clear();
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        var options = documents is null ? null : await documents.GetPrintDialogOptionsAsync(documentId);
+        var copyCount = options?.PrintCopies ?? 1;
+        var requestMotive = options?.PrintRequestMotive ?? true;
+        var titles = new[]
+        {
+            PreferenceLabels.Text("global_print_copy_title1", "Original"),
+            PreferenceLabels.Text("global_print_copy_title2", "Duplicado"),
+            PreferenceLabels.Text("global_print_copy_title3", "Triplicado"),
+            PreferenceLabels.Text("global_print_copy_title4", "Quadriplicado")
+        };
+
+        for (var index = 0; index < titles.Length; index++)
+        {
+            var enabled = index < copyCount;
+            var box = new CheckBox
+            {
+                Content = titles[index],
+                IsChecked = enabled,
+                IsEnabled = enabled,
+                Classes = { "bo_entity_input" }
+            };
+            if (index == 0)
+            {
+                box.IsCheckedChanged += (_, _) =>
+                {
+                    if (ReprintSecondCopy.IsChecked != true && box.IsChecked != true)
+                    {
+                        box.IsChecked = true;
+                    }
+                };
+            }
+
+            ReprintCopyChecks.Children.Add(box);
+        }
+
+        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cópias");
+        ReprintSecondCopy.Content = PreferenceLabels.Text("global_second_copy", "Segunda via");
+        ReprintSecondCopy.IsVisible = requestMotive;
+        ReprintSecondCopy.IsChecked = true;
+        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressão do original");
+        ReprintMotive.Text = string.Empty;
+        ReprintSecondCopy.IsCheckedChanged -= OnReprintSecondCopyChanged;
+        ReprintSecondCopy.IsCheckedChanged += OnReprintSecondCopyChanged;
+        UpdateReprintMotiveState();
+    }
+
+    private void OnReprintSecondCopyChanged(object? sender, RoutedEventArgs e) => UpdateReprintMotiveState();
+
+    private void UpdateReprintMotiveState()
+    {
+        var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
+        ReprintMotiveLabel.IsEnabled = secondCopy == false;
+        ReprintMotive.IsEnabled = secondCopy == false;
+        if (secondCopy)
+        {
+            ReprintMotive.Text = string.Empty;
+        }
+    }
+
     private async void OnReprintConfirmClick(object? sender, RoutedEventArgs e)
     {
         if (_documentId is not Guid documentId || documentId == Guid.Empty)
@@ -240,21 +302,23 @@ public partial class PdfDocumentView : UserControl
             return;
         }
 
-        if (int.TryParse(ReprintCopies.Text?.Trim(), out var copies) == false || copies < 1)
+        var copies = ReprintCopyChecks.Children.OfType<CheckBox>().Count(box => box.IsChecked == true && box.IsEnabled);
+        if (copies < 1)
         {
-            SetStatus("Indique o número de cópias.");
+            SetStatus("Selecione pelo menos uma cópia.");
             return;
         }
 
+        var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
         var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(reason))
+        if (secondCopy == false && string.IsNullOrWhiteSpace(reason))
         {
-            SetStatus("Indique o motivo da segunda via.");
+            SetStatus("Indique o motivo da reimpressão do original.");
             return;
         }
 
         ReprintOverlay.IsVisible = false;
-        var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason);
+        var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
         SetStatus(reprintError ?? string.Empty);
     }
 
