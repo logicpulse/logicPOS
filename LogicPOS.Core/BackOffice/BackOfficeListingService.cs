@@ -33,6 +33,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Designation"] = "Designação",
         ["Name"] = "Nome",
         ["Notes"] = "Notas",
+        ["Ord"] = "Ordem",
         ["Order"] = "Ordem",
         ["Value"] = "Valor",
         ["FiscalNumber"] = "NIF",
@@ -89,7 +90,25 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["ReasonCode"] = "Motivo",
         ["Supplier"] = "Fornecedor",
         ["CardNumber"] = "Cartão",
-        ["WebSite"] = "Website"
+        ["WebSite"] = "Website",
+        // Article fields — labels from GTK Resx (pt-PT)
+        ["CodeDealer"] = "Código Fornecedor",
+        ["FamilyId"] = "Família do artigo",
+        ["SubfamilyId"] = "Subfamília do artigo",
+        ["TypeId"] = "Tipo de artigo",
+        ["ClassId"] = "Classe do artigo",
+        ["IsComposed"] = "Artigo composto",
+        ["UseWeighingBalance"] = "Usar Balança",
+        ["UniqueArticles"] = "Artigos únicos",
+        ["Disabled"] = "Desactivado",
+        ["PriceWithVat"] = "Preço com imposto",
+        ["PVPVariable"] = "Preço variável",
+        ["VatOnTableId"] = "Imposto na mesa",
+        ["VatDirectSellingId"] = "Imposto venda direta",
+        ["VatExemptionReasonId"] = "Motivo de isenção de IVA",
+        ["ChildArticleId"] = "Artigo associado",
+        ["ChildQuantity"] = "Quantidade",
+        ["SerialNotice"] = "Números de série"
     };
 
     private readonly IServiceScopeFactory _scopes;
@@ -683,11 +702,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return null;
         }
 
+        // Tab titles match GTK Resx: article_edit_dialog_tab1 / dialog_edit_article_tab2..tab4
         return propertyName switch
         {
             "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "Barcode" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
-                => "Informação Geral",
+                => "Detalhes 1",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"
                 => "Detalhes financeiros",
@@ -696,13 +716,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         };
     }
 
-    /// <summary>Stable article editor tab order (reflection property order must not decide first tab).</summary>
+    /// <summary>Stable article editor tab order (GTK order; reflection must not decide first tab).</summary>
     public static IReadOnlyList<string> ArticleTabOrder { get; } =
     [
-        "Informação Geral",
+        "Detalhes 1",
         "Detalhes financeiros",
+        "Outros detalhes",
         "Número de série",
-        "Outros detalhes"
+        "Artigos Associados"
     ];
 
     private static List<ListingColumn> PickColumns(IReadOnlyList<ListingField> fields)
@@ -1075,19 +1096,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         fields.Add(new ListingField
         {
             Key = "ChildArticleId",
-            Label = "Artigo associado",
+            Label = Header("ChildArticleId"),
             Kind = "lookup",
             Lookup = "Article",
-            Group = "Artigos associados",
+            Group = "Artigos Associados",
             ShowWhen = "IsComposed",
             Value = child is null ? string.Empty : child.ChildId.ToString()
         });
         fields.Add(new ListingField
         {
             Key = "ChildQuantity",
-            Label = "Quantidade",
+            Label = Header("ChildQuantity"),
             Kind = "text",
-            Group = "Artigos associados",
+            Group = "Artigos Associados",
             ShowWhen = "IsComposed",
             Value = child is null ? "1" : child.Quantity.ToString(CultureInfo.CurrentCulture)
         });
@@ -1099,7 +1120,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         fields.Add(new ListingField
         {
             Key = "SerialNotice",
-            Label = "Números de série",
+            Label = Header("SerialNotice"),
             Kind = "multiline",
             ReadOnly = true,
             Group = "Número de série",
