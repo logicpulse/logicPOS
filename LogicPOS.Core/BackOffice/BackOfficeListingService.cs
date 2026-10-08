@@ -386,8 +386,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 "register-at" => await FiscalAsync(module => module.RegisterSeriesAsync(id ?? Guid.Empty, cancellationToken), cancellationToken),
                 "request-agt" or "request-series" => await FiscalAsync(module => module.RequestSeriesCodeAsync(DateTime.Today.Year, string.IsNullOrWhiteSpace(extra) ? "FT" : extra.Trim(), cancellationToken), cancellationToken),
                 "open-day" => await OpenDayAsync(cancellationToken),
-                "open-session" => await OpenSessionAsync(cancellationToken),
-                "close-session" => await CloseSessionAsync(cancellationToken),
+                "open-session" => await OpenSessionAsync(extra, cancellationToken),
+                "close-session" => await CloseSessionAsync(extra, cancellationToken),
                 "close-day" => await CloseDayAsync(cancellationToken),
                 "cash-in" => await CashAsync(true, extra, cancellationToken),
                 "cash-out" => await CashAsync(false, extra, cancellationToken),
@@ -685,9 +685,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         return propertyName switch
         {
-            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "FamilyId" or "SubfamilyId"
+            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "Barcode" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
-                => "Detalhes",
+                => "Informação Geral",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"
                 => "Detalhes financeiros",
@@ -695,6 +695,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             _ => "Outros detalhes"
         };
     }
+
+    /// <summary>Stable article editor tab order (reflection property order must not decide first tab).</summary>
+    public static IReadOnlyList<string> ArticleTabOrder { get; } =
+    [
+        "Informação Geral",
+        "Detalhes financeiros",
+        "Número de série",
+        "Outros detalhes"
+    ];
 
     private static List<ListingColumn> PickColumns(IReadOnlyList<ListingField> fields)
     {
@@ -1201,14 +1210,43 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return ListingSaveResult.Ok(day.Id, "Dia aberto.");
     }
 
-    private async Task<ListingSaveResult> OpenSessionAsync(CancellationToken cancellationToken)
+    private async Task<ListingSaveResult> OpenSessionAsync(string? extra, CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var open = await database.WorkSessionPeriods.AnyAsync(period => period.IsDeleted == false && period.Status == Domain.Enums.WorkSessionPeriodStatus.Open, cancellationToken);
-        if (open)
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
+        var dayId = await database.WorkSessionPeriods
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Day
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (dayId is null)
+        {
+            return ListingSaveResult.Fail("Abra o dia antes de abrir a sessão.");
+        }
+
+        var terminalOpen = await database.WorkSessionPeriods.AnyAsync(
+            item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value,
+            cancellationToken);
+        if (terminalOpen)
         {
             return ListingSaveResult.Fail("Já existe uma sessão aberta.");
+        }
+
+        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+        if (amount < 0)
+        {
+            amount = 0;
         }
 
         var period = new WorkSessionPeriod
@@ -1216,19 +1254,38 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Type = Domain.Enums.WorkSessionPeriodType.Terminal,
             Status = Domain.Enums.WorkSessionPeriodStatus.Open,
             Designation = "Sessão " + DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
-            StartDate = DateTime.Now
+            StartDate = DateTime.Now,
+            ParentId = dayId,
+            CreatedWhere = terminalId.Value
         };
         database.WorkSessionPeriods.Add(period);
+        database.WorkSessionMovements.Add(new WorkSessionMovement
+        {
+            PeriodId = period.Id,
+            Amount = amount,
+            Type = Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOpen,
+            Notes = "Abertura",
+            CreatedWhere = terminalId.Value
+        });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(period.Id, "Sessão aberta.");
     }
 
-    private async Task<ListingSaveResult> CloseSessionAsync(CancellationToken cancellationToken)
+    private async Task<ListingSaveResult> CloseSessionAsync(string? extra, CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
         var period = await database.WorkSessionPeriods
-            .Where(item => item.IsDeleted == false && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value)
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
         if (period is null)
@@ -1236,11 +1293,47 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Não existe uma sessão aberta.");
         }
 
+        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+        if (amount < 0)
+        {
+            amount = 0;
+        }
+
         period.Status = Domain.Enums.WorkSessionPeriodStatus.Closed;
         period.EndDate = DateTime.Now;
         period.UpdatedAt = DateTime.Now;
+        database.WorkSessionMovements.Add(new WorkSessionMovement
+        {
+            PeriodId = period.Id,
+            Amount = amount,
+            Type = Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerClose,
+            Notes = "Fecho",
+            CreatedWhere = terminalId.Value
+        });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(period.Id, "Sessão fechada.");
+    }
+
+    private static async Task<Guid?> ResolveTerminalIdAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    {
+        var hardwareId = MachineIdentity.HardwareId;
+        var byHardware = await database.Terminals
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.HardwareId == hardwareId)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (byHardware is Guid matched && matched != Guid.Empty)
+        {
+            return matched;
+        }
+
+        return await database.Terminals
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .OrderByDescending(item => item.IsDefault)
+            .ThenBy(item => item.Code)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private async Task<ListingSaveResult> CloseDayAsync(CancellationToken cancellationToken)
@@ -1278,10 +1371,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
         var period = await database.WorkSessionPeriods
             .Where(item => item.IsDeleted == false
                 && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
-                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && (terminalId == null || item.CreatedWhere == terminalId.Value))
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -1324,8 +1419,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
         var period = await database.WorkSessionPeriods
-            .Where(item => item.IsDeleted == false && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value)
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
         if (period is null)
@@ -1342,7 +1446,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 : Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOut,
             Notes = string.IsNullOrWhiteSpace(description)
                 ? incoming ? "Entrada de caixa" : "Saída de caixa"
-                : description
+                : description,
+            CreatedWhere = terminalId.Value
         };
         database.WorkSessionMovements.Add(movement);
         await database.SaveChangesAsync(cancellationToken);

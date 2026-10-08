@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
@@ -318,10 +318,10 @@ public partial class EntityListing : UserControl
         {
             var label = fiscalYear ? "Criar ano fiscal" : "Novo";
             var content = new StackPanel { Classes = { "bo_doc_action_content" } };
-            content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_doc_action_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_novo_w.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg"
             });
             content.Children.Add(new TextBlock { Classes = { "bo_doc_action_text" }, Text = label });
             var create = new Button { Classes = { "bo_page_action" }, Content = content };
@@ -394,17 +394,17 @@ public partial class EntityListing : UserControl
 
         if (ShowsDocument)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
         }
 
         if (snapshot.CanEdit)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_editar_b.svg", row => _ = EditAsync(row.Id), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg", row => _ = EditAsync(row.Id), _ => true));
         }
 
         if (snapshot.CanDelete)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
         }
     }
 
@@ -421,7 +421,7 @@ public partial class EntityListing : UserControl
             CellTemplate = new FuncDataTemplate<ListingRow>((row, _) =>
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" }, IsEnabled = enabled(row) };
-                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
                     Path = icon
@@ -639,11 +639,7 @@ public partial class EntityListing : UserControl
             Notice.Text = exception.Message;
             return;
         }
-        var groups = fields
-            .Select(field => field.Group)
-            .Where(group => string.IsNullOrWhiteSpace(group) == false)
-            .Distinct(StringComparer.Ordinal)
-            .ToList();
+        var groups = OrderEditorGroups(fields);
 
         // Tabbed editors keep a fixed frame so switching tabs does not resize the popup
         var simpleForm = groups.Count <= 1;
@@ -1207,7 +1203,7 @@ public partial class EntityListing : UserControl
             Content = new Image
             {
                 Classes = { "bo_printer_pick_icon" },
-                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://logicpos/Assets/Images/Documents/icon_doc_print_b.png")))
+                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_b.png")))
             }
         };
         ToolTip.SetTip(button, "Impressoras instaladas no Windows");
@@ -1257,10 +1253,10 @@ public partial class EntityListing : UserControl
         var button = new Button
         {
             Classes = { "bo_touch_key" },
-            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_touch_key_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_teclado.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
         button.Click += (_, _) =>
@@ -1284,6 +1280,39 @@ public partial class EntityListing : UserControl
     }
 
     private void OnEditorCancelClick(object? sender, RoutedEventArgs e) => EditorOverlay.IsVisible = false;
+
+    private static List<string> OrderEditorGroups(IReadOnlyList<ListingField> fields)
+    {
+        var present = fields
+            .Select(field => field.Group)
+            .Where(group => string.IsNullOrWhiteSpace(group) == false)
+            .Select(group => group!)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        if (present.Count == 0)
+        {
+            return present;
+        }
+
+        var ordered = new List<string>();
+        foreach (var name in BackOfficeListingService.ArticleTabOrder)
+        {
+            if (present.Contains(name))
+            {
+                ordered.Add(name);
+            }
+        }
+
+        foreach (var name in present)
+        {
+            if (ordered.Contains(name) == false)
+            {
+                ordered.Add(name);
+            }
+        }
+
+        return ordered;
+    }
 
     private void WireArticleRules()
     {
@@ -1790,10 +1819,10 @@ public partial class EntityListing : UserControl
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" } };
                 ToolTip.SetTip(button, "Remover");
-                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
-                    Path = "avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg"
+                    Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg"
                 };
                 button.Click += (_, _) => RemoveImportLine(line);
                 return button;

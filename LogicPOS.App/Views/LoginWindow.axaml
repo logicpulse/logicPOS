@@ -64,7 +64,7 @@
         <Border Classes="login_pinpad">
             <Grid Classes="login_pinpad_keys"
                   ColumnDefinitions="105,105,105"
-                  RowDefinitions="46,56,56,56,56,4,Auto,Auto,*">
+                  RowDefinitions="46,56,56,56,56,4,Auto,*">
                 <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                     <TextBox x:Name="PinEntry"
                              Classes="login_pin_entry"
@@ -113,20 +113,19 @@
                            Grid.ColumnSpan="3"
                            Text="{Binding StatusMessage}" />
 
-                <TextBlock Classes="login_version"
-                           Grid.Row="7"
+                <DockPanel Grid.Row="7"
                            Grid.Column="0"
                            Grid.ColumnSpan="3"
-                           Text="{Binding VersionText}" />
-
-                <Button Classes="login_pin_key login_pin_ok"
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="3"
-                        VerticalAlignment="Bottom"
-                        Content="{Binding OkText}"
-                        IsEnabled="{Binding CanSubmit}"
-                        Click="OnSubmitClick" />
+                           LastChildFill="False">
+                    <Button Classes="login_pin_key login_pin_ok"
+                            DockPanel.Dock="Bottom"
+                            Content="{Binding OkText}"
+                            IsEnabled="{Binding CanSubmit}"
+                            Click="OnSubmitClick" />
+                    <TextBlock Classes="login_version"
+                               DockPanel.Dock="Bottom"
+                               Text="{Binding VersionText}" />
+                </DockPanel>
             </Grid>
         </Border>
 

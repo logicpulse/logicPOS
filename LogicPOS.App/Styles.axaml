@@ -404,8 +404,8 @@
 
     <Style Selector="TextBlock.login_version">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Margin" Value="2,6,2,8" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="2,2,2,4" />
         <Setter Property="Foreground" Value="#B8B8B8" />
         <Setter Property="FontSize" Value="10" />
         <Setter Property="FontWeight" Value="Normal" />
