@@ -148,15 +148,17 @@ public static class ListingColumns
         ["Parâmetros da Empresa"] =
         [
             ("ResourceString", "Designação"),
-            ("Token", "Designação"),
+            ("Token", "Parâmetro"),
             ("Value", "Valor"),
+            ("FormType", "Tipo"),
             ("UpdatedAt", "Atualizado em")
         ],
         ["Parâmetros de Sistema"] =
         [
             ("ResourceString", "Designação"),
-            ("Token", "Designação"),
+            ("Token", "Parâmetro"),
             ("Value", "Valor"),
+            ("FormType", "Tipo"),
             ("UpdatedAt", "Atualizado em")
         ],
         ["Grupo de comissões"] =
