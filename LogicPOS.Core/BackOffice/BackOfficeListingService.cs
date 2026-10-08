@@ -43,7 +43,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Barcode"] = "Código de barras",
         ["Quantity"] = "Quantidade",
         ["Token"] = "Parâmetro",
-        ["Acronym"] = "Sigla",
+        ["Acronym"] = "Acrónimo",
         ["Year"] = "Ano",
         ["Status"] = "Estado",
         ["Amount"] = "Valor",
@@ -52,8 +52,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Description"] = "Descrição",
         ["Date"] = "Data",
         ["NextNumber"] = "Próximo número",
-        ["HardwareId"] = "Hardware",
-        ["IsDefault"] = "Predefinido",
+        ["HardwareId"] = "Hardware ID",
+        ["IsDefault"] = "Por padrão",
         ["Favorite"] = "Favorito",
         ["Discount"] = "Desconto",
         ["Price1"] = "Preço 1",
@@ -63,7 +63,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Price5"] = "Preço 5",
         ["Address"] = "Morada",
         ["City"] = "Cidade",
-        ["ZipCode"] = "Código postal",
+        ["ZipCode"] = "Código-Postal",
         ["Locality"] = "Localidade",
         ["RefNo"] = "Número",
         ["Number"] = "Número",
@@ -89,23 +89,61 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["CountryRegion"] = "Região",
         ["ReasonCode"] = "Motivo",
         ["Supplier"] = "Fornecedor",
-        ["CardNumber"] = "Cartão",
-        ["WebSite"] = "Website",
-        // Article fields — labels from GTK Resx (pt-PT)
-        ["CodeDealer"] = "Código Fornecedor",
+        ["CardNumber"] = "Número do Cartão de Cliente",
+        ["CardCredit"] = "Crédito do cartão",
+        ["CardMode"] = "Modo do cartão",
+        ["WebSite"] = "Página",
+        ["Fax"] = "Fax",
+        ["BirthDate"] = "Data de Nascimento",
+        ["DiscountType"] = "Tipo de desconto",
+        ["HasPrice"] = "Tem preço",
+        ["Commission"] = "Comissão",
+        ["ThermalPrinter"] = "Impressora Térmica",
+        ["UpdatedAt"] = "Atualizado em",
+        ["CreatedAt"] = "Criado em",
+        ["DateOfContract"] = "Data de contrato",
+        ["PasswordReset"] = "Repor palavra-passe",
+        ["Residence"] = "Residência",
+        ["DocumentNumber"] = "Número do Doc.",
+        // Lookups / FKs — GTK Resx (pt-PT)
+        ["CustomerTypeId"] = "Tipo de clientes",
+        ["DiscountGroupId"] = "Grupo de desconto",
+        ["PriceTypeId"] = "Tipo de Preço",
+        ["CountryId"] = "País",
+        ["CommissionGroupId"] = "Grupo de comissão",
+        ["ProfileId"] = "Perfil",
+        ["TerminalId"] = "Posto de Trabalho",
+        ["FiscalYearId"] = "Ano fiscal",
+        ["DocumentTypeId"] = "Tipo de documento",
+        ["PrinterTypeId"] = "Tipos de impressoras",
+        ["PrinterId"] = "Impressora",
+        ["PlaceId"] = "Locais",
+        ["MovementTypeId"] = "Tipo de Movimento",
+        ["CustomerId"] = "Cliente",
+        ["SupplierId"] = "Fornecedor",
+        ["ArticleId"] = "Artigo",
+        ["WarehouseId"] = "Armazém",
+        ["PaymentConditionId"] = "Condições de Pagamento",
+        ["PaymentMethodId"] = "Método de Pagamento",
+        ["UnitMeasureId"] = "Unidade de medida",
+        ["CurrencyId"] = "Moeda",
+        ["UserId"] = "Utilizador",
         ["FamilyId"] = "Família do artigo",
         ["SubfamilyId"] = "Subfamília do artigo",
         ["TypeId"] = "Tipo de artigo",
         ["ClassId"] = "Classe do artigo",
+        ["VatOnTableId"] = "Imposto na mesa",
+        ["VatDirectSellingId"] = "Imposto venda direta",
+        ["VatExemptionReasonId"] = "Motivo de isenção de IVA",
+        ["VatRateId"] = "Taxa",
+        // Article extras
+        ["CodeDealer"] = "Código Fornecedor",
         ["IsComposed"] = "Artigo composto",
         ["UseWeighingBalance"] = "Usar Balança",
         ["UniqueArticles"] = "Artigos únicos",
         ["Disabled"] = "Desactivado",
         ["PriceWithVat"] = "Preço com imposto",
         ["PVPVariable"] = "Preço variável",
-        ["VatOnTableId"] = "Imposto na mesa",
-        ["VatDirectSellingId"] = "Imposto venda direta",
-        ["VatExemptionReasonId"] = "Motivo de isenção de IVA",
         ["ChildArticleId"] = "Artigo associado",
         ["ChildQuantity"] = "Quantidade",
         ["SerialNotice"] = "Números de série"
@@ -2149,7 +2187,35 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return context.Create(property).WriteState != NullabilityState.Nullable;
     }
 
-    private static string Header(string name) => Headers.TryGetValue(name, out var header) ? header : name;
+    private static string Header(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return name;
+        }
+
+        if (Headers.TryGetValue(name, out var header))
+        {
+            return header;
+        }
+
+        // Price1Promotion / Price1UsePromotion → short GTK column labels
+        if (name.Length > 6 && name.StartsWith("Price", StringComparison.Ordinal) && name[5] is >= '1' and <= '5')
+        {
+            var suffix = name[6..];
+            if (suffix == "Promotion")
+            {
+                return "Promoção";
+            }
+
+            if (suffix == "UsePromotion")
+            {
+                return "Usa";
+            }
+        }
+
+        return name;
+    }
 
     private static string DisplayLabel(object row)
     {
