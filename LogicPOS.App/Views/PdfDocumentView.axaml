@@ -65,7 +65,7 @@
             </ScrollViewer>
         </DockPanel>
         <Panel x:Name="ReprintOverlay" Classes="login_alert_overlay" ZIndex="20" IsVisible="False">
-            <Border Classes="login_alert_frame bo_entity_prompt" Width="420" Height="340">
+            <Border Classes="login_alert_frame bo_entity_prompt bo_reprint_prompt">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">
@@ -92,11 +92,11 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <StackPanel Classes="bo_entity_form" Spacing="8">
+                    <StackPanel Classes="bo_entity_form" Spacing="10">
                         <TextBlock Classes="bo_new_doc_caption" Text="Cópias" />
                         <TextBox x:Name="ReprintCopies" Classes="bo_entity_input" Text="1" />
                         <TextBlock Classes="bo_new_doc_caption" Text="Motivo da reimpressão" />
-                        <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado" />
+                        <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado / Danificado" />
                     </StackPanel>
                 </DockPanel>
             </Border>

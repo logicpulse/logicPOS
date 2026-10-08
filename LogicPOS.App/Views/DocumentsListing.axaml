@@ -198,7 +198,7 @@
     </DockPanel>
     </Border>
         <Panel x:Name="PromptOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame bo_entity_prompt">
+            <Border x:Name="PromptFrame" Classes="login_alert_frame bo_entity_prompt">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">
@@ -225,16 +225,15 @@
                             </Button>
                         </StackPanel>
                     </Border>
-                    <StackPanel Classes="bo_entity_form">
+                    <StackPanel Classes="bo_entity_form" Spacing="10">
                         <TextBlock x:Name="PromptLabel" Classes="bo_new_doc_caption" />
                         <ComboBox x:Name="PrinterBox" Classes="bo_entity_input" IsVisible="False" />
                         <TextBox x:Name="PromptValue" Classes="bo_entity_input" />
-                        <StackPanel x:Name="ReprintPanel" IsVisible="False" Spacing="8">
-                            <TextBlock Classes="bo_new_doc_caption" Text="Segunda via" />
+                        <StackPanel x:Name="ReprintPanel" IsVisible="False" Spacing="10">
                             <TextBlock Classes="bo_new_doc_caption" Text="Cópias" />
                             <TextBox x:Name="ReprintCopies" Classes="bo_entity_input" Text="1" />
                             <TextBlock Classes="bo_new_doc_caption" Text="Motivo da reimpressão" />
-                            <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado" />
+                            <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado / Danificado" />
                         </StackPanel>
                     </StackPanel>
                 </DockPanel>

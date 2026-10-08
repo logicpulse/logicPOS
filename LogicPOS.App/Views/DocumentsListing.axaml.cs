@@ -441,10 +441,11 @@ public partial class DocumentsListing : UserControl
         PromptValue.Text = string.Empty;
         var reprint = kind == "reprint";
         var printer = kind == "print";
-        PromptLabel.IsVisible = reprint == false;
+        PromptLabel.IsVisible = reprint == false && string.IsNullOrWhiteSpace(label) == false;
         PromptValue.IsVisible = reprint == false && printer == false;
         PrinterBox.IsVisible = printer;
         ReprintPanel.IsVisible = reprint;
+        PromptFrame.Classes.Set("bo_reprint_prompt", reprint);
         if (reprint)
         {
             ReprintCopies.Text = "1";
@@ -458,7 +459,7 @@ public partial class DocumentsListing : UserControl
     {
         _pendingPrintIds.Clear();
         _pendingPrintIds.Add(row.Id);
-        OpenPrompt("reprint", $"Doc.Nº: {row.Number}", string.Empty);
+        OpenPrompt("reprint", $"Segunda via — {row.Number}", string.Empty);
     }
 
     private async void OnPromptConfirmClick(object? sender, RoutedEventArgs e)

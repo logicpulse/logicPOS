@@ -3992,9 +3992,15 @@
 
     <Style Selector="Border.bo_entity_prompt">
         <Setter Property="Width" Value="420" />
-        <Setter Property="Height" Value="240" />
+        <Setter Property="MinHeight" Value="240" />
+        <Setter Property="Height" Value="NaN" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_entity_prompt.bo_reprint_prompt">
+        <Setter Property="Width" Value="460" />
+        <Setter Property="MinHeight" Value="360" />
     </Style>
 
     <Style Selector="Border.bo_email_dialog">

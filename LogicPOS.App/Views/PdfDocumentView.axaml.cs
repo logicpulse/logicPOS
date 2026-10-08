@@ -199,7 +199,7 @@ public partial class PdfDocumentView : UserControl
                 {
                     ReprintTitle.Text = string.IsNullOrWhiteSpace(_documentTitle)
                         ? "Segunda via"
-                        : $"Doc.Nº: {_documentTitle}";
+                        : $"Segunda via — {_documentTitle}";
                     ReprintCopies.Text = "1";
                     ReprintMotive.Text = string.Empty;
                     ReprintOverlay.IsVisible = true;
