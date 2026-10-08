@@ -847,6 +847,14 @@
         <Setter Property="Foreground" Value="#000000" />
     </Style>
 
+    <Style Selector="Button.pos_menu_button:disabled">
+        <Setter Property="Opacity" Value="0.6" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_green:disabled">
+        <Setter Property="Background" Value="#999999" />
+    </Style>
+
     <Style Selector="Button.pos_menu_button.pos_menu_button_selected">
         <Setter Property="Background" Value="#2B2B2B" />
         <Setter Property="Foreground" Value="#FFFFFF" />
@@ -940,8 +948,14 @@
         <Setter Property="Opacity" Value="0.6" />
     </Style>
 
+    <Style Selector="Button.pos_pad_button_grey:disabled">
+        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#666666" />
+    </Style>
+
     <Style Selector="Button.pos_pad_button_green:disabled">
         <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#666666" />
     </Style>
 
     <Style Selector="Button.pos_toolbar_button">
@@ -971,6 +985,13 @@
         </Setter>
     </Style>
 
+    <!-- Same muted look as ticketpad when IsEnabled=false (e.g. ticket has lines). -->
+    <Style Selector="Button.pos_toolbar_button:disabled">
+        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Opacity" Value="0.6" />
+    </Style>
+
     <Style Selector="Button.pos_toolbar_button_close">
         <Setter Property="Background" Value="#C25E4F" />
         <Setter Property="Foreground" Value="#FFFFFF" />
@@ -996,6 +1017,12 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_toolbar_button_close:disabled">
+        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Opacity" Value="0.6" />
     </Style>
 
     <Style Selector="Image.pos_button_icon">
