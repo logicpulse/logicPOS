@@ -640,6 +640,41 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 readOnly = true;
             }
 
+            // GTK article prices: Value + PromotionValue + UsePromotion per Price1..Price5
+            if (property.PropertyType == typeof(ArticlePrice))
+            {
+                var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
+                var group = FieldGroup(page.EntityType, property.Name);
+                fields.Add(new ListingField
+                {
+                    Key = property.Name,
+                    Label = Header(property.Name),
+                    Kind = "number",
+                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                fields.Add(new ListingField
+                {
+                    Key = property.Name + "Promotion",
+                    Label = "Promoção",
+                    Kind = "number",
+                    Value = price.PromotionValue.ToString("0.##", CultureInfo.CurrentCulture),
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                fields.Add(new ListingField
+                {
+                    Key = property.Name + "UsePromotion",
+                    Label = "Usa",
+                    Kind = "bool",
+                    Value = price.UsePromotion ? "true" : "false",
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                continue;
+            }
+
             fields.Add(new ListingField
             {
                 Key = property.Name,
@@ -848,30 +883,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
-            var property = type.GetProperty(pair.Key);
-            if (property is null || property.CanWrite == false)
+            if (TryApplyArticlePriceField(type, entity, pair.Key, pair.Value, out var priceError))
             {
+                if (priceError is not null)
+                {
+                    return priceError;
+                }
+
                 continue;
             }
 
-            if (property.PropertyType == typeof(ArticlePrice))
+            var property = type.GetProperty(pair.Key);
+            if (property is null || property.CanWrite == false)
             {
-                var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
-                if (string.IsNullOrWhiteSpace(pair.Value))
-                {
-                    price.Value = 0;
-                    property.SetValue(entity, price);
-                    continue;
-                }
-
-                if (decimal.TryParse(pair.Value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
-                    && decimal.TryParse(pair.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
-                {
-                    return $"Valor inválido em {Header(pair.Key)}.";
-                }
-
-                price.Value = amount;
-                property.SetValue(entity, price);
                 continue;
             }
 
@@ -885,6 +909,74 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Applies PriceN / PriceNPromotion / PriceNUsePromotion onto ArticlePrice (GTK price table).
+    /// </summary>
+    private static bool TryApplyArticlePriceField(Type type, object entity, string key, string value, out string? error)
+    {
+        error = null;
+        if (key.Length < 6
+            || key.StartsWith("Price", StringComparison.Ordinal) == false
+            || key[5] is < '1' or > '5')
+        {
+            return false;
+        }
+
+        var suffix = key.Length == 6 ? string.Empty : key[6..];
+        if (suffix is not ("" or "Promotion" or "UsePromotion"))
+        {
+            return false;
+        }
+
+        var property = type.GetProperty($"Price{key[5]}");
+        if (property is null || property.PropertyType != typeof(ArticlePrice) || property.CanWrite == false)
+        {
+            return false;
+        }
+
+        var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
+        if (suffix == "UsePromotion")
+        {
+            price.UsePromotion = value is "true" or "True" or "1" or "Sim";
+            property.SetValue(entity, price);
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            if (suffix == "Promotion")
+            {
+                price.PromotionValue = 0;
+            }
+            else
+            {
+                price.Value = 0;
+            }
+
+            property.SetValue(entity, price);
+            return true;
+        }
+
+        if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
+            && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
+        {
+            error = $"Valor inválido em {Header(key)}.";
+            return true;
+        }
+
+        if (suffix == "Promotion")
+        {
+            price.PromotionValue = amount;
+        }
+        else
+        {
+            price.Value = amount;
+        }
+
+        property.SetValue(entity, price);
+        return true;
     }
 
     private static void PrepareRequired(Type type, object entity, LogicPOSDbContext database)
