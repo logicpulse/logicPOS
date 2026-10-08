@@ -3506,7 +3506,8 @@
         <Setter Property="Padding" Value="8,4" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="MaxDropDownHeight" Value="360" />
-        <Setter Property="PlaceholderText" Value="Código, designação ou código de barras" />
+        <Setter Property="MinimumPrefixLength" Value="0" />
+        <Setter Property="PlaceholderText" Value="Selecionar..." />
         <Setter Property="IsTextCompletionEnabled" Value="False" />
     </Style>
 

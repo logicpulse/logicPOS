@@ -163,7 +163,7 @@ public static class ListingFilters
         box.ItemFilter = MatchLookup;
         box.MinimumPrefixLength = count > 40 ? 1 : 0;
         box.IsTextCompletionEnabled = false;
-        box.PlaceholderText = "Código, designação ou código de barras";
+        box.PlaceholderText = "Selecionar...";
         box.MaxDropDownHeight = 360;
         box.ItemTemplate = new FuncDataTemplate<LookupOption>((option, _) =>
         {
@@ -192,6 +192,12 @@ public static class ListingFilters
             if (string.IsNullOrEmpty(text) || text == "Todos" || text == "(nenhum)" || text == selected)
             {
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
+            }
+
+            // Open the list on focus so touch/POS users can pick without typing first.
+            if (box.MinimumPrefixLength == 0)
+            {
+                box.IsDropDownOpen = true;
             }
         };
     }
@@ -284,20 +290,23 @@ public static class ListingFilters
             return false;
         }
 
+        // Empty / placeholder text must list every choice — otherwise selecting "(nenhum)"
+        // filters the dropdown down to only that row and nothing else can be picked.
         if (string.IsNullOrWhiteSpace(search))
         {
             return true;
         }
 
         var term = Fold(search.Trim());
-        if (term.Equals("todos", StringComparison.OrdinalIgnoreCase) || term.Equals("(nenhum)", StringComparison.OrdinalIgnoreCase))
+        if (term.Equals("todos", StringComparison.OrdinalIgnoreCase)
+            || term.Equals("(nenhum)", StringComparison.OrdinalIgnoreCase))
         {
-            return option.Id == Guid.Empty;
+            return true;
         }
 
         if (option.Id == Guid.Empty)
         {
-            return false;
+            return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase);
         }
 
         return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
