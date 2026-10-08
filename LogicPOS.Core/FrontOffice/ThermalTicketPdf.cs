@@ -3,13 +3,6 @@ using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using QrCodes;
-using QrCodes.Renderers;
-using QrCodes.Renderers.Abstractions;
-using SkiaSharp;
-using ZXing;
-using ZXing.QrCode;
-using ZXing.SkiaSharp.Rendering;
 
 namespace LogicPOS.Core.FrontOffice;
 
@@ -254,7 +247,7 @@ public static class ThermalTicketPdf
             var qrPayload = string.IsNullOrWhiteSpace(document.AtQRCode) ? document.Number : document.AtQRCode;
             if (string.IsNullOrWhiteSpace(qrPayload) == false)
             {
-                var qr = BuildQrPng(qrPayload);
+                var qr = ThermalQrPng.Render(qrPayload, size: 220);
                 if (qr.Length > 0)
                 {
                     column.Item().PaddingTop(4).AlignCenter().Width(42, Unit.Millimetre).Image(qr);
@@ -295,51 +288,6 @@ public static class ThermalTicketPdf
             }
 
             return $"{hash[0]}{hash[10]}{hash[20]}{hash[30]}";
-        }
-
-        private static byte[] BuildQrPng(string text)
-        {
-            try
-            {
-                var writer = new BarcodeWriter<SKBitmap>
-                {
-                    Format = BarcodeFormat.QR_CODE,
-                    Options = new QrCodeEncodingOptions
-                    {
-                        Width = 280,
-                        Height = 280,
-                        Margin = 1,
-                        CharacterSet = "UTF-8",
-                        ErrorCorrection = ZXing.QrCode.Internal.ErrorCorrectionLevel.M
-                    },
-                    Renderer = new SKBitmapRenderer
-                    {
-                        Background = SKColors.White,
-                        Foreground = SKColors.Black
-                    }
-                };
-                using var bitmap = writer.Write(text);
-                using var image = SKImage.FromBitmap(bitmap);
-                using var data = image.Encode(SKEncodedImageFormat.Png, 90);
-                return data.ToArray();
-            }
-            catch
-            {
-                try
-                {
-                    var qrCode = QrCodeGenerator.Generate(text, ErrorCorrectionLevel.Medium, forceUtf8: true);
-                    return new SkiaSharpRenderer().RenderToBytes(qrCode, new RendererSettings
-                    {
-                        PixelsPerModule = 6,
-                        DrawQuietZones = true,
-                        FileFormat = FileFormat.Png
-                    });
-                }
-                catch
-                {
-                    return Array.Empty<byte>();
-                }
-            }
         }
     }
 }

@@ -240,7 +240,38 @@ internal class DocumentCreator : EntityCreator<Document>
         }
 
         await AssignHashAsync(ct);
+        AssignAtcud();
 
         return document;
+    }
+
+    /// <summary>GTK ProcessFinanceDocument: ATCUD = ATDocCodeValidacaoSerie + "-" + sequential number.</summary>
+    private void AssignAtcud()
+    {
+        if (_dto.IsDraft)
+        {
+            return;
+        }
+
+        var built = BuildAtcud(_series?.ATDocCodeValidationSeries, _entity.Number);
+        if (string.IsNullOrWhiteSpace(built) == false)
+        {
+            _entity.ATCUD = built;
+        }
+    }
+
+    private static string BuildAtcud(string? seriesValidationCode, string documentNumber)
+    {
+        var value = documentNumber.Trim().Trim('[', ']');
+        var slash = value.LastIndexOf('/');
+        var sequential = slash >= 0 && slash < value.Length - 1
+            ? value[(slash + 1)..].Trim()
+            : value;
+        if (string.IsNullOrWhiteSpace(sequential))
+        {
+            return string.Empty;
+        }
+
+        return $"{seriesValidationCode?.Trim() ?? string.Empty}-{sequential}";
     }
 }

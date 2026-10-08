@@ -343,12 +343,23 @@ internal sealed class ThermalInvoiceRenderer
 
     private void PrintQrCode()
     {
+        var document = _job.Document;
+
+        // GTK always prints ATCUD on PT tickets (before QR), independent of PRINT_QRCODE.
+        if (string.IsNullOrWhiteSpace(document.Atcud) == false)
+        {
+            Center();
+            Small();
+            Line($"ATCUD: {document.Atcud}");
+            Normal();
+            Feed();
+        }
+
         if (_job.PrintQrCode == false)
         {
             return;
         }
 
-        var document = _job.Document;
         if (string.IsNullOrWhiteSpace(document.FiscalCodeLine) == false)
         {
             Center();
@@ -356,8 +367,29 @@ internal sealed class ThermalInvoiceRenderer
             Feed();
         }
 
-        Center();
         var content = string.IsNullOrWhiteSpace(document.AtQrCode) ? document.Number : document.AtQrCode;
+        if (string.IsNullOrWhiteSpace(content))
+        {
+            return;
+        }
+
+        Center();
+        // QRCODE_METHOD: 0 = native ESC/POS, 1 = bitmap (default in seeds; works on Generic/60mm).
+        if (_job.QrCodeMethod == 0)
+        {
+            PrintNativeQr(content);
+        }
+        else
+        {
+            PrintImageQr(content);
+        }
+
+        Reset();
+        Feed();
+    }
+
+    private void PrintNativeQr(string content)
+    {
         var data = Encoding.UTF8.GetBytes(content);
         var length = data.Length + 3;
         Raw(0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00);
@@ -366,8 +398,26 @@ internal sealed class ThermalInvoiceRenderer
         Raw(0x1D, 0x28, 0x6B, (byte)(length % 256), (byte)(length / 256), 0x31, 0x50, 0x30);
         _buffer.AddRange(data);
         Raw(0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30);
-        Reset();
-        Feed();
+    }
+
+    private void PrintImageQr(string content)
+    {
+        var size = _job.Printer.PaperWidthMm switch
+        {
+            >= 80 => 256,
+            >= 70 => 220,
+            _ => 180
+        };
+        var png = ThermalQrPng.Render(content, size);
+        var escPos = ThermalEscPosBitmap.FromPng(png);
+        if (escPos.Length == 0)
+        {
+            // Fallback if Skia/ZXing fails on this machine.
+            PrintNativeQr(content);
+            return;
+        }
+
+        _buffer.AddRange(escPos);
     }
 
     private byte QrModuleSize() => _job.Printer.PaperWidthMm switch

@@ -111,6 +111,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
                 TotalNet = doc.TotalNet,
                 TotalTax = doc.TotalTax,
                 TotalFinal = doc.TotalFinal,
+                Atcud = doc.ATCUD,
                 AtQrCode = doc.ATQRCode
             })
             .FirstOrDefaultAsync(cancellationToken);
@@ -118,6 +119,13 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
         {
             return null;
         }
+
+        var seriesValidation = await database.Documents
+            .AsNoTracking()
+            .Where(item => item.Id == documentId)
+            .Select(item => item.Series!.ATDocCodeValidationSeries)
+            .FirstOrDefaultAsync(cancellationToken);
+        document.Atcud = AtcudFormat.OrFallback(document.Atcud, seriesValidation, document.Number);
 
         var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument
         {
@@ -151,6 +159,8 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.Acronym == document.Type && item.PrintOpenDrawer, cancellationToken);
 
+        var qrMethod = int.TryParse(Value("QRCODE_METHOD"), out var parsedMethod) ? parsedMethod : 1;
+
         return new ThermalInvoiceJob
         {
             Printer = printer,
@@ -158,6 +168,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             TerminalName = terminal!.Designation,
             OpenDrawer = openDrawer,
             PrintQrCode = bool.TryParse(Value("PRINT_QRCODE"), out var printQr) == false || printQr,
+            QrCodeMethod = qrMethod,
             Company = new ThermalCompany
             {
                 Name = Value("COMPANY_NAME"),

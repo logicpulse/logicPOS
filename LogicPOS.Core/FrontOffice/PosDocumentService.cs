@@ -1201,6 +1201,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 Notes = doc.Notes,
                 AtQRCode = doc.ATQRCode,
                 Atcud = doc.ATCUD,
+                AtDocCodeId = doc.Series!.ATDocCodeValidationSeries,
                 ShipFromAddress = doc.ShipFromAddress,
                 ShipToAddress = doc.ShipToAddress,
                 PaymentCondition = doc.PaymentConditionId != null ? doc.PaymentCondition!.Designation : null,
@@ -1273,6 +1274,8 @@ public sealed class PosDocumentService : IPosDocumentService
         {
             document.AtQRCode = mark.QrPayload;
         }
+
+        document.Atcud = AtcudFormat.OrFallback(document.Atcud, document.AtDocCodeId, document.Number);
 
         var wasPrinted = await database.DocumentPrints.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId, cancellationToken);
