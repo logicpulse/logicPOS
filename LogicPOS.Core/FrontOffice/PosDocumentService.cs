@@ -472,7 +472,7 @@ public sealed class PosDocumentService : IPosDocumentService
         var document = created.Value!;
         await database.Documents.AddAsync(document, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
-        return PosDocumentResult.Ok(document.Number);
+        return PosDocumentResult.Ok(document.Id, document.Number);
     }
 
     private static async Task<PosDocumentResult> EnsureSeriesAsync(
