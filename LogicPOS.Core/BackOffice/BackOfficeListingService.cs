@@ -146,7 +146,73 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["PVPVariable"] = "Preço variável",
         ["ChildArticleId"] = "Artigo associado",
         ["ChildQuantity"] = "Quantidade",
-        ["SerialNotice"] = "Números de série"
+        ["SerialNotice"] = "Números de série",
+        // Remaining BO table fields — GTK Resx (pt-PT) only
+        ["AccessCardNumber"] = "Número do cartão de acesso",
+        ["BaudRate"] = "Bits por Segundo",
+        ["DataBits"] = "Bits de Dados",
+        ["Parity"] = "Paridade",
+        ["PortName"] = "Porta",
+        ["StopBits"] = "Bits de Paragem",
+        ["COMPort"] = "Porta",
+        ["NetworkName"] = "Network Share ou Parâmetros porta Usb",
+        ["Code2"] = "Código do País (2 Caracteres)",
+        ["Code3"] = "Código do País (3 Caracteres)",
+        ["Capital"] = "Capital",
+        ["MinimumStock"] = "Stock mínimo",
+        ["DefaultQuantity"] = "Quantidade por defeito",
+        ["SerialNumber"] = "Número de série",
+        ["WorkInStock"] = "Trabalha nos Stocks",
+        ["Entity"] = "Entidade",
+        ["CurrencyCode"] = "Código da Moeda",
+        ["Language"] = "Idioma",
+        ["Tare"] = "Tara",
+        ["Weight"] = "Peso",
+        ["PrintCopies"] = "Cópias",
+        ["Credit"] = "Crédito",
+        ["WarehouseLocationId"] = "Localização",
+        ["ButtonIcon"] = "Ícone do botão",
+        ["SeriesForEachTerminal"] = "Séries independente por cada terminal",
+        ["NumberRangeBegin"] = "Limite inferior",
+        ["NumberRangeEnd"] = "Limite superior",
+        ["CharactersPerLine"] = "Num.Caracteres Linha",
+        ["ThermalCutCommand"] = "Commando de Corte",
+        ["ThermalEncoding"] = "Encoding",
+        ["ThermalImageCompanyLogo"] = "Ficheiro de Imagem de Logotipo",
+        ["ThermalMaxCharsPerLineNormal"] = "Máximo de Caracteres por Linha Letra Normal",
+        ["ThermalMaxCharsPerLineNormalBold"] = "Máximo de Caracteres por Linha Letra Negrito",
+        ["ThermalMaxCharsPerLineSmall"] = "Máximo de Caracteres por Linha Letra Pequena",
+        ["ThermalOpenDrawerValueM"] = "Abertura Gaveta Comm. M",
+        ["ThermalOpenDrawerValueT1"] = "Abertura Gaveta Comm. T1",
+        ["ThermalOpenDrawerValueT2"] = "Abertura Gaveta Comm. T2",
+        ["ThermalPrintLogo"] = "Imprimir Imagem de Logotipo",
+        ["ThermalPrinterId"] = "Impressora Térmica",
+        ["PoleDisplayId"] = "Display de Cliente",
+        ["WeighingMachineId"] = "Balanças",
+        ["BarcodeReaderId"] = "Leitor de Código de Barras",
+        ["CardReaderId"] = "Leitor de Cartões",
+        ["ReaderSizes"] = "Tamanhos Válidos do Leitor",
+        ["AssignedSeating"] = "Assentos atribuído",
+        ["Locations"] = "Localizações",
+        ["ExchangeRate"] = "Câmbio",
+        ["Symbol"] = "Símbolo",
+        ["TimerInterval"] = "Intervalo do Leitor (ms)",
+        ["EndPoint"] = "EndPoint",
+        ["GoToStandByInSeconds"] = "Entra em Suspensão (Seg.)",
+        ["PrintRequestConfirmation"] = "Pergunta se deseja Imprimir documento",
+        ["PrintOpenDrawer"] = "Abrir Gaveta",
+        ["FiscalNumberRegex"] = "Expressão Regular Número Fiscal",
+        ["ZipCodeRegex"] = "Expressão Regular Código Postal",
+        ["ZipCpde"] = "Código-Postal",
+        ["ClosedAt"] = "Data de fecho",
+        ["MeasurementUnitId"] = "Unidade de medida",
+        ["SizeUnitId"] = "Unidade de tamanho",
+        ["Payments"] = "Pagamentos",
+        ["WithholdingTaxAmount"] = "Imposto retido na fonte",
+        ["TypeSubtotal"] = "SubT.",
+        ["CodeTable"] = "CodeTable",
+        ["StandByLine1"] = "StandBy Linha #1",
+        ["StandByLine2"] = "StandBy Linha #2"
     };
 
     private readonly IServiceScopeFactory _scopes;
@@ -2211,6 +2277,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             if (suffix == "UsePromotion")
             {
                 return "Usa";
+            }
+        }
+
+        // Reuse list-column headers already aligned with GTK (ListingColumns profiles).
+        foreach (var profile in ListingColumns.AllHeaders())
+        {
+            if (profile.TryGetValue(name, out var fromList))
+            {
+                return fromList;
             }
         }
 

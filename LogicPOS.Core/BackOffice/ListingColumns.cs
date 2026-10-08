@@ -221,4 +221,13 @@ public static class ListingColumns
 
         return keys.Take(6).Select(key => new ListingColumn { Key = key, Header = key, Visible = true }).ToList();
     }
+
+    /// <summary>Flattened GTK-aligned column headers used by form labels when missing from the main map.</summary>
+    public static IEnumerable<IReadOnlyDictionary<string, string>> AllHeaders()
+    {
+        yield return Profiles.Values
+            .SelectMany(columns => columns)
+            .GroupBy(column => column.Key, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First().Header, StringComparer.Ordinal);
+    }
 }
