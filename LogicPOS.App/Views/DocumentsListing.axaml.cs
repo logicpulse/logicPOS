@@ -609,12 +609,13 @@ public partial class DocumentsListing : UserControl
     {
         var sent = 0;
         var thermal = 0;
-        string? thermalError = null;
+        string? printError = null;
+        var useThermal = string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer);
         foreach (var row in rows)
         {
-            if (string.IsNullOrWhiteSpace(printer))
+            if (useThermal)
             {
-                var (handled, error) = await FrontOfficePrinting.TryPrintInvoiceAsync(row.Id);
+                var (handled, error) = await PrintThermalDocumentAsync(row.Id);
                 if (handled)
                 {
                     if (error is null)
@@ -624,7 +625,7 @@ public partial class DocumentsListing : UserControl
                     }
                     else
                     {
-                        thermalError ??= error;
+                        printError ??= error;
                     }
 
                     continue;
@@ -632,42 +633,59 @@ public partial class DocumentsListing : UserControl
             }
 
             var path = await CreatePdfAsync(row);
-            if (path is not null && PrintFile(path, printer))
+            if (path is null)
             {
+                printError ??= "Não foi possível gerar o PDF.";
+                continue;
+            }
+
+            try
+            {
+                await Task.Run(() => PdfWindowsPrint.Print(path, printer));
                 sent++;
+            }
+            catch (Exception exception)
+            {
+                printError ??= exception.Message;
             }
         }
 
-        var destination = string.IsNullOrWhiteSpace(printer)
-            ? thermal == sent ? "a impressora térmica" : "a impressora predefinida"
-            : printer;
+        var destination = useThermal && thermal == sent
+            ? "a impressora térmica"
+            : string.IsNullOrWhiteSpace(printer) ? "a impressora predefinida" : printer;
         ActionNotice.Text = sent == rows.Count
             ? $"{sent} documento(s) enviado(s) para {destination}."
             : $"Enviados {sent} de {rows.Count} documentos."
-              + (thermalError is null ? string.Empty : $" Erro ao imprimir: {thermalError}");
+              + (printError is null ? string.Empty : $" Erro ao imprimir: {printError}");
     }
 
-    private static bool PrintFile(string path, string? printer)
+    private static async Task<(bool Handled, string? Error)> PrintThermalDocumentAsync(Guid documentId)
     {
-        try
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        if (source is not null && await source.WasPrintedAsync(documentId))
         {
-            var start = new System.Diagnostics.ProcessStartInfo(path)
-            {
-                UseShellExecute = true,
-                Verb = string.IsNullOrWhiteSpace(printer) ? "print" : "printto"
-            };
-            if (string.IsNullOrWhiteSpace(printer) == false)
-            {
-                start.Arguments = "\"" + printer + "\"";
-            }
-
-            System.Diagnostics.Process.Start(start);
-            return true;
+            return await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, 1, "2ª Via");
         }
-        catch (Exception)
+
+        return await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+    }
+
+    private static async Task<bool> IsTerminalThermalPrinterAsync(string? printerName)
+    {
+        if (string.IsNullOrWhiteSpace(printerName))
         {
             return false;
         }
+
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        var settings = source is null ? null : await source.GetTerminalPrinterAsync();
+        if (settings is null)
+        {
+            return false;
+        }
+
+        return string.Equals(settings.Designation, printerName, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(settings.NetworkName, printerName, StringComparison.OrdinalIgnoreCase);
     }
 
     private static List<string> InstalledPrinters()
@@ -863,7 +881,7 @@ public partial class DocumentsListing : UserControl
         ActionNotice.Text = string.Empty;
         if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
         {
-            await office.ShowPdfAsync(path, row.Number);
+            await office.ShowPdfAsync(path, row.Number, row.Id);
         }
     }
 

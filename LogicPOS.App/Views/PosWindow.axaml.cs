@@ -923,12 +923,12 @@ public partial class PosWindow : Window, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title)
+    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
-        await PdfHost.ShowAsync(path, title);
+        await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
         ReportsOverlay.IsVisible = reportsOpen;
     }

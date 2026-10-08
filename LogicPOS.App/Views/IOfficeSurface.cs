@@ -5,7 +5,7 @@ namespace LogicPOS.App.Views;
 /// </summary>
 public interface IOfficeSurface
 {
-    Task ShowPdfAsync(string path, string? title);
+    Task ShowPdfAsync(string path, string? title, Guid? documentId = null);
 
     Task ShowNewDocumentAsync(Guid? draftId = null);
 }

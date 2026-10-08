@@ -1,8 +1,11 @@
-using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using LogicPOS.App.Hardware;
+using LogicPOS.Core;
+using LogicPOS.Core.FrontOffice;
+using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;
 
 namespace LogicPOS.App.Views;
@@ -20,6 +23,7 @@ public partial class PdfDocumentView : UserControl
     private TaskCompletionSource<bool>? _closed;
     private string? _pdfPath;
     private string? _documentTitle;
+    private Guid? _documentId;
     private int _pageIndex;
     private double _zoom = 1;
     private ZoomMode _zoomMode = ZoomMode.Page;
@@ -30,9 +34,10 @@ public partial class PdfDocumentView : UserControl
         PageScroll.SizeChanged += (_, _) => ApplyFit();
     }
 
-    public Task ShowAsync(string path, string? title)
+    public Task ShowAsync(string path, string? title, Guid? documentId = null)
     {
         _pdfPath = path;
+        _documentId = documentId;
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
         TitleText.Text = _documentTitle;
         SetStatus("A carregar...");
@@ -178,7 +183,7 @@ public partial class PdfDocumentView : UserControl
         }
     }
 
-    private void OnPrintClick(object? sender, RoutedEventArgs e)
+    private async void OnPrintClick(object? sender, RoutedEventArgs e)
     {
         if (_pdfPath is null)
         {
@@ -187,17 +192,51 @@ public partial class PdfDocumentView : UserControl
 
         try
         {
-            Process.Start(new ProcessStartInfo(_pdfPath)
+            if (_documentId is Guid documentId && documentId != Guid.Empty)
             {
-                UseShellExecute = true,
-                Verb = "print"
-            });
+                var thermalError = await PrintThermalAsync(documentId);
+                if (thermalError is null)
+                {
+                    SetStatus(string.Empty);
+                    return;
+                }
+
+                // Fall through to PDF when the terminal has no thermal printer.
+                if (thermalError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
+                    && thermalError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
+                {
+                    SetStatus(thermalError);
+                    return;
+                }
+            }
+
+            await Task.Run(() => PdfWindowsPrint.Print(_pdfPath));
             SetStatus(string.Empty);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            SetStatus("Não foi possível imprimir o documento.");
+            SetStatus(string.IsNullOrWhiteSpace(exception.Message)
+                ? "Não foi possível imprimir o documento."
+                : exception.Message);
         }
+    }
+
+    private static async Task<string?> PrintThermalAsync(Guid documentId)
+    {
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        if (source is null)
+        {
+            return "Impressora térmica do terminal não configurada.";
+        }
+
+        if (await source.WasPrintedAsync(documentId))
+        {
+            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, 1, "2ª Via");
+            return reprintError;
+        }
+
+        var (_, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+        return printError;
     }
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)

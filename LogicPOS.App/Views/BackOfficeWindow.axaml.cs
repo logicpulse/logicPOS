@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,9 +8,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +21,7 @@ namespace LogicPOS.App.Views;
 public partial class BackOfficeWindow : Window, IOfficeSurface
 {
     private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
-    private const string IconRoot = "avares://logicpos/Assets/Images/BackOffice/";
+    private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly List<StackPanel> _sectionPanels = new();
@@ -52,6 +54,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         VersionLabel.Text = string.IsNullOrWhiteSpace(number) ? "Versão" : $"Versão {number}";
         CopyrightLabel.Text = copyright;
         AboutCopyright.Text = copyright;
+        ApplyBranding(number ?? "1.6.0");
         BuildMenu();
         _clock.Tick += (_, _) => ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
         Opened += (_, _) => RefreshSession();
@@ -65,6 +68,25 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             e.Cancel = true;
             QuitOverlay.IsVisible = true;
         };
+    }
+
+    private void ApplyBranding(string productVersion)
+    {
+        try
+        {
+            SidebarLogo.Source = AppBranding.LoadSimpleLogo();
+            AboutLogo.Source = AppBranding.LoadSimpleLogo();
+            var reseller = AppComposition.Services?.GetService<ILicenseModule>()?.Reseller;
+            if (string.IsNullOrWhiteSpace(reseller) == false &&
+                reseller.Contains("LogicPulse", StringComparison.OrdinalIgnoreCase) == false)
+            {
+                CopyrightLabel.Text = AppBranding.FormatPoweredBy(productVersion);
+            }
+        }
+        catch
+        {
+            // Keep XAML defaults.
+        }
     }
 
     public void UseBackOfficeOnly()
@@ -92,12 +114,12 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title)
+    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
-        await PdfHost.ShowAsync(path, title);
+        await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
         ReportsOverlay.IsVisible = reportsOpen;
     }
