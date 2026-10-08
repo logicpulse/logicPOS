@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -28,13 +28,13 @@ public partial class PaymentWindow : Window
     private string? _methodToken;
     private bool _cash;
     private decimal _delivered;
-    private bool _replaceCash;
+    private bool _cashTyping;
+    private decimal _cashMoney;
     private bool _filling;
     private bool _confirmPayment;
     private bool _finalConsumer = true;
     private Guid? _customerId;
     private string _defaultCountry = string.Empty;
-    private TextBlock? _cashValue;
     private readonly string? _shareLabel;
 
     public bool PartialPayment { get; private set; }
@@ -54,7 +54,6 @@ public partial class PaymentWindow : Window
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
         BuildMethods();
-        BuildCashKeypad();
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
         Opened += async (_, _) => await LoadCustomerAsync();
@@ -102,7 +101,7 @@ public partial class PaymentWindow : Window
                     new Image
                     {
                         Classes = { "pos_pay_method_icon" },
-                        Source = LoadBitmap($"avares://logicpos/Assets/Images/Pos/Payments/{iconFile}")
+                        Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Pos/Payments/{iconFile}")
                     },
                     new TextBlock { Classes = { "pos_pay_method_text" }, Text = text }
                 }
@@ -469,85 +468,82 @@ public partial class PaymentWindow : Window
         var icon = error ? "error" : "info";
         NoticeTitle.Text = title;
         NoticeMessage.Text = message;
-        NoticeIcon.Source = LoadBitmap($"avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
-        NoticeSymbol.Source = LoadBitmap($"avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
+        NoticeIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
+        NoticeSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
         NoticeOverlay.IsVisible = true;
     }
 
     private void ShowCashPad()
     {
-        _replaceCash = true;
-        if (_cashValue is not null)
-        {
-            _cashValue.Text = Payable.ToString("0.00");
-        }
-
+        _cashTyping = false;
+        _cashMoney = 0;
+        CashEntry.Text = Payable > 0 ? Payable.ToString("0.00", CultureInfo.CurrentCulture) : string.Empty;
         CashOverlay.IsVisible = true;
     }
 
-    private void BuildCashKeypad()
+    private void OnCashMoneyClick(object? sender, RoutedEventArgs e)
     {
-        _cashValue = new TextBlock
+        if (sender is not Button button || button.Tag is not string tag)
         {
-            Classes = { "pos_ticket_cell" },
-            FontSize = 16,
-            FontWeight = Avalonia.Media.FontWeight.Bold,
-            HorizontalAlignment = HorizontalAlignment.Center,
-            Margin = new Avalonia.Thickness(0, 8, 0, 4)
-        };
-        CashKeypad.Children.Add(_cashValue);
-
-        var keys = new WrapPanel { Orientation = Orientation.Horizontal, Width = 315 };
-        foreach (var caption in new[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", ",", "0" })
-        {
-            var digit = caption;
-            var key = new Button { Classes = { "login_pin_key", "login_pin_digit" }, Content = digit };
-            key.Click += (_, _) => AppendCash(digit);
-            keys.Children.Add(key);
+            return;
         }
 
-        var clear = new Button { Classes = { "login_pin_key", "login_pin_ce" }, Content = "CE" };
-        clear.Click += (_, _) =>
+        if (decimal.TryParse(tag, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) == false)
         {
-            _cashValue.Text = "0";
-            _replaceCash = true;
-        };
-        keys.Children.Add(clear);
-        CashKeypad.Children.Add(keys);
+            return;
+        }
 
-        var ok = new Button { Classes = { "login_pin_ok" }, Content = "Ok" };
-        ok.Click += (_, _) => AcceptCash();
-        CashKeypad.Children.Add(ok);
+        if (_cashTyping)
+        {
+            _cashMoney = 0;
+            _cashTyping = false;
+        }
+
+        _cashMoney += amount;
+        CashEntry.Text = _cashMoney.ToString("0.00", CultureInfo.CurrentCulture);
     }
 
-    private void AppendCash(string caption)
+    private void OnCashDigitClick(object? sender, RoutedEventArgs e)
     {
-        if (_cashValue is null)
+        if (sender is not Button button)
         {
             return;
         }
 
-        if (_replaceCash)
+        var caption = button.Tag as string ?? button.Content as string ?? string.Empty;
+        if (_cashTyping == false)
         {
-            _cashValue.Text = caption == "," ? "0," : caption;
-            _replaceCash = false;
+            CashEntry.Text = caption == "," ? "0," : caption;
+            _cashTyping = true;
             return;
         }
 
-        var current = _cashValue.Text ?? string.Empty;
+        var current = CashEntry.Text ?? string.Empty;
         if (caption == "," && current.Contains(','))
         {
             return;
         }
 
-        _cashValue.Text = current == "0" && caption != "," ? caption : current + caption;
+        CashEntry.Text = current.Length == 0 && caption != "," ? caption : current + caption;
     }
 
-    private void AcceptCash()
+    private void OnCashClearClick(object? sender, RoutedEventArgs e)
     {
-        if (decimal.TryParse(_cashValue?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var value))
+        var current = CashEntry.Text ?? string.Empty;
+        CashEntry.Text = current.Length <= 1 ? string.Empty : current[..^1];
+        _cashTyping = true;
+        _cashMoney = 0;
+    }
+
+    private void OnCashOkClick(object? sender, RoutedEventArgs e)
+    {
+        if (decimal.TryParse(CashEntry.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var value) && value > 0)
         {
             _delivered = value;
+        }
+        else
+        {
+            _delivered = Payable;
         }
 
         CashOverlay.IsVisible = false;

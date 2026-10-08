@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Class="LogicPOS.App.Views.PaymentWindow"
         Classes="pos_pay_window"
@@ -15,7 +15,7 @@
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
                         <Image Classes="login_alert_title_icon"
-                               Source="avares://logicpos/Assets/Images/Pos/Payments/icon_window_payments.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
                         <TextBlock Classes="login_alert_title" Text="Pagamentos" />
                     </StackPanel>
                 </Border>
@@ -24,49 +24,49 @@
                     <Button Classes="login_alert_action" Click="OnInvoiceClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_toolbar_finance_document.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_toolbar_finance_document.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fatura" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnClearCustomerClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_nav_delete.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_nav_delete.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Limpar" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnNewCustomerClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_clients.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Novo Cli." />
                         </StackPanel>
                     </Button>
                     <Button x:Name="FullPaymentButton" Classes="login_alert_action selected">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Pag.Total" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnPartialPaymentClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Pag.Parcial" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnConfirmClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Ok" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnCancelClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                         </StackPanel>
                     </Button>
@@ -159,7 +159,7 @@
                             <Button Classes="login_alert_action" Click="OnNoticeCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
@@ -183,7 +183,7 @@
                         <Button Classes="login_alert_action" Click="OnCustomerListCloseClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </StackPanel>
                         </Button>
@@ -206,14 +206,14 @@
                             <Button Classes="login_alert_action" Click="OnPartialConfirmClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
                             <Button Classes="login_alert_action" Click="OnPartialCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                 </StackPanel>
                             </Button>
@@ -227,27 +227,64 @@
         </Panel>
 
         <Panel x:Name="CashOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="400" Height="460">
+            <Border Classes="login_alert_frame" Width="540" Height="530">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">
                             <Image Classes="login_alert_title_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
                             <TextBlock Classes="login_alert_title" Text="Dinheiro requisitado" />
                         </StackPanel>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
                         <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnCashOkClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
                             <Button Classes="login_alert_action" Click="OnCashCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                 </StackPanel>
                             </Button>
                         </StackPanel>
                     </Border>
-                    <StackPanel x:Name="CashKeypad" Classes="pos_ticket_keypad" />
+                    <Grid Classes="pos_price_pad" RowDefinitions="Auto,*" ColumnDefinitions="108,*,108">
+                        <TextBox x:Name="CashEntry" Grid.ColumnSpan="3" Classes="pos_price_entry" IsReadOnly="True" />
+                        <Grid Grid.Row="1" RowDefinitions="*,*,*,*,*">
+                            <Button Classes="pos_price_money" Content="0,05 €" Tag="0.05" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="1" Content="0,10 €" Tag="0.10" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="2" Content="0,20 €" Tag="0.20" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="3" Content="0,50 €" Tag="0.50" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="4" Content="1,00 €" Tag="1.00" Click="OnCashMoneyClick" />
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="1" Margin="6,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
+                            <Button Classes="pos_price_digit" Content="7" Tag="7" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Column="1" Content="8" Tag="8" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Column="2" Content="9" Tag="9" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="1" Content="4" Tag="4" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="1" Grid.Column="1" Content="5" Tag="5" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="1" Grid.Column="2" Content="6" Tag="6" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="2" Content="1" Tag="1" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="2" Grid.Column="1" Content="2" Tag="2" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="2" Grid.Column="2" Content="3" Tag="3" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="3" Content="0" Tag="0" Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="1" Content="," Tag="," Click="OnCashDigitClick" />
+                            <Button Classes="pos_price_digit" Grid.Row="3" Grid.Column="2" Content="CE" Click="OnCashClearClick" />
+                        </Grid>
+                        <Grid Grid.Row="1" Grid.Column="2" RowDefinitions="*,*,*,*,*">
+                            <Button Classes="pos_price_money" Content="5,00 €" Tag="5.00" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="1" Content="10,00 €" Tag="10.00" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="2" Content="20,00 €" Tag="20.00" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="3" Content="50,00 €" Tag="50.00" Click="OnCashMoneyClick" />
+                            <Button Classes="pos_price_money" Grid.Row="4" Content="100,00 €" Tag="100.00" Click="OnCashMoneyClick" />
+                        </Grid>
+                    </Grid>
                 </DockPanel>
             </Border>
         </Panel>
