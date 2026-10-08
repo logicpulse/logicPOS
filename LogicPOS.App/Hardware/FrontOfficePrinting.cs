@@ -1,18 +1,33 @@
 using System.Text;
 using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Hardware;
 
 internal static class FrontOfficePrinting
 {
+    private static string? PrintBlockedMessage()
+    {
+        var license = AppComposition.Services?.GetService<ILicenseModule>();
+        return license is { PrintEnabled: false }
+            ? "A impressão está indisponível sem licença válida."
+            : null;
+    }
+
     /// <summary>
     /// Prints the issued document on the terminal thermal printer (GTK ThermalPrintingService.PrintInvoice).
     /// Returns an error message, or null when printed or when the terminal has no thermal printer.
     /// </summary>
     public static async Task<(bool Handled, string? Error)> TryReprintInvoiceAsync(Guid documentId, int copies, string reason)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return (false, blocked);
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || documentId == Guid.Empty)
         {
@@ -24,7 +39,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (false, "Impressora do terminal não encontrada.");
+                return (true, "Impressora térmica do terminal não configurada.");
             }
 
             var count = Math.Max(1, copies);
@@ -62,6 +77,12 @@ internal static class FrontOfficePrinting
     /// </summary>
     public static async Task<(bool Handled, string? Error)> TryPrintInvoiceAsync(Guid documentId)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return (false, blocked);
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || documentId == Guid.Empty)
         {
@@ -73,7 +94,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (false, null);
+                return (true, "Impressora térmica do terminal não configurada.");
             }
 
             await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, ThermalInvoiceRenderer.Render(job));
@@ -112,6 +133,12 @@ internal static class FrontOfficePrinting
     /// </summary>
     public static async Task<string?> PrintOrderTicketAsync(string table, IReadOnlyList<PosTicketLine> lines)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || lines.Count == 0 || await source.IsOrderTicketEnabledAsync() == false)
         {
@@ -195,10 +222,16 @@ internal static class FrontOfficePrinting
 
     public static async Task<string?> PrintCashMovementAsync(string title, decimal amount, string? note, decimal drawerTotal)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora do terminal não encontrada.";
+            return "Impressora térmica do terminal não configurada.";
         }
 
         var width = Math.Max(16, printer.ColumnsNormal);
@@ -220,10 +253,16 @@ internal static class FrontOfficePrinting
 
     public static async Task<string?> PrintCashReportAsync(PosCashReport report)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora do terminal não encontrada.";
+            return "Impressora térmica do terminal não configurada.";
         }
 
         return await SendAsync(printer, report.Title, RenderCashReport(report, printer.ColumnsNormal));

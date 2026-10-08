@@ -2,6 +2,7 @@ using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,16 +12,21 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
 {
     private readonly IServiceScopeFactory _scopes;
     private readonly ILoginService _login;
+    private readonly IAuditingInformationService? _auditing;
 
-    public LocalThermalPrintSource(IServiceScopeFactory scopes, ILoginService login)
+    public LocalThermalPrintSource(
+        IServiceScopeFactory scopes,
+        ILoginService login,
+        IAuditingInformationService? auditing = null)
     {
         _scopes = scopes;
         _login = login;
+        _auditing = auditing;
     }
 
     public async Task<ThermalInvoiceJob?> GetInvoiceJobAsync(Guid documentId, CancellationToken cancellationToken = default)
     {
-        var terminalId = await _login.GetFirstTerminalIdAsync(cancellationToken);
+        var terminalId = await ResolveTerminalIdAsync(cancellationToken);
         if (terminalId is null)
         {
             return null;
@@ -34,22 +40,42 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .Select(item => new
             {
                 item.Designation,
-                Printer = item.ThermalPrinter == null || item.ThermalPrinter.IsDeleted
+                Thermal = item.ThermalPrinter == null || item.ThermalPrinter.IsDeleted
                     ? null
-                    : new ThermalPrinterSettings
+                    : new
                     {
-                        Designation = item.ThermalPrinter.Designation,
-                        NetworkName = item.ThermalPrinter.NetworkName,
-                        ColumnsNormal = item.ThermalPrinter.ThermalMaxCharsPerLineNormal ?? ThermalPrinterSettings.DefaultColumnsNormal,
-                        ColumnsBold = item.ThermalPrinter.ThermalMaxCharsPerLineNormalBold ?? ThermalPrinterSettings.DefaultColumnsBold,
-                        ColumnsSmall = item.ThermalPrinter.ThermalMaxCharsPerLineSmall ?? ThermalPrinterSettings.DefaultColumnsSmall
+                        item.ThermalPrinter.Designation,
+                        item.ThermalPrinter.NetworkName,
+                        item.ThermalPrinter.ThermalMaxCharsPerLineNormal,
+                        item.ThermalPrinter.ThermalMaxCharsPerLineNormalBold,
+                        item.ThermalPrinter.ThermalMaxCharsPerLineSmall
+                    },
+                Fallback = item.Printer == null || item.Printer.IsDeleted
+                    ? null
+                    : new
+                    {
+                        item.Printer.Designation,
+                        item.Printer.NetworkName,
+                        item.Printer.ThermalMaxCharsPerLineNormal,
+                        item.Printer.ThermalMaxCharsPerLineNormalBold,
+                        item.Printer.ThermalMaxCharsPerLineSmall
                     }
             })
             .FirstOrDefaultAsync(cancellationToken);
-        if (terminal?.Printer is null)
+        var chosen = terminal?.Thermal ?? terminal?.Fallback;
+        if (chosen is null)
         {
             return null;
         }
+
+        var printer = new ThermalPrinterSettings
+        {
+            Designation = chosen.Designation,
+            NetworkName = chosen.NetworkName,
+            ColumnsNormal = chosen.ThermalMaxCharsPerLineNormal ?? ThermalPrinterSettings.DefaultColumnsNormal,
+            ColumnsBold = chosen.ThermalMaxCharsPerLineNormalBold ?? ThermalPrinterSettings.DefaultColumnsBold,
+            ColumnsSmall = chosen.ThermalMaxCharsPerLineSmall ?? ThermalPrinterSettings.DefaultColumnsSmall
+        };
 
         var document = await database.Documents
             .AsNoTracking()
@@ -127,9 +153,9 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
 
         return new ThermalInvoiceJob
         {
-            Printer = terminal.Printer,
+            Printer = printer,
             Document = document,
-            TerminalName = terminal.Designation,
+            TerminalName = terminal!.Designation,
             OpenDrawer = openDrawer,
             PrintQrCode = bool.TryParse(Value("PRINT_QRCODE"), out var printQr) == false || printQr,
             Company = new ThermalCompany
@@ -153,7 +179,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
 
     public async Task<ThermalPrinterSettings?> GetTerminalPrinterAsync(CancellationToken cancellationToken = default)
     {
-        var terminalId = await _login.GetFirstTerminalIdAsync(cancellationToken);
+        var terminalId = await ResolveTerminalIdAsync(cancellationToken);
         if (terminalId is null)
         {
             return null;
@@ -161,25 +187,34 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        return await database.Terminals
+        var row = await database.Terminals
             .AsNoTracking()
             .Where(item => item.Id == terminalId)
-            .Select(item => item.ThermalPrinter == null || item.ThermalPrinter.IsDeleted
-                ? null
-                : new ThermalPrinterSettings
-                {
-                    Designation = item.ThermalPrinter.Designation,
-                    NetworkName = item.ThermalPrinter.NetworkName,
-                    ColumnsNormal = item.ThermalPrinter.ThermalMaxCharsPerLineNormal ?? ThermalPrinterSettings.DefaultColumnsNormal,
-                    ColumnsBold = item.ThermalPrinter.ThermalMaxCharsPerLineNormalBold ?? ThermalPrinterSettings.DefaultColumnsBold,
-                    ColumnsSmall = item.ThermalPrinter.ThermalMaxCharsPerLineSmall ?? ThermalPrinterSettings.DefaultColumnsSmall
-                })
+            .Select(item => new
+            {
+                Thermal = item.ThermalPrinter == null || item.ThermalPrinter.IsDeleted ? null : item.ThermalPrinter,
+                Fallback = item.Printer == null || item.Printer.IsDeleted ? null : item.Printer
+            })
             .FirstOrDefaultAsync(cancellationToken);
+        var chosen = row?.Thermal ?? row?.Fallback;
+        if (chosen is null)
+        {
+            return null;
+        }
+
+        return new ThermalPrinterSettings
+        {
+            Designation = chosen.Designation,
+            NetworkName = chosen.NetworkName,
+            ColumnsNormal = chosen.ThermalMaxCharsPerLineNormal ?? ThermalPrinterSettings.DefaultColumnsNormal,
+            ColumnsBold = chosen.ThermalMaxCharsPerLineNormalBold ?? ThermalPrinterSettings.DefaultColumnsBold,
+            ColumnsSmall = chosen.ThermalMaxCharsPerLineSmall ?? ThermalPrinterSettings.DefaultColumnsSmall
+        };
     }
 
     public async Task<CustomerDisplaySettings?> GetCustomerDisplayAsync(CancellationToken cancellationToken = default)
     {
-        var terminalId = await _login.GetFirstTerminalIdAsync(cancellationToken);
+        var terminalId = await ResolveTerminalIdAsync(cancellationToken);
         if (terminalId is null)
         {
             return null;
@@ -254,6 +289,17 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             Designation = secondPrint ? "Segunda via" : "Original"
         });
         await database.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<Guid?> ResolveTerminalIdAsync(CancellationToken cancellationToken)
+    {
+        var auditingId = _auditing?.GetTerminalId();
+        if (auditingId is Guid id && id != Guid.Empty)
+        {
+            return id;
+        }
+
+        return await _login.GetFirstTerminalIdAsync(cancellationToken);
     }
 
     private static bool IsOn(string? value)
