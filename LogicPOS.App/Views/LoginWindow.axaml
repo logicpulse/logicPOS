@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LogicPOS.App.Views"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
@@ -7,27 +7,27 @@
         x:CompileBindings="True"
         Classes="login_window"
         Title="logicpos"
-        Icon="avares://logicpos/Assets/application.ico"
+        Icon="avares://LogicPOS.App/Assets/application.ico"
         WindowState="FullScreen"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen">
     <Panel>
         <Image Classes="app_background"
-               Source="avares://logicpos/Assets/Images/background_logicpos.png"
+               Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
-        <Image Classes="login_logo"
-               Source="avares://logicpos/Assets/Images/logicpos_logo.png"
+        <Image x:Name="LoginLogo"
+               Classes="login_logo"
+               Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
         <Border Classes="login_users_frame" />
         <Border Classes="login_pinpad_frame" />
-        <Border Classes="login_version_frame" />
 
         <Button Classes="login_minimize" Click="OnMinimizeClick" />
 
         <StackPanel Classes="login_users_column">
             <Button Classes="login_scroll" Click="OnPreviousUsersClick">
                 <Image Classes="login_scroll_icon"
-                       Source="avares://logicpos/Assets/Images/button_family_scroll_up.png" />
+                       Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
             </Button>
             <ItemsControl Classes="login_users" ItemsSource="{Binding UserSlots}">
                 <ItemsControl.ItemsPanel>
@@ -45,7 +45,7 @@
                                     Tag="{Binding}">
                                 <Panel>
                                     <Image Classes="login_user_icon"
-                                           Source="avares://logicpos/Assets/Images/icon_user_default.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
                                     <Border Classes="login_user_caption">
                                         <TextBlock Classes="login_user_name" Text="{Binding Name}" />
                                     </Border>
@@ -57,14 +57,14 @@
             </ItemsControl>
             <Button Classes="login_scroll" Click="OnNextUsersClick">
                 <Image Classes="login_scroll_icon"
-                       Source="avares://logicpos/Assets/Images/button_family_scroll_down.png" />
+                       Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png" />
             </Button>
         </StackPanel>
 
         <Border Classes="login_pinpad">
             <Grid Classes="login_pinpad_keys"
                   ColumnDefinitions="105,105,105"
-                  RowDefinitions="46,56,56,56,56,4,Auto,*">
+                  RowDefinitions="46,56,56,56,56,4,Auto,Auto,*">
                 <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
                     <TextBox x:Name="PinEntry"
                              Classes="login_pin_entry"
@@ -77,10 +77,10 @@
                             Click="OnTogglePinClick">
                         <Panel>
                             <svg:Svg Classes="login_pin_eye"
-                                     Path="avares://logicpos/Assets/Images/Login/botao_password_invisivel.svg"
+                                     Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg"
                                      IsVisible="{Binding !PinVisible}" />
                             <svg:Svg Classes="login_pin_eye"
-                                     Path="avares://logicpos/Assets/Images/Login/botao_password_visivel.svg"
+                                     Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg"
                                      IsVisible="{Binding PinVisible}" />
                         </Panel>
                     </Button>
@@ -113,8 +113,14 @@
                            Grid.ColumnSpan="3"
                            Text="{Binding StatusMessage}" />
 
+                <TextBlock Classes="login_version"
+                           Grid.Row="7"
+                           Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           Text="{Binding VersionText}" />
+
                 <Button Classes="login_pin_key login_pin_ok"
-                        Grid.Row="7"
+                        Grid.Row="8"
                         Grid.Column="0"
                         Grid.ColumnSpan="3"
                         VerticalAlignment="Bottom"
@@ -123,8 +129,6 @@
                         Click="OnSubmitClick" />
             </Grid>
         </Border>
-
-        <TextBlock Classes="login_version" Text="{Binding VersionText}" />
 
         <Panel Classes="login_alert_overlay" IsVisible="{Binding AlertVisible}">
             <Border Classes="login_alert_frame"
@@ -135,13 +139,13 @@
                         <StackPanel Classes="login_alert_title_row">
                             <Image Classes="login_alert_title_icon"
                                    IsVisible="{Binding AlertIsQuestion}"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
                             <Image Classes="login_alert_title_icon"
                                    IsVisible="{Binding AlertIsError}"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_error_window.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_error_window.png" />
                             <Image Classes="login_alert_title_icon"
                                    IsVisible="{Binding AlertIsInformation}"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
                             <TextBlock Classes="login_alert_title" Text="{Binding AlertTitle}" />
                         </StackPanel>
                     </Border>
@@ -151,10 +155,10 @@
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            IsVisible="{Binding AlertShowsCancel}"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
                                     <Image Classes="login_alert_action_icon"
                                            IsVisible="{Binding AlertIsOkOnly}"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="{Binding AlertConfirmText}" />
                                 </StackPanel>
                             </Button>
@@ -163,7 +167,7 @@
                                     Click="OnAlertDismissClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
-                                           Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Não" />
                                 </StackPanel>
                             </Button>
@@ -172,13 +176,13 @@
                     <Grid Classes="login_alert_body">
                         <Image Classes="login_alert_symbol"
                                IsVisible="{Binding AlertIsQuestion}"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
                         <Image Classes="login_alert_symbol"
                                IsVisible="{Binding AlertIsError}"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_error.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_error.png" />
                         <Image Classes="login_alert_symbol"
                                IsVisible="{Binding AlertIsInformation}"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
                         <TextBlock Classes="login_alert_message" Text="{Binding AlertMessage}" />
                     </Grid>
                 </DockPanel>
@@ -192,11 +196,11 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Classes="login_alert_title_row">
                                 <Image Classes="login_alert_title_icon"
-                                       Source="avares://logicpos/Assets/Images/BackOffice/icon_terminals_w.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_terminals_w.png" />
                                 <TextBlock Classes="login_alert_title" Text="Selecione Registo" />
                             </StackPanel>
                             <Button Grid.Column="1" Classes="bo_window_button" Click="OnTerminalCancelClick" ToolTip.Tip="Fechar">
-                                <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                                <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                             </Button>
                         </Grid>
                     </Border>
@@ -206,7 +210,7 @@
                             <Border Classes="bo_listing_search" HorizontalAlignment="Stretch" Width="NaN" Margin="0,0,16,0">
                                 <DockPanel>
                                     <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" IsHitTestVisible="False" ToolTip.Tip="Pesquisar">
-                                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                                     </Button>
                                     <TextBox x:Name="TerminalSearch"
                                              Classes="bo_listing_search_box"
@@ -215,13 +219,13 @@
                             </Border>
                             <Button Grid.Column="1" Classes="login_alert_action" Click="OnTerminalConfirmClick">
                                 <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Ok" />
                                 </StackPanel>
                             </Button>
                             <Button Grid.Column="2" Classes="login_alert_action" Margin="8,0,0,0" Click="OnTerminalCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                 </StackPanel>
                             </Button>

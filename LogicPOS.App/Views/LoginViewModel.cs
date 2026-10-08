@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using LogicPOS.Core.Authentication;
@@ -46,13 +46,14 @@ public sealed class LoginViewModel : INotifyPropertyChanged
     private string? _pendingNewPin;
     private string? _previousPin;
     private PinMode _mode = PinMode.Password;
+    private string _versionText = string.Empty;
 
     public LoginViewModel(ILoginService? loginService, string? startupError)
     {
         _loginService = loginService;
         _startupError = startupError;
         UserSlots = new ObservableCollection<UserSlot>();
-        VersionText = "Powered by LogicPulse Technologies © Vers. v1.0.0";
+        _versionText = "Powered by LogicPulse Technologies © Vers. v1.6.0";
         if (string.IsNullOrWhiteSpace(startupError) == false)
         {
             StatusMessage = startupError;
@@ -69,7 +70,11 @@ public sealed class LoginViewModel : INotifyPropertyChanged
 
     public ObservableCollection<UserSlot> UserSlots { get; }
 
-    public string VersionText { get; }
+    public string VersionText
+    {
+        get => _versionText;
+        set => SetField(ref _versionText, value);
+    }
 
     public string StatusMessage
     {
@@ -133,8 +138,8 @@ public sealed class LoginViewModel : INotifyPropertyChanged
     public char PinMask => _pinIsError || _pinVisible ? '\0' : '*';
 
     public string PinVisibilityIcon => _pinVisible
-        ? "avares://logicpos/Assets/Images/Login/botao_password_visivel.svg"
-        : "avares://logicpos/Assets/Images/Login/botao_password_invisivel.svg";
+        ? "avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg"
+        : "avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg";
 
     public string PinVisibilityTip => _pinVisible ? "Ocultar PIN" : "Mostrar PIN";
 

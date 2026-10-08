@@ -4,7 +4,7 @@
     <Style Selector="Window.login_window">
         <Setter Property="Background" Value="#111111" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
     </Style>
 
     <Style Selector="Image.app_background">
@@ -28,7 +28,7 @@
         <Setter Property="CornerRadius" Value="0" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Image Source="avares://logicpos/Assets/Images/icon_window_minimize.png"
+                <Image Source="avares://LogicPOS.App/Assets/Images/icon_window_minimize.png"
                        Width="27"
                        Height="27"
                        Stretch="None" />
@@ -62,17 +62,6 @@
         <Setter Property="Margin" Value="0,0,104,0" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Background" Value="#38FFFFFF" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="IsHitTestVisible" Value="False" />
-    </Style>
-
-    <Style Selector="Border.login_version_frame">
-        <Setter Property="Width" Value="344" />
-        <Setter Property="Height" Value="89" />
-        <Setter Property="Margin" Value="0,0,104,109" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Background" Value="#38FFFFFF" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="IsHitTestVisible" Value="False" />
@@ -163,7 +152,7 @@
     </Style>
 
     <Style Selector="TextBlock.login_user_name">
-        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
         <Setter Property="FontSize" Value="7" />
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="HorizontalAlignment" Value="Center" />
@@ -388,7 +377,7 @@
                 <Border Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}">
-                    <Image Source="avares://logicpos/Assets/Images/pinpad_password_reset.png"
+                    <Image Source="avares://LogicPOS.App/Assets/Images/pinpad_password_reset.png"
                            Width="22"
                            Height="22"
                            Stretch="Uniform"
@@ -414,17 +403,15 @@
     </Style>
 
     <Style Selector="TextBlock.login_version">
-        <Setter Property="Width" Value="307" />
-        <Setter Property="Height" Value="50" />
-        <Setter Property="Margin" Value="0,0,124,128" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="8" />
-        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="2,6,2,8" />
+        <Setter Property="Foreground" Value="#B8B8B8" />
+        <Setter Property="FontSize" Value="10" />
+        <Setter Property="FontWeight" Value="Normal" />
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Padding" Value="0,16,0,0" />
+        <Setter Property="Opacity" Value="0.95" />
     </Style>
 
     <Style Selector="Panel.login_alert_overlay">
@@ -594,7 +581,7 @@
     <Style Selector="Window.pos_window">
         <Setter Property="Background" Value="#111111" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
     </Style>
 
     <Style Selector="Border.pos_logo_box">
@@ -827,7 +814,7 @@
     </Style>
 
     <Style Selector="Button.pos_menu_button">
-        <Setter Property="FontSize" Value="7" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
@@ -870,14 +857,25 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Margin" Value="4" />
-        <Setter Property="MaxHeight" Value="32" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Margin" Value="3,2" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MaxHeight" Value="40" />
     </Style>
 
-    <Style Selector="Image.pos_favorites_image">
+    <Style Selector="Image.pos_menu_image">
         <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="Margin" Value="8,8,8,28" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="4,4,4,2" />
+    </Style>
+
+    <Style Selector="Image.pos_menu_image_fill">
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="2,2,2,0" />
     </Style>
 
     <Style Selector="Button.pos_scroll">
@@ -906,7 +904,7 @@
 
     <Style Selector="Button.pos_pad_button">
         <Setter Property="Foreground" Value="#000000" />
-        <Setter Property="FontSize" Value="7" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="Padding" Value="4,2" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
@@ -949,7 +947,7 @@
     <Style Selector="Button.pos_toolbar_button">
         <Setter Property="Background" Value="#485460" />
         <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="7" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="Padding" Value="4,2" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
@@ -976,7 +974,7 @@
     <Style Selector="Button.pos_toolbar_button_close">
         <Setter Property="Background" Value="#C25E4F" />
         <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="7" />
+        <Setter Property="FontSize" Value="11" />
         <Setter Property="Padding" Value="4,2" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
@@ -1009,7 +1007,9 @@
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="MaxWidth" Value="110" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="MaxWidth" Value="120" />
     </Style>
 
     <Style Selector="Window.pos_pay_window">
@@ -1689,7 +1689,7 @@
 
     <Style Selector="Window.bo_window">
         <Setter Property="Background" Value="#585858" />
-        <Setter Property="FontFamily" Value="avares://logicpos/Assets/Fonts#Montserrat" />
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
     </Style>
 
     <Style Selector="Border.bo_status">
@@ -4114,5 +4114,270 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <!-- Registration (q.track-inspired layout) -->
+    <Style Selector="Window.register_window">
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
+        <Setter Property="Background" Value="#2A2C2E" />
+    </Style>
+
+    <Style Selector="Panel.register_shell">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="12" />
+    </Style>
+
+    <Style Selector="Border.register_card">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="BoxShadow" Value="0 12 40 0 #59000000" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.register_topbar">
+        <Setter Property="Background" Value="#323537" />
+        <Setter Property="Padding" Value="22,14" />
+        <Setter Property="BorderBrush" Value="#1F2122" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+    </Style>
+
+    <Style Selector="StackPanel.register_title">
+        <Setter Property="Spacing" Value="12" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Image.register_title_icon">
+        <Setter Property="Height" Value="30" />
+        <Setter Property="Stretch" Value="Uniform" />
+    </Style>
+
+    <Style Selector="TextBlock.register_title_text">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.register_langs">
+        <Setter Property="Spacing" Value="4" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.register_lang">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Opacity" Value="0.85" />
+    </Style>
+
+    <Style Selector="Button.register_lang:pointerover">
+        <Setter Property="Opacity" Value="1" />
+    </Style>
+
+    <Style Selector="svg|Svg.register_lang_flag">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+    </Style>
+
+    <Style Selector="Grid.register_body">
+        <Setter Property="Margin" Value="20,16,20,8" />
+    </Style>
+
+    <Style Selector="StackPanel.register_form_col">
+        <Setter Property="MinWidth" Value="0" />
+    </Style>
+
+    <Style Selector="TextBlock.register_welcome_title">
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="TextBlock.register_welcome_text">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#555555" />
+        <Setter Property="LineHeight" Value="20" />
+    </Style>
+
+    <Style Selector="Border.register_section_title">
+        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="Padding" Value="0,0,0,6" />
+        <Setter Property="BorderBrush" Value="#2595D2" />
+        <Setter Property="BorderThickness" Value="0,0,0,2" />
+    </Style>
+
+    <Style Selector="TextBlock.register_section_title_text">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="LetterSpacing" Value="0.5" />
+    </Style>
+
+    <Style Selector="TextBlock.register_label">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="#555555" />
+    </Style>
+
+    <Style Selector="TextBox.register_input">
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="BorderBrush" Value="#D6D6D6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="MinHeight" Value="36" />
+    </Style>
+
+    <Style Selector="TextBox.register_input:focus">
+        <Setter Property="BorderBrush" Value="#2595D2" />
+    </Style>
+
+    <Style Selector="TextBox.register_input_readonly">
+        <Setter Property="Background" Value="#F5F5F5" />
+        <Setter Property="Foreground" Value="#555555" />
+    </Style>
+
+    <Style Selector="ComboBox.register_combo">
+        <Setter Property="Padding" Value="8,6" />
+        <Setter Property="BorderBrush" Value="#D6D6D6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Border.register_contact_col">
+        <Setter Property="Background" Value="#F9F9F9" />
+        <Setter Property="BorderBrush" Value="#ECECEC" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14" />
+    </Style>
+
+    <Style Selector="TextBlock.register_contact_header">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="Button.register_tab">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0,0,0,3" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Padding" Value="4,8" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.register_tab:pointerover">
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="Button.register_tab.active">
+        <Setter Property="Foreground" Value="#2595D2" />
+        <Setter Property="BorderBrush" Value="#2595D2" />
+    </Style>
+
+    <Style Selector="Border.register_contact_item">
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#ECECEC" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="12,10" />
+    </Style>
+
+    <Style Selector="TextBlock.register_contact_label">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#888888" />
+        <Setter Property="LetterSpacing" Value="0.5" />
+    </Style>
+
+    <Style Selector="TextBlock.register_contact_value">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="StackPanel.register_contact_footer">
+        <Setter Property="Margin" Value="0,14,0,0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.register_website_text">
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
+    <Style Selector="Border.register_actions">
+        <Setter Property="Background" Value="#FAFAFA" />
+        <Setter Property="BorderBrush" Value="#EEEEEE" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="Padding" Value="28,16,28,22" />
+    </Style>
+
+    <Style Selector="TextBlock.register_notice">
+        <Setter Property="Foreground" Value="#B00020" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Margin" Value="0,0,16,0" />
+        <Setter Property="MaxWidth" Value="420" />
+    </Style>
+
+    <Style Selector="StackPanel.register_action_buttons">
+        <Setter Property="Spacing" Value="10" />
+    </Style>
+
+    <Style Selector="Button.register_btn">
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Padding" Value="18,0" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.register_btn_primary">
+        <Setter Property="Background" Value="#323537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
+    <Style Selector="Button.register_btn_primary:pointerover">
+        <Setter Property="Background" Value="#242729" />
+    </Style>
+
+    <Style Selector="Button.register_btn_secondary">
+        <Setter Property="Background" Value="#F5F5F5" />
+        <Setter Property="Foreground" Value="#333333" />
+        <Setter Property="BorderBrush" Value="#CCCCCC" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style Selector="Button.register_btn_secondary:pointerover">
+        <Setter Property="Background" Value="#E8E8E8" />
+        <Setter Property="BorderBrush" Value="#999999" />
+    </Style>
+
+    <Style Selector="Button.register_btn:disabled">
+        <Setter Property="Opacity" Value="0.6" />
     </Style>
 </Styles>
