@@ -24,7 +24,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         "Id", "CreatedAt", "CreatedBy", "CreatedWhere", "UpdatedAt", "UpdatedBy", "UpdatedWhere",
         "DeletedAt", "IsDeleted", "Hash", "Hash4Code", "HashControl", "Password", "AccessPin",
         "AccessPassword", "ExternalDocument", "QrCode", "ButtonImage", "BaseConsumption", "BaseOffers",
-        "PVPOffers", "Remarks"
+        "PVPOffers", "Remarks",
+        // Place: exist on entity / DB but GTK DialogConfigurationPlace never shows them
+        "TypeSubtotal", "AccountType", "OrderPrintMode"
     ];
 
     private static readonly Dictionary<string, string> Headers = new(StringComparer.Ordinal)
