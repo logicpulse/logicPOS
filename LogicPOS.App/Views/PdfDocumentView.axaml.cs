@@ -286,11 +286,19 @@ public partial class PdfDocumentView : UserControl
     private void UpdateReprintMotiveState()
     {
         var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
-        ReprintMotiveLabel.IsEnabled = secondCopy == false;
-        ReprintMotive.IsEnabled = secondCopy == false;
-        if (secondCopy)
+        var needMotive = secondCopy == false;
+        ReprintMotiveLabel.IsEnabled = needMotive;
+        ReprintMotiveLabel.IsVisible = needMotive;
+        ReprintMotive.IsEnabled = needMotive;
+        ReprintMotive.IsVisible = needMotive;
+        if (needMotive == false)
         {
             ReprintMotive.Text = string.Empty;
+        }
+
+        if (ReprintMotive.Parent is DockPanel row && row.Classes.Contains("bo_touch_row"))
+        {
+            row.IsVisible = needMotive;
         }
     }
 

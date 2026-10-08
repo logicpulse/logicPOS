@@ -442,11 +442,23 @@ public partial class DocumentsListing : UserControl
         var reprint = kind == "reprint";
         var printer = kind == "print";
         PromptLabel.IsVisible = reprint == false && string.IsNullOrWhiteSpace(label) == false;
-        PromptValue.IsVisible = reprint == false && printer == false;
+        SetTouchFieldVisible(PromptValue, reprint == false && printer == false);
         PrinterBox.IsVisible = printer;
         ReprintPanel.IsVisible = reprint;
         PromptFrame.Classes.Set("bo_reprint_prompt", reprint);
         PromptOverlay.IsVisible = true;
+    }
+
+    /// <summary>
+    /// TouchFields wraps TextBoxes in a DockPanel with a keyboard button; hide the whole row.
+    /// </summary>
+    private static void SetTouchFieldVisible(Control field, bool visible)
+    {
+        field.IsVisible = visible;
+        if (field.Parent is DockPanel row && row.Classes.Contains("bo_touch_row"))
+        {
+            row.IsVisible = visible;
+        }
     }
 
     private async Task OpenReprintPromptAsync(PosDocumentRow row)
@@ -513,9 +525,12 @@ public partial class DocumentsListing : UserControl
     private void UpdateReprintMotiveState()
     {
         var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
-        ReprintMotiveLabel.IsEnabled = secondCopy == false;
-        ReprintMotive.IsEnabled = secondCopy == false;
-        if (secondCopy)
+        var needMotive = secondCopy == false;
+        ReprintMotiveLabel.IsEnabled = needMotive;
+        ReprintMotive.IsEnabled = needMotive;
+        SetTouchFieldVisible(ReprintMotive, needMotive);
+        ReprintMotiveLabel.IsVisible = needMotive;
+        if (needMotive == false)
         {
             ReprintMotive.Text = string.Empty;
         }
