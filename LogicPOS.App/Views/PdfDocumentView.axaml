@@ -1,13 +1,14 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              x:Class="LogicPOS.App.Views.PdfDocumentView">
     <Border Classes="login_alert_frame" Width="1200" Height="860">
+        <Panel>
         <DockPanel>
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">
                     <Image Classes="login_alert_title_icon"
-                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                     <TextBlock x:Name="TitleText" Classes="login_alert_title" Text="Documento" />
                 </StackPanel>
             </Border>
@@ -16,7 +17,7 @@
                     <Button Classes="login_alert_action" Click="OnCloseClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                         </StackPanel>
                     </Button>
@@ -26,34 +27,34 @@
                 <DockPanel>
                     <StackPanel Classes="bo_pdf_tools" DockPanel.Dock="Right">
                         <Button x:Name="PreviousButton" Classes="bo_listing_icon_button" Click="OnPreviousClick" ToolTip.Tip="Anterior">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_prev.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_prev.svg" />
                         </Button>
                         <TextBlock x:Name="PageLabel" Classes="bo_pdf_meta" Text="" />
                         <Button x:Name="NextButton" Classes="bo_listing_icon_button" Click="OnNextClick" ToolTip.Tip="Seguinte">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_next.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_next.svg" />
                         </Button>
                     </StackPanel>
                     <StackPanel Classes="bo_pdf_tools">
                         <Button Classes="bo_listing_icon_button" Click="OnPrintClick" ToolTip.Tip="Imprimir">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_print.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_print.svg" />
                         </Button>
                         <Button Classes="bo_listing_icon_button" Click="OnExportClick" ToolTip.Tip="Exportar">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_export.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_export.svg" />
                         </Button>
                         <Border Classes="bo_pdf_split" />
                         <Button Classes="bo_listing_icon_button" Click="OnZoomOutClick" ToolTip.Tip="Reduzir">
-                            <Image Classes="bo_pdf_zoom" Source="avares://logicpos/Assets/Images/Pdf/zoom_out.png" />
+                            <Image Classes="bo_pdf_zoom" Source="avares://LogicPOS.App/Assets/Images/Pdf/zoom_out.png" />
                         </Button>
                         <TextBlock x:Name="ZoomLabel" Classes="bo_pdf_meta" Text="" />
                         <Button Classes="bo_listing_icon_button" Click="OnZoomInClick" ToolTip.Tip="Ampliar">
-                            <Image Classes="bo_pdf_zoom" Source="avares://logicpos/Assets/Images/Pdf/zoom_in.png" />
+                            <Image Classes="bo_pdf_zoom" Source="avares://LogicPOS.App/Assets/Images/Pdf/zoom_in.png" />
                         </Button>
                         <Border Classes="bo_pdf_split" />
                         <Button x:Name="FitPageButton" Classes="bo_listing_icon_button bo_pdf_tool_on" Click="OnFitPageClick" ToolTip.Tip="Ajustar à página">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_fit_page.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_fit_page.svg" />
                         </Button>
                         <Button x:Name="FitWidthButton" Classes="bo_listing_icon_button" Click="OnFitWidthClick" ToolTip.Tip="Ajustar à largura">
-                            <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Pdf/pdf_fit_width.svg" />
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Pdf/pdf_fit_width.svg" />
                         </Button>
                     </StackPanel>
                 </DockPanel>
@@ -63,5 +64,43 @@
                 <StackPanel x:Name="PagesHost" Classes="bo_pdf_pages" />
             </ScrollViewer>
         </DockPanel>
+        <Panel x:Name="ReprintOverlay" Classes="login_alert_overlay" ZIndex="20" IsVisible="False">
+            <Border Classes="login_alert_frame bo_entity_prompt" Width="420" Height="340">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                            <TextBlock x:Name="ReprintTitle" Classes="login_alert_title" Text="Segunda via" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnReprintConfirmClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnReprintCancelClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Classes="bo_entity_form" Spacing="8">
+                        <TextBlock Classes="bo_new_doc_caption" Text="Cópias" />
+                        <TextBox x:Name="ReprintCopies" Classes="bo_entity_input" Text="1" />
+                        <TextBlock Classes="bo_new_doc_caption" Text="Motivo da reimpressão" />
+                        <TextBox x:Name="ReprintMotive" Classes="bo_entity_input" PlaceholderText="ex.: Duplicado" />
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Panel>
+        </Panel>
     </Border>
 </UserControl>

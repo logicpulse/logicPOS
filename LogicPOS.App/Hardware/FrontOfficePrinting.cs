@@ -60,7 +60,7 @@ internal static class FrontOfficePrinting
             }
 
             var count = Math.Max(1, copies);
-            var payload = ThermalInvoiceRenderer.Render(job);
+            var payload = ThermalInvoiceRenderer.Render(job, isSecondCopy: true);
             for (var copy = 0; copy < count; copy++)
             {
                 await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, payload);

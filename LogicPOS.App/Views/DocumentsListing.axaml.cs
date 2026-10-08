@@ -439,9 +439,26 @@ public partial class DocumentsListing : UserControl
         PromptTitle.Text = title;
         PromptLabel.Text = label;
         PromptValue.Text = string.Empty;
-        PromptValue.IsVisible = kind != "print";
-        PrinterBox.IsVisible = kind == "print";
+        var reprint = kind == "reprint";
+        var printer = kind == "print";
+        PromptLabel.IsVisible = reprint == false;
+        PromptValue.IsVisible = reprint == false && printer == false;
+        PrinterBox.IsVisible = printer;
+        ReprintPanel.IsVisible = reprint;
+        if (reprint)
+        {
+            ReprintCopies.Text = "1";
+            ReprintMotive.Text = string.Empty;
+        }
+
         PromptOverlay.IsVisible = true;
+    }
+
+    private void OpenReprintPrompt(PosDocumentRow row)
+    {
+        _pendingPrintIds.Clear();
+        _pendingPrintIds.Add(row.Id);
+        OpenPrompt("reprint", $"Doc.Nº: {row.Number}", string.Empty);
     }
 
     private async void OnPromptConfirmClick(object? sender, RoutedEventArgs e)
@@ -464,15 +481,13 @@ public partial class DocumentsListing : UserControl
                 return;
             }
 
-            var copies = 1;
-            var reason = value;
-            var split = value.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length > 0 && int.TryParse(split[0], out var parsed) && parsed > 0)
+            if (int.TryParse(ReprintCopies.Text?.Trim(), out var copies) == false || copies < 1)
             {
-                copies = parsed;
-                reason = split.Length > 1 ? split[1].Trim() : string.Empty;
+                ActionNotice.Text = "Indique o número de cópias.";
+                return;
             }
 
+            var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
             if (string.IsNullOrWhiteSpace(reason))
             {
                 ActionNotice.Text = "Indique o motivo da segunda via.";
@@ -566,28 +581,27 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        if (rows.Count == 1)
+        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
         {
-            var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-            if (source is not null && await source.WasPrintedAsync(rows[0].Id))
-            {
-                _pendingPrintIds.Clear();
-                _pendingPrintIds.Add(rows[0].Id);
-                OpenPrompt("reprint", "Segunda via", "Cópias e motivo (ex.: 2 Duplicado)");
-                PromptValue.Text = "1 ";
-                return;
-            }
+            OpenReprintPrompt(rows[0]);
+            return;
         }
 
         await PrintRowsAsync(rows, null);
     }
 
-    private void OnPrintAsClick(object? sender, RoutedEventArgs e)
+    private async void OnPrintAsClick(object? sender, RoutedEventArgs e)
     {
         var rows = ChosenRows();
         if (rows.Count == 0)
         {
             ActionNotice.Text = "Selecione um ou mais documentos.";
+            return;
+        }
+
+        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
+        {
+            OpenReprintPrompt(rows[0]);
             return;
         }
 
@@ -661,13 +675,19 @@ public partial class DocumentsListing : UserControl
 
     private static async Task<(bool Handled, string? Error)> PrintThermalDocumentAsync(Guid documentId)
     {
-        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-        if (source is not null && await source.WasPrintedAsync(documentId))
+        if (await NeedsReprintDialogAsync(documentId))
         {
-            return await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, 1, "2ª Via");
+            // Already printed: caller must open the reprint dialog (copies + motive).
+            return (true, "Documento já impresso. Use Imprimir e indique o motivo da segunda via.");
         }
 
         return await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+    }
+
+    private static async Task<bool> NeedsReprintDialogAsync(Guid documentId)
+    {
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        return source is not null && await source.WasPrintedAsync(documentId);
     }
 
     private static async Task<bool> IsTerminalThermalPrinterAsync(string? printerName)

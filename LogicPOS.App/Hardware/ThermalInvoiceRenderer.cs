@@ -19,14 +19,16 @@ internal sealed class ThermalInvoiceRenderer
     private readonly int _columnsBold;
     private readonly int _columnsSmall;
     private readonly bool _narrow;
+    private readonly bool _isSecondCopy;
     private bool _smallFont;
     private bool _doubleWidth;
 
-    private ThermalInvoiceRenderer(ThermalInvoiceJob job)
+    private ThermalInvoiceRenderer(ThermalInvoiceJob job, bool isSecondCopy)
     {
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         _encoding = Encoding.GetEncoding(860, new EncoderReplacementFallback("?"), new DecoderReplacementFallback("?"));
         _job = job;
+        _isSecondCopy = isSecondCopy || job.IsSecondCopy;
         _columns = job.Printer.ColumnsNormal > 0 ? job.Printer.ColumnsNormal : ThermalPrinterSettings.DefaultColumnsNormal;
         _columnsBold = job.Printer.ColumnsBold > 0 ? job.Printer.ColumnsBold : ThermalPrinterSettings.DefaultColumnsBold;
         _columnsSmall = job.Printer.ColumnsSmall > 0 ? job.Printer.ColumnsSmall : ThermalPrinterSettings.DefaultColumnsSmall;
@@ -37,9 +39,9 @@ internal sealed class ThermalInvoiceRenderer
 
     private int LineWidth => _doubleWidth ? Math.Max(8, _columns / 2) : _smallFont ? _columnsSmall : _columns;
 
-    public static byte[] Render(ThermalInvoiceJob job)
+    public static byte[] Render(ThermalInvoiceJob job, bool isSecondCopy = false)
     {
-        var renderer = new ThermalInvoiceRenderer(job);
+        var renderer = new ThermalInvoiceRenderer(job, isSecondCopy);
         renderer.Print();
         return renderer._buffer.ToArray();
     }
@@ -122,7 +124,15 @@ internal sealed class ThermalInvoiceRenderer
         Center();
         Bold(document.Number);
         Center();
-        Line(L("global_print_copy_title1", "Original"));
+        Line(_isSecondCopy
+            ? L("global_print_copy_title2", "2ª Via")
+            : L("global_print_copy_title1", "Original"));
+        if (_isSecondCopy)
+        {
+            Center();
+            Line(DateTime.Now.ToString("d", CultureInfo.CurrentCulture));
+        }
+
         Line(document.Date.ToString("d", CultureInfo.CurrentCulture));
         Feed();
         Reset();
@@ -389,6 +399,11 @@ internal sealed class ThermalInvoiceRenderer
         Line(_job.TerminalName);
         Line($"{L("global_printed_on_date", "Impresso em")}: {DateTime.Now.ToString(CultureInfo.CurrentCulture)}");
         Line("LogicPulse: LogicPOS");
+        if (_isSecondCopy)
+        {
+            Bold("2ª Via — conteúdo idêntico ao original");
+        }
+
         Normal();
         Reset();
     }

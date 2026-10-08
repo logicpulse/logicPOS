@@ -194,18 +194,29 @@ public partial class PdfDocumentView : UserControl
         {
             if (_documentId is Guid documentId && documentId != Guid.Empty)
             {
-                var thermalError = await PrintThermalAsync(documentId);
-                if (thermalError is null)
+                var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+                if (source is not null && await source.WasPrintedAsync(documentId))
+                {
+                    ReprintTitle.Text = string.IsNullOrWhiteSpace(_documentTitle)
+                        ? "Segunda via"
+                        : $"Doc.Nº: {_documentTitle}";
+                    ReprintCopies.Text = "1";
+                    ReprintMotive.Text = string.Empty;
+                    ReprintOverlay.IsVisible = true;
+                    return;
+                }
+
+                var (_, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+                if (printError is null)
                 {
                     SetStatus(string.Empty);
                     return;
                 }
 
-                // Fall through to PDF when the terminal has no thermal printer.
-                if (thermalError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
-                    && thermalError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
+                if (printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
+                    && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
                 {
-                    SetStatus(thermalError);
+                    SetStatus(printError);
                     return;
                 }
             }
@@ -221,22 +232,35 @@ public partial class PdfDocumentView : UserControl
         }
     }
 
-    private static async Task<string?> PrintThermalAsync(Guid documentId)
+    private async void OnReprintConfirmClick(object? sender, RoutedEventArgs e)
     {
-        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-        if (source is null)
+        if (_documentId is not Guid documentId || documentId == Guid.Empty)
         {
-            return "Impressora térmica do terminal não configurada.";
+            ReprintOverlay.IsVisible = false;
+            return;
         }
 
-        if (await source.WasPrintedAsync(documentId))
+        if (int.TryParse(ReprintCopies.Text?.Trim(), out var copies) == false || copies < 1)
         {
-            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, 1, "2ª Via");
-            return reprintError;
+            SetStatus("Indique o número de cópias.");
+            return;
         }
 
-        var (_, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
-        return printError;
+        var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(reason))
+        {
+            SetStatus("Indique o motivo da segunda via.");
+            return;
+        }
+
+        ReprintOverlay.IsVisible = false;
+        var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason);
+        SetStatus(reprintError ?? string.Empty);
+    }
+
+    private void OnReprintCancelClick(object? sender, RoutedEventArgs e)
+    {
+        ReprintOverlay.IsVisible = false;
     }
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)

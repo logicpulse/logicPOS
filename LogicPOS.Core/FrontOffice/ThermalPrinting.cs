@@ -136,6 +136,8 @@ public sealed class ThermalInvoiceJob
     public bool OpenDrawer { get; init; }
 
     public string? TerminalName { get; init; }
+
+    public bool IsSecondCopy { get; init; }
 }
 
 public interface IThermalPrintSource
