@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Net;
 using System.Net.Mail;
 using LogicPOS.Core.Fiscal;
+using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
@@ -369,10 +370,12 @@ public sealed class PosDocumentService : IPosDocumentService
     private const string SimplifiedInvoice = "FS";
 
     private readonly IServiceScopeFactory _scopes;
+    private readonly ILicenseModule _license;
 
-    public PosDocumentService(IServiceScopeFactory scopes)
+    public PosDocumentService(IServiceScopeFactory scopes, ILicenseModule license)
     {
         _scopes = scopes;
+        _license = license;
     }
 
     public async Task<PosDocumentResult> IssueSimplifiedInvoiceAsync(
@@ -385,6 +388,11 @@ public sealed class PosDocumentService : IPosDocumentService
         string documentType = "FS",
         CancellationToken cancellationToken = default)
     {
+        if (_license.DocumentsEnabled == false)
+        {
+            return PosDocumentResult.Fail("A criação de documentos está indisponível sem licença válida.");
+        }
+
         if (lines.Count == 0)
         {
             return PosDocumentResult.Fail("O ticket não tem artigos.");
@@ -1070,6 +1078,11 @@ public sealed class PosDocumentService : IPosDocumentService
         PosDocumentHeader? header = null,
         CancellationToken cancellationToken = default)
     {
+        if (_license.DocumentsEnabled == false)
+        {
+            return PosDocumentResult.Fail("A criação de documentos está indisponível sem licença válida.");
+        }
+
         if (lines.Count == 0)
         {
             return PosDocumentResult.Fail("O documento não tem artigos.");
@@ -1187,6 +1200,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 WithholdingTaxAmount = doc.WithholdingTaxAmount,
                 Notes = doc.Notes,
                 AtQRCode = doc.ATQRCode,
+                Atcud = doc.ATCUD,
                 ShipFromAddress = doc.ShipFromAddress,
                 ShipToAddress = doc.ShipToAddress,
                 PaymentCondition = doc.PaymentConditionId != null ? doc.PaymentCondition!.Designation : null,
@@ -1260,17 +1274,21 @@ public sealed class PosDocumentService : IPosDocumentService
             document.AtQRCode = mark.QrPayload;
         }
 
+        var wasPrinted = await database.DocumentPrints.AsNoTracking()
+            .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId, cancellationToken);
+        var thermalPrinted = await database.DocumentPrints.AsNoTracking()
+            .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId && item.IsThermalPrint, cancellationToken);
+        // FO talões (FS/FR) always; other invoice types only when already printed thermally.
+        var useTicketLayout = document.Type is "FS" or "FR" || thermalPrinted;
+        // Portuguese rules: after the original was delivered, further copies are 2ª via.
+        var isSecondCopy = wasPrinted;
+
         var safeNumber = string.Concat(document.Number.Select(character => Path.GetInvalidFileNameChars().Contains(character) ? '_' : character));
         var path = Path.Combine(Path.GetTempPath(), $"logicpos-{safeNumber}.pdf");
-        await File.WriteAllBytesAsync(path, A4DocumentPdf.Render(data), cancellationToken);
-        var printer = scope.ServiceProvider.GetService<ITicketPrinter>();
-        if (printer is not null)
-        {
-            var lines = document.Details.Select(detail => $"{detail.Designation}  {detail.Quantity:0.##}  {detail.TotalFinal:0.00}").ToList();
-            lines.Add($"Total {document.TotalFinal:0.00}");
-            await printer.TryPrintAsync(document.Number, lines, cancellationToken);
-        }
-
+        var bytes = useTicketLayout
+            ? ThermalTicketPdf.Render(data, isSecondCopy)
+            : A4DocumentPdf.Render(data, isSecondCopy);
+        await File.WriteAllBytesAsync(path, bytes, cancellationToken);
         return path;
     }
 
