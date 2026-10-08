@@ -603,19 +603,23 @@ public partial class PosWindow : Window, IOfficeSurface
             Classes = { "pos_menu_button", article ? "pos_menu_button_grey" : "pos_menu_button_green" }
         };
 
-        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
+        var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: true);
         if (image is not null)
         {
-            var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
-            var content = new Grid
+            // GTK ButtonImage already includes the product art + caption strip.
+            // Fill the tile; only overlay text for asset icons that have no baked-in label.
+            if (string.IsNullOrWhiteSpace(imageBase64) == false || article)
             {
-                RowDefinitions = new RowDefinitions("*,Auto")
-            };
-            Grid.SetRow(image, 0);
-            Grid.SetRow(caption, 1);
-            content.Children.Add(image);
-            content.Children.Add(caption);
-            button.Content = content;
+                button.Content = image;
+            }
+            else
+            {
+                var caption = new TextBlock { Classes = { "pos_menu_caption", "pos_menu_caption_overlay" }, Text = text };
+                var content = new Panel { ClipToBounds = true };
+                content.Children.Add(image);
+                content.Children.Add(caption);
+                button.Content = content;
+            }
         }
         else
         {

@@ -872,18 +872,27 @@
         <Setter Property="MaxHeight" Value="40" />
     </Style>
 
+    <Style Selector="TextBlock.pos_menu_caption_overlay">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Background" Value="#CC2B2B2B" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="Padding" Value="4,3" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="MaxHeight" Value="36" />
+    </Style>
+
     <Style Selector="Image.pos_menu_image">
-        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="Stretch" Value="UniformToFill" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="4,4,4,2" />
+        <Setter Property="Margin" Value="0" />
     </Style>
 
     <Style Selector="Image.pos_menu_image_fill">
         <Setter Property="Stretch" Value="UniformToFill" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="2,2,2,0" />
+        <Setter Property="Margin" Value="0" />
     </Style>
 
     <Style Selector="Button.pos_scroll">
