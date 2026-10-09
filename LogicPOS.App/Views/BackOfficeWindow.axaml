@@ -5,7 +5,7 @@
         x:Class="LogicPOS.App.Views.BackOfficeWindow"
         Classes="bo_window"
         Title="logicpos"
-        Icon="avares://logicpos/Assets/application.ico"
+        Icon="avares://LogicPOS.App/Assets/application.ico"
         WindowState="FullScreen"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen">
@@ -18,30 +18,35 @@
                 <TextBlock x:Name="ClockLabel" Grid.Column="2" Classes="bo_status_text" />
                 <StackPanel Grid.Column="3" Classes="bo_window_buttons">
                     <Button Classes="bo_window_button" Click="OnMinimizeClick" ToolTip.Tip="Minimizar">
-                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_minimizar_w.svg" />
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_minimizar_w.svg" />
                     </Button>
                     <Button Classes="bo_window_button" Click="OnMaximizeClick" ToolTip.Tip="Maximizar">
-                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_maximizar_w.svg" />
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_maximizar_w.svg" />
                     </Button>
                     <Button Classes="bo_window_button" Click="OnRestoreClick" ToolTip.Tip="Redimensionar">
-                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_restaurar_w.svg" />
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_restaurar_w.svg" />
                     </Button>
                     <Button Classes="bo_window_button" Click="OnWindowCloseClick" ToolTip.Tip="Fechar">
-                        <svg:Svg Classes="bo_window_icon" Path="avares://logicpos/Assets/Images/BackOffice/botao_fechar_w.svg" />
+                        <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_fechar_w.svg" />
                     </Button>
                 </StackPanel>
             </Grid>
         </Border>
+
+        <StackPanel x:Name="SetupAlerts"
+                    Classes="bo_setup_alerts"
+                    DockPanel.Dock="Top"
+                    IsVisible="False" />
 
         <Border x:Name="Sidebar" Classes="bo_sidebar" DockPanel.Dock="Left">
             <DockPanel>
                 <Border Classes="bo_sidebar_header" DockPanel.Dock="Top">
                     <Grid ColumnDefinitions="*,Auto">
                         <Button Classes="bo_sidebar_brand" Click="OnDashboardClick" ToolTip.Tip="Dashboard">
-                            <Image Classes="bo_sidebar_logo" Source="avares://logicpos/Assets/Images/logicpos_logo_simple.png" />
+                            <Image x:Name="SidebarLogo" Classes="bo_sidebar_logo" Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png" />
                         </Button>
                         <Button x:Name="SidebarToggle" Classes="bo_sidebar_toggle" Grid.Column="1" Click="OnSidebarToggleClick" ToolTip.Tip="Recolher menu">
-                            <svg:Svg Classes="bo_sidebar_toggle_icon" Path="avares://logicpos/Assets/Images/BackOffice/menu_icon.svg" />
+                            <svg:Svg Classes="bo_sidebar_toggle_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/menu_icon.svg" />
                         </Button>
                     </Grid>
                 </Border>
@@ -50,7 +55,7 @@
                         <StackPanel Classes="bo_menu_row">
                             <Border Classes="bo_menu_glyph">
                                 <Border.OpacityMask>
-                                    <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_pos_close_backoffice.png" />
+                                    <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_pos_close_backoffice.png" />
                                 </Border.OpacityMask>
                             </Border>
                             <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Sair da Aplicação" />
@@ -59,16 +64,16 @@
                     <Border Classes="bo_sidebar_line" />
                     <StackPanel x:Name="FlagBar" Classes="bo_sidebar_flags">
                         <Border Classes="bo_sidebar_flag" Tag="pt-PT" ClipToBounds="True" PointerPressed="OnFlagClick">
-                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/PT.svg" />
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://LogicPOS.App/Assets/Images/Flags/PT.svg" />
                         </Border>
                         <Border Classes="bo_sidebar_flag" Tag="en-GB" ClipToBounds="True" PointerPressed="OnFlagClick">
-                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/EN.svg" />
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://LogicPOS.App/Assets/Images/Flags/EN.svg" />
                         </Border>
                         <Border Classes="bo_sidebar_flag" Tag="fr-FR" ClipToBounds="True" PointerPressed="OnFlagClick">
-                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/FR.svg" />
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://LogicPOS.App/Assets/Images/Flags/FR.svg" />
                         </Border>
                         <Border Classes="bo_sidebar_flag" Tag="es-ES" ClipToBounds="True" PointerPressed="OnFlagClick">
-                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://logicpos/Assets/Images/Flags/ES.svg" />
+                            <svg:Svg Classes="bo_sidebar_flag_icon" Path="avares://LogicPOS.App/Assets/Images/Flags/ES.svg" />
                         </Border>
                     </StackPanel>
                     <Border Classes="bo_sidebar_line" />
@@ -87,7 +92,7 @@
                             <StackPanel Classes="bo_menu_row">
                                 <Border Classes="bo_menu_glyph">
                                     <Border.OpacityMask>
-                                        <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_dashboard.png" />
+                                        <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_dashboard.png" />
                                     </Border.OpacityMask>
                                 </Border>
                                 <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Dashboard" />
@@ -98,7 +103,7 @@
                             <StackPanel Classes="bo_menu_row">
                                 <Border Classes="bo_menu_glyph">
                                     <Border.OpacityMask>
-                                        <ImageBrush Source="avares://logicpos/Assets/Images/BackOffice/icon_pos_front_office.png" />
+                                        <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_pos_front_office.png" />
                                     </Border.OpacityMask>
                                 </Border>
                                 <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="FrontOffice" />
@@ -132,7 +137,7 @@
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
                                 <Image Classes="login_alert_title_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
                                 <TextBlock Classes="login_alert_title" Text="Sair" />
                             </StackPanel>
                         </Border>
@@ -141,14 +146,14 @@
                                 <Button Classes="login_alert_action" Click="OnQuitConfirmClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
-                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                     </StackPanel>
                                 </Button>
                                 <Button Classes="login_alert_action" Click="OnQuitDismissClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
-                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Não" />
                                     </StackPanel>
                                 </Button>
@@ -156,7 +161,7 @@
                         </Border>
                         <Grid Classes="login_alert_body">
                             <Image Classes="login_alert_symbol"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
                             <TextBlock Classes="login_alert_message" Text="Sair da Aplicação?" />
                         </Grid>
                     </DockPanel>
@@ -169,7 +174,7 @@
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
                                 <Image Classes="login_alert_title_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
                                 <TextBlock Classes="login_alert_title" Text="Atualizar" />
                             </StackPanel>
                         </Border>
@@ -178,14 +183,14 @@
                                 <Button x:Name="UpdateConfirm" Classes="login_alert_action" Click="OnUpdateConfirmClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
-                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Sim" />
                                     </StackPanel>
                                 </Button>
                                 <Button x:Name="UpdateDismiss" Classes="login_alert_action" Click="OnUpdateDismissClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
-                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Não" />
                                     </StackPanel>
                                 </Button>
@@ -193,10 +198,19 @@
                         </Border>
                         <Grid Classes="login_alert_body">
                             <Image Classes="login_alert_symbol"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
                             <TextBlock Classes="login_alert_message"
-                                       Text="Descarregar a atualização e reiniciar? A configuração e a base de dados local mantêm-se." />
-                            <TextBlock x:Name="UpdateStatus" Classes="bo_update_status" />
+                                       Text="Descarregar a atualização e reiniciar? A configuração (appsettings) e a base de dados local mantêm-se." />
+                            <StackPanel Classes="bo_update_progress_panel">
+                                <TextBlock x:Name="UpdateStatus" Classes="bo_update_status" Text="" />
+                                <ProgressBar x:Name="UpdateProgress"
+                                             Classes="bo_update_progress"
+                                             Minimum="0"
+                                             Maximum="100"
+                                             IsIndeterminate="False"
+                                             Value="0"
+                                             IsVisible="False" />
+                            </StackPanel>
                         </Grid>
                     </DockPanel>
                 </Border>
@@ -208,7 +222,7 @@
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
                                 <Image Classes="login_alert_title_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
                                 <TextBlock Classes="login_alert_title" Text="Acerca" />
                             </StackPanel>
                         </Border>
@@ -217,7 +231,7 @@
                                 <Button Classes="login_alert_action" Click="OnAboutCloseClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
-                                               Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                                     </StackPanel>
                                 </Button>
@@ -225,7 +239,7 @@
                         </Border>
                         <StackPanel Classes="bo_about_body">
                             <Border Classes="bo_about_logo_band">
-                                <Image Classes="bo_about_logo" Source="avares://logicpos/Assets/Images/logicpos_logo_simple.png" />
+                                <Image x:Name="AboutLogo" Classes="bo_about_logo" Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png" />
                             </Border>
                             <TextBlock x:Name="VersionLabel" Classes="bo_about_text" />
                             <TextBlock x:Name="AboutCopyright" Classes="bo_about_text" />

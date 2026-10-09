@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
@@ -15,7 +15,7 @@
                                 </Button>
                                 <Button Classes="bo_page_action" Click="OnOpenClick" ToolTip.Tip="Abrir">
                                     <StackPanel Classes="bo_doc_action_content">
-                                        <Image Classes="bo_doc_action_icon" Source="avares://logicpos/Assets/Images/Documents/icon_doc_open_w.png" />
+                                        <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_open_w.png" />
                                         <TextBlock Classes="bo_doc_action_text" Text="Abrir" />
                                     </StackPanel>
                                 </Button>
@@ -38,7 +38,7 @@
                                 <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />
                             </StackPanel>
                             <Button Classes="bo_listing_icon_button" Click="OnFilterClick" ToolTip.Tip="Filtrar">
-                                <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_filtro_b.svg" />
+                                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_filtro_b.svg" />
                             </Button>
                             <TextBlock x:Name="SelectionLabel" Classes="bo_doc_count_inline" Text="(0) = 0,00" />
                         </StackPanel>
@@ -46,7 +46,7 @@
                             <Border Classes="bo_listing_search">
                                 <DockPanel>
                                     <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
-                                        <svg:Svg Classes="bo_listing_icon" Path="avares://logicpos/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                        <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                                     </Button>
                                     <TextBox x:Name="SearchBox"
                                              Classes="bo_listing_search_box"
@@ -103,7 +103,7 @@
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:CompileBindings="False">
                                     <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" ToolTip.Tip="Ver">
-                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://logicpos/Assets/Images/Documents/botao_ver_b.svg" />
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -125,13 +125,13 @@
                         <StackPanel Classes="login_alert_action_buttons">
                             <Button x:Name="PayOkButton" Classes="login_alert_action" Click="OnPayOkClick">
                                 <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="OK" />
                                 </StackPanel>
                             </Button>
                             <Button Classes="login_alert_action" Click="OnPayCancelClick">
                                 <StackPanel Classes="login_alert_action_content">
-                                    <Image Classes="login_alert_action_icon" Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <Image Classes="login_alert_action_icon" Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                 </StackPanel>
                             </Button>

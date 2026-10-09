@@ -16,6 +16,13 @@
                                 <TextBlock Classes="bo_doc_action_text" Text="Novo" />
                             </StackPanel>
                         </Button>
+                        <Button Classes="bo_page_action" Click="OnCopyClick" ToolTip.Tip="Copiar">
+                            <StackPanel Classes="bo_doc_action_content">
+                                <Image Classes="bo_doc_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Documents/icon_pos_dialog_action_clone_document.png" />
+                                <TextBlock Classes="bo_doc_action_text" Text="Copiar" />
+                            </StackPanel>
+                        </Button>
                         <Button Classes="bo_page_action" Click="OnEditDraftClick" ToolTip.Tip="Editar rascunho">
                             <StackPanel Classes="bo_doc_action_content">
                                 <Image Classes="bo_doc_action_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/icon_doc_edit_w.png" />
@@ -159,17 +166,20 @@
                     <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" Width="140" MinWidth="140" IsReadOnly="True" />
                     <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" Width="170" MinWidth="170" IsReadOnly="True" />
                     <DataGridTextColumn Header="Documentos Associados" Binding="{Binding AssociatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="" Width="36" MinWidth="36" MaxWidth="36" CanUserSort="False" CanUserReorder="False">
+                    <DataGridTemplateColumn Header="" Width="72" MinWidth="72" MaxWidth="72" CanUserSort="False" CanUserReorder="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:CompileBindings="False">
-                                <Panel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="0">
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="Copiar">
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                    </Button>
                                     <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="Ver">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
                                     </Button>
                                     <Button Classes="bo_doc_icon_button" Click="OnRowEditClick" IsVisible="{Binding CanEdit}" ToolTip.Tip="Editar">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                                     </Button>
-                                </Panel>
+                                </StackPanel>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>

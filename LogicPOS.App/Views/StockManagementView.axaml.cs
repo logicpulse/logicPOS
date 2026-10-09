@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
@@ -267,7 +267,7 @@ public partial class StockManagementView : UserControl
     private void AddEditAction()
     {
         Grid.Columns.Add(ActionColumn(
-            "avares://logicpos/Assets/Images/Documents/botao_editar_b.svg",
+            "avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg",
             "Editar",
             row =>
             {
@@ -286,7 +286,7 @@ public partial class StockManagementView : UserControl
     private void AddDeleteAction()
     {
         Grid.Columns.Add(ActionColumn(
-            "avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg",
+            "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg",
             "Apagar",
             row =>
             {
@@ -314,7 +314,7 @@ public partial class StockManagementView : UserControl
                     IsEnabled = enabled(row)
                 };
                 ToolTip.SetTip(button, tip);
-                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
                     Path = icon
@@ -1587,10 +1587,10 @@ public partial class StockManagementView : UserControl
         var button = new Button
         {
             Classes = { "bo_listing_icon_button" },
-            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_listing_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_importar_b.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_importar_b.svg"
             }
         };
         ToolTip.SetTip(button, "Anexar");

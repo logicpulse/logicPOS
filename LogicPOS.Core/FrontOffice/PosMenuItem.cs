@@ -2,12 +2,13 @@ namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosMenuItem
 {
-    public PosMenuItem(Guid id, Guid parentId, string text, bool favorite)
+    public PosMenuItem(Guid id, Guid parentId, string text, bool favorite, string? imageBase64 = null)
     {
         Id = id;
         ParentId = parentId;
         Text = text;
         Favorite = favorite;
+        ImageBase64 = imageBase64;
     }
 
     public Guid Id { get; }
@@ -17,6 +18,9 @@ public sealed class PosMenuItem
     public string Text { get; }
 
     public bool Favorite { get; }
+
+    /// <summary>Optional button image from seed/DB (base64, no data: prefix).</summary>
+    public string? ImageBase64 { get; }
 }
 
 public sealed class PosCatalog

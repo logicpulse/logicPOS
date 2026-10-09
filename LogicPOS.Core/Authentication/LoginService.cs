@@ -1,6 +1,7 @@
-﻿using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Services;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Interceptors;
 using LogicPOS.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,12 +12,17 @@ public sealed class LoginService : ILoginService
 {
     private readonly IServiceScopeFactory _scopes;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly DesktopAuditingInformationService? _auditing;
     private Guid? _selectedTerminalId;
 
-    public LoginService(IServiceScopeFactory scopes, IPasswordHasher passwordHasher)
+    public LoginService(
+        IServiceScopeFactory scopes,
+        IPasswordHasher passwordHasher,
+        IAuditingInformationService? auditing = null)
     {
         _scopes = scopes;
         _passwordHasher = passwordHasher;
+        _auditing = auditing as DesktopAuditingInformationService;
     }
 
     public async Task<IReadOnlyList<UserOption>> GetUsersAsync(CancellationToken cancellationToken = default)
@@ -69,6 +75,7 @@ public sealed class LoginService : ILoginService
     public void RememberTerminal(Guid terminalId, string name)
     {
         _selectedTerminalId = terminalId;
+        _auditing?.SetTerminal(terminalId);
         _ = name;
     }
 
@@ -135,9 +142,12 @@ public sealed class LoginService : ILoginService
                 return new LoginAttemptResult(false, claimed.Message) { TerminalUpdateFailed = true };
             }
 
+            terminalId = selectedId;
             _selectedTerminalId = null;
         }
 
+        _auditing?.SetUser(user.Id);
+        _auditing?.SetTerminal(terminalId);
         return new LoginAttemptResult(true, user.Name);
     }
 

@@ -481,16 +481,27 @@
     </Style>
 
     <Style Selector="Border.bo_update_frame">
-        <Setter Property="Width" Value="480" />
-        <Setter Property="Height" Value="340" />
+        <Setter Property="Width" Value="520" />
+        <Setter Property="Height" Value="360" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_update_progress_panel">
+        <Setter Property="Margin" Value="132,140,18,8" />
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
 
     <Style Selector="TextBlock.bo_update_status">
         <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="#4D6610" />
         <Setter Property="TextWrapping" Value="Wrap" />
-        <Setter Property="Margin" Value="132,150,18,8" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="ProgressBar.bo_update_progress">
+        <Setter Property="Height" Value="14" />
+        <Setter Property="MinHeight" Value="14" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="TextBlock.login_alert_message">
@@ -1723,6 +1734,53 @@
         <Setter Property="Height" Value="38" />
         <Setter Property="Background" Value="#3D3D3D" />
         <Setter Property="Padding" Value="8,0" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_setup_alerts">
+        <Setter Property="Spacing" Value="0" />
+    </Style>
+
+    <Style Selector="Border.bo_setup_alert">
+        <Setter Property="Background" Value="#FFF3CD" />
+        <Setter Property="BorderBrush" Value="#FFECB5" />
+        <Setter Property="BorderThickness" Value="0,0,0,1" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_setup_alert_text">
+        <Setter Property="Foreground" Value="#664D03" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <Style Selector="Button.bo_setup_alert_action">
+        <Setter Property="Background" Value="#664D03" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="12,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
+    </Style>
+
+    <Style Selector="Button.bo_setup_alert_dismiss">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="#664D03" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Cursor" Value="Hand" />
     </Style>
 
     <Style Selector="Image.bo_logo">
@@ -3286,6 +3344,23 @@
         <Setter Property="Padding" Value="8,4" />
     </Style>
 
+    <Style Selector="AutoCompleteBox.bo_new_doc_search">
+        <Setter Property="MinHeight" Value="32" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Normal" />
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="8,4" />
+        <Setter Property="MaxDropDownHeight" Value="360" />
+        <Setter Property="MinimumPrefixLength" Value="0" />
+        <Setter Property="IsTextCompletionEnabled" Value="False" />
+        <Setter Property="PlaceholderText" Value="Nº, cliente ou NIF..." />
+    </Style>
+
     <Style Selector="Border.bo_new_doc_value_box">
         <Setter Property="Background" Value="#F4F6F8" />
         <Setter Property="BorderBrush" Value="#D5DCE3" />
@@ -3978,6 +4053,14 @@
         <Setter Property="Height" Value="220" />
     </Style>
 
+    <Style Selector="Border.company_setup_frame">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MaxHeight" Value="NaN" />
+    </Style>
+
     <Style Selector="Border.bo_entity_editor">
         <Setter Property="Width" Value="1080" />
         <Setter Property="Height" Value="720" />
@@ -4185,7 +4268,7 @@
     <!-- Registration (q.track-inspired layout) -->
     <Style Selector="Window.register_window">
         <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
-        <Setter Property="Background" Value="#2A2C2E" />
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style Selector="Panel.register_shell">
@@ -4201,6 +4284,11 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.register_card.register_card_popup">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.register_topbar">

@@ -13,14 +13,15 @@ O repositório público `logicPOS` publica só a edição pública: base de dado
 
 ## Decisions so far
 
+- [Casa de cada peça privada](tickets/03-casa-das-pecas.md): o anfitrião LogicPulse fica em `logicPOS-internal` com API, cliente, cloud, fiscal, migradores, web e instalador; o opensource só no `logicPOS`.
+- [Contrato do encaixe de certificação](tickets/05-contrato-publico.md): `AddFiscal` + `IFiscalModule`; encaixe vazio fatura sem marcas fiscais; a LogicPulse leva `LogicPOS.Fiscal.dll` ao lado da app.
+- [Montagem automática da edição LogicPulse](tickets/06-montagem-logicpulse.md): WinExe em `logicPOS-internal` com composição própria (local: licença + fiscal; LogicPulse: cloud); o instalador publica esse anfitrião, não a Avalonia pública.
 - [Fronteira do opensource antigo](tickets/01-fronteira-legado.md): o legado público já continha a certificação (AT, ATCUD, hash, QR, SAF-T); fora ficavam os segredos LogicPulse, a licença e os stocks.
 - [Persistência da base de dados direta](tickets/07-persistencia-direta.md): a edição pública usa SQLite, MySQL e SQL Server sobre o mesmo modelo; o arranque deixa de recusar os servidores.
 - [Edição pública sem as peças](tickets/04-edicao-publica-sem-pecas.md): não pede licença; o documento leva só o número da fatura (`sigla/n`), sem ATCUD nem série certificada.
 - [Superfície certificada no repo público](tickets/02-superficie-no-publico.md): na Avalonia as chamadas à autoridade estão no plugin fiscal da base direta; rodapé, QR, hash, série de teste e ecrãs SAF-T/AT continuam no público. No GTK isso sai pelo cliente HTTP.
 
 ## Not yet specified
-
-- **Onde nasce o anfitrião LogicPulse** se nenhum repositório privado atual servir. O GTK não tem arquivo. <clears-with: 03>
 
 ## Out of scope
 

@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.Views.FiscalYearWizard">
     <Border Classes="login_alert_frame bo_fiscal_wizard">
@@ -6,7 +6,7 @@
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">
                     <Image Classes="login_alert_title_icon"
-                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                     <TextBlock Classes="login_alert_title" Text="Criar ano fiscal" />
                 </StackPanel>
             </Border>
@@ -22,14 +22,14 @@
                         <Button x:Name="FinishButton" Classes="login_alert_action" Click="OnFinishClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Criar" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnCloseClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </StackPanel>
                         </Button>

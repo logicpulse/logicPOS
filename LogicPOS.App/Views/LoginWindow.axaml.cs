@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
+using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -36,8 +37,38 @@ public partial class LoginWindow : Window
             await _viewModel.LoadAsync();
             PinEntryFocus();
             // Defer so the login window finishes opening before a modal dialog (fullscreen-safe).
-            Dispatcher.UIThread.Post(() => _ = PromptRegistrationIfNeededAsync(), DispatcherPriority.Background);
+            Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
         };
+    }
+
+    private async Task PromptStartupDialogsAsync()
+    {
+        await PromptCompanySetupIfNeededAsync();
+        await PromptRegistrationIfNeededAsync();
+    }
+
+    private async Task PromptCompanySetupIfNeededAsync()
+    {
+        var setup = AppComposition.Services?.GetService<ICompanySetupService>();
+        if (setup is null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (await setup.NeedsSetupAsync() == false)
+            {
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Company setup check failed: {ex}");
+            return;
+        }
+
+        await new CompanySetupWindow(setup).ShowDialog(this);
     }
 
     private void ApplyBranding()
@@ -99,25 +130,8 @@ public partial class LoginWindow : Window
             return;
         }
 
-        var previousState = WindowState;
-        if (WindowState == WindowState.FullScreen)
-        {
-            WindowState = WindowState.Maximized;
-        }
-
-        try
-        {
-            var dialog = new RegistrationWindow(license)
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            };
-            await dialog.ShowDialog(this);
-            ApplyBranding();
-        }
-        finally
-        {
-            WindowState = previousState;
-        }
+        await new RegistrationWindow(license).ShowDialog(this);
+        ApplyBranding();
     }
 
     private Guid? _selectedTerminalId;

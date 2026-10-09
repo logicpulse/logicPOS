@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              x:Class="LogicPOS.App.Views.NewDocumentWindow">
@@ -8,7 +8,7 @@
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">
                     <Image Classes="login_alert_title_icon"
-                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                     <TextBlock Classes="login_alert_title" Text="Novo documento" />
                 </StackPanel>
             </Border>
@@ -18,28 +18,28 @@
                         <CheckBox x:Name="DraftBox" Classes="bo_new_doc_draft" Content="Guardar como rascunho" IsCheckedChanged="OnDraftChanged" />
                         <CheckBox x:Name="TransportBox" Classes="bo_new_doc_draft" Content="Dados de transporte" IsVisible="False" IsCheckedChanged="OnTransportChanged" />
                         <Button x:Name="TransportButton" Classes="bo_line_icon bo_transport_icon" IsVisible="False" Click="OnOpenTransportClick" ToolTip.Tip="Dados de transporte">
-                            <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://logicpos/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
+                            <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
                         </Button>
                     </StackPanel>
                 <StackPanel Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action bo_new_doc_preview" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_preview.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_preview.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Pré-visualizar" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnIssueClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                             <TextBlock x:Name="IssueLabel" Classes="login_alert_action_text" Text="Emitir A4" />
                         </StackPanel>
                     </Button>
                     <Button Classes="login_alert_action" Click="OnCancelClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                         </StackPanel>
                     </Button>
@@ -74,11 +74,35 @@
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1">
                         <TextBlock Classes="bo_new_doc_caption" Text="Documento de origem" />
-                        <ComboBox x:Name="OriginBox" Classes="bo_new_doc_combo" />
+                        <DockPanel Classes="bo_touch_row">
+                            <Button x:Name="OriginClearButton"
+                                    Classes="bo_lookup_clear"
+                                    Content="×"
+                                    DockPanel.Dock="Right"
+                                    IsVisible="False"
+                                    Click="OnClearOriginClick"
+                                    ToolTip.Tip="Limpar" />
+                            <AutoCompleteBox x:Name="OriginBox"
+                                            Classes="bo_new_doc_search"
+                                            SelectionChanged="OnOriginChanged"
+                                            TextChanged="OnOriginTextChanged" />
+                        </DockPanel>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
                         <TextBlock Classes="bo_new_doc_caption" Text="Copiar outro documento" />
-                        <ComboBox x:Name="CopyBox" Classes="bo_new_doc_combo" SelectionChanged="OnCopyChanged" />
+                        <DockPanel Classes="bo_touch_row">
+                            <Button x:Name="CopyClearButton"
+                                    Classes="bo_lookup_clear"
+                                    Content="×"
+                                    DockPanel.Dock="Right"
+                                    IsVisible="False"
+                                    Click="OnClearCopyClick"
+                                    ToolTip.Tip="Limpar" />
+                            <AutoCompleteBox x:Name="CopyBox"
+                                            Classes="bo_new_doc_search"
+                                            SelectionChanged="OnCopyChanged"
+                                            TextChanged="OnCopyTextChanged" />
+                        </DockPanel>
                     </StackPanel>
                     <Grid Grid.Row="2" Grid.ColumnSpan="4" ColumnDefinitions="*,160,Auto">
                         <StackPanel>
@@ -103,16 +127,16 @@
                         </StackPanel>
                         <StackPanel Grid.Column="2" Classes="bo_new_doc_customer_actions">
                             <Button Classes="bo_line_icon" Click="OnCustomerSearchClick" ToolTip.Tip="Procurar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
                             </Button>
                             <Button Classes="bo_line_icon" Click="OnNewCustomerClick" ToolTip.Tip="Novo">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Listing/botao_novo_b.svg" />
+                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_b.svg" />
                             </Button>
                             <Button x:Name="CustomerEditButton" Classes="bo_line_icon" IsVisible="False" Click="OnEditCustomerClick" ToolTip.Tip="Editar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Documents/botao_editar_b.svg" />
+                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                             </Button>
                             <Button Classes="bo_line_icon" Click="OnClearCustomerClick" ToolTip.Tip="Limpar">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Listing/botao_limpar_b.svg" />
+                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_limpar_b.svg" />
                             </Button>
                         </StackPanel>
                     </Grid>
@@ -129,7 +153,7 @@
                             <Button Classes="bo_new_doc_tool" Click="OnNewArticleClick" ToolTip.Tip="Novo artigo">Novo</Button>
                             <Button x:Name="SerialButton" Classes="bo_new_doc_tool" IsVisible="False" Click="OnSerialClick" ToolTip.Tip="Artigo único">Série</Button>
                             <Button Classes="bo_line_icon" Click="OnOpenArticlePad" ToolTip.Tip="Escolher">
-                                <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Listing/botao_selecionar_b.svg" />
+                                <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_selecionar_b.svg" />
                             </Button>
                         </StackPanel>
                         <TextBox x:Name="ArticleSearch"
@@ -170,10 +194,10 @@
                                 <DataTemplate>
                                     <StackPanel Classes="bo_line_icons">
                                         <Button Classes="bo_line_icon" Click="OnEditRowClick" ToolTip.Tip="Editar">
-                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Documents/botao_editar_b.svg" />
+                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg" />
                                         </Button>
                                         <Button Classes="bo_line_icon" Click="OnRemoveRowClick" ToolTip.Tip="Eliminar">
-                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg" />
+                                            <svg:Svg Classes="bo_line_icon_image" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg" />
                                         </Button>
                                     </StackPanel>
                                 </DataTemplate>
@@ -190,7 +214,7 @@
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
                         <Image Classes="login_alert_title_icon"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                         <TextBlock Classes="login_alert_title" Text="Editar artigo" />
                     </StackPanel>
                 </Border>
@@ -199,28 +223,28 @@
                         <Button Classes="login_alert_action" Click="OnLineOk">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Ok" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnLineCancel">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnLineRemove">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Remover" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnLineClear">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Limpar" />
                             </StackPanel>
                         </Button>
@@ -286,7 +310,7 @@
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
                         <Image Classes="login_alert_title_icon"
-                               Source="avares://logicpos/Assets/Images/Pos/Payments/icon_pos_clients.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
                         <TextBlock x:Name="CustomerEditorTitle" Classes="login_alert_title" Text="Novo cliente" />
                     </StackPanel>
                 </Border>
@@ -295,14 +319,14 @@
                         <Button Classes="login_alert_action" Click="OnCustomerEditorOk">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Ok" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnCustomerEditorCancel">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                             </StackPanel>
                         </Button>
@@ -378,7 +402,7 @@
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
                         <Image Classes="login_alert_title_icon"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                         <TextBlock Classes="login_alert_title" Text="Artigos" />
                     </StackPanel>
                 </Border>
@@ -386,7 +410,7 @@
                     <Button Classes="login_alert_action" Click="OnArticlePadClose">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                         </StackPanel>
                     </Button>
@@ -415,7 +439,7 @@
                     <Button Classes="login_alert_action" Click="OnCustomerListCloseClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                         </StackPanel>
                     </Button>
@@ -432,7 +456,7 @@
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
                         <Image Classes="login_alert_title_icon"
-                               Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                         <TextBlock Classes="login_alert_title" Text="Dados de transporte" />
                     </StackPanel>
                 </Border>
@@ -440,7 +464,7 @@
                     <Button Classes="login_alert_action" Click="OnCloseTransportClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
-                                   Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                             <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                         </StackPanel>
                     </Button>

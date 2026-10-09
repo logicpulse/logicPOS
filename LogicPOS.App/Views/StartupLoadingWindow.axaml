@@ -1,0 +1,37 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LogicPOS.App.Views.StartupLoadingWindow"
+        Title="logicpos"
+        Icon="avares://LogicPOS.App/Assets/application.ico"
+        Width="220"
+        Height="250"
+        CanResize="False"
+        ShowInTaskbar="True"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F5"
+        Topmost="True">
+    <Border Padding="16" Background="#F5F5F5">
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
+            <Image Width="120"
+                   Height="120"
+                   Stretch="Uniform"
+                   HorizontalAlignment="Center"
+                   Source="avares://LogicPOS.App/Assets/Images/Other/working.gif"
+                   RenderOptions.BitmapInterpolationMode="HighQuality" />
+            <TextBlock x:Name="StatusText"
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat"
+                       FontSize="13"
+                       FontWeight="Bold"
+                       Foreground="#2F4F4F"
+                       TextWrapping="Wrap"
+                       Text="A carregar POS..." />
+            <ProgressBar IsIndeterminate="True"
+                         Height="4"
+                         Width="160"
+                         HorizontalAlignment="Center" />
+        </StackPanel>
+    </Border>
+</Window>

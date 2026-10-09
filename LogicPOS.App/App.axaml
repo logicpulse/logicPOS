@@ -1,10 +1,10 @@
-<Application xmlns="https://github.com/avaloniaui"
+﻿<Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.App"
              RequestedThemeVariant="Light">
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
-        <StyleInclude Source="avares://logicpos/Styles.axaml" />
+        <StyleInclude Source="avares://LogicPOS.App/Styles.axaml" />
     </Application.Styles>
 </Application>

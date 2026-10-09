@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App;
 
-internal static class BackOfficeSmoke
+public static class BackOfficeSmoke
 {
     public static async Task<string> RunAsync()
     {

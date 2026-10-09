@@ -5,12 +5,51 @@ using LogicPOS.Domain.Repositories;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.Core;
 
 public static class DatabaseStartup
 {
+    /// <summary>
+    /// True when the configured SQLite file already exists (GTK loading vs first-time create).
+    /// </summary>
+    public static bool SqliteDatabaseExists(string? baseDirectory = null)
+    {
+        try
+        {
+            var root = string.IsNullOrWhiteSpace(baseDirectory) ? AppContext.BaseDirectory : baseDirectory;
+            var settingsPath = Path.Combine(root, "appsettings.json");
+            var connectionString = "Data Source=logicpos.db";
+            if (File.Exists(settingsPath))
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(root)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .Build();
+                var configured = configuration["DatabaseSettings:ConnectionString"];
+                if (string.IsNullOrWhiteSpace(configured) == false)
+                {
+                    connectionString = configured;
+                }
+            }
+
+            var dataSource = new SqliteConnectionStringBuilder(connectionString).DataSource;
+            if (string.IsNullOrWhiteSpace(dataSource)
+                || string.Equals(dataSource, ":memory:", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return File.Exists(SqliteDataPath.Resolve(dataSource));
+        }
+        catch
+        {
+            return true;
+        }
+    }
+
     public static void EnsureExists(DatabaseSettings settings)
     {
         if (settings.DatabaseType != DatabaseType.Sqlite)

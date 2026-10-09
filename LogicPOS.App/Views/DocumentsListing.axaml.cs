@@ -29,6 +29,7 @@ public partial class DocumentsListing : UserControl
     private Guid? _appliedCustomer;
     private bool _updatingColumnChecks;
     private bool _updatingPick;
+    private bool _syncingSelection;
     private ListingLoad _load = null!;
 
     public DocumentsListing()
@@ -192,7 +193,18 @@ public partial class DocumentsListing : UserControl
         _ = LoadAsync();
     }
 
-    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => RefreshSelectionLabel();
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_syncingSelection)
+        {
+            RefreshSelectionLabel();
+            return;
+        }
+
+        SyncPicksFromGridSelection();
+        RefreshSelectionLabel();
+        RefreshPickAll();
+    }
 
     private void OnPickAllClick(object? sender, RoutedEventArgs e)
     {
@@ -222,12 +234,18 @@ public partial class DocumentsListing : UserControl
             }
         }
 
+        SyncGridSelectionFromPicks();
         RefreshSelectionLabel();
         RefreshPickAll();
     }
 
     internal void OnRowPicked(Guid id, bool selected)
     {
+        if (_syncingSelection)
+        {
+            return;
+        }
+
         if (selected)
         {
             _picked.Add(id);
@@ -237,8 +255,72 @@ public partial class DocumentsListing : UserControl
             _picked.Remove(id);
         }
 
+        SyncGridSelectionFromPicks();
         RefreshSelectionLabel();
         RefreshPickAll();
+    }
+
+    private void SyncPicksFromGridSelection()
+    {
+        if (DocumentGrid.ItemsSource is not IEnumerable<CheckedDocument> visible)
+        {
+            return;
+        }
+
+        _syncingSelection = true;
+        try
+        {
+            var list = visible.ToList();
+            var selectedIds = DocumentGrid.SelectedItems?
+                .OfType<CheckedDocument>()
+                .Select(item => item.Source.Id)
+                .ToHashSet()
+                ?? [];
+
+            foreach (var item in list)
+            {
+                _picked.Remove(item.Source.Id);
+            }
+
+            foreach (var id in selectedIds)
+            {
+                _picked.Add(id);
+            }
+
+            foreach (var item in list)
+            {
+                item.ApplySelected(selectedIds.Contains(item.Source.Id));
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    private void SyncGridSelectionFromPicks()
+    {
+        if (DocumentGrid.ItemsSource is not IEnumerable<CheckedDocument> visible)
+        {
+            return;
+        }
+
+        _syncingSelection = true;
+        try
+        {
+            DocumentGrid.SelectedItems.Clear();
+            foreach (var item in visible)
+            {
+                if (_picked.Contains(item.Source.Id))
+                {
+                    DocumentGrid.SelectedItems.Add(item);
+                }
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
     }
 
     private void OnFirstPageClick(object? sender, RoutedEventArgs e) => GoToPage(1);
@@ -620,7 +702,12 @@ public partial class DocumentsListing : UserControl
 
     private PosDocumentRow? FocusedRow()
     {
-        return DocumentGrid.SelectedItem is CheckedDocument item ? item.Source : null;
+        if (DocumentGrid.SelectedItem is CheckedDocument item)
+        {
+            return item.Source;
+        }
+
+        return _rows.FirstOrDefault(row => _picked.Contains(row.Id));
     }
 
     private List<PosDocumentRow> ChosenRows()
@@ -639,6 +726,43 @@ public partial class DocumentsListing : UserControl
         if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
         {
             await office.ShowNewDocumentAsync();
+        }
+    }
+
+    private async void OnCopyClick(object? sender, RoutedEventArgs e)
+    {
+        if (FocusedRow() is not PosDocumentRow row)
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "Selecione um documento para copiar.";
+            return;
+        }
+
+        await CopyDocumentAsync(row);
+    }
+
+    private async void OnRowCopyClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: CheckedDocument item })
+        {
+            return;
+        }
+
+        await CopyDocumentAsync(item.Source);
+    }
+
+    private async Task CopyDocumentAsync(PosDocumentRow row)
+    {
+        if (row.Status == "Anulado")
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "Não é possível copiar um documento anulado.";
+            return;
+        }
+
+        if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
+        {
+            await office.ShowNewDocumentAsync(copyFromDocumentId: row.Id);
         }
     }
 
@@ -1174,7 +1298,12 @@ public partial class DocumentsListing : UserControl
 
     private void RefreshSelectionLabel()
     {
-        var count = _picked.Count > 0 ? _rows.Count(row => _picked.Contains(row.Id)) : DocumentGrid.SelectedItems?.Count ?? 0;
+        var count = _rows.Count(row => _picked.Contains(row.Id));
+        if (count == 0)
+        {
+            count = DocumentGrid.SelectedItems?.Count ?? 0;
+        }
+
         SelectionLabel.Text = $"{count} documento(s) selecionado(s)";
     }
 
@@ -1242,6 +1371,8 @@ public partial class DocumentsListing : UserControl
         public bool CanEdit => Source.CanEdit;
 
         public bool CanView => Source.CanView;
+
+        public bool CanCopy => Source.Status != "Anulado";
 
         public void ApplySelected(bool selected)
         {

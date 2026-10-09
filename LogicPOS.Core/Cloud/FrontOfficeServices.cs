@@ -64,6 +64,15 @@ public interface IPosDocumentService
 
     Task<IReadOnlyList<PosCopiedLine>> LoadDocumentLinesAsync(Guid documentId, CancellationToken cancellationToken = default);
 
+    /// <summary>Customer of a source document for the New Document copy flow.</summary>
+    Task<Guid?> GetDocumentCustomerIdAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>Header + lines to seed a new document from an existing one.</summary>
+    Task<PosDocumentCopySource?> LoadDocumentForCopyAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>Lookup label (type + number) for the Copy combo.</summary>
+    Task<PosLookupItem?> GetDocumentLookupAsync(Guid documentId, CancellationToken cancellationToken = default);
+
     Task<PosDocumentResult> IssueDocumentAsync(
         string documentType,
         Guid customerId,

@@ -50,15 +50,21 @@ public sealed class PosSaleLine
 public sealed class PosLookupItem
 {
     public PosLookupItem(Guid id, string label)
-        : this(id, label, string.Empty)
+        : this(id, label, string.Empty, string.Empty)
     {
     }
 
     public PosLookupItem(Guid id, string label, string? code)
+        : this(id, label, code, string.Empty)
+    {
+    }
+
+    public PosLookupItem(Guid id, string label, string? code, string? detail)
     {
         Id = id;
         Label = label;
         Code = code ?? string.Empty;
+        Detail = detail ?? string.Empty;
     }
 
     public Guid Id { get; }
@@ -67,7 +73,43 @@ public sealed class PosLookupItem
 
     public string Code { get; }
 
+    /// <summary>Secondary line in searchable document pickers (customer, NIF, date).</summary>
+    public string Detail { get; }
+
     public override string ToString() => Label;
+
+    public static PosLookupItem ForDocument(
+        Guid id,
+        string type,
+        string number,
+        string? customerName = null,
+        string? fiscalNumber = null,
+        DateTime? createdAt = null)
+    {
+        var label = $"{type} {number}".Trim();
+        if (string.IsNullOrWhiteSpace(label))
+        {
+            label = id.ToString();
+        }
+
+        var parts = new List<string>();
+        if (string.IsNullOrWhiteSpace(customerName) == false)
+        {
+            parts.Add(customerName.Trim());
+        }
+
+        if (string.IsNullOrWhiteSpace(fiscalNumber) == false)
+        {
+            parts.Add(fiscalNumber.Trim());
+        }
+
+        if (createdAt is DateTime when)
+        {
+            parts.Add(when.ToString("dd/MM/yyyy"));
+        }
+
+        return new PosLookupItem(id, label, type, parts.Count == 0 ? null : string.Join(" · ", parts));
+    }
 }
 
 public sealed class PosVatOption
@@ -308,7 +350,8 @@ public sealed class PosCopiedLine
         decimal discount,
         Guid vatRateId,
         decimal vatPercentage,
-        string? serialNumber = null)
+        string? serialNumber = null,
+        string? notes = null)
     {
         ArticleId = articleId;
         Code = code;
@@ -319,6 +362,7 @@ public sealed class PosCopiedLine
         VatRateId = vatRateId;
         VatPercentage = vatPercentage;
         SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
+        Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
     }
 
     public Guid ArticleId { get; }
@@ -338,6 +382,30 @@ public sealed class PosCopiedLine
     public decimal VatPercentage { get; }
 
     public string? SerialNumber { get; }
+
+    public string? Notes { get; }
+}
+
+/// <summary>Full source document used to seed a new document from an existing one.</summary>
+public sealed class PosDocumentCopySource
+{
+    public required string Type { get; init; }
+
+    public Guid CustomerId { get; init; }
+
+    public string? Notes { get; init; }
+
+    public Guid? PaymentConditionId { get; init; }
+
+    public Guid? CurrencyId { get; init; }
+
+    public Guid? ParentDocumentId { get; init; }
+
+    public PosShipAddress? ShipTo { get; init; }
+
+    public PosShipAddress? ShipFrom { get; init; }
+
+    public IReadOnlyList<PosCopiedLine> Lines { get; init; } = [];
 }
 
 public sealed class PosDocumentResult
@@ -1022,24 +1090,94 @@ public sealed class PosDocumentService : IPosDocumentService
             .AsNoTracking()
             .Where(item => item.IsDeleted == false && item.IsDraft == false && item.Status != "A")
             .OrderByDescending(item => item.CreatedAt)
-            .Take(100)
-            .Select(item => new { item.Id, item.Type, item.Number })
+            .Take(250)
+            .Select(item => new
+            {
+                item.Id,
+                item.Type,
+                item.Number,
+                CustomerName = item.Customer.Name,
+                FiscalNumber = item.Customer.FiscalNumber,
+                item.CreatedAt
+            })
             .ToListAsync(cancellationToken);
         return documents
-            .Select(item => new PosLookupItem(item.Id, $"{item.Type} {item.Number}"))
+            .Select(item => PosLookupItem.ForDocument(
+                item.Id,
+                item.Type,
+                item.Number,
+                item.CustomerName,
+                item.FiscalNumber,
+                item.CreatedAt))
             .ToList();
     }
 
     public async Task<IReadOnlyList<PosCopiedLine>> LoadDocumentLinesAsync(Guid documentId, CancellationToken cancellationToken = default)
     {
-        var stored = LocalDraftStore.Lines(documentId);
+        var source = await LoadDocumentForCopyAsync(documentId, cancellationToken);
+        return source?.Lines ?? [];
+    }
+
+    public async Task<Guid?> GetDocumentCustomerIdAsync(Guid documentId, CancellationToken cancellationToken = default)
+    {
+        var source = await LoadDocumentForCopyAsync(documentId, cancellationToken);
+        return source is null || source.CustomerId == Guid.Empty ? null : source.CustomerId;
+    }
+
+    public async Task<PosDocumentCopySource?> LoadDocumentForCopyAsync(Guid documentId, CancellationToken cancellationToken = default)
+    {
+        var stored = LocalDraftStore.Find(documentId);
         if (stored is not null)
         {
-            return stored;
+            return new PosDocumentCopySource
+            {
+                Type = stored.Acronym,
+                CustomerId = stored.CustomerId,
+                Notes = stored.Notes,
+                PaymentConditionId = stored.PaymentConditionId,
+                CurrencyId = stored.CurrencyId,
+                ParentDocumentId = stored.ParentDocumentId,
+                ShipTo = stored.ShipTo,
+                ShipFrom = stored.ShipFrom,
+                Lines = LocalDraftStore.Lines(documentId) ?? []
+            };
         }
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var header = await database.Documents.AsNoTracking()
+            .Where(item => item.Id == documentId && item.IsDeleted == false)
+            .Select(item => new
+            {
+                item.Type,
+                item.CustomerId,
+                item.Notes,
+                item.PaymentConditionId,
+                item.CurrencyId,
+                item.ParentId,
+                ToAddress = item.ShipToAddress.AddressDetail,
+                ToRegion = item.ShipToAddress.Region,
+                ToPostal = item.ShipToAddress.PostalCode,
+                ToCity = item.ShipToAddress.City,
+                ToCountry = item.ShipToAddress.Country,
+                ToWhen = item.ShipToAddress.DeliveryDate,
+                ToDeliveryId = item.ShipToAddress.DeliveryID,
+                ToWarehouseId = item.ShipToAddress.WarehouseID,
+                FromAddress = item.ShipFromAddress.AddressDetail,
+                FromRegion = item.ShipFromAddress.Region,
+                FromPostal = item.ShipFromAddress.PostalCode,
+                FromCity = item.ShipFromAddress.City,
+                FromCountry = item.ShipFromAddress.Country,
+                FromWhen = item.ShipFromAddress.DeliveryDate,
+                FromDeliveryId = item.ShipFromAddress.DeliveryID,
+                FromWarehouseId = item.ShipFromAddress.WarehouseID
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+        if (header is null)
+        {
+            return null;
+        }
+
         var rows = await database.DocumentDetails
             .AsNoTracking()
             .Where(item => item.DocumentId == documentId && item.IsDeleted == false)
@@ -1054,21 +1192,94 @@ public sealed class PosDocumentService : IPosDocumentService
                 item.Discount,
                 VatRateId = item.Tax.TaxId,
                 VatPercentage = item.Tax.Percentage,
-                item.SerialNumber
+                item.SerialNumber,
+                item.Notes
             })
             .ToListAsync(cancellationToken);
-        return rows
-            .Select(item => new PosCopiedLine(
-                item.ArticleId,
-                item.Code,
-                item.Designation,
-                item.Quantity,
-                item.Price,
-                item.Discount,
-                item.VatRateId,
-                item.VatPercentage,
-                item.SerialNumber))
-            .ToList();
+
+        return new PosDocumentCopySource
+        {
+            Type = header.Type ?? string.Empty,
+            CustomerId = header.CustomerId,
+            Notes = header.Notes,
+            PaymentConditionId = header.PaymentConditionId,
+            CurrencyId = header.CurrencyId == Guid.Empty ? null : header.CurrencyId,
+            ParentDocumentId = header.ParentId,
+            ShipTo = ToPosShip(
+                header.ToAddress, header.ToRegion, header.ToPostal, header.ToCity, header.ToCountry,
+                header.ToWhen, header.ToDeliveryId, header.ToWarehouseId),
+            ShipFrom = ToPosShip(
+                header.FromAddress, header.FromRegion, header.FromPostal, header.FromCity, header.FromCountry,
+                header.FromWhen, header.FromDeliveryId, header.FromWarehouseId),
+            Lines = rows
+                .Select(item => new PosCopiedLine(
+                    item.ArticleId,
+                    item.Code,
+                    item.Designation,
+                    item.Quantity,
+                    item.Price,
+                    item.Discount,
+                    item.VatRateId,
+                    item.VatPercentage,
+                    item.SerialNumber,
+                    item.Notes))
+                .ToList()
+        };
+    }
+
+    private static PosShipAddress? ToPosShip(
+        string? address,
+        string? region,
+        string? postal,
+        string? city,
+        string? country,
+        DateTime? when,
+        string? deliveryId,
+        string? warehouseId)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            return null;
+        }
+
+        return new PosShipAddress
+        {
+            Address = address,
+            Region = region,
+            PostalCode = postal,
+            City = city,
+            Country = country,
+            When = when?.ToString("O"),
+            DeliveryId = deliveryId,
+            WarehouseId = warehouseId
+        };
+    }
+
+    public async Task<PosLookupItem?> GetDocumentLookupAsync(Guid documentId, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var row = await database.Documents.AsNoTracking()
+            .Where(item => item.Id == documentId && item.IsDeleted == false)
+            .Select(item => new
+            {
+                item.Id,
+                item.Type,
+                item.Number,
+                CustomerName = item.Customer.Name,
+                FiscalNumber = item.Customer.FiscalNumber,
+                item.CreatedAt
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+        return row is null
+            ? null
+            : PosLookupItem.ForDocument(
+                row.Id,
+                row.Type,
+                row.Number,
+                row.CustomerName,
+                row.FiscalNumber,
+                row.CreatedAt);
     }
 
     public async Task<PosDocumentResult> IssueDocumentAsync(

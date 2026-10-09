@@ -914,10 +914,10 @@ public partial class PosWindow : Window, IOfficeSurface
         }
     }
 
-    public async Task ShowNewDocumentAsync(Guid? draftId = null)
+    public async Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
         NewDocumentOverlay.IsVisible = true;
-        var created = await NewDocumentHost.ShowAsync(draftId);
+        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId);
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {

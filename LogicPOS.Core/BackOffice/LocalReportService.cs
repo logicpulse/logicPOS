@@ -1,4 +1,4 @@
-using LogicPOS.Domain.Entities;
+﻿using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -135,7 +135,7 @@ public sealed class LocalReportService : IReportService
         }
 
         if (customerId is Guid customer && customer != Guid.Empty &&
-            (report.ShowCustomer || report.Key is "customer-balance" or "current-account" or "sales-customer" or "sales-customer-detail"))
+            (report.ShowCustomer || report.Key is "customer-balance-summary" or "customer-balance-details" or "sales-customer" or "sales-customer-detail"))
         {
             documents = documents.Where(item => item.CustomerId == customer);
         }

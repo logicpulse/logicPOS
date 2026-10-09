@@ -107,6 +107,10 @@ public static class AppComposition
             services.AddSingleton<IReportService>(provider => provider.GetRequiredService<LocalReportService>());
             services.AddSingleton<LocalFiscalYearWizard>();
             services.AddSingleton<IFiscalYearWizard>(provider => provider.GetRequiredService<LocalFiscalYearWizard>());
+            services.AddSingleton<LocalCompanySetupService>();
+            services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
+            services.AddSingleton<StartupReadinessService>();
+            services.AddSingleton<IStartupReadinessService>(provider => provider.GetRequiredService<StartupReadinessService>());
             services.AddSingleton<ITicketPrinter, EscPosTicketPrinter>();
             services.AddSingleton<IThermalPrintSource, LocalThermalPrintSource>();
             if (FiscalModuleLoader.TryRegister(services, baseDirectory) == false)
@@ -116,7 +120,8 @@ public static class AppComposition
             var provider = services.BuildServiceProvider();
             DatabaseStartup.EnsureDatabase(provider, databaseSettings);
             DatabaseStartup.EnsureMachineTerminalAsync(provider).GetAwaiter().GetResult();
-            provider.GetRequiredService<PosDocumentService>().EnsureFiscalSetupAsync().GetAwaiter().GetResult();
+            // Do not auto-create fiscal year / series here. Fresh DBs stay empty until the
+            // Abertura de ano fiscal wizard (or EnsureSeriesAsync on first document issue).
             Services = provider;
         }
         catch (Exception exception)

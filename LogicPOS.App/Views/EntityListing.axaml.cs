@@ -57,11 +57,14 @@ public partial class EntityListing : UserControl
         FiscalYearHost.Finished += OnFiscalYearFinished;
     }
 
+    public event EventHandler? FiscalYearCompleted;
+
     private async void OnFiscalYearFinished(object? sender, string? message)
     {
         FiscalYearOverlay.IsVisible = false;
         await ReloadAsync();
         Notice.Text = message ?? string.Empty;
+        FiscalYearCompleted?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task ShowAsync(string title)
