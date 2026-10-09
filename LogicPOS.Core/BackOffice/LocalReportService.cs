@@ -18,10 +18,7 @@ public sealed class LocalReportService : IReportService
 
     public async Task<ListingSaveResult> GenerateAsync(
         string key,
-        DateTime start,
-        DateTime end,
-        Guid? customerId,
-        Guid? articleId,
+        ReportFilterRequest filters,
         CancellationToken cancellationToken = default)
     {
         var report = ReportCatalog.All.FirstOrDefault(item => item.Key == key);
@@ -30,24 +27,26 @@ public sealed class LocalReportService : IReportService
             return ListingSaveResult.Fail("Relatório desconhecido.");
         }
 
-        if (end.Date < start.Date)
+        var start = filters.Start.Date;
+        var end = filters.End.Date;
+        if (report.ShowDates && end < start)
         {
             return ListingSaveResult.Fail("A data final tem de ser igual ou posterior à data inicial.");
         }
 
-        if (report.NeedsCustomer && (customerId is null || customerId == Guid.Empty))
+        if (report.NeedsCustomer && (filters.CustomerId is null || filters.CustomerId == Guid.Empty))
         {
-            return ListingSaveResult.Fail("Escolha um cliente.");
+            return ListingSaveResult.Fail(report.CustomerIsSupplier ? "Escolha um fornecedor." : "Escolha um cliente.");
         }
 
-        if (report.NeedsArticle && (articleId is null || articleId == Guid.Empty))
+        if (report.NeedsArticle && (filters.ArticleId is null || filters.ArticleId == Guid.Empty))
         {
             return ListingSaveResult.Fail("Escolha um artigo.");
         }
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var rows = await ReadRowsAsync(database, report, start.Date, end.Date, customerId, articleId, cancellationToken);
+        var rows = await ReadRowsAsync(database, report, filters, cancellationToken);
         if (rows.Count == 0)
         {
             return ListingSaveResult.Fail("Não há dados para este relatório no intervalo indicado.");
@@ -64,13 +63,17 @@ public sealed class LocalReportService : IReportService
     private static async Task<List<Dictionary<string, string>>> ReadRowsAsync(
         LogicPOSDbContext database,
         ReportDefinition report,
-        DateTime start,
-        DateTime end,
-        Guid? customerId,
-        Guid? articleId,
+        ReportFilterRequest filters,
         CancellationToken cancellationToken)
     {
+        var start = filters.Start.Date;
+        var end = filters.End.Date;
         var until = end.AddDays(1);
+        var customerId = filters.CustomerId;
+        var articleId = filters.ArticleId;
+        var terminalId = filters.TerminalId;
+        var documentType = filters.DocumentTypeAcronym?.Trim();
+
         if (report.Key is "articles")
         {
             var articles = await database.Articles.AsNoTracking()
@@ -93,12 +96,23 @@ public sealed class LocalReportService : IReportService
             return customers.Select(item => Row(("Nome", item.Name), ("NIF", item.FiscalNumber ?? string.Empty), ("Cidade", item.City ?? string.Empty))).ToList();
         }
 
-        if (report.Key is "stock" or "stock-article" or "stock-gain" or "stock-supplier")
+        if (report.Key is "stock" or "stock-article" or "stock-gain" or "stock-supplier" or "stock-movement")
         {
             var stock = database.WarehouseArticles.AsNoTracking().Where(item => item.IsDeleted == false);
-            if (articleId is Guid selected && selected != Guid.Empty)
+            if (articleId is Guid selectedArticle && selectedArticle != Guid.Empty)
             {
-                stock = stock.Where(item => item.ArticleId == selected);
+                stock = stock.Where(item => item.ArticleId == selectedArticle);
+            }
+
+            if (filters.WarehouseId is Guid warehouse && warehouse != Guid.Empty)
+            {
+                stock = stock.Where(item => item.WarehouseLocation != null && item.WarehouseLocation.WarehouseId == warehouse);
+            }
+
+            if (string.IsNullOrWhiteSpace(filters.SerialNumber) == false)
+            {
+                var serial = filters.SerialNumber.Trim();
+                stock = stock.Where(item => item.SerialNumber == serial);
             }
 
             var lines = await stock
@@ -114,11 +128,26 @@ public sealed class LocalReportService : IReportService
         }
 
         var documents = database.Documents.AsNoTracking()
-            .Where(item => item.IsDeleted == false && item.IsDraft == false && item.Status != "A")
-            .Where(item => item.CreatedAt >= start && item.CreatedAt < until);
-        if (customerId is Guid customer && customer != Guid.Empty && report.Key is "customer-balance" or "current-account" or "sales-customer" or "sales-customer-detail")
+            .Where(item => item.IsDeleted == false && item.IsDraft == false && item.Status != "A");
+        if (report.ShowDates)
+        {
+            documents = documents.Where(item => item.CreatedAt >= start && item.CreatedAt < until);
+        }
+
+        if (customerId is Guid customer && customer != Guid.Empty &&
+            (report.ShowCustomer || report.Key is "customer-balance" or "current-account" or "sales-customer" or "sales-customer-detail"))
         {
             documents = documents.Where(item => item.CustomerId == customer);
+        }
+
+        if (string.IsNullOrWhiteSpace(documentType) == false)
+        {
+            documents = documents.Where(item => item.Type == documentType);
+        }
+
+        if (terminalId is Guid terminal && terminal != Guid.Empty)
+        {
+            documents = documents.Where(item => item.Series != null && item.Series.TerminalId == terminal);
         }
 
         var sales = await documents

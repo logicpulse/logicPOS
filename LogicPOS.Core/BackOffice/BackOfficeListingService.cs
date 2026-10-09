@@ -369,6 +369,13 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return rate.ToString(CultureInfo.InvariantCulture);
         }
 
+        // DocumentType / similar: acronym is what report APIs expect (FS, FT, …).
+        var acronym = type.GetProperty("Acronym")?.GetValue(item)?.ToString();
+        if (string.IsNullOrWhiteSpace(acronym) == false)
+        {
+            return acronym.Trim();
+        }
+
         var code = type.GetProperty("Code2")?.GetValue(item)?.ToString();
         return string.IsNullOrWhiteSpace(code) ? null : code;
     }

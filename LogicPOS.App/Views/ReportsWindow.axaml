@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.Views.ReportsWindow">
     <Border Classes="login_alert_frame bo_entity_editor">
@@ -6,7 +6,7 @@
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">
                     <Image Classes="login_alert_title_icon"
-                           Source="avares://logicpos/Assets/Images/Dialogs/icon_window_documents.png" />
+                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
                     <TextBlock Classes="login_alert_title" Text="Relatórios" />
                 </StackPanel>
             </Border>
@@ -17,14 +17,14 @@
                         <Button Classes="login_alert_action" Click="OnGenerateClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Gerar" />
                             </StackPanel>
                         </Button>
                         <Button Classes="login_alert_action" Click="OnCloseClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
-                                       Source="avares://logicpos/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                 <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                             </StackPanel>
                         </Button>
@@ -32,24 +32,62 @@
                 </DockPanel>
             </Border>
             <DockPanel Classes="bo_new_doc_body">
-                <Grid x:Name="Filters" Classes="bo_new_doc_fields" DockPanel.Dock="Top" ColumnDefinitions="*,*,*,*">
-                    <StackPanel>
-                        <TextBlock Classes="bo_new_doc_caption" Text="Data inicial" />
-                        <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
-                    </StackPanel>
-                    <StackPanel Grid.Column="1">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Data final" />
-                        <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
-                    </StackPanel>
-                    <StackPanel x:Name="CustomerPanel" Grid.Column="2" IsVisible="False">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Cliente" />
-                        <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo" />
-                    </StackPanel>
-                    <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
-                        <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
-                        <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo" />
-                    </StackPanel>
-                </Grid>
+                <StackPanel x:Name="Filters" Classes="bo_new_doc_fields" DockPanel.Dock="Top" Spacing="8">
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                        <StackPanel x:Name="StartDatePanel">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Data inicial" />
+                            <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
+                        </StackPanel>
+                        <StackPanel x:Name="EndDatePanel" Grid.Column="1">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Data final" />
+                            <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
+                        </StackPanel>
+                        <StackPanel x:Name="DocumentTypePanel" Grid.Column="2" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
+                            <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="TerminalPanel" Grid.Column="3" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Terminal" />
+                            <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                        <StackPanel x:Name="CustomerPanel" IsVisible="False">
+                            <TextBlock x:Name="CustomerCaption" Classes="bo_new_doc_caption" Text="Cliente" />
+                            <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="VatPanel" Grid.Column="1" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Taxa IVA" />
+                            <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="WarehousePanel" Grid.Column="2" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Armazém" />
+                            <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
+                            <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                        <StackPanel x:Name="FamilyPanel" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Família" />
+                            <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="SubfamilyPanel" Grid.Column="1" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="Subfamília" />
+                            <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo" />
+                        </StackPanel>
+                        <StackPanel x:Name="SerialPanel" Grid.Column="2" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="N.º de série" />
+                            <TextBox x:Name="SerialBox" Classes="bo_new_doc_text" />
+                        </StackPanel>
+                        <StackPanel x:Name="DocumentNumberPanel" Grid.Column="3" IsVisible="False">
+                            <TextBlock Classes="bo_new_doc_caption" Text="N.º documento" />
+                            <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text" />
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
                 <StackPanel x:Name="TabBar" Classes="bo_entity_tab_headers" DockPanel.Dock="Top" />
                 <ScrollViewer>
                     <StackPanel x:Name="Groups" />

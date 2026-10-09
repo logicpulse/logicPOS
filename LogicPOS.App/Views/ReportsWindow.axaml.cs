@@ -24,6 +24,7 @@ public partial class ReportsWindow : UserControl
         StartDate.SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
         EndDate.SelectedDate = DateTime.Today;
         TouchFields.Attach(Filters);
+        ApplyFilterVisibility(null);
     }
 
     public async Task ShowAsync()
@@ -37,6 +38,7 @@ public partial class ReportsWindow : UserControl
         _group = groups.FirstOrDefault() ?? string.Empty;
         BuildTabs(groups);
         ShowGroup(_group);
+        ApplyFilterVisibility(null);
         await LoadLookupsAsync();
     }
 
@@ -59,8 +61,10 @@ public partial class ReportsWindow : UserControl
             button.Click += (_, _) =>
             {
                 _group = tab;
+                _selected = null;
                 BuildTabs(groups);
                 ShowGroup(tab);
+                ApplyFilterVisibility(null);
             };
             TabBar.Children.Add(button);
         }
@@ -100,9 +104,26 @@ public partial class ReportsWindow : UserControl
         }
 
         button.Classes.Add("bo_report_row_on");
-        CustomerPanel.IsVisible = report.NeedsCustomer;
-        ArticlePanel.IsVisible = report.NeedsArticle;
+        ApplyFilterVisibility(report);
         Notice.Text = report.Name;
+    }
+
+    private void ApplyFilterVisibility(ReportDefinition? report)
+    {
+        var showDates = report?.ShowDates == true;
+        StartDatePanel.IsVisible = showDates;
+        EndDatePanel.IsVisible = showDates;
+        DocumentTypePanel.IsVisible = report?.ShowDocumentType == true;
+        TerminalPanel.IsVisible = report?.ShowTerminal == true;
+        CustomerPanel.IsVisible = report?.ShowCustomer == true;
+        CustomerCaption.Text = report?.CustomerIsSupplier == true ? "Fornecedor" : "Cliente";
+        VatPanel.IsVisible = report?.ShowVat == true;
+        WarehousePanel.IsVisible = report?.ShowWarehouse == true;
+        ArticlePanel.IsVisible = report?.ShowArticle == true;
+        FamilyPanel.IsVisible = report?.ShowFamily == true;
+        SubfamilyPanel.IsVisible = report?.ShowSubfamily == true;
+        SerialPanel.IsVisible = report?.ShowSerial == true;
+        DocumentNumberPanel.IsVisible = report?.ShowDocumentNumber == true;
     }
 
     private async Task LoadLookupsAsync()
@@ -114,10 +135,22 @@ public partial class ReportsWindow : UserControl
         }
 
         var template = new FuncDataTemplate<LookupOption>((item, _) => new TextBlock { Text = item?.Label ?? string.Empty });
-        CustomerBox.ItemTemplate = template;
-        ArticleBox.ItemTemplate = template;
+        foreach (var box in new[]
+                 {
+                     CustomerBox, ArticleBox, DocumentTypeBox, TerminalBox, VatBox, WarehouseBox, FamilyBox, SubfamilyBox
+                 })
+        {
+            box.ItemTemplate = template;
+        }
+
         CustomerBox.ItemsSource = await listing.LookupAsync("Clientes");
         ArticleBox.ItemsSource = await listing.LookupAsync("Artigos");
+        DocumentTypeBox.ItemsSource = await listing.LookupAsync("Tipo de documento");
+        TerminalBox.ItemsSource = await listing.LookupAsync("Terminais");
+        VatBox.ItemsSource = await listing.LookupAsync("Taxas de imposto");
+        WarehouseBox.ItemsSource = await listing.LookupAsync("Armazém");
+        FamilyBox.ItemsSource = await listing.LookupAsync("Famílias");
+        SubfamilyBox.ItemsSource = await listing.LookupAsync("Subfamílias");
     }
 
     private async void OnGenerateClick(object? sender, RoutedEventArgs e)
@@ -135,12 +168,26 @@ public partial class ReportsWindow : UserControl
             return;
         }
 
-        var start = StartDate.SelectedDate?.Date ?? DateTime.Today;
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
-        Guid? customer = CustomerBox.SelectedItem is LookupOption customerOption ? customerOption.Id : null;
-        Guid? article = ArticleBox.SelectedItem is LookupOption articleOption ? articleOption.Id : null;
+        var documentType = SelectedOption(DocumentTypeBox);
+        var filters = new ReportFilterRequest
+        {
+            Start = StartDate.SelectedDate?.Date ?? DateTime.Today,
+            End = EndDate.SelectedDate?.Date ?? DateTime.Today,
+            CustomerId = SelectedId(CustomerBox),
+            ArticleId = SelectedId(ArticleBox),
+            TerminalId = SelectedId(TerminalBox),
+            DocumentTypeId = documentType?.Id,
+            DocumentTypeAcronym = string.IsNullOrWhiteSpace(documentType?.Meta) ? null : documentType.Meta,
+            VatRateId = SelectedId(VatBox),
+            WarehouseId = SelectedId(WarehouseBox),
+            FamilyId = SelectedId(FamilyBox),
+            SubfamilyId = SelectedId(SubfamilyBox),
+            SerialNumber = SerialBox.Text?.Trim() ?? string.Empty,
+            DocumentNumber = DocumentNumberBox.Text?.Trim() ?? string.Empty
+        };
+
         Notice.Text = "A gerar...";
-        var result = await service.GenerateAsync(_selected.Key, start, end, customer, article);
+        var result = await service.GenerateAsync(_selected.Key, filters);
         if (result.Succeeded == false || string.IsNullOrWhiteSpace(result.Message))
         {
             Notice.Text = result.Error ?? "Não há dados para este relatório no intervalo indicado.";
@@ -153,6 +200,12 @@ public partial class ReportsWindow : UserControl
             await PreviewRequested.Invoke(result.Message, _selected.Name);
         }
     }
+
+    private static Guid? SelectedId(ComboBox box)
+        => box.SelectedItem is LookupOption option && option.Id != Guid.Empty ? option.Id : null;
+
+    private static LookupOption? SelectedOption(ComboBox box)
+        => box.SelectedItem as LookupOption;
 
     private void OnCloseClick(object? sender, RoutedEventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
 }
