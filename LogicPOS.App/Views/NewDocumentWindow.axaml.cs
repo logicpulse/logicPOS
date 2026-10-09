@@ -256,13 +256,9 @@ public partial class NewDocumentWindow : UserControl
                 ApplyStoredShip(source.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
             }
 
-            if (source.CustomerId != Guid.Empty && customers is not null)
+            if (customers is not null && source.CustomerId != Guid.Empty)
             {
-                var customer = await customers.FindAsync(source.CustomerId);
-                if (customer is not null)
-                {
-                    ShowCustomer(customer);
-                }
+                await RestoreCustomerAsync(customers, source.CustomerId, customerName: null, fiscalNumber: null);
             }
         }
         finally
@@ -314,48 +310,54 @@ public partial class NewDocumentWindow : UserControl
 
         _previewDraftId = documentId;
         DraftBox.IsChecked = true;
+        // Cloud/DB drafts are not in local-drafts.json; reuse the copy loader for header+lines+customer.
+        await ApplyDocumentCopyAsync(documentId, documents, customers);
+        if (_customerId is not null)
+        {
+            return;
+        }
+
         var stored = LocalDraftStore.Find(documentId);
-        if (stored is not null)
+        if (stored is null)
         {
-            NotesBox.Text = stored.Notes;
-            var typeIndex = _types.FindIndex(type => string.Equals(type.Acronym, stored.Acronym, StringComparison.OrdinalIgnoreCase));
-            if (typeIndex >= 0)
-            {
-                TypeBox.SelectedIndex = typeIndex;
-            }
+            return;
+        }
 
-            SelectId(PaymentBox, stored.PaymentConditionId);
-            SelectId(CurrencyBox, stored.CurrencyId);
-            SelectDocumentId(OriginBox, stored.ParentDocumentId);
-            RefreshDocumentClearButtons();
-            if (stored.CustomerId != Guid.Empty)
-            {
-                var customer = await customers.FindAsync(stored.CustomerId);
-                if (customer is not null)
-                {
-                    ShowCustomer(customer);
-                }
-            }
+        await RestoreCustomerAsync(customers, stored.CustomerId, stored.CustomerName, stored.FiscalNumber);
+    }
 
-            if (stored.ShipTo is not null || stored.ShipFrom is not null)
+    private async Task RestoreCustomerAsync(
+        IPosCustomerService customers,
+        Guid customerId,
+        string? customerName,
+        string? fiscalNumber)
+    {
+        if (customerId != Guid.Empty)
+        {
+            var byId = await customers.FindAsync(customerId);
+            if (byId is not null)
             {
-                TransportBox.IsChecked = true;
-                ApplyStoredShip(stored.ShipTo, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
-                ApplyStoredShip(stored.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
+                ShowCustomer(byId);
+                return;
             }
         }
 
-        var copied = await documents.LoadDocumentLinesAsync(documentId);
-        _lines.Clear();
-        foreach (var line in copied)
+        var term = string.IsNullOrWhiteSpace(fiscalNumber) ? customerName : fiscalNumber;
+        if (string.IsNullOrWhiteSpace(term))
         {
-            var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
-            _lines.Add(article is null
-                ? NewDocumentLine.FromCopy(line, string.Empty)
-                : NewDocumentLine.FromCopy(line, FamilyNameOf(article)));
+            return;
         }
 
-        RefreshLines();
+        var matches = await customers.SearchAsync(term.Trim());
+        var match = matches.FirstOrDefault(item =>
+                string.Equals(item.FiscalNumber, fiscalNumber?.Trim(), StringComparison.OrdinalIgnoreCase))
+            ?? matches.FirstOrDefault(item =>
+                string.Equals(item.Name, customerName?.Trim(), StringComparison.OrdinalIgnoreCase))
+            ?? matches.FirstOrDefault();
+        if (match is not null)
+        {
+            ShowCustomer(match);
+        }
     }
 
     private async Task Fill(Func<Task> load)
@@ -1875,7 +1877,7 @@ public partial class NewDocumentWindow : UserControl
             return null;
         }
 
-        var company = await documents.GetCompanyAddressAsync();
+        var company = await documents.GetCompanyInformationAsync();
         var currency = CurrencyBox.SelectedItem is PosLookupItem selected ? selected.Code : "EUR";
         var transport = RequiresTransport();
         return DocumentPreviewFile.Write(new DocumentPreview
@@ -1891,10 +1893,11 @@ public partial class NewDocumentWindow : UserControl
             Notes = NotesBox.Text,
             PaymentCondition = PaymentBox.SelectedItem?.ToString(),
             Currency = string.IsNullOrWhiteSpace(currency) ? "EUR" : currency,
+            Company = company,
             CompanyAddress = company.Address,
             CompanyCity = company.City,
             CompanyPostalCode = company.PostalCode,
-            CompanyCountry = company.Country,
+            CompanyCountry = company.CountryCode2,
             ShipTo = transport ? PosDocumentRules.ToAddress(ReadDestination()) : null,
             ShipFrom = transport ? PosDocumentRules.ToAddress(ReadOrigin()) : null,
             Lines = _lines.Select(line =>
