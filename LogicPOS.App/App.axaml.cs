@@ -58,8 +58,9 @@ public partial class App : global::Avalonia.Application
             await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
             await Task.Delay(50);
 
-            var databaseExists = DatabaseStartup.SqliteDatabaseExists();
-            await Dispatcher.UIThread.InvokeAsync(() => loading.ApplyMessage(databaseExists));
+            // Cloud keeps appsettings across auto-update; do not flash "criar BD" when UseCloud is on.
+            var databaseReady = DatabaseStartup.ShowFirstTimeDatabaseMessage() == false;
+            await Dispatcher.UIThread.InvokeAsync(() => loading.ApplyMessage(databaseReady));
 
             await Task.Run(() =>
             {
@@ -89,6 +90,7 @@ public partial class App : global::Avalonia.Application
     {
         try
         {
+            AppLogging.Fatal(exception, "Crash: {Source}", source);
             var path = Path.Combine(Path.GetTempPath(), "logicpos-login-crash.txt");
             var text = $"{DateTime.Now:O}{Environment.NewLine}{source}{Environment.NewLine}{exception}{Environment.NewLine}";
             File.AppendAllText(path, text);

@@ -76,8 +76,11 @@ public static class AppComposition
                 return;
             }
 
+            AppLogging.Configure(baseDirectory);
+            AppLogging.Information("Initializing application (local)...");
+
             var services = new ServiceCollection();
-            services.AddLogging();
+            AppLogging.AddToServices(services);
             services.AddSingleton<IConfiguration>(configuration);
             services.AddSingleton<ILicenseModule, NullLicenseModule>();
             services.AddSingleton<ISystemInformationService, DesktopSystemInformationService>();
