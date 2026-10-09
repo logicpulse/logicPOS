@@ -26,11 +26,7 @@ public static class DatabaseStartup
             return;
         }
 
-        if (Path.IsPathRooted(dataSource) == false)
-        {
-            dataSource = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, dataSource));
-        }
-
+        dataSource = SqliteDataPath.Resolve(dataSource);
         builder.DataSource = dataSource;
         settings.ConnectionString = builder.ConnectionString;
 
