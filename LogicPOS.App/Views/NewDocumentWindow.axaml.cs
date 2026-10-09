@@ -123,15 +123,10 @@ public partial class NewDocumentWindow : UserControl
             _types.AddRange(types);
             TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
             var preferred = DocumentDefaultStore.Read();
-            var index = string.IsNullOrWhiteSpace(preferred)
-                ? -1
-                : _types.FindIndex(type => string.Equals(type.Acronym, preferred, StringComparison.OrdinalIgnoreCase));
-            if (index < 0)
+            if (SelectDocumentType(preferred) == false)
             {
-                index = _types.FindIndex(type => type.Acronym == "FS");
+                SelectDocumentType("FS");
             }
-
-            TypeBox.SelectedIndex = index >= 0 ? index : 0;
         });
         await Fill(async () =>
         {
@@ -224,15 +219,7 @@ public partial class NewDocumentWindow : UserControl
         _filling = true;
         try
         {
-            if (string.IsNullOrWhiteSpace(source.Type) == false)
-            {
-                var typeIndex = _types.FindIndex(type =>
-                    string.Equals(type.Acronym, source.Type, StringComparison.OrdinalIgnoreCase));
-                if (typeIndex >= 0)
-                {
-                    TypeBox.SelectedIndex = typeIndex;
-                }
-            }
+            SelectDocumentType(source.Type);
 
             NotesBox.Text = source.Notes ?? string.Empty;
             SelectId(PaymentBox, source.PaymentConditionId);
@@ -278,6 +265,47 @@ public partial class NewDocumentWindow : UserControl
 
         var match = items.FirstOrDefault(item => string.Equals(item.Code, code, StringComparison.OrdinalIgnoreCase));
         box.SelectedItem = match ?? items.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Avalonia ComboBox often ignores SelectedIndex when it already has a value; clear then set SelectedItem.
+    /// </summary>
+    private bool SelectDocumentType(string? typeKey)
+    {
+        if (string.IsNullOrWhiteSpace(typeKey) || _types.Count == 0)
+        {
+            return false;
+        }
+
+        var key = typeKey.Trim();
+        var typeIndex = _types.FindIndex(type =>
+            string.Equals(type.Acronym, key, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(type.Designation, key, StringComparison.OrdinalIgnoreCase)
+            || (type.Acronym.Length >= 2
+                && key.StartsWith(type.Acronym, StringComparison.OrdinalIgnoreCase)
+                && (key.Length == type.Acronym.Length || char.IsDigit(key[type.Acronym.Length]))));
+        if (typeIndex < 0)
+        {
+            return false;
+        }
+
+        if (TypeBox.ItemsSource is not System.Collections.IList { Count: > 0 } items
+            || typeIndex >= items.Count)
+        {
+            TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
+            items = (System.Collections.IList)TypeBox.ItemsSource!;
+        }
+
+        // Clear first so the displayed designation always refreshes when opening a draft/copy.
+        TypeBox.SelectedIndex = -1;
+        TypeBox.SelectedItem = items[typeIndex];
+        if (TypeBox.SelectedIndex != typeIndex)
+        {
+            TypeBox.SelectedIndex = typeIndex;
+        }
+
+        return TypeBox.SelectedIndex == typeIndex
+            || string.Equals(TypeBox.SelectedItem as string, _types[typeIndex].Designation, StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task ApplyPortugalAddressesAsync(IPosDocumentService documents)
