@@ -8,4 +8,16 @@ public partial class ListingBusy : UserControl
     {
         InitializeComponent();
     }
+
+    public void Show(string? message = null)
+    {
+        Label.Text = string.IsNullOrWhiteSpace(message) ? "A carregar..." : message;
+        IsVisible = true;
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
+        Label.Text = "A carregar...";
+    }
 }

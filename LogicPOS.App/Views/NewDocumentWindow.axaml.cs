@@ -51,10 +51,13 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<LookupOption> _priceTypes = new();
     private readonly List<LookupOption> _countries = new();
 
+    private ListingLoad _load = null!;
+
     public NewDocumentWindow()
     {
         InitializeComponent();
         TouchFields.Attach(this);
+        _load = new ListingLoad(Busy);
     }
 
     public Task<bool> ShowAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
@@ -104,6 +107,29 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        var loadingDraft = _seedDraftId is not null;
+        var loadingCopy = _copyFromDocumentId is not null;
+        if (loadingDraft)
+        {
+            Busy.Show("A carregar rascunho...");
+        }
+        else if (loadingCopy)
+        {
+            Busy.Show("A carregar documento...");
+        }
+
+        try
+        {
+            await _load.RunAsync(() => LoadContentAsync(services));
+        }
+        finally
+        {
+            Busy.Hide();
+        }
+    }
+
+    private async Task LoadContentAsync(IServiceProvider services)
+    {
         _posCatalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync();
         _catalog.Clear();
         _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
