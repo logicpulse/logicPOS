@@ -872,27 +872,18 @@
         <Setter Property="MaxHeight" Value="40" />
     </Style>
 
-    <Style Selector="TextBlock.pos_menu_caption_overlay">
-        <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Background" Value="#CC2B2B2B" />
-        <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="Padding" Value="4,3" />
-        <Setter Property="Margin" Value="0" />
-        <Setter Property="MaxHeight" Value="36" />
-    </Style>
-
     <Style Selector="Image.pos_menu_image">
-        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="4,4,4,2" />
     </Style>
 
     <Style Selector="Image.pos_menu_image_fill">
         <Setter Property="Stretch" Value="UniformToFill" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Margin" Value="0" />
+        <Setter Property="Margin" Value="2,2,2,0" />
     </Style>
 
     <Style Selector="Button.pos_scroll">
@@ -3919,6 +3910,38 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_lookup_clear">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Margin" Value="4,0,0,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_lookup_clear:pointerover">
+        <Setter Property="Foreground" Value="#B00020" />
     </Style>
 
     <Style Selector="svg|Svg.bo_touch_key_icon">

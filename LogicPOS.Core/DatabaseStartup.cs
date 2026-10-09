@@ -52,6 +52,7 @@ public static class DatabaseStartup
         var hasTerminal = await database.Terminals.AnyAsync(terminal => terminal.IsDeleted == false);
         if (hasTerminal)
         {
+            await SyncOrphanLocalHardwareIdAsync(database);
             return;
         }
 
@@ -90,6 +91,46 @@ public static class DatabaseStartup
         await database.Terminals.AddAsync(terminal);
         await database.SaveChangesAsync();
     }
+
+    /// <summary>
+    /// Older builds stored a random Guid from <c>hardware.id</c> on the terminal.
+    /// When the real machine fingerprint is wired and no terminal matches it, reclaim
+    /// the default/orphan local Guid so login and licence Hardware ID agree.
+    /// </summary>
+    private static async Task SyncOrphanLocalHardwareIdAsync(LogicPOSDbContext database)
+    {
+        var hardwareId = MachineIdentity.HardwareId;
+        if (string.IsNullOrWhiteSpace(hardwareId))
+        {
+            return;
+        }
+
+        var alreadyBound = await database.Terminals
+            .AnyAsync(terminal => terminal.IsDeleted == false && terminal.HardwareId == hardwareId);
+        if (alreadyBound)
+        {
+            return;
+        }
+
+        var terminals = await database.Terminals
+            .Where(terminal => terminal.IsDeleted == false)
+            .OrderByDescending(terminal => terminal.IsDefault)
+            .ThenBy(terminal => terminal.Code)
+            .ToListAsync();
+        var orphan = terminals.FirstOrDefault(terminal => IsLocalGuidHardwareId(terminal.HardwareId))
+            ?? terminals.FirstOrDefault(terminal => string.IsNullOrWhiteSpace(terminal.HardwareId));
+        if (orphan is null)
+        {
+            return;
+        }
+
+        orphan.HardwareId = hardwareId;
+        orphan.UpdatedAt = DateTime.Now;
+        await database.SaveChangesAsync();
+    }
+
+    private static bool IsLocalGuidHardwareId(string? value)
+        => value is { Length: 32 } && value.All(Uri.IsHexDigit);
 
     public static string ResolveSeedPath()
     {

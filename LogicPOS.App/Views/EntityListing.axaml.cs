@@ -924,6 +924,11 @@ public partial class EntityListing : UserControl
                 ListingFilters.SelectLookup(search, current);
             }
 
+            if (field.Required == false && field.ReadOnly == false)
+            {
+                return WrapLookupClear(search);
+            }
+
             return search;
         }
 
@@ -977,8 +982,44 @@ public partial class EntityListing : UserControl
             printerDock.Children.Insert(0, pick);
         }
 
+        if (_title == "Terminais" && field.Key == "HardwareId" && field.ReadOnly == false && input is DockPanel hardwareDock)
+        {
+            var bind = new Button { Classes = { "bo_doc_page_button" }, Content = "PC" };
+            ToolTip.SetTip(bind, "Usar o Hardware ID desta máquina");
+            bind.Click += (_, _) => box.Text = MachineIdentity.HardwareId;
+            DockPanel.SetDock(bind, Dock.Right);
+            hardwareDock.Children.Insert(0, bind);
+        }
+
         return input;
     }
+
+    private static Control WrapLookupClear(AutoCompleteBox search)
+    {
+        var clear = new Button
+        {
+            Classes = { "bo_lookup_clear" },
+            Content = "×"
+        };
+        ToolTip.SetTip(clear, "Limpar");
+        clear.Click += (_, _) =>
+        {
+            ListingFilters.SelectLookup(search, null);
+            RefreshLookupClear(clear, search);
+        };
+        search.SelectionChanged += (_, _) => RefreshLookupClear(clear, search);
+        search.TextChanged += (_, _) => RefreshLookupClear(clear, search);
+        RefreshLookupClear(clear, search);
+
+        var dock = new DockPanel { Classes = { "bo_touch_row" } };
+        DockPanel.SetDock(clear, Dock.Right);
+        dock.Children.Add(clear);
+        dock.Children.Add(search);
+        return dock;
+    }
+
+    private static void RefreshLookupClear(Button clear, AutoCompleteBox search)
+        => clear.IsVisible = ListingFilters.SelectedLookup(search) is not null;
 
     private async void OnSaveClick(object? sender, RoutedEventArgs e) => await SaveEditorAsync();
 
@@ -1149,6 +1190,11 @@ public partial class EntityListing : UserControl
 
     private static LookupOption? ChosenLookup(Control? input)
     {
+        if (input is DockPanel dock)
+        {
+            input = dock.Children.OfType<AutoCompleteBox>().FirstOrDefault() ?? input;
+        }
+
         if (input is AutoCompleteBox box)
         {
             return ListingFilters.SelectedLookup(box);
@@ -1163,7 +1209,8 @@ public partial class EntityListing : UserControl
     {
         if (input is DockPanel dock)
         {
-            input = dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
+            var lookup = dock.Children.OfType<AutoCompleteBox>().FirstOrDefault();
+            input = lookup ?? dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
         }
 
         if (input is CheckBox check)
