@@ -21,6 +21,15 @@ public static class AppComposition
 
     public static string? StartupError { get; private set; }
 
+    /// <summary>
+    /// Lets the LogicPulse host attach its own composition so Avalonia UI can resolve services.
+    /// </summary>
+    public static void UseExternal(IServiceProvider? services, string? startupError = null)
+    {
+        Services = services;
+        StartupError = startupError;
+    }
+
     public static void Configure() => Configure(AppContext.BaseDirectory);
 
     public static void Configure(string baseDirectory)
@@ -49,7 +58,8 @@ public static class AppComposition
                     ["DatabaseSettings:UseCloud"] = "false",
                     ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(),
                     ["DatabaseSettings:UseSeed"] = "true",
-                    ["DatabaseSettings:Module"] = "default"
+                    // Module comes from appsettings.json (e.g. restaurant, cafe, default).
+                    ["DatabaseSettings:Module"] = configuration["DatabaseSettings:Module"] ?? "default"
                 })
                 .Build();
 
@@ -104,9 +114,7 @@ public static class AppComposition
                 services.AddSingleton<IFiscalModule, NullFiscalModule>();
             }
             var provider = services.BuildServiceProvider();
-            DatabaseStartup.EnsureExists(databaseSettings);
-            DatabaseStartup.ApplySchema(provider);
-            DatabaseStartup.EnsureSeed(provider);
+            DatabaseStartup.EnsureDatabase(provider, databaseSettings);
             DatabaseStartup.EnsureMachineTerminalAsync(provider).GetAwaiter().GetResult();
             provider.GetRequiredService<PosDocumentService>().EnsureFiscalSetupAsync().GetAwaiter().GetResult();
             Services = provider;

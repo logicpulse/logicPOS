@@ -31,10 +31,53 @@ public static class DatabaseStartup
             dataSource = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, dataSource));
         }
 
+        builder.DataSource = dataSource;
+        settings.ConnectionString = builder.ConnectionString;
+
         var directory = Path.GetDirectoryName(dataSource);
         if (string.IsNullOrWhiteSpace(directory) == false)
         {
             Directory.CreateDirectory(directory);
+        }
+
+        // Deleting only logicpos.db leaves -wal/-shm behind; SQLite then fails with Error 14.
+        if (File.Exists(dataSource) == false)
+        {
+            TryDelete(dataSource + "-wal");
+            TryDelete(dataSource + "-shm");
+            TryDelete(dataSource + "-journal");
+        }
+
+        // Create an empty file early so a missing/unwritable path fails here, not on login.
+        builder.Mode = SqliteOpenMode.ReadWriteCreate;
+        builder.Pooling = false;
+        try
+        {
+            using var connection = new SqliteConnection(builder.ConnectionString);
+            connection.Open();
+            connection.Close();
+        }
+        catch (SqliteException exception) when (exception.SqliteErrorCode == 14)
+        {
+            throw new InvalidOperationException(
+                $"Não foi possível criar a base de dados em '{dataSource}'. " +
+                "Apague logicpos.db, logicpos.db-wal e logicpos.db-shm (os três) e confirme permissão de escrita na pasta da aplicação.",
+                exception);
+        }
+    }
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch
+        {
+            // Best-effort: Migrate may still succeed if the main file can be created.
         }
     }
 
@@ -154,6 +197,7 @@ public static class DatabaseStartup
     {
         using var scope = services.CreateScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var settings = scope.ServiceProvider.GetRequiredService<DatabaseSettings>();
         if (database.Users.Any(user => user.IsDeleted == false))
         {
             return;
@@ -165,7 +209,41 @@ public static class DatabaseStartup
             throw new InvalidOperationException("A semente obrigatória falhou.");
         }
 
-        seeder.ApplyAdditionalSeed();
+        // Fresh database: always load module seed data (appsettings UseSeed only gates
+        // optional extras on an already-populated DB in DatabaseInitializer).
+        if (settings.UseSeed)
+        {
+            seeder.ApplyAdditionalSeed();
+        }
+        else
+        {
+            seeder.ApplyRequiredUsersSeed();
+        }
+
         seeder.EnsureCountrySpecificConfiguration();
+    }
+
+    /// <summary>
+    /// Creates schema + seed when the SQLite file is missing (same outcome as first install).
+    /// Prefer this over calling EnsureExists / ApplySchema / EnsureSeed separately.
+    /// </summary>
+    public static void EnsureDatabase(IServiceProvider services, DatabaseSettings settings)
+    {
+        EnsureExists(settings);
+        using var scope = services.CreateScope();
+        var initializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
+        if (initializer is not null)
+        {
+            if (initializer.Initialize() == false)
+            {
+                throw new InvalidOperationException(
+                    "Não foi possível criar ou inicializar a base de dados. Verifique permissões na pasta da aplicação e o SeedPath no appsettings.");
+            }
+
+            return;
+        }
+
+        ApplySchema(services);
+        EnsureSeed(services);
     }
 }
