@@ -31,17 +31,17 @@ internal static class SqLiteDependencyInjection
     }
 
     /// <summary>
-    /// Relative <c>Data Source</c> is resolved to a writable path (beside the exe when possible,
-    /// otherwise ProgramData). <c>Cache=Shared</c> eases concurrent connections.
+    /// Relative <c>Data Source</c> is always beside the exe. The installer must grant Users
+    /// modify on the install folder. <c>Cache=Shared</c> eases concurrent connections.
     /// </summary>
     private static string BuildSqliteConnectionString(string connectionString)
     {
         var builder = new SqliteConnectionStringBuilder(connectionString);
 
-        if (ShouldResolveDataSource(builder))
+        if (ShouldResolveDataSourceToAppBaseDirectory(builder))
         {
-            // Keep resolution in sync with LogicPOS.Core.SqliteDataPath (same rules).
-            builder.DataSource = ResolveSqliteDataSource(builder.DataSource);
+            builder.DataSource = Path.GetFullPath(
+                Path.Combine(AppContext.BaseDirectory, builder.DataSource));
         }
 
         if (builder.Cache is SqliteCacheMode.Default)
@@ -54,7 +54,7 @@ internal static class SqLiteDependencyInjection
         return builder.ConnectionString;
     }
 
-    private static bool ShouldResolveDataSource(SqliteConnectionStringBuilder builder)
+    private static bool ShouldResolveDataSourceToAppBaseDirectory(SqliteConnectionStringBuilder builder)
     {
         if (builder.Mode is SqliteOpenMode.Memory)
         {
@@ -73,53 +73,6 @@ internal static class SqLiteDependencyInjection
         }
 
         return Path.IsPathRooted(builder.DataSource) == false;
-    }
-
-    /// <summary>
-    /// Duplicates <c>LogicPOS.Core.SqliteDataPath</c> so Persistence does not reference Core.
-    /// </summary>
-    private static string ResolveSqliteDataSource(string configuredDataSource)
-    {
-        var fileName = Path.GetFileName(configuredDataSource);
-        if (string.IsNullOrWhiteSpace(fileName))
-        {
-            fileName = "logicpos.db";
-        }
-
-        var besideExe = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, configuredDataSource));
-        if (File.Exists(besideExe))
-        {
-            return besideExe;
-        }
-
-        if (CanCreateFile(AppContext.BaseDirectory))
-        {
-            return besideExe;
-        }
-
-        var programDataDir = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Logicpulse",
-            "logicpos",
-            "Data");
-        Directory.CreateDirectory(programDataDir);
-        return Path.GetFullPath(Path.Combine(programDataDir, fileName));
-    }
-
-    private static bool CanCreateFile(string directory)
-    {
-        try
-        {
-            Directory.CreateDirectory(directory);
-            var probe = Path.Combine(directory, $".logicpos-write-{Guid.NewGuid():N}.tmp");
-            File.WriteAllText(probe, "ok");
-            File.Delete(probe);
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
 }

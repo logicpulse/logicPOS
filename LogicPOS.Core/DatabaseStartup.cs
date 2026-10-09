@@ -36,6 +36,13 @@ public static class DatabaseStartup
             Directory.CreateDirectory(directory);
         }
 
+        if (string.IsNullOrWhiteSpace(directory) == false && SqliteDataPath.CanCreateFile(directory) == false)
+        {
+            throw new InvalidOperationException(
+                $"Sem permissão de escrita em '{directory}'. " +
+                "A base de dados tem de ficar na pasta de instalação: reponha as ACL (Utilizadores = Modificar) ou reinstale.");
+        }
+
         // Deleting only logicpos.db leaves -wal/-shm behind; SQLite then fails with Error 14.
         if (File.Exists(dataSource) == false)
         {
@@ -57,7 +64,7 @@ public static class DatabaseStartup
         {
             throw new InvalidOperationException(
                 $"Não foi possível criar a base de dados em '{dataSource}'. " +
-                "Apague logicpos.db, logicpos.db-wal e logicpos.db-shm (os três) e confirme permissão de escrita na pasta da aplicação.",
+                "Apague logicpos.db, logicpos.db-wal e logicpos.db-shm se existirem, e garanta permissão de escrita na pasta de instalação.",
                 exception);
         }
     }
