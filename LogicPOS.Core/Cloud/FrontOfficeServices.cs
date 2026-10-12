@@ -26,6 +26,7 @@ public interface IPosDocumentService
         string? notes,
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
+        bool createMissingSeries = false,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<string>> ListRecentAsync(CancellationToken cancellationToken = default);

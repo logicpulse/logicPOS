@@ -155,8 +155,22 @@
                         </StackPanel>
                     </Border>
                     <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnNoticeCloseClick">
+                        <StackPanel Classes="login_alert_action_buttons" Orientation="Horizontal" Spacing="8">
+                            <Button x:Name="NoticeYesButton" Classes="login_alert_action" IsVisible="False" Click="OnNoticeYesClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Sim" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="NoticeNoButton" Classes="login_alert_action" IsVisible="False" Click="OnNoticeCloseClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Não" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="NoticeOkButton" Classes="login_alert_action" Click="OnNoticeCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
@@ -167,7 +181,7 @@
                     </Border>
                     <Grid Classes="login_alert_body">
                         <Image x:Name="NoticeSymbol" Classes="login_alert_symbol" />
-                        <TextBlock x:Name="NoticeMessage" Classes="login_alert_message" />
+                        <TextBlock x:Name="NoticeMessage" Classes="login_alert_message" TextWrapping="Wrap" />
                     </Grid>
                 </DockPanel>
             </Border>

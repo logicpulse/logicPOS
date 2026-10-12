@@ -177,6 +177,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["SeriesForEachTerminal"] = "Séries independente por cada terminal",
         ["NumberRangeBegin"] = "Limite inferior",
         ["NumberRangeEnd"] = "Limite superior",
+        ["ATDocCodeValidationSeries"] = "Código de validação AT",
+        ["AtValidationCode"] = "Código de validação AT",
         ["CharactersPerLine"] = "Num.Caracteres Linha",
         ["ThermalCutCommand"] = "Commando de Corte",
         ["ThermalEncoding"] = "Encoding",
@@ -515,7 +517,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 "export-saft" or "saft-period" => await FiscalAsync(module => module.ExportSaftAsync(ParseStart(extra), ParseEnd(extra), cancellationToken), cancellationToken),
                 "saft-year" => await ExportSaftRangeAsync(new DateTime(DateTime.Today.Year, 1, 1), new DateTime(DateTime.Today.Year, 12, 31), cancellationToken),
                 "saft-month" => await ExportSaftMonthAsync(cancellationToken),
-                "register-at" => await FiscalAsync(module => module.RegisterSeriesAsync(id ?? Guid.Empty, cancellationToken), cancellationToken),
+                "register-at" => await CommunicateSeriesAtAsync(id, cancellationToken),
                 "request-agt" or "request-series" => await FiscalAsync(module => module.RequestSeriesCodeAsync(DateTime.Today.Year, string.IsNullOrWhiteSpace(extra) ? "FT" : extra.Trim(), cancellationToken), cancellationToken),
                 "open-day" => await OpenDayAsync(cancellationToken),
                 "open-session" => await OpenSessionAsync(extra, cancellationToken),
@@ -1222,6 +1224,33 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         user.AccessPin = _passwords.HashPassword(pin);
         user.PasswordReset = false;
+    }
+
+    private async Task<ListingSaveResult> CommunicateSeriesAtAsync(Guid? id, CancellationToken cancellationToken)
+    {
+        if (id is null || id == Guid.Empty)
+        {
+            return ListingSaveResult.Fail("Selecione a série.");
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var series = await database.DocumentSeries
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == id.Value && item.IsDeleted == false, cancellationToken);
+        if (series is null)
+        {
+            return ListingSaveResult.Fail("Série não encontrada.");
+        }
+
+        if (string.IsNullOrWhiteSpace(series.ATDocCodeValidationSeries) == false)
+        {
+            return ListingSaveResult.Ok(
+                id.Value,
+                $"A série «{series.Acronym}» já está comunicada à AT.{Environment.NewLine}Código: {series.ATDocCodeValidationSeries}{Environment.NewLine}Não foi enviada nova comunicação.");
+        }
+
+        return await FiscalAsync(module => module.RegisterSeriesAsync(id.Value, cancellationToken), cancellationToken);
     }
 
     private async Task<ListingSaveResult> FiscalAsync(Func<IFiscalModule, Task<string?>> call, CancellationToken cancellationToken)
@@ -2375,7 +2404,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Séries", typeof(DocumentSeries), actions:
             [
                 new ListingAction { Key = "export-saft", Label = "SAFT" },
-                new ListingAction { Key = "register-at", Label = "Registar série" },
+                new ListingAction { Key = "register-at", Label = "Comunicar série fiscal" },
                 new ListingAction { Key = "request-agt", Label = "Série AGT" }
             ]),
             Entity("Tipo de documento", typeof(DocumentType)),

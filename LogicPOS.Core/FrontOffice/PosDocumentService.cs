@@ -410,6 +410,8 @@ public sealed class PosDocumentCopySource
 
 public sealed class PosDocumentResult
 {
+    public const string SeriesMissingPrefix = "SERIES_MISSING:";
+
     private PosDocumentResult(bool succeeded, Guid documentId, string? number, string? error)
     {
         Succeeded = succeeded;
@@ -426,11 +428,23 @@ public sealed class PosDocumentResult
 
     public string? Error { get; }
 
+    /// <summary>True when the POS should ask before creating the fiscal year / document series.</summary>
+    public bool NeedsSeriesConfirmation =>
+        Succeeded == false
+        && Error is not null
+        && Error.StartsWith(SeriesMissingPrefix, StringComparison.Ordinal);
+
+    public string? MissingSeriesDocumentType =>
+        NeedsSeriesConfirmation ? Error![SeriesMissingPrefix.Length..] : null;
+
     public static PosDocumentResult Ok(string number) => new(true, Guid.Empty, number, null);
 
     public static PosDocumentResult Ok(Guid documentId, string number) => new(true, documentId, number, null);
 
     public static PosDocumentResult Fail(string error) => new(false, Guid.Empty, null, error);
+
+    public static PosDocumentResult NeedSeriesConfirmation(string documentType) =>
+        Fail($"{SeriesMissingPrefix}{documentType}");
 }
 
 public sealed class PosDocumentService : IPosDocumentService
@@ -454,6 +468,7 @@ public sealed class PosDocumentService : IPosDocumentService
         string? notes,
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
+        bool createMissingSeries = false,
         CancellationToken cancellationToken = default)
     {
         if (_license.DocumentsEnabled == false)
@@ -477,7 +492,12 @@ public sealed class PosDocumentService : IPosDocumentService
             return PosDocumentResult.Fail("Método de pagamento não encontrado.");
         }
 
-        var seriesResult = await EnsureSeriesAsync(scope.ServiceProvider, database, documentType, cancellationToken);
+        var seriesResult = await EnsureSeriesAsync(
+            scope.ServiceProvider,
+            database,
+            documentType,
+            createMissingSeries,
+            cancellationToken);
         if (seriesResult.Succeeded == false)
         {
             return seriesResult;
@@ -547,6 +567,7 @@ public sealed class PosDocumentService : IPosDocumentService
         IServiceProvider services,
         LogicPOSDbContext database,
         string documentType,
+        bool createIfMissing,
         CancellationToken cancellationToken)
     {
         var existing = await services.GetRequiredService<IDocumentSeriesRepository>()
@@ -554,6 +575,11 @@ public sealed class PosDocumentService : IPosDocumentService
         if (existing is not null)
         {
             return PosDocumentResult.Ok(existing.Acronym);
+        }
+
+        if (createIfMissing == false)
+        {
+            return PosDocumentResult.NeedSeriesConfirmation(documentType);
         }
 
         var year = DateTime.Now.Year;

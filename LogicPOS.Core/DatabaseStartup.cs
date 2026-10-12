@@ -315,10 +315,22 @@ public static class DatabaseStartup
                     "Não foi possível criar ou inicializar a base de dados. Verifique permissões na pasta da aplicação e o SeedPath no appsettings.");
             }
 
+            EnsureMandatoryLookups(services);
             return;
         }
 
         ApplySchema(services);
         EnsureSeed(services);
+        EnsureMandatoryLookups(services);
+    }
+
+    /// <summary>
+    /// Fills customer/price types when an existing DB was created without demo seed.
+    /// </summary>
+    public static void EnsureMandatoryLookups(IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
+        var seeder = scope.ServiceProvider.GetService<IDatabaseSeeder>();
+        seeder?.EnsureMandatoryLookups();
     }
 }

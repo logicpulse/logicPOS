@@ -72,7 +72,7 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
         _dbSettings.SeedPath ??= "db_seeds";
         _logger.LogInformation("Seeds path: {SeedsPath}", _dbSettings.SeedPath);
         _dbSettings.Module ??= "default";
-        _dbSettings.Module = _dbSettings.Module.ToLower();
+        _dbSettings.Module = ModuleSeedFiles.NormalizeModule(_dbSettings.Module);
         _logger.LogInformation("Seed module: {Module}", _dbSettings.Module);
         string[] validModules =
         [
@@ -93,6 +93,7 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
 
         ArticleFamiliesSeeder.SeedData(_database, _dbSettings, _logger);
         ArticleTypesSeeder.SeedData(_database, _dbSettings, _logger);
+        // PriceTypes / CustomerTypes are also applied in ApplyRequiredSeed; keep here for module overrides.
         PriceTypesSeeder.SeedData(_database, _dbSettings, _logger);
         CommissionGroupsSeeder.SeedData(_database, _dbSettings, _logger);
         UserProfilesSeeder.SeedData(_database, _dbSettings, _logger);
@@ -156,6 +157,19 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
         WeighingMachinesSeeder.SeedData(_database, _dbSettings, _logger);
         MovementTypesSeeder.SeedData(_database, _dbSettings, _logger);
         DiscountGroupsSeeder.SeedData(_database, _dbSettings, _logger);
+
+        // Mandatory auxiliary lookups for customer/document UI — always load (fallback to default module).
+        if (CustomerTypesSeeder.SeedData(_database, _dbSettings, _logger) == false)
+        {
+            _logger.LogCritical("Customer types seeding failed.");
+            return false;
+        }
+
+        if (PriceTypesSeeder.SeedData(_database, _dbSettings, _logger) == false)
+        {
+            _logger.LogCritical("Price types seeding failed.");
+            return false;
+        }
 
         _logger.LogInformation("Required seed applied successfully");
         return true;
@@ -251,5 +265,13 @@ public sealed class DatabaseSeeder : IDatabaseSeeder
 
         _logger.LogInformation("Ensuring Portugal-specific configuration");
         SdrDepositArticleSeeder.EnsureConfigured(_database, _logger);
+    }
+
+    public void EnsureMandatoryLookups()
+    {
+        Initialize();
+        _logger.LogInformation("Ensuring mandatory auxiliary lookups");
+        CustomerTypesSeeder.SeedData(_database, _dbSettings, _logger);
+        PriceTypesSeeder.SeedData(_database, _dbSettings, _logger);
     }
 }

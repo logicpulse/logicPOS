@@ -36,6 +36,9 @@ public partial class PaymentWindow : Window
     private Guid? _customerId;
     private string _defaultCountry = string.Empty;
     private readonly string? _shareLabel;
+    private string? _pendingSeriesDocumentType;
+    private IReadOnlyList<PosTicketLine>? _pendingSeriesLines;
+    private IReadOnlyList<int>? _pendingSeriesPartialIndexes;
 
     public bool PartialPayment { get; private set; }
 
@@ -396,10 +399,82 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        var services = AppComposition.Services;
-        if (services is null)
+        if (AppComposition.Services is null)
         {
             ShowNotice("Aviso", "A aplicação não está pronta para gravar o documento.", error: true);
+            return;
+        }
+
+        await IssueWithSeriesAsync(documentType, lines, partialIndexes, createMissingSeries: false);
+    }
+
+    private void OnCancelClick(object? sender, RoutedEventArgs e)
+    {
+        Close(false);
+    }
+
+    private void OnNoticeCloseClick(object? sender, RoutedEventArgs e)
+    {
+        NoticeOverlay.IsVisible = false;
+        _pendingSeriesDocumentType = null;
+        _pendingSeriesLines = null;
+        _pendingSeriesPartialIndexes = null;
+        SetNoticeButtons(confirm: false);
+        if (_confirmPayment)
+        {
+            Close(true);
+        }
+    }
+
+    private async void OnNoticeYesClick(object? sender, RoutedEventArgs e)
+    {
+        var documentType = _pendingSeriesDocumentType ?? "FS";
+        var lines = _pendingSeriesLines ?? _lines;
+        var partial = _pendingSeriesPartialIndexes;
+        NoticeOverlay.IsVisible = false;
+        SetNoticeButtons(confirm: false);
+        _pendingSeriesDocumentType = null;
+        _pendingSeriesLines = null;
+        _pendingSeriesPartialIndexes = null;
+        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true);
+    }
+
+    private void ShowNotice(string title, string message, bool error)
+    {
+        SetNoticeButtons(confirm: false);
+        var icon = error ? "error" : "info";
+        NoticeTitle.Text = title;
+        NoticeMessage.Text = message;
+        NoticeIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
+        NoticeSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
+        NoticeOverlay.IsVisible = true;
+    }
+
+    private void ShowConfirm(string title, string message)
+    {
+        SetNoticeButtons(confirm: true);
+        NoticeTitle.Text = title;
+        NoticeMessage.Text = message;
+        NoticeIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png");
+        NoticeSymbol.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png");
+        NoticeOverlay.IsVisible = true;
+    }
+
+    private void SetNoticeButtons(bool confirm)
+    {
+        NoticeYesButton.IsVisible = confirm;
+        NoticeNoButton.IsVisible = confirm;
+        NoticeOkButton.IsVisible = confirm == false;
+    }
+
+    private async Task IssueWithSeriesAsync(
+        string documentType,
+        IReadOnlyList<PosTicketLine> lines,
+        IReadOnlyList<int>? partialIndexes,
+        bool createMissingSeries)
+    {
+        if (_methodToken is null || _customerId is null || AppComposition.Services is null)
+        {
             return;
         }
 
@@ -407,14 +482,26 @@ public partial class PaymentWindow : Window
         {
             var total = lines.Sum(line => line.Total);
             var payable = total - (total * DiscountPercent() / 100m);
-            var result = await services.GetRequiredService<IPosDocumentService>().IssueSimplifiedInvoiceAsync(
+            var result = await AppComposition.Services.GetRequiredService<IPosDocumentService>().IssueSimplifiedInvoiceAsync(
                 _customerId.Value,
                 _methodToken,
                 DiscountPercent(),
                 _cash ? _delivered : payable,
                 Notes.Text,
                 lines.Select(line => new PosSaleLine(line.ArticleId, line.Quantity, line.NetUnitPrice, line.Discount, line.VatRateId)).ToList(),
-                documentType);
+                documentType,
+                createMissingSeries);
+
+            if (createMissingSeries == false && result.NeedsSeriesConfirmation)
+            {
+                _pendingSeriesDocumentType = result.MissingSeriesDocumentType ?? documentType;
+                _pendingSeriesLines = lines;
+                _pendingSeriesPartialIndexes = partialIndexes;
+                ShowConfirm(
+                    "Série fiscal",
+                    $"Não existe série activa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
+                return;
+            }
 
             if (result.Succeeded == false)
             {
@@ -429,6 +516,7 @@ public partial class PaymentWindow : Window
             {
                 message = $"{_shareLabel}{Environment.NewLine}{message}";
             }
+
             if (_cash)
             {
                 message += $"{Environment.NewLine}Troco: {_delivered - payable:C}";
@@ -447,30 +535,6 @@ public partial class PaymentWindow : Window
         {
             ShowNotice("Aviso", exception.Message, error: true);
         }
-    }
-
-    private void OnCancelClick(object? sender, RoutedEventArgs e)
-    {
-        Close(false);
-    }
-
-    private void OnNoticeCloseClick(object? sender, RoutedEventArgs e)
-    {
-        NoticeOverlay.IsVisible = false;
-        if (_confirmPayment)
-        {
-            Close(true);
-        }
-    }
-
-    private void ShowNotice(string title, string message, bool error)
-    {
-        var icon = error ? "error" : "info";
-        NoticeTitle.Text = title;
-        NoticeMessage.Text = message;
-        NoticeIcon.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}_window.png");
-        NoticeSymbol.Source = LoadBitmap($"avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_{icon}.png");
-        NoticeOverlay.IsVisible = true;
     }
 
     private void ShowCashPad()

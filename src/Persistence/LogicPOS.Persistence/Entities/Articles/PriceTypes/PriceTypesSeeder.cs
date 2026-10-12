@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Seeding;
 using Microsoft.Extensions.Logging;
 
 namespace LogicPOS.Persistence.Entities.Articles.PriceTypes;
@@ -10,10 +11,16 @@ public static class PriceTypesSeeder
     public static bool SeedData(LogicPOSDbContext database, DatabaseSettings dbSettings, ILogger logger)
     {
         logger.LogInformation("Seeding price types");
-        string seedFilePath = Path.Combine(dbSettings.SeedPath!,"modules",dbSettings.Module!, "pricetypes.json");
+        if (database.PriceTypes.Any())
+        {
+            logger.LogInformation("Price types already present; skipping seed.");
+            return true;
+        }
+
+        string seedFilePath = ModuleSeedFiles.Resolve(dbSettings, "pricetypes.json");
         if (File.Exists(seedFilePath) == false)
         {
-            logger.LogError("Price types seed file not found.");
+            logger.LogError("Price types seed file not found (module and default).");
             return false;
         }
 

@@ -74,6 +74,7 @@ public class DatabaseInitializer : IDatabaseInitializer
         }
 
         _databaseSeeder.EnsureCountrySpecificConfiguration();
+        _databaseSeeder.EnsureMandatoryLookups();
 
         return true;
     }
