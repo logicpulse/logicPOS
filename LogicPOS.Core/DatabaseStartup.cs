@@ -13,6 +13,39 @@ namespace LogicPOS.Core;
 public static class DatabaseStartup
 {
     /// <summary>
+    /// True when appsettings asks for cloud/online mode (no local SQLite create on startup).
+    /// </summary>
+    public static bool UsesCloud(string? baseDirectory = null)
+    {
+        try
+        {
+            var root = string.IsNullOrWhiteSpace(baseDirectory) ? AppContext.BaseDirectory : baseDirectory;
+            var settingsPath = Path.Combine(root, "appsettings.json");
+            if (File.Exists(settingsPath) == false)
+            {
+                return false;
+            }
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(root)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
+            return bool.TryParse(configuration["DatabaseSettings:UseCloud"], out var useCloud) && useCloud;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Splash should say "creating database" only for a missing local SQLite file.
+    /// Cloud installs never create a local DB on boot — show the normal loading text.
+    /// </summary>
+    public static bool ShowFirstTimeDatabaseMessage(string? baseDirectory = null)
+        => UsesCloud(baseDirectory) == false && SqliteDatabaseExists(baseDirectory) == false;
+
+    /// <summary>
     /// True when the configured SQLite file already exists (GTK loading vs first-time create).
     /// </summary>
     public static bool SqliteDatabaseExists(string? baseDirectory = null)

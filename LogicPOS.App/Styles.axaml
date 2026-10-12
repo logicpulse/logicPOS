@@ -502,6 +502,25 @@
         <Setter Property="Height" Value="14" />
         <Setter Property="MinHeight" Value="14" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="Foreground" Value="#9bbe1d" />
+    </Style>
+
+    <Style Selector="ProgressBar.startup_progress">
+        <Setter Property="Height" Value="4" />
+        <Setter Property="Width" Value="160" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#9bbe1d" />
+        <Setter Property="Background" Value="#D9D9D9" />
+    </Style>
+
+    <Style Selector="TextBlock.startup_status">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#4D6610" />
+        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
     <Style Selector="TextBlock.login_alert_message">

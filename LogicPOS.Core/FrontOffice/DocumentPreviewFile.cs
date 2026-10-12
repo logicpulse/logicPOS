@@ -61,6 +61,9 @@ public sealed class DocumentPreview
 
     public string? CompanyCountry { get; init; }
 
+    /// <summary>When set, used for the PDF company block (name, logo, contacts).</summary>
+    public CompanyInformation? Company { get; init; }
+
     public ShipAddress? ShipTo { get; init; }
 
     public ShipAddress? ShipFrom { get; init; }
@@ -137,16 +140,15 @@ public static class DocumentPreviewFile
                 }
             ]
         };
+        var company = preview.Company ?? new CompanyInformation();
+        company.Address ??= preview.CompanyAddress;
+        company.City ??= preview.CompanyCity;
+        company.PostalCode ??= preview.CompanyPostalCode;
+        company.CountryCode2 ??= preview.CompanyCountry;
+        company.CurrencyCode ??= document.Currency;
         var data = new DocumentPdfData
         {
-            Company = new CompanyInformation
-            {
-                Address = preview.CompanyAddress,
-                City = preview.CompanyCity,
-                PostalCode = preview.CompanyPostalCode,
-                CountryCode2 = preview.CompanyCountry,
-                CurrencyCode = document.Currency
-            },
+            Company = company,
             Country = FiscalCountry.Portugal,
             Document = document,
             SoftwareVersion = "preview"

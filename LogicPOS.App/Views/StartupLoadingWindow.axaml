@@ -20,18 +20,10 @@
                    Source="avares://LogicPOS.App/Assets/Images/Other/working.gif"
                    RenderOptions.BitmapInterpolationMode="HighQuality" />
             <TextBlock x:Name="StatusText"
-                       HorizontalAlignment="Center"
-                       TextAlignment="Center"
-                       FontFamily="avares://LogicPOS.App/Assets/Fonts#Montserrat"
-                       FontSize="13"
-                       FontWeight="Bold"
-                       Foreground="#2F4F4F"
-                       TextWrapping="Wrap"
+                       Classes="startup_status"
                        Text="A carregar POS..." />
-            <ProgressBar IsIndeterminate="True"
-                         Height="4"
-                         Width="160"
-                         HorizontalAlignment="Center" />
+            <ProgressBar Classes="startup_progress"
+                         IsIndeterminate="True" />
         </StackPanel>
     </Border>
 </Window>

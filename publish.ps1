@@ -116,6 +116,7 @@ $required = @(
     (Join-Path $OutputDir "Avalonia.dll"),
     (Join-Path $OutputDir "LogicPOS.Fiscal.dll"),
     (Join-Path $OutputDir "LogicPOS.Cloud.dll"),
+    (Join-Path $OutputDir "LogicPOS.ApiClient.dll"),
     (Join-Path $OutputDir "LogicPOS.Licence.dll"),
     (Join-Path $OutputDir "application.ico"),
     (Join-Path $OutputDir "db_seeds\modules\default\users.json")
