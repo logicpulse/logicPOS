@@ -892,9 +892,7 @@ public sealed class PosDocumentService : IPosDocumentService
 
     public async Task<PosCompanyAddress> GetCompanyAddressAsync(CancellationToken cancellationToken = default)
     {
-        await using var scope = _scopes.CreateAsyncScope();
-        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var company = await ReadCompanyAsync(database, cancellationToken);
+        var company = await GetCompanyInformationAsync(cancellationToken);
         return new PosCompanyAddress
         {
             Address = company.Address ?? string.Empty,
@@ -902,6 +900,13 @@ public sealed class PosDocumentService : IPosDocumentService
             PostalCode = company.PostalCode ?? string.Empty,
             Country = string.Equals(company.CountryCode2, "PT", StringComparison.OrdinalIgnoreCase) ? "Portugal" : company.CountryCode2 ?? "Portugal"
         };
+    }
+
+    public async Task<CompanyInformation> GetCompanyInformationAsync(CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        return await ReadCompanyAsync(database, cancellationToken);
     }
 
     public async Task DeleteDraftAsync(Guid documentId, CancellationToken cancellationToken = default)
@@ -1301,10 +1306,21 @@ public sealed class PosDocumentService : IPosDocumentService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var isDraft = header?.IsDraft == true;
         var paymentToken = string.IsNullOrWhiteSpace(header?.PaymentToken) ? "MONEY" : header.PaymentToken;
         var paymentMethod = await database.PaymentMethods
             .AsNoTracking()
             .FirstOrDefaultAsync(method => method.IsDeleted == false && (method.Token == paymentToken || method.Acronym == paymentToken), cancellationToken);
+        // Drafts only need a payment method row for FK shape; fall back to any active method.
+        if (paymentMethod is null && isDraft)
+        {
+            paymentMethod = await database.PaymentMethods
+                .AsNoTracking()
+                .Where(method => method.IsDeleted == false)
+                .OrderBy(method => method.Order)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         if (paymentMethod is null)
         {
             return PosDocumentResult.Fail("Método de pagamento não encontrado.");
@@ -1352,7 +1368,7 @@ public sealed class PosDocumentService : IPosDocumentService
             Notes: string.IsNullOrWhiteSpace(header?.Notes) ? null : header!.Notes.Trim(),
             Details: details,
             PaymentMethods: new[] { new CreateDocumentPaymentMethodDto(paymentMethod.Id, 0) },
-            IsDraft: header?.IsDraft == true);
+            IsDraft: isDraft);
 
         var references = new DocumentReferences(
             scope.ServiceProvider.GetRequiredService<IDocumentRepository>(),
