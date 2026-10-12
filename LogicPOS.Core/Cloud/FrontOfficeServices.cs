@@ -42,6 +42,9 @@ public interface IPosDocumentService
 
     Task<PosCompanyAddress> GetCompanyAddressAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>Full company block for document PDF preview (name, logo, contacts).</summary>
+    Task<LogicPOS.Shared.Features.Company.CompanyInformation> GetCompanyInformationAsync(CancellationToken cancellationToken = default);
+
     Task DeleteDraftAsync(Guid documentId, CancellationToken cancellationToken = default);
 
     Task<string?> CancelDocumentAsync(Guid documentId, string reason, CancellationToken cancellationToken = default);
