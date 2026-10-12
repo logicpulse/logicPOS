@@ -341,7 +341,16 @@
                         </StackPanel>
                         <StackPanel Grid.Row="1">
                             <TextBlock Classes="bo_new_doc_caption" Text="NIF" />
-                            <TextBox x:Name="EditorFiscal" Classes="bo_line_editor_input bo_numeric" />
+                            <DockPanel Classes="bo_touch_row">
+                                <Button x:Name="EditorVies"
+                                        Classes="bo_doc_page_button"
+                                        Content="VIES"
+                                        DockPanel.Dock="Right"
+                                        Click="OnCustomerViesClick" />
+                                <TextBox x:Name="EditorFiscal"
+                                         Classes="bo_line_editor_input bo_numeric"
+                                         LostFocus="OnCustomerFiscalLostFocus" />
+                            </DockPanel>
                         </StackPanel>
                         <StackPanel Grid.Row="1" Grid.Column="1">
                             <TextBlock Classes="bo_new_doc_caption" Text="Número do Cartão de Cliente" />

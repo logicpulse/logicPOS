@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -50,6 +50,8 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<LookupOption> _customerTypes = new();
     private readonly List<LookupOption> _priceTypes = new();
     private readonly List<LookupOption> _countries = new();
+    private bool _vatBusy;
+    private bool? _vatAutocomplete;
 
     private ListingLoad _load = null!;
 
@@ -1533,6 +1535,100 @@ public partial class NewDocumentWindow : UserControl
     }
 
     private void OnCustomerEditorCancel(object? sender, RoutedEventArgs e) => CustomerEditor.IsVisible = false;
+
+    private async void OnCustomerViesClick(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: true);
+
+    private async void OnCustomerFiscalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: false);
+
+    private async Task CompleteCustomerVatAsync(bool force)
+    {
+        if (_vatBusy || CustomerEditor.IsVisible == false || _filling)
+        {
+            return;
+        }
+
+        _vatBusy = true;
+        try
+        {
+            if (force == false && await CustomerVatAutocompleteEnabledAsync() == false)
+            {
+                return;
+            }
+
+            var fiscalNumber = EditorFiscal.Text?.Trim() ?? string.Empty;
+            if (fiscalNumber.Length < 3)
+            {
+                return;
+            }
+
+            var info = await EuropeanVatLookup.FindAsync(CustomerCountryCode(), fiscalNumber);
+            if (info is null)
+            {
+                EditorError.Text = "NIF não encontrado no VIES.";
+                return;
+            }
+
+            EditorName.Text = info.Name;
+            EditorAddress.Text = info.Address;
+            EditorCity.Text = info.City;
+            EditorZip.Text = info.ZipCode;
+            EditorLocality.Text = info.Locality;
+            EditorError.Text = "Dados preenchidos a partir do VIES.";
+        }
+        finally
+        {
+            _vatBusy = false;
+        }
+    }
+
+    private async Task<bool> CustomerVatAutocompleteEnabledAsync()
+    {
+        if (_vatAutocomplete is bool cached)
+        {
+            return cached;
+        }
+
+        var services = AppComposition.Services;
+        var listing = services?.GetService<IBackOfficeListingService>();
+        if (listing is null)
+        {
+            _vatAutocomplete = true;
+            return true;
+        }
+
+        try
+        {
+            var snapshot = await listing.QueryAsync("Parâmetros de Sistema");
+            var row = snapshot.Rows.FirstOrDefault(item =>
+                item.Values.TryGetValue("Token", out var token) && token == "USE_EUROPEAN_VAT_AUTOCOMPLETE");
+            if (row is null || row.Values.TryGetValue("Value", out var value) == false)
+            {
+                _vatAutocomplete = true;
+                return true;
+            }
+
+            _vatAutocomplete = value is "1" or "true" or "True" or "Sim";
+        }
+        catch (Exception)
+        {
+            _vatAutocomplete = true;
+        }
+
+        return _vatAutocomplete.Value;
+    }
+
+    private string CustomerCountryCode()
+    {
+        var index = EditorCountry.SelectedIndex;
+        if (index >= 0 && index < _countries.Count && string.IsNullOrWhiteSpace(_countries[index].Meta) == false)
+        {
+            return _countries[index].Meta!;
+        }
+
+        var name = CultureInfo.CurrentUICulture.Name;
+        var split = name.IndexOf('-');
+        return split > 0 ? name[(split + 1)..] : "PT";
+    }
 
     private async void OnCustomerEditorOk(object? sender, RoutedEventArgs e)
     {

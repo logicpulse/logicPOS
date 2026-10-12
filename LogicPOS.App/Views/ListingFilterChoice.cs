@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -160,7 +160,18 @@ public static class ListingFilters
     {
         var count = Count(box.ItemsSource);
         box.FilterMode = AutoCompleteFilterMode.Custom;
-        box.ItemFilter = MatchLookup;
+        // When the text is still the current selection, show every option — otherwise the
+        // filter keeps only that one row (e.g. "Documento de Conferência") and hides the rest.
+        box.ItemFilter = (search, item) =>
+        {
+            if (box.SelectedItem is LookupOption selected
+                && string.Equals((search ?? string.Empty).Trim(), selected.Label, StringComparison.CurrentCultureIgnoreCase))
+            {
+                return item is LookupOption;
+            }
+
+            return MatchLookup(search, item);
+        };
         box.MinimumPrefixLength = count > 40 ? 1 : 0;
         box.IsTextCompletionEnabled = false;
         box.PlaceholderText = "Selecionar...";

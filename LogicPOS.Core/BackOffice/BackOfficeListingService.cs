@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
 using LogicPOS.Core.Authentication;
@@ -330,7 +330,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     public async Task<IReadOnlyList<LookupOption>> LookupAsync(string typeName, CancellationToken cancellationToken = default)
     {
-        var type = ResolveEntityType(typeName);
+        // Accept either page titles ("Tipo de clientes") or entity type names ("CustomerType").
+        var type = Find(ResolveTitle(typeName))?.EntityType ?? ResolveEntityType(typeName);
         if (type is null)
         {
             return [];
