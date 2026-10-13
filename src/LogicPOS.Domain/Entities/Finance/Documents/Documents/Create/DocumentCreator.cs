@@ -1,10 +1,12 @@
 using LogicPOS.Domain.Entities.Common.Utilities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
+using System.Globalization;
 
 namespace LogicPOS.Domain.Entities.Utilities;
 
@@ -42,7 +44,7 @@ internal class DocumentCreator : EntityCreator<Document>
         _entity.Number = GenerateNumber();
         _entity.Type = _dto.Type;
         _entity.Status = "N";
-        _entity.StatusDate = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ss}";
+        _entity.StatusDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
         _entity.Discount = _dto.Discount;
         _entity.Notes = _dto.Notes;
         _entity.ShipToAddress = _dto.ShipToAddress ?? new ShipAddress();
@@ -135,18 +137,50 @@ internal class DocumentCreator : EntityCreator<Document>
         _entity.ParentId = _dto.ParentId;
     }
 
-    private async Task AssignCurrencyAsync()
+    private async Task AssignCurrencyAsync(CancellationToken ct = default)
     {
         if (_dto.CurrencyId == null)
         {
-            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync();
+            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
             _entity.ExchangeRate = 1;
         }
         else
         {
             _entity.CurrencyId = _dto.CurrencyId.Value;
-            _entity.ExchangeRate = _dto.ExchangeRate ?? 1;
+            _entity.ExchangeRate = await ResolveExchangeRateAsync(_entity.CurrencyId, ct);
         }
+    }
+
+    private async Task<decimal> ResolveExchangeRateAsync(Guid currencyId, CancellationToken ct)
+    {
+        var companyCurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
+        if (currencyId == companyCurrencyId)
+        {
+            return 1;
+        }
+
+        return _dto.ExchangeRate
+               ?? await _references.CurrencyRepository.GetExchangeRateAsync(currencyId, ct);
+    }
+
+    private async Task<bool> WithholdsServiceTaxAsync(CancellationToken ct)
+    {
+        if (!_country.IsAngola)
+        {
+            return false;
+        }
+
+        if (_dto.CustomerId is null)
+        {
+            return true;
+        }
+
+        if (_dto.CustomerId == CustomerWellKnownIds.FinalConsumer)
+        {
+            return false;
+        }
+
+        return !await _references.CustomerRepository.IsFinalConsumerAsync(_dto.CustomerId.Value, ct);
     }
 
     protected override async Task<Result> CheckForConflictsAsync(CancellationToken ct = default)
@@ -223,11 +257,13 @@ internal class DocumentCreator : EntityCreator<Document>
 
         var document = createResult.Value!;
 
+        var withholdsServiceTax = await WithholdsServiceTaxAsync(ct);
         var addDetailsResult = await document.AddDetailsAsync(_dto.Details,
             new DocumentDetailReferences(_references.ArticleRepository,
                 _references.VatRateRepository,
                 _references.VatExemptionRepository),
-            cancellationToken: ct);
+            withholdsServiceTax,
+            ct);
         if (addDetailsResult.IsFailure)
         {
             return addDetailsResult.ToGenericFailure<Document>();
@@ -236,7 +272,7 @@ internal class DocumentCreator : EntityCreator<Document>
         document.CalculateTotals();
         if (document.PaymentMethods is not null && document.PaymentMethods.Count == 1)
         {
-            document.PaymentMethods.First().Amount = document.TotalFinal;
+            document.PaymentMethods.First().Amount = document.TotalFinal.Round();
         }
 
         await AssignHashAsync(ct);

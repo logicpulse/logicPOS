@@ -33,20 +33,32 @@ internal class DocumentPreviewCreator : EntityCreator<Document>
         _entity.Type = string.IsNullOrWhiteSpace(_dto.Type) ? "OR" : _dto.Type;
     }
     
-    private async Task AssignCurrencyAsync()
+    private async Task AssignCurrencyAsync(CancellationToken ct = default)
     {
         if (_dto.CurrencyId == null)
         {
-            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync();
-            _entity.Currency = await _references.CurrencyRepository.GetByIdAsync(_entity.CurrencyId);
+            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
+            _entity.Currency = await _references.CurrencyRepository.GetByIdAsync(_entity.CurrencyId, ct);
             _entity.ExchangeRate = 1;
         }
         else
         {
             _entity.CurrencyId = _dto.CurrencyId.Value;
-            _entity.Currency = await _references.CurrencyRepository.GetByIdAsync(_entity.CurrencyId);
-            _entity.ExchangeRate = _dto.ExchangeRate ?? _entity.Currency!.ExchangeRate;
+            _entity.Currency = await _references.CurrencyRepository.GetByIdAsync(_entity.CurrencyId, ct);
+            _entity.ExchangeRate = await ResolveExchangeRateAsync(_entity.CurrencyId, ct);
         }
+    }
+
+    private async Task<decimal> ResolveExchangeRateAsync(Guid currencyId, CancellationToken ct)
+    {
+        var companyCurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
+        if (currencyId == companyCurrencyId)
+        {
+            return 1;
+        }
+
+        return _dto.ExchangeRate
+               ?? await _references.CurrencyRepository.GetExchangeRateAsync(currencyId, ct);
     }
 
     protected override Task<Result> CheckForConflictsAsync(CancellationToken ct = default)
@@ -89,7 +101,8 @@ internal class DocumentPreviewCreator : EntityCreator<Document>
                                                               new DocumentDetailReferences(_references.ArticleRepository,
                                                                                            _references.VatRateRepository,
                                                                                            _references.VatExemptionRepository),
-                                                              cancellationToken: ct);
+                                                              _dto.WithholdsServiceTax,
+                                                              ct);
         if (addDetailsResult.IsFailure)
         {
             return addDetailsResult.ToGenericFailure<Document>();
