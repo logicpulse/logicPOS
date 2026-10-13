@@ -227,7 +227,7 @@ internal class DocumentCreator : EntityCreator<Document>
             new DocumentDetailReferences(_references.ArticleRepository,
                 _references.VatRateRepository,
                 _references.VatExemptionRepository),
-            ct);
+            cancellationToken: ct);
         if (addDetailsResult.IsFailure)
         {
             return addDetailsResult.ToGenericFailure<Document>();
