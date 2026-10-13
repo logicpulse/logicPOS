@@ -62,12 +62,19 @@ public sealed class CustomerOutstandingBalanceService : ICustomerOutstandingBala
             id =>
             {
                 var customerDocs = documentRows.Where(d => d.CustomerId == id).ToList();
-                var totalDebit = customerDocs.Sum(d => d.TotalFinal).Round();
-                var outstanding = customerDocs
-                    .Sum(d => (d.TotalFinal - paidTotals.GetValueOrDefault(d.Id)).Round());
-                var totalCredit = (totalDebit - outstanding).Round();
-                var balance = (totalCredit - totalDebit).Round();
-                return new CustomerOutstandingBalance(totalDebit, totalCredit, balance);
+                var rows = customerDocs
+                    .Select(d => new CustomerOutstandingBalanceCompute.DocumentBalanceRow(d.Id, d.TotalFinal));
+                return CustomerOutstandingBalanceCompute.ToCustomerOutstandingBalance(rows, paidTotals);
             });
+    }
+
+    public static CustomerOutstandingBalance Compute(IEnumerable<(decimal TotalFinal, decimal Paid)> documents)
+    {
+        var customerDocs = documents.ToList();
+        var totalDebit = customerDocs.Sum(d => d.TotalFinal.Round());
+        var outstanding = customerDocs.Sum(d => (d.TotalFinal - d.Paid).Round());
+        var totalCredit = (totalDebit - outstanding).Round();
+        var balance = (totalCredit - totalDebit).Round();
+        return new CustomerOutstandingBalance(totalDebit, totalCredit, balance);
     }
 }

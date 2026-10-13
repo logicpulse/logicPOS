@@ -3,6 +3,7 @@ using LogicPOS.Domain.Entities.Finance.Documents.Documents.Common;
 using LogicPOS.Domain.ValueObjects;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 namespace LogicPOS.Domain.Entities;
 
@@ -41,8 +42,8 @@ public partial class Document : Entity
     public int CashVatSchemeIndicator { get; set; }
     public int ThirdPartiesBillingIndicator { get; set; }
     public string? EACCode { get; set; }
-    public string Date => CreatedAt.ToString("yyyy-MM-dd");
-    public string SystemEntryDate => CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss");
+    public string Date => CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+    public string SystemEntryDate => CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
     public bool IsDraft { get; set; }
 
     [Required] public ShipAddress ShipToAddress { get; set; } = new();

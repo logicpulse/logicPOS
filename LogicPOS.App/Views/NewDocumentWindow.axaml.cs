@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -258,8 +259,8 @@ public partial class NewDocumentWindow : UserControl
             {
                 var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
                 _lines.Add(article is null
-                    ? NewDocumentLine.FromCopy(line, string.Empty)
-                    : NewDocumentLine.FromCopy(line, FamilyNameOf(article)));
+                    ? NewDocumentLine.FromCopy(line, string.Empty, source.DocumentDiscount)
+                    : NewDocumentLine.FromCopy(line, FamilyNameOf(article), source.DocumentDiscount));
             }
 
             RefreshLines();
@@ -757,7 +758,7 @@ public partial class NewDocumentWindow : UserControl
             ["Designation"] = designation,
             ["ButtonLabel"] = button.Length < 2 ? code : button,
             ["Price1"] = price,
-            ["PriceWithVat"] = "true",
+            ["PriceWithVat"] = "false",
             ["DefaultQuantity"] = "1",
             ["SubfamilyId"] = family.Id.ToString(),
             ["TypeId"] = typeId.ToString(),
@@ -784,7 +785,7 @@ public partial class NewDocumentWindow : UserControl
             null,
             false,
             ParseDecimal(price),
-            true,
+            false,
             vat.Percentage,
             1,
             0,
@@ -1826,7 +1827,9 @@ public partial class NewDocumentWindow : UserControl
             line.Discount,
             line.VatRateId,
             line.Notes,
-            line.SerialNumber)).ToList();
+            line.SerialNumber,
+            line.Price,
+            line.PriceIncludesVat)).ToList();
         var header = new PosDocumentHeader
         {
             PaymentConditionId = SelectedId(PaymentBox),
@@ -2061,6 +2064,8 @@ public partial class NewDocumentWindow : UserControl
                         : line.Designation + "  SN " + line.SerialNumber,
                     Quantity = line.Quantity,
                     NetUnitPrice = line.NetUnitPrice,
+                    ShelfUnitPrice = line.Price,
+                    PriceIncludesVat = line.PriceIncludesVat,
                     Discount = line.Discount,
                     VatPercentage = line.VatPercentage,
                     TotalNet = totals.Net,
@@ -2289,7 +2294,7 @@ public partial class NewDocumentWindow : UserControl
             SerialNumber = serialNumber.Trim();
         }
 
-        private NewDocumentLine(PosCopiedLine line, string family, bool priceIncludesVat)
+        private NewDocumentLine(PosCopiedLine line, string family, decimal documentDiscount)
         {
             ArticleId = line.ArticleId;
             VatRateId = line.VatRateId;
@@ -2298,17 +2303,17 @@ public partial class NewDocumentWindow : UserControl
             Family = family;
             Quantity = line.Quantity;
             Price = line.Price;
-            Discount = line.Discount;
-            PriceIncludesVat = priceIncludesVat;
+            Discount = DocumentLineCalculator.ExtractLineDiscount(line.Discount, documentDiscount);
+            PriceIncludesVat = false;
             VatPercentage = line.VatPercentage;
             SerialNumber = line.SerialNumber;
             Notes = line.Notes;
             RecalculateNet();
         }
 
-        public static NewDocumentLine FromCopy(PosCopiedLine line, string family)
+        public static NewDocumentLine FromCopy(PosCopiedLine line, string family, decimal documentDiscount)
         {
-            return new NewDocumentLine(line, family, false);
+            return new NewDocumentLine(line, family, documentDiscount);
         }
 
         public Guid ArticleId { get; }
@@ -2382,17 +2387,20 @@ public partial class NewDocumentWindow : UserControl
 
         public static (decimal Net, decimal Gross) Totals(bool priceIncludesVat, decimal price, decimal quantity, decimal discount, decimal vatPercentage)
         {
-            var netUnit = PosTicketLine.ToNetUnitPrice(price, vatPercentage, priceIncludesVat);
-            var net = quantity * netUnit * (1m - discount / 100m);
-            var gross = priceIncludesVat
-                ? quantity * price * (1m - discount / 100m)
-                : net * (1m + vatPercentage / 100m);
-            return (net, gross);
+            var totals = DocumentLineCalculator.CalculateLine(
+                price,
+                priceIncludesVat,
+                quantity,
+                discount,
+                0,
+                vatPercentage,
+                useAgtRounding: false);
+            return (totals.TotalNet, totals.TotalFinal.Round());
         }
 
         private void RecalculateNet()
         {
-            NetUnitPrice = PosTicketLine.ToNetUnitPrice(Price, VatPercentage, PriceIncludesVat);
+            NetUnitPrice = DocumentLineCalculator.ToNetUnitPrice(Price, VatPercentage, PriceIncludesVat);
         }
     }
 }

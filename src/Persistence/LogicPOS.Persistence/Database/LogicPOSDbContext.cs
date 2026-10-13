@@ -1,4 +1,4 @@
-using LogicPOS.Domain.Entities;
+﻿using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.POS.Orders.Orders.Common;
 using LogicPOS.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
@@ -108,6 +108,7 @@ public class LogicPOSDbContext : DbContext
     public DbSet<SystemNotification> SystemNotifications { get; private set; } = null!;
     public DbSet<SystemNotificationType> SystemNotificationTypes { get; private set; } = null!;
     public DbSet<DocumentNotification> DocumentNotifications { get; private set; } = null!;
+    public DbSet<LicenseSession> LicenseSessions { get; private set; } = null!;
 
     #endregion
 }

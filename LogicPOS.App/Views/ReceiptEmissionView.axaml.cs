@@ -8,6 +8,7 @@ using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -221,7 +222,7 @@ public partial class ReceiptEmissionView : UserControl
         CurrencyBox.SelectedItem = currency;
         var rate = currency is null || currency.ExchangeRate <= 0 ? 1m : currency.ExchangeRate;
         ExchangeRate.Text = rate.ToString("0.00", CultureInfo.CurrentCulture);
-        TotalPaid.Text = (rate == 0 ? _net : _net / rate).ToString("0.00", CultureInfo.CurrentCulture);
+        TotalPaid.Text = (rate <= 0 ? _net : DocumentLineCalculator.FullCurrencyAmount(_net, rate)).ToString("0.00", CultureInfo.CurrentCulture);
         PayDate.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
         PayNotes.Text = string.Empty;
         PayError.Text = string.Empty;
@@ -248,7 +249,7 @@ public partial class ReceiptEmissionView : UserControl
             return;
         }
 
-        var amount = ReceiptSettlement.Round(currencyAmount * rate);
+        var amount = DocumentLineCalculator.ReceiptAmount(_net, currencyAmount, rate);
         var method = PaymentMethodBox.SelectedItem as ReceiptPayOption;
         var currency = CurrencyBox.SelectedItem as ReceiptPayOption;
         PayOkButton.IsEnabled = false;
@@ -480,11 +481,11 @@ public partial class ReceiptEmissionView : UserControl
             return;
         }
 
-        var system = ReceiptSettlement.Round(paid * rate);
+        var system = DocumentLineCalculator.ReceiptAmount(_net, paid, rate);
         if (system > _net && _net >= 0)
         {
             _filling = true;
-            TotalPaid.Text = rate == 0 ? "0.00" : (_net / rate).ToString("0.00", CultureInfo.CurrentCulture);
+            TotalPaid.Text = rate <= 0 ? "0.00" : DocumentLineCalculator.FullCurrencyAmount(_net, rate).ToString("0.00", CultureInfo.CurrentCulture);
             _filling = false;
             system = _net;
         }
@@ -558,7 +559,7 @@ public partial class ReceiptEmissionView : UserControl
             return "O montante em moeda não pode ser negativo.";
         }
 
-        var amount = ReceiptSettlement.Round(currencyAmount * rate);
+        var amount = DocumentLineCalculator.ReceiptAmount(_net, currencyAmount, rate);
         if (_net > 0 && amount <= 0)
         {
             return "O valor do pagamento tem de ser superior a zero.";

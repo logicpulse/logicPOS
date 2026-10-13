@@ -12,12 +12,12 @@ namespace LogicPOS.Domain.Entities;
 
 public partial class Document
 {
-    public decimal GetTaxPayableForAmount(decimal amount)
-    {
-        if (TotalFinal == 0) return 0;
-        decimal taxPayable = (amount * TotalTax) / TotalFinal;
-        return taxPayable.Round();
-    }
+    public decimal GetTaxPayableForPayment(decimal amount, decimal paidBefore)
+        => DocumentLineCalculator.TaxForPayment(TotalFinal, TotalTax, paidBefore, amount);
+
+    /// <summary>Withholding retained on this payment, split cumulatively like the tax.</summary>
+    public decimal GetWithholdingForPayment(decimal amount, decimal paidBefore)
+        => DocumentLineCalculator.TaxForPayment(TotalFinal, WithholdingTaxAmount, paidBefore, amount);
 
     internal void CalculateTotals()
     {
@@ -27,7 +27,7 @@ public partial class Document
         {
             if (TotalDelivery != 0)
             {
-                TotalChange = TotalDelivery - TotalFinal;
+                TotalChange = TotalDelivery - TotalFinal.Round();
                 Paid = TotalDelivery.Round() >= TotalFinal.Round();
             }
             else
@@ -103,12 +103,14 @@ public partial class Document
 
     internal async Task<Result> AddDetailsAsync(IEnumerable<CreateDocumentDetailDto> createDetailDtos,
         DocumentDetailReferences references,
+        bool withholdsServiceTax = false,
         CancellationToken cancellationToken = default)
     {
         var detailList = createDetailDtos as IList<CreateDocumentDetailDto> ?? createDetailDtos.ToList();
         var lookup = references.Lookup
             ?? await DocumentDetailLookup.LoadAsync(detailList, references, cancellationToken);
         var referencesWithLookup = references with { Lookup = lookup };
+        decimal servicesNet = 0;
 
         foreach (var createDetailDto in detailList)
         {
@@ -120,7 +122,20 @@ public partial class Document
             {
                 return addDetailResult;
             }
+
+            if (withholdsServiceTax)
+            {
+                var detail = Details!.Last();
+                if (await IsServiceAsync(detail.ArticleId, referencesWithLookup, cancellationToken))
+                {
+                    servicesNet += detail.TotalNet;
+                }
+            }
         }
+
+        WithholdingTaxAmount = withholdsServiceTax
+            ? DocumentLineCalculator.ServiceWithholding(servicesNet)
+            : 0;
 
         return Result.Success();
     }
@@ -130,7 +145,10 @@ public partial class Document
         CancellationToken cancellationToken = default)
     {
         CreateDocumentDetailDto createDetailWithGlobalDiscountDto =
-            createDetailDto with { Discount = createDetailDto.Discount + Discount };
+            createDetailDto with
+            {
+                Discount = DocumentLineCalculator.CombineDiscounts(createDetailDto.Discount, Discount)
+            };
 
         var detailCreator = new DocumentDetailCreator(createDetailWithGlobalDiscountDto,
             references);
@@ -152,15 +170,18 @@ public partial class Document
         TotalDiscount += detail.TotalDiscount;
         TotalTax += detail.TotalTax;
 
-        var articleClassAcronym = references.Lookup?.Articles.TryGetValue(detail.ArticleId, out var article) == true
-            ? article.ClassAcronym
-            : await references.ArticleRepository.GetArticleClassAcronymAsync(detail.ArticleId, cancellationToken);
-        if (articleClassAcronym == "S")
-        {
-            WithholdingTaxAmount += (6.5M / 100M) * detail.TotalNet;
-        }
-
         return Result.Success();
+    }
+
+    private static async Task<bool> IsServiceAsync(Guid articleId,
+        DocumentDetailReferences references,
+        CancellationToken cancellationToken)
+    {
+        var articleClassAcronym = references.Lookup?.Articles.TryGetValue(articleId, out var article) == true
+            ? article.ClassAcronym
+            : await references.ArticleRepository.GetArticleClassAcronymAsync(articleId, cancellationToken);
+
+        return articleClassAcronym == "S";
     }
 
     public static async Task<Result<Document>> CreatePreviewAsync(CreateDocumentPreviewDto dto,

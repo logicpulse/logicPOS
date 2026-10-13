@@ -18,5 +18,6 @@ public static class SdrDepositDetailFactory
             PriceType: null,
             Notes: null,
             Country2Code: country2Code,
-            SerialNumber: null);
+            SerialNumber: null,
+            PriceIncludesVat: depositArticle.PriceWithVat);
 }

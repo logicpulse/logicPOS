@@ -1,8 +1,10 @@
 using System.Globalization;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
+using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.Core.BackOffice;
@@ -10,12 +12,12 @@ namespace LogicPOS.Core.BackOffice;
 public sealed class LocalReceiptEmission : IReceiptEmission
 {
     private readonly IServiceScopeFactory _scopes;
-    private readonly IConfiguration _configuration;
+    private readonly ISystemInformationService _systemInformation;
 
-    public LocalReceiptEmission(IServiceScopeFactory scopes, IConfiguration configuration)
+    public LocalReceiptEmission(IServiceScopeFactory scopes, ISystemInformationService systemInformation)
     {
         _scopes = scopes;
-        _configuration = configuration;
+        _systemInformation = systemInformation;
     }
 
     public async Task<ReceiptEmissionPage> ListAsync(DateTime start, DateTime end, int page, int pageSize, string? search = null, CancellationToken cancellationToken = default, Guid? customerId = null)
@@ -100,7 +102,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
 
     public async Task<ReceiptPayResult> PayAsync(ReceiptPayRequest request, CancellationToken cancellationToken = default)
     {
-        var documentType = Portugal() ? "RC" : "RG";
+        var documentType = _systemInformation.IsPortugal() ? "RC" : "RG";
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         if (await database.FiscalYears.AnyAsync(item => item.IsDeleted == false, cancellationToken) == false)
@@ -122,12 +124,29 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             return ReceiptPayResult.Fail("Documento não encontrado.");
         }
 
-        var net = documents.Where(item => item.Type is "FT" or "ND").Sum(item => item.TotalFinal)
-            - documents.Where(item => item.Type == "NC").Sum(item => item.TotalFinal);
-        if (request.Amount + 0.01m < ReceiptSettlement.Round(net))
+        var invoiceAmounts = documents.Where(item => item.Type is "FT" or "ND").Select(item => item.TotalFinal);
+        var creditAmounts = documents.Where(item => item.Type == "NC").Select(item => item.TotalFinal);
+        var settleable = DocumentSettlementService.ComputeSettleableAmount(invoiceAmounts, creditAmounts);
+        var receiptAmount = DocumentLineCalculator.ReceiptAmount(settleable, request.CurrencyAmount, request.ExchangeRate);
+        if (request.Amount + 0.01m < settleable || receiptAmount + 0.01m < settleable)
         {
             return ReceiptPayResult.Fail("No modo local o recibo tem de liquidar o valor total em dívida.");
         }
+
+        var settlementDocs = documents
+            .Select(item => new DocumentSettlementService.SettlementDocument(
+                item.Id,
+                item.Type,
+                item.TotalFinal,
+                item.TotalTax,
+                item.WithholdingTaxAmount,
+                0m,
+                item.CreatedAt))
+            .ToList();
+        var creditPool = creditAmounts.Sum(amount => amount.Round());
+        var allocations = DocumentSettlementService.AllocateInvoicePayments(settlementDocs, receiptAmount, creditPool);
+        var taxPayable = DocumentSettlementService.SumTaxPayable(allocations);
+        var withholding = DocumentSettlementService.SumWithholding(allocations);
 
         foreach (var document in documents.Where(item => item.Type is "FT" or "ND"))
         {
@@ -145,8 +164,10 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             Status = "N",
             SourcePayment = "P",
             Mechanism = "NU",
-            Amount = request.Amount,
-            AmountInWords = request.Amount.ToString("0.00", CultureInfo.CurrentCulture),
+            Amount = receiptAmount,
+            TaxPayable = taxPayable,
+            WithholdingTaxAmount = withholding,
+            AmountInWords = receiptAmount.ToString("0.00", CultureInfo.CurrentCulture),
             SourceId = documents.First().Number,
             CurrencyCode = currency?.Acronym ?? "EUR",
             CurrencyAmount = request.CurrencyAmount,
@@ -157,17 +178,6 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         });
         await database.SaveChangesAsync(cancellationToken);
         return ReceiptPayResult.Done("Recibo emitido.");
-    }
-
-    private bool Portugal()
-    {
-        var country = _configuration["Country"];
-        if (string.IsNullOrWhiteSpace(country) == false)
-        {
-            return string.Equals(country.Trim(), "PT", StringComparison.OrdinalIgnoreCase);
-        }
-
-        return CultureInfo.CurrentUICulture.Name.StartsWith("pt-PT", StringComparison.OrdinalIgnoreCase);
     }
 
     private static async Task<string?> MissingSeriesAsync(LogicPOSDbContext database, string documentType, CancellationToken cancellationToken)

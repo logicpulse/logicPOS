@@ -18,7 +18,6 @@ public class ReceiptModel : IDocument
 
     public uint CopyNumber { get; set; } = 1;
     public bool IsSecondCopy;
-    private decimal WithHoldingTaxAmount { get; set; }
     private DocumentPdfData Data { get; init; }
     private string DocumentFormattedDate => Data.Receipt!.CreatedAt.ToShortDateString().Replace("/", "-");
 
@@ -108,8 +107,6 @@ public class ReceiptModel : IDocument
                         itemsTable.Cell().Background(backgroundColor).Border(0.5f)
                             .BorderColor(Color.FromRGB(192, 194, 196)).AlignCenter().Padding(1).Text(" ").Black();
                     }
-
-                    WithHoldingTaxAmount += item.Document.WithholdingTaxAmount;
                 }
             });
 
@@ -280,7 +277,7 @@ public class ReceiptModel : IDocument
                     if (Data.Country.IsAngola)
                     {
                         totalTable.Cell()
-                            .Text($"Retenção na Fonte:\n {WithHoldingTaxAmount:N2} {Data.Receipt.CurrencyCode}")
+                            .Text($"Retenção na Fonte:\n {Data.Receipt.WithholdingTaxAmount:N2} {Data.Receipt.CurrencyCode}")
                             .AlignRight().Bold();
                     }
                 });

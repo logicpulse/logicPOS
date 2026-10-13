@@ -6,12 +6,12 @@ public static class DateTimeExtension
 {
     public static string ToISO8601DateTime(this DateTime dateTime)
     {
-        return dateTime.ToString("yyyy-MM-ddTHH:mm:ss");
+        return dateTime.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
     }
 
     public static string ToISO8601DateOnly(this DateTime dateTime)
     {
-        return dateTime.ToString("yyyy-MM-dd");
+        return dateTime.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 
     public static DateTime FromISO8601DateTime(this string datetime)

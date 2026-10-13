@@ -5389,6 +5389,33 @@ namespace LogicPOS.Persistence.Migrations
                     b.ToTable("UserVerificationCodes");
                 });
 
+            modelBuilder.Entity("LogicPOS.Domain.Entities.LicenseSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("ClientKind").IsRequired().HasMaxLength(32).HasColumnType("varchar(32)");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("datetime(6)");
+                    b.Property<Guid>("CreatedBy").HasColumnType("char(36)");
+                    b.Property<Guid>("CreatedWhere").HasColumnType("char(36)");
+                    b.Property<DateTime>("DeletedAt").HasColumnType("datetime(6)");
+                    b.Property<bool>("IsDeleted").HasColumnType("tinyint(1)");
+                    b.Property<DateTime>("LastHeartbeatAt").HasColumnType("datetime(6)");
+                    b.Property<string>("Notes").HasColumnType("longtext");
+                    b.Property<Guid>("SessionKey").HasColumnType("char(36)");
+                    b.Property<Guid?>("TerminalId").HasColumnType("char(36)");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("datetime(6)");
+                    b.Property<Guid>("UpdatedBy").HasColumnType("char(36)");
+                    b.Property<Guid>("UpdatedWhere").HasColumnType("char(36)");
+                    b.Property<Guid>("UserId").HasColumnType("char(36)");
+                    b.HasKey("Id");
+                    b.HasIndex("LastHeartbeatAt");
+                    b.HasIndex("SessionKey").IsUnique();
+                    b.HasIndex("UserId");
+                    b.ToTable("LicenseSessions");
+                });
+
 #pragma warning restore 612, 618
         }
     }

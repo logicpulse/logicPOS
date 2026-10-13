@@ -12,4 +12,5 @@ public record CreateDocumentPreviewDto(
     decimal? ExchangeRate,
     decimal? TotalDelivery,
     string? Notes,
-    IEnumerable<CreateDocumentDetailDto> Details);
+    IEnumerable<CreateDocumentDetailDto> Details,
+    bool WithholdsServiceTax = false);

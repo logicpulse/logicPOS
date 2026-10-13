@@ -1,5 +1,6 @@
 using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Entities.POS.WorkSessions.Movements.Common;
 using LogicPOS.Domain.Enums;
@@ -12,12 +13,20 @@ namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosStoredLine
 {
-    public PosStoredLine(Guid articleId, decimal quantity, decimal netUnitPrice, string? ticketKey = null)
+    public PosStoredLine(
+        Guid articleId,
+        decimal quantity,
+        decimal netUnitPrice,
+        string? ticketKey = null,
+        decimal? unitPrice = null,
+        bool priceWithVat = false)
     {
         ArticleId = articleId;
         Quantity = quantity;
         NetUnitPrice = netUnitPrice;
         TicketKey = ticketKey;
+        UnitPrice = unitPrice ?? netUnitPrice;
+        PriceWithVat = priceWithVat;
     }
 
     public string? TicketKey { get; }
@@ -27,6 +36,10 @@ public sealed class PosStoredLine
     public decimal Quantity { get; }
 
     public decimal NetUnitPrice { get; }
+
+    public decimal UnitPrice { get; }
+
+    public bool PriceWithVat { get; }
 }
 
 public sealed class PosOpenOrder
@@ -123,7 +136,11 @@ public sealed class PosOrderService : IPosOrderService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var details = lines.Select(line => new CreateOrderDetailDto(line.ArticleId, line.Quantity, line.NetUnitPrice)).ToList();
+        var details = lines.Select(line => new CreateOrderDetailDto(
+            line.ArticleId,
+            line.Quantity,
+            line.UnitPrice,
+            PriceIncludesVat: line.PriceWithVat)).ToList();
 
         if (orderId is Guid existingId)
         {
@@ -462,7 +479,7 @@ public sealed class PosOrderService : IPosOrderService
         foreach (var ticket in order.Tickets ?? [])
         {
             detail = ticket.Details?.FirstOrDefault(item => item.ArticleId == articleId
-                && Math.Round(item.Price, 2, MidpointRounding.AwayFromZero) == Math.Round(unitPrice, 2, MidpointRounding.AwayFromZero));
+                && item.Price.Round() == unitPrice.Round());
             if (detail is not null)
             {
                 sourceTicket = ticket;
@@ -521,9 +538,15 @@ public sealed class PosOrderService : IPosOrderService
         foreach (var detail in order.Tickets!.SelectMany(ticket => ticket.Details ?? []).Where(detail => articles.Contains(detail.ArticleId)))
         {
             detail.Quantity /= splitters;
-            detail.TotalTax /= splitters;
-            detail.TotalFinal /= splitters;
-            detail.TotalDiscount /= splitters;
+            var totals = DocumentLineCalculator.Calculate(
+                detail.Price,
+                detail.Quantity,
+                detail.Discount,
+                detail.Vat,
+                useAgtRounding: false);
+            detail.TotalDiscount = totals.TotalDiscount;
+            detail.TotalTax = totals.TotalTax;
+            detail.TotalFinal = totals.TotalFinal;
         }
 
         await database.SaveChangesAsync(cancellationToken);

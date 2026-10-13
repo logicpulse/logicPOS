@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -488,7 +488,14 @@ public partial class PaymentWindow : Window
                 DiscountPercent(),
                 _cash ? _delivered : payable,
                 Notes.Text,
-                lines.Select(line => new PosSaleLine(line.ArticleId, line.Quantity, line.NetUnitPrice, line.Discount, line.VatRateId)).ToList(),
+                lines.Select(line => new PosSaleLine(
+                    line.ArticleId,
+                    line.Quantity,
+                    line.NetUnitPrice,
+                    line.Discount,
+                    line.VatRateId,
+                    unitPrice: line.DisplayUnitPrice,
+                    priceWithVat: line.PriceIncludesVat)).ToList(),
                 documentType,
                 createMissingSeries);
 

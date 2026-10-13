@@ -10,6 +10,7 @@ public record SaftPayment
     public string PaymentType { get; set; } = null!;
     public SaftDocumentStatus Status { get; set; } = null!;
     public string PaymentMechanism { get; set; } = null!;
+    public decimal PaymentAmount { get; set; }
     public decimal GrossTotal { get; set; }
     public string PaymentDate { get; set; } = null!;
     public string SourceId { get; set; } = null!;
