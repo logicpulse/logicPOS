@@ -280,7 +280,7 @@
     "DeletedAt": "0001-01-01T00:00:00"
   },
   {
-    "Acronym": "DC",
+    "Acronym": "CM",
     "AcronymLastSerie": 6,
     "Credit": true,
     "CreditDebit": null,
@@ -364,7 +364,7 @@
     "DeletedAt": "0001-01-01T00:00:00"
   },
   {
-    "Acronym": "FP",
+    "Acronym": "PF",
     "AcronymLastSerie": 6,
     "Credit": true,
     "CreditDebit": null,

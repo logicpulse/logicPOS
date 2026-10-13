@@ -27,7 +27,8 @@ public sealed class PosCatalogService : IPosCatalogService
             {
                 family.Id,
                 family.Designation,
-                Label = family.Button != null ? family.Button.Label : null
+                Label = family.Button != null ? family.Button.Label : null,
+                Image = family.Button != null ? family.Button.Image : null
             })
             .ToListAsync(cancellationToken);
 
@@ -41,7 +42,8 @@ public sealed class PosCatalogService : IPosCatalogService
                 subfamily.Id,
                 subfamily.FamilyId,
                 subfamily.Designation,
-                Label = subfamily.Button != null ? subfamily.Button.Label : null
+                Label = subfamily.Button != null ? subfamily.Button.Label : null,
+                Image = subfamily.Button != null ? subfamily.Button.Image : null
             })
             .ToListAsync(cancellationToken);
 
@@ -59,18 +61,30 @@ public sealed class PosCatalogService : IPosCatalogService
                 article.Barcode,
                 article.Favorite,
                 article.PriceWithVat,
+                article.PVPVariable,
                 article.DefaultQuantity,
                 article.Discount,
                 Price = article.Price1.Value,
                 article.VatDirectSellingId,
                 Vat = article.VatDirectSelling != null ? article.VatDirectSelling.Value : 0m,
-                Label = article.Button != null ? article.Button.Label : null
+                Label = article.Button != null ? article.Button.Label : null,
+                Image = article.Button != null ? article.Button.Image : null
             })
             .ToListAsync(cancellationToken);
 
         return new PosCatalog(
-            families.Select(item => new PosMenuItem(item.Id, Guid.Empty, LabelOrDesignation(item.Label, item.Designation), false)).ToList(),
-            subfamilies.Select(item => new PosMenuItem(item.Id, item.FamilyId, LabelOrDesignation(item.Label, item.Designation), false)).ToList(),
+            families.Select(item => new PosMenuItem(
+                item.Id,
+                Guid.Empty,
+                LabelOrDesignation(item.Label, item.Designation),
+                false,
+                item.Image)).ToList(),
+            subfamilies.Select(item => new PosMenuItem(
+                item.Id,
+                item.FamilyId,
+                LabelOrDesignation(item.Label, item.Designation),
+                false,
+                item.Image)).ToList(),
             articles.Select(item => new PosArticle(
                 item.Id,
                 item.SubfamilyId,
@@ -84,7 +98,9 @@ public sealed class PosCatalogService : IPosCatalogService
                 item.Vat,
                 item.DefaultQuantity,
                 item.Discount,
-                item.VatDirectSellingId)).ToList());
+                item.VatDirectSellingId,
+                item.Image,
+                item.PVPVariable)).ToList());
     }
 
     private static string LabelOrDesignation(string? label, string designation)

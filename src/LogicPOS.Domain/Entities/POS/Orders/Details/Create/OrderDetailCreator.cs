@@ -1,5 +1,6 @@
 using LogicPOS.Domain.Entities.Common.Utilities;
 using LogicPOS.Domain.Entities.Dtos;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Details.Common;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
@@ -27,13 +28,18 @@ internal class OrderDetailCreator : EntityCreator<OrderDetail>
         _entity.VatExemptionReasonId = article.VatExemptionReasonId;
         _entity.Unit = article.Unit;
         _entity.Quantity = _dto.Quantity;
-        _entity.Price = _dto.UnitPrice;
         _entity.Discount = article.Discount;
         _entity.Vat = article.Vat;
-        _entity.TotalDiscount = (_dto.Quantity * _dto.UnitPrice) * (article.Discount / 100M);
-        var totalWithDiscount = (_dto.Quantity * _dto.UnitPrice) - _entity.TotalDiscount;
-        _entity.TotalTax = (totalWithDiscount) * (_entity.Vat / 100M);
-        _entity.TotalFinal = totalWithDiscount + _entity.TotalTax;
+        var unitPrice = DocumentLineCalculator.ToNetUnitPrice(_dto.UnitPrice, _entity.Vat, _dto.PriceIncludesVat);
+        _entity.Price = unitPrice;
+        var totals = DocumentLineCalculator.Calculate(unitPrice,
+            _dto.Quantity,
+            article.Discount,
+            _entity.Vat,
+            useAgtRounding: false);
+        _entity.TotalDiscount = totals.TotalDiscount;
+        _entity.TotalTax = totals.TotalTax;
+        _entity.TotalFinal = totals.TotalFinal;
     }
 
     protected override Task<Result> CheckForConflictsAsync(CancellationToken ct = default)

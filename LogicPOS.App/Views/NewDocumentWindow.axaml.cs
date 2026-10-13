@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -41,6 +42,7 @@ public partial class NewDocumentWindow : UserControl
 
     private Guid? _previewDraftId;
     private Guid? _seedDraftId;
+    private Guid? _copyFromDocumentId;
     private Guid? _customerId;
     private bool _customerIsFinal;
     private PosCustomer? _customer;
@@ -49,16 +51,22 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<LookupOption> _customerTypes = new();
     private readonly List<LookupOption> _priceTypes = new();
     private readonly List<LookupOption> _countries = new();
+    private bool _vatBusy;
+    private bool? _vatAutocomplete;
+
+    private ListingLoad _load = null!;
 
     public NewDocumentWindow()
     {
         InitializeComponent();
         TouchFields.Attach(this);
+        _load = new ListingLoad(Busy);
     }
 
-    public Task<bool> ShowAsync(Guid? draftId = null)
+    public Task<bool> ShowAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
         _seedDraftId = draftId;
+        _copyFromDocumentId = copyFromDocumentId;
         _lines.Clear();
         LinesGrid.ItemsSource = null;
         ArticleSearch.Text = string.Empty;
@@ -102,6 +110,29 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        var loadingDraft = _seedDraftId is not null;
+        var loadingCopy = _copyFromDocumentId is not null;
+        if (loadingDraft)
+        {
+            Busy.Show("A carregar rascunho...");
+        }
+        else if (loadingCopy)
+        {
+            Busy.Show("A carregar documento...");
+        }
+
+        try
+        {
+            await _load.RunAsync(() => LoadContentAsync(services));
+        }
+        finally
+        {
+            Busy.Hide();
+        }
+    }
+
+    private async Task LoadContentAsync(IServiceProvider services)
+    {
         _posCatalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync();
         _catalog.Clear();
         _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
@@ -121,15 +152,10 @@ public partial class NewDocumentWindow : UserControl
             _types.AddRange(types);
             TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
             var preferred = DocumentDefaultStore.Read();
-            var index = string.IsNullOrWhiteSpace(preferred)
-                ? -1
-                : _types.FindIndex(type => string.Equals(type.Acronym, preferred, StringComparison.OrdinalIgnoreCase));
-            if (index < 0)
+            if (SelectDocumentType(preferred) == false)
             {
-                index = _types.FindIndex(type => type.Acronym == "FS");
+                SelectDocumentType("FS");
             }
-
-            TypeBox.SelectedIndex = index >= 0 ? index : 0;
         });
         await Fill(async () =>
         {
@@ -149,10 +175,14 @@ public partial class NewDocumentWindow : UserControl
         {
             _documents.Clear();
             _documents.AddRange(await documents.ListSourceDocumentsAsync());
-            OriginBox.ItemsSource = Optional(_documents);
-            CopyBox.ItemsSource = Optional(_documents);
-            OriginBox.SelectedIndex = 0;
-            CopyBox.SelectedIndex = 0;
+            var choices = Optional(_documents);
+            OriginBox.ItemsSource = choices;
+            CopyBox.ItemsSource = choices;
+            ListingFilters.EnableDocumentSearch(OriginBox);
+            ListingFilters.EnableDocumentSearch(CopyBox);
+            ListingFilters.SelectDocument(OriginBox, choices[0]);
+            ListingFilters.SelectDocument(CopyBox, choices[0]);
+            RefreshDocumentClearButtons();
         });
         await Fill(async () =>
         {
@@ -162,6 +192,7 @@ public partial class NewDocumentWindow : UserControl
         });
         await Fill(async () => await ApplyPortugalAddressesAsync(documents));
         await Fill(async () => await SeedDraftAsync(documents, services.GetRequiredService<IPosCustomerService>()));
+        await Fill(async () => await ApplyCopyFromAsync(documents, services.GetRequiredService<IPosCustomerService>()));
         await Fill(async () =>
         {
             if (_customerId is not null)
@@ -179,6 +210,81 @@ public partial class NewDocumentWindow : UserControl
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
     }
 
+    private async Task ApplyCopyFromAsync(IPosDocumentService documents, IPosCustomerService customers)
+    {
+        if (_copyFromDocumentId is not Guid documentId || documentId == Guid.Empty)
+        {
+            return;
+        }
+
+        // Ensure the source appears in the Copy list even outside the recent list.
+        if (_documents.Any(item => item.Id == documentId) == false)
+        {
+            var lookup = await documents.GetDocumentLookupAsync(documentId)
+                ?? new PosLookupItem(documentId, "Documento");
+            _documents.Insert(0, lookup);
+            var choices = Optional(_documents);
+            OriginBox.ItemsSource = choices;
+            CopyBox.ItemsSource = choices;
+        }
+
+        SelectDocumentId(CopyBox, documentId);
+        RefreshDocumentClearButtons();
+        await ApplyDocumentCopyAsync(documentId, documents, customers);
+    }
+
+    private async Task ApplyDocumentCopyAsync(
+        Guid documentId,
+        IPosDocumentService documents,
+        IPosCustomerService? customers)
+    {
+        var source = await documents.LoadDocumentForCopyAsync(documentId);
+        if (source is null)
+        {
+            return;
+        }
+
+        var wasFilling = _filling;
+        _filling = true;
+        try
+        {
+            SelectDocumentType(source.Type);
+
+            NotesBox.Text = source.Notes ?? string.Empty;
+            SelectId(PaymentBox, source.PaymentConditionId);
+            SelectId(CurrencyBox, source.CurrencyId);
+
+            _lines.Clear();
+            foreach (var line in source.Lines)
+            {
+                var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
+                _lines.Add(article is null
+                    ? NewDocumentLine.FromCopy(line, string.Empty, source.DocumentDiscount)
+                    : NewDocumentLine.FromCopy(line, FamilyNameOf(article), source.DocumentDiscount));
+            }
+
+            RefreshLines();
+
+            if (source.ShipTo is not null || source.ShipFrom is not null)
+            {
+                TransportBox.IsChecked = true;
+                ApplyStoredShip(source.ShipTo, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
+                ApplyStoredShip(source.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
+            }
+
+            if (customers is not null && source.CustomerId != Guid.Empty)
+            {
+                await RestoreCustomerAsync(customers, source.CustomerId, customerName: null, fiscalNumber: null);
+            }
+        }
+        finally
+        {
+            _filling = wasFilling;
+        }
+
+        UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
+    }
+
     private static void SelectCode(ComboBox box, string code)
     {
         if (box.ItemsSource is not IEnumerable<PosLookupItem> items)
@@ -188,6 +294,47 @@ public partial class NewDocumentWindow : UserControl
 
         var match = items.FirstOrDefault(item => string.Equals(item.Code, code, StringComparison.OrdinalIgnoreCase));
         box.SelectedItem = match ?? items.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Avalonia ComboBox often ignores SelectedIndex when it already has a value; clear then set SelectedItem.
+    /// </summary>
+    private bool SelectDocumentType(string? typeKey)
+    {
+        if (string.IsNullOrWhiteSpace(typeKey) || _types.Count == 0)
+        {
+            return false;
+        }
+
+        var key = typeKey.Trim();
+        var typeIndex = _types.FindIndex(type =>
+            string.Equals(type.Acronym, key, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(type.Designation, key, StringComparison.OrdinalIgnoreCase)
+            || (type.Acronym.Length >= 2
+                && key.StartsWith(type.Acronym, StringComparison.OrdinalIgnoreCase)
+                && (key.Length == type.Acronym.Length || char.IsDigit(key[type.Acronym.Length]))));
+        if (typeIndex < 0)
+        {
+            return false;
+        }
+
+        if (TypeBox.ItemsSource is not System.Collections.IList { Count: > 0 } items
+            || typeIndex >= items.Count)
+        {
+            TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
+            items = (System.Collections.IList)TypeBox.ItemsSource!;
+        }
+
+        // Clear first so the displayed designation always refreshes when opening a draft/copy.
+        TypeBox.SelectedIndex = -1;
+        TypeBox.SelectedItem = items[typeIndex];
+        if (TypeBox.SelectedIndex != typeIndex)
+        {
+            TypeBox.SelectedIndex = typeIndex;
+        }
+
+        return TypeBox.SelectedIndex == typeIndex
+            || string.Equals(TypeBox.SelectedItem as string, _types[typeIndex].Designation, StringComparison.OrdinalIgnoreCase);
     }
 
     private async Task ApplyPortugalAddressesAsync(IPosDocumentService documents)
@@ -220,47 +367,54 @@ public partial class NewDocumentWindow : UserControl
 
         _previewDraftId = documentId;
         DraftBox.IsChecked = true;
+        // Cloud/DB drafts are not in local-drafts.json; reuse the copy loader for header+lines+customer.
+        await ApplyDocumentCopyAsync(documentId, documents, customers);
+        if (_customerId is not null)
+        {
+            return;
+        }
+
         var stored = LocalDraftStore.Find(documentId);
-        if (stored is not null)
+        if (stored is null)
         {
-            NotesBox.Text = stored.Notes;
-            var typeIndex = _types.FindIndex(type => string.Equals(type.Acronym, stored.Acronym, StringComparison.OrdinalIgnoreCase));
-            if (typeIndex >= 0)
-            {
-                TypeBox.SelectedIndex = typeIndex;
-            }
+            return;
+        }
 
-            SelectId(PaymentBox, stored.PaymentConditionId);
-            SelectId(CurrencyBox, stored.CurrencyId);
-            SelectId(OriginBox, stored.ParentDocumentId);
-            if (stored.CustomerId != Guid.Empty)
-            {
-                var customer = await customers.FindAsync(stored.CustomerId);
-                if (customer is not null)
-                {
-                    ShowCustomer(customer);
-                }
-            }
+        await RestoreCustomerAsync(customers, stored.CustomerId, stored.CustomerName, stored.FiscalNumber);
+    }
 
-            if (stored.ShipTo is not null || stored.ShipFrom is not null)
+    private async Task RestoreCustomerAsync(
+        IPosCustomerService customers,
+        Guid customerId,
+        string? customerName,
+        string? fiscalNumber)
+    {
+        if (customerId != Guid.Empty)
+        {
+            var byId = await customers.FindAsync(customerId);
+            if (byId is not null)
             {
-                TransportBox.IsChecked = true;
-                ApplyStoredShip(stored.ShipTo, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
-                ApplyStoredShip(stored.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
+                ShowCustomer(byId);
+                return;
             }
         }
 
-        var copied = await documents.LoadDocumentLinesAsync(documentId);
-        _lines.Clear();
-        foreach (var line in copied)
+        var term = string.IsNullOrWhiteSpace(fiscalNumber) ? customerName : fiscalNumber;
+        if (string.IsNullOrWhiteSpace(term))
         {
-            var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
-            _lines.Add(article is null
-                ? NewDocumentLine.FromCopy(line, string.Empty)
-                : NewDocumentLine.FromCopy(line, FamilyNameOf(article)));
+            return;
         }
 
-        RefreshLines();
+        var matches = await customers.SearchAsync(term.Trim());
+        var match = matches.FirstOrDefault(item =>
+                string.Equals(item.FiscalNumber, fiscalNumber?.Trim(), StringComparison.OrdinalIgnoreCase))
+            ?? matches.FirstOrDefault(item =>
+                string.Equals(item.Name, customerName?.Trim(), StringComparison.OrdinalIgnoreCase))
+            ?? matches.FirstOrDefault();
+        if (match is not null)
+        {
+            ShowCustomer(match);
+        }
     }
 
     private async Task Fill(Func<Task> load)
@@ -284,29 +438,54 @@ public partial class NewDocumentWindow : UserControl
 
     private async void OnCopyChanged(object? sender, SelectionChangedEventArgs e)
     {
-        if (_filling || SelectedId(CopyBox) is not Guid documentId)
+        RefreshCopyClear();
+        if (_filling || ListingFilters.SelectedDocumentId(CopyBox) is not Guid documentId)
         {
             return;
         }
 
-        var service = AppComposition.Services?.GetService<IPosDocumentService>();
-        if (service is null)
+        var services = AppComposition.Services;
+        var documents = services?.GetService<IPosDocumentService>();
+        if (documents is null)
         {
             return;
         }
 
-        var copied = await service.LoadDocumentLinesAsync(documentId);
-        _lines.Clear();
-        foreach (var line in copied)
-        {
-            var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
-            _lines.Add(article is null
-                ? NewDocumentLine.FromCopy(line, string.Empty)
-                : NewDocumentLine.FromCopy(line, FamilyNameOf(article)));
-        }
-
-        RefreshLines();
+        await ApplyDocumentCopyAsync(
+            documentId,
+            documents,
+            services?.GetService<IPosCustomerService>());
     }
+
+    private void OnOriginChanged(object? sender, SelectionChangedEventArgs e) => RefreshOriginClear();
+
+    private void OnOriginTextChanged(object? sender, TextChangedEventArgs e) => RefreshOriginClear();
+
+    private void OnCopyTextChanged(object? sender, TextChangedEventArgs e) => RefreshCopyClear();
+
+    private void OnClearOriginClick(object? sender, RoutedEventArgs e)
+    {
+        SelectDocumentId(OriginBox, null);
+        RefreshOriginClear();
+    }
+
+    private void OnClearCopyClick(object? sender, RoutedEventArgs e)
+    {
+        SelectDocumentId(CopyBox, null);
+        RefreshCopyClear();
+    }
+
+    private void RefreshDocumentClearButtons()
+    {
+        RefreshOriginClear();
+        RefreshCopyClear();
+    }
+
+    private void RefreshOriginClear()
+        => OriginClearButton.IsVisible = ListingFilters.SelectedDocumentId(OriginBox) is not null;
+
+    private void RefreshCopyClear()
+        => CopyClearButton.IsVisible = ListingFilters.SelectedDocumentId(CopyBox) is not null;
 
     private async void OnTypeChanged(object? sender, SelectionChangedEventArgs e)
     {
@@ -579,7 +758,7 @@ public partial class NewDocumentWindow : UserControl
             ["Designation"] = designation,
             ["ButtonLabel"] = button.Length < 2 ? code : button,
             ["Price1"] = price,
-            ["PriceWithVat"] = "true",
+            ["PriceWithVat"] = "false",
             ["DefaultQuantity"] = "1",
             ["SubfamilyId"] = family.Id.ToString(),
             ["TypeId"] = typeId.ToString(),
@@ -606,7 +785,7 @@ public partial class NewDocumentWindow : UserControl
             null,
             false,
             ParseDecimal(price),
-            true,
+            false,
             vat.Percentage,
             1,
             0,
@@ -1358,6 +1537,100 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnCustomerEditorCancel(object? sender, RoutedEventArgs e) => CustomerEditor.IsVisible = false;
 
+    private async void OnCustomerViesClick(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: true);
+
+    private async void OnCustomerFiscalLostFocus(object? sender, RoutedEventArgs e) => await CompleteCustomerVatAsync(force: false);
+
+    private async Task CompleteCustomerVatAsync(bool force)
+    {
+        if (_vatBusy || CustomerEditor.IsVisible == false || _filling)
+        {
+            return;
+        }
+
+        _vatBusy = true;
+        try
+        {
+            if (force == false && await CustomerVatAutocompleteEnabledAsync() == false)
+            {
+                return;
+            }
+
+            var fiscalNumber = EditorFiscal.Text?.Trim() ?? string.Empty;
+            if (fiscalNumber.Length < 3)
+            {
+                return;
+            }
+
+            var info = await EuropeanVatLookup.FindAsync(CustomerCountryCode(), fiscalNumber);
+            if (info is null)
+            {
+                EditorError.Text = "NIF não encontrado no VIES.";
+                return;
+            }
+
+            EditorName.Text = info.Name;
+            EditorAddress.Text = info.Address;
+            EditorCity.Text = info.City;
+            EditorZip.Text = info.ZipCode;
+            EditorLocality.Text = info.Locality;
+            EditorError.Text = "Dados preenchidos a partir do VIES.";
+        }
+        finally
+        {
+            _vatBusy = false;
+        }
+    }
+
+    private async Task<bool> CustomerVatAutocompleteEnabledAsync()
+    {
+        if (_vatAutocomplete is bool cached)
+        {
+            return cached;
+        }
+
+        var services = AppComposition.Services;
+        var listing = services?.GetService<IBackOfficeListingService>();
+        if (listing is null)
+        {
+            _vatAutocomplete = true;
+            return true;
+        }
+
+        try
+        {
+            var snapshot = await listing.QueryAsync("Parâmetros de Sistema");
+            var row = snapshot.Rows.FirstOrDefault(item =>
+                item.Values.TryGetValue("Token", out var token) && token == "USE_EUROPEAN_VAT_AUTOCOMPLETE");
+            if (row is null || row.Values.TryGetValue("Value", out var value) == false)
+            {
+                _vatAutocomplete = true;
+                return true;
+            }
+
+            _vatAutocomplete = value is "1" or "true" or "True" or "Sim";
+        }
+        catch (Exception)
+        {
+            _vatAutocomplete = true;
+        }
+
+        return _vatAutocomplete.Value;
+    }
+
+    private string CustomerCountryCode()
+    {
+        var index = EditorCountry.SelectedIndex;
+        if (index >= 0 && index < _countries.Count && string.IsNullOrWhiteSpace(_countries[index].Meta) == false)
+        {
+            return _countries[index].Meta!;
+        }
+
+        var name = CultureInfo.CurrentUICulture.Name;
+        var split = name.IndexOf('-');
+        return split > 0 ? name[(split + 1)..] : "PT";
+    }
+
     private async void OnCustomerEditorOk(object? sender, RoutedEventArgs e)
     {
         if (decimal.TryParse(EditorDiscount.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var discount) == false
@@ -1554,12 +1827,14 @@ public partial class NewDocumentWindow : UserControl
             line.Discount,
             line.VatRateId,
             line.Notes,
-            line.SerialNumber)).ToList();
+            line.SerialNumber,
+            line.Price,
+            line.PriceIncludesVat)).ToList();
         var header = new PosDocumentHeader
         {
             PaymentConditionId = SelectedId(PaymentBox),
             CurrencyId = SelectedId(CurrencyBox),
-            ParentDocumentId = SelectedId(OriginBox),
+            ParentDocumentId = ListingFilters.SelectedDocumentId(OriginBox),
             Notes = NotesBox.Text,
             IsDraft = draft,
             ShipTo = transport ? ReadDestination() : null,
@@ -1666,7 +1941,7 @@ public partial class NewDocumentWindow : UserControl
             Notes = NotesBox.Text,
             PaymentConditionId = SelectedId(PaymentBox),
             CurrencyId = SelectedId(CurrencyBox),
-            ParentDocumentId = SelectedId(OriginBox),
+            ParentDocumentId = ListingFilters.SelectedDocumentId(OriginBox),
             Total = total,
             ShipTo = transport ? ReadDestination() : null,
             ShipFrom = transport ? ReadOrigin() : null,
@@ -1697,6 +1972,26 @@ public partial class NewDocumentWindow : UserControl
         if (match is not null)
         {
             box.SelectedItem = match;
+        }
+    }
+
+    private static void SelectDocumentId(AutoCompleteBox box, Guid? id)
+    {
+        if (box.ItemsSource is not IEnumerable<PosLookupItem> items)
+        {
+            return;
+        }
+
+        if (id is null || id == Guid.Empty)
+        {
+            ListingFilters.SelectDocument(box, items.FirstOrDefault(item => item.Id == Guid.Empty));
+            return;
+        }
+
+        var match = items.FirstOrDefault(item => item.Id == id);
+        if (match is not null)
+        {
+            ListingFilters.SelectDocument(box, match);
         }
     }
 
@@ -1735,7 +2030,7 @@ public partial class NewDocumentWindow : UserControl
             return null;
         }
 
-        var company = await documents.GetCompanyAddressAsync();
+        var company = await documents.GetCompanyInformationAsync();
         var currency = CurrencyBox.SelectedItem is PosLookupItem selected ? selected.Code : "EUR";
         var transport = RequiresTransport();
         return DocumentPreviewFile.Write(new DocumentPreview
@@ -1751,10 +2046,11 @@ public partial class NewDocumentWindow : UserControl
             Notes = NotesBox.Text,
             PaymentCondition = PaymentBox.SelectedItem?.ToString(),
             Currency = string.IsNullOrWhiteSpace(currency) ? "EUR" : currency,
+            Company = company,
             CompanyAddress = company.Address,
             CompanyCity = company.City,
             CompanyPostalCode = company.PostalCode,
-            CompanyCountry = company.Country,
+            CompanyCountry = company.CountryCode2,
             ShipTo = transport ? PosDocumentRules.ToAddress(ReadDestination()) : null,
             ShipFrom = transport ? PosDocumentRules.ToAddress(ReadOrigin()) : null,
             Lines = _lines.Select(line =>
@@ -1768,6 +2064,8 @@ public partial class NewDocumentWindow : UserControl
                         : line.Designation + "  SN " + line.SerialNumber,
                     Quantity = line.Quantity,
                     NetUnitPrice = line.NetUnitPrice,
+                    ShelfUnitPrice = line.Price,
+                    PriceIncludesVat = line.PriceIncludesVat,
                     Discount = line.Discount,
                     VatPercentage = line.VatPercentage,
                     TotalNet = totals.Net,
@@ -1996,7 +2294,7 @@ public partial class NewDocumentWindow : UserControl
             SerialNumber = serialNumber.Trim();
         }
 
-        private NewDocumentLine(PosCopiedLine line, string family, bool priceIncludesVat)
+        private NewDocumentLine(PosCopiedLine line, string family, decimal documentDiscount)
         {
             ArticleId = line.ArticleId;
             VatRateId = line.VatRateId;
@@ -2005,16 +2303,17 @@ public partial class NewDocumentWindow : UserControl
             Family = family;
             Quantity = line.Quantity;
             Price = line.Price;
-            Discount = line.Discount;
-            PriceIncludesVat = priceIncludesVat;
+            Discount = DocumentLineCalculator.ExtractLineDiscount(line.Discount, documentDiscount);
+            PriceIncludesVat = false;
             VatPercentage = line.VatPercentage;
             SerialNumber = line.SerialNumber;
+            Notes = line.Notes;
             RecalculateNet();
         }
 
-        public static NewDocumentLine FromCopy(PosCopiedLine line, string family)
+        public static NewDocumentLine FromCopy(PosCopiedLine line, string family, decimal documentDiscount)
         {
-            return new NewDocumentLine(line, family, false);
+            return new NewDocumentLine(line, family, documentDiscount);
         }
 
         public Guid ArticleId { get; }
@@ -2088,17 +2387,20 @@ public partial class NewDocumentWindow : UserControl
 
         public static (decimal Net, decimal Gross) Totals(bool priceIncludesVat, decimal price, decimal quantity, decimal discount, decimal vatPercentage)
         {
-            var netUnit = PosTicketLine.ToNetUnitPrice(price, vatPercentage, priceIncludesVat);
-            var net = quantity * netUnit * (1m - discount / 100m);
-            var gross = priceIncludesVat
-                ? quantity * price * (1m - discount / 100m)
-                : net * (1m + vatPercentage / 100m);
-            return (net, gross);
+            var totals = DocumentLineCalculator.CalculateLine(
+                price,
+                priceIncludesVat,
+                quantity,
+                discount,
+                0,
+                vatPercentage,
+                useAgtRounding: false);
+            return (totals.TotalNet, totals.TotalFinal.Round());
         }
 
         private void RecalculateNet()
         {
-            NetUnitPrice = PosTicketLine.ToNetUnitPrice(Price, VatPercentage, PriceIncludesVat);
+            NetUnitPrice = DocumentLineCalculator.ToNetUnitPrice(Price, VatPercentage, PriceIncludesVat);
         }
     }
 }

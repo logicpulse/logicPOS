@@ -59,6 +59,7 @@ internal static class CustomerDisplay
             var first = standby ? settings.StandByLine1 ?? string.Empty : line1;
             var second = standby ? settings.StandByLine2 ?? string.Empty : line2 ?? string.Empty;
             var text = Fit(RemoveAccents(first), columns) + Fit(RemoveAccents(second), columns);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var payload = new byte[] { 0x0C }.Concat(Encoding.GetEncoding(860).GetBytes(text)).ToArray();
             using var port = new SerialPort(settings.ComPort.Trim(), 9600, Parity.None, 8, StopBits.One)
             {

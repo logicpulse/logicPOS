@@ -5,12 +5,84 @@ using LogicPOS.Domain.Repositories;
 using LogicPOS.Persistence.Database;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.Core;
 
 public static class DatabaseStartup
 {
+    /// <summary>
+    /// True when appsettings asks for cloud/online mode (no local SQLite create on startup).
+    /// </summary>
+    public static bool UsesCloud(string? baseDirectory = null)
+    {
+        try
+        {
+            var root = string.IsNullOrWhiteSpace(baseDirectory) ? AppContext.BaseDirectory : baseDirectory;
+            var settingsPath = Path.Combine(root, "appsettings.json");
+            if (File.Exists(settingsPath) == false)
+            {
+                return false;
+            }
+
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(root)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .Build();
+            return bool.TryParse(configuration["DatabaseSettings:UseCloud"], out var useCloud) && useCloud;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Splash should say "creating database" only for a missing local SQLite file.
+    /// Cloud installs never create a local DB on boot — show the normal loading text.
+    /// </summary>
+    public static bool ShowFirstTimeDatabaseMessage(string? baseDirectory = null)
+        => UsesCloud(baseDirectory) == false && SqliteDatabaseExists(baseDirectory) == false;
+
+    /// <summary>
+    /// True when the configured SQLite file already exists (GTK loading vs first-time create).
+    /// </summary>
+    public static bool SqliteDatabaseExists(string? baseDirectory = null)
+    {
+        try
+        {
+            var root = string.IsNullOrWhiteSpace(baseDirectory) ? AppContext.BaseDirectory : baseDirectory;
+            var settingsPath = Path.Combine(root, "appsettings.json");
+            var connectionString = "Data Source=logicpos.db";
+            if (File.Exists(settingsPath))
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(root)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .Build();
+                var configured = configuration["DatabaseSettings:ConnectionString"];
+                if (string.IsNullOrWhiteSpace(configured) == false)
+                {
+                    connectionString = configured;
+                }
+            }
+
+            var dataSource = new SqliteConnectionStringBuilder(connectionString).DataSource;
+            if (string.IsNullOrWhiteSpace(dataSource)
+                || string.Equals(dataSource, ":memory:", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return File.Exists(SqliteDataPath.Resolve(dataSource));
+        }
+        catch
+        {
+            return true;
+        }
+    }
+
     public static void EnsureExists(DatabaseSettings settings)
     {
         if (settings.DatabaseType != DatabaseType.Sqlite)
@@ -26,15 +98,61 @@ public static class DatabaseStartup
             return;
         }
 
-        if (Path.IsPathRooted(dataSource) == false)
-        {
-            dataSource = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, dataSource));
-        }
+        dataSource = SqliteDataPath.Resolve(dataSource);
+        builder.DataSource = dataSource;
+        settings.ConnectionString = builder.ConnectionString;
 
         var directory = Path.GetDirectoryName(dataSource);
         if (string.IsNullOrWhiteSpace(directory) == false)
         {
             Directory.CreateDirectory(directory);
+        }
+
+        if (string.IsNullOrWhiteSpace(directory) == false && SqliteDataPath.CanCreateFile(directory) == false)
+        {
+            throw new InvalidOperationException(
+                $"Sem permissão de escrita em '{directory}'. " +
+                "A base de dados tem de ficar na pasta de instalação: reponha as ACL (Utilizadores = Modificar) ou reinstale.");
+        }
+
+        // Deleting only logicpos.db leaves -wal/-shm behind; SQLite then fails with Error 14.
+        if (File.Exists(dataSource) == false)
+        {
+            TryDelete(dataSource + "-wal");
+            TryDelete(dataSource + "-shm");
+            TryDelete(dataSource + "-journal");
+        }
+
+        // Create an empty file early so a missing/unwritable path fails here, not on login.
+        builder.Mode = SqliteOpenMode.ReadWriteCreate;
+        builder.Pooling = false;
+        try
+        {
+            using var connection = new SqliteConnection(builder.ConnectionString);
+            connection.Open();
+            connection.Close();
+        }
+        catch (SqliteException exception) when (exception.SqliteErrorCode == 14)
+        {
+            throw new InvalidOperationException(
+                $"Não foi possível criar a base de dados em '{dataSource}'. " +
+                "Apague logicpos.db, logicpos.db-wal e logicpos.db-shm se existirem, e garanta permissão de escrita na pasta de instalação.",
+                exception);
+        }
+    }
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch
+        {
+            // Best-effort: Migrate may still succeed if the main file can be created.
         }
     }
 
@@ -52,6 +170,7 @@ public static class DatabaseStartup
         var hasTerminal = await database.Terminals.AnyAsync(terminal => terminal.IsDeleted == false);
         if (hasTerminal)
         {
+            await SyncOrphanLocalHardwareIdAsync(database);
             return;
         }
 
@@ -91,6 +210,46 @@ public static class DatabaseStartup
         await database.SaveChangesAsync();
     }
 
+    /// <summary>
+    /// Older builds stored a random Guid from <c>hardware.id</c> on the terminal.
+    /// When the real machine fingerprint is wired and no terminal matches it, reclaim
+    /// the default/orphan local Guid so login and licence Hardware ID agree.
+    /// </summary>
+    private static async Task SyncOrphanLocalHardwareIdAsync(LogicPOSDbContext database)
+    {
+        var hardwareId = MachineIdentity.HardwareId;
+        if (string.IsNullOrWhiteSpace(hardwareId))
+        {
+            return;
+        }
+
+        var alreadyBound = await database.Terminals
+            .AnyAsync(terminal => terminal.IsDeleted == false && terminal.HardwareId == hardwareId);
+        if (alreadyBound)
+        {
+            return;
+        }
+
+        var terminals = await database.Terminals
+            .Where(terminal => terminal.IsDeleted == false)
+            .OrderByDescending(terminal => terminal.IsDefault)
+            .ThenBy(terminal => terminal.Code)
+            .ToListAsync();
+        var orphan = terminals.FirstOrDefault(terminal => IsLocalGuidHardwareId(terminal.HardwareId))
+            ?? terminals.FirstOrDefault(terminal => string.IsNullOrWhiteSpace(terminal.HardwareId));
+        if (orphan is null)
+        {
+            return;
+        }
+
+        orphan.HardwareId = hardwareId;
+        orphan.UpdatedAt = DateTime.Now;
+        await database.SaveChangesAsync();
+    }
+
+    private static bool IsLocalGuidHardwareId(string? value)
+        => value is { Length: 32 } && value.All(Uri.IsHexDigit);
+
     public static string ResolveSeedPath()
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
@@ -113,6 +272,7 @@ public static class DatabaseStartup
     {
         using var scope = services.CreateScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var settings = scope.ServiceProvider.GetRequiredService<DatabaseSettings>();
         if (database.Users.Any(user => user.IsDeleted == false))
         {
             return;
@@ -124,7 +284,53 @@ public static class DatabaseStartup
             throw new InvalidOperationException("A semente obrigatória falhou.");
         }
 
-        seeder.ApplyAdditionalSeed();
+        // Fresh database: always load module seed data (appsettings UseSeed only gates
+        // optional extras on an already-populated DB in DatabaseInitializer).
+        if (settings.UseSeed)
+        {
+            seeder.ApplyAdditionalSeed();
+        }
+        else
+        {
+            seeder.ApplyRequiredUsersSeed();
+        }
+
         seeder.EnsureCountrySpecificConfiguration();
+    }
+
+    /// <summary>
+    /// Creates schema + seed when the SQLite file is missing (same outcome as first install).
+    /// Prefer this over calling EnsureExists / ApplySchema / EnsureSeed separately.
+    /// </summary>
+    public static void EnsureDatabase(IServiceProvider services, DatabaseSettings settings)
+    {
+        EnsureExists(settings);
+        using var scope = services.CreateScope();
+        var initializer = scope.ServiceProvider.GetService<IDatabaseInitializer>();
+        if (initializer is not null)
+        {
+            if (initializer.Initialize() == false)
+            {
+                throw new InvalidOperationException(
+                    "Não foi possível criar ou inicializar a base de dados. Verifique permissões na pasta da aplicação e o SeedPath no appsettings.");
+            }
+
+            EnsureMandatoryLookups(services);
+            return;
+        }
+
+        ApplySchema(services);
+        EnsureSeed(services);
+        EnsureMandatoryLookups(services);
+    }
+
+    /// <summary>
+    /// Fills customer/price types when an existing DB was created without demo seed.
+    /// </summary>
+    public static void EnsureMandatoryLookups(IServiceProvider services)
+    {
+        using var scope = services.CreateScope();
+        var seeder = scope.ServiceProvider.GetService<IDatabaseSeeder>();
+        seeder?.EnsureMandatoryLookups();
     }
 }

@@ -1,4 +1,5 @@
 using LogicPOS.Domain.Entities.Common.Utilities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
@@ -39,13 +40,22 @@ internal class ReceiptCreator : EntityCreator<Receipt>
         _entity.Mechanism = await _references.PaymentMethodRepository.GetAcronymAsync(_dto.PaymentMethodId, ct);
         _entity.RefNo = GenerateNumber();
         _entity.DocumentType = await _repository.GetDocumentType(ct);
-        _entity.Amount = _dto.Amount;
+        _entity.Amount = _dto.Amount.Round();
         _entity.TaxPayable = _dto.TaxPayable;
         _entity.CurrencyCode = await _references.CurrencyRepository.GetAcronymAsync(_dto.CurrencyId, ct);
         _entity.CurrencyAmount = _dto.CurrencyAmount;
         _entity.ExchangeRate = _dto.ExchangeRate;
         _entity.SourceId = _entity.CreatedBy.ToString();
         _entity.Notes = _dto.Notes;
+        if (SystemCountryIsPortugal)
+        {
+            _entity.Hash = await _documentHasher.GenerateReceiptHashAsync(LastReceiptNumber, _entity.RefNo,
+                _entity.Date,
+                _entity.SystemEntryDate, _entity.Amount, ct);
+            _entity.Hash4Code = _documentHasher.GenerateHash4Chars(_entity.Hash);
+            var documentNumber = _series!.NextNumber - 1;
+            _entity.Atcud = $"{_series.ATDocCodeValidationSeries}-{documentNumber}";
+        }
     }
 
     private string GenerateNumber()

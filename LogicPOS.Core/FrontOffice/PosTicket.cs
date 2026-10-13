@@ -1,3 +1,5 @@
+using LogicPOS.Domain.Entities.Finance.Calculations;
+
 namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosTicketLine
@@ -12,7 +14,8 @@ public sealed class PosTicketLine
         Discount = article.Discount;
         VatRateId = article.VatRateId;
         Quantity = article.QuantityStep;
-        NetUnitPrice = ToNetUnitPrice(article.CatalogPrice, article.VatPercentage, article.PriceIncludesVat);
+        ShelfUnitPrice = article.PriceIncludesVat ? article.CatalogPrice : ToNetUnitPrice(article.CatalogPrice, article.VatPercentage, false);
+        NetUnitPrice = DocumentLineCalculator.ToNetUnitPrice(ShelfUnitPrice, VatPercentage, PriceIncludesVat);
     }
 
     public Guid ArticleId { get; }
@@ -31,19 +34,22 @@ public sealed class PosTicketLine
 
     public decimal Quantity { get; set; }
 
+    public decimal ShelfUnitPrice { get; private set; }
+
     public decimal NetUnitPrice { get; set; }
 
     public decimal DisplayUnitPrice => PriceIncludesVat
-        ? NetUnitPrice * (1m + VatPercentage / 100m)
+        ? ShelfUnitPrice
         : NetUnitPrice;
 
-    public decimal TotalNet => Quantity * NetUnitPrice * (1m - Discount / 100m);
+    public decimal TotalNet => LineTotals().TotalNet;
 
-    public decimal Total => TotalNet * (1m + VatPercentage / 100m);
+    public decimal Total => LineTotals().TotalFinal.Round();
 
     public void SetDisplayPrice(decimal price)
     {
-        NetUnitPrice = ToNetUnitPrice(price, VatPercentage, PriceIncludesVat);
+        ShelfUnitPrice = price;
+        NetUnitPrice = DocumentLineCalculator.ToNetUnitPrice(price, VatPercentage, PriceIncludesVat);
     }
 
     public PosTicketLine WithQuantity(decimal quantity)
@@ -54,14 +60,10 @@ public sealed class PosTicketLine
     }
 
     public static decimal ToNetUnitPrice(decimal price, decimal vatPercentage, bool priceIncludesVat)
-    {
-        if (priceIncludesVat == false || vatPercentage <= 0)
-        {
-            return price;
-        }
+        => DocumentLineCalculator.ToNetUnitPrice(price, vatPercentage, priceIncludesVat);
 
-        return price / (1m + vatPercentage / 100m);
-    }
+    private DocumentLineTotals LineTotals()
+        => DocumentLineCalculator.Calculate(NetUnitPrice, Quantity, Discount, VatPercentage, useAgtRounding: false);
 }
 
 public sealed class PosTicket
@@ -78,9 +80,16 @@ public sealed class PosTicket
 
     public bool HasLines => _lines.Count > 0;
 
-    public void Add(PosArticle article)
+    public void Add(PosArticle article, decimal? displayUnitPrice = null)
     {
-        var existing = _lines.FindIndex(line => line.ArticleId == article.Id);
+        var line = new PosTicketLine(article);
+        if (displayUnitPrice is decimal price)
+        {
+            line.SetDisplayPrice(price);
+        }
+
+        var existing = _lines.FindIndex(item =>
+            item.ArticleId == article.Id && item.NetUnitPrice == line.NetUnitPrice);
         if (existing >= 0)
         {
             _lines[existing].Quantity += article.QuantityStep;
@@ -88,7 +97,7 @@ public sealed class PosTicket
             return;
         }
 
-        _lines.Add(new PosTicketLine(article));
+        _lines.Add(line);
         SelectedIndex = _lines.Count - 1;
     }
 

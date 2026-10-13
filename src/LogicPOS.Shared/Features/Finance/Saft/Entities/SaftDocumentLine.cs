@@ -6,10 +6,16 @@ public record SaftDocumentLine {
     public string ProductDescription { get; init; } = null!;
     public decimal Quantity { get; init; } 
     public string UnitOfMeasure { get; init; } = null!;
-    public decimal UnitPrice => Price - TotalDiscount / (Quantity == 0 ? 1 : Quantity);
+    public decimal UnitPrice =>
+        Math.Max(
+            0,
+            Math.Round(
+                Price - TotalDiscount / (Quantity == 0 ? 1 : Quantity),
+                6,
+                MidpointRounding.AwayFromZero));
     public SaftDocumentLineReference? Reference { get; set; }
     public string Description { get; init; } = null!;
-    public decimal Amount { get; set; }
+    public decimal Amount => TotalNet;
     public SaftTax Tax { get; init; } = null!;
     public string? TaxExemptionReason { get; init; } 
     public string? TaxExemptionCode { get; init; }
@@ -17,4 +23,6 @@ public record SaftDocumentLine {
     public decimal TaxPayable => Amount * (Tax.Percentage / 100);
     public decimal Price { get; init; }
     public decimal TotalDiscount { get; init; }
+    public decimal TotalNet { get; init; }
+    public decimal TotalTax { get; init; }
 }

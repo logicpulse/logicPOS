@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -8,9 +8,11 @@ using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
+using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,14 +21,16 @@ namespace LogicPOS.App.Views;
 public partial class BackOfficeWindow : Window, IOfficeSurface
 {
     private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
-    private const string IconRoot = "avares://logicpos/Assets/Images/BackOffice/";
+    private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
 
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
     private readonly List<StackPanel> _sectionPanels = new();
     private readonly List<Button> _sectionButtons = new();
+    private readonly HashSet<string> _dismissedSetupAlerts = new(StringComparer.OrdinalIgnoreCase);
     private Button? _selectedItem;
     private bool _allowClose;
     private bool _backOfficeOnly;
+    private bool _setupToastsShown;
     private StockManagementView? _stockView;
     private string? _pendingSaftAction;
 
@@ -53,9 +57,11 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         VersionLabel.Text = string.IsNullOrWhiteSpace(number) ? "Versão" : $"Versão {number}";
         CopyrightLabel.Text = copyright;
         AboutCopyright.Text = copyright;
+        ApplyBranding(number ?? "1.6.0");
         BuildMenu();
         _clock.Tick += (_, _) => ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
         Opened += (_, _) => RefreshSession();
+        EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshSetupAlertsAsync();
         Closing += (_, e) =>
         {
             if (_allowClose)
@@ -68,6 +74,25 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         };
     }
 
+    private void ApplyBranding(string productVersion)
+    {
+        try
+        {
+            SidebarLogo.Source = AppBranding.LoadSimpleLogo();
+            AboutLogo.Source = AppBranding.LoadSimpleLogo();
+            var reseller = AppComposition.Services?.GetService<ILicenseModule>()?.Reseller;
+            if (string.IsNullOrWhiteSpace(reseller) == false &&
+                reseller.Contains("LogicPulse", StringComparison.OrdinalIgnoreCase) == false)
+            {
+                CopyrightLabel.Text = AppBranding.FormatPoweredBy(productVersion);
+            }
+        }
+        catch
+        {
+            // Keep XAML defaults.
+        }
+    }
+
     public void UseBackOfficeOnly()
     {
         _backOfficeOnly = true;
@@ -78,10 +103,10 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
 
     public event EventHandler? LoggedOut;
 
-    public async Task ShowNewDocumentAsync(Guid? draftId = null)
+    public async Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
         NewDocumentOverlay.IsVisible = true;
-        var created = await NewDocumentHost.ShowAsync(draftId);
+        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId);
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {
@@ -93,12 +118,12 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title)
+    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
-        await PdfHost.ShowAsync(path, title);
+        await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
         ReportsOverlay.IsVisible = reportsOpen;
     }
@@ -110,6 +135,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
         _clock.Start();
         _ = ReloadDashboardSafeAsync();
+        _ = RefreshSetupAlertsAsync();
     }
 
     private async Task ReloadDashboardSafeAsync()
@@ -122,6 +148,107 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         {
             App.WriteCrash("DashboardHost.ReloadAsync", exception);
         }
+    }
+
+    public async Task RefreshSetupAlertsAsync()
+    {
+        var service = AppComposition.Services?.GetService<IStartupReadinessService>();
+        if (service is null)
+        {
+            SetupAlerts.Children.Clear();
+            SetupAlerts.IsVisible = false;
+            return;
+        }
+
+        IReadOnlyList<StartupReadinessIssue> issues;
+        try
+        {
+            issues = await service.GetIssuesAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("RefreshSetupAlertsAsync", exception);
+            return;
+        }
+
+        SetupAlerts.Children.Clear();
+        var visible = new List<StartupReadinessIssue>();
+        foreach (var issue in issues)
+        {
+            if (_dismissedSetupAlerts.Contains(issue.Key))
+            {
+                continue;
+            }
+
+            visible.Add(issue);
+            SetupAlerts.Children.Add(BuildSetupAlert(issue));
+        }
+
+        SetupAlerts.IsVisible = SetupAlerts.Children.Count > 0;
+
+        // Same idea as web ShowAlertBox: toast warnings at the top on first open.
+        if (_setupToastsShown == false && visible.Count > 0)
+        {
+            _setupToastsShown = true;
+            foreach (var issue in visible)
+            {
+                Toast.Warning(this, issue.Message);
+            }
+        }
+    }
+
+    private Border BuildSetupAlert(StartupReadinessIssue issue)
+    {
+        var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto,Auto") };
+        row.Children.Add(new TextBlock
+        {
+            Classes = { "bo_setup_alert_text" },
+            Text = issue.Message
+        });
+
+        if (string.IsNullOrWhiteSpace(issue.ActionPage) == false)
+        {
+            var action = new Button
+            {
+                Classes = { "bo_setup_alert_action" },
+                Content = string.IsNullOrWhiteSpace(issue.ActionLabel) ? "Abrir" : issue.ActionLabel,
+                Tag = issue.ActionPage
+            };
+            Grid.SetColumn(action, 1);
+            action.Click += (_, _) =>
+            {
+                if (action.Tag is string page)
+                {
+                    ShowPage(page);
+                }
+            };
+            row.Children.Add(action);
+        }
+
+        var dismiss = new Button
+        {
+            Classes = { "bo_setup_alert_dismiss" },
+            Content = "×",
+            Tag = issue.Key
+        };
+        Grid.SetColumn(dismiss, 2);
+        ToolTip.SetTip(dismiss, "Dispensar");
+        dismiss.Click += (_, _) =>
+        {
+            if (dismiss.Tag is string key)
+            {
+                _dismissedSetupAlerts.Add(key);
+            }
+
+            _ = RefreshSetupAlertsAsync();
+        };
+        row.Children.Add(dismiss);
+
+        return new Border
+        {
+            Classes = { "bo_setup_alert" },
+            Child = row
+        };
     }
 
     private void BuildMenu()
@@ -815,7 +942,9 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
 
     private void ShowUpdate()
     {
-        UpdateStatus.Text = "A configuração e a base de dados local não são substituídas.";
+        UpdateStatus.Text = "A configuração (appsettings) e a base de dados local não são substituídas.";
+        UpdateProgress.IsVisible = false;
+        UpdateProgress.Value = 0;
         UpdateConfirm.IsEnabled = true;
         UpdateDismiss.IsEnabled = true;
         UpdateOverlay.IsVisible = true;
@@ -835,12 +964,34 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     {
         UpdateConfirm.IsEnabled = false;
         UpdateDismiss.IsEnabled = false;
-        var progress = new Progress<string>(text => UpdateStatus.Text = text);
+        UpdateProgress.IsVisible = true;
+        UpdateProgress.IsIndeterminate = true;
+        UpdateProgress.Value = 0;
+        var progress = new Progress<string>(text =>
+        {
+            UpdateStatus.Text = text;
+            var percent = ParseUpdatePercent(text);
+            if (percent is int value)
+            {
+                UpdateProgress.IsIndeterminate = false;
+                UpdateProgress.Value = value;
+            }
+            else if (text.Contains("extrair", StringComparison.OrdinalIgnoreCase)
+                     || text.Contains("preparar", StringComparison.OrdinalIgnoreCase)
+                     || text.Contains("fechar", StringComparison.OrdinalIgnoreCase))
+            {
+                UpdateProgress.IsIndeterminate = true;
+            }
+        });
         try
         {
             await ApplicationUpdater.DownloadAndScheduleAsync(progress);
+            UpdateProgress.IsIndeterminate = false;
+            UpdateProgress.Value = 100;
             _allowClose = true;
             _clock.Stop();
+            // Give the progress window a moment to appear before this process exits.
+            await Task.Delay(600);
             if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.Shutdown();
@@ -852,9 +1003,28 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         catch (Exception exception)
         {
             UpdateStatus.Text = exception.Message;
+            UpdateProgress.IsVisible = false;
             UpdateConfirm.IsEnabled = true;
             UpdateDismiss.IsEnabled = true;
         }
+    }
+
+    private static int? ParseUpdatePercent(string text)
+    {
+        var start = text.IndexOf('%');
+        if (start <= 0)
+        {
+            return null;
+        }
+
+        var cursor = start - 1;
+        while (cursor >= 0 && char.IsDigit(text[cursor]))
+        {
+            cursor--;
+        }
+
+        var digits = text.Substring(cursor + 1, start - cursor - 1);
+        return int.TryParse(digits, out var value) ? Math.Clamp(value, 0, 100) : null;
     }
 
     private void OnExitClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

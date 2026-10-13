@@ -1,0 +1,187 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:LogicPOS.App.Views"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+        x:Class="LogicPOS.App.Views.RegistrationWindow"
+        x:DataType="views:RegistrationForm"
+        x:CompileBindings="True"
+        Classes="register_window"
+        Title="{Binding WindowTitle}"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterOwner"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
+        CanResize="False"
+        ShowInTaskbar="False">
+    <!-- Popup chrome like PaymentWindow / CompanySetup (no OS title bar). -->
+    <Panel>
+        <Panel Classes="login_alert_overlay" />
+        <Border Classes="register_card register_card_popup" Width="1100" Height="720" MaxWidth="1100" MaxHeight="720">
+            <DockPanel>
+                <Border Classes="register_topbar" DockPanel.Dock="Top">
+                    <DockPanel>
+                        <StackPanel Classes="register_langs" DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button Classes="register_lang" Tag="pt-PT" Click="OnCultureClick" ToolTip.Tip="Português">
+                                <svg:Svg Classes="register_lang_flag" Path="avares://LogicPOS.App/Assets/Images/Flags/PT.svg" />
+                            </Button>
+                            <Button Classes="register_lang" Tag="en-US" Click="OnCultureClick" ToolTip.Tip="English">
+                                <svg:Svg Classes="register_lang_flag" Path="avares://LogicPOS.App/Assets/Images/Flags/EN.svg" />
+                            </Button>
+                            <Button Classes="register_lang" Tag="fr-FR" Click="OnCultureClick" ToolTip.Tip="Français">
+                                <svg:Svg Classes="register_lang_flag" Path="avares://LogicPOS.App/Assets/Images/Flags/FR.svg" />
+                            </Button>
+                            <Button Classes="register_lang" Tag="es-ES" Click="OnCultureClick" ToolTip.Tip="Español">
+                                <svg:Svg Classes="register_lang_flag" Path="avares://LogicPOS.App/Assets/Images/Flags/ES.svg" />
+                            </Button>
+                        </StackPanel>
+                        <StackPanel Classes="register_title" Orientation="Horizontal">
+                            <Image x:Name="RegisterLogo"
+                                   Classes="register_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png"
+                                   RenderOptions.BitmapInterpolationMode="HighQuality" />
+                            <TextBlock Classes="register_title_text" Text="{Binding TitleText}" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Border Classes="register_actions" DockPanel.Dock="Bottom">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel Classes="register_action_buttons"
+                                    DockPanel.Dock="Right"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <Button Classes="register_btn register_btn_secondary" Click="OnExitClick" IsEnabled="{Binding !Busy}">
+                                <TextBlock Text="{Binding ButtonExit}" />
+                            </Button>
+                            <Button Classes="register_btn register_btn_secondary" Click="OnSkipClick" IsEnabled="{Binding !Busy}">
+                                <TextBlock Text="{Binding ButtonContinue}" />
+                            </Button>
+                            <Button Classes="register_btn register_btn_primary" Click="OnRegisterClick" IsEnabled="{Binding !Busy}">
+                                <TextBlock Text="{Binding ButtonRegister}" />
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Classes="register_notice"
+                                   Text="{Binding Notice}"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center" />
+                    </DockPanel>
+                </Border>
+
+                <Grid Classes="register_body" ColumnDefinitions="*,280" ColumnSpacing="20">
+                    <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Classes="register_form_col" Spacing="10">
+                            <StackPanel Classes="register_welcome" Spacing="2">
+                                <TextBlock Classes="register_welcome_title" Text="{Binding WelcomeTitle}" />
+                                <TextBlock Classes="register_welcome_text"
+                                           Text="{Binding WelcomeText}"
+                                           TextWrapping="Wrap" />
+                            </StackPanel>
+
+                            <Border Classes="register_section_title">
+                                <TextBlock Classes="register_section_title_text" Text="{Binding SectionTitle}" />
+                            </Border>
+
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="10">
+                                <StackPanel Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelName}" />
+                                    <TextBox Classes="register_input" Text="{Binding Name}" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelCompany}" />
+                                    <TextBox Classes="register_input" Text="{Binding Company}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelAddress}" />
+                                    <TextBox Classes="register_input register_textarea"
+                                             Text="{Binding Address}"
+                                             AcceptsReturn="True"
+                                             TextWrapping="Wrap"
+                                             MinHeight="48"
+                                             MaxHeight="72" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="2" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelCountry}" />
+                                    <ComboBox Classes="register_input register_combo"
+                                              ItemsSource="{Binding Countries}"
+                                              SelectedItem="{Binding SelectedCountry}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="2" Grid.Column="1" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelEmail}" />
+                                    <TextBox Classes="register_input" Text="{Binding Email}" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="3" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelPhone}" />
+                                    <TextBox Classes="register_input" Text="{Binding Phone}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="3" Grid.Column="1" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelHardwareId}" />
+                                    <TextBox Classes="register_input register_input_readonly"
+                                             Text="{Binding HardwareId}"
+                                             IsReadOnly="True" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Row="4" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelFiscalNumber}" />
+                                    <TextBox Classes="register_input" Text="{Binding FiscalNumber}" />
+                                </StackPanel>
+                                <StackPanel Grid.Row="4" Grid.Column="1" Classes="register_field" Spacing="4">
+                                    <TextBlock Classes="register_label" Text="{Binding LabelSoftwareKey}" />
+                                    <TextBox Classes="register_input" Text="{Binding SoftwareKey}" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Border Grid.Column="1" Classes="register_contact_col">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Spacing="8">
+                                <TextBlock Classes="register_contact_header" Text="{Binding ContactHeader}" TextWrapping="Wrap" />
+                                <Grid Classes="register_tabs" ColumnDefinitions="*,*,*">
+                                    <Button Classes="register_tab"
+                                            Classes.active="{Binding IsContactPortugal}"
+                                            Content="Portugal"
+                                            Tag="0"
+                                            Click="OnContactTabClick" />
+                                    <Button Grid.Column="1"
+                                            Classes="register_tab"
+                                            Classes.active="{Binding IsContactAngola}"
+                                            Content="Angola"
+                                            Tag="1"
+                                            Click="OnContactTabClick" />
+                                    <Button Grid.Column="2"
+                                            Classes="register_tab"
+                                            Classes.active="{Binding IsContactMozambique}"
+                                            Content="Moçambique"
+                                            Tag="2"
+                                            Click="OnContactTabClick" />
+                                </Grid>
+                            </StackPanel>
+
+                            <StackPanel DockPanel.Dock="Bottom" Classes="register_contact_footer" Spacing="8">
+                                <TextBlock Classes="register_website_text" Text="logicpulse.com" />
+                            </StackPanel>
+
+                            <StackPanel Classes="register_contact_list" Spacing="10" Margin="0,10,0,0">
+                                <Border Classes="register_contact_item">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Classes="register_contact_label" Text="{Binding LabelTechnicalAssistance}" />
+                                        <TextBlock Classes="register_contact_value" Text="{Binding ContactPhone}" />
+                                    </StackPanel>
+                                </Border>
+                                <Border Classes="register_contact_item">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Classes="register_contact_label" Text="{Binding LabelContactEmail}" />
+                                        <TextBlock Classes="register_contact_value" Text="{Binding ContactEmail}" />
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+            </DockPanel>
+        </Border>
+    </Panel>
+</Window>

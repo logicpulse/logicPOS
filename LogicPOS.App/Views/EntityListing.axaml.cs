@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
@@ -57,11 +57,14 @@ public partial class EntityListing : UserControl
         FiscalYearHost.Finished += OnFiscalYearFinished;
     }
 
+    public event EventHandler? FiscalYearCompleted;
+
     private async void OnFiscalYearFinished(object? sender, string? message)
     {
         FiscalYearOverlay.IsVisible = false;
         await ReloadAsync();
         Notice.Text = message ?? string.Empty;
+        FiscalYearCompleted?.Invoke(this, EventArgs.Empty);
     }
 
     public async Task ShowAsync(string title)
@@ -318,10 +321,10 @@ public partial class EntityListing : UserControl
         {
             var label = fiscalYear ? "Criar ano fiscal" : "Novo";
             var content = new StackPanel { Classes = { "bo_doc_action_content" } };
-            content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            content.Children.Add(new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_doc_action_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_novo_w.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg"
             });
             content.Children.Add(new TextBlock { Classes = { "bo_doc_action_text" }, Text = label });
             var create = new Button { Classes = { "bo_page_action" }, Content = content };
@@ -394,17 +397,17 @@ public partial class EntityListing : UserControl
 
         if (ShowsDocument)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
         }
 
         if (snapshot.CanEdit)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_editar_b.svg", row => _ = EditAsync(row.Id), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_editar_b.svg", row => _ = EditAsync(row.Id), _ => true));
         }
 
         if (snapshot.CanDelete)
         {
-            Grid.Columns.Add(ActionColumn("avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg", row => _ = DeleteAsync(row), row => row.CanDelete));
         }
     }
 
@@ -421,7 +424,7 @@ public partial class EntityListing : UserControl
             CellTemplate = new FuncDataTemplate<ListingRow>((row, _) =>
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" }, IsEnabled = enabled(row) };
-                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
                     Path = icon
@@ -639,11 +642,7 @@ public partial class EntityListing : UserControl
             Notice.Text = exception.Message;
             return;
         }
-        var groups = fields
-            .Select(field => field.Group)
-            .Where(group => string.IsNullOrWhiteSpace(group) == false)
-            .Distinct(StringComparer.Ordinal)
-            .ToList();
+        var groups = OrderEditorGroups(fields);
 
         // Tabbed editors keep a fixed frame so switching tabs does not resize the popup
         var simpleForm = groups.Count <= 1;
@@ -928,6 +927,11 @@ public partial class EntityListing : UserControl
                 ListingFilters.SelectLookup(search, current);
             }
 
+            if (field.Required == false && field.ReadOnly == false)
+            {
+                return WrapLookupClear(search);
+            }
+
             return search;
         }
 
@@ -981,8 +985,44 @@ public partial class EntityListing : UserControl
             printerDock.Children.Insert(0, pick);
         }
 
+        if (_title == "Terminais" && field.Key == "HardwareId" && field.ReadOnly == false && input is DockPanel hardwareDock)
+        {
+            var bind = new Button { Classes = { "bo_doc_page_button" }, Content = "PC" };
+            ToolTip.SetTip(bind, "Usar o Hardware ID desta máquina");
+            bind.Click += (_, _) => box.Text = MachineIdentity.HardwareId;
+            DockPanel.SetDock(bind, Dock.Right);
+            hardwareDock.Children.Insert(0, bind);
+        }
+
         return input;
     }
+
+    private static Control WrapLookupClear(AutoCompleteBox search)
+    {
+        var clear = new Button
+        {
+            Classes = { "bo_lookup_clear" },
+            Content = "×"
+        };
+        ToolTip.SetTip(clear, "Limpar");
+        clear.Click += (_, _) =>
+        {
+            ListingFilters.SelectLookup(search, null);
+            RefreshLookupClear(clear, search);
+        };
+        search.SelectionChanged += (_, _) => RefreshLookupClear(clear, search);
+        search.TextChanged += (_, _) => RefreshLookupClear(clear, search);
+        RefreshLookupClear(clear, search);
+
+        var dock = new DockPanel { Classes = { "bo_touch_row" } };
+        DockPanel.SetDock(clear, Dock.Right);
+        dock.Children.Add(clear);
+        dock.Children.Add(search);
+        return dock;
+    }
+
+    private static void RefreshLookupClear(Button clear, AutoCompleteBox search)
+        => clear.IsVisible = ListingFilters.SelectedLookup(search) is not null;
 
     private async void OnSaveClick(object? sender, RoutedEventArgs e) => await SaveEditorAsync();
 
@@ -1153,6 +1193,11 @@ public partial class EntityListing : UserControl
 
     private static LookupOption? ChosenLookup(Control? input)
     {
+        if (input is DockPanel dock)
+        {
+            input = dock.Children.OfType<AutoCompleteBox>().FirstOrDefault() ?? input;
+        }
+
         if (input is AutoCompleteBox box)
         {
             return ListingFilters.SelectedLookup(box);
@@ -1167,7 +1212,8 @@ public partial class EntityListing : UserControl
     {
         if (input is DockPanel dock)
         {
-            input = dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
+            var lookup = dock.Children.OfType<AutoCompleteBox>().FirstOrDefault();
+            input = lookup ?? dock.Children.OfType<TextBox>().FirstOrDefault() ?? input;
         }
 
         if (input is CheckBox check)
@@ -1207,7 +1253,7 @@ public partial class EntityListing : UserControl
             Content = new Image
             {
                 Classes = { "bo_printer_pick_icon" },
-                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://logicpos/Assets/Images/Documents/icon_doc_print_b.png")))
+                Source = new Bitmap(Avalonia.Platform.AssetLoader.Open(new Uri("avares://LogicPOS.App/Assets/Images/Documents/icon_doc_print_b.png")))
             }
         };
         ToolTip.SetTip(button, "Impressoras instaladas no Windows");
@@ -1257,10 +1303,10 @@ public partial class EntityListing : UserControl
         var button = new Button
         {
             Classes = { "bo_touch_key" },
-            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_touch_key_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_teclado.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
         button.Click += (_, _) =>
@@ -1284,6 +1330,39 @@ public partial class EntityListing : UserControl
     }
 
     private void OnEditorCancelClick(object? sender, RoutedEventArgs e) => EditorOverlay.IsVisible = false;
+
+    private static List<string> OrderEditorGroups(IReadOnlyList<ListingField> fields)
+    {
+        var present = fields
+            .Select(field => field.Group)
+            .Where(group => string.IsNullOrWhiteSpace(group) == false)
+            .Select(group => group!)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+        if (present.Count == 0)
+        {
+            return present;
+        }
+
+        var ordered = new List<string>();
+        foreach (var name in BackOfficeListingService.ArticleTabOrder)
+        {
+            if (present.Contains(name))
+            {
+                ordered.Add(name);
+            }
+        }
+
+        foreach (var name in present)
+        {
+            if (ordered.Contains(name) == false)
+            {
+                ordered.Add(name);
+            }
+        }
+
+        return ordered;
+    }
 
     private void WireArticleRules()
     {
@@ -1804,10 +1883,10 @@ public partial class EntityListing : UserControl
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" } };
                 ToolTip.SetTip(button, "Remover");
-                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+                button.Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
                 {
                     Classes = { "bo_doc_row_icon" },
-                    Path = "avares://logicpos/Assets/Images/Documents/botao_eliminar_b.svg"
+                    Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg"
                 };
                 button.Click += (_, _) => RemoveImportLine(line);
                 return button;

@@ -26,6 +26,7 @@ public interface IPosDocumentService
         string? notes,
         IReadOnlyList<PosSaleLine> lines,
         string documentType = "FS",
+        bool createMissingSeries = false,
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<string>> ListRecentAsync(CancellationToken cancellationToken = default);
@@ -41,6 +42,9 @@ public interface IPosDocumentService
     Task<IReadOnlyList<PosLookupItem>> ListCurrenciesAsync(CancellationToken cancellationToken = default);
 
     Task<PosCompanyAddress> GetCompanyAddressAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>Full company block for document PDF preview (name, logo, contacts).</summary>
+    Task<LogicPOS.Shared.Features.Company.CompanyInformation> GetCompanyInformationAsync(CancellationToken cancellationToken = default);
 
     Task DeleteDraftAsync(Guid documentId, CancellationToken cancellationToken = default);
 
@@ -64,6 +68,15 @@ public interface IPosDocumentService
 
     Task<IReadOnlyList<PosCopiedLine>> LoadDocumentLinesAsync(Guid documentId, CancellationToken cancellationToken = default);
 
+    /// <summary>Customer of a source document for the New Document copy flow.</summary>
+    Task<Guid?> GetDocumentCustomerIdAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>Header + lines to seed a new document from an existing one.</summary>
+    Task<PosDocumentCopySource?> LoadDocumentForCopyAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>Lookup label (type + number) for the Copy combo.</summary>
+    Task<PosLookupItem?> GetDocumentLookupAsync(Guid documentId, CancellationToken cancellationToken = default);
+
     Task<PosDocumentResult> IssueDocumentAsync(
         string documentType,
         Guid customerId,
@@ -72,6 +85,19 @@ public interface IPosDocumentService
         CancellationToken cancellationToken = default);
 
     Task<string?> CreateA4FileAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    /// <summary>GTK PosDocumentFinancePrintDialog options for an already-printed document.</summary>
+    Task<DocumentPrintDialogOptions?> GetPrintDialogOptionsAsync(Guid documentId, CancellationToken cancellationToken = default);
+}
+
+/// <summary>Copy/motive options from the document type (GTK PrintCopies / PrintRequestMotive).</summary>
+public sealed class DocumentPrintDialogOptions
+{
+    public string Number { get; init; } = string.Empty;
+
+    public int PrintCopies { get; init; } = 1;
+
+    public bool PrintRequestMotive { get; init; } = true;
 }
 
 public sealed class PosWorkSessionState

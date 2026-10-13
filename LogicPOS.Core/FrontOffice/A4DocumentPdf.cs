@@ -19,11 +19,11 @@ public static class A4DocumentPdf
         RegisterSystemFont("arialbi.ttf");
     }
 
-    public static byte[] Render(DocumentPdfData data)
+    public static byte[] Render(DocumentPdfData data, bool isSecondCopy = false)
     {
         var model = CreateModel(data);
         model.Copy = 1;
-        model.IsSecondCopy = false;
+        model.IsSecondCopy = isSecondCopy;
         return model.GeneratePdf();
     }
 

@@ -31,9 +31,8 @@ internal static class SqLiteDependencyInjection
     }
 
     /// <summary>
-    ///     Caminho relativo no ficheiro de config depende do diretório de trabalho; fixamos em
-    ///     <see cref="AppContext.BaseDirectory" />. <c>Cache=Shared</c> alivia bloqueios com várias
-    ///     ligações ao mesmo ficheiro.
+    /// Relative <c>Data Source</c> is always beside the exe. The installer must grant Users
+    /// modify on the install folder. <c>Cache=Shared</c> eases concurrent connections.
     /// </summary>
     private static string BuildSqliteConnectionString(string connectionString)
     {

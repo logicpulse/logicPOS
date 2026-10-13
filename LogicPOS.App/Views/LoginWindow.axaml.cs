@@ -1,8 +1,13 @@
+using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
+using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -10,6 +15,7 @@ namespace LogicPOS.App.Views;
 public partial class LoginWindow : Window
 {
     private readonly LoginViewModel _viewModel;
+    private bool _registrationPrompted;
 
     public LoginWindow()
     {
@@ -26,10 +32,106 @@ public partial class LoginWindow : Window
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
         Opened += async (_, _) =>
         {
+            ApplyBranding();
             ApplyScreenLayout();
             await _viewModel.LoadAsync();
             PinEntryFocus();
+            // Defer so the login window finishes opening before a modal dialog (fullscreen-safe).
+            Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
         };
+    }
+
+    private async Task PromptStartupDialogsAsync()
+    {
+        await PromptCompanySetupIfNeededAsync();
+        await PromptRegistrationIfNeededAsync();
+    }
+
+    private async Task PromptCompanySetupIfNeededAsync()
+    {
+        var setup = AppComposition.Services?.GetService<ICompanySetupService>();
+        if (setup is null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (await setup.NeedsSetupAsync() == false)
+            {
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Company setup check failed: {ex}");
+            return;
+        }
+
+        await new CompanySetupWindow(setup).ShowDialog(this);
+    }
+
+    private void ApplyBranding()
+    {
+        try
+        {
+            _viewModel.VersionText = FormatLoginVersion();
+            LoginLogo.Source = AppBranding.LoadLoginLogo();
+        }
+        catch
+        {
+            // Keep XAML defaults when branding assets are missing.
+        }
+    }
+
+    private static string FormatLoginVersion()
+    {
+        var version = ReadAssemblyVersion();
+        return $"Powered by LogicPulse Technologies © Vers. v{version}";
+    }
+
+    private static string ReadAssemblyVersion()
+    {
+        // Prefer stamped informational version (e.g. "1.6.2+retail"); keep only Major.Minor.Patch.
+        var informational = typeof(LoginWindow).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion;
+        var raw = string.IsNullOrWhiteSpace(informational)
+            ? (typeof(LoginWindow).Assembly.GetName().Version?.ToString(3) ?? "1.6.0")
+            : informational.Trim();
+
+        var plus = raw.IndexOf('+');
+        if (plus >= 0)
+        {
+            raw = raw[..plus];
+        }
+
+        raw = raw.TrimStart('v', 'V');
+        var parts = raw.Split('.', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (parts.Length >= 3)
+        {
+            return $"{parts[0]}.{parts[1]}.{parts[2]}";
+        }
+
+        return string.IsNullOrWhiteSpace(raw) ? "1.6.0" : raw;
+    }
+
+    private async Task PromptRegistrationIfNeededAsync()
+    {
+        if (_registrationPrompted)
+        {
+            return;
+        }
+
+        _registrationPrompted = true;
+        var license = AppComposition.Services?.GetService<ILicenseModule>();
+        if (license is null || license.RegistrationRequired == false)
+        {
+            return;
+        }
+
+        await new RegistrationWindow(license).ShowDialog(this);
+        ApplyBranding();
     }
 
     private Guid? _selectedTerminalId;

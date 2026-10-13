@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Seeding;
 using Microsoft.Extensions.Logging;
 
 namespace LogicPOS.Persistence.Entities.Finance.Customers.Types;
@@ -10,10 +11,16 @@ public static class CustomerTypesSeeder
     public static bool SeedData(LogicPOSDbContext database, DatabaseSettings dbSettings, ILogger logger)
     {
         logger.LogInformation("Seeding customer types");
-        string seedFilePath = Path.Combine(dbSettings.SeedPath!,"modules",dbSettings.Module!, "customertypes.json");
+        if (database.CustomerTypes.Any())
+        {
+            logger.LogInformation("Customer types already present; skipping seed.");
+            return true;
+        }
+
+        string seedFilePath = ModuleSeedFiles.Resolve(dbSettings, "customertypes.json");
         if (File.Exists(seedFilePath) == false)
         {
-            logger.LogError("Customer types seed file not found.");
+            logger.LogError("Customer types seed file not found (module and default).");
             return false;
         }
 

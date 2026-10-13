@@ -1,18 +1,54 @@
 using System.Text;
 using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Core.Licensing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Hardware;
 
 internal static class FrontOfficePrinting
 {
+    private static Encoding? _cp860;
+
+    private static Encoding Cp860
+    {
+        get
+        {
+            if (_cp860 is not null)
+            {
+                return _cp860;
+            }
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            _cp860 = Encoding.GetEncoding(860, new EncoderReplacementFallback("?"), new DecoderReplacementFallback("?"));
+            return _cp860;
+        }
+    }
+
+    private static string? PrintBlockedMessage()
+    {
+        var license = AppComposition.Services?.GetService<ILicenseModule>();
+        return license is { PrintEnabled: false }
+            ? "A impressão está indisponível sem licença válida."
+            : null;
+    }
+
     /// <summary>
     /// Prints the issued document on the terminal thermal printer (GTK ThermalPrintingService.PrintInvoice).
     /// Returns an error message, or null when printed or when the terminal has no thermal printer.
     /// </summary>
-    public static async Task<(bool Handled, string? Error)> TryReprintInvoiceAsync(Guid documentId, int copies, string reason)
+    public static async Task<(bool Handled, string? Error)> TryReprintInvoiceAsync(
+        Guid documentId,
+        int copies,
+        string reason,
+        bool isSecondCopy = true)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return (false, blocked);
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || documentId == Guid.Empty)
         {
@@ -24,11 +60,11 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (false, "Impressora do terminal não encontrada.");
+                return (true, "Impressora térmica do terminal não configurada.");
             }
 
             var count = Math.Max(1, copies);
-            var payload = ThermalInvoiceRenderer.Render(job);
+            var payload = ThermalInvoiceRenderer.Render(job, isSecondCopy);
             for (var copy = 0; copy < count; copy++)
             {
                 await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, payload);
@@ -36,7 +72,10 @@ internal static class FrontOfficePrinting
 
             try
             {
-                await source.RegisterReprintAsync(documentId, count, reason);
+                var motive = string.IsNullOrWhiteSpace(reason)
+                    ? (isSecondCopy ? "Segunda via" : "Reimpressão")
+                    : reason.Trim();
+                await source.RegisterReprintAsync(documentId, count, motive);
             }
             catch
             {
@@ -62,6 +101,12 @@ internal static class FrontOfficePrinting
     /// </summary>
     public static async Task<(bool Handled, string? Error)> TryPrintInvoiceAsync(Guid documentId)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return (false, blocked);
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || documentId == Guid.Empty)
         {
@@ -73,7 +118,7 @@ internal static class FrontOfficePrinting
             var job = await source.GetInvoiceJobAsync(documentId);
             if (job is null)
             {
-                return (false, null);
+                return (true, "Impressora térmica do terminal não configurada.");
             }
 
             await ThermalPrinterOutput.SendAsync(job.Printer, job.Document.Number, ThermalInvoiceRenderer.Render(job));
@@ -112,6 +157,12 @@ internal static class FrontOfficePrinting
     /// </summary>
     public static async Task<string?> PrintOrderTicketAsync(string table, IReadOnlyList<PosTicketLine> lines)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         if (source is null || lines.Count == 0 || await source.IsOrderTicketEnabledAsync() == false)
         {
@@ -156,7 +207,7 @@ internal static class FrontOfficePrinting
         text.AppendLine();
         text.AppendLine();
         var payload = new List<byte> { 0x1B, 0x40, 0x1B, 0x74, 0x03 };
-        payload.AddRange(Encoding.GetEncoding(860).GetBytes(text.ToString()));
+        payload.AddRange(Cp860.GetBytes(text.ToString()));
         payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
         return payload.ToArray();
     }
@@ -195,10 +246,16 @@ internal static class FrontOfficePrinting
 
     public static async Task<string?> PrintCashMovementAsync(string title, decimal amount, string? note, decimal drawerTotal)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora do terminal não encontrada.";
+            return "Impressora térmica do terminal não configurada.";
         }
 
         var width = Math.Max(16, printer.ColumnsNormal);
@@ -220,10 +277,16 @@ internal static class FrontOfficePrinting
 
     public static async Task<string?> PrintCashReportAsync(PosCashReport report)
     {
+        var blocked = PrintBlockedMessage();
+        if (blocked is not null)
+        {
+            return blocked;
+        }
+
         var printer = await TerminalPrinterAsync();
         if (printer is null)
         {
-            return "Impressora do terminal não encontrada.";
+            return "Impressora térmica do terminal não configurada.";
         }
 
         return await SendAsync(printer, report.Title, RenderCashReport(report, printer.ColumnsNormal));
@@ -304,7 +367,7 @@ internal static class FrontOfficePrinting
         }
 
         var payload = new List<byte> { 0x1B, 0x40, 0x1B, 0x74, 0x03 };
-        payload.AddRange(Encoding.GetEncoding(860).GetBytes(text.ToString()));
+        payload.AddRange(Cp860.GetBytes(text.ToString()));
         payload.AddRange([0x1B, 0x64, 0x04, 0x1D, 0x56, 0x00]);
         return payload.ToArray();
     }

@@ -1,10 +1,12 @@
 using LogicPOS.Domain.Entities.Common.Utilities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Domain.Results;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
+using System.Globalization;
 
 namespace LogicPOS.Domain.Entities.Utilities;
 
@@ -42,7 +44,7 @@ internal class DocumentCreator : EntityCreator<Document>
         _entity.Number = GenerateNumber();
         _entity.Type = _dto.Type;
         _entity.Status = "N";
-        _entity.StatusDate = $"{DateTime.Now:yyyy-MM-ddTHH:mm:ss}";
+        _entity.StatusDate = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
         _entity.Discount = _dto.Discount;
         _entity.Notes = _dto.Notes;
         _entity.ShipToAddress = _dto.ShipToAddress ?? new ShipAddress();
@@ -135,18 +137,56 @@ internal class DocumentCreator : EntityCreator<Document>
         _entity.ParentId = _dto.ParentId;
     }
 
-    private async Task AssignCurrencyAsync()
+    /// <summary>Only Angolan companies withhold the service tax, and final consumers do not withhold.</summary>
+    internal static bool WithholdsServiceTax(FiscalCountry country, Guid customerId) =>
+        country.IsAngola && customerId != CustomerWellKnownIds.FinalConsumer;
+
+    internal static async Task<decimal> ResolveExchangeRateAsync(ICurrencyRepository currencies,
+        Guid currencyId,
+        decimal? requestedRate,
+        CancellationToken ct = default)
+    {
+        if (currencyId == await currencies.GetCompanyCurrencyIdAsync(ct))
+        {
+            return 1;
+        }
+
+        return requestedRate ?? await currencies.GetExchangeRateAsync(currencyId, ct);
+    }
+
+    private async Task AssignCurrencyAsync(CancellationToken ct = default)
     {
         if (_dto.CurrencyId == null)
         {
-            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync();
+            _entity.CurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
             _entity.ExchangeRate = 1;
         }
         else
         {
             _entity.CurrencyId = _dto.CurrencyId.Value;
-            _entity.ExchangeRate = _dto.ExchangeRate ?? 1;
+            _entity.ExchangeRate = await ResolveExchangeRateAsync(_references.CurrencyRepository, _entity.CurrencyId,
+                _dto.ExchangeRate, ct);
         }
+    }
+
+    private async Task<bool> WithholdsServiceTaxAsync(CancellationToken ct)
+    {
+        if (!_country.IsAngola)
+        {
+            return false;
+        }
+
+        if (_dto.CustomerId is null)
+        {
+            return true;
+        }
+
+        if (_dto.CustomerId == CustomerWellKnownIds.FinalConsumer)
+        {
+            return false;
+        }
+
+        return !await _references.CustomerRepository.IsFinalConsumerAsync(_dto.CustomerId.Value, ct);
     }
 
     protected override async Task<Result> CheckForConflictsAsync(CancellationToken ct = default)
@@ -223,10 +263,12 @@ internal class DocumentCreator : EntityCreator<Document>
 
         var document = createResult.Value!;
 
+        var withholdsServiceTax = await WithholdsServiceTaxAsync(ct);
         var addDetailsResult = await document.AddDetailsAsync(_dto.Details,
             new DocumentDetailReferences(_references.ArticleRepository,
                 _references.VatRateRepository,
                 _references.VatExemptionRepository),
+            withholdsServiceTax,
             ct);
         if (addDetailsResult.IsFailure)
         {
@@ -236,11 +278,42 @@ internal class DocumentCreator : EntityCreator<Document>
         document.CalculateTotals();
         if (document.PaymentMethods is not null && document.PaymentMethods.Count == 1)
         {
-            document.PaymentMethods.First().Amount = document.TotalFinal;
+            document.PaymentMethods.First().Amount = document.TotalFinal.Round();
         }
 
         await AssignHashAsync(ct);
+        AssignAtcud();
 
         return document;
+    }
+
+    /// <summary>GTK ProcessFinanceDocument: ATCUD = ATDocCodeValidacaoSerie + "-" + sequential number.</summary>
+    private void AssignAtcud()
+    {
+        if (_dto.IsDraft)
+        {
+            return;
+        }
+
+        var built = BuildAtcud(_series?.ATDocCodeValidationSeries, _entity.Number);
+        if (string.IsNullOrWhiteSpace(built) == false)
+        {
+            _entity.ATCUD = built;
+        }
+    }
+
+    private static string BuildAtcud(string? seriesValidationCode, string documentNumber)
+    {
+        var value = documentNumber.Trim().Trim('[', ']');
+        var slash = value.LastIndexOf('/');
+        var sequential = slash >= 0 && slash < value.Length - 1
+            ? value[(slash + 1)..].Trim()
+            : value;
+        if (string.IsNullOrWhiteSpace(sequential))
+        {
+            return string.Empty;
+        }
+
+        return $"{seriesValidationCode?.Trim() ?? string.Empty}-{sequential}";
     }
 }

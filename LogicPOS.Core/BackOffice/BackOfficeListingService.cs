@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
 using LogicPOS.Application.Features.System;
@@ -25,7 +25,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         "Id", "CreatedAt", "CreatedBy", "CreatedWhere", "UpdatedAt", "UpdatedBy", "UpdatedWhere",
         "DeletedAt", "IsDeleted", "Hash", "Hash4Code", "HashControl", "Password", "AccessPin",
         "AccessPassword", "ExternalDocument", "QrCode", "ButtonImage", "BaseConsumption", "BaseOffers",
-        "PVPOffers", "Remarks"
+        "PVPOffers", "Remarks",
+        // Place: exist on entity / DB but GTK DialogConfigurationPlace never shows them
+        "TypeSubtotal", "AccountType", "OrderPrintMode"
     ];
 
     private static readonly Dictionary<string, string> Headers = new(StringComparer.Ordinal)
@@ -34,6 +36,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Designation"] = "Designação",
         ["Name"] = "Nome",
         ["Notes"] = "Notas",
+        ["Ord"] = "Ordem",
         ["Order"] = "Ordem",
         ["Value"] = "Valor",
         ["FiscalNumber"] = "NIF",
@@ -43,7 +46,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Barcode"] = "Código de barras",
         ["Quantity"] = "Quantidade",
         ["Token"] = "Parâmetro",
-        ["Acronym"] = "Sigla",
+        ["Acronym"] = "Acrónimo",
         ["Year"] = "Ano",
         ["Status"] = "Estado",
         ["Amount"] = "Valor",
@@ -52,8 +55,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Description"] = "Descrição",
         ["Date"] = "Data",
         ["NextNumber"] = "Próximo número",
-        ["HardwareId"] = "Hardware",
-        ["IsDefault"] = "Predefinido",
+        ["HardwareId"] = "Hardware ID",
+        ["IsDefault"] = "Por padrão",
         ["Favorite"] = "Favorito",
         ["Discount"] = "Desconto",
         ["Price1"] = "Preço 1",
@@ -63,7 +66,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Price5"] = "Preço 5",
         ["Address"] = "Morada",
         ["City"] = "Cidade",
-        ["ZipCode"] = "Código postal",
+        ["ZipCode"] = "Código-Postal",
         ["Locality"] = "Localidade",
         ["RefNo"] = "Número",
         ["Number"] = "Número",
@@ -89,8 +92,132 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["CountryRegion"] = "Região",
         ["ReasonCode"] = "Motivo",
         ["Supplier"] = "Fornecedor",
-        ["CardNumber"] = "Cartão",
-        ["WebSite"] = "Website"
+        ["CardNumber"] = "Número do Cartão de Cliente",
+        ["CardCredit"] = "Crédito do cartão",
+        ["CardMode"] = "Modo do cartão",
+        ["WebSite"] = "Página",
+        ["Fax"] = "Fax",
+        ["BirthDate"] = "Data de Nascimento",
+        ["DiscountType"] = "Tipo de desconto",
+        ["HasPrice"] = "Tem preço",
+        ["Commission"] = "Comissão",
+        ["ThermalPrinter"] = "Impressora Térmica",
+        ["UpdatedAt"] = "Atualizado em",
+        ["CreatedAt"] = "Criado em",
+        ["DateOfContract"] = "Data de contrato",
+        ["PasswordReset"] = "Repor palavra-passe",
+        ["Residence"] = "Residência",
+        ["DocumentNumber"] = "Número do Doc.",
+        // Lookups / FKs — GTK Resx (pt-PT)
+        ["CustomerTypeId"] = "Tipo de clientes",
+        ["DiscountGroupId"] = "Grupo de desconto",
+        ["PriceTypeId"] = "Tipo de Preço",
+        ["CountryId"] = "País",
+        ["CommissionGroupId"] = "Grupo de comissão",
+        ["ProfileId"] = "Perfil",
+        ["TerminalId"] = "Posto de Trabalho",
+        ["FiscalYearId"] = "Ano fiscal",
+        ["DocumentTypeId"] = "Tipo de documento",
+        ["PrinterTypeId"] = "Tipos de impressoras",
+        ["PrinterId"] = "Impressora",
+        ["PlaceId"] = "Locais",
+        ["MovementTypeId"] = "Tipo de Movimento",
+        ["CustomerId"] = "Cliente",
+        ["SupplierId"] = "Fornecedor",
+        ["ArticleId"] = "Artigo",
+        ["WarehouseId"] = "Armazém",
+        ["PaymentConditionId"] = "Condições de Pagamento",
+        ["PaymentMethodId"] = "Método de Pagamento",
+        ["UnitMeasureId"] = "Unidade de medida",
+        ["CurrencyId"] = "Moeda",
+        ["UserId"] = "Utilizador",
+        ["FamilyId"] = "Família do artigo",
+        ["SubfamilyId"] = "Subfamília do artigo",
+        ["TypeId"] = "Tipo de artigo",
+        ["ClassId"] = "Classe do artigo",
+        ["VatOnTableId"] = "Imposto na mesa",
+        ["VatDirectSellingId"] = "Imposto venda direta",
+        ["VatExemptionReasonId"] = "Motivo de isenção de IVA",
+        ["VatRateId"] = "Taxa",
+        // Article extras
+        ["CodeDealer"] = "Código Fornecedor",
+        ["IsComposed"] = "Artigo composto",
+        ["UseWeighingBalance"] = "Usar Balança",
+        ["UniqueArticles"] = "Artigos únicos",
+        ["Disabled"] = "Desactivado",
+        ["PriceWithVat"] = "Preço com imposto",
+        ["PVPVariable"] = "Preço variável",
+        ["ChildArticleId"] = "Artigo associado",
+        ["ChildQuantity"] = "Quantidade",
+        ["SerialNotice"] = "Números de série",
+        // Remaining BO table fields — GTK Resx (pt-PT) only
+        ["AccessCardNumber"] = "Número do cartão de acesso",
+        ["BaudRate"] = "Bits por Segundo",
+        ["DataBits"] = "Bits de Dados",
+        ["Parity"] = "Paridade",
+        ["PortName"] = "Porta",
+        ["StopBits"] = "Bits de Paragem",
+        ["COMPort"] = "Porta",
+        ["NetworkName"] = "Network Share ou Parâmetros porta Usb",
+        ["Code2"] = "Código do País (2 Caracteres)",
+        ["Code3"] = "Código do País (3 Caracteres)",
+        ["Capital"] = "Capital",
+        ["MinimumStock"] = "Stock mínimo",
+        ["DefaultQuantity"] = "Quantidade por defeito",
+        ["SerialNumber"] = "Número de série",
+        ["WorkInStock"] = "Trabalha nos Stocks",
+        ["Entity"] = "Entidade",
+        ["CurrencyCode"] = "Código da Moeda",
+        ["Language"] = "Idioma",
+        ["Tare"] = "Tara",
+        ["Weight"] = "Peso",
+        ["PrintCopies"] = "Cópias",
+        ["Credit"] = "Crédito",
+        ["WarehouseLocationId"] = "Localização",
+        ["ButtonIcon"] = "Ícone do botão",
+        ["SeriesForEachTerminal"] = "Séries independente por cada terminal",
+        ["NumberRangeBegin"] = "Limite inferior",
+        ["NumberRangeEnd"] = "Limite superior",
+        ["ATDocCodeValidationSeries"] = "Código de validação AT",
+        ["AtValidationCode"] = "Código de validação AT",
+        ["CharactersPerLine"] = "Num.Caracteres Linha",
+        ["ThermalCutCommand"] = "Commando de Corte",
+        ["ThermalEncoding"] = "Encoding",
+        ["ThermalImageCompanyLogo"] = "Ficheiro de Imagem de Logotipo",
+        ["ThermalMaxCharsPerLineNormal"] = "Máximo de Caracteres por Linha Letra Normal",
+        ["ThermalMaxCharsPerLineNormalBold"] = "Máximo de Caracteres por Linha Letra Negrito",
+        ["ThermalMaxCharsPerLineSmall"] = "Máximo de Caracteres por Linha Letra Pequena",
+        ["ThermalOpenDrawerValueM"] = "Abertura Gaveta Comm. M",
+        ["ThermalOpenDrawerValueT1"] = "Abertura Gaveta Comm. T1",
+        ["ThermalOpenDrawerValueT2"] = "Abertura Gaveta Comm. T2",
+        ["ThermalPrintLogo"] = "Imprimir Imagem de Logotipo",
+        ["ThermalPrinterId"] = "Impressora Térmica",
+        ["PoleDisplayId"] = "Display de Cliente",
+        ["WeighingMachineId"] = "Balanças",
+        ["BarcodeReaderId"] = "Leitor de Código de Barras",
+        ["CardReaderId"] = "Leitor de Cartões",
+        ["ReaderSizes"] = "Tamanhos Válidos do Leitor",
+        ["AssignedSeating"] = "Assentos atribuído",
+        ["Locations"] = "Localizações",
+        ["ExchangeRate"] = "Câmbio",
+        ["Symbol"] = "Símbolo",
+        ["TimerInterval"] = "Intervalo do Leitor (ms)",
+        ["EndPoint"] = "EndPoint",
+        ["GoToStandByInSeconds"] = "Entra em Suspensão (Seg.)",
+        ["PrintRequestConfirmation"] = "Pergunta se deseja Imprimir documento",
+        ["PrintOpenDrawer"] = "Abrir Gaveta",
+        ["FiscalNumberRegex"] = "Expressão Regular Número Fiscal",
+        ["ZipCodeRegex"] = "Expressão Regular Código Postal",
+        ["ZipCpde"] = "Código-Postal",
+        ["ClosedAt"] = "Data de fecho",
+        ["MeasurementUnitId"] = "Unidade de medida",
+        ["SizeUnitId"] = "Unidade de tamanho",
+        ["Payments"] = "Pagamentos",
+        ["WithholdingTaxAmount"] = "Imposto retido na fonte",
+        ["TypeSubtotal"] = "SubT.",
+        ["CodeTable"] = "CodeTable",
+        ["StandByLine1"] = "StandBy Linha #1",
+        ["StandByLine2"] = "StandBy Linha #2"
     };
 
     private readonly IServiceScopeFactory _scopes;
@@ -231,7 +358,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     public async Task<IReadOnlyList<LookupOption>> LookupAsync(string typeName, CancellationToken cancellationToken = default)
     {
-        var type = ResolveEntityType(typeName);
+        // Accept either page titles ("Tipo de clientes") or entity type names ("CustomerType").
+        var type = Find(ResolveTitle(typeName))?.EntityType ?? ResolveEntityType(typeName);
         if (type is null)
         {
             return [];
@@ -270,6 +398,13 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (value?.PropertyType == typeof(decimal) && value.GetValue(item) is decimal rate)
         {
             return rate.ToString(CultureInfo.InvariantCulture);
+        }
+
+        // DocumentType / similar: acronym is what report APIs expect (FS, FT, …).
+        var acronym = type.GetProperty("Acronym")?.GetValue(item)?.ToString();
+        if (string.IsNullOrWhiteSpace(acronym) == false)
+        {
+            return acronym.Trim();
         }
 
         var code = type.GetProperty("Code2")?.GetValue(item)?.ToString();
@@ -411,11 +546,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 "export-saft" or "saft-period" => await ExportSaftRangeAsync(ParseStart(extra), ParseEnd(extra), cancellationToken),
                 "saft-year" => await ExportSaftRangeAsync(new DateTime(DateTime.Today.Year, 1, 1), new DateTime(DateTime.Today.Year, 12, 31), cancellationToken),
                 "saft-month" => await ExportSaftMonthAsync(cancellationToken),
-                "register-at" => await FiscalAsync(module => module.RegisterSeriesAsync(id ?? Guid.Empty, cancellationToken), cancellationToken),
+                "register-at" => await CommunicateSeriesAtAsync(id, cancellationToken),
                 "request-agt" or "request-series" => await FiscalAsync(module => module.RequestSeriesCodeAsync(DateTime.Today.Year, string.IsNullOrWhiteSpace(extra) ? "FT" : extra.Trim(), cancellationToken), cancellationToken),
                 "open-day" => await OpenDayAsync(cancellationToken),
-                "open-session" => await OpenSessionAsync(cancellationToken),
-                "close-session" => await CloseSessionAsync(cancellationToken),
+                "open-session" => await OpenSessionAsync(extra, cancellationToken),
+                "close-session" => await CloseSessionAsync(extra, cancellationToken),
                 "close-day" => await CloseDayAsync(cancellationToken),
                 "cash-in" => await CashAsync(true, extra, cancellationToken),
                 "cash-out" => await CashAsync(false, extra, cancellationToken),
@@ -649,6 +784,41 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 readOnly = true;
             }
 
+            // GTK article prices: Value + PromotionValue + UsePromotion per Price1..Price5
+            if (property.PropertyType == typeof(ArticlePrice))
+            {
+                var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
+                var group = FieldGroup(page.EntityType, property.Name);
+                fields.Add(new ListingField
+                {
+                    Key = property.Name,
+                    Label = Header(property.Name),
+                    Kind = "number",
+                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                fields.Add(new ListingField
+                {
+                    Key = property.Name + "Promotion",
+                    Label = "Promoção",
+                    Kind = "number",
+                    Value = price.PromotionValue.ToString("0.##", CultureInfo.CurrentCulture),
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                fields.Add(new ListingField
+                {
+                    Key = property.Name + "UsePromotion",
+                    Label = "Usa",
+                    Kind = "bool",
+                    Value = price.UsePromotion ? "true" : "false",
+                    ReadOnly = readOnly,
+                    Group = group
+                });
+                continue;
+            }
+
             fields.Add(new ListingField
             {
                 Key = property.Name,
@@ -711,11 +881,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return null;
         }
 
+        // Tab titles match GTK Resx: article_edit_dialog_tab1 / dialog_edit_article_tab2..tab4
         return propertyName switch
         {
-            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "FamilyId" or "SubfamilyId"
+            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "Barcode" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
-                => "Detalhes",
+                => "Detalhes 1",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"
                 => "Detalhes financeiros",
@@ -723,6 +894,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             _ => "Outros detalhes"
         };
     }
+
+    /// <summary>Stable article editor tab order (GTK order; reflection must not decide first tab).</summary>
+    public static IReadOnlyList<string> ArticleTabOrder { get; } =
+    [
+        "Detalhes 1",
+        "Detalhes financeiros",
+        "Outros detalhes",
+        "Número de série",
+        "Artigos Associados"
+    ];
 
     private static List<ListingColumn> PickColumns(IReadOnlyList<ListingField> fields)
     {
@@ -846,30 +1027,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
-            var property = type.GetProperty(pair.Key);
-            if (property is null || property.CanWrite == false)
+            if (TryApplyArticlePriceField(type, entity, pair.Key, pair.Value, out var priceError))
             {
+                if (priceError is not null)
+                {
+                    return priceError;
+                }
+
                 continue;
             }
 
-            if (property.PropertyType == typeof(ArticlePrice))
+            var property = type.GetProperty(pair.Key);
+            if (property is null || property.CanWrite == false)
             {
-                var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
-                if (string.IsNullOrWhiteSpace(pair.Value))
-                {
-                    price.Value = 0;
-                    property.SetValue(entity, price);
-                    continue;
-                }
-
-                if (decimal.TryParse(pair.Value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
-                    && decimal.TryParse(pair.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
-                {
-                    return $"Valor inválido em {Header(pair.Key)}.";
-                }
-
-                price.Value = amount;
-                property.SetValue(entity, price);
                 continue;
             }
 
@@ -883,6 +1053,74 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Applies PriceN / PriceNPromotion / PriceNUsePromotion onto ArticlePrice (GTK price table).
+    /// </summary>
+    private static bool TryApplyArticlePriceField(Type type, object entity, string key, string value, out string? error)
+    {
+        error = null;
+        if (key.Length < 6
+            || key.StartsWith("Price", StringComparison.Ordinal) == false
+            || key[5] is < '1' or > '5')
+        {
+            return false;
+        }
+
+        var suffix = key.Length == 6 ? string.Empty : key[6..];
+        if (suffix is not ("" or "Promotion" or "UsePromotion"))
+        {
+            return false;
+        }
+
+        var property = type.GetProperty($"Price{key[5]}");
+        if (property is null || property.PropertyType != typeof(ArticlePrice) || property.CanWrite == false)
+        {
+            return false;
+        }
+
+        var price = property.GetValue(entity) as ArticlePrice ?? ArticlePrice.Default();
+        if (suffix == "UsePromotion")
+        {
+            price.UsePromotion = value is "true" or "True" or "1" or "Sim";
+            property.SetValue(entity, price);
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            if (suffix == "Promotion")
+            {
+                price.PromotionValue = 0;
+            }
+            else
+            {
+                price.Value = 0;
+            }
+
+            property.SetValue(entity, price);
+            return true;
+        }
+
+        if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
+            && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
+        {
+            error = $"Valor inválido em {Header(key)}.";
+            return true;
+        }
+
+        if (suffix == "Promotion")
+        {
+            price.PromotionValue = amount;
+        }
+        else
+        {
+            price.Value = amount;
+        }
+
+        property.SetValue(entity, price);
+        return true;
     }
 
     private static void PrepareRequired(Type type, object entity, LogicPOSDbContext database)
@@ -1017,6 +1255,33 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         user.PasswordReset = false;
     }
 
+    private async Task<ListingSaveResult> CommunicateSeriesAtAsync(Guid? id, CancellationToken cancellationToken)
+    {
+        if (id is null || id == Guid.Empty)
+        {
+            return ListingSaveResult.Fail("Selecione a série.");
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var series = await database.DocumentSeries
+            .AsNoTracking()
+            .FirstOrDefaultAsync(item => item.Id == id.Value && item.IsDeleted == false, cancellationToken);
+        if (series is null)
+        {
+            return ListingSaveResult.Fail("Série não encontrada.");
+        }
+
+        if (string.IsNullOrWhiteSpace(series.ATDocCodeValidationSeries) == false)
+        {
+            return ListingSaveResult.Ok(
+                id.Value,
+                $"A série «{series.Acronym}» já está comunicada à AT.{Environment.NewLine}Código: {series.ATDocCodeValidationSeries}{Environment.NewLine}Não foi enviada nova comunicação.");
+        }
+
+        return await FiscalAsync(module => module.RegisterSeriesAsync(id.Value, cancellationToken), cancellationToken);
+    }
+
     private async Task<ListingSaveResult> FiscalAsync(Func<IFiscalModule, Task<string?>> call, CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -1121,19 +1386,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         fields.Add(new ListingField
         {
             Key = "ChildArticleId",
-            Label = "Artigo associado",
+            Label = Header("ChildArticleId"),
             Kind = "lookup",
             Lookup = "Article",
-            Group = "Artigos associados",
+            Group = "Artigos Associados",
             ShowWhen = "IsComposed",
             Value = child is null ? string.Empty : child.ChildId.ToString()
         });
         fields.Add(new ListingField
         {
             Key = "ChildQuantity",
-            Label = "Quantidade",
+            Label = Header("ChildQuantity"),
             Kind = "text",
-            Group = "Artigos associados",
+            Group = "Artigos Associados",
             ShowWhen = "IsComposed",
             Value = child is null ? "1" : child.Quantity.ToString(CultureInfo.CurrentCulture)
         });
@@ -1145,7 +1410,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         fields.Add(new ListingField
         {
             Key = "SerialNotice",
-            Label = "Números de série",
+            Label = Header("SerialNotice"),
             Kind = "multiline",
             ReadOnly = true,
             Group = "Número de série",
@@ -1256,14 +1521,43 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return ListingSaveResult.Ok(day.Id, "Dia aberto.");
     }
 
-    private async Task<ListingSaveResult> OpenSessionAsync(CancellationToken cancellationToken)
+    private async Task<ListingSaveResult> OpenSessionAsync(string? extra, CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var open = await database.WorkSessionPeriods.AnyAsync(period => period.IsDeleted == false && period.Status == Domain.Enums.WorkSessionPeriodStatus.Open, cancellationToken);
-        if (open)
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
+        var dayId = await database.WorkSessionPeriods
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Day
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (dayId is null)
+        {
+            return ListingSaveResult.Fail("Abra o dia antes de abrir a sessão.");
+        }
+
+        var terminalOpen = await database.WorkSessionPeriods.AnyAsync(
+            item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value,
+            cancellationToken);
+        if (terminalOpen)
         {
             return ListingSaveResult.Fail("Já existe uma sessão aberta.");
+        }
+
+        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+        if (amount < 0)
+        {
+            amount = 0;
         }
 
         var period = new WorkSessionPeriod
@@ -1271,19 +1565,38 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Type = Domain.Enums.WorkSessionPeriodType.Terminal,
             Status = Domain.Enums.WorkSessionPeriodStatus.Open,
             Designation = "Sessão " + DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
-            StartDate = DateTime.Now
+            StartDate = DateTime.Now,
+            ParentId = dayId,
+            CreatedWhere = terminalId.Value
         };
         database.WorkSessionPeriods.Add(period);
+        database.WorkSessionMovements.Add(new WorkSessionMovement
+        {
+            PeriodId = period.Id,
+            Amount = amount,
+            Type = Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOpen,
+            Notes = "Abertura",
+            CreatedWhere = terminalId.Value
+        });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(period.Id, "Sessão aberta.");
     }
 
-    private async Task<ListingSaveResult> CloseSessionAsync(CancellationToken cancellationToken)
+    private async Task<ListingSaveResult> CloseSessionAsync(string? extra, CancellationToken cancellationToken)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
         var period = await database.WorkSessionPeriods
-            .Where(item => item.IsDeleted == false && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value)
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
         if (period is null)
@@ -1291,11 +1604,47 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Não existe uma sessão aberta.");
         }
 
+        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+        if (amount < 0)
+        {
+            amount = 0;
+        }
+
         period.Status = Domain.Enums.WorkSessionPeriodStatus.Closed;
         period.EndDate = DateTime.Now;
         period.UpdatedAt = DateTime.Now;
+        database.WorkSessionMovements.Add(new WorkSessionMovement
+        {
+            PeriodId = period.Id,
+            Amount = amount,
+            Type = Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerClose,
+            Notes = "Fecho",
+            CreatedWhere = terminalId.Value
+        });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(period.Id, "Sessão fechada.");
+    }
+
+    private static async Task<Guid?> ResolveTerminalIdAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    {
+        var hardwareId = MachineIdentity.HardwareId;
+        var byHardware = await database.Terminals
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.HardwareId == hardwareId)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (byHardware is Guid matched && matched != Guid.Empty)
+        {
+            return matched;
+        }
+
+        return await database.Terminals
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .OrderByDescending(item => item.IsDefault)
+            .ThenBy(item => item.Code)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     private async Task<ListingSaveResult> CloseDayAsync(CancellationToken cancellationToken)
@@ -1333,10 +1682,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
         var period = await database.WorkSessionPeriods
             .Where(item => item.IsDeleted == false
                 && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
-                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && (terminalId == null || item.CreatedWhere == terminalId.Value))
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
 
@@ -1379,8 +1730,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Fail("Terminal não encontrado.");
+        }
+
         var period = await database.WorkSessionPeriods
-            .Where(item => item.IsDeleted == false && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open)
+            .Where(item => item.IsDeleted == false
+                && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
+                && item.CreatedWhere == terminalId.Value)
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
         if (period is null)
@@ -1397,7 +1757,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 : Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOut,
             Notes = string.IsNullOrWhiteSpace(description)
                 ? incoming ? "Entrada de caixa" : "Saída de caixa"
-                : description
+                : description,
+            CreatedWhere = terminalId.Value
         };
         database.WorkSessionMovements.Add(movement);
         await database.SaveChangesAsync(cancellationToken);
@@ -2001,7 +2362,44 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return context.Create(property).WriteState != NullabilityState.Nullable;
     }
 
-    private static string Header(string name) => Headers.TryGetValue(name, out var header) ? header : name;
+    private static string Header(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return name;
+        }
+
+        if (Headers.TryGetValue(name, out var header))
+        {
+            return header;
+        }
+
+        // Price1Promotion / Price1UsePromotion → short GTK column labels
+        if (name.Length > 6 && name.StartsWith("Price", StringComparison.Ordinal) && name[5] is >= '1' and <= '5')
+        {
+            var suffix = name[6..];
+            if (suffix == "Promotion")
+            {
+                return "Promoção";
+            }
+
+            if (suffix == "UsePromotion")
+            {
+                return "Usa";
+            }
+        }
+
+        // Reuse list-column headers already aligned with GTK (ListingColumns profiles).
+        foreach (var profile in ListingColumns.AllHeaders())
+        {
+            if (profile.TryGetValue(name, out var fromList))
+            {
+                return fromList;
+            }
+        }
+
+        return name;
+    }
 
     private static string DisplayLabel(object row)
     {
@@ -2077,7 +2475,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Entity("Séries", typeof(DocumentSeries), actions:
             [
                 new ListingAction { Key = "export-saft", Label = "SAFT" },
-                new ListingAction { Key = "register-at", Label = "Registar série" },
+                new ListingAction { Key = "register-at", Label = "Comunicar série fiscal" },
                 new ListingAction { Key = "request-agt", Label = "Série AGT" }
             ]),
             Entity("Tipo de documento", typeof(DocumentType)),

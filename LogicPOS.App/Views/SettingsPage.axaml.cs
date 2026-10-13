@@ -13,7 +13,7 @@ public partial class SettingsPage : UserControl
 {
     private static readonly string[] CategoryOrder =
     [
-        "Geral", "Empresa", "SAFT", "Email", "Impressão", "Backup", "Stock", "Relatórios", "Pastas", "Outros"
+        "Empresa", "Geral", "SAFT", "Email", "Impressão", "Backup", "Stock", "Relatórios", "Pastas", "Notificações", "Outros"
     ];
 
     private readonly List<(Guid Id, string Order, string Code, string Notes, Func<string> Read)> _fields = new();
@@ -357,7 +357,12 @@ public partial class SettingsPage : UserControl
     private static string Category(string token)
     {
         var key = token.ToUpperInvariant();
-        if (key.StartsWith("COMPANY"))
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            return "Outros";
+        }
+
+        if (key.StartsWith("COMPANY") || key == "SYSTEM_CURRENCY")
         {
             return "Empresa";
         }
@@ -377,7 +382,7 @@ public partial class SettingsPage : UserControl
             return "Backup";
         }
 
-        if (key.StartsWith("TICKET") || key.StartsWith("PRINT"))
+        if (key.StartsWith("TICKET") || key.StartsWith("PRINT") || key.Contains("QRCODE"))
         {
             return "Impressão";
         }
@@ -397,7 +402,12 @@ public partial class SettingsPage : UserControl
             return "Pastas";
         }
 
-        if (key.StartsWith("APP") || key == "CULTURE" || key.StartsWith("USE_"))
+        if (key.StartsWith("NOTIFICATION"))
+        {
+            return "Notificações";
+        }
+
+        if (key.StartsWith("APP") || key == "CULTURE" || key.StartsWith("USE_") || key.StartsWith("SPLIT_"))
         {
             return "Geral";
         }

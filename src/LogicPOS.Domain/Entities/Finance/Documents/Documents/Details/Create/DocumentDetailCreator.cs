@@ -14,9 +14,7 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
     private ArticleDetail? _article;
     private VatRate? _vatRate;
     private VatExemptionReason? _vatExemptionReason;
-    private bool _isPriceWithVat;
     private decimal _unitPrice;
-    private bool UseAgtCalculations => _dto.UseAgtRounding && !_isPriceWithVat;
     public DocumentDetailCreator(CreateDocumentDetailDto dto,
                                  DocumentDetailReferences references) : base(new())
     {
@@ -27,7 +25,6 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
     protected override async Task AssignDataAsync(CancellationToken ct = default)
     {
         _article = await ResolveArticleAsync(ct);
-        _isPriceWithVat = _article.PriceWithVat;
         _entity.Order = _article.Order;
         _entity.Code = _article.Code;
         _entity.Designation = _article.Designation;
@@ -35,7 +32,8 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         _entity.Quantity = _dto.Quantity;
         _entity.ArticleId = _dto.ArticleId;
         _vatRate = await GetVatRateAsync(ct);
-        _unitPrice = ResolveUnitPrice();
+        var catalogPriceIncludesVat = _dto.PriceIncludesVat || _article.PriceWithVat;
+        _unitPrice = ResolveUnitPrice(catalogPriceIncludesVat);
         _entity.Price = _unitPrice;
 
         _entity.Tax = new DocumentDetailTax
@@ -59,10 +57,16 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         _entity.VatExemptionReason = _vatExemptionReason?.Designation;
         _entity.VatExemptionCode = _vatExemptionReason?.Acronym;
         _entity.Discount = _dto.Discount;
-        _entity.TotalNet = CalculateNetTotal();
-        _entity.TotalDiscount = CalculateDiscountPrice();
-        _entity.TotalTax = CalculateTaxPrice();
-        _entity.TotalFinal = CalculateTotalFinal();
+
+        var totals = DocumentLineCalculator.Calculate(_unitPrice,
+            _dto.Quantity,
+            _dto.Discount,
+            _vatRate.Value,
+            _dto.UseAgtRounding);
+        _entity.TotalNet = totals.TotalNet;
+        _entity.TotalDiscount = totals.TotalDiscount;
+        _entity.TotalTax = totals.TotalTax;
+        _entity.TotalFinal = totals.TotalFinal;
         _entity.PriceType = _dto.PriceType;
         _entity.Notes = _dto.Notes ?? _article.Notes;
         _entity.SerialNumber = _dto.SerialNumber;
@@ -76,46 +80,6 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         }
 
         return await _references.ArticleRepository.GetArticleDetailAsync(_dto.ArticleId, ct);
-    }
-
-    private decimal CalculateTotalFinal()
-    {
-        if (UseAgtCalculations)
-        {
-            return CalculateNetTotal().TruncateDecimal() + CalculateTaxPrice().ApplyAgtRounding();
-        }
-        return CalculateNetTotal() + CalculateTaxPrice();
-    }
-
-    private decimal CalculateNetTotal()
-    {
-        var netTotal = CalculateTotalWithoutDiscount() - CalculateDiscountPrice();
-        if (UseAgtCalculations)
-        {
-            return netTotal.TruncateDecimal();
-        }
-        return netTotal;
-    }
-
-    private decimal CalculateTaxPrice()
-    {
-        var taxPrice = CalculateNetTotal() * _vatRate!.Value / 100;
-        if (UseAgtCalculations)
-        {
-            return taxPrice.ApplyAgtRounding();
-        }
-
-        return taxPrice;
-    }
-
-    private decimal CalculateTotalWithoutDiscount()
-    {
-        return _unitPrice * _dto.Quantity;
-    }
-
-    private decimal CalculateDiscountPrice()
-    {
-        return CalculateTotalWithoutDiscount() * _dto.Discount / 100;
     }
 
     private async Task<VatRate> GetVatRateAsync(CancellationToken ct)
@@ -154,18 +118,18 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         return await _references.VatExemptionRepository.GetByIdAsync(exemptionId.Value, ct);
     }
 
-    private decimal ResolveUnitPrice()
+    private decimal ResolveUnitPrice(bool catalogPriceIncludesVat)
     {
         if (_dto.Price != null)
         {
-            return _dto.Price.Value;
+            return DocumentLineCalculator.ToNetUnitPrice(_dto.Price.Value, _vatRate!.Value, _dto.PriceIncludesVat);
         }
 
         var catalogPrice = _dto.PriceType == null
             ? _article!.Price1
             : _article!.GetPriceByType(_dto.PriceType.Value);
 
-        return UnitPriceCalculator.ToNetUnitPrice(catalogPrice, _vatRate!.Value, _isPriceWithVat);
+        return DocumentLineCalculator.ToNetUnitPrice(catalogPrice, _vatRate!.Value, catalogPriceIncludesVat);
     }
 
     protected override Task<Result> CheckForConflictsAsync(CancellationToken ct = default)

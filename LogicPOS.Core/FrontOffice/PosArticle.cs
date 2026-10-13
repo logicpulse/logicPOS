@@ -15,7 +15,9 @@ public sealed class PosArticle
         decimal vatPercentage,
         decimal defaultQuantity,
         decimal discount,
-        Guid vatRateId)
+        Guid vatRateId,
+        string? imageBase64 = null,
+        bool pvpVariable = false)
     {
         Id = id;
         SubfamilyId = subfamilyId;
@@ -30,6 +32,8 @@ public sealed class PosArticle
         DefaultQuantity = defaultQuantity;
         Discount = discount;
         VatRateId = vatRateId;
+        ImageBase64 = imageBase64;
+        PvpVariable = pvpVariable;
     }
 
     public Guid Id { get; }
@@ -58,5 +62,14 @@ public sealed class PosArticle
 
     public Guid VatRateId { get; }
 
+    /// <summary>Optional button image from seed/DB (base64, no data: prefix).</summary>
+    public string? ImageBase64 { get; }
+
+    /// <summary>GTK <c>PVPVariable</c>: always ask for the unit price when selling.</summary>
+    public bool PvpVariable { get; }
+
     public decimal QuantityStep => DefaultQuantity > 0 ? DefaultQuantity : 1m;
+
+    /// <summary>GTK TicketList: price pad when catalog price is zero/empty or PVP is variable.</summary>
+    public bool RequiresPriceEntry => CatalogPrice <= 0m || PvpVariable;
 }

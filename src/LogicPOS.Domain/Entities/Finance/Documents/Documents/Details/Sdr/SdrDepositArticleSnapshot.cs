@@ -4,4 +4,5 @@ public sealed record SdrDepositArticleSnapshot(
     Guid Id,
     decimal UnitPrice,
     Guid VatRateId,
-    Guid? VatExemptionId);
+    Guid? VatExemptionId,
+    bool PriceWithVat);

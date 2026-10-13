@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input.TextInput;
 using Avalonia.VisualTree;
 using LogicPOS.App.Views;
@@ -68,10 +68,10 @@ internal static class TouchFields
         var button = new Button
         {
             Classes = { "bo_touch_key" },
-            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://logicpos/"))
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "bo_touch_key_icon" },
-                Path = "avares://logicpos/Assets/Images/Listing/botao_teclado.svg"
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
             }
         };
         button.Click += (_, _) => TouchKeyboard.Show(showKeyboard());

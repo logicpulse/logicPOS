@@ -5384,6 +5384,33 @@ namespace LogicPOS.Persistence.Migrations
                     b.ToTable("UserVerificationCodes");
                 });
 
+            modelBuilder.Entity("LogicPOS.Domain.Entities.LicenseSession", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ClientKind").IsRequired().HasMaxLength(32).HasColumnType("TEXT");
+                    b.Property<DateTime>("CreatedAt").HasColumnType("TEXT");
+                    b.Property<Guid>("CreatedBy").HasColumnType("TEXT");
+                    b.Property<Guid>("CreatedWhere").HasColumnType("TEXT");
+                    b.Property<DateTime>("DeletedAt").HasColumnType("TEXT");
+                    b.Property<bool>("IsDeleted").HasColumnType("INTEGER");
+                    b.Property<DateTime>("LastHeartbeatAt").HasColumnType("TEXT");
+                    b.Property<string>("Notes").HasColumnType("TEXT");
+                    b.Property<Guid>("SessionKey").HasColumnType("TEXT");
+                    b.Property<Guid?>("TerminalId").HasColumnType("TEXT");
+                    b.Property<DateTime>("UpdatedAt").HasColumnType("TEXT");
+                    b.Property<Guid>("UpdatedBy").HasColumnType("TEXT");
+                    b.Property<Guid>("UpdatedWhere").HasColumnType("TEXT");
+                    b.Property<Guid>("UserId").HasColumnType("TEXT");
+                    b.HasKey("Id");
+                    b.HasIndex("LastHeartbeatAt");
+                    b.HasIndex("SessionKey").IsUnique();
+                    b.HasIndex("UserId");
+                    b.ToTable("LicenseSessions");
+                });
+
 #pragma warning restore 612, 618
         }
     }

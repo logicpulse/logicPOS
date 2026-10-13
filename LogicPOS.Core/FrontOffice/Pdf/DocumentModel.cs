@@ -27,12 +27,14 @@ public abstract class DocumentModel : IDocument
     private int DetailsCount { get; }
     private string? References { get; set; }
     private bool IsAngola;
+    private bool UseAgtRounding;
     protected DocumentModel(DocumentPdfData data)
     {
         Data = data;
         DetailsCount = Data.Document!.Details.Count;
         _ = Data.Document.Details.OrderByDescending(x => x.Order);
         IsAngola = Data.Country.IsAngola;
+        UseAgtRounding = Data.UseAgtRounding;
     }
 
     private bool IsGuide()
@@ -189,7 +191,7 @@ public abstract class DocumentModel : IDocument
                                 itemTable.Cell().Padding(2).AlignRight().Text($"{item.Price:N2}");
                                 itemTable.Cell().Padding(2).AlignRight().Text($"{item.Discount:N2}");
                                 itemTable.Cell().Padding(2).AlignRight().Text($"{item.Tax.Percentage:N2}");
-                                itemTable.Cell().Padding(2).AlignRight().Text(IsAngola?$"{ item.TotalNet.TruncateDecimal():N2}" : $"{item.TotalNet:N2}");
+                                itemTable.Cell().Padding(2).AlignRight().Text(UseAgtRounding ? $"{item.TotalNet.TruncateDecimal():N2}" : $"{item.TotalNet:N2}");
                                 itemTable.Cell().Padding(2).AlignRight().Text($"{item.TotalFinal:N2}").Bold();
 
                                 if (!string.IsNullOrEmpty(item.SerialNumber))
@@ -561,8 +563,8 @@ public abstract class DocumentModel : IDocument
 
             table.Cell().PaddingTop(3).PaddingLeft(4).Text(firstValue).AlignLeft();
             table.Cell().PaddingTop(3).Text($"{resume.Rate:N2}").AlignRight();
-            table.Cell().PaddingTop(3).PaddingRight(7).Text(IsAngola? $"{resume.Base.TruncateDecimal():N2}": $"{resume.Base:N2}").AlignRight();
-            table.Cell().PaddingTop(3).PaddingRight(8).Text(IsAngola? $"{resume.Total.ApplyAgtRounding():N2}" : $"{resume.Total:N2}").AlignRight().Bold();
+            table.Cell().PaddingTop(3).PaddingRight(7).Text(UseAgtRounding ? $"{resume.Base.TruncateDecimal():N2}" : $"{resume.Base:N2}").AlignRight();
+            table.Cell().PaddingTop(3).PaddingRight(8).Text(UseAgtRounding ? $"{resume.Total.ApplyAgtRounding():N2}" : $"{resume.Total:N2}").AlignRight().Bold();
         }
     }
 
@@ -597,11 +599,11 @@ public abstract class DocumentModel : IDocument
                     .AlignRight();
 
                 discountTable.Cell().PaddingTop(6).Text("Total líquido").AlignRight();
-                discountTable.Cell().PaddingTop(6).PaddingRight(10).Text(IsAngola ? $"{Data.Document.TotalNet.TruncateDecimal():N2}" : $"{Data.Document.TotalNet:N2}")
+                discountTable.Cell().PaddingTop(6).PaddingRight(10).Text(UseAgtRounding ? $"{Data.Document.TotalNet.TruncateDecimal():N2}" : $"{Data.Document.TotalNet:N2}")
                     .AlignRight();
 
                 discountTable.Cell().PaddingTop(6).Text("Total Imposto").AlignRight();
-                discountTable.Cell().PaddingTop(6).PaddingRight(10).Text(IsAngola ? $"{Data.Document.TotalTax.ApplyAgtRounding():N2}" : $"{Data.Document.TotalTax:N2}")
+                discountTable.Cell().PaddingTop(6).PaddingRight(10).Text(UseAgtRounding ? $"{Data.Document.TotalTax.ApplyAgtRounding():N2}" : $"{Data.Document.TotalTax:N2}")
                     .AlignRight();
 
                 if (IsAngola)

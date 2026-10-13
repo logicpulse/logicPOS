@@ -29,6 +29,7 @@ public partial class DocumentsListing : UserControl
     private Guid? _appliedCustomer;
     private bool _updatingColumnChecks;
     private bool _updatingPick;
+    private bool _syncingSelection;
     private ListingLoad _load = null!;
 
     public DocumentsListing()
@@ -192,7 +193,18 @@ public partial class DocumentsListing : UserControl
         _ = LoadAsync();
     }
 
-    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e) => RefreshSelectionLabel();
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_syncingSelection)
+        {
+            RefreshSelectionLabel();
+            return;
+        }
+
+        SyncPicksFromGridSelection();
+        RefreshSelectionLabel();
+        RefreshPickAll();
+    }
 
     private void OnPickAllClick(object? sender, RoutedEventArgs e)
     {
@@ -222,12 +234,18 @@ public partial class DocumentsListing : UserControl
             }
         }
 
+        SyncGridSelectionFromPicks();
         RefreshSelectionLabel();
         RefreshPickAll();
     }
 
     internal void OnRowPicked(Guid id, bool selected)
     {
+        if (_syncingSelection)
+        {
+            return;
+        }
+
         if (selected)
         {
             _picked.Add(id);
@@ -237,8 +255,72 @@ public partial class DocumentsListing : UserControl
             _picked.Remove(id);
         }
 
+        SyncGridSelectionFromPicks();
         RefreshSelectionLabel();
         RefreshPickAll();
+    }
+
+    private void SyncPicksFromGridSelection()
+    {
+        if (DocumentGrid.ItemsSource is not IEnumerable<CheckedDocument> visible)
+        {
+            return;
+        }
+
+        _syncingSelection = true;
+        try
+        {
+            var list = visible.ToList();
+            var selectedIds = DocumentGrid.SelectedItems?
+                .OfType<CheckedDocument>()
+                .Select(item => item.Source.Id)
+                .ToHashSet()
+                ?? [];
+
+            foreach (var item in list)
+            {
+                _picked.Remove(item.Source.Id);
+            }
+
+            foreach (var id in selectedIds)
+            {
+                _picked.Add(id);
+            }
+
+            foreach (var item in list)
+            {
+                item.ApplySelected(selectedIds.Contains(item.Source.Id));
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    private void SyncGridSelectionFromPicks()
+    {
+        if (DocumentGrid.ItemsSource is not IEnumerable<CheckedDocument> visible)
+        {
+            return;
+        }
+
+        _syncingSelection = true;
+        try
+        {
+            DocumentGrid.SelectedItems.Clear();
+            foreach (var item in visible)
+            {
+                if (_picked.Contains(item.Source.Id))
+                {
+                    DocumentGrid.SelectedItems.Add(item);
+                }
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
     }
 
     private void OnFirstPageClick(object? sender, RoutedEventArgs e) => GoToPage(1);
@@ -439,19 +521,111 @@ public partial class DocumentsListing : UserControl
         PromptTitle.Text = title;
         PromptLabel.Text = label;
         PromptValue.Text = string.Empty;
-        PromptValue.IsVisible = kind != "print";
-        PrinterBox.IsVisible = kind == "print";
+        var reprint = kind == "reprint";
+        var printer = kind == "print";
+        PromptLabel.IsVisible = reprint == false && string.IsNullOrWhiteSpace(label) == false;
+        SetTouchFieldVisible(PromptValue, reprint == false && printer == false);
+        PrinterBox.IsVisible = printer;
+        ReprintPanel.IsVisible = reprint;
+        PromptFrame.Classes.Set("bo_reprint_prompt", reprint);
         PromptOverlay.IsVisible = true;
+    }
+
+    /// <summary>
+    /// TouchFields wraps TextBoxes in a DockPanel with a keyboard button; hide the whole row.
+    /// </summary>
+    private static void SetTouchFieldVisible(Control field, bool visible)
+    {
+        field.IsVisible = visible;
+        if (field.Parent is DockPanel row && row.Classes.Contains("bo_touch_row"))
+        {
+            row.IsVisible = visible;
+        }
+    }
+
+    private async Task OpenReprintPromptAsync(PosDocumentRow row)
+    {
+        _pendingPrintIds.Clear();
+        _pendingPrintIds.Add(row.Id);
+        OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"), row.Number), string.Empty);
+        await BuildReprintOptionsAsync(row.Id);
+    }
+
+    private async Task BuildReprintOptionsAsync(Guid documentId)
+    {
+        ReprintCopyChecks.Children.Clear();
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        var options = documents is null ? null : await documents.GetPrintDialogOptionsAsync(documentId);
+        var copyCount = options?.PrintCopies ?? 1;
+        var requestMotive = options?.PrintRequestMotive ?? true;
+        var titles = new[]
+        {
+            PreferenceLabels.Text("global_print_copy_title1", "Original"),
+            PreferenceLabels.Text("global_print_copy_title2", "Duplicado"),
+            PreferenceLabels.Text("global_print_copy_title3", "Triplicado"),
+            PreferenceLabels.Text("global_print_copy_title4", "Quadriplicado")
+        };
+
+        for (var index = 0; index < titles.Length; index++)
+        {
+            var enabled = index < copyCount;
+            var box = new CheckBox
+            {
+                Content = titles[index],
+                IsChecked = enabled,
+                IsEnabled = enabled,
+                Classes = { "bo_entity_input" }
+            };
+            if (index == 0)
+            {
+                // GTK: Original stays checked when Segunda via is off.
+                box.IsCheckedChanged += (_, _) =>
+                {
+                    if (ReprintSecondCopy.IsChecked != true && box.IsChecked != true)
+                    {
+                        box.IsChecked = true;
+                    }
+                };
+            }
+
+            ReprintCopyChecks.Children.Add(box);
+        }
+
+        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cópias");
+        ReprintSecondCopy.Content = PreferenceLabels.Text("global_second_copy", "Segunda via");
+        ReprintSecondCopy.IsVisible = requestMotive;
+        ReprintSecondCopy.IsChecked = true;
+        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressão do original");
+        ReprintMotive.Text = string.Empty;
+        ReprintSecondCopy.IsCheckedChanged -= OnReprintSecondCopyChanged;
+        ReprintSecondCopy.IsCheckedChanged += OnReprintSecondCopyChanged;
+        UpdateReprintMotiveState();
+    }
+
+    private void OnReprintSecondCopyChanged(object? sender, RoutedEventArgs e) => UpdateReprintMotiveState();
+
+    private void UpdateReprintMotiveState()
+    {
+        var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
+        var needMotive = secondCopy == false;
+        ReprintMotiveLabel.IsEnabled = needMotive;
+        ReprintMotive.IsEnabled = needMotive;
+        SetTouchFieldVisible(ReprintMotive, needMotive);
+        ReprintMotiveLabel.IsVisible = needMotive;
+        if (needMotive == false)
+        {
+            ReprintMotive.Text = string.Empty;
+        }
     }
 
     private async void OnPromptConfirmClick(object? sender, RoutedEventArgs e)
     {
         var kind = _promptKind;
         var value = PromptValue.Text?.Trim() ?? string.Empty;
-        PromptOverlay.IsVisible = false;
         var documents = AppComposition.Services?.GetService<IPosDocumentService>();
         if (documents is null || kind is null)
         {
+            PromptOverlay.IsVisible = false;
             return;
         }
 
@@ -461,28 +635,32 @@ public partial class DocumentsListing : UserControl
             if (documentId == Guid.Empty)
             {
                 ActionNotice.Text = "Selecione um documento.";
+                PromptOverlay.IsVisible = false;
                 return;
             }
 
-            var copies = 1;
-            var reason = value;
-            var split = value.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            if (split.Length > 0 && int.TryParse(split[0], out var parsed) && parsed > 0)
+            var copies = ReprintCopyChecks.Children.OfType<CheckBox>().Count(box => box.IsChecked == true && box.IsEnabled);
+            if (copies < 1)
             {
-                copies = parsed;
-                reason = split.Length > 1 ? split[1].Trim() : string.Empty;
-            }
-
-            if (string.IsNullOrWhiteSpace(reason))
-            {
-                ActionNotice.Text = "Indique o motivo da segunda via.";
+                ActionNotice.Text = "Selecione pelo menos uma cópia.";
                 return;
             }
 
-            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason);
+            var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
+            var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
+            if (secondCopy == false && string.IsNullOrWhiteSpace(reason))
+            {
+                ActionNotice.Text = "Indique o motivo da reimpressão do original.";
+                return;
+            }
+
+            PromptOverlay.IsVisible = false;
+            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
             ActionNotice.Text = reprintError ?? $"{copies} cópia(s) enviada(s) para a impressora térmica.";
             return;
         }
+
+        PromptOverlay.IsVisible = false;
 
         if (kind == "print")
         {
@@ -524,7 +702,12 @@ public partial class DocumentsListing : UserControl
 
     private PosDocumentRow? FocusedRow()
     {
-        return DocumentGrid.SelectedItem is CheckedDocument item ? item.Source : null;
+        if (DocumentGrid.SelectedItem is CheckedDocument item)
+        {
+            return item.Source;
+        }
+
+        return _rows.FirstOrDefault(row => _picked.Contains(row.Id));
     }
 
     private List<PosDocumentRow> ChosenRows()
@@ -543,6 +726,43 @@ public partial class DocumentsListing : UserControl
         if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
         {
             await office.ShowNewDocumentAsync();
+        }
+    }
+
+    private async void OnCopyClick(object? sender, RoutedEventArgs e)
+    {
+        if (FocusedRow() is not PosDocumentRow row)
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "Selecione um documento para copiar.";
+            return;
+        }
+
+        await CopyDocumentAsync(row);
+    }
+
+    private async void OnRowCopyClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: CheckedDocument item })
+        {
+            return;
+        }
+
+        await CopyDocumentAsync(item.Source);
+    }
+
+    private async Task CopyDocumentAsync(PosDocumentRow row)
+    {
+        if (row.Status == "Anulado")
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "Não é possível copiar um documento anulado.";
+            return;
+        }
+
+        if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
+        {
+            await office.ShowNewDocumentAsync(copyFromDocumentId: row.Id);
         }
     }
 
@@ -566,28 +786,27 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        if (rows.Count == 1)
+        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
         {
-            var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-            if (source is not null && await source.WasPrintedAsync(rows[0].Id))
-            {
-                _pendingPrintIds.Clear();
-                _pendingPrintIds.Add(rows[0].Id);
-                OpenPrompt("reprint", "Segunda via", "Cópias e motivo (ex.: 2 Duplicado)");
-                PromptValue.Text = "1 ";
-                return;
-            }
+            await OpenReprintPromptAsync(rows[0]);
+            return;
         }
 
         await PrintRowsAsync(rows, null);
     }
 
-    private void OnPrintAsClick(object? sender, RoutedEventArgs e)
+    private async void OnPrintAsClick(object? sender, RoutedEventArgs e)
     {
         var rows = ChosenRows();
         if (rows.Count == 0)
         {
             ActionNotice.Text = "Selecione um ou mais documentos.";
+            return;
+        }
+
+        if (rows.Count == 1 && await NeedsReprintDialogAsync(rows[0].Id))
+        {
+            await OpenReprintPromptAsync(rows[0]);
             return;
         }
 
@@ -609,12 +828,13 @@ public partial class DocumentsListing : UserControl
     {
         var sent = 0;
         var thermal = 0;
-        string? thermalError = null;
+        string? printError = null;
+        var useThermal = string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer);
         foreach (var row in rows)
         {
-            if (string.IsNullOrWhiteSpace(printer))
+            if (useThermal)
             {
-                var (handled, error) = await FrontOfficePrinting.TryPrintInvoiceAsync(row.Id);
+                var (handled, error) = await PrintThermalDocumentAsync(row.Id);
                 if (handled)
                 {
                     if (error is null)
@@ -624,7 +844,7 @@ public partial class DocumentsListing : UserControl
                     }
                     else
                     {
-                        thermalError ??= error;
+                        printError ??= error;
                     }
 
                     continue;
@@ -632,42 +852,65 @@ public partial class DocumentsListing : UserControl
             }
 
             var path = await CreatePdfAsync(row);
-            if (path is not null && PrintFile(path, printer))
+            if (path is null)
             {
+                printError ??= "Não foi possível gerar o PDF.";
+                continue;
+            }
+
+            try
+            {
+                await Task.Run(() => PdfWindowsPrint.Print(path, printer));
                 sent++;
+            }
+            catch (Exception exception)
+            {
+                printError ??= exception.Message;
             }
         }
 
-        var destination = string.IsNullOrWhiteSpace(printer)
-            ? thermal == sent ? "a impressora térmica" : "a impressora predefinida"
-            : printer;
+        var destination = useThermal && thermal == sent
+            ? "a impressora térmica"
+            : string.IsNullOrWhiteSpace(printer) ? "a impressora predefinida" : printer;
         ActionNotice.Text = sent == rows.Count
             ? $"{sent} documento(s) enviado(s) para {destination}."
             : $"Enviados {sent} de {rows.Count} documentos."
-              + (thermalError is null ? string.Empty : $" Erro ao imprimir: {thermalError}");
+              + (printError is null ? string.Empty : $" Erro ao imprimir: {printError}");
     }
 
-    private static bool PrintFile(string path, string? printer)
+    private static async Task<(bool Handled, string? Error)> PrintThermalDocumentAsync(Guid documentId)
     {
-        try
+        if (await NeedsReprintDialogAsync(documentId))
         {
-            var start = new System.Diagnostics.ProcessStartInfo(path)
-            {
-                UseShellExecute = true,
-                Verb = string.IsNullOrWhiteSpace(printer) ? "print" : "printto"
-            };
-            if (string.IsNullOrWhiteSpace(printer) == false)
-            {
-                start.Arguments = "\"" + printer + "\"";
-            }
-
-            System.Diagnostics.Process.Start(start);
-            return true;
+            // Already printed: caller must open the reprint dialog (copies + motive).
+            return (true, "Documento já impresso. Use Imprimir e indique o motivo da segunda via.");
         }
-        catch (Exception)
+
+        return await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+    }
+
+    private static async Task<bool> NeedsReprintDialogAsync(Guid documentId)
+    {
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        return source is not null && await source.WasPrintedAsync(documentId);
+    }
+
+    private static async Task<bool> IsTerminalThermalPrinterAsync(string? printerName)
+    {
+        if (string.IsNullOrWhiteSpace(printerName))
         {
             return false;
         }
+
+        var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+        var settings = source is null ? null : await source.GetTerminalPrinterAsync();
+        if (settings is null)
+        {
+            return false;
+        }
+
+        return string.Equals(settings.Designation, printerName, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(settings.NetworkName, printerName, StringComparison.OrdinalIgnoreCase);
     }
 
     private static List<string> InstalledPrinters()
@@ -863,7 +1106,7 @@ public partial class DocumentsListing : UserControl
         ActionNotice.Text = string.Empty;
         if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
         {
-            await office.ShowPdfAsync(path, row.Number);
+            await office.ShowPdfAsync(path, row.Number, row.Id);
         }
     }
 
@@ -1055,7 +1298,12 @@ public partial class DocumentsListing : UserControl
 
     private void RefreshSelectionLabel()
     {
-        var count = _picked.Count > 0 ? _rows.Count(row => _picked.Contains(row.Id)) : DocumentGrid.SelectedItems?.Count ?? 0;
+        var count = _rows.Count(row => _picked.Contains(row.Id));
+        if (count == 0)
+        {
+            count = DocumentGrid.SelectedItems?.Count ?? 0;
+        }
+
         SelectionLabel.Text = $"{count} documento(s) selecionado(s)";
     }
 
@@ -1123,6 +1371,8 @@ public partial class DocumentsListing : UserControl
         public bool CanEdit => Source.CanEdit;
 
         public bool CanView => Source.CanView;
+
+        public bool CanCopy => Source.Status != "Anulado";
 
         public void ApplySelected(bool selected)
         {

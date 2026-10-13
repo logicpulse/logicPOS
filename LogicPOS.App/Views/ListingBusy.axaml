@@ -14,7 +14,7 @@
                     </Path.RenderTransform>
                 </Path>
             </Panel>
-            <TextBlock Classes="bo_listing_busy_label" Text="A carregar..." />
+            <TextBlock x:Name="Label" Classes="bo_listing_busy_label" Text="A carregar..." />
         </StackPanel>
     </Panel>
 </UserControl>

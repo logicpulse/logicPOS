@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -134,6 +134,6 @@ internal static class Toast
             ToastKind.Warning => "notificacao_info_alerta.png",
             _ => "notificacao_info_informacao.png"
         };
-        return new Bitmap(AssetLoader.Open(new Uri($"avares://logicpos/Assets/Images/Notifications/{file}")));
+        return new Bitmap(AssetLoader.Open(new Uri($"avares://LogicPOS.App/Assets/Images/Notifications/{file}")));
     }
 }

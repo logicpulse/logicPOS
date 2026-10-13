@@ -133,7 +133,8 @@ public static class LocalDraftStore
             line.Discount,
             line.VatRateId,
             line.VatPercentage,
-            line.SerialNumber)).ToList();
+            line.SerialNumber,
+            line.Notes)).ToList();
     }
 
     public static IReadOnlyList<PosDocumentRow> Merge(IReadOnlyList<PosDocumentRow> remote, DateTime start, DateTime end)

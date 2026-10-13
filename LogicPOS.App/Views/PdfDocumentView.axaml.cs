@@ -1,8 +1,11 @@
-using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using LogicPOS.App.Hardware;
+using LogicPOS.Core;
+using LogicPOS.Core.FrontOffice;
+using Microsoft.Extensions.DependencyInjection;
 using SkiaSharp;
 
 namespace LogicPOS.App.Views;
@@ -20,6 +23,7 @@ public partial class PdfDocumentView : UserControl
     private TaskCompletionSource<bool>? _closed;
     private string? _pdfPath;
     private string? _documentTitle;
+    private Guid? _documentId;
     private int _pageIndex;
     private double _zoom = 1;
     private ZoomMode _zoomMode = ZoomMode.Page;
@@ -30,9 +34,10 @@ public partial class PdfDocumentView : UserControl
         PageScroll.SizeChanged += (_, _) => ApplyFit();
     }
 
-    public Task ShowAsync(string path, string? title)
+    public Task ShowAsync(string path, string? title, Guid? documentId = null)
     {
         _pdfPath = path;
+        _documentId = documentId;
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
         TitleText.Text = _documentTitle;
         SetStatus("A carregar...");
@@ -178,7 +183,7 @@ public partial class PdfDocumentView : UserControl
         }
     }
 
-    private void OnPrintClick(object? sender, RoutedEventArgs e)
+    private async void OnPrintClick(object? sender, RoutedEventArgs e)
     {
         if (_pdfPath is null)
         {
@@ -187,17 +192,147 @@ public partial class PdfDocumentView : UserControl
 
         try
         {
-            Process.Start(new ProcessStartInfo(_pdfPath)
+            if (_documentId is Guid documentId && documentId != Guid.Empty)
             {
-                UseShellExecute = true,
-                Verb = "print"
-            });
+                var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+                if (source is not null && await source.WasPrintedAsync(documentId))
+                {
+                    ReprintTitle.Text = string.Format(
+                        PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"),
+                        string.IsNullOrWhiteSpace(_documentTitle) ? "—" : _documentTitle);
+                    await BuildReprintOptionsAsync(documentId);
+                    ReprintOverlay.IsVisible = true;
+                    return;
+                }
+
+                var (_, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+                if (printError is null)
+                {
+                    SetStatus(string.Empty);
+                    return;
+                }
+
+                if (printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
+                    && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
+                {
+                    SetStatus(printError);
+                    return;
+                }
+            }
+
+            await Task.Run(() => PdfWindowsPrint.Print(_pdfPath));
             SetStatus(string.Empty);
         }
-        catch (Exception)
+        catch (Exception exception)
         {
-            SetStatus("Não foi possível imprimir o documento.");
+            SetStatus(string.IsNullOrWhiteSpace(exception.Message)
+                ? "Não foi possível imprimir o documento."
+                : exception.Message);
         }
+    }
+
+    private async Task BuildReprintOptionsAsync(Guid documentId)
+    {
+        ReprintCopyChecks.Children.Clear();
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        var options = documents is null ? null : await documents.GetPrintDialogOptionsAsync(documentId);
+        var copyCount = options?.PrintCopies ?? 1;
+        var requestMotive = options?.PrintRequestMotive ?? true;
+        var titles = new[]
+        {
+            PreferenceLabels.Text("global_print_copy_title1", "Original"),
+            PreferenceLabels.Text("global_print_copy_title2", "Duplicado"),
+            PreferenceLabels.Text("global_print_copy_title3", "Triplicado"),
+            PreferenceLabels.Text("global_print_copy_title4", "Quadriplicado")
+        };
+
+        for (var index = 0; index < titles.Length; index++)
+        {
+            var enabled = index < copyCount;
+            var box = new CheckBox
+            {
+                Content = titles[index],
+                IsChecked = enabled,
+                IsEnabled = enabled,
+                Classes = { "bo_entity_input" }
+            };
+            if (index == 0)
+            {
+                box.IsCheckedChanged += (_, _) =>
+                {
+                    if (ReprintSecondCopy.IsChecked != true && box.IsChecked != true)
+                    {
+                        box.IsChecked = true;
+                    }
+                };
+            }
+
+            ReprintCopyChecks.Children.Add(box);
+        }
+
+        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cópias");
+        ReprintSecondCopy.Content = PreferenceLabels.Text("global_second_copy", "Segunda via");
+        ReprintSecondCopy.IsVisible = requestMotive;
+        ReprintSecondCopy.IsChecked = true;
+        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressão do original");
+        ReprintMotive.Text = string.Empty;
+        ReprintSecondCopy.IsCheckedChanged -= OnReprintSecondCopyChanged;
+        ReprintSecondCopy.IsCheckedChanged += OnReprintSecondCopyChanged;
+        UpdateReprintMotiveState();
+    }
+
+    private void OnReprintSecondCopyChanged(object? sender, RoutedEventArgs e) => UpdateReprintMotiveState();
+
+    private void UpdateReprintMotiveState()
+    {
+        var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
+        var needMotive = secondCopy == false;
+        ReprintMotiveLabel.IsEnabled = needMotive;
+        ReprintMotiveLabel.IsVisible = needMotive;
+        ReprintMotive.IsEnabled = needMotive;
+        ReprintMotive.IsVisible = needMotive;
+        if (needMotive == false)
+        {
+            ReprintMotive.Text = string.Empty;
+        }
+
+        if (ReprintMotive.Parent is DockPanel row && row.Classes.Contains("bo_touch_row"))
+        {
+            row.IsVisible = needMotive;
+        }
+    }
+
+    private async void OnReprintConfirmClick(object? sender, RoutedEventArgs e)
+    {
+        if (_documentId is not Guid documentId || documentId == Guid.Empty)
+        {
+            ReprintOverlay.IsVisible = false;
+            return;
+        }
+
+        var copies = ReprintCopyChecks.Children.OfType<CheckBox>().Count(box => box.IsChecked == true && box.IsEnabled);
+        if (copies < 1)
+        {
+            SetStatus("Selecione pelo menos uma cópia.");
+            return;
+        }
+
+        var secondCopy = ReprintSecondCopy.IsVisible == false || ReprintSecondCopy.IsChecked == true;
+        var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
+        if (secondCopy == false && string.IsNullOrWhiteSpace(reason))
+        {
+            SetStatus("Indique o motivo da reimpressão do original.");
+            return;
+        }
+
+        ReprintOverlay.IsVisible = false;
+        var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+        SetStatus(reprintError ?? string.Empty);
+    }
+
+    private void OnReprintCancelClick(object? sender, RoutedEventArgs e)
+    {
+        ReprintOverlay.IsVisible = false;
     }
 
     private void OnCloseClick(object? sender, RoutedEventArgs e)

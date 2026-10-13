@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -160,10 +160,21 @@ public static class ListingFilters
     {
         var count = Count(box.ItemsSource);
         box.FilterMode = AutoCompleteFilterMode.Custom;
-        box.ItemFilter = MatchLookup;
+        // When the text is still the current selection, show every option — otherwise the
+        // filter keeps only that one row (e.g. "Documento de Conferência") and hides the rest.
+        box.ItemFilter = (search, item) =>
+        {
+            if (box.SelectedItem is LookupOption selected
+                && string.Equals((search ?? string.Empty).Trim(), selected.Label, StringComparison.CurrentCultureIgnoreCase))
+            {
+                return item is LookupOption;
+            }
+
+            return MatchLookup(search, item);
+        };
         box.MinimumPrefixLength = count > 40 ? 1 : 0;
         box.IsTextCompletionEnabled = false;
-        box.PlaceholderText = "Código, designação ou código de barras";
+        box.PlaceholderText = "Selecionar...";
         box.MaxDropDownHeight = 360;
         box.ItemTemplate = new FuncDataTemplate<LookupOption>((option, _) =>
         {
@@ -193,7 +204,125 @@ public static class ListingFilters
             {
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
             }
+
+            // Open the list on focus so touch/POS users can pick without typing first.
+            if (box.MinimumPrefixLength == 0)
+            {
+                box.IsDropDownOpen = true;
+            }
         };
+    }
+
+    public static void EnableDocumentSearch(AutoCompleteBox box)
+    {
+        box.FilterMode = AutoCompleteFilterMode.Custom;
+        box.ItemFilter = MatchDocument;
+        box.MinimumPrefixLength = 0;
+        box.IsTextCompletionEnabled = false;
+        box.PlaceholderText = "Nº, cliente ou NIF...";
+        box.MaxDropDownHeight = 360;
+        box.ItemTemplate = new FuncDataTemplate<PosLookupItem>((item, _) =>
+        {
+            var panel = new StackPanel { Spacing = 0 };
+            panel.Children.Add(new TextBlock
+            {
+                Classes = { "bo_doc_filter_search_name" },
+                Text = item?.Label ?? string.Empty
+            });
+            if (string.IsNullOrWhiteSpace(item?.Detail) == false)
+            {
+                panel.Children.Add(new TextBlock
+                {
+                    Classes = { "bo_doc_filter_search_meta" },
+                    Text = item.Detail
+                });
+            }
+
+            return panel;
+        });
+        box.GotFocus += (_, _) =>
+        {
+            var text = box.Text ?? string.Empty;
+            var selected = (box.SelectedItem as PosLookupItem)?.Label;
+            if (string.IsNullOrEmpty(text) || text == "—" || text == selected)
+            {
+                box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
+            }
+
+            box.IsDropDownOpen = true;
+        };
+    }
+
+    public static Guid? SelectedDocumentId(AutoCompleteBox box)
+    {
+        if (box.SelectedItem is not PosLookupItem item || item.Id == Guid.Empty)
+        {
+            return null;
+        }
+
+        var text = (box.Text ?? string.Empty).Trim();
+        if (text.Length == 0 || text == "—")
+        {
+            return null;
+        }
+
+        return text.Equals(item.Label, StringComparison.CurrentCultureIgnoreCase) ? item.Id : null;
+    }
+
+    public static void SelectDocument(AutoCompleteBox box, PosLookupItem? item)
+    {
+        PosLookupItem? target = item;
+        if (target is null && box.ItemsSource is System.Collections.IEnumerable items)
+        {
+            foreach (var entry in items)
+            {
+                if (entry is PosLookupItem choice && choice.Id == Guid.Empty)
+                {
+                    target = choice;
+                    break;
+                }
+            }
+        }
+
+        var label = target?.Label ?? string.Empty;
+        box.Text = label;
+        if (target is null)
+        {
+            box.SelectedItem = null;
+        }
+        else if (ReferenceEquals(box.SelectedItem, target) == false)
+        {
+            box.SelectedItem = target;
+        }
+
+        var editor = box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
+        if (editor is not null && editor.Text != label)
+        {
+            editor.Text = label;
+        }
+    }
+
+    private static bool MatchDocument(string? search, object? item)
+    {
+        if (item is not PosLookupItem choice)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(search) || search.Trim() == "—")
+        {
+            return true;
+        }
+
+        if (choice.Id == Guid.Empty)
+        {
+            return false;
+        }
+
+        var term = Fold(search.Trim());
+        return Fold(choice.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || Fold(choice.Detail).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || Fold(choice.Code).Contains(term, StringComparison.OrdinalIgnoreCase);
     }
 
     public static LookupOption? SelectedLookup(AutoCompleteBox? box)
@@ -284,20 +413,23 @@ public static class ListingFilters
             return false;
         }
 
+        // Empty / placeholder text must list every choice — otherwise selecting "(nenhum)"
+        // filters the dropdown down to only that row and nothing else can be picked.
         if (string.IsNullOrWhiteSpace(search))
         {
             return true;
         }
 
         var term = Fold(search.Trim());
-        if (term.Equals("todos", StringComparison.OrdinalIgnoreCase) || term.Equals("(nenhum)", StringComparison.OrdinalIgnoreCase))
+        if (term.Equals("todos", StringComparison.OrdinalIgnoreCase)
+            || term.Equals("(nenhum)", StringComparison.OrdinalIgnoreCase))
         {
-            return option.Id == Guid.Empty;
+            return true;
         }
 
         if (option.Id == Guid.Empty)
         {
-            return false;
+            return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase);
         }
 
         return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase)

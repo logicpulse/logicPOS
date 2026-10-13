@@ -9,6 +9,8 @@ public record DocumentPdfData
     public CompanyInformation Company { get; set; } = null!;
     /// <summary>Set by the PDF generators from <c>ISystemInformationService.Country</c>.</summary>
     public FiscalCountry Country { get; init; } = null!;
+    /// <summary>True when licence.AgtFeModule and country is Angola.</summary>
+    public bool UseAgtRounding { get; init; }
     public Document? Document { get; set; } 
     public Receipt? Receipt { get; set; }
     public string SoftwareVersion { get; set; } = null!;
@@ -31,6 +33,7 @@ public record Receipt
     public string CurrencyAcronym { get; set; } = null!;
     public DateTime CreatedAt { get; set; }
     public string Status { get; set; } = null!;
+    public decimal WithholdingTaxAmount { get; set; }
 
     public record ReceiptPayment
     {
@@ -46,7 +49,6 @@ public record Receipt
             public string Number { get; set; } = null!;
             public decimal TotalFinal { get; set; }
             public bool Paid { get; set; }
-            public decimal WithholdingTaxAmount { get; set; }
         }
     }
 

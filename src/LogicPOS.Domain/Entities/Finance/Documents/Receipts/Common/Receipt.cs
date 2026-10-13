@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
 
 using LogicPOS.Domain.Entities.Common.Entity;
 using LogicPOS.Domain.Entities.Dtos;
@@ -23,7 +24,7 @@ public class Receipt : Entity
     public string? Hash4Code { get; set; } 
     public string? Atcud { get; set; } 
     public string Status { get; set; } = "N";
-    public string StatusDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
+    public string StatusDate { get; set; } = DateTime.Now.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     public string? StatusReason { get; set; }
     public string? StatusSourceId { get; set; }
     public string SourcePayment { get; set; } = "P";
@@ -32,9 +33,9 @@ public class Receipt : Entity
     [Column(TypeName = "decimal(18,6)")]
     public decimal Amount { get; set; }
     public string AmountInWords { get; set; } = null!;
-    public string Date => CreatedAt.ToString("yyyy-MM-dd");
+    public string Date => CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     public string SourceId { get; set; } = null!;
-    public string SystemEntryDate => CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss");
+    public string SystemEntryDate => CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
 
     [Column(TypeName = "decimal(18,6)")]
     public decimal TaxPayable { get; set; }

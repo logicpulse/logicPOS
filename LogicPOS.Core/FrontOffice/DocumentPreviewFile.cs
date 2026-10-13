@@ -1,5 +1,6 @@
 using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using LogicPOS.Core.Fiscal;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Shared.Features.Company;
 using PdfDetail = LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentDetail;
@@ -17,6 +18,10 @@ public sealed class DocumentPreviewLine
     public decimal Quantity { get; init; }
 
     public decimal NetUnitPrice { get; init; }
+
+    public bool PriceIncludesVat { get; init; }
+
+    public decimal ShelfUnitPrice { get; init; }
 
     public decimal Discount { get; init; }
 
@@ -61,6 +66,9 @@ public sealed class DocumentPreview
 
     public string? CompanyCountry { get; init; }
 
+    /// <summary>When set, used for the PDF company block (name, logo, contacts).</summary>
+    public CompanyInformation? Company { get; init; }
+
     public ShipAddress? ShipTo { get; init; }
 
     public ShipAddress? ShipFrom { get; init; }
@@ -72,7 +80,19 @@ public static class DocumentPreviewFile
 {
     public static string Write(DocumentPreview preview)
     {
-        var details = preview.Lines.Select((line, index) => new PdfDetail
+        var country = FiscalCountry.Parse(preview.CompanyCountry ?? preview.Company?.CountryCode2 ?? "PT");
+        var useAgtRounding = country.IsAngola;
+        var details = preview.Lines.Select((line, index) =>
+        {
+            var totals = DocumentLineCalculator.CalculateLine(
+                line.ShelfUnitPrice > 0 ? line.ShelfUnitPrice : line.NetUnitPrice,
+                line.PriceIncludesVat,
+                line.Quantity,
+                line.Discount,
+                0,
+                line.VatPercentage,
+                useAgtRounding);
+            return new PdfDetail
         {
             CreatedAt = DateTime.Now,
             Order = (uint)(index + 1),
@@ -81,9 +101,9 @@ public static class DocumentPreviewFile
             Quantity = line.Quantity,
             Price = line.NetUnitPrice,
             Discount = line.Discount,
-            TotalNet = line.TotalNet,
-            TotalTax = line.TotalFinal - line.TotalNet,
-            TotalFinal = line.TotalFinal,
+            TotalNet = totals.TotalNet,
+            TotalTax = totals.TotalTax,
+            TotalFinal = totals.TotalFinal,
             Notes = line.Notes,
             ArticleClassAcronym = string.Empty,
             Tax = new DocumentDetailTax
@@ -93,8 +113,9 @@ public static class DocumentPreviewFile
                 Code = "NOR",
                 Description = "IVA",
                 Percentage = line.VatPercentage,
-                CountryRegion = "PT"
+                CountryRegion = country.Code2
             }
+        };
         }).ToList();
         var totalNet = details.Sum(detail => detail.TotalNet);
         var totalFinal = details.Sum(detail => detail.TotalFinal);
@@ -137,17 +158,17 @@ public static class DocumentPreviewFile
                 }
             ]
         };
+        var company = preview.Company ?? new CompanyInformation();
+        company.Address ??= preview.CompanyAddress;
+        company.City ??= preview.CompanyCity;
+        company.PostalCode ??= preview.CompanyPostalCode;
+        company.CountryCode2 ??= preview.CompanyCountry;
+        company.CurrencyCode ??= document.Currency;
         var data = new DocumentPdfData
         {
-            Company = new CompanyInformation
-            {
-                Address = preview.CompanyAddress,
-                City = preview.CompanyCity,
-                PostalCode = preview.CompanyPostalCode,
-                CountryCode2 = preview.CompanyCountry,
-                CurrencyCode = document.Currency
-            },
-            Country = FiscalCountry.Portugal,
+            Company = company,
+            Country = country,
+            UseAgtRounding = useAgtRounding,
             Document = document,
             SoftwareVersion = "preview"
         };

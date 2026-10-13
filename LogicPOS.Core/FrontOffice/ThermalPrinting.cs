@@ -118,6 +118,8 @@ public sealed class ThermalDocument
 
     public decimal TotalFinal { get; init; }
 
+    public string? Atcud { get; set; }
+
     public string? AtQrCode { get; set; }
 
     public string? FiscalCodeLine { get; set; }
@@ -133,9 +135,14 @@ public sealed class ThermalInvoiceJob
 
     public bool PrintQrCode { get; init; } = true;
 
+    /// <summary>0 = ESC/POS native QR (GS k); 1 = bitmap image (GTK default / QRCODE_METHOD).</summary>
+    public int QrCodeMethod { get; init; } = 1;
+
     public bool OpenDrawer { get; init; }
 
     public string? TerminalName { get; init; }
+
+    public bool IsSecondCopy { get; init; }
 }
 
 public interface IThermalPrintSource

@@ -1,8 +1,8 @@
 namespace LogicPOS.Domain.Entities.Finance.Calculations;
 
 /// <summary>
-/// Converts catalog prices to net unit prices when articles are flagged as PriceWithVat.
-/// Explicit prices sent by clients are always treated as net and are not converted here.
+/// Converts shelf or client prices to net unit prices when PriceIncludesVat on the detail DTO
+/// or the article's PriceWithVat flag is set (R7). Prefer DocumentLineCalculator.ToNetUnitPrice at call sites.
 /// </summary>
 public static class UnitPriceCalculator
 {
