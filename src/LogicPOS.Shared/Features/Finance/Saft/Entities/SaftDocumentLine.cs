@@ -6,7 +6,13 @@ public record SaftDocumentLine {
     public string ProductDescription { get; init; } = null!;
     public decimal Quantity { get; init; } 
     public string UnitOfMeasure { get; init; } = null!;
-    public decimal UnitPrice => Price - TotalDiscount / (Quantity == 0 ? 1 : Quantity);
+    public decimal UnitPrice =>
+        Math.Max(
+            0,
+            Math.Round(
+                Price - TotalDiscount / (Quantity == 0 ? 1 : Quantity),
+                6,
+                MidpointRounding.AwayFromZero));
     public SaftDocumentLineReference? Reference { get; set; }
     public string Description { get; init; } = null!;
     public decimal Amount { get; set; }
