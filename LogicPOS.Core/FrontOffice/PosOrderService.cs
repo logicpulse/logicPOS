@@ -1,5 +1,6 @@
 using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Entities.POS.WorkSessions.Movements.Common;
 using LogicPOS.Domain.Enums;
@@ -474,7 +475,7 @@ public sealed class PosOrderService : IPosOrderService
         foreach (var ticket in order.Tickets ?? [])
         {
             detail = ticket.Details?.FirstOrDefault(item => item.ArticleId == articleId
-                && Math.Round(item.Price, 2, MidpointRounding.AwayFromZero) == Math.Round(unitPrice, 2, MidpointRounding.AwayFromZero));
+                && item.Price.Round() == unitPrice.Round());
             if (detail is not null)
             {
                 sourceTicket = ticket;

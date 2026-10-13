@@ -1,5 +1,6 @@
 using System.Globalization;
 using LogicPOS.Application.Features.Finance.Documents;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,8 +69,8 @@ public sealed class DashboardBillingService : IDashboardBillingService
                 return new DashboardPoint
                 {
                     Label = $"T{index + 1}",
-                    Final = Math.Round(slice.Sum(point => point.Final), 2, MidpointRounding.AwayFromZero),
-                    Net = Math.Round(slice.Sum(point => point.Net), 2, MidpointRounding.AwayFromZero)
+                    Final = (double)((decimal)slice.Sum(point => point.Final)).Round(),
+                    Net = (double)((decimal)slice.Sum(point => point.Net)).Round()
                 };
             })
             .ToList();
@@ -118,8 +119,8 @@ public sealed class DashboardBillingService : IDashboardBillingService
             Days = days,
             Months = months,
             Quarters = quarters,
-            SelectedYearFinal = (decimal)Math.Round(months.Sum(point => point.Final), 2, MidpointRounding.AwayFromZero),
-            SelectedYearNet = (decimal)Math.Round(months.Sum(point => point.Net), 2, MidpointRounding.AwayFromZero),
+            SelectedYearFinal = ((decimal)months.Sum(point => point.Final)).Round(),
+            SelectedYearNet = ((decimal)months.Sum(point => point.Net)).Round(),
             BestMonthFinal = best.Point.Final <= 0 ? 0m : (decimal)best.Point.Final,
             BestMonthNet = bestNet.Net <= 0 ? 0m : (decimal)bestNet.Net,
             BestMonthLabel = best.Point.Final <= 0 ? "—" : best.Point.Label,
@@ -135,10 +136,10 @@ public sealed class DashboardBillingService : IDashboardBillingService
         var total = final
             ? await documents.SumAsync(document => document.TotalFinal * (document.Type == "NC" ? -1 : 1), cancellationToken)
             : await documents.SumAsync(document => document.TotalNet * (document.Type == "NC" ? -1 : 1), cancellationToken);
-        return Math.Round(total, 2, MidpointRounding.AwayFromZero);
+        return total.Round();
     }
 
-    private static double ToDouble(decimal value) => Math.Round((double)value, 2, MidpointRounding.AwayFromZero);
+    private static double ToDouble(decimal value) => (double)value.Round();
 
     private static string MonthLabel(CultureInfo culture, int month)
     {
