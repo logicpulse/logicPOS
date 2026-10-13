@@ -10,4 +10,5 @@ public record CreateDocumentDetailDto(Guid ArticleId,
                                       string? Notes,
                                       string Country2Code,
                                       string? SerialNumber,
-                                      bool UseAgtRounding = false);
+                                      bool UseAgtRounding = false,
+                                      bool PriceIncludesVat = false);

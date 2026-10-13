@@ -16,6 +16,16 @@ public readonly record struct DocumentLineTotals(decimal TotalGross,
 /// </summary>
 public static class DocumentLineCalculator
 {
+    public static decimal ToNetUnitPrice(decimal price, decimal vatPercentage, bool priceWithVat)
+    {
+        if (!priceWithVat || vatPercentage <= 0)
+        {
+            return price;
+        }
+
+        return price / (1 + vatPercentage / 100m);
+    }
+
     public static decimal CombineDiscounts(decimal lineDiscount, decimal globalDiscount)
     {
         return 100m - (100m - lineDiscount) * (100m - globalDiscount) / 100m;
