@@ -137,6 +137,23 @@ internal class DocumentCreator : EntityCreator<Document>
         _entity.ParentId = _dto.ParentId;
     }
 
+    /// <summary>Only Angolan companies withhold the service tax, and final consumers do not withhold.</summary>
+    internal static bool WithholdsServiceTax(FiscalCountry country, Guid customerId) =>
+        country.IsAngola && customerId != CustomerWellKnownIds.FinalConsumer;
+
+    internal static async Task<decimal> ResolveExchangeRateAsync(ICurrencyRepository currencies,
+        Guid currencyId,
+        decimal? requestedRate,
+        CancellationToken ct = default)
+    {
+        if (currencyId == await currencies.GetCompanyCurrencyIdAsync(ct))
+        {
+            return 1;
+        }
+
+        return requestedRate ?? await currencies.GetExchangeRateAsync(currencyId, ct);
+    }
+
     private async Task AssignCurrencyAsync(CancellationToken ct = default)
     {
         if (_dto.CurrencyId == null)
@@ -147,20 +164,9 @@ internal class DocumentCreator : EntityCreator<Document>
         else
         {
             _entity.CurrencyId = _dto.CurrencyId.Value;
-            _entity.ExchangeRate = await ResolveExchangeRateAsync(_entity.CurrencyId, ct);
+            _entity.ExchangeRate = await ResolveExchangeRateAsync(_references.CurrencyRepository, _entity.CurrencyId,
+                _dto.ExchangeRate, ct);
         }
-    }
-
-    private async Task<decimal> ResolveExchangeRateAsync(Guid currencyId, CancellationToken ct)
-    {
-        var companyCurrencyId = await _references.CurrencyRepository.GetCompanyCurrencyIdAsync(ct);
-        if (currencyId == companyCurrencyId)
-        {
-            return 1;
-        }
-
-        return _dto.ExchangeRate
-               ?? await _references.CurrencyRepository.GetExchangeRateAsync(currencyId, ct);
     }
 
     private async Task<bool> WithholdsServiceTaxAsync(CancellationToken ct)

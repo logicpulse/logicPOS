@@ -47,6 +47,15 @@ internal class ReceiptCreator : EntityCreator<Receipt>
         _entity.ExchangeRate = _dto.ExchangeRate;
         _entity.SourceId = _entity.CreatedBy.ToString();
         _entity.Notes = _dto.Notes;
+        if (SystemCountryIsPortugal)
+        {
+            _entity.Hash = await _documentHasher.GenerateReceiptHashAsync(LastReceiptNumber, _entity.RefNo,
+                _entity.Date,
+                _entity.SystemEntryDate, _entity.Amount, ct);
+            _entity.Hash4Code = _documentHasher.GenerateHash4Chars(_entity.Hash);
+            var documentNumber = _series!.NextNumber - 1;
+            _entity.Atcud = $"{_series.ATDocCodeValidationSeries}-{documentNumber}";
+        }
     }
 
     private string GenerateNumber()

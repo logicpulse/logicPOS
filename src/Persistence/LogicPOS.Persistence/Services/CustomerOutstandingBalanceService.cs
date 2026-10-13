@@ -1,5 +1,6 @@
 using LogicPOS.Application.Features.Finance.Customers;
 using LogicPOS.Application.Features.Finance.Documents;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -65,5 +66,15 @@ public sealed class CustomerOutstandingBalanceService : ICustomerOutstandingBala
                     .Select(d => new CustomerOutstandingBalanceCompute.DocumentBalanceRow(d.Id, d.TotalFinal));
                 return CustomerOutstandingBalanceCompute.ToCustomerOutstandingBalance(rows, paidTotals);
             });
+    }
+
+    public static CustomerOutstandingBalance Compute(IEnumerable<(decimal TotalFinal, decimal Paid)> documents)
+    {
+        var customerDocs = documents.ToList();
+        var totalDebit = customerDocs.Sum(d => d.TotalFinal.Round());
+        var outstanding = customerDocs.Sum(d => (d.TotalFinal - d.Paid).Round());
+        var totalCredit = (totalDebit - outstanding).Round();
+        var balance = (totalCredit - totalDebit).Round();
+        return new CustomerOutstandingBalance(totalDebit, totalCredit, balance);
     }
 }

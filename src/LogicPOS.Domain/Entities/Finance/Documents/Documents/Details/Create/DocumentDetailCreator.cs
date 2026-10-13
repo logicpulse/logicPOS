@@ -32,8 +32,8 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         _entity.Quantity = _dto.Quantity;
         _entity.ArticleId = _dto.ArticleId;
         _vatRate = await GetVatRateAsync(ct);
-        var priceIncludesVat = _dto.PriceIncludesVat || _article.PriceWithVat;
-        _unitPrice = ResolveUnitPrice(priceIncludesVat);
+        var catalogPriceIncludesVat = _dto.PriceIncludesVat || _article.PriceWithVat;
+        _unitPrice = ResolveUnitPrice(catalogPriceIncludesVat);
         _entity.Price = _unitPrice;
 
         _entity.Tax = new DocumentDetailTax
@@ -118,18 +118,18 @@ internal class DocumentDetailCreator : EntityCreator<DocumentDetail>
         return await _references.VatExemptionRepository.GetByIdAsync(exemptionId.Value, ct);
     }
 
-    private decimal ResolveUnitPrice(bool priceIncludesVat)
+    private decimal ResolveUnitPrice(bool catalogPriceIncludesVat)
     {
         if (_dto.Price != null)
         {
-            return DocumentLineCalculator.ToNetUnitPrice(_dto.Price.Value, _vatRate!.Value, priceIncludesVat);
+            return DocumentLineCalculator.ToNetUnitPrice(_dto.Price.Value, _vatRate!.Value, _dto.PriceIncludesVat);
         }
 
         var catalogPrice = _dto.PriceType == null
             ? _article!.Price1
             : _article!.GetPriceByType(_dto.PriceType.Value);
 
-        return DocumentLineCalculator.ToNetUnitPrice(catalogPrice, _vatRate!.Value, priceIncludesVat);
+        return DocumentLineCalculator.ToNetUnitPrice(catalogPrice, _vatRate!.Value, catalogPriceIncludesVat);
     }
 
     protected override Task<Result> CheckForConflictsAsync(CancellationToken ct = default)
