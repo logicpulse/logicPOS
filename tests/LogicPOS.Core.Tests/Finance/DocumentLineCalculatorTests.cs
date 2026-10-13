@@ -34,4 +34,11 @@ public class DocumentLineCalculatorTests
         var c = DocumentLineCalculator.TaxForPayment(final, tax, 66.66m, 33.34m);
         Assert.Equal(18.70m, a + b + c);
     }
+
+    [Fact]
+    public void Settlement_rounds_each_document_before_adding()
+    {
+        var net = DocumentLineCalculator.SettlementAmount([10.005m, 10.005m], []);
+        Assert.Equal(20.02m, net);
+    }
 }
