@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LogicPOS.Tests" />
+    <InternalsVisibleTo Include="LogicPOS.Core.Tests" />
   </ItemGroup>
 
 </Project>

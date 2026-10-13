@@ -1,4 +1,4 @@
-using LogicPOS.Domain.Entities.Finance.Calculations;
+﻿using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Core.Tests.Finance;

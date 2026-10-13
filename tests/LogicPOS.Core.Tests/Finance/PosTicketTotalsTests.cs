@@ -1,4 +1,4 @@
-using LogicPOS.Core.FrontOffice;
+﻿using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 
 namespace LogicPOS.Core.Tests.Finance;

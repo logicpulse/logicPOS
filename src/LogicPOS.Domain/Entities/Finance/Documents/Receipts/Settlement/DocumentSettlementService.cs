@@ -1,4 +1,4 @@
-using LogicPOS.Domain.Entities.Finance.Calculations;
+﻿using LogicPOS.Domain.Entities.Finance.Calculations;
 
 namespace LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 
