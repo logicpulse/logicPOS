@@ -31,6 +31,47 @@ public static class DocumentLineCalculator
         return 100m - (100m - lineDiscount) * (100m - globalDiscount) / 100m;
     }
 
+    /// <summary>Inverse of <see cref="CombineDiscounts"/>, at stored precision (6 decimals).</summary>
+    public static decimal ExtractLineDiscount(decimal combinedDiscount, decimal globalDiscount)
+    {
+        if (globalDiscount >= 100m)
+        {
+            return 0m;
+        }
+
+        return Math.Round(100m - (100m - combinedDiscount) * 100m / (100m - globalDiscount), RoundingExtension.StoredDecimals);
+    }
+
+    public static DocumentLineTotals CalculateLine(decimal unitPrice,
+                                                   bool priceWithVat,
+                                                   decimal quantity,
+                                                   decimal lineDiscount,
+                                                   decimal globalDiscount,
+                                                   decimal vatPercentage,
+                                                   bool useAgtRounding = false)
+    {
+        return Calculate(ToNetUnitPrice(unitPrice, vatPercentage, priceWithVat),
+                         quantity,
+                         CombineDiscounts(lineDiscount, globalDiscount),
+                         vatPercentage,
+                         useAgtRounding);
+    }
+
+    /// <summary>Foreign currency amount that settles the full debt (legacy rate: foreign = system × rate).</summary>
+    public static decimal FullCurrencyAmount(decimal toPay, decimal exchangeRate)
+        => exchangeRate > 0 ? (toPay * exchangeRate).Round() : toPay;
+
+    /// <summary>System-currency receipt amount for a foreign currency payment.</summary>
+    public static decimal ReceiptAmount(decimal toPay, decimal currencyAmount, decimal exchangeRate)
+    {
+        if (currencyAmount >= FullCurrencyAmount(toPay, exchangeRate))
+        {
+            return toPay;
+        }
+
+        return Math.Min(toPay, exchangeRate > 0 ? (currencyAmount / exchangeRate).Round() : currencyAmount.Round());
+    }
+
     public static DocumentLineTotals Calculate(decimal netUnitPrice,
                                                decimal quantity,
                                                decimal discount,

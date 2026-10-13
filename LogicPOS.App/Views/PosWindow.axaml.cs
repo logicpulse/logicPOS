@@ -14,6 +14,7 @@ using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -1982,7 +1983,10 @@ public partial class PosWindow : Window, IOfficeSurface
         var total = 0m;
         if (_voltaArticle is not null && TryGetVoltaQuantity(out var quantity))
         {
-            total = Math.Round(quantity * VoltaNetUnitPrice() * (1m + _voltaArticle.VatPercentage / 100m), 2);
+            total = DocumentLineCalculator
+                .Calculate(VoltaNetUnitPrice(), quantity, 0, _voltaArticle.VatPercentage, useAgtRounding: false)
+                .TotalFinal
+                .Round();
         }
 
         VoltaTitle.Text = $"{VoltaTitleBase} - Total a reembolsar: {total:N2}€";

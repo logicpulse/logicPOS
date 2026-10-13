@@ -1,3 +1,6 @@
+using LogicPOS.Domain.Entities.Finance.Calculations;
+using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
+
 namespace LogicPOS.Core.BackOffice;
 
 public interface IReceiptEmission
@@ -114,13 +117,13 @@ public sealed class ReceiptPayResult
 
 public static class ReceiptSettlement
 {
-    public static decimal Round(decimal value) => decimal.Round(value, 2, MidpointRounding.AwayFromZero);
+    public static decimal Round(decimal value) => value.Round();
 
     public static decimal Net(IEnumerable<ReceiptEmissionRow> documents)
     {
         var list = documents as IList<ReceiptEmissionRow> ?? documents.ToList();
-        var debit = list.Where(row => row.Type is "FT" or "ND").Sum(row => row.TotalToPay);
-        var credit = list.Where(row => row.Type == "NC").Sum(row => row.TotalFinal);
-        return Round(debit - credit);
+        var invoices = list.Where(row => row.Type is "FT" or "ND").Select(row => row.TotalToPay);
+        var credits = list.Where(row => row.Type == "NC").Select(row => row.TotalFinal);
+        return DocumentSettlementService.ComputeSettleableAmount(invoices, credits);
     }
 }

@@ -1,8 +1,10 @@
 using System.Reflection;
 using System.Net;
 using System.Net.Mail;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
+using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Documents;
 using LogicPOS.Domain.Entities.Dtos;
@@ -421,6 +423,8 @@ public sealed class PosDocumentCopySource
     public PosShipAddress? ShipFrom { get; init; }
 
     public IReadOnlyList<PosCopiedLine> Lines { get; init; } = [];
+
+    public decimal DocumentDiscount { get; init; }
 }
 
 public sealed class PosDocumentResult
@@ -468,11 +472,16 @@ public sealed class PosDocumentService : IPosDocumentService
 
     private readonly IServiceScopeFactory _scopes;
     private readonly ILicenseModule _license;
+    private readonly ISystemInformationService _systemInformation;
 
-    public PosDocumentService(IServiceScopeFactory scopes, ILicenseModule license)
+    public PosDocumentService(
+        IServiceScopeFactory scopes,
+        ILicenseModule license,
+        ISystemInformationService systemInformation)
     {
         _scopes = scopes;
         _license = license;
+        _systemInformation = systemInformation;
     }
 
     public async Task<PosDocumentResult> IssueSimplifiedInvoiceAsync(
@@ -518,17 +527,9 @@ public sealed class PosDocumentService : IPosDocumentService
             return seriesResult;
         }
 
-        var details = lines.Select(line => new CreateDocumentDetailDto(
-            ArticleId: line.ArticleId,
-            Quantity: line.Quantity,
-            Price: line.NetUnitPrice,
-            VatExemptionId: null,
-            VatRateId: line.VatRateId == Guid.Empty ? null : line.VatRateId,
-            Discount: line.Discount,
-            PriceType: null,
-            Notes: null,
-            Country2Code: "PT",
-            SerialNumber: null)).ToList();
+        var country = SystemCountry;
+        var useAgtRounding = UseAgtRoundingForDocuments();
+        var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
 
         var dto = new CreateDocumentDto(
             Type: documentType,
@@ -563,7 +564,7 @@ public sealed class PosDocumentService : IPosDocumentService
             references.DocumentRepository,
             references,
             scope.ServiceProvider.GetRequiredService<IDocumentHasher>(),
-            FiscalCountry.Portugal,
+            country,
             terminalId: null,
             cancellationToken);
 
@@ -1197,6 +1198,7 @@ public sealed class PosDocumentService : IPosDocumentService
             {
                 item.Type,
                 item.CustomerId,
+                item.Discount,
                 item.Notes,
                 item.PaymentConditionId,
                 item.CurrencyId,
@@ -1251,6 +1253,7 @@ public sealed class PosDocumentService : IPosDocumentService
             PaymentConditionId = header.PaymentConditionId,
             CurrencyId = header.CurrencyId == Guid.Empty ? null : header.CurrencyId,
             ParentDocumentId = header.ParentId,
+            DocumentDiscount = header.Discount,
             ShipTo = ToPosShip(
                 header.ToAddress, header.ToRegion, header.ToPostal, header.ToCity, header.ToCountry,
                 header.ToWhen, header.ToDeliveryId, header.ToWarehouseId),
@@ -1382,17 +1385,9 @@ public sealed class PosDocumentService : IPosDocumentService
             }
         }
 
-        var details = lines.Select(line => new CreateDocumentDetailDto(
-            ArticleId: line.ArticleId,
-            Quantity: line.Quantity,
-            Price: line.NetUnitPrice,
-            VatExemptionId: null,
-            VatRateId: line.VatRateId == Guid.Empty ? null : line.VatRateId,
-            Discount: line.Discount,
-            PriceType: null,
-            Notes: line.Notes,
-            Country2Code: "PT",
-            SerialNumber: line.SerialNumber)).ToList();
+        var country = SystemCountry;
+        var useAgtRounding = UseAgtRoundingForDocuments();
+        var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
 
         var dto = new CreateDocumentDto(
             Type: documentType,
@@ -1427,7 +1422,7 @@ public sealed class PosDocumentService : IPosDocumentService
             references.DocumentRepository,
             references,
             scope.ServiceProvider.GetRequiredService<IDocumentHasher>(),
-            FiscalCountry.Portugal,
+            country,
             terminalId: null,
             cancellationToken);
         if (created.IsFailure)
@@ -1513,10 +1508,12 @@ public sealed class PosDocumentService : IPosDocumentService
         document.Details = document.Details.OrderBy(detail => detail.CreatedAt).ToList();
         document.RelatedDocuments = new List<string>();
 
+        var country = SystemCountry;
         var data = new LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentPdfData
         {
             Company = await ReadCompanyAsync(database, cancellationToken),
-            Country = FiscalCountry.Portugal,
+            Country = country,
+            UseAgtRounding = UseAgtRoundingForDocuments(),
             Document = document,
             SoftwareVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"
         };
@@ -1630,5 +1627,26 @@ public sealed class PosDocumentService : IPosDocumentService
             TicketFinalLine2 = Value("TICKET_FOOTER_LINE2"),
             CurrencyCode = Value("SYSTEM_CURRENCY")
         };
+    }
+
+    private FiscalCountry SystemCountry => _systemInformation.Country;
+
+    private bool UseAgtRoundingForDocuments() => _systemInformation.IsAngola();
+
+    private static CreateDocumentDetailDto ToCreateDetail(PosSaleLine line, FiscalCountry country, bool useAgtRounding)
+    {
+        return new CreateDocumentDetailDto(
+            ArticleId: line.ArticleId,
+            Quantity: line.Quantity,
+            Price: line.UnitPrice,
+            VatExemptionId: null,
+            VatRateId: line.VatRateId == Guid.Empty ? null : line.VatRateId,
+            Discount: line.Discount,
+            PriceType: null,
+            Notes: line.Notes,
+            Country2Code: country.Code2,
+            SerialNumber: line.SerialNumber,
+            UseAgtRounding: useAgtRounding,
+            PriceIncludesVat: line.PriceWithVat);
     }
 }

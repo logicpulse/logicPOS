@@ -41,4 +41,16 @@ public class DocumentLineCalculatorTests
         var net = DocumentLineCalculator.SettlementAmount([10.005m, 10.005m], []);
         Assert.Equal(20.02m, net);
     }
+
+    [Fact]
+    public void ExtractLineDiscount_undoes_combine()
+        => Assert.Equal(10m, DocumentLineCalculator.ExtractLineDiscount(19m, 10m));
+
+    [Fact]
+    public void FullCurrencyAmount_multiplies_debt_by_rate()
+        => Assert.Equal(1000.00m, DocumentLineCalculator.FullCurrencyAmount(1_000_000m, 0.001m));
+
+    [Fact]
+    public void ReceiptAmount_full_currency_pays_whole_debt()
+        => Assert.Equal(1000m, DocumentLineCalculator.ReceiptAmount(1000m, 1000m, 1m));
 }
