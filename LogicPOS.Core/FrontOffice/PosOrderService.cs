@@ -12,12 +12,20 @@ namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosStoredLine
 {
-    public PosStoredLine(Guid articleId, decimal quantity, decimal netUnitPrice, string? ticketKey = null)
+    public PosStoredLine(
+        Guid articleId,
+        decimal quantity,
+        decimal netUnitPrice,
+        string? ticketKey = null,
+        decimal? unitPrice = null,
+        bool priceWithVat = false)
     {
         ArticleId = articleId;
         Quantity = quantity;
         NetUnitPrice = netUnitPrice;
         TicketKey = ticketKey;
+        UnitPrice = unitPrice ?? netUnitPrice;
+        PriceWithVat = priceWithVat;
     }
 
     public string? TicketKey { get; }
@@ -27,6 +35,10 @@ public sealed class PosStoredLine
     public decimal Quantity { get; }
 
     public decimal NetUnitPrice { get; }
+
+    public decimal UnitPrice { get; }
+
+    public bool PriceWithVat { get; }
 }
 
 public sealed class PosOpenOrder

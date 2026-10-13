@@ -50,6 +50,7 @@ public class ReceiptModel : IDocument
         page.Content().AlignCenter().Column(xcolumn =>
         {
             DocumentCancelVerify(xcolumn, Data.Receipt!.Status);
+            WithHoldingTaxAmount = Data.Receipt.WithholdingTaxAmount;
             xcolumn.Item().Table(itemsTable =>
             {
                 itemsTable.ColumnsDefinition(columns =>
@@ -108,8 +109,6 @@ public class ReceiptModel : IDocument
                         itemsTable.Cell().Background(backgroundColor).Border(0.5f)
                             .BorderColor(Color.FromRGB(192, 194, 196)).AlignCenter().Padding(1).Text(" ").Black();
                     }
-
-                    WithHoldingTaxAmount += item.Document.WithholdingTaxAmount;
                 }
             });
 

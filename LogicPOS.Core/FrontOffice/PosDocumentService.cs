@@ -21,7 +21,16 @@ namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosSaleLine
 {
-    public PosSaleLine(Guid articleId, decimal quantity, decimal netUnitPrice, decimal discount, Guid vatRateId, string? notes = null, string? serialNumber = null)
+    public PosSaleLine(
+        Guid articleId,
+        decimal quantity,
+        decimal netUnitPrice,
+        decimal discount,
+        Guid vatRateId,
+        string? notes = null,
+        string? serialNumber = null,
+        decimal? unitPrice = null,
+        bool priceWithVat = false)
     {
         ArticleId = articleId;
         Quantity = quantity;
@@ -30,6 +39,8 @@ public sealed class PosSaleLine
         VatRateId = vatRateId;
         Notes = notes;
         SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
+        UnitPrice = unitPrice ?? netUnitPrice;
+        PriceWithVat = priceWithVat;
     }
 
     public Guid ArticleId { get; }
@@ -45,6 +56,10 @@ public sealed class PosSaleLine
     public string? Notes { get; }
 
     public string? SerialNumber { get; }
+
+    public decimal UnitPrice { get; }
+
+    public bool PriceWithVat { get; }
 }
 
 public sealed class PosLookupItem
