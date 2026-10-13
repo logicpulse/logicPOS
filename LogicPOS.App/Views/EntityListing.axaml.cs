@@ -87,7 +87,7 @@ public partial class EntityListing : UserControl
     }
 
     private static bool UsesDateFilter(string title)
-        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trab." or "Gestão de Stocks" or "Conta.Corr." or "Registro de alterações (Changelog)" or "Séries" or "SAF-T período";
+        => title is "Recibos" or "Emissão Recibos" or "Sessões de Trab." or "Gestão de Stocks" or "Conta.Corr." or "Registro de alterações (Changelog)" or "Séries";
 
     private IBackOfficeListingService? Service => AppComposition.Services?.GetService<IBackOfficeListingService>();
 
@@ -1689,7 +1689,21 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        if (action is "export-saft" or "saft-period" or "open-audit")
+        if (action is "saft-year" or "saft-month")
+        {
+            await ExportSaftUiAsync(action, null);
+            return;
+        }
+
+        if (action is "export-saft" or "saft-period")
+        {
+            var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
+            var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+            await ExportSaftUiAsync(action, $"{start:yyyy-MM-dd}|{end:yyyy-MM-dd}");
+            return;
+        }
+
+        if (action == "open-audit")
         {
             var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
             var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
@@ -2009,6 +2023,13 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        // SAF-T actions never use the generic "open temp file" path.
+        if (IsSaftAction(action))
+        {
+            await ExportSaftUiAsync(action, extra);
+            return;
+        }
+
         var result = await service.RunActionAsync(action, id, extra);
         if (result.Succeeded && string.IsNullOrWhiteSpace(result.Message) == false && File.Exists(result.Message))
         {
@@ -2018,7 +2039,76 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        Notice.Text = result.Error ?? result.Message ?? string.Empty;
+        var message = result.Error ?? result.Message ?? string.Empty;
         await ReloadAsync();
+        if (IsSeriesFiscalAction(action) && string.IsNullOrWhiteSpace(message) == false)
+        {
+            // Reload clears Notice via ApplyFilter — keep the fiscal result until Ok.
+            ShowResultDialog(SeriesFiscalTitle(action), message);
+            return;
+        }
+
+        Notice.Text = message;
+    }
+
+    private static bool IsSaftAction(string action)
+        => action is "export-saft" or "saft-year" or "saft-month" or "saft-period";
+
+    private static bool IsSeriesFiscalAction(string action)
+        => action is "register-at" or "request-agt" or "request-series";
+
+    private static string SeriesFiscalTitle(string action)
+        => action is "request-agt" or "request-series" ? "Série AGT" : "Comunicar série fiscal";
+
+    private void ShowResultDialog(string title, string message)
+    {
+        ResultTitle.Text = title;
+        ResultText.Text = message;
+        ResultOverlay.IsVisible = true;
+    }
+
+    private void OnResultCloseClick(object? sender, RoutedEventArgs e)
+        => ResultOverlay.IsVisible = false;
+
+    /// <summary>
+    /// Saves SAF-T to PATH_SAFTPT (or a SaveFilePicker), shows the Resx success path,
+    /// and surfaces validation issues without opening the API temp file.
+    /// </summary>
+    private async Task ExportSaftUiAsync(string action, string? extra)
+    {
+        var service = Service;
+        if (service is null)
+        {
+            return;
+        }
+
+        // ListingBusy covers the grid; also disable the header action so the user cannot re-click.
+        ActionBar.IsEnabled = false;
+        Notice.Text = "A exportar...";
+        Busy.Show("A exportar...");
+        // Yield so the overlay paints before the long fiscal export.
+        await Task.Yield();
+
+        ListingSaveResult result;
+        try
+        {
+            result = await SaftExportUi.RunExportAsync(service, action, extra);
+        }
+        finally
+        {
+            Busy.Hide();
+            ActionBar.IsEnabled = true;
+        }
+
+        var notice = await SaftExportUi.FormatResultAsync(result, TopLevel.GetTopLevel(this));
+        // Reload first: ApplyFilter would otherwise overwrite the success notice.
+        await ReloadAsync();
+        if (string.IsNullOrWhiteSpace(notice) == false)
+        {
+            ShowResultDialog(SaftExportUi.ExportDialogTitle(), notice);
+            return;
+        }
+
+        Notice.Text = notice;
     }
 }

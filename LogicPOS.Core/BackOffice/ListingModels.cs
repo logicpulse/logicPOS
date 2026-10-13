@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.BackOffice;
+﻿namespace LogicPOS.Core.BackOffice;
 
 public sealed class ListingColumn
 {
@@ -80,15 +80,27 @@ public sealed class ListingSaveResult
 
     public string? Message { get; init; }
 
+    /// <summary>
+    /// Extra notice for the UI (e.g. SAF-T validation issues + helpdesk link).
+    /// </summary>
+    public string? Detail { get; init; }
+
+    /// <summary>
+    /// When true, <see cref="Message"/> is a temp path and the Avalonia UI must ask where to save.
+    /// </summary>
+    public bool NeedsSaveAs { get; init; }
+
     public Guid Id { get; init; }
 
     public IReadOnlyList<Guid> Ids { get; init; } = [];
 
-    public static ListingSaveResult Ok(Guid id, string? message = null) => new()
+    public static ListingSaveResult Ok(Guid id, string? message = null, string? detail = null, bool needsSaveAs = false) => new()
     {
         Succeeded = true,
         Id = id,
         Message = message,
+        Detail = detail,
+        NeedsSaveAs = needsSaveAs,
         Ids = id == Guid.Empty ? [] : [id]
     };
 

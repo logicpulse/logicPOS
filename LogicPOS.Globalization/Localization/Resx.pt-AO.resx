@@ -637,10 +637,10 @@ Deseja finalizar este ticket e prosseguir?</value>
     <value>Para usar esta funcionalidade, tem que ter uma impressora e um template válido associado ao seu terminal!</value>
   </data>
   <data name="dialog_message_saftpt_exported_error" xml:space="preserve">
-    <value>Erro ao Exportar o Ficheiro de SAF-T!</value>
+    <value>Erro ao Exportar o Ficheiro de AGT!</value>
   </data>
   <data name="dialog_message_saftpt_exported_successfully" xml:space="preserve">
-    <value>SAF-T Exportado para
+    <value>AGT Exportado para
 {0}</value>
   </data>
   <data name="dialog_message_series_create_confirmation_text" xml:space="preserve">
@@ -1520,16 +1520,16 @@ Prima "Sim" para continuar e fechar os terminais, ou prima "Não", feche o(s) te
     <value>Exportar Clientes</value>
   </data>
   <data name="global_export_saftpt" xml:space="preserve">
-    <value>Exportar SAF-T</value>
+    <value>Exportar AGT</value>
   </data>
   <data name="global_export_saftpt_custom" xml:space="preserve">
-    <value>SAF-T Personalizado</value>
+    <value>AGT Personalizado</value>
   </data>
   <data name="global_export_saftpt_last_month" xml:space="preserve">
-    <value>SAF-T E-Fatura</value>
+    <value>AGT Último Mês</value>
   </data>
   <data name="global_export_saftpt_whole_year" xml:space="preserve">
-    <value>SAF-T Ano Atual</value>
+    <value>AGT Ano Atual</value>
   </data>
   <data name="global_families" xml:space="preserve">
     <value>Famílias</value>

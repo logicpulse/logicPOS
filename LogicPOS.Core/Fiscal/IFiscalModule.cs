@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.Fiscal;
+﻿namespace LogicPOS.Core.Fiscal;
 
 /// <summary>
 /// Optional fiscal port. Authority calls and document marks stay outside LogicPOS.OS.
@@ -13,7 +13,12 @@ public interface IFiscalModule
     /// </summary>
     FiscalPrint DescribePrint(FiscalDocument document);
 
-    Task<string?> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Exports SAF-T for the range. Cloud/API returns a temp path plus optional validation notice.
+    /// Local plugins should call the same <c>ISaftPtValidator</c> when Infrastructure is available
+    /// and fill <see cref="SaftExportResult.ValidationNotice"/> (Avalonia local follow-up).
+    /// </summary>
+    Task<SaftExportResult> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default);
 
     Task<string?> RegisterSeriesAsync(Guid seriesId, CancellationToken cancellationToken = default);
 
