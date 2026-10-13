@@ -15,7 +15,7 @@ public record SaftDocumentLine {
                 MidpointRounding.AwayFromZero));
     public SaftDocumentLineReference? Reference { get; set; }
     public string Description { get; init; } = null!;
-    public decimal Amount { get; set; }
+    public decimal Amount => TotalNet;
     public SaftTax Tax { get; init; } = null!;
     public string? TaxExemptionReason { get; init; } 
     public string? TaxExemptionCode { get; init; }
@@ -23,4 +23,6 @@ public record SaftDocumentLine {
     public decimal TaxPayable => Amount * (Tax.Percentage / 100);
     public decimal Price { get; init; }
     public decimal TotalDiscount { get; init; }
+    public decimal TotalNet { get; init; }
+    public decimal TotalTax { get; init; }
 }
