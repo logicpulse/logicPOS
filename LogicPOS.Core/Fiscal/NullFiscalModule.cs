@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.Fiscal;
+﻿namespace LogicPOS.Core.Fiscal;
 
 public sealed class NullFiscalModule : IFiscalModule
 {
@@ -6,8 +6,8 @@ public sealed class NullFiscalModule : IFiscalModule
 
     public FiscalPrint DescribePrint(FiscalDocument document) => new();
 
-    public Task<string?> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default)
-        => Task.FromResult<string?>("A certificação fiscal não está instalada neste posto.");
+    public Task<SaftExportResult> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default)
+        => Task.FromResult(SaftExportResult.Fail("A certificação fiscal não está instalada neste posto."));
 
     public Task<string?> RegisterSeriesAsync(Guid seriesId, CancellationToken cancellationToken = default)
         => Task.FromResult<string?>("A certificação fiscal não está instalada neste posto.");

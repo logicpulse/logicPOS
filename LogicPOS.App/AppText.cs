@@ -1,4 +1,4 @@
-namespace LogicPOS.App;
+﻿namespace LogicPOS.App;
 
 internal static class AppText
 {
@@ -17,6 +17,16 @@ internal static class AppText
             ["Configuração"] = "Settings",
             ["Importar"] = "Import",
             ["Exportar"] = "Export",
+            ["SAFT"] = "SAFT",
+            ["SAF-T ano"] = "SAF-T year",
+            ["SAF-T último mês"] = "SAF-T last month",
+            ["SAF-T período"] = "SAF-T period",
+            ["AGT"] = "AGT",
+            ["AGT ano"] = "AGT year",
+            ["AGT último mês"] = "AGT last month",
+            ["AGT período"] = "AGT period",
+            ["Séries AGT"] = "AGT series",
+            ["Documentos AGT"] = "AGT documents",
             ["Sistema"] = "System",
             ["Dashboard"] = "Dashboard",
             ["FrontOffice"] = "Front office",

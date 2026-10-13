@@ -225,5 +225,37 @@
                 </DockPanel>
             </Border>
         </Panel>
+
+        <Panel x:Name="ResultOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_entity_prompt">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                            <TextBlock x:Name="ResultTitle" Classes="login_alert_title" Text="Séries" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnResultCloseClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <Grid Classes="login_alert_body">
+                        <Image Classes="login_alert_symbol"
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                        <TextBlock x:Name="ResultText"
+                                   Classes="login_alert_message"
+                                   TextWrapping="Wrap" />
+                    </Grid>
+                </DockPanel>
+            </Border>
+        </Panel>
     </Panel>
 </UserControl>

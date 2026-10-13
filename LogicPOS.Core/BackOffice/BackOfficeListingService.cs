@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
@@ -94,12 +95,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private readonly IServiceScopeFactory _scopes;
     private readonly IPasswordHasher _passwords;
+    private readonly ISystemInformationService _system;
     private readonly PageSpec[] _pages;
 
-    public BackOfficeListingService(IServiceScopeFactory scopes, IPasswordHasher passwords)
+    public BackOfficeListingService(
+        IServiceScopeFactory scopes,
+        IPasswordHasher passwords,
+        ISystemInformationService system)
     {
         _scopes = scopes;
         _passwords = passwords;
+        _system = system;
         _pages = BuildPages();
     }
 
@@ -168,10 +174,32 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             CanDelete = page.CanDelete,
             Columns = snapshot.Columns,
             Rows = rows,
-            Actions = page.Actions,
+            Actions = FilterActions(title, page.Actions),
             Modes = page.Modes,
             Notice = snapshot.Notice
         };
+    }
+
+    private IReadOnlyList<ListingAction> FilterActions(string title, IReadOnlyList<ListingAction> actions)
+    {
+        if (title != "Séries")
+        {
+            return actions;
+        }
+
+        // AT series registration is Portugal-only; AGT series request is Angola-only.
+        // Export button stays export-saft; Angola label is AGT (same as export menu).
+        return actions
+            .Where(action => action.Key switch
+            {
+                "register-at" => _system.IsPortugal(),
+                "request-agt" or "request-series" => _system.IsAngola(),
+                _ => true
+            })
+            .Select(action => action.Key == "export-saft" && _system.IsAngola()
+                ? new ListingAction { Key = action.Key, Label = "AGT" }
+                : action)
+            .ToList();
     }
 
     public async Task<IReadOnlyList<ListingField>> LoadFieldsAsync(string title, Guid? id, CancellationToken cancellationToken = default)
@@ -380,7 +408,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             return action switch
             {
-                "export-saft" or "saft-period" => await FiscalAsync(module => module.ExportSaftAsync(ParseStart(extra), ParseEnd(extra), cancellationToken), cancellationToken),
+                "export-saft" or "saft-period" => await ExportSaftRangeAsync(ParseStart(extra), ParseEnd(extra), cancellationToken),
                 "saft-year" => await ExportSaftRangeAsync(new DateTime(DateTime.Today.Year, 1, 1), new DateTime(DateTime.Today.Year, 12, 31), cancellationToken),
                 "saft-month" => await ExportSaftMonthAsync(cancellationToken),
                 "register-at" => await FiscalAsync(module => module.RegisterSeriesAsync(id ?? Guid.Empty, cancellationToken), cancellationToken),
@@ -1004,13 +1032,40 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             : ListingSaveResult.Fail(message);
     }
 
-    private Task<ListingSaveResult> ExportSaftRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken)
-        => FiscalAsync(module => module.ExportSaftAsync(start, end, cancellationToken), cancellationToken);
+    private async Task<ListingSaveResult> ExportSaftRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var module = scope.ServiceProvider.GetService<IFiscalModule>() ?? new NullFiscalModule();
+        var export = await module.ExportSaftAsync(start, end, cancellationToken);
+        return await FinalizeSaftExportAsync(export, cancellationToken);
+    }
 
     private Task<ListingSaveResult> ExportSaftMonthAsync(CancellationToken cancellationToken)
     {
         var first = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).AddMonths(-1);
         return ExportSaftRangeAsync(first, first.AddMonths(1).AddDays(-1), cancellationToken);
+    }
+
+    private async Task<ListingSaveResult> FinalizeSaftExportAsync(SaftExportResult export, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(export.Error) == false)
+        {
+            return ListingSaveResult.Fail(export.Error);
+        }
+
+        if (string.IsNullOrWhiteSpace(export.Path) || File.Exists(export.Path) == false)
+        {
+            return ListingSaveResult.Ok(Guid.Empty, "Operação fiscal concluída.", export.ValidationNotice);
+        }
+
+        var folder = await GetPreferenceValueAsync(SaftExportPaths.PreferenceToken, cancellationToken);
+        if (SaftExportPaths.TrySaveToFolder(export.Path, folder, out var savedPath))
+        {
+            return ListingSaveResult.Ok(Guid.Empty, savedPath, export.ValidationNotice);
+        }
+
+        // Avalonia asks the user where to save; keep the API/plugin temp path in Message.
+        return ListingSaveResult.Ok(Guid.Empty, export.Path, export.ValidationNotice, needsSaveAs: true);
     }
 
     private static ListingSnapshot NoticePage(PageSpec page)
@@ -1437,6 +1492,21 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     public Task<IReadOnlyCollection<string>?> AllowedMenuTitlesAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyCollection<string>?>(null);
+
+    public async Task<string?> GetPreferenceValueAsync(string token, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        return await database.PreferenceParameters.AsNoTracking()
+            .Where(item => item.Token == token)
+            .Select(item => item.Value)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 
     public async Task<ListingSaveResult> UndoReceiptAsync(Guid receiptId, CancellationToken cancellationToken = default)
     {
@@ -2053,9 +2123,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             new("Importar Clientes", PageKind.Files, null, false, false, false, "exports", [new ListingAction { Key = "import-customers", Label = "Importar" }], []),
             new("Exportar Artigos", PageKind.Files, null, false, false, false, "exports", [new ListingAction { Key = "export-articles", Label = "Exportar" }], []),
             new("Exportar Clientes", PageKind.Files, null, false, false, false, "exports", [new ListingAction { Key = "export-customers", Label = "Exportar" }], []),
-            new("SAF-T ano", PageKind.Notice, null, false, false, false, "Exporta o SAF-T do ano corrente.", [new ListingAction { Key = "saft-year", Label = "Exportar ano" }], []),
-            new("SAF-T último mês", PageKind.Notice, null, false, false, false, "Exporta o SAF-T do mês anterior.", [new ListingAction { Key = "saft-month", Label = "Exportar mês" }], []),
-            new("SAF-T período", PageKind.Notice, null, false, false, false, "Use as datas e exporte o SAF-T desse intervalo.", [new ListingAction { Key = "saft-period", Label = "Exportar período" }], []),
+            // SAF-T ano / mês / período are menu dialogs on BackOfficeWindow (not Notice listing pages).
             new("Documentos AGT", PageKind.Notice, null, false, false, false, "A consulta online de documentos AGT está disponível no modo cloud.", [new ListingAction { Key = "agt-consult", Label = "Consultar" }], []),
             new("Séries AGT", PageKind.Notice, null, false, false, false, "A consulta online de séries AGT está disponível no modo cloud.", [], []),
             Entity("Sessões de Trab.", typeof(WorkSessionPeriod), actions:

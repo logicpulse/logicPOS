@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.BackOffice;
+﻿namespace LogicPOS.Core.BackOffice;
 
 public interface IDashboardBillingService
 {
@@ -26,6 +26,11 @@ public interface IBackOfficeListingService
     Task<ListingSaveResult> RunActionAsync(string action, Guid? id, string? extra, CancellationToken cancellationToken = default);
 
     Task<ListingSaveResult> UndoReceiptAsync(Guid receiptId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Preference parameter value by token (e.g. PATH_SAFTPT). Null when missing.
+    /// </summary>
+    Task<string?> GetPreferenceValueAsync(string token, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Menu titles the signed-in user may open. Null means the menu stays fully available.

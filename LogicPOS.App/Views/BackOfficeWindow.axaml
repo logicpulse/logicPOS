@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         xmlns:views="using:LogicPOS.App.Views"
@@ -245,5 +245,119 @@
             <Panel x:Name="ReportsOverlay" Classes="login_alert_overlay" IsVisible="False">
                 <views:ReportsWindow x:Name="ReportsHost" />
             </Panel>
+
+            <Panel x:Name="SaftConfirmOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <Border Classes="login_alert_frame" Width="420" Height="300">
+                    <DockPanel Classes="login_alert_inner">
+                        <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                <TextBlock x:Name="SaftConfirmTitle" Classes="login_alert_title" Text="Exportar SAF-T" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button Classes="login_alert_action" Click="OnSaftConfirmYesClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_yes.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Sim" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action" Click="OnSaftConfirmNoClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Não" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <Grid Classes="login_alert_body">
+                            <Image Classes="login_alert_symbol"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question.png" />
+                            <TextBlock x:Name="SaftConfirmMessage" Classes="login_alert_message"
+                                       Text="Exportar o SAF-T?" />
+                        </Grid>
+                    </DockPanel>
+                </Border>
+            </Panel>
+
+            <Panel x:Name="SaftPeriodOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <Border Classes="login_alert_frame bo_entity_prompt">
+                    <DockPanel Classes="login_alert_inner">
+                        <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_question_window.png" />
+                                <TextBlock x:Name="SaftPeriodTitle" Classes="login_alert_title" Text="SAF-T Personalizado" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button Classes="login_alert_action" Click="OnSaftPeriodOkClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="login_alert_action" Click="OnSaftPeriodCancelClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <StackPanel Classes="bo_entity_form">
+                            <StackPanel Classes="bo_doc_date_field">
+                                <TextBlock x:Name="SaftPeriodStartLabel" Classes="bo_doc_label" Text="Data Inicial" />
+                                <CalendarDatePicker x:Name="SaftPeriodStart" Classes="bo_doc_date" />
+                            </StackPanel>
+                            <StackPanel Classes="bo_doc_date_field">
+                                <TextBlock x:Name="SaftPeriodEndLabel" Classes="bo_doc_label" Text="Data Final" />
+                                <CalendarDatePicker x:Name="SaftPeriodEnd" Classes="bo_doc_date" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </Panel>
+
+            <Panel x:Name="SaftMessageOverlay" Classes="login_alert_overlay" IsVisible="False">
+                <Border Classes="login_alert_frame bo_entity_prompt">
+                    <DockPanel Classes="login_alert_inner">
+                        <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <TextBlock x:Name="SaftMessageTitle" Classes="login_alert_title" Text="Exportar SAF-T" />
+                            </StackPanel>
+                        </Border>
+                        <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                            <StackPanel Classes="login_alert_action_buttons">
+                                <Button Classes="login_alert_action" Click="OnSaftMessageCloseClick">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                        <Grid Classes="login_alert_body">
+                            <Image Classes="login_alert_symbol"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                            <TextBlock x:Name="SaftMessageText"
+                                       Classes="login_alert_message"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </DockPanel>
+                </Border>
+            </Panel>
+
+            <views:ListingBusy x:Name="SaftBusy" ZIndex="200" />
     </Panel>
 </Window>

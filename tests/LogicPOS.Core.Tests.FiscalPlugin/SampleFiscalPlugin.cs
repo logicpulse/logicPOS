@@ -1,4 +1,4 @@
-using LogicPOS.Core.Fiscal;
+﻿using LogicPOS.Core.Fiscal;
 
 namespace LogicPOS.Core.Tests.FiscalPlugin;
 
@@ -13,8 +13,8 @@ public sealed class SampleFiscalPlugin : IFiscalModule
             QrPayload = "QR " + document.Number
         };
 
-    public Task<string?> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default)
-        => Task.FromResult<string?>(null);
+    public Task<SaftExportResult> ExportSaftAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default)
+        => Task.FromResult(SaftExportResult.CompletedWithoutFile());
 
     public Task<string?> RegisterSeriesAsync(Guid seriesId, CancellationToken cancellationToken = default)
         => Task.FromResult<string?>(null);
