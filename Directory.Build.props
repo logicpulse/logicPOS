@@ -1,0 +1,11 @@
+﻿<Project>
+  <!--
+    EF Core / Microsoft.Data.Sqlite still pull SQLitePCLRaw.lib.e_sqlite3 2.1.x,
+    which NuGet Audit flags as NU1903 (GHSA-2m69-gcr7-jv3q / CVE-2025-6965).
+    Pin the native package to 3.50.3 (SQLite >= 3.50.2). Safe for projects that
+    do not use SQLite: unused PackageReference is ignored at runtime.
+  -->
+  <ItemGroup>
+    <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="3.50.3" />
+  </ItemGroup>
+</Project>
