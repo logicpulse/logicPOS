@@ -136,7 +136,11 @@ public sealed class PosOrderService : IPosOrderService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var details = lines.Select(line => new CreateOrderDetailDto(line.ArticleId, line.Quantity, line.NetUnitPrice)).ToList();
+        var details = lines.Select(line => new CreateOrderDetailDto(
+            line.ArticleId,
+            line.Quantity,
+            line.UnitPrice,
+            PriceIncludesVat: line.PriceWithVat)).ToList();
 
         if (orderId is Guid existingId)
         {
@@ -534,9 +538,15 @@ public sealed class PosOrderService : IPosOrderService
         foreach (var detail in order.Tickets!.SelectMany(ticket => ticket.Details ?? []).Where(detail => articles.Contains(detail.ArticleId)))
         {
             detail.Quantity /= splitters;
-            detail.TotalTax /= splitters;
-            detail.TotalFinal /= splitters;
-            detail.TotalDiscount /= splitters;
+            var totals = DocumentLineCalculator.Calculate(
+                detail.Price,
+                detail.Quantity,
+                detail.Discount,
+                detail.Vat,
+                useAgtRounding: false);
+            detail.TotalDiscount = totals.TotalDiscount;
+            detail.TotalTax = totals.TotalTax;
+            detail.TotalFinal = totals.TotalFinal;
         }
 
         await database.SaveChangesAsync(cancellationToken);

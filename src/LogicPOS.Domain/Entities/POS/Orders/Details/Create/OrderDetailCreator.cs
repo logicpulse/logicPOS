@@ -28,10 +28,11 @@ internal class OrderDetailCreator : EntityCreator<OrderDetail>
         _entity.VatExemptionReasonId = article.VatExemptionReasonId;
         _entity.Unit = article.Unit;
         _entity.Quantity = _dto.Quantity;
-        _entity.Price = _dto.UnitPrice;
         _entity.Discount = article.Discount;
         _entity.Vat = article.Vat;
-        var totals = DocumentLineCalculator.Calculate(_dto.UnitPrice,
+        var unitPrice = DocumentLineCalculator.ToNetUnitPrice(_dto.UnitPrice, _entity.Vat, _dto.PriceIncludesVat);
+        _entity.Price = unitPrice;
+        var totals = DocumentLineCalculator.Calculate(unitPrice,
             _dto.Quantity,
             article.Discount,
             _entity.Vat,
