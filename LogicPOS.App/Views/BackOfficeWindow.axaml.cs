@@ -32,6 +32,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     private bool _backOfficeOnly;
     private bool _setupToastsShown;
     private StockManagementView? _stockView;
+    private string? _pendingSaftAction;
 
     public BackOfficeWindow()
         : this(string.Empty)
@@ -329,10 +330,8 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
                 ("Parâmetros de Sistema", false),
                 ("Terminais", false)
             }),
-            ("Exportar", "Accordion/pos_backoffice_export.png", new[]
+            ("SAFT", "Accordion/pos_backoffice_export.png", new[]
             {
-                ("Exportar Artigos", false),
-                ("Exportar Clientes", false),
                 ("SAF-T ano", false),
                 ("SAF-T último mês", false),
                 ("SAF-T período", false)
@@ -352,7 +351,18 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         var menu = sections.ToList();
         if (IsAngola())
         {
-            var exportIndex = menu.FindIndex(section => section.Title == "Exportar");
+            var exportIndex = menu.FindIndex(section => section.Title == "SAFT");
+            // Keep the separate AGT Séries/Documentos section; only rename the fiscal export accordion.
+            if (exportIndex >= 0)
+            {
+                menu[exportIndex] = ("AGT", "Accordion/pos_backoffice_export.png", new[]
+                {
+                    ("AGT ano", false),
+                    ("AGT último mês", false),
+                    ("AGT período", false)
+                });
+            }
+
             menu.Insert(exportIndex < 0 ? menu.Count : exportIndex, ("AGT", "Accordion/pos_backoffice_informacao_fiscal.png", new[]
             {
                 ("Séries AGT", false),
@@ -390,6 +400,13 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
                         if (title == "Atualizar")
                         {
                             ShowUpdate();
+                            return;
+                        }
+
+                        // SAF-T menu items stay on the current listing and open dialogs.
+                        if (SaftExportUi.IsMenuTitle(title))
+                        {
+                            OpenSaftFromMenu(title);
                             return;
                         }
 
@@ -525,12 +542,124 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         }
     }
 
-    public void OpenPage(string title) => ShowPage(title);
+    public void OpenPage(string title)
+    {
+        if (SaftExportUi.IsMenuTitle(title))
+        {
+            OpenSaftFromMenu(title);
+            return;
+        }
+
+        ShowPage(title);
+    }
 
     private void OpenReports()
     {
         ReportsOverlay.IsVisible = true;
         _ = ReportsHost.ShowAsync();
+    }
+
+    private void OpenSaftFromMenu(string title)
+    {
+        var action = SaftExportUi.ActionForMenu(title);
+        if (action == "saft-period")
+        {
+            ShowSaftPeriodDialog();
+            return;
+        }
+
+        _pendingSaftAction = action;
+        SaftConfirmTitle.Text = SaftExportUi.ExportDialogTitle();
+        SaftConfirmMessage.Text = action == "saft-month"
+            ? SaftExportUi.ConfirmMonthMessage()
+            : SaftExportUi.ConfirmYearMessage();
+        SaftConfirmOverlay.IsVisible = true;
+    }
+
+    private void ShowSaftPeriodDialog()
+    {
+        _pendingSaftAction = "saft-period";
+        SaftPeriodTitle.Text = SaftExportUi.CustomPeriodTitle();
+        SaftPeriodStartLabel.Text = PreferenceLabels.Text("global_date_start", "Data Inicial");
+        SaftPeriodEndLabel.Text = PreferenceLabels.Text("global_date_end", "Data Final");
+        SaftPeriodStart.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
+        SaftPeriodEnd.SelectedDate = DateTime.Today;
+        SaftPeriodOverlay.IsVisible = true;
+    }
+
+    private async void OnSaftConfirmYesClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        SaftConfirmOverlay.IsVisible = false;
+        var action = _pendingSaftAction;
+        _pendingSaftAction = null;
+        if (string.IsNullOrWhiteSpace(action))
+        {
+            return;
+        }
+
+        await RunSaftExportAsync(action, null);
+    }
+
+    private void OnSaftConfirmNoClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        _pendingSaftAction = null;
+        SaftConfirmOverlay.IsVisible = false;
+    }
+
+    private async void OnSaftPeriodOkClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        SaftPeriodOverlay.IsVisible = false;
+        var start = SaftPeriodStart.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
+        var end = SaftPeriodEnd.SelectedDate?.Date ?? DateTime.Today;
+        if (end < start)
+        {
+            (start, end) = (end, start);
+        }
+
+        _pendingSaftAction = null;
+        await RunSaftExportAsync("saft-period", $"{start:yyyy-MM-dd}|{end:yyyy-MM-dd}");
+    }
+
+    private void OnSaftPeriodCancelClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        _pendingSaftAction = null;
+        SaftPeriodOverlay.IsVisible = false;
+    }
+
+    private void OnSaftMessageCloseClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        => SaftMessageOverlay.IsVisible = false;
+
+    private async Task RunSaftExportAsync(string action, string? extra)
+    {
+        var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
+        if (service is null)
+        {
+            ShowSaftMessage(SaftExportUi.ExportErrorText());
+            return;
+        }
+
+        SaftBusy.Show("A exportar...");
+        await Task.Yield();
+
+        ListingSaveResult result;
+        try
+        {
+            result = await SaftExportUi.RunExportAsync(service, action, extra);
+        }
+        finally
+        {
+            SaftBusy.Hide();
+        }
+
+        var message = await SaftExportUi.FormatResultAsync(result, this);
+        ShowSaftMessage(message);
+    }
+
+    private void ShowSaftMessage(string message)
+    {
+        SaftMessageTitle.Text = SaftExportUi.ExportDialogTitle();
+        SaftMessageText.Text = message;
+        SaftMessageOverlay.IsVisible = true;
     }
 
     private static bool IsAngola()
@@ -544,6 +673,12 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
         title = service?.ResolveTitle(title) ?? title;
+        if (SaftExportUi.IsMenuTitle(title))
+        {
+            OpenSaftFromMenu(title);
+            return;
+        }
+
         if (title is "Relatórios")
         {
             OpenReports();
