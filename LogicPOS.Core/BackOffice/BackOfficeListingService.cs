@@ -1332,6 +1332,21 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var kind = FormDecimal.KindFor(property.Name);
         if (string.IsNullOrWhiteSpace(raw))
         {
+            if (FormDecimal.EmptyPolicy(property.Name) == FormDecimal.MeasuredEmpty.StoreZero)
+            {
+                if (Nullable.GetUnderlyingType(property.PropertyType) is not null)
+                {
+                    property.SetValue(entity, null);
+                }
+                else
+                {
+                    object zero = underlying == typeof(float) ? 0f : underlying == typeof(double) ? 0d : 0m;
+                    property.SetValue(entity, zero);
+                }
+
+                return true;
+            }
+
             error = $"Indique {Header(property.Name)}.";
             return true;
         }

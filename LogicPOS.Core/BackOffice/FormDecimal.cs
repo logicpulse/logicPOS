@@ -76,6 +76,32 @@ public static class FormDecimal
     public static FormDecimalKind KindFor(string? key)
         => IsMoneyKey(key) ? FormDecimalKind.Money : FormDecimalKind.Quantity;
 
+    /// <summary>Tare, weight and minimum stock may be left blank and are stored as zero.</summary>
+    public static bool IsOptionalMeasuredKey(string? key)
+        => key is "Tare" or "Weight" or "MinimumStock";
+
+    public enum MeasuredEmpty
+    {
+        NotMeasured,
+        StoreZero,
+        Required
+    }
+
+    public static MeasuredEmpty EmptyPolicy(string? key)
+    {
+        if (IsOptionalMeasuredKey(key))
+        {
+            return MeasuredEmpty.StoreZero;
+        }
+
+        if (IsQuantityKey(key) || IsMoneyKey(key))
+        {
+            return MeasuredEmpty.Required;
+        }
+
+        return MeasuredEmpty.NotMeasured;
+    }
+
     public static string Format(decimal value, FormDecimalKind kind = FormDecimalKind.Quantity)
     {
         var culture = CultureInfo.CurrentCulture;

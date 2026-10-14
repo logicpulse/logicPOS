@@ -291,6 +291,37 @@ public class BackOfficeAnomalyTests
         Assert.Equal(FormDecimalIssue.Empty, emptyIssue);
     }
 
+    [Fact]
+    public void Optional_tare_weight_and_minimum_stock_accept_an_empty_value()
+    {
+        Assert.Equal(FormDecimal.MeasuredEmpty.StoreZero, FormDecimal.EmptyPolicy("Tare"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.StoreZero, FormDecimal.EmptyPolicy("Weight"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.StoreZero, FormDecimal.EmptyPolicy("MinimumStock"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Quantity"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Price"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Price1"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("DefaultQuantity"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.NotMeasured, FormDecimal.EmptyPolicy("Discount"));
+
+        var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var optional = ArticleFormRules.Validate(
+            ValidArticle(parent, new Dictionary<string, string>
+            {
+                ["Tare"] = "",
+                ["Weight"] = "   ",
+                ["MinimumStock"] = ""
+            }),
+            vatRequiresExemption: false,
+            parent);
+        Assert.Null(optional);
+
+        var required = ArticleFormRules.Validate(
+            ValidArticle(parent, new Dictionary<string, string> { ["Price1"] = "" }),
+            vatRequiresExemption: false,
+            parent);
+        Assert.Equal("Indique o preço 1.", required);
+    }
+
     [Theory]
     [InlineData("pt-PT")]
     [InlineData("en-US")]
