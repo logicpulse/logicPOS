@@ -795,10 +795,11 @@ public partial class StockManagementView : UserControl
             SelectedItem = locations.FirstOrDefault(item => item.Id == currentLocation) ?? locations.FirstOrDefault()
         };
         _locationBox.Classes.Add("bo_entity_input");
-        _quantityBox = Field("Quantidade", quantity.ToString("0.###", CultureInfo.CurrentCulture), out _);
+        _quantityBox = Field("Quantidade", quantity.ToString("0.###", CultureInfo.CurrentCulture), out var quantityField);
+        EditorNotice.Text = string.Empty;
         EditorHost.Children.Add(Label("Nova localização"));
         EditorHost.Children.Add(_locationBox);
-        EditorHost.Children.Add(_quantityBox);
+        EditorHost.Children.Add(quantityField);
         EditorOverlay.IsVisible = true;
     }
 
@@ -881,6 +882,8 @@ public partial class StockManagementView : UserControl
         EditorHost.Children.Add(_supplierBox);
         EditorHost.Children.Add(Label("Data"));
         EditorHost.Children.Add(_dateBox);
+        _dateBox.SelectedDate = DateTime.Today;
+        EditorNotice.Text = string.Empty;
         EditorHost.Children.Add(documentField);
         EditorHost.Children.Add(notesField);
         EditorHost.Children.Add(attachButton);
@@ -1187,25 +1190,30 @@ public partial class StockManagementView : UserControl
         var service = Service;
         if (service is null)
         {
+            EditorError("Serviço de stocks indisponível.");
             return;
         }
 
-        ListingSaveResult result;
+        EditorNotice.Text = string.Empty;
+        var result = ListingSaveResult.Fail("Falha ao guardar.");
+        try
+        {
         switch (_editor)
         {
             case EditorMode.CreateMovement:
             {
-                var supplier = ListingFilters.SelectedLookup(_supplierBox);
-                if (supplier is null || _dateBox?.SelectedDate is null)
+                var supplier = ChosenOption(_supplierBox);
+                var date = ReadEditorDate();
+                if (supplier is null || date is null)
                 {
-                    Notice.Text = "Preencha fornecedor e data.";
+                    EditorError("Preencha fornecedor e data.");
                     return;
                 }
 
                 var lines = new List<StockMovementLineInput>();
                 foreach (var line in _lineControls)
                 {
-                    var article = ListingFilters.SelectedLookup(line.Article);
+                    var article = ChosenOption(line.Article);
                     if (article is null)
                     {
                         if (string.IsNullOrWhiteSpace(line.Article.Text))
@@ -1213,17 +1221,17 @@ public partial class StockManagementView : UserControl
                             continue;
                         }
 
-                        Notice.Text = "Selecione o artigo na lista.";
+                        EditorError("Selecione o artigo na lista.");
                         return;
                     }
 
-                    if (decimal.TryParse(line.Quantity.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false || quantity == 0)
+                    if (TryDecimal(line.Quantity.Text, out var quantity) == false || quantity == 0)
                     {
-                        Notice.Text = "Quantidade inválida numa das linhas.";
+                        EditorError("Quantidade inválida numa das linhas.");
                         return;
                     }
 
-                    decimal.TryParse(line.Price.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price);
+                    TryDecimal(line.Price.Text, out var price);
                     lines.Add(new StockMovementLineInput
                     {
                         ArticleId = article.Id,
@@ -1237,7 +1245,7 @@ public partial class StockManagementView : UserControl
                 result = await service.CreateMovementAsync(new StockMovementCreateRequest
                 {
                     SupplierId = supplier.Id,
-                    Date = _dateBox.SelectedDate.Value.Date,
+                    Date = date.Value,
                     DocumentNumber = DocumentNumberOrReference(),
                     Notes = _notesBox?.Text,
                     ExternalDocument = _attachedPdf,
@@ -1252,9 +1260,9 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.EditMovement when _editId is Guid id:
             {
-                if (decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false)
+                if (TryDecimal(_quantityBox?.Text, out var quantity) == false)
                 {
-                    Notice.Text = "Quantidade inválida.";
+                    EditorError("Quantidade inválida.");
                     return;
                 }
 
@@ -1273,10 +1281,10 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.AdjustArticle when _editId is Guid articleId:
             {
-                if (decimal.TryParse(_totalBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var total) == false ||
-                    decimal.TryParse(_minimumBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var minimum) == false)
+                if (TryDecimal(_totalBox?.Text, out var total) == false ||
+                    TryDecimal(_minimumBox?.Text, out var minimum) == false)
                 {
-                    Notice.Text = "Valores de stock inválidos.";
+                    EditorError("Valores de stock inválidos.");
                     return;
                 }
 
@@ -1292,10 +1300,10 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.ChangeLocation when _editId is Guid warehouseArticleId:
             {
-                if (_locationBox?.SelectedItem is not StockLocationOption location ||
-                    decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false)
+                if (SelectedLocation() is not StockLocationOption location ||
+                    TryDecimal(_quantityBox?.Text, out var quantity) == false)
                 {
-                    Notice.Text = "Localização ou quantidade inválida.";
+                    EditorError("Localização ou quantidade inválida.");
                     return;
                 }
 
@@ -1306,7 +1314,7 @@ public partial class StockManagementView : UserControl
             {
                 if (ListingFilters.SelectedLookup(_exchangeBox) is not LookupOption exchange)
                 {
-                    Notice.Text = "Selecione o artigo de troca.";
+                    EditorError("Selecione o artigo de troca.");
                     return;
                 }
 
@@ -1317,7 +1325,7 @@ public partial class StockManagementView : UserControl
             {
                 if (string.IsNullOrWhiteSpace(_serialBox?.Text))
                 {
-                    Notice.Text = "Indique o número de série.";
+                    EditorError("Indique o número de série.");
                     return;
                 }
 
@@ -1329,7 +1337,7 @@ public partial class StockManagementView : UserControl
                     {
                         if (ListingFilters.SelectedLookup(box) is not LookupOption child || child.Id == Guid.Empty)
                         {
-                            Notice.Text = "Selecione o número de série de cada artigo filho.";
+                            EditorError("Selecione o número de série de cada artigo filho.");
                             return;
                         }
 
@@ -1345,17 +1353,17 @@ public partial class StockManagementView : UserControl
                 if (ListingFilters.SelectedLookup(_articleBox) is not LookupOption article ||
                     _locationBox?.SelectedItem is not StockLocationOption location ||
                     _dateBox?.SelectedDate is null ||
-                    decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var positionQty) == false ||
+                    TryDecimal(_quantityBox?.Text, out var positionQty) == false ||
                     positionQty == 0)
                 {
-                    Notice.Text = "Preencha artigo, localização, data e quantidade.";
+                    EditorError("Preencha artigo, localização, data e quantidade.");
                     return;
                 }
 
-                var supplier = ListingFilters.SelectedLookup(_supplierBox);
+                var supplier = ChosenOption(_supplierBox);
                 if (HasChoices(_supplierBox) && supplier is null)
                 {
-                    Notice.Text = "Selecione o fornecedor.";
+                    EditorError("Selecione o fornecedor.");
                     return;
                 }
 
@@ -1388,13 +1396,21 @@ public partial class StockManagementView : UserControl
             default:
                 return;
         }
-
-        Notice.Text = result.Succeeded ? string.Empty : result.Error ?? "Falha ao guardar.";
-        if (result.Succeeded == false)
+        }
+        catch (Exception exception)
         {
-            Toast.Error(this, Notice.Text);
+            EditorError(exception.Message);
             return;
         }
+
+        if (result.Succeeded == false)
+        {
+            EditorError(result.Error ?? "Falha ao guardar.");
+            return;
+        }
+
+        Notice.Text = string.Empty;
+        EditorNotice.Text = string.Empty;
 
         Toast.Success(this, result.Message ?? "Guardado com sucesso.");
         EditorOverlay.IsVisible = false;
@@ -1639,6 +1655,86 @@ public partial class StockManagementView : UserControl
         ToolTip.SetTip(button, "Anexar");
         button.Click += async (_, _) => await PickAttachmentAsync();
         return button;
+    }
+
+    private void EditorError(string message)
+    {
+        EditorNotice.Text = message;
+        Notice.Text = message;
+        Toast.Error(this, message);
+    }
+
+    private DateTime? ReadEditorDate()
+    {
+        if (_dateBox?.SelectedDate is DateTime date)
+        {
+            return date.Date;
+        }
+
+        return null;
+    }
+
+    private StockLocationOption? SelectedLocation()
+        => _locationBox?.SelectedItem as StockLocationOption
+            ?? _locationBox?.Items.Cast<object?>().OfType<StockLocationOption>()
+                .FirstOrDefault(item => string.Equals(item.Label, _locationBox.SelectionBoxItem?.ToString(), StringComparison.CurrentCulture));
+
+    private static LookupOption? ChosenOption(AutoCompleteBox? box)
+    {
+        var selected = ListingFilters.SelectedLookup(box);
+        if (selected is not null)
+        {
+            return selected;
+        }
+
+        if (box?.SelectedItem is LookupOption option && option.Id != Guid.Empty)
+        {
+            return option;
+        }
+
+        var text = (box?.Text ?? string.Empty).Trim();
+        if (text.Length == 0 || box?.ItemsSource is not System.Collections.IEnumerable items)
+        {
+            return null;
+        }
+
+        LookupOption? match = null;
+        foreach (var item in items)
+        {
+            if (item is not LookupOption candidate || candidate.Id == Guid.Empty)
+            {
+                continue;
+            }
+
+            var label = candidate.Label ?? string.Empty;
+            var search = candidate.Search ?? string.Empty;
+            var hit = text.Equals(label, StringComparison.CurrentCultureIgnoreCase)
+                || search.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                    .Any(part => part.Equals(text, StringComparison.CurrentCultureIgnoreCase));
+            if (hit == false)
+            {
+                continue;
+            }
+
+            if (match is not null)
+            {
+                return null;
+            }
+
+            match = candidate;
+        }
+
+        return match;
+    }
+
+    private static bool TryDecimal(string? text, out decimal value)
+    {
+        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value))
+        {
+            return true;
+        }
+
+        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
     }
 
     private string DocumentNumberOrReference()

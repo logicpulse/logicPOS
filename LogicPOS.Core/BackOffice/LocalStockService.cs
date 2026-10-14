@@ -633,7 +633,7 @@ public sealed class LocalStockService : IStockManagementService
             return ListingSaveResult.Fail("Posição de stock não encontrada.");
         }
 
-        if (quantity <= 0 || quantity > source.Quantity)
+        if (quantity <= 0)
         {
             return ListingSaveResult.Fail("A quantidade a transferir é inválida.");
         }
@@ -643,19 +643,69 @@ public sealed class LocalStockService : IStockManagementService
             return ListingSaveResult.Ok(warehouseArticleId, "Localização sem alterações.");
         }
 
+        // A serial number is one row. FindOrCreate would return this same row (the database
+        // still has the old location) and the move would be undone.
+        if (string.IsNullOrWhiteSpace(source.SerialNumber) == false)
+        {
+            var duplicate = await database.WarehouseArticles.AnyAsync(
+                item => item.Id != source.Id
+                    && item.IsDeleted == false
+                    && item.SerialNumber == source.SerialNumber,
+                cancellationToken);
+            if (duplicate)
+            {
+                return ListingSaveResult.Fail("Já existe outro artigo com este número de série.");
+            }
+
+            source.WarehouseLocationId = locationId;
+            source.UpdatedAt = DateTime.Now;
+            await database.SaveChangesAsync(cancellationToken);
+            return ListingSaveResult.Ok(source.Id, "Localização atualizada.");
+        }
+
+        if (quantity > source.Quantity)
+        {
+            return ListingSaveResult.Fail("A quantidade a transferir é inválida.");
+        }
+
+        var destination = await database.WarehouseArticles.FirstOrDefaultAsync(
+            item => item.Id != source.Id
+                && item.IsDeleted == false
+                && item.ArticleId == source.ArticleId
+                && item.WarehouseLocationId == locationId
+                && (item.SerialNumber == null || item.SerialNumber == string.Empty),
+            cancellationToken);
+        if (quantity == source.Quantity && destination is null)
+        {
+            source.WarehouseLocationId = locationId;
+            source.UpdatedAt = DateTime.Now;
+            await database.SaveChangesAsync(cancellationToken);
+            return ListingSaveResult.Ok(source.Id, "Localização atualizada.");
+        }
+
         source.Quantity -= quantity;
         source.UpdatedAt = DateTime.Now;
-        if (source.Quantity <= 0 && string.IsNullOrWhiteSpace(source.SerialNumber) == false)
+        if (source.Quantity <= 0)
         {
             source.IsDeleted = true;
         }
 
-        var target = await FindOrCreateWarehouseArticleAsync(database, source.ArticleId, locationId, source.SerialNumber, cancellationToken);
-        target.Quantity += quantity;
-        target.Status = source.Status;
-        target.UpdatedAt = DateTime.Now;
+        if (destination is null)
+        {
+            destination = new WarehouseArticle
+            {
+                ArticleId = source.ArticleId,
+                WarehouseLocationId = locationId,
+                Quantity = 0,
+                Status = ArticleSerialNumberStatus.None
+            };
+            database.WarehouseArticles.Add(destination);
+        }
+
+        destination.Quantity += quantity;
+        destination.UpdatedAt = DateTime.Now;
         await database.SaveChangesAsync(cancellationToken);
-        return ListingSaveResult.Ok(target.Id, "Localização atualizada.");
+        return ListingSaveResult.Ok(destination.Id, "Localização atualizada.");
     }
 
     public async Task<ListingSaveResult> UpdateUniqueArticleAsync(Guid warehouseArticleId, string? serialNumber, IReadOnlyList<Guid>? children, CancellationToken cancellationToken = default)

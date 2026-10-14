@@ -156,7 +156,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
 
         var currency = await database.Currencies.AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == request.CurrencyId, cancellationToken);
-        database.Receipts.Add(new Receipt
+        var receipt = new Receipt
         {
             PaymentMethodId = request.PaymentMethodId,
             DocumentType = documentType,
@@ -175,7 +175,17 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             Notes = string.IsNullOrWhiteSpace(request.Notes)
                 ? string.Join(",", documents.Select(item => item.Id))
                 : request.Notes
-        });
+        };
+        database.Receipts.Add(receipt);
+        foreach (var document in documents.Where(item => item.Type is "FT" or "ND"))
+        {
+            database.Payments.Add(new Payment
+            {
+                Receipt = receipt,
+                DocumentId = document.Id,
+                CreditAmount = document.TotalFinal
+            });
+        }
         await database.SaveChangesAsync(cancellationToken);
         return ReceiptPayResult.Done("Recibo emitido.");
     }

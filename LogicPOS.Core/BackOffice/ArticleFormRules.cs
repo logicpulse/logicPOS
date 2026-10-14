@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.Core.BackOffice;
@@ -60,29 +61,118 @@ public static class ArticleFormRules
             return null;
         }
 
-        var childText = Cell(fields, "ChildArticleId");
-        if (articleId is not null && string.IsNullOrWhiteSpace(childText))
+        var lines = ReadComposition(fields, articleId, out var compositionError);
+        if (compositionError is not null)
         {
-            return null;
+            return compositionError;
         }
 
-        if (Guid.TryParse(childText, out var child) == false || child == Guid.Empty)
-        {
-            return "Indique o artigo associado.";
-        }
-
-        if (articleId is Guid current && current == child)
-        {
-            return "O artigo composto não pode incluir o próprio artigo.";
-        }
-
-        if (Regex.IsMatch(Cell(fields, "ChildQuantity"), DecimalAboveZeroPattern) == false)
-        {
-            return "Indique a quantidade do artigo associado.";
-        }
-
-        return null;
+        // Creating a composed article needs at least one child. Editing may leave the list unchanged.
+        return lines.Count == 0 && articleId is null
+            ? "Indique o artigo associado."
+            : null;
     }
+
+    public readonly record struct CompositionLine(Guid ChildId, decimal Quantity);
+
+    /// <summary>
+    /// Reads every associated article. Indexed keys (ChildArticleId:0) and the legacy single key are both accepted.
+    /// Blank rows are ignored so the editor can offer an empty extra line.
+    /// </summary>
+    public static IReadOnlyList<CompositionLine> ReadComposition(IReadOnlyDictionary<string, string> fields, Guid? articleId, out string? error)
+    {
+        error = null;
+        var lines = new List<CompositionLine>();
+        var seen = new HashSet<Guid>();
+        foreach (var suffix in CompositionSuffixes(fields))
+        {
+            var childText = Cell(fields, ArticleKey(suffix));
+            if (Guid.TryParse(childText, out var child) == false || child == Guid.Empty)
+            {
+                continue;
+            }
+
+            if (articleId is Guid current && current == child)
+            {
+                error = "O artigo composto não pode incluir o próprio artigo.";
+                return [];
+            }
+
+            if (seen.Add(child) == false)
+            {
+                error = "O artigo associado está repetido.";
+                return [];
+            }
+
+            var quantityText = Cell(fields, QuantityKey(suffix));
+            if (Regex.IsMatch(quantityText, DecimalAboveZeroPattern) == false)
+            {
+                error = "Indique a quantidade do artigo associado.";
+                return [];
+            }
+
+            if (TryQuantity(quantityText, out var quantity) == false)
+            {
+                error = "Indique a quantidade do artigo associado.";
+                return [];
+            }
+
+            lines.Add(new CompositionLine(child, quantity));
+        }
+
+        return lines;
+    }
+
+    private static IEnumerable<string> CompositionSuffixes(IReadOnlyDictionary<string, string> fields)
+    {
+        var suffixes = new List<string>();
+        foreach (var key in fields.Keys)
+        {
+            string? suffix = null;
+            if (key == "ChildArticleId" || key == "ChildQuantity")
+            {
+                suffix = string.Empty;
+            }
+            else if (key.StartsWith("ChildArticleId:", StringComparison.Ordinal))
+            {
+                suffix = key["ChildArticleId:".Length..];
+            }
+            else if (key.StartsWith("ChildQuantity:", StringComparison.Ordinal))
+            {
+                suffix = key["ChildQuantity:".Length..];
+            }
+
+            if (suffix is not null && suffixes.Contains(suffix) == false)
+            {
+                suffixes.Add(suffix);
+            }
+        }
+
+        return suffixes;
+    }
+
+    /// <summary>
+    /// A single comma is the decimal separator used by the GTK quantity pattern, even when the process culture treats it as a thousands mark.
+    /// </summary>
+    private static bool TryQuantity(string text, out decimal value)
+    {
+        text = text.Trim();
+        if (text.Contains(',') && text.Contains('.') == false)
+        {
+            return decimal.TryParse(text, NumberStyles.Number, CultureInfo.GetCultureInfo("pt-PT"), out value) && value > 0;
+        }
+
+        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value) && value > 0)
+        {
+            return true;
+        }
+
+        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value) && value > 0;
+    }
+
+    private static string ArticleKey(string suffix) => suffix.Length == 0 ? "ChildArticleId" : "ChildArticleId:" + suffix;
+
+    private static string QuantityKey(string suffix) => suffix.Length == 0 ? "ChildQuantity" : "ChildQuantity:" + suffix;
 
     private static string? Match(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)
     {
