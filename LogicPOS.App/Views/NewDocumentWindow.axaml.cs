@@ -1806,6 +1806,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        services.GetService<PosCustomerService>()?.InvalidateSearch();
         PosCustomer? customer = null;
         if (saved.Id != Guid.Empty)
         {

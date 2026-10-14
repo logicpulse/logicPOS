@@ -428,6 +428,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
+        services.GetService<PosCustomerService>()?.InvalidateSearch();
         var customer = await services.GetRequiredService<IPosCustomerService>().FindAsync(saved.Id);
         if (customer is not null)
         {

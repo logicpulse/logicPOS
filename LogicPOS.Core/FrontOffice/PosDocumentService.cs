@@ -601,7 +601,16 @@ public sealed class PosDocumentService : IPosDocumentService
         var document = created.Value!;
         await database.Documents.AddAsync(document, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
+        InvalidateCustomerSearchIfCreated(dto);
         return PosDocumentResult.Ok(document.Id, document.Number);
+    }
+
+    private static void InvalidateCustomerSearchIfCreated(CreateDocumentDto dto)
+    {
+        if (dto.CustomerId is null && dto.Customer is not null)
+        {
+            AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
+        }
     }
 
     private static async Task<PosDocumentResult> EnsureSeriesAsync(
@@ -1480,6 +1489,7 @@ public sealed class PosDocumentService : IPosDocumentService
         var document = created.Value!;
         await database.Documents.AddAsync(document, cancellationToken);
         await database.SaveChangesAsync(cancellationToken);
+        InvalidateCustomerSearchIfCreated(dto);
         return PosDocumentResult.Ok(document.Id, document.Number);
     }
 
