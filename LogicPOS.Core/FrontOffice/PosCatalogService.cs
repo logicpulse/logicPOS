@@ -1,4 +1,4 @@
-using LogicPOS.Persistence.Database;
+﻿using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -66,6 +66,7 @@ public sealed class PosCatalogService : IPosCatalogService
                 article.Discount,
                 Price = article.Price1.Value,
                 article.VatDirectSellingId,
+                article.VatExemptionReasonId,
                 Vat = article.VatDirectSelling != null ? article.VatDirectSelling.Value : 0m,
                 Label = article.Button != null ? article.Button.Label : null,
                 Image = article.Button != null ? article.Button.Image : null
@@ -100,7 +101,8 @@ public sealed class PosCatalogService : IPosCatalogService
                 item.Discount,
                 item.VatDirectSellingId,
                 item.Image,
-                item.PVPVariable)).ToList());
+                item.PVPVariable,
+                item.VatExemptionReasonId)).ToList());
     }
 
     private static string LabelOrDesignation(string? label, string designation)

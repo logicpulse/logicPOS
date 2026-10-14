@@ -46,6 +46,7 @@ public partial class EntityListing : UserControl
     private readonly List<(DataGridColumn Column, bool Visible)> _columnSnapshot = new();
     private static readonly string[] DateKeys = ["Date", "StartDate", "ReadingDate", "CreatedAt", "UpdatedAt", "EndDate"];
     private readonly List<(Button Header, Control Page, string? ShowWhen)> _articleTabs = new();
+    private readonly List<(Control Block, string ShowWhen)> _articleFieldBlocks = new();
     private ContentControl? _articlePages;
 
     public EntityListing()
@@ -631,6 +632,7 @@ public partial class EntityListing : UserControl
         EditorFields.Children.Clear();
         _inputs.Clear();
         _articleTabs.Clear();
+        _articleFieldBlocks.Clear();
         _articlePages = null;
         IReadOnlyList<ListingField> fields;
         try
@@ -697,6 +699,13 @@ public partial class EntityListing : UserControl
             EditorFields.Children.Add(shell);
             WireArticleRules();
             ApplyArticleTabs();
+            ApplyArticleFieldVisibility();
+            // Re-evaluate after AutoCompleteBox binds SelectedItem (TypeHasPrice / VatDutyFree).
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                ApplyArticleTabs();
+                ApplyArticleFieldVisibility();
+            });
         }
         else
         {
@@ -704,6 +713,8 @@ public partial class EntityListing : UserControl
             {
                 await AddFieldAsync(service, EditorFields, field);
             }
+
+            ApplyArticleFieldVisibility();
         }
 
         EditorOverlay.IsVisible = true;
@@ -848,15 +859,25 @@ public partial class EntityListing : UserControl
         }
 
         _inputs.Add((field.Key, input, field.Kind));
+        Control block;
         if (caption == false)
         {
-            return input;
+            block = input;
+        }
+        else
+        {
+            var stack = new StackPanel();
+            stack.Children.Add(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = field.Label });
+            stack.Children.Add(input);
+            block = stack;
         }
 
-        var stack = new StackPanel();
-        stack.Children.Add(new TextBlock { Classes = { "bo_new_doc_caption" }, Text = field.Label });
-        stack.Children.Add(input);
-        return stack;
+        if (string.IsNullOrWhiteSpace(field.ShowWhen) == false)
+        {
+            _articleFieldBlocks.Add((block, field.ShowWhen!));
+        }
+
+        return block;
     }
 
     private void Place(Grid grid, Control input, int row, int column, ListingField field)
@@ -1370,20 +1391,41 @@ public partial class EntityListing : UserControl
         {
             if (input.Input is CheckBox check && input.Key is "IsComposed" or "UniqueArticles")
             {
-                check.IsCheckedChanged += (_, _) => ApplyArticleTabs();
+                check.IsCheckedChanged += (_, _) =>
+                {
+                    ApplyArticleTabs();
+                    ApplyArticleFieldVisibility();
+                };
             }
 
-            if (input.Key == "TypeId" && input.Input is AutoCompleteBox typeBox)
+            if (input.Key is "TypeId" or "VatOnTableId" or "VatDirectSellingId")
             {
-                typeBox.PropertyChanged += (_, args) =>
+                var box = LookupBox(input.Input);
+                if (box is null)
+                {
+                    continue;
+                }
+
+                box.PropertyChanged += (_, args) =>
                 {
                     if (args.Property == AutoCompleteBox.TextProperty || args.Property == AutoCompleteBox.SelectedItemProperty)
                     {
                         ApplyArticleTabs();
+                        ApplyArticleFieldVisibility();
                     }
                 };
             }
         }
+    }
+
+    private static AutoCompleteBox? LookupBox(Control? input)
+    {
+        if (input is DockPanel dock)
+        {
+            return dock.Children.OfType<AutoCompleteBox>().FirstOrDefault();
+        }
+
+        return input as AutoCompleteBox;
     }
 
     private void SelectArticleTab((Button Header, Control Page, string? ShowWhen) tab)
@@ -1418,6 +1460,14 @@ public partial class EntityListing : UserControl
         }
     }
 
+    private void ApplyArticleFieldVisibility()
+    {
+        foreach (var field in _articleFieldBlocks)
+        {
+            field.Block.IsVisible = ShowArticleTab(field.ShowWhen);
+        }
+    }
+
     private bool ShowArticleTab(string? showWhen)
     {
         if (string.IsNullOrWhiteSpace(showWhen))
@@ -1430,12 +1480,17 @@ public partial class EntityListing : UserControl
             return TypeHasPrice();
         }
 
+        if (showWhen == "VatDutyFree")
+        {
+            return VatIsDutyFree();
+        }
+
         return _inputs.FirstOrDefault(input => input.Key == showWhen).Input is CheckBox check && check.IsChecked == true;
     }
 
     private bool TypeHasPrice()
     {
-        var option = ChosenLookup(_inputs.FirstOrDefault(input => input.Key == "TypeId").Input);
+        var option = ResolveLookup("TypeId");
         if (option is null || option.Id == Guid.Empty)
         {
             return false;
@@ -1448,7 +1503,7 @@ public partial class EntityListing : UserControl
     {
         foreach (var key in new[] { "VatOnTableId", "VatDirectSellingId" })
         {
-            var option = ChosenLookup(_inputs.FirstOrDefault(input => input.Key == key).Input);
+            var option = ResolveLookup(key);
             if (option is not null
                 && decimal.TryParse(option.Meta, NumberStyles.Number, CultureInfo.InvariantCulture, out var rate)
                 && rate == 0)
@@ -1458,6 +1513,21 @@ public partial class EntityListing : UserControl
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Resolves a lookup by SelectedItem first (stable for tab rules), then by typed text match.
+    /// </summary>
+    private LookupOption? ResolveLookup(string key)
+    {
+        var input = _inputs.FirstOrDefault(item => item.Key == key).Input;
+        var box = LookupBox(input);
+        if (box?.SelectedItem is LookupOption selected && selected.Id != Guid.Empty)
+        {
+            return selected;
+        }
+
+        return ChosenLookup(input);
     }
 
     private ImageChrome CreateImageChrome(ListingField field)
