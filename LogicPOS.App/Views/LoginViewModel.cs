@@ -433,13 +433,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         var result = await _loginService.SignInAsync(_selectedUser.Id, Pin);
         if (result.Succeeded == false)
         {
-            if (result.TerminalUpdateFailed)
-            {
-                StatusMessage = result.Message;
-                return;
-            }
-
-            ShowWrongPin();
+            ShowLoginFailure(result.Message);
             return;
         }
 
@@ -502,13 +496,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         var result = await _loginService.SignInAsync(_selectedUser.Id, Pin);
         if (result.Succeeded == false)
         {
-            if (result.TerminalUpdateFailed)
-            {
-                StatusMessage = result.Message;
-                return;
-            }
-
-            ShowWrongPin();
+            ShowLoginFailure(result.Message);
             return;
         }
 
@@ -615,10 +603,28 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         SessionStarted?.Invoke(this, userName);
     }
 
-    private void ShowWrongPin()
+    /// <summary>
+    /// Shows the failed login message in the status label.
+    /// Keeps the PIN field empty (red) so the watermark is not used as the error text.
+    /// </summary>
+    private void ShowLoginFailure(string message)
     {
+        var text = FormatLoginFailure(message);
+        // Clear PIN before PinIsError — the Pin setter clears the error flag when text changes.
+        Pin = string.Empty;
         PinIsError = true;
-        Pin = WrongPinText;
+        StatusMessage = text;
+    }
+
+    private static string FormatLoginFailure(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message)
+            || string.Equals(message.Trim(), "Credenciais inválidas", StringComparison.OrdinalIgnoreCase))
+        {
+            return WrongPinText;
+        }
+
+        return message.Trim();
     }
 
     private void RebuildSlots()
