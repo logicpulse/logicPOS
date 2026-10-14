@@ -11,6 +11,8 @@ public class MoneyFormatTests
     [InlineData("10,00", "10")]
     [InlineData("0.00", "0")]
     [InlineData("0,05", "0.05")]
+    [InlineData("0.125", "0.125")]
+    [InlineData("0,125", "0.125")]
     [InlineData("1500.00", "1500")]
     [InlineData("1500,00", "1500")]
     [InlineData("1.234,56", "1234.56")]

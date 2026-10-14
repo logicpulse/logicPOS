@@ -18,7 +18,8 @@ public static class MoneyFormat
 
     /// <summary>
     /// Portuguese grouping (1.234,56) and a dot decimal (1234.56 or 1.50).
-    /// A single separator followed by exactly three digits ("1.500", "1,500") is rejected.
+    /// A single separator followed by exactly three digits is rejected when the integer part is not zero ("1.500", "1,500").
+    /// "0.125" and "0,125" are 0.125.
     /// </summary>
     public static bool TryParse(string? text, out decimal amount)
     {
@@ -69,7 +70,7 @@ public static class MoneyFormat
                 return false;
             }
 
-            if (parts.Length == 2 && parts[1].Length == 3)
+            if (parts.Length == 2 && parts[1].Length == 3 && parts[0].All(character => character == '0') == false)
             {
                 return false;
             }
