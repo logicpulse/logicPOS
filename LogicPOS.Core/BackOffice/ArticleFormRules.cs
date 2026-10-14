@@ -1,4 +1,3 @@
-using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace LogicPOS.Core.BackOffice;
@@ -67,10 +66,37 @@ public static class ArticleFormRules
             return compositionError;
         }
 
-        // Creating a composed article needs at least one child. Editing may leave the list unchanged.
+        // Creating a composed article needs at least one child. Saving an edit with none clears the children.
         return lines.Count == 0 && articleId is null
             ? "Indique o artigo associado."
             : null;
+    }
+
+    public readonly record struct CompositionPlan(bool ClearExisting, IReadOnlyList<CompositionLine> Lines, string? Error);
+
+    /// <summary>
+    /// Decides how a save treats associated articles. Unchecking the composed flag, or leaving no children, removes them.
+    /// A read error is returned and must not be ignored.
+    /// </summary>
+    public static CompositionPlan PlanComposition(IReadOnlyDictionary<string, string> fields, Guid? articleId)
+    {
+        if (fields.ContainsKey("IsComposed") == false)
+        {
+            return new CompositionPlan(false, [], null);
+        }
+
+        if (IsOn(fields, "IsComposed") == false)
+        {
+            return new CompositionPlan(true, [], null);
+        }
+
+        var lines = ReadComposition(fields, articleId, out var error);
+        if (error is not null)
+        {
+            return new CompositionPlan(false, [], error);
+        }
+
+        return new CompositionPlan(lines.Count == 0, lines, null);
     }
 
     public readonly record struct CompositionLine(Guid ChildId, decimal Quantity);
@@ -151,24 +177,8 @@ public static class ArticleFormRules
         return suffixes;
     }
 
-    /// <summary>
-    /// A single comma is the decimal separator used by the GTK quantity pattern, even when the process culture treats it as a thousands mark.
-    /// </summary>
     private static bool TryQuantity(string text, out decimal value)
-    {
-        text = text.Trim();
-        if (text.Contains(',') && text.Contains('.') == false)
-        {
-            return decimal.TryParse(text, NumberStyles.Number, CultureInfo.GetCultureInfo("pt-PT"), out value) && value > 0;
-        }
-
-        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value) && value > 0)
-        {
-            return true;
-        }
-
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value) && value > 0;
-    }
+        => FormDecimal.TryParse(text, out value) && value > 0;
 
     private static string ArticleKey(string suffix) => suffix.Length == 0 ? "ChildArticleId" : "ChildArticleId:" + suffix;
 

@@ -1266,7 +1266,7 @@ public partial class StockManagementView : UserControl
                     return;
                 }
 
-                decimal.TryParse(_priceBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price);
+                TryDecimal(_priceBox?.Text, out var price);
                 result = await service.UpdateMovementAsync(new StockMovementUpdateRequest
                 {
                     Id = id,
@@ -1397,9 +1397,9 @@ public partial class StockManagementView : UserControl
                 return;
         }
         }
-        catch (Exception exception)
+        catch (Exception)
         {
-            EditorError(exception.Message);
+            EditorError("Não foi possível guardar.");
             return;
         }
 
@@ -1680,62 +1680,14 @@ public partial class StockManagementView : UserControl
                 .FirstOrDefault(item => string.Equals(item.Label, _locationBox.SelectionBoxItem?.ToString(), StringComparison.CurrentCulture));
 
     private static LookupOption? ChosenOption(AutoCompleteBox? box)
-    {
-        var selected = ListingFilters.SelectedLookup(box);
-        if (selected is not null)
-        {
-            return selected;
-        }
-
-        if (box?.SelectedItem is LookupOption option && option.Id != Guid.Empty)
-        {
-            return option;
-        }
-
-        var text = (box?.Text ?? string.Empty).Trim();
-        if (text.Length == 0 || box?.ItemsSource is not System.Collections.IEnumerable items)
-        {
-            return null;
-        }
-
-        LookupOption? match = null;
-        foreach (var item in items)
-        {
-            if (item is not LookupOption candidate || candidate.Id == Guid.Empty)
-            {
-                continue;
-            }
-
-            var label = candidate.Label ?? string.Empty;
-            var search = candidate.Search ?? string.Empty;
-            var hit = text.Equals(label, StringComparison.CurrentCultureIgnoreCase)
-                || search.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                    .Any(part => part.Equals(text, StringComparison.CurrentCultureIgnoreCase));
-            if (hit == false)
-            {
-                continue;
-            }
-
-            if (match is not null)
-            {
-                return null;
-            }
-
-            match = candidate;
-        }
-
-        return match;
-    }
+        => LookupChoice.Choose(
+            ListingFilters.SelectedLookup(box),
+            box?.SelectedItem as LookupOption,
+            box?.Text,
+            box?.ItemsSource as System.Collections.IEnumerable);
 
     private static bool TryDecimal(string? text, out decimal value)
-    {
-        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value))
-        {
-            return true;
-        }
-
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
-    }
+        => FormDecimal.TryParse(text, out value);
 
     private string DocumentNumberOrReference()
     {

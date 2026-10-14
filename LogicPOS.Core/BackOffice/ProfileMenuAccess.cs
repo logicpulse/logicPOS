@@ -65,14 +65,38 @@ public static class ProfileMenuAccess
         ["AGT período"] = UserProfilePermissions.System.BACKOFFICE_MAN_SYSTEM_EXPORTSAFTPT_CUSTOM_MENU
     };
 
+    public const string PermissionsTitle = "Permissões";
+
+    public const string PermissionsMenuToken = UserProfilePermissions.System.Users.BACKOFFICE_MAN_USERPERMISSIONPROFILE_MENU;
+
+    public static readonly Guid OwnerProfileId = Guid.Parse("1626e21f-75e6-429e-b0ac-edb755e733c2");
+
     public static bool IsRestricted(string title) => Tokens.ContainsKey(title);
 
-    public static IReadOnlyCollection<string> AllowedTitles(IEnumerable<string> grantedTokens)
+    /// <summary>
+    /// The seeded owner profile, a profile named Proprietário, or the profile of the admin login
+    /// always keeps the permissions menu so that profile cannot lock itself out.
+    /// </summary>
+    public static bool KeepsPermissionsMenu(Guid profileId, string? code, string? designation, bool assignedToAdminLogin)
+    {
+        _ = code;
+        return profileId == OwnerProfileId
+            || assignedToAdminLogin
+            || string.Equals(designation?.Trim(), "Proprietário", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static IReadOnlyCollection<string> AllowedTitles(IEnumerable<string> grantedTokens, bool keepPermissionsMenu = false)
     {
         var granted = grantedTokens as IReadOnlySet<string> ?? new HashSet<string>(grantedTokens, StringComparer.Ordinal);
-        return Tokens
+        var titles = Tokens
             .Where(pair => granted.Contains(pair.Value))
             .Select(pair => pair.Key)
-            .ToArray();
+            .ToList();
+        if (keepPermissionsMenu && titles.Contains(PermissionsTitle, StringComparer.Ordinal) == false)
+        {
+            titles.Add(PermissionsTitle);
+        }
+
+        return titles;
     }
 }

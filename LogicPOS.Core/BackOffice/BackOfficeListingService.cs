@@ -274,15 +274,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             PageKind.Files => QueryFiles(page),
             PageKind.Notice => NoticePage(page),
             _ => page.EntityType == typeof(Receipt)
-                ? await QueryReceiptsAsync(database, cancellationToken)
+                ? await QueryReceiptsAsync(database, customerId, cancellationToken)
                 : await QueryEntitiesAsync(database, page, cancellationToken)
         };
 
         var rows = snapshot.Rows;
-        if (customerId is Guid selectedCustomer && selectedCustomer != Guid.Empty && title == "Recibos")
-        {
-            rows = await FilterReceiptsByCustomerAsync(database, rows, selectedCustomer, cancellationToken);
-        }
 
         if (string.IsNullOrWhiteSpace(search) == false)
         {
@@ -354,9 +350,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             AddEmptyCompositionRow(fields);
         }
 
-        if (page.EntityType == typeof(UserProfile))
+        if (entity is UserProfile profile)
         {
-            await AddProfilePermissionsAsync(database, fields, id, cancellationToken);
+            await AddProfilePermissionsAsync(database, fields, profile, cancellationToken);
         }
 
         return fields;
@@ -470,6 +466,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 return ListingSaveResult.Fail(missing);
             }
 
+            if (entity is Article plannedArticle)
+            {
+                var plan = ArticleFormRules.PlanComposition(fields, plannedArticle.Id);
+                if (plan.Error is not null)
+                {
+                    return ListingSaveResult.Fail(plan.Error);
+                }
+            }
+
+            await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
             if (creating)
             {
                 database.Add(entity);
@@ -495,7 +501,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             await database.SaveChangesAsync(cancellationToken);
             if (entity is Article savedArticle)
             {
-                await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
+                var childError = await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
+                if (childError is not null)
+                {
+                    return ListingSaveResult.Fail(childError);
+                }
+
                 await database.SaveChangesAsync(cancellationToken);
             }
 
@@ -505,6 +516,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 await database.SaveChangesAsync(cancellationToken);
             }
 
+            await transaction.CommitAsync(cancellationToken);
             return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
         }
         catch (Exception exception)
@@ -588,10 +600,24 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
     }
 
-    private async Task<ListingSnapshot> QueryReceiptsAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    private async Task<ListingSnapshot> QueryReceiptsAsync(LogicPOSDbContext database, Guid? customerId, CancellationToken cancellationToken)
     {
-        var receipts = await database.Receipts.AsNoTracking()
-            .Where(item => item.IsDeleted == false)
+        var query = database.Receipts.AsNoTracking().Where(item => item.IsDeleted == false);
+        if (customerId is Guid customer && customer != Guid.Empty)
+        {
+            var allowed = await ReceiptIdsForCustomerAsync(database, customer, cancellationToken);
+            if (allowed.Count == 0)
+            {
+                return new ListingSnapshot
+                {
+                    Columns = ListingColumns.For("Recibos", ["Date", "Number", "Status", "CustomerId", "FiscalNumber", "TotalFinal", "UpdatedAt"])
+                };
+            }
+
+            query = query.Where(item => allowed.Contains(item.Id));
+        }
+
+        var receipts = await query
             .OrderByDescending(item => item.CreatedAt)
             .Take(RowLimit)
             .ToListAsync(cancellationToken);
@@ -656,9 +682,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return new ListingSnapshot { Columns = columns, Rows = rows };
     }
 
-    private static async Task<List<ListingRow>> FilterReceiptsByCustomerAsync(
+    private static async Task<HashSet<Guid>> ReceiptIdsForCustomerAsync(
         LogicPOSDbContext database,
-        IReadOnlyList<ListingRow> rows,
         Guid customerId,
         CancellationToken cancellationToken)
     {
@@ -666,6 +691,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Where(item => item.IsDeleted == false && item.CustomerId == customerId)
             .Select(item => item.Id)
             .ToListAsync(cancellationToken);
+        if (documentIds.Count == 0)
+        {
+            return [];
+        }
+
         var documents = documentIds.ToHashSet();
         var fromPayments = await database.Payments.AsNoTracking()
             .Where(item => item.IsDeleted == false && documents.Contains(item.DocumentId))
@@ -673,9 +703,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Distinct()
             .ToListAsync(cancellationToken);
         var allowed = fromPayments.ToHashSet();
-        var ids = rows.Select(row => row.Id).ToList();
         var notes = await database.Receipts.AsNoTracking()
-            .Where(item => ids.Contains(item.Id))
+            .Where(item => item.IsDeleted == false && item.Notes != null && item.Notes != "")
             .Select(item => new { item.Id, item.Notes })
             .ToListAsync(cancellationToken);
         foreach (var note in notes)
@@ -686,7 +715,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             }
         }
 
-        return rows.Where(row => allowed.Contains(row.Id)).ToList();
+        return allowed;
     }
 
     private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, CancellationToken cancellationToken)
@@ -1699,24 +1728,24 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         });
     }
 
-    private static async Task SaveArticleChildrenAsync(LogicPOSDbContext database, Guid articleId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)
+    private static async Task<string?> SaveArticleChildrenAsync(LogicPOSDbContext database, Guid articleId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)
     {
-        if (fields.TryGetValue("IsComposed", out var composed) == false || composed is not ("true" or "True" or "1"))
+        var plan = ArticleFormRules.PlanComposition(fields, articleId);
+        if (plan.Error is not null)
         {
-            return;
+            return plan.Error;
         }
 
-        var lines = ArticleFormRules.ReadComposition(fields, articleId, out _);
-        if (lines.Count == 0)
+        if (plan.ClearExisting == false && plan.Lines.Count == 0)
         {
-            return;
+            return null;
         }
 
         var existing = await database.ArticleCompositions
             .Where(item => item.ParentId == articleId && item.IsDeleted == false)
             .ToListAsync(cancellationToken);
         var keep = new HashSet<Guid>();
-        foreach (var line in lines)
+        foreach (var line in plan.Lines)
         {
             keep.Add(line.ChildId);
             var row = existing.FirstOrDefault(item => item.ChildId == line.ChildId);
@@ -1741,6 +1770,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             row.DeletedAt = DateTime.Now;
             row.UpdatedAt = DateTime.Now;
         }
+
+        return null;
     }
 
     private static bool CanRemove(object entity)
@@ -2107,6 +2138,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Crie primeiro um método de pagamento.");
         }
 
+        var alreadyPaid = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.DocumentId == document.Id)
+            .SumAsync(item => (decimal?)item.CreditAmount, cancellationToken) ?? 0m;
+        var due = ReceiptCredit.Outstanding(document.TotalFinal, alreadyPaid);
+        if (due <= 0)
+        {
+            return ListingSaveResult.Fail("O documento já está pago.");
+        }
+
         document.Paid = true;
         document.PaymentDate = DateTime.Now;
         document.UpdatedAt = DateTime.Now;
@@ -2118,11 +2158,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Status = "N",
             SourcePayment = "P",
             Mechanism = "NU",
-            Amount = document.TotalFinal,
-            AmountInWords = document.TotalFinal.ToString("0.00", CultureInfo.CurrentCulture),
+            Amount = due,
+            AmountInWords = due.ToString("0.00", CultureInfo.CurrentCulture),
             SourceId = document.Number,
             CurrencyCode = "EUR",
-            CurrencyAmount = document.TotalFinal,
+            CurrencyAmount = due,
             ExchangeRate = 1,
             Notes = document.Id.ToString()
         };
@@ -2131,7 +2171,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             Receipt = receipt,
             DocumentId = document.Id,
-            CreditAmount = document.TotalFinal
+            CreditAmount = due
         });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(receipt.Id, "Recibo emitido.");
@@ -2160,7 +2200,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Where(item => item.UserProfileId == profileId && item.IsDeleted == false)
             .Select(item => new { item.PermissionItemId, item.Granted })
             .ToListAsync(cancellationToken);
-        // Profiles that were never edited keep the full menu.
+        var keepPermissions = await ProfileKeepsPermissionsMenuAsync(database, profileId, cancellationToken);
+        // Profiles that were never edited keep the full menu, including Permissões.
         if (grants.Count == 0)
         {
             return null;
@@ -2171,15 +2212,29 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Where(item => item.IsDeleted == false && grantedIds.Contains(item.Id))
             .Select(item => item.Token)
             .ToListAsync(cancellationToken);
-        return ProfileMenuAccess.AllowedTitles(tokens);
+        return ProfileMenuAccess.AllowedTitles(tokens, keepPermissions);
     }
 
-    private static async Task AddProfilePermissionsAsync(LogicPOSDbContext database, List<ListingField> fields, Guid? profileId, CancellationToken cancellationToken)
+    private static async Task<bool> ProfileKeepsPermissionsMenuAsync(LogicPOSDbContext database, Guid profileId, CancellationToken cancellationToken)
+    {
+        var profile = await database.UserProfiles.AsNoTracking()
+            .Where(item => item.Id == profileId && item.IsDeleted == false)
+            .Select(item => new { item.Code, item.Designation })
+            .FirstOrDefaultAsync(cancellationToken);
+        var logins = await database.Users.AsNoTracking()
+            .Where(item => item.ProfileId == profileId && item.IsDeleted == false)
+            .Select(item => item.Login)
+            .ToListAsync(cancellationToken);
+        var assignedToAdmin = logins.Any(login => string.Equals(login, "admin", StringComparison.OrdinalIgnoreCase));
+        return ProfileMenuAccess.KeepsPermissionsMenu(profileId, profile?.Code, profile?.Designation, assignedToAdmin);
+    }
+
+    private static async Task AddProfilePermissionsAsync(LogicPOSDbContext database, List<ListingField> fields, UserProfile profile, CancellationToken cancellationToken)
     {
         var items = await database.PermissionItems.AsNoTracking()
             .Where(item => item.IsDeleted == false)
             .OrderBy(item => item.Order)
-            .Select(item => new { item.Id, item.Designation, item.PermissionGroupId })
+            .Select(item => new { item.Id, item.Designation, item.Token, item.PermissionGroupId })
             .ToListAsync(cancellationToken);
         if (items.Count == 0)
         {
@@ -2190,23 +2245,27 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Where(item => item.IsDeleted == false)
             .ToDictionaryAsync(item => item.Id, item => item.Designation, cancellationToken);
         var granted = new HashSet<Guid>();
-        if (profileId is Guid id && id != Guid.Empty)
+        var keepPermissions = false;
+        if (profile.Id != Guid.Empty)
         {
             var ids = await database.PermissionProfiles.AsNoTracking()
-                .Where(item => item.UserProfileId == id && item.IsDeleted == false && item.Granted)
+                .Where(item => item.UserProfileId == profile.Id && item.IsDeleted == false && item.Granted)
                 .Select(item => item.PermissionItemId)
                 .ToListAsync(cancellationToken);
             granted = ids.ToHashSet();
+            keepPermissions = await ProfileKeepsPermissionsMenuAsync(database, profile.Id, cancellationToken);
         }
 
         foreach (var item in items)
         {
+            var locked = keepPermissions && item.Token == ProfileMenuAccess.PermissionsMenuToken;
             fields.Add(new ListingField
             {
                 Key = "perm:" + item.Id.ToString(),
                 Label = string.IsNullOrWhiteSpace(item.Designation) ? item.Id.ToString() : item.Designation,
                 Kind = "bool",
-                Value = granted.Contains(item.Id) ? "true" : "false",
+                Value = locked || granted.Contains(item.Id) ? "true" : "false",
+                ReadOnly = locked,
                 Group = groups.TryGetValue(item.PermissionGroupId, out var group) && string.IsNullOrWhiteSpace(group) == false
                     ? group
                     : "Privilégios"
@@ -2249,6 +2308,36 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             row.IsDeleted = false;
             row.UpdatedAt = DateTime.Now;
         }
+
+        if (await ProfileKeepsPermissionsMenuAsync(database, profileId, cancellationToken) == false)
+        {
+            return;
+        }
+
+        var menuItemId = await database.PermissionItems.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Token == ProfileMenuAccess.PermissionsMenuToken)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (menuItemId is not Guid protectedId || protectedId == Guid.Empty)
+        {
+            return;
+        }
+
+        var protectedRow = existing.FirstOrDefault(item => item.PermissionItemId == protectedId);
+        if (protectedRow is null)
+        {
+            database.PermissionProfiles.Add(new PermissionProfile
+            {
+                UserProfileId = profileId,
+                PermissionItemId = protectedId,
+                Granted = true
+            });
+            return;
+        }
+
+        protectedRow.Granted = true;
+        protectedRow.IsDeleted = false;
+        protectedRow.UpdatedAt = DateTime.Now;
     }
 
     public async Task<string?> GetPreferenceValueAsync(string token, CancellationToken cancellationToken = default)
@@ -2878,13 +2967,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private static string DescribeException(Exception exception)
     {
-        var current = exception;
-        while (current.InnerException is not null)
+        if (exception is InvalidOperationException)
         {
-            current = current.InnerException;
+            return exception.Message;
         }
 
-        return current.Message;
+        return "Não foi possível concluir a operação.";
     }
 
     private PageSpec? Find(string title) => _pages.FirstOrDefault(page => page.Title == title);

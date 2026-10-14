@@ -124,7 +124,16 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             return ReceiptPayResult.Fail("Documento não encontrado.");
         }
 
-        var invoiceAmounts = documents.Where(item => item.Type is "FT" or "ND").Select(item => item.TotalFinal);
+        var paidRows = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && request.DocumentIds.Contains(item.DocumentId))
+            .GroupBy(item => item.DocumentId)
+            .Select(group => new { group.Key, Amount = group.Sum(item => item.CreditAmount) })
+            .ToListAsync(cancellationToken);
+        var alreadyPaid = paidRows.ToDictionary(item => item.Key, item => item.Amount);
+        decimal PaidOf(Document document) => alreadyPaid.TryGetValue(document.Id, out var amount) ? amount : 0m;
+
+        var invoiceAmounts = documents.Where(item => item.Type is "FT" or "ND")
+            .Select(item => ReceiptCredit.Outstanding(item.TotalFinal, PaidOf(item)));
         var creditAmounts = documents.Where(item => item.Type == "NC").Select(item => item.TotalFinal);
         var settleable = DocumentSettlementService.ComputeSettleableAmount(invoiceAmounts, creditAmounts);
         var receiptAmount = DocumentLineCalculator.ReceiptAmount(settleable, request.CurrencyAmount, request.ExchangeRate);
@@ -140,19 +149,13 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 item.TotalFinal,
                 item.TotalTax,
                 item.WithholdingTaxAmount,
-                0m,
+                PaidOf(item),
                 item.CreatedAt))
             .ToList();
         var creditPool = creditAmounts.Sum(amount => amount.Round());
         var allocations = DocumentSettlementService.AllocateInvoicePayments(settlementDocs, receiptAmount, creditPool);
         var taxPayable = DocumentSettlementService.SumTaxPayable(allocations);
         var withholding = DocumentSettlementService.SumWithholding(allocations);
-
-        foreach (var document in documents.Where(item => item.Type is "FT" or "ND"))
-        {
-            document.Paid = true;
-            document.UpdatedAt = DateTime.Now;
-        }
 
         var currency = await database.Currencies.AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == request.CurrencyId, cancellationToken);
@@ -177,14 +180,25 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 : request.Notes
         };
         database.Receipts.Add(receipt);
-        foreach (var document in documents.Where(item => item.Type is "FT" or "ND"))
+        foreach (var allocation in allocations)
         {
+            if (allocation.AmountToPay <= 0)
+            {
+                continue;
+            }
+
             database.Payments.Add(new Payment
             {
                 Receipt = receipt,
-                DocumentId = document.Id,
-                CreditAmount = document.TotalFinal
+                DocumentId = allocation.DocumentId,
+                CreditAmount = allocation.AmountToPay
             });
+            var document = documents.First(item => item.Id == allocation.DocumentId);
+            if (ReceiptCredit.Outstanding(document.TotalFinal, PaidOf(document) + allocation.AmountToPay) <= 0)
+            {
+                document.Paid = true;
+                document.UpdatedAt = DateTime.Now;
+            }
         }
         await database.SaveChangesAsync(cancellationToken);
         return ReceiptPayResult.Done("Recibo emitido.");

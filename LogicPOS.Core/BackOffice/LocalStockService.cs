@@ -228,9 +228,9 @@ public sealed class LocalStockService : IStockManagementService
             await ApplyMovementAsync(database, request, cancellationToken);
             return ListingSaveResult.Ok(Guid.Empty, "Movimento de stock registado.");
         }
-        catch (Exception exception)
+        catch (Exception)
         {
-            return ListingSaveResult.Fail(exception.Message);
+            return ListingSaveResult.Fail("Não foi possível registar o movimento de stock.");
         }
     }
 
@@ -623,6 +623,12 @@ public sealed class LocalStockService : IStockManagementService
             .ToList();
     }
 
+    public readonly record struct BulkLocationPlan(bool DeleteSourceWhenEmpty, ArticleSerialNumberStatus DestinationStatus);
+
+    /// <summary>A bulk move keeps the source status and leaves a zero-quantity row in place.</summary>
+    public static BulkLocationPlan PlanBulkLocation(ArticleSerialNumberStatus sourceStatus)
+        => new(DeleteSourceWhenEmpty: false, sourceStatus);
+
     public async Task<ListingSaveResult> ChangeLocationAsync(Guid warehouseArticleId, Guid locationId, decimal quantity, CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -685,7 +691,8 @@ public sealed class LocalStockService : IStockManagementService
 
         source.Quantity -= quantity;
         source.UpdatedAt = DateTime.Now;
-        if (source.Quantity <= 0)
+        var plan = PlanBulkLocation(source.Status);
+        if (source.Quantity <= 0 && plan.DeleteSourceWhenEmpty)
         {
             source.IsDeleted = true;
         }
@@ -697,7 +704,7 @@ public sealed class LocalStockService : IStockManagementService
                 ArticleId = source.ArticleId,
                 WarehouseLocationId = locationId,
                 Quantity = 0,
-                Status = ArticleSerialNumberStatus.None
+                Status = plan.DestinationStatus
             };
             database.WarehouseArticles.Add(destination);
         }

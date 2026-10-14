@@ -1,5 +1,8 @@
-﻿using LogicPOS.Application.Features.System.Users;
+﻿using System.Globalization;
+using LogicPOS.Application.Features.System.Users;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
+using LogicPOS.Domain.Enums;
 
 namespace LogicPOS.Core.Tests.BackOffice;
 
@@ -103,6 +106,137 @@ public class BackOfficeAnomalyTests
         Assert.Contains("Recibos", allowed);
         Assert.DoesNotContain("Famílias", allowed);
         Assert.DoesNotContain("Clientes", allowed);
+    }
+
+    [Theory]
+    [InlineData("pt-PT")]
+    [InlineData("en-US")]
+    public void Decimal_text_treats_dot_and_comma_as_decimal_not_thousands(string culture)
+    {
+        var previous = CultureInfo.CurrentCulture;
+        CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(culture);
+        try
+        {
+            Assert.True(FormDecimal.TryParse("2.5", out var dotted));
+            Assert.Equal(2.5m, dotted);
+            Assert.True(FormDecimal.TryParse("2,5", out var comma));
+            Assert.Equal(2.5m, comma);
+            Assert.False(FormDecimal.TryParse("1.234,56", out _));
+            Assert.False(FormDecimal.TryParse("1,234.56", out _));
+
+            var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
+            var child = Guid.Parse("22222222-2222-2222-2222-222222222222");
+            var fields = ValidArticle(parent, new Dictionary<string, string>
+            {
+                ["IsComposed"] = "true",
+                ["ChildArticleId"] = child.ToString(),
+                ["ChildQuantity"] = "2.5"
+            });
+            var lines = ArticleFormRules.ReadComposition(fields, parent, out var error);
+            Assert.Null(error);
+            Assert.Equal(2.5m, lines[0].Quantity);
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = previous;
+        }
+    }
+
+    [Fact]
+    public void Empty_or_unchecked_composition_clears_children_and_errors_are_kept()
+    {
+        var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var child = Guid.Parse("22222222-2222-2222-2222-222222222222");
+        var empty = ValidArticle(parent, new Dictionary<string, string>
+        {
+            ["IsComposed"] = "true",
+            ["ChildArticleId:0"] = string.Empty
+        });
+        var off = ValidArticle(parent, new Dictionary<string, string>
+        {
+            ["IsComposed"] = "false",
+            ["ChildArticleId:0"] = child.ToString(),
+            ["ChildQuantity:0"] = "1"
+        });
+        var invalid = ValidArticle(parent, new Dictionary<string, string>
+        {
+            ["IsComposed"] = "true",
+            ["ChildArticleId:0"] = parent.ToString(),
+            ["ChildQuantity:0"] = "1"
+        });
+
+        var cleared = ArticleFormRules.PlanComposition(empty, parent);
+        var removed = ArticleFormRules.PlanComposition(off, parent);
+        var failed = ArticleFormRules.PlanComposition(invalid, parent);
+
+        Assert.True(cleared.ClearExisting);
+        Assert.Empty(cleared.Lines);
+        Assert.Null(cleared.Error);
+        Assert.True(removed.ClearExisting);
+        Assert.Empty(removed.Lines);
+        Assert.False(failed.ClearExisting);
+        Assert.Equal("O artigo composto não pode incluir o próprio artigo.", failed.Error);
+    }
+
+    [Fact]
+    public void Partial_receipt_credit_is_the_amount_received()
+    {
+        Assert.Equal(60m, ReceiptCredit.Outstanding(100m, 40m));
+        Assert.Equal(0m, ReceiptCredit.Outstanding(100m, 100m));
+
+        var invoiceId = Guid.Parse("44444444-4444-4444-4444-444444444444");
+        var allocations = DocumentSettlementService.AllocateInvoicePayments(
+        [
+            new DocumentSettlementService.SettlementDocument(
+                invoiceId,
+                "FT",
+                TotalFinal: 100m,
+                TotalTax: 23m,
+                WithholdingTaxAmount: 0m,
+                TotalPaid: 40m,
+                CreatedAt: DateTime.UtcNow)
+        ],
+        receiptCashAmount: 60m,
+        creditNotePoolTotal: 0m);
+
+        Assert.Equal(60m, allocations[0].AmountToPay);
+        Assert.NotEqual(100m, allocations[0].AmountToPay);
+    }
+
+    [Fact]
+    public void Owner_profile_keeps_the_permissions_menu()
+    {
+        Assert.True(ProfileMenuAccess.KeepsPermissionsMenu(ProfileMenuAccess.OwnerProfileId, "10", "Proprietário", false));
+        Assert.True(ProfileMenuAccess.KeepsPermissionsMenu(Guid.NewGuid(), "20", "Caixa", assignedToAdminLogin: true));
+        Assert.False(ProfileMenuAccess.KeepsPermissionsMenu(Guid.NewGuid(), "10", "Caixa", false));
+
+        var allowed = ProfileMenuAccess.AllowedTitles(
+            [UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_MENU],
+            keepPermissionsMenu: true);
+        Assert.Contains(ProfileMenuAccess.PermissionsTitle, allowed);
+        Assert.Contains("Artigos", allowed);
+        Assert.DoesNotContain("Clientes", allowed);
+    }
+
+    [Fact]
+    public void Bulk_location_move_keeps_status_and_does_not_delete_an_empty_row()
+    {
+        var plan = LocalStockService.PlanBulkLocation(ArticleSerialNumberStatus.Available);
+        Assert.False(plan.DeleteSourceWhenEmpty);
+        Assert.Equal(ArticleSerialNumberStatus.Available, plan.DestinationStatus);
+    }
+
+    [Fact]
+    public void Lookup_choice_ignores_a_partial_match()
+    {
+        var cafe = new LookupOption { Id = Guid.Parse("55555555-5555-5555-5555-555555555555"), Label = "Café - Expresso", Search = "A1 Café Expresso" };
+        var other = new LookupOption { Id = Guid.Parse("66666666-6666-6666-6666-666666666666"), Label = "Café", Search = "A2 Café" };
+        var items = new[] { cafe, other };
+
+        Assert.Null(LookupChoice.Choose(null, null, "Expresso", items));
+        Assert.Null(LookupChoice.Choose(null, null, "A1", items));
+        Assert.Equal(other.Id, LookupChoice.Choose(null, null, "Café", items)?.Id);
+        Assert.Equal(cafe.Id, LookupChoice.Choose(null, cafe, "Expresso", items)?.Id);
     }
 
     private static Dictionary<string, string> ValidArticle(Guid id, Dictionary<string, string> extra)
