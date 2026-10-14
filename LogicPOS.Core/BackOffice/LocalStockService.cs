@@ -323,6 +323,16 @@ public sealed class LocalStockService : IStockManagementService
                 movement.SerialNumber,
                 cancellationToken);
             stock.Quantity -= movement.Quantity;
+            // Reversing a stock-out must put the unique article back to Available.
+            if (string.IsNullOrWhiteSpace(movement.SerialNumber) == false && movement.Quantity < 0)
+            {
+                stock.Status = ArticleSerialNumberStatus.Available;
+                if (stock.Quantity < 1)
+                {
+                    stock.Quantity = 1;
+                }
+            }
+
             stock.UpdatedAt = DateTime.Now;
         }
 
@@ -434,7 +444,8 @@ public sealed class LocalStockService : IStockManagementService
                     ArticlePrice = item.Article?.Price1?.Value ?? 0m,
                     PurchaseDate = inbound?.Date,
                     SaleDate = outbound?.Date,
-                    OriginDocument = inbound?.DocumentNumber,
+                    // Doc. origem opens the attached PDF only — show a number only when one is attached.
+                    OriginDocument = inbound?.ExternalDocument is { Length: > 0 } ? inbound.DocumentNumber : null,
                     SaleDocument = outbound?.Detail?.Document?.Number ?? outbound?.DocumentNumber,
                     InMovementId = inbound?.Id ?? Guid.Empty,
                     OutMovementId = outbound?.Id,
