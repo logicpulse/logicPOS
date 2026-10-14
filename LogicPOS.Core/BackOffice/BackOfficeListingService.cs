@@ -500,6 +500,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 AppComposition.Services?.GetRequiredService<CompanyCurrency>().Reload(database);
             }
 
+            if (entity is Customer)
+            {
+                AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
+            }
+
             return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
         }
         catch (Exception exception)
@@ -536,6 +541,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             page.EntityType.GetProperty("DeletedAt")?.SetValue(entity, DateTime.Now);
             page.EntityType.GetProperty("UpdatedAt")?.SetValue(entity, DateTime.Now);
             await database.SaveChangesAsync(cancellationToken);
+            if (entity is Customer)
+            {
+                AppComposition.Services?.GetService<PosCustomerService>()?.InvalidateSearch();
+            }
+
             return ListingSaveResult.Ok(id, "Registo eliminado.");
         }
         catch (Exception exception)

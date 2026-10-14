@@ -1060,7 +1060,7 @@ public partial class NewDocumentWindow : UserControl
 
         var hasSerial = string.IsNullOrWhiteSpace(EditSerial.Text) == false;
         EditQuantity.IsReadOnly = hasSerial;
-        if (hasSerial && ParseDecimal(EditQuantity.Text) != 1)
+        if (hasSerial && ParseQuantity(EditQuantity.Text) != 1)
         {
             EditQuantity.Text = "1";
         }
@@ -1110,7 +1110,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var vat = SelectedVat()?.Percentage ?? _editing.VatPercentage;
         var totals = NewDocumentLine.Totals(_editing.PriceIncludesVat, price, quantity, discount, vat);
@@ -1127,7 +1127,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var serial = EditSerial.Text?.Trim();
         if (string.IsNullOrWhiteSpace(serial) == false && quantity != 1)
@@ -1252,6 +1252,11 @@ public partial class NewDocumentWindow : UserControl
     private static decimal ParseDecimal(string? text)
     {
         return MoneyFormat.TryParse(text, out var value) ? value : 0m;
+    }
+
+    private static decimal ParseQuantity(string? text)
+    {
+        return QuantityFormat.TryParse(text, out var value) ? value : 0m;
     }
 
     private static string Money(decimal value)
@@ -1426,7 +1431,7 @@ public partial class NewDocumentWindow : UserControl
             CustomerSuggest.IsOpen = _customerMatches.Count > 0;
             ErrorLabel.Text = _customerMatches.Count == 0 ? "Não foi encontrado nenhum cliente." : string.Empty;
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             if (ticket != _customerSearch)
             {
@@ -1434,7 +1439,7 @@ public partial class NewDocumentWindow : UserControl
             }
 
             HideCustomerSuggest();
-            ErrorLabel.Text = exception.Message;
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
         }
     }
 
@@ -1470,9 +1475,10 @@ public partial class NewDocumentWindow : UserControl
         {
             matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
         }
-        catch (Exception exception)
+        catch (Exception)
         {
-            ErrorLabel.Text = exception.Message;
+            CustomerOverlay.IsVisible = false;
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
             return;
         }
 

@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,9 @@ public sealed class PosCustomerService : IPosCustomerService
     private const string FinalConsumerName = "Consumidor Final";
 
     private readonly IServiceScopeFactory _scopes;
+    private readonly object _cacheGate = new();
+    private int _cacheVersion;
+    private CachedCustomers? _cache;
 
     public PosCustomerService(IServiceScopeFactory scopes)
     {
@@ -96,9 +101,43 @@ public sealed class PosCustomerService : IPosCustomerService
         }
 
         var folded = Fold(term);
+        var customers = await CachedAsync(cancellationToken);
+        return customers
+            .Where(item => item.Name.Contains(folded, StringComparison.Ordinal)
+                || item.FiscalNumber.Contains(folded, StringComparison.Ordinal)
+                || item.CardNumber.Contains(folded, StringComparison.Ordinal))
+            .OrderBy(item => item.Customer.Name)
+            .Take(20)
+            .Select(item => item.Customer)
+            .ToList();
+    }
+
+    /// <summary>Drops the decrypted search list after a customer is saved or deleted.</summary>
+    public void InvalidateSearch()
+    {
+        lock (_cacheGate)
+        {
+            _cache = null;
+            _cacheVersion++;
+        }
+    }
+
+    private async Task<IReadOnlyList<CachedCustomer>> CachedAsync(CancellationToken cancellationToken)
+    {
+        int version;
+        lock (_cacheGate)
+        {
+            if (_cache is not null)
+            {
+                return _cache.Rows;
+            }
+
+            version = _cacheVersion;
+        }
+
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        // Name and fiscal number are encrypted, so a SQL replace cannot fold accents.
+        // Name and fiscal number are encrypted, so accent folding happens after decryption.
         var customers = await database.Customers.AsNoTracking()
             .Where(item => item.IsDeleted == false)
             .Select(item => new
@@ -116,42 +155,51 @@ public sealed class PosCustomerService : IPosCustomerService
             })
             .ToListAsync(cancellationToken);
 
-        return customers
-            .Where(item => Hits(item.Name, folded) || Hits(item.FiscalNumber, folded) || Hits(item.CardNumber, folded))
-            .OrderBy(item => item.Name)
-            .Take(20)
-            .Select(item => Map(item.Id, item.Name, item.FiscalNumber, item.CardNumber, item.Discount, item.Address, item.Locality, item.ZipCode, item.City, item.Country))
+        var rows = customers
+            .Select(item => new CachedCustomer(
+                Map(item.Id, item.Name, item.FiscalNumber, item.CardNumber, item.Discount, item.Address, item.Locality, item.ZipCode, item.City, item.Country),
+                Fold(item.Name),
+                Fold(item.FiscalNumber),
+                Fold(item.CardNumber)))
             .ToList();
+
+        lock (_cacheGate)
+        {
+            if (_cacheVersion == version)
+            {
+                _cache = new CachedCustomers(rows);
+            }
+
+            return _cache?.Rows ?? rows;
+        }
     }
 
-    private static bool Hits(string? value, string folded)
-        => string.IsNullOrEmpty(value) == false && Fold(value).Contains(folded, StringComparison.Ordinal);
-
-    private static string Fold(string value)
+    private static string Fold(string? value)
     {
-        var text = value;
-        foreach (var (from, to) in Accents)
+        if (string.IsNullOrEmpty(value))
         {
-            text = text.Replace(from, to);
+            return string.Empty;
         }
 
-        return text.ToLowerInvariant();
+        var decomposed = value.Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(decomposed.Length);
+        foreach (var character in decomposed)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
+            {
+                builder.Append(character);
+            }
+        }
+
+        return builder.ToString().ToLowerInvariant();
     }
 
-    private static readonly (string From, string To)[] Accents =
-    [
-        ("á", "a"), ("à", "a"), ("â", "a"), ("ã", "a"), ("ä", "a"),
-        ("Á", "A"), ("À", "A"), ("Â", "A"), ("Ã", "A"), ("Ä", "A"),
-        ("é", "e"), ("è", "e"), ("ê", "e"), ("ë", "e"),
-        ("É", "E"), ("È", "E"), ("Ê", "E"), ("Ë", "E"),
-        ("í", "i"), ("ì", "i"), ("î", "i"), ("ï", "i"),
-        ("Í", "I"), ("Ì", "I"), ("Î", "I"), ("Ï", "I"),
-        ("ó", "o"), ("ò", "o"), ("ô", "o"), ("õ", "o"), ("ö", "o"),
-        ("Ó", "O"), ("Ò", "O"), ("Ô", "O"), ("Õ", "O"), ("Ö", "O"),
-        ("ú", "u"), ("ù", "u"), ("û", "u"), ("ü", "u"),
-        ("Ú", "U"), ("Ù", "U"), ("Û", "U"), ("Ü", "U"),
-        ("ç", "c"), ("Ç", "C"), ("ñ", "n"), ("Ñ", "N")
-    ];
+    private sealed class CachedCustomers(List<CachedCustomer> rows)
+    {
+        public List<CachedCustomer> Rows { get; } = rows;
+    }
+
+    private sealed record CachedCustomer(PosCustomer Customer, string Name, string FiscalNumber, string CardNumber);
 
     private static PosCustomer Map(
         Guid id,

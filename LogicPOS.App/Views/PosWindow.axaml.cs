@@ -1974,8 +1974,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private bool TryGetVoltaQuantity(out decimal quantity)
     {
-        var text = (VoltaQuantity.Text ?? string.Empty).Trim().Replace(',', '.');
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity) && quantity > 0;
+        return QuantityFormat.TryParse(VoltaQuantity.Text, out quantity) && quantity > 0;
     }
 
     private void UpdateVoltaTitle()
@@ -3423,6 +3422,11 @@ public partial class PosWindow : Window, IOfficeSurface
     private bool TryReadKeypad(out decimal value)
     {
         var text = _prompt == TicketPrompt.Price ? PriceEntry.Text : _keypadValue?.Text;
+        if (_prompt is TicketPrompt.Quantity or TicketPrompt.Weight)
+        {
+            return QuantityFormat.TryParse(text, out value);
+        }
+
         return MoneyFormat.TryParse(text, out value);
     }
 

@@ -145,11 +145,12 @@ public static class MoneyFormat
         return SymbolFor(currency?.Acronym ?? acronym);
     }
 
+    private static readonly CultureInfo Fallback = Build("€");
+
     private static CultureInfo Culture()
-    {
-        var symbol = AppComposition.Services?.GetService<CompanyCurrency>()?.Symbol;
-        return Build(string.IsNullOrWhiteSpace(symbol) ? SymbolFor(null) : symbol);
-    }
+        => AppComposition.Services?.GetService<CompanyCurrency>()?.Culture ?? Fallback;
+
+    internal static CultureInfo ForSymbol(string symbol) => Build(symbol);
 
     private static bool IsGrouped(string text, char groupSeparator, char decimalSeparator)
     {
@@ -209,10 +210,21 @@ public static class MoneyFormat
 /// <summary>Company currency loaded from SYSTEM_CURRENCY_OID. Not stored on <see cref="MoneyFormat"/>.</summary>
 public sealed class CompanyCurrency
 {
+    private CultureInfo _culture = MoneyFormat.ForSymbol("€");
+
     public string Symbol { get; private set; } = "€";
+
+    public CultureInfo Culture => _culture;
 
     public void Reload(LogicPOSDbContext database)
     {
-        Symbol = MoneyFormat.ReadSymbol(database);
+        var symbol = MoneyFormat.ReadSymbol(database);
+        if (symbol == Symbol)
+        {
+            return;
+        }
+
+        Symbol = symbol;
+        _culture = MoneyFormat.ForSymbol(symbol);
     }
 }

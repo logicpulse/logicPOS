@@ -384,14 +384,14 @@ public partial class PaymentWindow : Window
                 CustomerSearchNotice.IsVisible = true;
             }
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             if (ticket != _customerSearch)
             {
                 return;
             }
 
-            CustomerSearchNotice.Text = exception.Message;
+            CustomerSearchNotice.Text = "Não foi possível pesquisar os clientes.";
             CustomerSearchNotice.IsVisible = true;
         }
     }

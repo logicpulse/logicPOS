@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace LogicPOS.Core.Tests;
 
@@ -33,6 +33,9 @@ public class MoneyFormatTests
     [Theory]
     [InlineData("1.500")]
     [InlineData("1,500")]
+    [InlineData("1.250")]
+    [InlineData("1,250")]
+    [InlineData("2,125")]
     [InlineData("12.500")]
     [InlineData("")]
     [InlineData("   ")]
@@ -44,5 +47,30 @@ public class MoneyFormatTests
     {
         Assert.False(MoneyFormat.TryParse(text, out var amount));
         Assert.Equal(0m, amount);
+    }
+
+    [Theory]
+    [InlineData("1,250", "1.250")]
+    [InlineData("1.250", "1.250")]
+    [InlineData("1,2345", "1.2345")]
+    [InlineData("12.3456", "12.3456")]
+    [InlineData("0,125", "0.125")]
+    [InlineData("1250", "1250")]
+    public void Parses_quantities_up_to_four_decimals(string text, string expectedText)
+    {
+        var expected = decimal.Parse(expectedText, CultureInfo.InvariantCulture);
+        Assert.True(QuantityFormat.TryParse(text, out var quantity));
+        Assert.Equal(expected, quantity);
+    }
+
+    [Theory]
+    [InlineData("1,23456")]
+    [InlineData("1.23456")]
+    [InlineData("1.250.000")]
+    [InlineData("")]
+    public void Rejects_quantities_past_four_decimals(string text)
+    {
+        Assert.False(QuantityFormat.TryParse(text, out var quantity));
+        Assert.Equal(0m, quantity);
     }
 }
