@@ -499,21 +499,36 @@ public partial class StockManagementView : UserControl
     {
         if (_tab == StockTab.Movements && SelectedMovement() is { } movement)
         {
+            var documentLabel = string.IsNullOrWhiteSpace(movement.DocumentNumber)
+                ? movement.Id.ToString("N")[..8]
+                : movement.DocumentNumber;
             AskConfirm(
-                $"Confirma que deseja eliminar o movimento {movement.DocumentNumber}?",
+                $"Confirma que deseja eliminar o movimento {documentLabel}?",
                 async () =>
                 {
-                    var service = Service;
-                    if (service is null)
+                    try
                     {
-                        return;
-                    }
+                        var service = Service;
+                        if (service is null)
+                        {
+                            Fail("Serviço de stocks indisponível.");
+                            return;
+                        }
 
-                    var result = await service.DeleteMovementAsync(movement.Id);
-                    Notice.Text = result.Succeeded ? result.Message ?? "Concluído." : result.Error ?? "Falha.";
-                    if (result.Succeeded)
-                    {
+                        var result = await service.DeleteMovementAsync(movement.Id);
+                        if (result.Succeeded == false)
+                        {
+                            Fail(result.Error ?? "Não foi possível apagar o movimento.");
+                            return;
+                        }
+
+                        Toast.Success(this, result.Message ?? "Movimento apagado.");
+                        Notice.Text = string.Empty;
                         await LoadAsync(resetPage: false);
+                    }
+                    catch (Exception exception)
+                    {
+                        Fail(exception.Message);
                     }
                 });
             return;
@@ -523,7 +538,7 @@ public partial class StockManagementView : UserControl
         {
             if (history.IsSold)
             {
-                Notice.Text = "Não é possível apagar um número de série vendido.";
+                Fail("Não é possível apagar um número de série vendido.");
                 return;
             }
 
@@ -531,23 +546,35 @@ public partial class StockManagementView : UserControl
                 $"Confirma que deseja eliminar o número de série {history.SerialNumber}?",
                 async () =>
                 {
-                    var service = Service;
-                    if (service is null)
+                    try
                     {
-                        return;
-                    }
+                        var service = Service;
+                        if (service is null)
+                        {
+                            Fail("Serviço de stocks indisponível.");
+                            return;
+                        }
 
-                    var result = await service.DeleteSerialAsync(history.WarehouseArticleId);
-                    Notice.Text = result.Succeeded ? result.Message ?? "Concluído." : result.Error ?? "Falha.";
-                    if (result.Succeeded)
-                    {
+                        var result = await service.DeleteSerialAsync(history.WarehouseArticleId);
+                        if (result.Succeeded == false)
+                        {
+                            Fail(result.Error ?? "Não foi possível apagar o número de série.");
+                            return;
+                        }
+
+                        Toast.Success(this, result.Message ?? "Número de série apagado.");
+                        Notice.Text = string.Empty;
                         await LoadAsync(resetPage: false);
+                    }
+                    catch (Exception exception)
+                    {
+                        Fail(exception.Message);
                     }
                 });
             return;
         }
 
-        Notice.Text = "Selecione um registo.";
+        Fail("Selecione um registo.");
     }
 
     private void AskConfirm(string message, Func<Task> action, Func<Task>? cancel = null)
@@ -1002,8 +1029,10 @@ public partial class StockManagementView : UserControl
                 Classes = { "bo_entity_input" }
             };
             _saleDateBox = new CalendarDatePicker { SelectedDate = DateTime.Today, Classes = { "bo_doc_date" } };
-            var sell = new Button { Content = "Registar saída", Classes = { "bo_listing_icon_button" } };
+            // bo_listing_icon_button is 32x32 (icon-only) and truncates labels to "Reg." — use text action.
+            var sell = new Button { Content = "Registar saída", Classes = { "bo_doc_action" } };
             ToolTip.SetTip(sell, "Associa este número de série a um documento de venda e marca-o como vendido.");
+            sell.IsEnabled = documents.Count > 0;
             sell.Click += (_, _) =>
             {
                 if (_saleDocumentBox?.SelectedItem is not StockSaleDocumentOption document || _saleDateBox?.SelectedDate is null)
