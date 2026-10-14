@@ -94,11 +94,15 @@ public sealed class PosCustomerService : IPosCustomerService
             return [];
         }
 
+        // Case-insensitive partial match (name, fiscal number or card). SQLite Contains/instr is case-sensitive.
+        var lower = term.ToLowerInvariant();
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var customers = await database.Customers.AsNoTracking()
             .Where(item => item.IsDeleted == false)
-            .Where(item => item.Name.Contains(term) || item.FiscalNumber.Contains(term) || (item.CardNumber != null && item.CardNumber.Contains(term)))
+            .Where(item => item.Name.ToLower().Contains(lower)
+                || item.FiscalNumber.ToLower().Contains(lower)
+                || (item.CardNumber != null && item.CardNumber.ToLower().Contains(lower)))
             .OrderBy(item => item.Name)
             .Take(20)
             .Select(item => new

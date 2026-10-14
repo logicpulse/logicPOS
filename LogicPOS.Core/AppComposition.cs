@@ -126,6 +126,7 @@ public static class AppComposition
             // Do not auto-create fiscal year / series here. Fresh DBs stay empty until the
             // Abertura de ano fiscal wizard (or EnsureSeriesAsync on first document issue).
             Services = provider;
+            MoneyFormat.Load(provider);
         }
         catch (Exception exception)
         {

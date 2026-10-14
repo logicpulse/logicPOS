@@ -315,7 +315,7 @@ public partial class PosWindow : Window, IOfficeSurface
         totalGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         totalGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         var totalLabel = new TextBlock { Classes = { "pos_ticket_total_label" }, Text = "Total" };
-        _ticketTotal = new TextBlock { Classes = { "pos_ticket_total_value" }, Text = 0m.ToString("C") };
+        _ticketTotal = new TextBlock { Classes = { "pos_ticket_total_value" }, Text = MoneyFormat.Format(0m) };
         Grid.SetColumn(_ticketTotal, 1);
         totalGrid.Children.Add(totalLabel);
         totalGrid.Children.Add(_ticketTotal);
@@ -1770,7 +1770,7 @@ public partial class PosWindow : Window, IOfficeSurface
             if (table.State == PosTableState.Open)
             {
                 status.Classes.Add("pos_table_status_open");
-                status.Child = new TextBlock { Classes = { "pos_table_status_text" }, Text = table.Total.ToString("C") };
+                status.Child = new TextBlock { Classes = { "pos_table_status_text" }, Text = MoneyFormat.Format(table.Total) };
             }
             else if (table.State == PosTableState.Reserved)
             {
@@ -1989,7 +1989,7 @@ public partial class PosWindow : Window, IOfficeSurface
                 .Round();
         }
 
-        VoltaTitle.Text = $"{VoltaTitleBase} - Total a reembolsar: {total:N2}€";
+        VoltaTitle.Text = $"{VoltaTitleBase} - Total a reembolsar: {MoneyFormat.Format(total)}";
     }
 
     private void OnVoltaQuantityChanged(object? sender, TextChangedEventArgs e)
@@ -2691,7 +2691,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
         SessionHome.IsVisible = false;
         SessionCash.IsVisible = true;
-        SessionTitle.Text = $"Caixa :: Total em Caixa: {totalText} €";
+        SessionTitle.Text = $"Caixa :: Total em Caixa: {MoneyFormat.Format(_cashTotal)}";
         SessionFrame.Width = 680;
         SessionFrame.Height = 360;
         SessionAmount.IsVisible = true;
@@ -3515,7 +3515,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var orderTotal = _orderLines.Sum(line => line.Total);
         if (_ticketTotal is not null)
         {
-            _ticketTotal.Text = (_orderListMode ? orderTotal : _ticket.Total).ToString("C");
+            _ticketTotal.Text = MoneyFormat.Format(_orderListMode ? orderTotal : _ticket.Total);
         }
 
         if (_amountDue is not null)

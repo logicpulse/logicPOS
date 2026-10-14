@@ -48,6 +48,8 @@ public partial class EntityListing : UserControl
     private readonly List<(Button Header, Control Page, string? ShowWhen)> _articleTabs = new();
     private readonly List<(Control Block, string ShowWhen)> _articleFieldBlocks = new();
     private ContentControl? _articlePages;
+    private readonly SemaphoreSlim _editorBuild = new(1, 1);
+    private int _editorGeneration;
 
     public EntityListing()
     {
@@ -626,6 +628,26 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        // Overlapping opens (double-click plus the edit button) used to append a second tab strip.
+        var generation = Interlocked.Increment(ref _editorGeneration);
+        await _editorBuild.WaitAsync();
+        try
+        {
+            if (generation != _editorGeneration)
+            {
+                return;
+            }
+
+            await EditCoreAsync(service, id);
+        }
+        finally
+        {
+            _editorBuild.Release();
+        }
+    }
+
+    private async Task EditCoreAsync(IBackOfficeListingService service, Guid? id)
+    {
         _editingId = id;
         EditorTitle.Text = id is null ? "Novo" : "Editar";
         EditorNotice.Text = string.Empty;
@@ -667,7 +689,11 @@ public partial class EntityListing : UserControl
                 }
 
                 var page = await LayoutGroupAsync(service, groupFields);
-                var header = new Button { Classes = { "bo_entity_tab" }, Content = group };
+                var header = new Button
+                {
+                    Classes = { "bo_entity_tab" },
+                    Content = new TextBlock { Text = group }
+                };
                 var showWhen = group == "Detalhes financeiros"
                     ? "TypeHasPrice"
                     : groupFields.Select(item => item.ShowWhen).FirstOrDefault(value => string.IsNullOrWhiteSpace(value) == false);

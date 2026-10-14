@@ -97,7 +97,7 @@ public partial class ArticleDashboardView : UserControl
         UniqueStockValue.Text = snapshot.UniqueInStock.ToString("N0", Culture);
         UniqueSoldValue.Text = snapshot.UniqueSoldInYear.ToString("N0", Culture);
         UniqueSoldHint.Text = $"Séries vendidas em {snapshot.Year}";
-        StockValue.Text = snapshot.StockValue.ToString("C", Culture);
+        StockValue.Text = MoneyFormat.Format(snapshot.StockValue);
         StockHint.Text = snapshot.Limited
             ? "Resumo limitado aos registos mais recentes."
             : "Artigos únicos, armazéns e vendas do ano selecionado.";

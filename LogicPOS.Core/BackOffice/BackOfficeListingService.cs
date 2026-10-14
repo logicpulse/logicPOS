@@ -2,6 +2,7 @@
 using System.Reflection;
 using System.Text;
 using LogicPOS.Application.Features.System;
+using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.FrontOffice;
@@ -493,6 +494,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 await database.SaveChangesAsync(cancellationToken);
             }
 
+            if ((entity is PreferenceParameter preference && preference.Token is "SYSTEM_CURRENCY" or "SYSTEM_CURRENCY_OID")
+                || entity is Currency)
+            {
+                if (AppComposition.Services is not null)
+                {
+                    MoneyFormat.Load(AppComposition.Services);
+                }
+            }
+
             return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
         }
         catch (Exception exception)
@@ -794,9 +804,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 fields.Add(new ListingField
                 {
                     Key = property.Name,
-                    Label = Header(property.Name),
-                    Kind = "number",
-                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                Label = FieldLabel(page.EntityType, property.Name),
+                Kind = "number",
+                Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -824,7 +834,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             fields.Add(new ListingField
             {
                 Key = property.Name,
-                Label = Header(property.Name),
+                Label = FieldLabel(page.EntityType, property.Name),
                 Kind = property.Name is "Notes" or "Message" or "Value" ? "multiline" : kind,
                 Value = ReadRaw(entity, property),
                 Lookup = lookup,
@@ -1628,10 +1638,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Já existe uma sessão aberta.");
         }
 
-        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
-        if (amount < 0)
+        decimal amount = 0;
+        if (string.IsNullOrWhiteSpace(extra) == false
+            && (MoneyFormat.TryParse(extra, out amount) == false || amount < 0))
         {
-            amount = 0;
+            return ListingSaveResult.Fail("Indique o valor de abertura.");
         }
 
         var period = new WorkSessionPeriod
@@ -1678,10 +1689,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Não existe uma sessão aberta.");
         }
 
-        decimal.TryParse(extra, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
-        if (amount < 0)
+        if (MoneyFormat.TryParse(extra, out var amount) == false || amount < 0)
         {
-            amount = 0;
+            return ListingSaveResult.Fail("Indique o valor de fecho.");
         }
 
         period.Status = Domain.Enums.WorkSessionPeriodStatus.Closed;
@@ -1765,21 +1775,31 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
 
-        decimal total = 0;
-        if (period is not null)
+        if (period is null)
         {
-            var movements = await database.WorkSessionMovements
-                .Where(item => item.PeriodId == period.Id)
-                .ToListAsync(cancellationToken);
-            foreach (var movement in movements)
+            // No open terminal session: the drawer balance is the last saved closing amount.
+            var lastClose = await database.WorkSessionMovements
+                .AsNoTracking()
+                .Where(item => item.Type == Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerClose
+                    && (terminalId == null || item.CreatedWhere == terminalId.Value))
+                .OrderByDescending(item => item.CreatedAt)
+                .Select(item => (decimal?)item.Amount)
+                .FirstOrDefaultAsync(cancellationToken);
+            return ListingSaveResult.Ok(Guid.Empty, (lastClose ?? 0m).ToString("0.00", CultureInfo.InvariantCulture));
+        }
+
+        var movements = await database.WorkSessionMovements
+            .Where(item => item.PeriodId == period.Id)
+            .ToListAsync(cancellationToken);
+        decimal total = 0;
+        foreach (var movement in movements)
+        {
+            total += movement.Type switch
             {
-                total += movement.Type switch
-                {
-                    Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOut => -Math.Abs(movement.Amount),
-                    Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerMoneyOut => -Math.Abs(movement.Amount),
-                    _ => movement.Amount
-                };
-            }
+                Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerOut => -Math.Abs(movement.Amount),
+                Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerMoneyOut => -Math.Abs(movement.Amount),
+                _ => movement.Amount
+            };
         }
 
         return ListingSaveResult.Ok(Guid.Empty, total.ToString("0.00", CultureInfo.InvariantCulture));
@@ -1796,7 +1816,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             description = extra[(split + 1)..].Trim();
         }
 
-        if (decimal.TryParse(amountText, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
+        if (MoneyFormat.TryParse(amountText, out var amount) == false
             || amount <= 0)
         {
             return ListingSaveResult.Fail("Indique um valor maior que zero.");
@@ -2303,6 +2323,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return typeof(ArticleType);
         }
 
+        // Printer.Type would otherwise fall through to ArticleType ("Article" + "Type").
+        if (propertyName is "TypeId" && entity == typeof(Printer))
+        {
+            return typeof(PrinterType);
+        }
+
         var navigation = entity.GetProperty(navigationName);
         if (navigation is not null)
         {
@@ -2473,6 +2499,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         var context = new NullabilityInfoContext();
         return context.Create(property).WriteState != NullabilityState.Nullable;
+    }
+
+    private static string FieldLabel(Type entityType, string propertyName)
+    {
+        if (entityType == typeof(Printer) && propertyName == "TypeId")
+        {
+            return "Tipo de Impressora";
+        }
+
+        return Header(propertyName);
     }
 
     private static string Header(string name)

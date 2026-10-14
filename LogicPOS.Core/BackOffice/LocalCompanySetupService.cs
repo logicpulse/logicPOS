@@ -1,3 +1,4 @@
+using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
 using LogicPOS.Persistence.Database;
@@ -191,6 +192,7 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         }
 
         await database.SaveChangesAsync(cancellationToken);
+        MoneyFormat.Apply(currency.Acronym, currency.Symbol);
         return ListingSaveResult.Ok(Guid.Empty, "Dados da empresa gravados.");
     }
 

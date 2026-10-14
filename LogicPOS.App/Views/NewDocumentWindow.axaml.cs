@@ -60,6 +60,7 @@ public partial class NewDocumentWindow : UserControl
     public NewDocumentWindow()
     {
         InitializeComponent();
+        CustomerSuggest.PlacementTarget = CustomerName;
         TouchFields.Attach(this);
         _load = new ListingLoad(Busy);
     }
@@ -88,7 +89,7 @@ public partial class NewDocumentWindow : UserControl
         NewArticleOverlay.IsVisible = false;
         SerialOverlay.IsVisible = false;
         ArticleSuggest.IsVisible = false;
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
         CustomerEditButton.IsVisible = false;
         _customerId = null;
         _customer = null;
@@ -1257,7 +1258,7 @@ public partial class NewDocumentWindow : UserControl
 
     private static string Money(decimal value)
     {
-        return value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-PT"));
+        return MoneyFormat.Format(value);
     }
 
     private string FamilyNameOf(PosArticle article)
@@ -1375,7 +1376,7 @@ public partial class NewDocumentWindow : UserControl
     {
         _customerMatches.Clear();
         CustomerSuggestList.Children.Clear();
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
     }
 
     private async Task SuggestCustomersAsync(string? text)
@@ -1416,7 +1417,7 @@ public partial class NewDocumentWindow : UserControl
             CustomerSuggestList.Children.Add(button);
         }
 
-        CustomerSuggest.IsVisible = _customerMatches.Count > 0;
+        CustomerSuggest.IsOpen = _customerMatches.Count > 0;
     }
 
     private async void OnCustomerSearchKey(object? sender, KeyEventArgs e)
@@ -1459,12 +1460,6 @@ public partial class NewDocumentWindow : UserControl
         }
 
         ErrorLabel.Text = string.Empty;
-        if (matches.Count == 1)
-        {
-            ShowCustomer(matches[0]);
-            return;
-        }
-
         CustomerList.Children.Clear();
         foreach (var match in matches)
         {
