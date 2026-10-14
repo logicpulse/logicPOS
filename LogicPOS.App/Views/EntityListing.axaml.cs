@@ -1053,6 +1053,11 @@ public partial class EntityListing : UserControl
             box.Classes.Add("bo_numeric");
         }
 
+        if (UsesFormDecimal(field.Key))
+        {
+            ToolTip.SetTip(box, FormDecimal.Rule);
+        }
+
         var input = field.ReadOnly ? (Control)box : AttachKeyboard(box);
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
         {
@@ -1080,6 +1085,29 @@ public partial class EntityListing : UserControl
         }
 
         return input;
+    }
+
+    private static bool UsesFormDecimal(string key)
+    {
+        if (key is "MinimumStock" or "Tare" or "Weight" or "DefaultQuantity")
+        {
+            return true;
+        }
+
+        if (key.StartsWith("ChildQuantity", StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (key.Length < 6
+            || key.StartsWith("Price", StringComparison.Ordinal) == false
+            || key[5] is < '1' or > '5')
+        {
+            return false;
+        }
+
+        var suffix = key.Length == 6 ? string.Empty : key[6..];
+        return suffix is "" or "Promotion";
     }
 
     private static Control WrapLookupClear(AutoCompleteBox search)

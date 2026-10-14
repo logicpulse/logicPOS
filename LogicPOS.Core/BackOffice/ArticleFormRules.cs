@@ -28,22 +28,22 @@ public static class ArticleFormRules
             ?? NeedGuid(fields, "SizeUnitId", "a unidade de tamanho")
             ?? NeedGuid(fields, "VatDirectSellingId", "o IVA de venda direta")
             ?? NeedGuid(fields, "VatOnTableId", "o IVA de mesa")
-            ?? Match(fields, "Price1", "o preço 1", DecimalFromZeroPattern, required: true)
-            ?? Match(fields, "Price2", "o preço 2", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price3", "o preço 3", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price4", "o preço 4", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price5", "o preço 5", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price1Promotion", "a promoção 1", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price2Promotion", "a promoção 2", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price3Promotion", "a promoção 3", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price4Promotion", "a promoção 4", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price5Promotion", "a promoção 5", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price1", "o preço 1", DecimalFromZeroPattern, required: true)
+            ?? DecimalField(fields, "Price2", "o preço 2", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price3", "o preço 3", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price4", "o preço 4", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price5", "o preço 5", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price1Promotion", "a promoção 1", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price2Promotion", "a promoção 2", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price3Promotion", "a promoção 3", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price4Promotion", "a promoção 4", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price5Promotion", "a promoção 5", DecimalFromZeroPattern, required: false)
             ?? Match(fields, "Discount", "o desconto", PercentPattern, required: false)
             ?? Match(fields, "Barcode", "o código de barras", BarcodePattern, required: false)
-            ?? Match(fields, "MinimumStock", "o stock mínimo", DecimalPattern, required: false)
-            ?? Match(fields, "Tare", "a tara", DecimalPattern, required: false)
-            ?? Match(fields, "Weight", "o peso", DecimalPattern, required: false)
-            ?? Match(fields, "DefaultQuantity", "a quantidade predefinida", DecimalPattern, required: false);
+            ?? DecimalField(fields, "MinimumStock", "o stock mínimo", DecimalPattern, required: false)
+            ?? DecimalField(fields, "Tare", "a tara", DecimalPattern, required: false)
+            ?? DecimalField(fields, "Weight", "o peso", DecimalPattern, required: false)
+            ?? DecimalField(fields, "DefaultQuantity", "a quantidade predefinida", DecimalPattern, required: false);
 
         if (error is not null)
         {
@@ -139,7 +139,9 @@ public static class ArticleFormRules
 
             if (TryQuantity(quantityText, out var quantity) == false)
             {
-                error = "Indique a quantidade do artigo associado.";
+                error = FormDecimal.TryParse(quantityText, out _, out var issue) == false && issue == FormDecimalIssue.AmbiguousThousands
+                    ? FormDecimal.Rule
+                    : "Indique a quantidade do artigo associado.";
                 return [];
             }
 
@@ -183,6 +185,25 @@ public static class ArticleFormRules
     private static string ArticleKey(string suffix) => suffix.Length == 0 ? "ChildArticleId" : "ChildArticleId:" + suffix;
 
     private static string QuantityKey(string suffix) => suffix.Length == 0 ? "ChildQuantity" : "ChildQuantity:" + suffix;
+
+    private static string? DecimalField(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)
+    {
+        var error = Match(fields, key, label, pattern, required);
+        if (error is not null)
+        {
+            return error;
+        }
+
+        var value = Cell(fields, key);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return null;
+        }
+
+        return FormDecimal.TryParse(value, out _, out var issue) == false && issue == FormDecimalIssue.AmbiguousThousands
+            ? FormDecimal.Rule
+            : null;
+    }
 
     private static string? Match(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)
     {

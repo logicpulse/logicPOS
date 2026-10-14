@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using LogicPOS.Application.Features.System.Users;
+using Microsoft.EntityFrameworkCore;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Domain.Enums;
@@ -123,6 +124,10 @@ public class BackOfficeAnomalyTests
             Assert.Equal(2.5m, comma);
             Assert.False(FormDecimal.TryParse("1.234,56", out _));
             Assert.False(FormDecimal.TryParse("1,234.56", out _));
+            Assert.True(FormDecimal.TryParse("1.50", out var twoPlaces));
+            Assert.Equal(1.50m, twoPlaces);
+            Assert.True(FormDecimal.TryParse("1500", out var plain));
+            Assert.Equal(1500m, plain);
 
             var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var child = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -206,9 +211,8 @@ public class BackOfficeAnomalyTests
     [Fact]
     public void Owner_profile_keeps_the_permissions_menu()
     {
-        Assert.True(ProfileMenuAccess.KeepsPermissionsMenu(ProfileMenuAccess.OwnerProfileId, "10", "Proprietário", false));
-        Assert.True(ProfileMenuAccess.KeepsPermissionsMenu(Guid.NewGuid(), "20", "Caixa", assignedToAdminLogin: true));
-        Assert.False(ProfileMenuAccess.KeepsPermissionsMenu(Guid.NewGuid(), "10", "Caixa", false));
+        Assert.True(ProfileMenuAccess.KeepsPermissionsMenu(ProfileMenuAccess.OwnerProfileId));
+        Assert.False(ProfileMenuAccess.KeepsPermissionsMenu(Guid.NewGuid()));
 
         var allowed = ProfileMenuAccess.AllowedTitles(
             [UserProfilePermissions.Articles.BACKOFFICE_MAN_ARTICLE_MENU],
@@ -237,6 +241,54 @@ public class BackOfficeAnomalyTests
         Assert.Null(LookupChoice.Choose(null, null, "A1", items));
         Assert.Equal(other.Id, LookupChoice.Choose(null, null, "Café", items)?.Id);
         Assert.Equal(cafe.Id, LookupChoice.Choose(null, cafe, "Expresso", items)?.Id);
+    }
+
+    [Fact]
+    public void Three_digit_fraction_is_rejected_for_money_and_for_future_MoneyFormat()
+    {
+        // POS Desktop MoneyFormat must call FormDecimal and keep this rule. Do not parse "1.500" as 1.5 or 1500.
+        Assert.False(FormDecimal.TryParse("1.500", out _, out var dotted));
+        Assert.Equal(FormDecimalIssue.AmbiguousThousands, dotted);
+        Assert.False(FormDecimal.TryParse("1,500", out _, out var comma));
+        Assert.Equal(FormDecimalIssue.AmbiguousThousands, comma);
+        Assert.False(FormDecimal.TryParse("-1.500", out _, out var negative));
+        Assert.Equal(FormDecimalIssue.AmbiguousThousands, negative);
+        Assert.True(FormDecimal.TryParse("1.5000", out var four));
+        Assert.Equal(1.5000m, four);
+        Assert.Contains("3 dígitos", FormDecimal.Rule, StringComparison.Ordinal);
+
+        var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var fields = ValidArticle(parent, new Dictionary<string, string>
+        {
+            ["Price1"] = "1.500",
+            ["MinimumStock"] = "1,500"
+        });
+        var error = ArticleFormRules.Validate(fields, vatRequiresExemption: false, parent);
+        Assert.Equal(FormDecimal.Rule, error);
+    }
+
+    [Fact]
+    public void Save_errors_keep_business_text_and_hide_provider_text()
+    {
+        var missing = new InvalidOperationException("Registo não encontrado.");
+        Assert.Equal("Registo não encontrado.", SaveExceptionText.Message(missing));
+
+        var duplicateCode = new DbUpdateException(
+            "An error occurred while saving the entity changes. See the inner exception for details.",
+            new Exception("SQLite Error 19: 'UNIQUE constraint failed: Articles.Code'"));
+        var codeMessage = SaveExceptionText.Message(duplicateCode);
+        Assert.Equal("Já existe um registo com este código.", codeMessage);
+        Assert.DoesNotContain("SQLite", codeMessage, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("DbUpdate", codeMessage, StringComparison.OrdinalIgnoreCase);
+
+        var duplicateNif = new DbUpdateException(
+            "An error occurred while saving the entity changes. See the inner exception for details.",
+            new Exception("UNIQUE constraint failed: Customers.FiscalNumber"));
+        Assert.Equal("Já existe um registo com este NIF.", SaveExceptionText.Message(duplicateNif));
+
+        var technical = new DbUpdateException("An error occurred while saving the entity changes. See the inner exception for details.");
+        Assert.Equal(SaveExceptionText.Generic, SaveExceptionText.Message(technical));
+        Assert.Equal("Já existe um registo com este NIF.", SaveExceptionText.Describe(duplicateNif));
     }
 
     private static Dictionary<string, string> ValidArticle(Guid id, Dictionary<string, string> extra)

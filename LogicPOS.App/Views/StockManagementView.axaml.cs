@@ -914,7 +914,7 @@ public partial class StockManagementView : UserControl
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", movement.DocumentNumber, out var documentField);
         _quantityBox = Field("Quantidade", movement.Quantity.ToString("0.###", CultureInfo.CurrentCulture), out var quantityField);
-        _priceBox = Field("Preço", movement.Price.ToString("0.###", CultureInfo.CurrentCulture), out var priceField);
+        _priceBox = Field("Preço", movement.Price.ToString("0.###", CultureInfo.CurrentCulture), out var priceField, FormDecimal.Rule);
         _attachLabel = new TextBlock
         {
             Text = movement.HasExternalDocument ? "Anexo atual mantido (escolha outro para substituir)" : "Sem anexo",
@@ -941,8 +941,8 @@ public partial class StockManagementView : UserControl
         _editId = article.Id;
         EditorTitle.Text = $"Stock - {article.Designation}";
         EditorHost.Children.Clear();
-        _totalBox = Field("Total stock", article.TotalStock.ToString("0.###", CultureInfo.CurrentCulture), out var totalField);
-        _minimumBox = Field("Stock mínimo", article.MinimumStock.ToString("0.###", CultureInfo.CurrentCulture), out var minimumField);
+        _totalBox = Field("Total stock", article.TotalStock.ToString("0.###", CultureInfo.CurrentCulture), out var totalField, FormDecimal.Rule);
+        _minimumBox = Field("Stock mínimo", article.MinimumStock.ToString("0.###", CultureInfo.CurrentCulture), out var minimumField, FormDecimal.Rule);
         EditorHost.Children.Add(totalField);
         EditorHost.Children.Add(minimumField);
         EditorOverlay.IsVisible = true;
@@ -1126,6 +1126,7 @@ public partial class StockManagementView : UserControl
         ListingFilters.EnableLookupSearch(article);
         var quantity = new TextBox { Text = "1", Classes = { "bo_entity_input", "bo_numeric" } };
         var price = new TextBox { Text = "0", Classes = { "bo_entity_input", "bo_numeric" } };
+        ToolTip.SetTip(price, FormDecimal.Rule);
         var serial = new TextBox { PlaceholderText = "Nº série", Classes = { "bo_entity_input" } };
         var location = new ComboBox
         {
@@ -1225,13 +1226,22 @@ public partial class StockManagementView : UserControl
                         return;
                     }
 
-                    if (TryDecimal(line.Quantity.Text, out var quantity) == false || quantity == 0)
+                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity) == false || quantity == 0)
                     {
-                        EditorError("Quantidade inválida numa das linhas.");
+                        if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                        {
+                            EditorError("Quantidade inválida numa das linhas.");
+                        }
+
                         return;
                     }
 
-                    TryDecimal(line.Price.Text, out var price);
+                    var price = 0m;
+                    if (string.IsNullOrWhiteSpace(line.Price.Text) == false
+                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price) == false)
+                    {
+                        return;
+                    }
                     lines.Add(new StockMovementLineInput
                     {
                         ArticleId = article.Id,
@@ -1260,13 +1270,17 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.EditMovement when _editId is Guid id:
             {
-                if (TryDecimal(_quantityBox?.Text, out var quantity) == false)
+                if (ReadDecimal(_quantityBox?.Text, "Quantidade inválida.", out var quantity) == false)
                 {
-                    EditorError("Quantidade inválida.");
                     return;
                 }
 
-                TryDecimal(_priceBox?.Text, out var price);
+                var price = 0m;
+                if (string.IsNullOrWhiteSpace(_priceBox?.Text) == false
+                    && ReadDecimal(_priceBox?.Text, "Preço inválido.", out price) == false)
+                {
+                    return;
+                }
                 result = await service.UpdateMovementAsync(new StockMovementUpdateRequest
                 {
                     Id = id,
@@ -1281,10 +1295,9 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.AdjustArticle when _editId is Guid articleId:
             {
-                if (TryDecimal(_totalBox?.Text, out var total) == false ||
-                    TryDecimal(_minimumBox?.Text, out var minimum) == false)
+                if (ReadDecimal(_totalBox?.Text, "Valores de stock inválidos.", out var total) == false ||
+                    ReadDecimal(_minimumBox?.Text, "Valores de stock inválidos.", out var minimum) == false)
                 {
-                    EditorError("Valores de stock inválidos.");
                     return;
                 }
 
@@ -1301,9 +1314,13 @@ public partial class StockManagementView : UserControl
             case EditorMode.ChangeLocation when _editId is Guid warehouseArticleId:
             {
                 if (SelectedLocation() is not StockLocationOption location ||
-                    TryDecimal(_quantityBox?.Text, out var quantity) == false)
+                    ReadDecimal(_quantityBox?.Text, "Localização ou quantidade inválida.", out var quantity) == false)
                 {
-                    EditorError("Localização ou quantidade inválida.");
+                    if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                    {
+                        EditorError("Localização ou quantidade inválida.");
+                    }
+
                     return;
                 }
 
@@ -1353,10 +1370,14 @@ public partial class StockManagementView : UserControl
                 if (ListingFilters.SelectedLookup(_articleBox) is not LookupOption article ||
                     _locationBox?.SelectedItem is not StockLocationOption location ||
                     _dateBox?.SelectedDate is null ||
-                    TryDecimal(_quantityBox?.Text, out var positionQty) == false ||
+                    ReadDecimal(_quantityBox?.Text, "Preencha artigo, localização, data e quantidade.", out var positionQty) == false ||
                     positionQty == 0)
                 {
-                    EditorError("Preencha artigo, localização, data e quantidade.");
+                    if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                    {
+                        EditorError("Preencha artigo, localização, data e quantidade.");
+                    }
+
                     return;
                 }
 
@@ -1686,6 +1707,17 @@ public partial class StockManagementView : UserControl
             box?.Text,
             box?.ItemsSource as System.Collections.IEnumerable);
 
+    private bool ReadDecimal(string? text, string invalidMessage, out decimal value)
+    {
+        if (FormDecimal.TryParse(text, out value, out var issue))
+        {
+            return true;
+        }
+
+        EditorError(issue == FormDecimalIssue.AmbiguousThousands ? FormDecimal.Rule : invalidMessage);
+        return false;
+    }
+
     private static bool TryDecimal(string? text, out decimal value)
         => FormDecimal.TryParse(text, out value);
 
@@ -1695,13 +1727,23 @@ public partial class StockManagementView : UserControl
         return string.IsNullOrWhiteSpace(typed) ? $"ST{DateTime.Now:yyyyMMddHHmmss}" : typed;
     }
 
-    private static TextBox Field(string label, string value, out StackPanel host)
+    private static TextBox Field(string label, string value, out StackPanel host, string? hint = null)
     {
         var box = new TextBox { Text = value };
         box.Classes.Add("bo_entity_input");
+        if (string.IsNullOrWhiteSpace(hint) == false)
+        {
+            ToolTip.SetTip(box, hint);
+        }
+
         host = new StackPanel { Spacing = 2 };
         host.Children.Add(Label(label));
         host.Children.Add(box);
+        if (string.IsNullOrWhiteSpace(hint) == false)
+        {
+            host.Children.Add(new TextBlock { Text = hint, TextWrapping = Avalonia.Media.TextWrapping.Wrap, Classes = { "bo_entity_notice" } });
+        }
+
         return box;
     }
 }

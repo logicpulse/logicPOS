@@ -73,17 +73,8 @@ public static class ProfileMenuAccess
 
     public static bool IsRestricted(string title) => Tokens.ContainsKey(title);
 
-    /// <summary>
-    /// The seeded owner profile, a profile named Proprietário, or the profile of the admin login
-    /// always keeps the permissions menu so that profile cannot lock itself out.
-    /// </summary>
-    public static bool KeepsPermissionsMenu(Guid profileId, string? code, string? designation, bool assignedToAdminLogin)
-    {
-        _ = code;
-        return profileId == OwnerProfileId
-            || assignedToAdminLogin
-            || string.Equals(designation?.Trim(), "Proprietário", StringComparison.OrdinalIgnoreCase);
-    }
+    /// <summary>The seeded owner profile always keeps the permissions menu.</summary>
+    public static bool KeepsPermissionsMenu(Guid profileId) => profileId == OwnerProfileId;
 
     public static IReadOnlyCollection<string> AllowedTitles(IEnumerable<string> grantedTokens, bool keepPermissionsMenu = false)
     {

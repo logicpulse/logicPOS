@@ -1393,10 +1393,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return true;
         }
 
-        if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
-            && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
+        if (FormDecimal.TryParse(value, out var amount, out var issue) == false)
         {
-            error = $"Valor inválido em {Header(key)}.";
+            error = issue == FormDecimalIssue.AmbiguousThousands
+                ? FormDecimal.Rule
+                : $"Valor inválido em {Header(key)}.";
             return true;
         }
 
@@ -2200,7 +2201,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Where(item => item.UserProfileId == profileId && item.IsDeleted == false)
             .Select(item => new { item.PermissionItemId, item.Granted })
             .ToListAsync(cancellationToken);
-        var keepPermissions = await ProfileKeepsPermissionsMenuAsync(database, profileId, cancellationToken);
+        var keepPermissions = ProfileMenuAccess.KeepsPermissionsMenu(profileId);
         // Profiles that were never edited keep the full menu, including Permissões.
         if (grants.Count == 0)
         {
@@ -2213,20 +2214,6 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Select(item => item.Token)
             .ToListAsync(cancellationToken);
         return ProfileMenuAccess.AllowedTitles(tokens, keepPermissions);
-    }
-
-    private static async Task<bool> ProfileKeepsPermissionsMenuAsync(LogicPOSDbContext database, Guid profileId, CancellationToken cancellationToken)
-    {
-        var profile = await database.UserProfiles.AsNoTracking()
-            .Where(item => item.Id == profileId && item.IsDeleted == false)
-            .Select(item => new { item.Code, item.Designation })
-            .FirstOrDefaultAsync(cancellationToken);
-        var logins = await database.Users.AsNoTracking()
-            .Where(item => item.ProfileId == profileId && item.IsDeleted == false)
-            .Select(item => item.Login)
-            .ToListAsync(cancellationToken);
-        var assignedToAdmin = logins.Any(login => string.Equals(login, "admin", StringComparison.OrdinalIgnoreCase));
-        return ProfileMenuAccess.KeepsPermissionsMenu(profileId, profile?.Code, profile?.Designation, assignedToAdmin);
     }
 
     private static async Task AddProfilePermissionsAsync(LogicPOSDbContext database, List<ListingField> fields, UserProfile profile, CancellationToken cancellationToken)
@@ -2253,7 +2240,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 .Select(item => item.PermissionItemId)
                 .ToListAsync(cancellationToken);
             granted = ids.ToHashSet();
-            keepPermissions = await ProfileKeepsPermissionsMenuAsync(database, profile.Id, cancellationToken);
+            keepPermissions = ProfileMenuAccess.KeepsPermissionsMenu(profile.Id);
         }
 
         foreach (var item in items)
@@ -2309,7 +2296,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             row.UpdatedAt = DateTime.Now;
         }
 
-        if (await ProfileKeepsPermissionsMenuAsync(database, profileId, cancellationToken) == false)
+        if (ProfileMenuAccess.KeepsPermissionsMenu(profileId) == false)
         {
             return;
         }
@@ -2965,15 +2952,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private static decimal ParseDecimal(string value)
         => decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var number) ? number : 0;
 
-    private static string DescribeException(Exception exception)
-    {
-        if (exception is InvalidOperationException)
-        {
-            return exception.Message;
-        }
-
-        return "Não foi possível concluir a operação.";
-    }
+    private static string DescribeException(Exception exception) => SaveExceptionText.Describe(exception);
 
     private PageSpec? Find(string title) => _pages.FirstOrDefault(page => page.Title == title);
 
