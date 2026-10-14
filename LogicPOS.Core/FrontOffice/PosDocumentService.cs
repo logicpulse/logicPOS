@@ -213,7 +213,7 @@ public static class PosDocumentRules
 
     public static bool RequiresNamedCustomer(string? acronym)
     {
-        return acronym is "FT" or "NC" or "ND";
+        return acronym is "FT" or "FR" or "NC" or "ND";
     }
 
     public static bool SupportsOptionalTransport(string? acronym)
@@ -522,6 +522,23 @@ public sealed class PosDocumentService : IPosDocumentService
         if (paymentMethod is null)
         {
             return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+        }
+
+        if (string.Equals(documentType, "FR", StringComparison.OrdinalIgnoreCase))
+        {
+            var buyer = await database.Customers.AsNoTracking()
+                .Where(item => item.Id == customerId && item.IsDeleted == false)
+                .Select(item => new { item.Id, item.Name, item.FiscalNumber })
+                .FirstOrDefaultAsync(cancellationToken);
+            var named = buyer is not null
+                && buyer.Id != CustomerWellKnownIds.FinalConsumer
+                && string.Equals(buyer.Name, "Consumidor Final", StringComparison.OrdinalIgnoreCase) == false
+                && string.IsNullOrWhiteSpace(buyer.Name) == false
+                && string.IsNullOrWhiteSpace(buyer.FiscalNumber) == false;
+            if (named == false)
+            {
+                return PosDocumentResult.Fail("A fatura-recibo exige um cliente com nome e NIF.");
+            }
         }
 
         var seriesResult = await EnsureSeriesAsync(

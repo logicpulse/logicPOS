@@ -1,3 +1,4 @@
+using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -94,17 +95,12 @@ public sealed class PosCustomerService : IPosCustomerService
             return [];
         }
 
-        // Case-insensitive partial match (name, fiscal number or card). SQLite Contains/instr is case-sensitive.
-        var lower = term.ToLowerInvariant();
+        var folded = Fold(term);
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        // Name and fiscal number are encrypted, so a SQL replace cannot fold accents.
         var customers = await database.Customers.AsNoTracking()
             .Where(item => item.IsDeleted == false)
-            .Where(item => item.Name.ToLower().Contains(lower)
-                || item.FiscalNumber.ToLower().Contains(lower)
-                || (item.CardNumber != null && item.CardNumber.ToLower().Contains(lower)))
-            .OrderBy(item => item.Name)
-            .Take(20)
             .Select(item => new
             {
                 item.Id,
@@ -121,9 +117,41 @@ public sealed class PosCustomerService : IPosCustomerService
             .ToListAsync(cancellationToken);
 
         return customers
+            .Where(item => Hits(item.Name, folded) || Hits(item.FiscalNumber, folded) || Hits(item.CardNumber, folded))
+            .OrderBy(item => item.Name)
+            .Take(20)
             .Select(item => Map(item.Id, item.Name, item.FiscalNumber, item.CardNumber, item.Discount, item.Address, item.Locality, item.ZipCode, item.City, item.Country))
             .ToList();
     }
+
+    private static bool Hits(string? value, string folded)
+        => string.IsNullOrEmpty(value) == false && Fold(value).Contains(folded, StringComparison.Ordinal);
+
+    private static string Fold(string value)
+    {
+        var text = value;
+        foreach (var (from, to) in Accents)
+        {
+            text = text.Replace(from, to);
+        }
+
+        return text.ToLowerInvariant();
+    }
+
+    private static readonly (string From, string To)[] Accents =
+    [
+        ("á", "a"), ("à", "a"), ("â", "a"), ("ã", "a"), ("ä", "a"),
+        ("Á", "A"), ("À", "A"), ("Â", "A"), ("Ã", "A"), ("Ä", "A"),
+        ("é", "e"), ("è", "e"), ("ê", "e"), ("ë", "e"),
+        ("É", "E"), ("È", "E"), ("Ê", "E"), ("Ë", "E"),
+        ("í", "i"), ("ì", "i"), ("î", "i"), ("ï", "i"),
+        ("Í", "I"), ("Ì", "I"), ("Î", "I"), ("Ï", "I"),
+        ("ó", "o"), ("ò", "o"), ("ô", "o"), ("õ", "o"), ("ö", "o"),
+        ("Ó", "O"), ("Ò", "O"), ("Ô", "O"), ("Õ", "O"), ("Ö", "O"),
+        ("ú", "u"), ("ù", "u"), ("û", "u"), ("ü", "u"),
+        ("Ú", "U"), ("Ù", "U"), ("Û", "U"), ("Ü", "U"),
+        ("ç", "c"), ("Ç", "C"), ("ñ", "n"), ("Ñ", "N")
+    ];
 
     private static PosCustomer Map(
         Guid id,

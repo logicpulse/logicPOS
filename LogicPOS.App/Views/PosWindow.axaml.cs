@@ -2687,7 +2687,6 @@ public partial class PosWindow : Window, IOfficeSurface
     private async void OnShowCashDrawerClick(object? sender, RoutedEventArgs e)
     {
         _cashTotal = await LoadCashTotalAsync();
-        var totalText = _cashTotal.ToString("0.00", CultureInfo.CurrentCulture);
 
         SessionHome.IsVisible = false;
         SessionCash.IsVisible = true;
@@ -2785,10 +2784,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         // Parse the amount
-        var hasAmount = decimal.TryParse(SessionAmount.Text,
-            System.Globalization.NumberStyles.Number,
-            System.Globalization.CultureInfo.CurrentCulture, out var amount)
-            && amount >= 0;
+        var hasAmount = MoneyFormat.TryParse(SessionAmount.Text, out var amount) && amount >= 0;
 
         if (_sessionAction == "close-session")
         {
@@ -2872,8 +2868,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         var result = await services.GetRequiredService<IBackOfficeListingService>().RunActionAsync("cash-total", null, null);
-        if (result.Succeeded
-            && decimal.TryParse(result.Message, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount))
+        if (result.Succeeded && MoneyFormat.TryParse(result.Message, out var amount))
         {
             return amount;
         }
@@ -2886,7 +2881,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var drawerError = await FrontOfficePrinting.OpenDrawerAsync();
         if (action is "cash-in" or "cash-out")
         {
-            decimal.TryParse(SessionAmount.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+            MoneyFormat.TryParse(SessionAmount.Text, out var amount);
             var total = await LoadCashTotalAsync();
             var title = action == "cash-in" ? "Entrada de caixa" : "Saída de caixa";
             var printError = await FrontOfficePrinting.PrintCashMovementAsync(title, amount, SessionNote.Text, total);
@@ -3379,7 +3374,7 @@ public partial class PosWindow : Window, IOfficeSurface
             return;
         }
 
-        if (decimal.TryParse(tag, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) == false)
+        if (MoneyFormat.TryParse(tag, out var amount) == false)
         {
             return;
         }
@@ -3428,7 +3423,7 @@ public partial class PosWindow : Window, IOfficeSurface
     private bool TryReadKeypad(out decimal value)
     {
         var text = _prompt == TicketPrompt.Price ? PriceEntry.Text : _keypadValue?.Text;
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value);
+        return MoneyFormat.TryParse(text, out value);
     }
 
     private bool TryAddArticleByCode(string? code)

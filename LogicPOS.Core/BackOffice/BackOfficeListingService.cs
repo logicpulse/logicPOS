@@ -497,10 +497,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             if ((entity is PreferenceParameter preference && preference.Token is "SYSTEM_CURRENCY" or "SYSTEM_CURRENCY_OID")
                 || entity is Currency)
             {
-                if (AppComposition.Services is not null)
-                {
-                    MoneyFormat.Load(AppComposition.Services);
-                }
+                AppComposition.Services?.GetRequiredService<CompanyCurrency>().Reload(database);
             }
 
             return ListingSaveResult.Ok(ReadGuid(entity, "Id"), "Registo gravado.");
@@ -804,9 +801,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 fields.Add(new ListingField
                 {
                     Key = property.Name,
-                Label = FieldLabel(page.EntityType, property.Name),
-                Kind = "number",
-                Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                    Label = FieldLabel(page.EntityType, property.Name),
+                    Kind = "number",
+                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -1689,7 +1686,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Não existe uma sessão aberta.");
         }
 
-        if (MoneyFormat.TryParse(extra, out var amount) == false || amount < 0)
+        decimal amount = 0;
+        if (string.IsNullOrWhiteSpace(extra) == false
+            && (MoneyFormat.TryParse(extra, out amount) == false || amount < 0))
         {
             return ListingSaveResult.Fail("Indique o valor de fecho.");
         }
@@ -1767,21 +1766,30 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var terminalId = await ResolveTerminalIdAsync(database, cancellationToken);
+        if (terminalId is null)
+        {
+            return ListingSaveResult.Ok(Guid.Empty, 0m.ToString("0.00", CultureInfo.InvariantCulture));
+        }
+
         var period = await database.WorkSessionPeriods
             .Where(item => item.IsDeleted == false
                 && item.Type == Domain.Enums.WorkSessionPeriodType.Terminal
                 && item.Status == Domain.Enums.WorkSessionPeriodStatus.Open
-                && (terminalId == null || item.CreatedWhere == terminalId.Value))
+                && item.CreatedWhere == terminalId.Value)
             .OrderByDescending(item => item.StartDate)
             .FirstOrDefaultAsync(cancellationToken);
 
         if (period is null)
         {
-            // No open terminal session: the drawer balance is the last saved closing amount.
             var lastClose = await database.WorkSessionMovements
                 .AsNoTracking()
-                .Where(item => item.Type == Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerClose
-                    && (terminalId == null || item.CreatedWhere == terminalId.Value))
+                .Where(item => item.IsDeleted == false
+                    && item.Type == Domain.Entities.POS.WorkSessions.Movements.Common.WorkSessionMovementType.CashDrawerClose
+                    && item.CreatedWhere == terminalId.Value
+                    && item.Period != null
+                    && item.Period.IsDeleted == false
+                    && item.Period.Type == Domain.Enums.WorkSessionPeriodType.Terminal
+                    && item.Period.CreatedWhere == terminalId.Value)
                 .OrderByDescending(item => item.CreatedAt)
                 .Select(item => (decimal?)item.Amount)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -1789,7 +1797,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         var movements = await database.WorkSessionMovements
-            .Where(item => item.PeriodId == period.Id)
+            .Where(item => item.IsDeleted == false && item.PeriodId == period.Id)
             .ToListAsync(cancellationToken);
         decimal total = 0;
         foreach (var movement in movements)

@@ -192,7 +192,7 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         }
 
         await database.SaveChangesAsync(cancellationToken);
-        MoneyFormat.Apply(currency.Acronym, currency.Symbol);
+        AppComposition.Services?.GetRequiredService<CompanyCurrency>().Reload(database);
         return ListingSaveResult.Ok(Guid.Empty, "Dados da empresa gravados.");
     }
 

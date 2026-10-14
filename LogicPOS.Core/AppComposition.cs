@@ -114,6 +114,7 @@ public static class AppComposition
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
             services.AddSingleton<StartupReadinessService>();
             services.AddSingleton<IStartupReadinessService>(provider => provider.GetRequiredService<StartupReadinessService>());
+            services.AddSingleton<CompanyCurrency>();
             services.AddSingleton<ITicketPrinter, EscPosTicketPrinter>();
             services.AddSingleton<IThermalPrintSource, LocalThermalPrintSource>();
             if (FiscalModuleLoader.TryRegister(services, baseDirectory) == false)
@@ -126,7 +127,9 @@ public static class AppComposition
             // Do not auto-create fiscal year / series here. Fresh DBs stay empty until the
             // Abertura de ano fiscal wizard (or EnsureSeriesAsync on first document issue).
             Services = provider;
-            MoneyFormat.Load(provider);
+            using var currencyScope = provider.CreateScope();
+            provider.GetRequiredService<CompanyCurrency>().Reload(
+                currencyScope.ServiceProvider.GetRequiredService<LogicPOS.Persistence.Database.LogicPOSDbContext>());
         }
         catch (Exception exception)
         {

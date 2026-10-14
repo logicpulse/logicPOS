@@ -260,6 +260,58 @@ public sealed class PublicEditionStartupTests
         }
     }
 
+    [Fact]
+    public async Task Customer_search_matches_a_partial_name_ignoring_accents()
+    {
+        var root = Directory.CreateTempSubdirectory("logicpos-customer-search-");
+        try
+        {
+            var databasePath = Path.Combine(root.FullName, "logicpos.db");
+            File.WriteAllText(
+                Path.Combine(root.FullName, "appsettings.json"),
+                $$"""
+                {
+                  "Culture": "pt-PT",
+                  "DatabaseSettings": {
+                    "DatabaseType": "Sqlite",
+                    "ConnectionString": "Data Source={{databasePath.Replace("\\", "\\\\")}}",
+                    "UseCloud": false
+                  }
+                }
+                """);
+
+            AppComposition.Configure(root.FullName);
+            Assert.Null(AppComposition.StartupError);
+
+            var services = AppComposition.Services!;
+            await using (var scope = services.CreateAsyncScope())
+            {
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOS.Persistence.Database.LogicPOSDbContext>();
+                var customer = database.Customers.First(item => item.IsDeleted == false);
+                customer.Name = "João Silva";
+                await database.SaveChangesAsync();
+            }
+
+            var customers = services.GetRequiredService<IPosCustomerService>();
+            var matches = await customers.SearchAsync("joao");
+            Assert.Contains(matches, item => item.Name == "João Silva");
+            var byAccent = await customers.SearchAsync("JOÃO");
+            Assert.Contains(byAccent, item => item.Name == "João Silva");
+            var none = await customers.SearchAsync("nenhum-cliente-xyz");
+            Assert.Empty(none);
+        }
+        finally
+        {
+            if (AppComposition.Services is IDisposable disposable)
+            {
+                disposable.Dispose();
+            }
+
+            SqliteConnection.ClearAllPools();
+            root.Delete(recursive: true);
+        }
+    }
+
     private static string ReadPdfText(string path)
     {
         using var document = UglyToad.PdfPig.PdfDocument.Open(path);

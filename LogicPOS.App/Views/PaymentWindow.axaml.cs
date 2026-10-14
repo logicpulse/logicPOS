@@ -59,6 +59,7 @@ public partial class PaymentWindow : Window
         _shareLabel = shareLabel;
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
+        SelectSaleDocument("FS");
         BuildMethods();
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
@@ -176,6 +177,7 @@ public partial class PaymentWindow : Window
         _customerSearch++;
         CustomerMatches.Children.Clear();
         _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = customer.Id;
         _finalConsumer = customer.IsFinalConsumer;
@@ -224,6 +226,7 @@ public partial class PaymentWindow : Window
         _customerSearch++;
         CustomerMatches.Children.Clear();
         _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = null;
         _finalConsumer = false;
@@ -317,8 +320,8 @@ public partial class PaymentWindow : Window
         }
 
         _customerId = null;
-        _finalConsumer = true;
-        _ = SuggestCustomersAsync(sender is TextBox box ? box.Text : CustomerName.Text);
+        _finalConsumer = false;
+        _ = SuggestCustomersAsync(sender is TextBox box ? box.Text : CustomerName.Text, delay: true);
     }
 
     private async void OnCustomerSearchKey(object? sender, KeyEventArgs e)
@@ -328,48 +331,70 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (_customerMatches.Count > 0)
-        {
-            ShowCustomer(_customerMatches[0]);
-            return;
-        }
-
+        e.Handled = true;
         var text = sender is TextBox box ? box.Text : CustomerName.Text;
-        await SuggestCustomersAsync(text);
+        await SuggestCustomersAsync(text, delay: false);
     }
 
-    private async Task SuggestCustomersAsync(string? text)
+    private async Task SuggestCustomersAsync(string? text, bool delay)
     {
         var term = text?.Trim() ?? string.Empty;
         var ticket = ++_customerSearch;
         CustomerMatches.Children.Clear();
         _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
         if (term.Length == 0 || AppComposition.Services is null)
         {
             return;
         }
 
-        var matches = await AppComposition.Services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
-        if (ticket != _customerSearch)
+        try
         {
-            return;
-        }
-
-        _customerMatches.AddRange(matches);
-        foreach (var match in _customerMatches)
-        {
-            var customer = match;
-            var button = new Button
+            if (delay)
             {
-                Classes = { "pos_list_item" },
-                Content = $"{customer.Name}  {customer.FiscalNumber}"
-            };
-            button.Click += (_, _) => ShowCustomer(customer);
-            CustomerMatches.Children.Add(button);
+                await Task.Delay(300);
+                if (ticket != _customerSearch)
+                {
+                    return;
+                }
+            }
+
+            var matches = await AppComposition.Services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            _customerMatches.AddRange(matches);
+            foreach (var match in _customerMatches)
+            {
+                var customer = match;
+                var button = new Button
+                {
+                    Classes = { "pos_list_item" },
+                    Content = $"{customer.Name}  {customer.FiscalNumber}"
+                };
+                button.Click += (_, _) => ShowCustomer(customer);
+                CustomerMatches.Children.Add(button);
+            }
+
+            if (_customerMatches.Count == 0)
+            {
+                CustomerSearchNotice.Text = "Não foi encontrado nenhum cliente.";
+                CustomerSearchNotice.IsVisible = true;
+            }
+        }
+        catch (Exception exception)
+        {
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            CustomerSearchNotice.Text = exception.Message;
+            CustomerSearchNotice.IsVisible = true;
         }
     }
-
-    private void OnCustomerListCloseClick(object? sender, RoutedEventArgs e) => CustomerOverlay.IsVisible = false;
 
     private async void OnNewCustomerClick(object? sender, RoutedEventArgs e)
     {
@@ -428,6 +453,12 @@ public partial class PaymentWindow : Window
         if (_customerId is null)
         {
             ShowNotice("Aviso", "Selecione um cliente.", error: true);
+            return;
+        }
+
+        if (documentType == "FR" && (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text)))
+        {
+            ShowNotice("Aviso", "A fatura-recibo exige um cliente com nome e NIF.", error: true);
             return;
         }
 
@@ -591,7 +622,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (decimal.TryParse(tag, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) == false)
+        if (MoneyFormat.TryParse(tag, out var amount) == false)
         {
             return;
         }
@@ -640,7 +671,7 @@ public partial class PaymentWindow : Window
 
     private void OnCashOkClick(object? sender, RoutedEventArgs e)
     {
-        if (decimal.TryParse(CashEntry.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var value) && value > 0)
+        if (MoneyFormat.TryParse(CashEntry.Text, out var value) && value > 0)
         {
             _delivered = value;
         }
@@ -662,7 +693,7 @@ public partial class PaymentWindow : Window
 
     private decimal DiscountPercent()
     {
-        if (decimal.TryParse(Discount.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var discount) == false || discount < 0)
+        if (MoneyFormat.TryParse(Discount.Text, out var discount) == false || discount < 0)
         {
             return 0;
         }
