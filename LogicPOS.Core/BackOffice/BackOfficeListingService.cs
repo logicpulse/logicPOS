@@ -589,7 +589,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var fields = rows.Count == 0
             ? Describe(page, Activator.CreateInstance(page.EntityType!)!, true)
             : Describe(page, rows[0], false);
-        var columns = ListingColumns.For(page.Title, fields.Select(field => field.Key));
+        // UpdatedAt is form-hidden but still listed in column profiles (GTK parity).
+        var availableKeys = fields.Select(field => field.Key).Append("UpdatedAt");
+        var columns = ListingColumns.For(page.Title, availableKeys);
         var lookups = await LoadLookupsAsync(database, page.EntityType!, columns, cancellationToken);
         return new ListingSnapshot
         {
@@ -942,7 +944,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private async Task<Dictionary<string, Dictionary<Guid, string>>> LoadLookupsAsync(LogicPOSDbContext database, Type entityType, IReadOnlyList<ListingColumn> columns, CancellationToken cancellationToken)
     {
-        var maps = new Dictionary<string, Dictionary<Guid, string>>();
+        var maps = new Dictionary<string, Dictionary<Guid, string>>(StringComparer.Ordinal);
         foreach (var column in columns.Where(item => item.Key.EndsWith("Id", StringComparison.Ordinal)))
         {
             var type = LookupType(entityType, column.Key);
@@ -951,11 +953,63 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
-            var rows = await MaterializeAsync(database, type, cancellationToken);
-            maps[column.Key] = rows.Cast<object>().ToDictionary(ReadId, DisplayLabel);
+            // Direct EF projections for article FKs (avoids reflection/materialize edge cases that left raw Guids in the grid).
+            if (type == typeof(ArticleSubfamily))
+            {
+                maps[column.Key] = await database.ArticleSubfamilies.AsNoTracking()
+                    .Select(row => new { row.Id, row.Designation, row.Code })
+                    .ToDictionaryAsync(
+                        row => row.Id,
+                        row => FirstNonEmpty(row.Designation, row.Code) ?? row.Id.ToString(),
+                        cancellationToken);
+                continue;
+            }
+
+            if (type == typeof(ArticleFamily))
+            {
+                maps[column.Key] = await database.ArticleFamilies.AsNoTracking()
+                    .Select(row => new { row.Id, row.Designation, row.Code })
+                    .ToDictionaryAsync(
+                        row => row.Id,
+                        row => FirstNonEmpty(row.Designation, row.Code) ?? row.Id.ToString(),
+                        cancellationToken);
+                continue;
+            }
+
+            if (type == typeof(ArticleType))
+            {
+                maps[column.Key] = await database.ArticleTypes.AsNoTracking()
+                    .Select(row => new { row.Id, row.Designation, row.Code })
+                    .ToDictionaryAsync(
+                        row => row.Id,
+                        row => FirstNonEmpty(row.Designation, row.Code) ?? row.Id.ToString(),
+                        cancellationToken);
+                continue;
+            }
+
+            // Include soft-deleted rows so FK cells still resolve to a designation/code.
+            var rows = await MaterializeLookupAsync(database, type, cancellationToken);
+            maps[column.Key] = rows
+                .Cast<object>()
+                .GroupBy(ReadId)
+                .Where(group => group.Key != Guid.Empty)
+                .ToDictionary(group => group.Key, group => DisplayLabel(group.First()));
         }
 
         return maps;
+    }
+
+    private static string? FirstNonEmpty(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (string.IsNullOrWhiteSpace(value) == false)
+            {
+                return value.Trim();
+            }
+        }
+
+        return null;
     }
 
     private static string ReadCell(object entity, string propertyName, IReadOnlyDictionary<string, Dictionary<Guid, string>> lookups)
@@ -968,12 +1022,30 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (lookups.TryGetValue(propertyName, out var map))
         {
-            var id = property.GetValue(entity) as Guid? ?? (property.GetValue(entity) is Guid guid ? guid : Guid.Empty);
+            var id = ReadGuidValue(property.GetValue(entity));
             return id != Guid.Empty && map.TryGetValue(id, out var label) ? label : string.Empty;
+        }
+
+        // Never paint raw Guids for foreign-key columns when the lookup map was not loaded.
+        if (propertyName.EndsWith("Id", StringComparison.Ordinal) && IsGuidProperty(property.PropertyType))
+        {
+            return string.Empty;
         }
 
         return ReadRaw(entity, property);
     }
+
+    private static bool IsGuidProperty(Type type)
+    {
+        var underlying = Nullable.GetUnderlyingType(type) ?? type;
+        return underlying == typeof(Guid);
+    }
+
+    private static Guid ReadGuidValue(object? value) => value switch
+    {
+        Guid guid => guid,
+        _ => Guid.Empty
+    };
 
     private static string ReadRaw(object entity, PropertyInfo property)
     {
@@ -2171,14 +2243,28 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     }
 
     private static async Task<System.Collections.IList> MaterializeAsync(LogicPOSDbContext database, Type type, CancellationToken cancellationToken)
+        => await MaterializeCoreAsync(database, type, onlyActive: true, cancellationToken);
+
+    private static async Task<System.Collections.IList> MaterializeLookupAsync(LogicPOSDbContext database, Type type, CancellationToken cancellationToken)
+        => await MaterializeCoreAsync(database, type, onlyActive: false, cancellationToken);
+
+    private static async Task<System.Collections.IList> MaterializeCoreAsync(
+        LogicPOSDbContext database,
+        Type type,
+        bool onlyActive,
+        CancellationToken cancellationToken)
     {
         IQueryable query = QueryableSet(database, type);
-        var parameter = System.Linq.Expressions.Expression.Parameter(type, "row");
-        var deleted = System.Linq.Expressions.Expression.Property(parameter, "IsDeleted");
-        var body = System.Linq.Expressions.Expression.Equal(deleted, System.Linq.Expressions.Expression.Constant(false));
-        var lambda = System.Linq.Expressions.Expression.Lambda(body, parameter);
-        var where = typeof(Queryable).GetMethods().First(method => method.Name == "Where" && method.GetParameters().Length == 2);
-        query = (IQueryable)where.MakeGenericMethod(type).Invoke(null, [query, lambda])!;
+        if (onlyActive)
+        {
+            var parameter = System.Linq.Expressions.Expression.Parameter(type, "row");
+            var deleted = System.Linq.Expressions.Expression.Property(parameter, "IsDeleted");
+            var body = System.Linq.Expressions.Expression.Equal(deleted, System.Linq.Expressions.Expression.Constant(false));
+            var lambda = System.Linq.Expressions.Expression.Lambda(body, parameter);
+            var where = typeof(Queryable).GetMethods().First(method => method.Name == "Where" && method.GetParameters().Length == 2);
+            query = (IQueryable)where.MakeGenericMethod(type).Invoke(null, [query, lambda])!;
+        }
+
         var toList = typeof(EntityFrameworkQueryableExtensions).GetMethods()
             .First(method => method.Name == "ToListAsync"
                 && method.GetParameters().Length == 2
@@ -2201,6 +2287,22 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return null;
         }
 
+        // Explicit FK → entity map (navigation names like Subfamily/Family/Type do not match type names).
+        if (propertyName is "SubfamilyId")
+        {
+            return typeof(ArticleSubfamily);
+        }
+
+        if (propertyName is "FamilyId")
+        {
+            return typeof(ArticleFamily);
+        }
+
+        if (propertyName is "TypeId" && entity == typeof(Article))
+        {
+            return typeof(ArticleType);
+        }
+
         var navigation = entity.GetProperty(navigationName);
         if (navigation is not null)
         {
@@ -2209,9 +2311,18 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             {
                 return navigationType;
             }
+
+            // Navigation type from another load context: trust the CLR property type when it is a domain entity.
+            if (navigationType.IsClass
+                && navigationType != typeof(string)
+                && navigationType.Namespace == "LogicPOS.Domain.Entities")
+            {
+                return navigationType;
+            }
         }
 
-        return ResolveEntityType(navigationName);
+        return ResolveEntityType(navigationName)
+            ?? ResolveEntityType("Article" + navigationName);
     }
 
     private static Type? ResolveEntityType(string name)
