@@ -18,15 +18,10 @@ public enum FormDecimalIssue
 }
 
 /// <summary>
-/// Decimal text for BackOffice fields. The POS Desktop MoneyFormat must use <see cref="FormDecimalKind.Money"/>
-/// later; do not change MoneyFormat in this change.
-/// Either '.' or ',' is the decimal separator and thousands groups are not accepted.
-/// Quantity, weight and tare accept up to four decimal places and do not use the three-digit rule
-/// ("0.125" and "2,125" are 0.125 and 2.125).
-/// Money (price and monetary total) rejects a separator followed by exactly three digits only when the
-/// integer part is not zero: "1.500" and "1,500" are ambiguous with a thousands group, "0.125" is 0.125.
-/// <see cref="Format"/> writes "0.####" (invariant). A money value that would still look ambiguous
-/// ("1.125") is written with four decimal places so saving the prefilled text cannot fail.
+/// BackOffice decimal fields. Parsing delegates to the desktop <see cref="MoneyFormat"/> and <see cref="QuantityFormat"/>
+/// so "1.234,56", "1.500.000" and "+1.25" match the POS. Display uses the UI culture (comma in pt-PT).
+/// A money value whose natural text is ambiguous ("1,125") is written with four fraction digits ("1,1250")
+/// so saving the prefilled field does not fail.
 /// </summary>
 public static class FormDecimal
 {
@@ -36,7 +31,7 @@ public static class FormDecimal
         "Use ponto ou vírgula como decimal, até 4 casas, sem separador de milhares.";
 
     public const string MoneyRule =
-        "Use ponto ou vírgula como decimal, sem separador de milhares. Um separador seguido de exatamente 3 dígitos com parte inteira diferente de zero (1.500 ou 1,500) é ambíguo e não é aceite. 0.125 é aceite.";
+        "Use ponto ou vírgula como decimal. Um separador seguido de exatamente 3 dígitos com parte inteira diferente de zero (1.500 ou 1,500) é ambíguo e não é aceite. 0.125 é aceite. Milhares usam o formato 1.234,56.";
 
     public const string Rule = MoneyRule;
 
@@ -62,7 +57,7 @@ public static class FormDecimal
             return false;
         }
 
-        if (key is "Price" or "Total" or "TotalFinal" or "Amount")
+        if (key == "Price")
         {
             return true;
         }
@@ -83,10 +78,17 @@ public static class FormDecimal
 
     public static string Format(decimal value, FormDecimalKind kind = FormDecimalKind.Quantity)
     {
-        var text = value.ToString(DisplayFormat, CultureInfo.InvariantCulture);
-        if (kind == FormDecimalKind.Money && AmbiguousMoney(text))
+        var culture = CultureInfo.CurrentCulture;
+        var text = value.ToString(DisplayFormat, culture);
+        if (ReadsBack(text, kind, value))
         {
-            text = value.ToString("0.0000", CultureInfo.InvariantCulture);
+            return text;
+        }
+
+        var padded = value.ToString("0.0000", culture);
+        if (ReadsBack(padded, kind, value))
+        {
+            return padded;
         }
 
         return text;
@@ -103,81 +105,58 @@ public static class FormDecimal
 
     public static bool TryParse(string? text, FormDecimalKind kind, out decimal value, out FormDecimalIssue issue)
     {
+        var parsed = kind == FormDecimalKind.Money
+            ? MoneyFormat.TryParse(text, out value)
+            : QuantityFormat.TryParse(text, out value);
+        if (parsed)
+        {
+            issue = FormDecimalIssue.None;
+            return true;
+        }
+
         value = 0m;
-        issue = FormDecimalIssue.Invalid;
+        issue = Classify(text, kind);
+        return false;
+    }
+
+    private static bool ReadsBack(string text, FormDecimalKind kind, decimal value)
+        => TryParse(text, kind, out var parsed, out _) && parsed == value;
+
+    private static FormDecimalIssue Classify(string? text, FormDecimalKind kind)
+    {
         if (string.IsNullOrWhiteSpace(text))
         {
-            issue = FormDecimalIssue.Empty;
-            return false;
+            return FormDecimalIssue.Empty;
         }
 
         text = text.Trim();
-        var separators = 0;
-        var fractionDigits = 0;
-        var nonzeroInteger = false;
-        var inFraction = false;
-        for (var index = 0; index < text.Length; index++)
+        if (text[0] is '+' or '-')
         {
-            var character = text[index];
-            if (character is '.' or ',')
-            {
-                separators++;
-                inFraction = true;
-                fractionDigits = 0;
-                continue;
-            }
-
-            if (character == '-' && index == 0)
-            {
-                continue;
-            }
-
-            if (character is < '0' or > '9')
-            {
-                return false;
-            }
-
-            if (inFraction)
-            {
-                fractionDigits++;
-            }
-            else if (character != '0')
-            {
-                nonzeroInteger = true;
-            }
+            text = text[1..].Trim();
         }
 
-        if (separators > 1)
+        var separators = text.Count(character => character is '.' or ',');
+        if (separators != 1)
         {
-            return false;
+            return FormDecimalIssue.Invalid;
         }
 
-        if (kind == FormDecimalKind.Quantity && separators == 1 && fractionDigits > 4)
+        var split = text.IndexOf('.') >= 0 ? text.IndexOf('.') : text.IndexOf(',');
+        var integer = text[..split];
+        var fraction = text[(split + 1)..];
+        if (kind == FormDecimalKind.Quantity && fraction.Length > 4)
         {
-            issue = FormDecimalIssue.TooManyDecimals;
-            return false;
+            return FormDecimalIssue.TooManyDecimals;
         }
 
-        if (kind == FormDecimalKind.Money && separators == 1 && fractionDigits == 3 && nonzeroInteger)
+        if (kind == FormDecimalKind.Money
+            && fraction.Length == 3
+            && integer.Length > 0
+            && integer.All(character => character == '0') == false)
         {
-            issue = FormDecimalIssue.AmbiguousThousands;
-            return false;
+            return FormDecimalIssue.AmbiguousThousands;
         }
 
-        if (decimal.TryParse(
-                text.Replace(',', '.'),
-                NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint,
-                CultureInfo.InvariantCulture,
-                out value) == false)
-        {
-            return false;
-        }
-
-        issue = FormDecimalIssue.None;
-        return true;
+        return FormDecimalIssue.Invalid;
     }
-
-    private static bool AmbiguousMoney(string text)
-        => TryParse(text, FormDecimalKind.Money, out _, out var issue) == false
-            && issue == FormDecimalIssue.AmbiguousThousands;
 }

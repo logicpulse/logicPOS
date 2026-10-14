@@ -440,7 +440,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             else
             {
                 entity = await FindEntityAsync(database, page.EntityType, id!.Value, cancellationToken)
-                    ?? throw new InvalidOperationException("Registo não encontrado.");
+                    ?? throw new BusinessException("Registo não encontrado.");
                 page.EntityType.GetProperty("UpdatedAt")?.SetValue(entity, DateTime.Now);
                 if (entity is WarehouseArticle article)
                 {
@@ -1332,8 +1332,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var kind = FormDecimal.KindFor(property.Name);
         if (string.IsNullOrWhiteSpace(raw))
         {
-            object zero = underlying == typeof(float) ? 0f : underlying == typeof(double) ? 0d : 0m;
-            property.SetValue(entity, zero);
+            error = $"Indique {Header(property.Name)}.";
             return true;
         }
 

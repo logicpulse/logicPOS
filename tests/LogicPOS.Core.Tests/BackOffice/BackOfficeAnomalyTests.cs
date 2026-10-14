@@ -246,9 +246,13 @@ public class BackOfficeAnomalyTests
     [Fact]
     public void Money_rejects_only_a_nonzero_integer_with_three_fraction_digits()
     {
-        // POS Desktop MoneyFormat must call FormDecimalKind.Money and keep this rule. Do not parse "1.500" as 1.5 or 1500.
+        // FormDecimal money delegates to MoneyFormat. These strings must match the desktop parser.
+        AssertSameMoney("1.234,56");
+        AssertSameMoney("1.500.000");
+        AssertSameMoney("+1.25");
         Assert.False(FormDecimal.TryParse("1.500", FormDecimalKind.Money, out _, out var dotted));
         Assert.Equal(FormDecimalIssue.AmbiguousThousands, dotted);
+        Assert.False(MoneyFormat.TryParse("1.500", out _));
         Assert.False(FormDecimal.TryParse("1,500", FormDecimalKind.Money, out _, out var comma));
         Assert.Equal(FormDecimalIssue.AmbiguousThousands, comma);
         Assert.False(FormDecimal.TryParse("-1.500", FormDecimalKind.Money, out _, out var negative));
@@ -259,6 +263,8 @@ public class BackOfficeAnomalyTests
         Assert.Equal(0.125m, smallComma);
         Assert.True(FormDecimal.TryParse("1.5000", FormDecimalKind.Money, out var four));
         Assert.Equal(1.5000m, four);
+        Assert.False(QuantityFormat.TryParse("1.500.000", out _));
+        Assert.False(FormDecimal.TryParse("1.500.000", FormDecimalKind.Quantity, out _));
         Assert.Contains("3 dígitos", FormDecimal.MoneyRule, StringComparison.Ordinal);
 
         var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
@@ -273,6 +279,16 @@ public class BackOfficeAnomalyTests
             vatRequiresExemption: false,
             parent);
         Assert.Null(stock);
+        Assert.False(FormDecimal.IsMoneyKey("TotalFinal"));
+        Assert.False(FormDecimal.IsMoneyKey("Amount"));
+        Assert.False(FormDecimal.IsMoneyKey("Discount"));
+        Assert.True(FormDecimal.IsMoneyKey("Price1"));
+        Assert.True(FormDecimal.IsQuantityKey("Tare"));
+        Assert.True(FormDecimal.IsQuantityKey("Weight"));
+        Assert.True(FormDecimal.IsQuantityKey("DefaultQuantity"));
+        Assert.False(FormDecimal.TryParse("   ", FormDecimalKind.Quantity, out var empty, out var emptyIssue));
+        Assert.Equal(0m, empty);
+        Assert.Equal(FormDecimalIssue.Empty, emptyIssue);
     }
 
     [Theory]
@@ -291,21 +307,44 @@ public class BackOfficeAnomalyTests
             Assert.False(FormDecimal.TryParse("1.23456", FormDecimalKind.Quantity, out _, out var tooMany));
             Assert.Equal(FormDecimalIssue.TooManyDecimals, tooMany);
 
+            var separator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
             foreach (var sample in new[] { 0.125m, 2.125m, 1.5m, 0m, 1.2345m })
             {
                 var text = FormDecimal.Format(sample);
-                Assert.Equal(sample.ToString(FormDecimal.DisplayFormat, CultureInfo.InvariantCulture), text);
+                Assert.Equal(sample.ToString(FormDecimal.DisplayFormat, CultureInfo.CurrentCulture), text);
+                if (sample != decimal.Truncate(sample))
+                {
+                    Assert.Contains(separator, text, StringComparison.Ordinal);
+                }
+
                 Assert.True(FormDecimal.TryParse(text, FormDecimalKind.Quantity, out var read, out var issue), text);
                 Assert.Equal(FormDecimalIssue.None, issue);
                 Assert.Equal(sample, read);
                 Assert.Equal(text, FormDecimal.Format(read));
+                Assert.Null(ArticleFormRules.Validate(
+                    ValidArticle(Guid.Empty, new Dictionary<string, string>
+                    {
+                        ["DefaultQuantity"] = text,
+                        ["Weight"] = text,
+                        ["Tare"] = text,
+                        ["MinimumStock"] = text
+                    }),
+                    vatRequiresExemption: false,
+                    Guid.Empty));
             }
 
             var moneyText = FormDecimal.Format(1.125m, FormDecimalKind.Money);
-            Assert.Equal("1.1250", moneyText);
+            Assert.Contains(separator, moneyText, StringComparison.Ordinal);
+            if (separator == ",")
+            {
+                Assert.Equal("1,1250", moneyText);
+                Assert.DoesNotContain("1.1250", moneyText, StringComparison.Ordinal);
+            }
             Assert.True(FormDecimal.TryParse(moneyText, FormDecimalKind.Money, out var money, out _));
             Assert.Equal(1.125m, money);
             Assert.Equal(moneyText, FormDecimal.Format(money, FormDecimalKind.Money));
+            Assert.True(MoneyFormat.TryParse(moneyText, out var desktopMoney));
+            Assert.Equal(money, desktopMoney);
 
             var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
             var child = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -339,10 +378,11 @@ public class BackOfficeAnomalyTests
     [Fact]
     public void Save_errors_keep_business_text_and_hide_provider_text()
     {
-        var missing = new InvalidOperationException("Registo não encontrado.");
+        var missing = new BusinessException("Registo não encontrado.");
         Assert.Equal("Registo não encontrado.", SaveExceptionText.Message(missing));
-        Assert.Contains(typeof(InvalidOperationException), SaveExceptionText.BusinessExceptions);
-        Assert.Equal("SQLite: o artigo já está inativo.", SaveExceptionText.Message(new InvalidOperationException("SQLite: o artigo já está inativo.")));
+        Assert.Equal(new[] { typeof(BusinessException) }, SaveExceptionText.BusinessExceptions);
+        Assert.Equal(SaveExceptionText.Generic, SaveExceptionText.Message(new InvalidOperationException("Registo não encontrado.")));
+        Assert.Equal(SaveExceptionText.Generic, SaveExceptionText.Message(new InvalidOperationException("SQLite: o artigo já está inativo.")));
         Assert.Equal(SaveExceptionText.Generic, SaveExceptionText.Message(new Exception("Registo não encontrado.")));
 
         var duplicateCode = new DbUpdateException(
@@ -361,6 +401,14 @@ public class BackOfficeAnomalyTests
         var technical = new DbUpdateException("An error occurred while saving the entity changes. See the inner exception for details.");
         Assert.Equal(SaveExceptionText.Generic, SaveExceptionText.Message(technical));
         Assert.Equal("Já existe um registo com este NIF.", SaveExceptionText.Describe(duplicateNif));
+    }
+
+    private static void AssertSameMoney(string text)
+    {
+        var desktop = MoneyFormat.TryParse(text, out var desktopAmount);
+        var backOffice = FormDecimal.TryParse(text, FormDecimalKind.Money, out var backOfficeAmount);
+        Assert.Equal(desktop, backOffice);
+        Assert.Equal(desktopAmount, backOfficeAmount);
     }
 
     private static Dictionary<string, string> ValidArticle(Guid id, Dictionary<string, string> extra)

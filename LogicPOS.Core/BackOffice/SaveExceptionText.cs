@@ -7,11 +7,10 @@ public static class SaveExceptionText
 {
     public const string Generic = "Não foi possível concluir a operação.";
 
-    /// <summary>Only these exception types may show their message. Everything else is logged and replaced.</summary>
+    /// <summary>Only <see cref="BusinessException"/> may show its message. Duplicate code and NIF are mapped separately.</summary>
     public static readonly Type[] BusinessExceptions =
     [
-        typeof(InvalidOperationException),
-        typeof(ArgumentException)
+        typeof(BusinessException)
     ];
 
     public static string Describe(Exception exception)

@@ -228,6 +228,10 @@ public sealed class LocalStockService : IStockManagementService
             await ApplyMovementAsync(database, request, cancellationToken);
             return ListingSaveResult.Ok(Guid.Empty, "Movimento de stock registado.");
         }
+        catch (BusinessException exception)
+        {
+            return ListingSaveResult.Fail(exception.Message);
+        }
         catch (Exception)
         {
             return ListingSaveResult.Fail("Não foi possível registar o movimento de stock.");
@@ -971,7 +975,7 @@ public sealed class LocalStockService : IStockManagementService
             var locationId = line.WarehouseLocationId ?? defaultLocation;
             if (locationId is null)
             {
-                throw new InvalidOperationException("Não há localização de armazém disponível.");
+                throw new BusinessException("Não há localização de armazém disponível.");
             }
 
             var serial = string.IsNullOrWhiteSpace(line.SerialNumber) ? null : line.SerialNumber.Trim();
@@ -981,7 +985,7 @@ public sealed class LocalStockService : IStockManagementService
                     .AnyAsync(item => item.IsDeleted == false && item.SerialNumber == serial, cancellationToken);
                 if (exists)
                 {
-                    throw new InvalidOperationException($"O número de série {serial} já existe.");
+                    throw new BusinessException($"O número de série {serial} já existe.");
                 }
             }
 
