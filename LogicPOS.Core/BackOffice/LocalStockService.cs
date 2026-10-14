@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -309,7 +309,8 @@ public sealed class LocalStockService : IStockManagementService
             return ListingSaveResult.Fail("Movimento não encontrado.");
         }
 
-        if (movement.DetailId is not null)
+        // Document-linked bulk stock stays tied to the fiscal line; unique serial outs may be undone.
+        if (movement.DetailId is not null && string.IsNullOrWhiteSpace(movement.SerialNumber))
         {
             return ListingSaveResult.Fail("Este movimento está ligado a um documento e não pode ser apagado.");
         }
