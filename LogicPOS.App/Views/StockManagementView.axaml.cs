@@ -993,15 +993,29 @@ public partial class StockManagementView : UserControl
 
         if (history.IsSold == false)
         {
+            // Do not pre-select a document: first item is the latest invoice and would bind by accident.
             _saleDocumentBox = new ComboBox
             {
                 ItemsSource = documents,
-                SelectedIndex = documents.Count > 0 ? 0 : -1,
+                SelectedIndex = -1,
+                PlaceholderText = documents.Count > 0 ? "Selecione o documento de venda…" : "Sem documentos de venda",
                 Classes = { "bo_entity_input" }
             };
             _saleDateBox = new CalendarDatePicker { SelectedDate = DateTime.Today, Classes = { "bo_doc_date" } };
             var sell = new Button { Content = "Registar saída", Classes = { "bo_listing_icon_button" } };
-            sell.Click += async (_, _) => await RegisterSaleAsync(history);
+            ToolTip.SetTip(sell, "Associa este número de série a um documento de venda e marca-o como vendido.");
+            sell.Click += (_, _) =>
+            {
+                if (_saleDocumentBox?.SelectedItem is not StockSaleDocumentOption document || _saleDateBox?.SelectedDate is null)
+                {
+                    Fail("Selecione o documento e a data de venda.");
+                    return;
+                }
+
+                AskConfirm(
+                    $"Confirma a saída do artigo único para o documento {document.Number}?",
+                    async () => await RegisterSaleAsync(history));
+            };
             EditorHost.Children.Add(Label("Documento de venda"));
             EditorHost.Children.Add(_saleDocumentBox);
             EditorHost.Children.Add(Label("Data de venda"));
