@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.FrontOffice;
+﻿namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosArticle
 {
@@ -17,7 +17,8 @@ public sealed class PosArticle
         decimal discount,
         Guid vatRateId,
         string? imageBase64 = null,
-        bool pvpVariable = false)
+        bool pvpVariable = false,
+        Guid? vatExemptionReasonId = null)
     {
         Id = id;
         SubfamilyId = subfamilyId;
@@ -34,6 +35,7 @@ public sealed class PosArticle
         VatRateId = vatRateId;
         ImageBase64 = imageBase64;
         PvpVariable = pvpVariable;
+        VatExemptionReasonId = vatExemptionReasonId;
     }
 
     public Guid Id { get; }
@@ -67,6 +69,9 @@ public sealed class PosArticle
 
     /// <summary>GTK <c>PVPVariable</c>: always ask for the unit price when selling.</summary>
     public bool PvpVariable { get; }
+
+    /// <summary>Default VAT exemption reason when the article VAT rate is 0%.</summary>
+    public Guid? VatExemptionReasonId { get; }
 
     public decimal QuantityStep => DefaultQuantity > 0 ? DefaultQuantity : 1m;
 

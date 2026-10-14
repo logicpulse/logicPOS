@@ -27,6 +27,7 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<PosLookupItem> _currencies = new();
     private readonly List<PosLookupItem> _documents = new();
     private readonly List<PosVatOption> _vatRates = new();
+    private readonly List<PosLookupItem> _vatExemptions = new();
     private TaskCompletionSource<bool>? _closed;
     private bool _filling;
     private int _customerLock;
@@ -189,6 +190,12 @@ public partial class NewDocumentWindow : UserControl
             _vatRates.Clear();
             _vatRates.AddRange(await documents.ListVatRatesAsync());
             EditVat.ItemsSource = _vatRates.ToList();
+        });
+        await Fill(async () =>
+        {
+            _vatExemptions.Clear();
+            _vatExemptions.AddRange(await documents.ListVatExemptionReasonsAsync());
+            EditExemption.ItemsSource = OptionalExemptions(_vatExemptions);
         });
         await Fill(async () => await ApplyPortugalAddressesAsync(documents));
         await Fill(async () => await SeedDraftAsync(documents, services.GetRequiredService<IPosCustomerService>()));
@@ -1005,7 +1012,7 @@ public partial class NewDocumentWindow : UserControl
         _editSnapshot = LineSnapshot.From(line);
         _editorOpen = true;
         EditQuantity.IsReadOnly = string.IsNullOrWhiteSpace(line.SerialNumber) == false;
-        FillEditor(line.Code, line.Designation, line.Family, line.Price, line.Quantity, line.Discount, line.VatRateId, line.Notes, line.SerialNumber);
+        FillEditor(line.Code, line.Designation, line.Family, line.Price, line.Quantity, line.Discount, line.VatRateId, line.Notes, line.SerialNumber, line.VatExemptionId);
         LineEditor.IsVisible = true;
     }
 
@@ -1018,7 +1025,8 @@ public partial class NewDocumentWindow : UserControl
         decimal discount,
         Guid vatRateId,
         string? notes,
-        string? serialNumber)
+        string? serialNumber,
+        Guid? vatExemptionId)
     {
         EditCode.Text = code;
         EditDesignation.Text = designation;
@@ -1032,6 +1040,8 @@ public partial class NewDocumentWindow : UserControl
         EditError.Text = string.Empty;
         var vatIndex = _vatRates.FindIndex(item => item.Id == vatRateId);
         EditVat.SelectedIndex = vatIndex >= 0 ? vatIndex : 0;
+        SelectExemption(vatExemptionId);
+        RefreshExemptionVisibility();
         RefreshEditTotals();
     }
 
@@ -1057,7 +1067,38 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnEditVatChanged(object? sender, SelectionChangedEventArgs e)
     {
+        RefreshExemptionVisibility();
         RefreshEditTotals();
+    }
+
+    private void RefreshExemptionVisibility()
+    {
+        var dutyFree = SelectedVat()?.Percentage == 0m;
+        EditExemptionPanel.IsVisible = dutyFree;
+        if (dutyFree == false)
+        {
+            SelectExemption(null);
+        }
+    }
+
+    private void SelectExemption(Guid? id)
+    {
+        if (EditExemption.ItemsSource is not IEnumerable<PosLookupItem> items)
+        {
+            return;
+        }
+
+        var match = id is Guid value && value != Guid.Empty
+            ? items.FirstOrDefault(item => item.Id == value)
+            : items.FirstOrDefault(item => item.Id == Guid.Empty);
+        EditExemption.SelectedItem = match ?? items.FirstOrDefault();
+    }
+
+    private static IReadOnlyList<PosLookupItem> OptionalExemptions(IReadOnlyList<PosLookupItem> items)
+    {
+        var list = new List<PosLookupItem> { new(Guid.Empty, "(nenhum)") };
+        list.AddRange(items);
+        return list;
     }
 
     private void RefreshEditTotals()
@@ -1107,15 +1148,28 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var vat = SelectedVat();
+        var percentage = vat?.Percentage ?? _editing.VatPercentage;
+        Guid? exemptionId = null;
+        if (percentage == 0m)
+        {
+            exemptionId = SelectedExemptionId();
+            if (exemptionId is null || exemptionId == Guid.Empty)
+            {
+                EditError.Text = "Indique o motivo de isenção de IVA.";
+                return;
+            }
+        }
+
         _editing.Apply(
             EditDesignation.Text?.Trim() ?? _editing.Designation,
             price,
             quantity,
             discount,
             vat?.Id ?? _editing.VatRateId,
-            vat?.Percentage ?? _editing.VatPercentage,
+            percentage,
             EditNotes.Text,
-            serial);
+            serial,
+            exemptionId);
         CloseEditor();
         RefreshLines();
     }
@@ -1153,7 +1207,8 @@ public partial class NewDocumentWindow : UserControl
             _editSnapshot.Discount,
             _editSnapshot.VatRateId,
             _editSnapshot.Notes,
-            _editSnapshot.SerialNumber);
+            _editSnapshot.SerialNumber,
+            _editSnapshot.VatExemptionId);
     }
 
     private void CloseEditor()
@@ -1181,6 +1236,11 @@ public partial class NewDocumentWindow : UserControl
     private PosVatOption? SelectedVat()
     {
         return EditVat.SelectedItem as PosVatOption;
+    }
+
+    private Guid? SelectedExemptionId()
+    {
+        return EditExemption.SelectedItem is PosLookupItem item && item.Id != Guid.Empty ? item.Id : null;
     }
 
     private static Guid? SelectedId(ComboBox box)
@@ -1786,6 +1846,14 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        if (draft == false
+            && _lines.Any(line => line.VatPercentage == 0m
+                && (line.VatExemptionId is null || line.VatExemptionId == Guid.Empty)))
+        {
+            ErrorLabel.Text = "Há linhas com IVA a 0% sem motivo de isenção. Edite a linha e indique o motivo.";
+            return;
+        }
+
         var transport = RequiresTransport();
         if (transport && draft == false)
         {
@@ -1829,7 +1897,8 @@ public partial class NewDocumentWindow : UserControl
             line.Notes,
             line.SerialNumber,
             line.Price,
-            line.PriceIncludesVat)).ToList();
+            line.PriceIncludesVat,
+            line.VatExemptionId)).ToList();
         var header = new PosDocumentHeader
         {
             PaymentConditionId = SelectedId(PaymentBox),
@@ -1845,6 +1914,13 @@ public partial class NewDocumentWindow : UserControl
         {
             if (draft)
             {
+                // Cloud: drafts must live on the API — never fall back to local-drafts.json.
+                if (IsCloudMode())
+                {
+                    ErrorLabel.Text = issued.Error ?? "Não foi possível gravar o rascunho na API.";
+                    return;
+                }
+
                 var draftId = SaveLocalDraft(type, customerId, _lines.Sum(line => line.GrossTotal));
                 _previewDraftId = draftId;
                 if (close == false)
@@ -1955,10 +2031,17 @@ public partial class NewDocumentWindow : UserControl
                 Discount = line.Discount,
                 VatRateId = line.VatRateId,
                 VatPercentage = line.VatPercentage,
+                VatExemptionId = line.VatExemptionId,
                 Notes = line.Notes,
                 SerialNumber = line.SerialNumber
             }).ToList()
         });
+    }
+
+    private static bool IsCloudMode()
+    {
+        var configuration = AppComposition.Services?.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
+        return bool.TryParse(configuration?["DatabaseSettings:UseCloud"], out var useCloud) && useCloud;
     }
 
     private static void SelectId(ComboBox box, Guid? id)
@@ -2249,6 +2332,8 @@ public partial class NewDocumentWindow : UserControl
 
         public Guid VatRateId { get; init; }
 
+        public Guid? VatExemptionId { get; init; }
+
         public string? Notes { get; init; }
 
         public string? SerialNumber { get; init; }
@@ -2264,6 +2349,7 @@ public partial class NewDocumentWindow : UserControl
                 Quantity = line.Quantity,
                 Discount = line.Discount,
                 VatRateId = line.VatRateId,
+                VatExemptionId = line.VatExemptionId,
                 Notes = line.Notes,
                 SerialNumber = line.SerialNumber
             };
@@ -2276,6 +2362,7 @@ public partial class NewDocumentWindow : UserControl
         {
             ArticleId = article.Id;
             VatRateId = article.VatRateId;
+            VatExemptionId = article.VatPercentage == 0m ? article.VatExemptionReasonId : null;
             Code = article.Code;
             Designation = article.Designation;
             Family = family;
@@ -2298,6 +2385,7 @@ public partial class NewDocumentWindow : UserControl
         {
             ArticleId = line.ArticleId;
             VatRateId = line.VatRateId;
+            VatExemptionId = line.VatPercentage == 0m ? line.VatExemptionId : null;
             Code = line.Code;
             Designation = line.Designation;
             Family = family;
@@ -2319,6 +2407,8 @@ public partial class NewDocumentWindow : UserControl
         public Guid ArticleId { get; }
 
         public Guid VatRateId { get; private set; }
+
+        public Guid? VatExemptionId { get; private set; }
 
         public string Code { get; }
 
@@ -2372,7 +2462,16 @@ public partial class NewDocumentWindow : UserControl
             Quantity += step > 0 ? step : 1m;
         }
 
-        public void Apply(string designation, decimal price, decimal quantity, decimal discount, Guid vatRateId, decimal vatPercentage, string? notes, string? serialNumber)
+        public void Apply(
+            string designation,
+            decimal price,
+            decimal quantity,
+            decimal discount,
+            Guid vatRateId,
+            decimal vatPercentage,
+            string? notes,
+            string? serialNumber,
+            Guid? vatExemptionId)
         {
             Designation = string.IsNullOrWhiteSpace(designation) ? Designation : designation;
             Price = price;
@@ -2380,6 +2479,7 @@ public partial class NewDocumentWindow : UserControl
             Discount = discount;
             VatRateId = vatRateId;
             VatPercentage = vatPercentage;
+            VatExemptionId = vatPercentage == 0m ? vatExemptionId : null;
             Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
             SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
             RecalculateNet();

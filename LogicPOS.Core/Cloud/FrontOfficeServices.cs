@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.FrontOffice;
+﻿namespace LogicPOS.Core.FrontOffice;
 
 public interface IPosCatalogService
 {
@@ -63,6 +63,8 @@ public interface IPosDocumentService
         CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<PosVatOption>> ListVatRatesAsync(CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<PosLookupItem>> ListVatExemptionReasonsAsync(CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default);
 

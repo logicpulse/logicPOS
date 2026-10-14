@@ -251,7 +251,7 @@
                         </Button>
                     </StackPanel>
                 </Border>
-                <Grid Classes="bo_line_editor_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                <Grid Classes="bo_line_editor_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
                     <StackPanel>
                         <TextBlock Classes="bo_new_doc_caption" Text="Código" />
                         <TextBox x:Name="EditCode" Classes="bo_line_editor_input" IsReadOnly="True" />
@@ -296,11 +296,15 @@
                         <TextBlock Classes="bo_new_doc_caption" Text="Taxa (%)" />
                         <ComboBox x:Name="EditVat" Classes="bo_new_doc_combo" SelectionChanged="OnEditVatChanged" />
                     </StackPanel>
-                    <StackPanel Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2">
+                    <StackPanel x:Name="EditExemptionPanel" Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2">
+                        <TextBlock Classes="bo_new_doc_caption" Text="Motivo de isenção de IVA" />
+                        <ComboBox x:Name="EditExemption" Classes="bo_new_doc_combo" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Grid.ColumnSpan="4">
                         <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
                         <TextBox x:Name="EditNotes" Classes="bo_line_editor_notes" />
                     </StackPanel>
-                    <TextBlock x:Name="EditError" Grid.Row="4" Grid.ColumnSpan="4" Classes="bo_new_doc_error" />
+                    <TextBlock x:Name="EditError" Grid.Row="5" Grid.ColumnSpan="4" Classes="bo_new_doc_error" />
                 </Grid>
             </DockPanel>
         </Border>

@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 
 namespace LogicPOS.Core.FrontOffice;
 
@@ -50,6 +50,8 @@ public sealed class StoredDraftLine
     public Guid VatRateId { get; set; }
 
     public decimal VatPercentage { get; set; }
+
+    public Guid? VatExemptionId { get; set; }
 
     public string? Notes { get; set; }
 
@@ -134,7 +136,8 @@ public static class LocalDraftStore
             line.VatRateId,
             line.VatPercentage,
             line.SerialNumber,
-            line.Notes)).ToList();
+            line.Notes,
+            line.VatExemptionId)).ToList();
     }
 
     public static IReadOnlyList<PosDocumentRow> Merge(IReadOnlyList<PosDocumentRow> remote, DateTime start, DateTime end)

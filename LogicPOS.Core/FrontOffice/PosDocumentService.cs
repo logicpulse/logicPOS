@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Net;
 using System.Net.Mail;
 using LogicPOS.Application.Features.System;
@@ -32,7 +32,8 @@ public sealed class PosSaleLine
         string? notes = null,
         string? serialNumber = null,
         decimal? unitPrice = null,
-        bool priceWithVat = false)
+        bool priceWithVat = false,
+        Guid? vatExemptionId = null)
     {
         ArticleId = articleId;
         Quantity = quantity;
@@ -43,6 +44,7 @@ public sealed class PosSaleLine
         SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
         UnitPrice = unitPrice ?? netUnitPrice;
         PriceWithVat = priceWithVat;
+        VatExemptionId = vatExemptionId;
     }
 
     public Guid ArticleId { get; }
@@ -62,6 +64,8 @@ public sealed class PosSaleLine
     public decimal UnitPrice { get; }
 
     public bool PriceWithVat { get; }
+
+    public Guid? VatExemptionId { get; }
 }
 
 public sealed class PosLookupItem
@@ -368,7 +372,8 @@ public sealed class PosCopiedLine
         Guid vatRateId,
         decimal vatPercentage,
         string? serialNumber = null,
-        string? notes = null)
+        string? notes = null,
+        Guid? vatExemptionId = null)
     {
         ArticleId = articleId;
         Code = code;
@@ -380,6 +385,7 @@ public sealed class PosCopiedLine
         VatPercentage = vatPercentage;
         SerialNumber = string.IsNullOrWhiteSpace(serialNumber) ? null : serialNumber.Trim();
         Notes = string.IsNullOrWhiteSpace(notes) ? null : notes.Trim();
+        VatExemptionId = vatExemptionId;
     }
 
     public Guid ArticleId { get; }
@@ -401,6 +407,8 @@ public sealed class PosCopiedLine
     public string? SerialNumber { get; }
 
     public string? Notes { get; }
+
+    public Guid? VatExemptionId { get; }
 }
 
 /// <summary>Full source document used to seed a new document from an existing one.</summary>
@@ -1129,6 +1137,28 @@ public sealed class PosDocumentService : IPosDocumentService
             .ToList();
     }
 
+    public async Task<IReadOnlyList<PosLookupItem>> ListVatExemptionReasonsAsync(CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var reasons = await database.VatExemptionReasons
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .Select(item => new { item.Id, item.Code, item.Designation, item.Acronym })
+            .ToListAsync(cancellationToken);
+        return reasons
+            .OrderBy(item => item.Code)
+            .Select(item =>
+            {
+                var code = string.IsNullOrWhiteSpace(item.Acronym) ? item.Code : item.Acronym;
+                var label = string.IsNullOrWhiteSpace(code)
+                    ? item.Designation
+                    : code + " - " + item.Designation;
+                return new PosLookupItem(item.Id, label, item.Code);
+            })
+            .ToList();
+    }
+
     public async Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -1639,7 +1669,7 @@ public sealed class PosDocumentService : IPosDocumentService
             ArticleId: line.ArticleId,
             Quantity: line.Quantity,
             Price: line.UnitPrice,
-            VatExemptionId: null,
+            VatExemptionId: line.VatExemptionId,
             VatRateId: line.VatRateId == Guid.Empty ? null : line.VatRateId,
             Discount: line.Discount,
             PriceType: null,

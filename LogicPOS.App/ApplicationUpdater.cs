@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO.Compression;
 using System.Net.Http;
 
@@ -23,18 +23,24 @@ internal static class ApplicationUpdater
         progress.Report("A descarregar o pacote...");
         await DownloadAsync(zipPath, progress, cancellationToken);
 
+        // Extract/copy prep must not run on the UI sync context — a large zip freezes the
+        // progress UI at 100% and delays Shutdown so the apply script never sees process exit.
         progress.Report("A extrair ficheiros...");
-        if (Directory.Exists(extractPath))
+        var payload = await Task.Run(() =>
         {
-            Directory.Delete(extractPath, recursive: true);
-        }
+            if (Directory.Exists(extractPath))
+            {
+                Directory.Delete(extractPath, recursive: true);
+            }
 
-        ZipFile.ExtractToDirectory(zipPath, extractPath);
-        var payload = FindPayload(extractPath)
-            ?? throw new InvalidOperationException("O pacote não contém logicpos.exe.");
+            ZipFile.ExtractToDirectory(zipPath, extractPath);
+            var found = FindPayload(extractPath)
+                ?? throw new InvalidOperationException("O pacote não contém logicpos.exe.");
 
-        // Never ship install-time defaults over a live cloud/local configuration.
-        StripProtectedFiles(payload);
+            // Never ship install-time defaults over a live cloud/local configuration.
+            StripProtectedFiles(found);
+            return found;
+        }, cancellationToken);
 
         progress.Report("A preparar a aplicação dos ficheiros...");
         var scriptPath = Path.Combine(tempRoot, "apply.ps1");
@@ -95,7 +101,8 @@ internal static class ApplicationUpdater
             received += read;
             if (total is > 0)
             {
-                var percent = (int)(received * 100 / total.Value);
+                // Cap at 99% so the bar does not look finished while extract/apply still run.
+                var percent = Math.Min(99, (int)(received * 100 / total.Value));
                 if (percent != lastPercent)
                 {
                     lastPercent = percent;

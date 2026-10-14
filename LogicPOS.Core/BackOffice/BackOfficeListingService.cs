@@ -828,7 +828,9 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 Lookup = lookup,
                 ReadOnly = readOnly,
                 Required = kind is not ("lookup") && IsRequired(property) || (lookup is not null && IsRequired(property)),
-                Group = FieldGroup(page.EntityType, property.Name)
+                Group = FieldGroup(page.EntityType, property.Name),
+                // GTK: exemption reason only when VAT rate is 0%
+                ShowWhen = property.Name == "VatExemptionReasonId" ? "VatDutyFree" : null
             });
         }
 
