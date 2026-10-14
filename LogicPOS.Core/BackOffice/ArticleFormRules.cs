@@ -9,8 +9,6 @@ public static class ArticleFormRules
     private const string DealerPattern = @"^[À-ÿ\-_ \s\w]*$";
     private const string DesignationPattern = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
     private const string ButtonPattern = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª()\[\]';:!?<>+\-_ \.\,\s\\\/\*]{2,35}$";
-    private const string DecimalPattern = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,4})?\s*$";
-    private const string DecimalFromZeroPattern = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,})?\s*$";
     private const string DecimalAboveZeroPattern = @"^\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";
     private const string PercentPattern = @"^(100([\.\,][0]{1,})?$|[0-9]{1,2}([\.\,][0-9]{1,})?)$";
     private const string BarcodePattern = @"^[0-9A-Za-z]+$";
@@ -28,22 +26,22 @@ public static class ArticleFormRules
             ?? NeedGuid(fields, "SizeUnitId", "a unidade de tamanho")
             ?? NeedGuid(fields, "VatDirectSellingId", "o IVA de venda direta")
             ?? NeedGuid(fields, "VatOnTableId", "o IVA de mesa")
-            ?? DecimalField(fields, "Price1", "o preço 1", DecimalFromZeroPattern, required: true)
-            ?? DecimalField(fields, "Price2", "o preço 2", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price3", "o preço 3", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price4", "o preço 4", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price5", "o preço 5", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price1Promotion", "a promoção 1", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price2Promotion", "a promoção 2", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price3Promotion", "a promoção 3", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price4Promotion", "a promoção 4", DecimalFromZeroPattern, required: false)
-            ?? DecimalField(fields, "Price5Promotion", "a promoção 5", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price1", "o preço 1", required: true)
+            ?? DecimalField(fields, "Price2", "o preço 2", required: false)
+            ?? DecimalField(fields, "Price3", "o preço 3", required: false)
+            ?? DecimalField(fields, "Price4", "o preço 4", required: false)
+            ?? DecimalField(fields, "Price5", "o preço 5", required: false)
+            ?? DecimalField(fields, "Price1Promotion", "a promoção 1", required: false)
+            ?? DecimalField(fields, "Price2Promotion", "a promoção 2", required: false)
+            ?? DecimalField(fields, "Price3Promotion", "a promoção 3", required: false)
+            ?? DecimalField(fields, "Price4Promotion", "a promoção 4", required: false)
+            ?? DecimalField(fields, "Price5Promotion", "a promoção 5", required: false)
             ?? Match(fields, "Discount", "o desconto", PercentPattern, required: false)
             ?? Match(fields, "Barcode", "o código de barras", BarcodePattern, required: false)
-            ?? DecimalField(fields, "MinimumStock", "o stock mínimo", DecimalPattern, required: false)
-            ?? DecimalField(fields, "Tare", "a tara", DecimalPattern, required: false)
-            ?? DecimalField(fields, "Weight", "o peso", DecimalPattern, required: false)
-            ?? DecimalField(fields, "DefaultQuantity", "a quantidade predefinida", DecimalPattern, required: false);
+            ?? DecimalField(fields, "MinimumStock", "o stock mínimo", required: false)
+            ?? DecimalField(fields, "Tare", "a tara", required: false)
+            ?? DecimalField(fields, "Weight", "o peso", required: false)
+            ?? DecimalField(fields, "DefaultQuantity", "a quantidade predefinida", required: false);
 
         if (error is not null)
         {
@@ -139,9 +137,7 @@ public static class ArticleFormRules
 
             if (TryQuantity(quantityText, out var quantity) == false)
             {
-                error = FormDecimal.TryParse(quantityText, out _, out var issue) == false && issue == FormDecimalIssue.AmbiguousThousands
-                    ? FormDecimal.Rule
-                    : "Indique a quantidade do artigo associado.";
+                error = QuantityError(quantityText);
                 return [];
             }
 
@@ -180,29 +176,43 @@ public static class ArticleFormRules
     }
 
     private static bool TryQuantity(string text, out decimal value)
-        => FormDecimal.TryParse(text, out value) && value > 0;
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out value, out _) && value > 0;
+
+    private static string QuantityError(string text)
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out _, out var issue) == false
+            && issue == FormDecimalIssue.TooManyDecimals
+            ? FormDecimal.QuantityRule
+            : "Indique a quantidade do artigo associado.";
 
     private static string ArticleKey(string suffix) => suffix.Length == 0 ? "ChildArticleId" : "ChildArticleId:" + suffix;
 
     private static string QuantityKey(string suffix) => suffix.Length == 0 ? "ChildQuantity" : "ChildQuantity:" + suffix;
 
-    private static string? DecimalField(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)
+    private static string? DecimalField(IReadOnlyDictionary<string, string> fields, string key, string label, bool required)
     {
-        var error = Match(fields, key, label, pattern, required);
-        if (error is not null)
-        {
-            return error;
-        }
-
         var value = Cell(fields, key);
         if (string.IsNullOrWhiteSpace(value))
         {
-            return null;
+            return required ? $"Indique {label}." : null;
         }
 
-        return FormDecimal.TryParse(value, out _, out var issue) == false && issue == FormDecimalIssue.AmbiguousThousands
-            ? FormDecimal.Rule
-            : null;
+        var kind = FormDecimal.KindFor(key);
+        if (FormDecimal.TryParse(value, kind, out var parsed, out var issue) == false || parsed < 0)
+        {
+            if (issue == FormDecimalIssue.AmbiguousThousands)
+            {
+                return FormDecimal.MoneyRule;
+            }
+
+            if (issue == FormDecimalIssue.TooManyDecimals)
+            {
+                return FormDecimal.QuantityRule;
+            }
+
+            return $"O valor de {label} não é válido.";
+        }
+
+        return null;
     }
 
     private static string? Match(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)

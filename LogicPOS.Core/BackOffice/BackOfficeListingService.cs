@@ -938,7 +938,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     Key = property.Name,
                     Label = Header(property.Name),
                     Kind = "number",
-                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                    Value = FormDecimal.Format(price.Value, FormDecimalKind.Money),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -947,7 +947,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     Key = property.Name + "Promotion",
                     Label = "Promoção",
                     Kind = "number",
-                    Value = price.PromotionValue.ToString("0.##", CultureInfo.CurrentCulture),
+                    Value = FormDecimal.Format(price.PromotionValue, FormDecimalKind.Money),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -1226,7 +1226,13 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (value is ArticlePrice price)
         {
-            return price.Value.ToString("0.##", CultureInfo.CurrentCulture);
+            return FormDecimal.Format(price.Value, FormDecimalKind.Money);
+        }
+
+        if (value is decimal or double or float
+            && (FormDecimal.IsQuantityKey(property.Name) || FormDecimal.IsMoneyKey(property.Name)))
+        {
+            return FormDecimal.Format(Convert.ToDecimal(value, CultureInfo.InvariantCulture), FormDecimal.KindFor(property.Name));
         }
 
         if (value is bool flag)
@@ -1287,6 +1293,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            if (TryApplyMeasuredNumber(entity, property, pair.Value, out var measuredError))
+            {
+                if (measuredError is not null)
+                {
+                    return measuredError;
+                }
+
+                continue;
+            }
+
             var converted = ConvertValue(property.PropertyType, pair.Value);
             if (converted.Failed)
             {
@@ -1297,6 +1313,44 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return null;
+    }
+
+    private static bool TryApplyMeasuredNumber(object entity, PropertyInfo property, string raw, out string? error)
+    {
+        error = null;
+        if (FormDecimal.IsQuantityKey(property.Name) == false && FormDecimal.IsMoneyKey(property.Name) == false)
+        {
+            return false;
+        }
+
+        var underlying = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        if (underlying != typeof(decimal) && underlying != typeof(float) && underlying != typeof(double))
+        {
+            return false;
+        }
+
+        var kind = FormDecimal.KindFor(property.Name);
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            object zero = underlying == typeof(float) ? 0f : underlying == typeof(double) ? 0d : 0m;
+            property.SetValue(entity, zero);
+            return true;
+        }
+
+        if (FormDecimal.TryParse(raw, kind, out var number, out var issue) == false)
+        {
+            error = issue switch
+            {
+                FormDecimalIssue.AmbiguousThousands => FormDecimal.MoneyRule,
+                FormDecimalIssue.TooManyDecimals => FormDecimal.QuantityRule,
+                _ => $"Valor inválido em {Header(property.Name)}."
+            };
+            return true;
+        }
+
+        object stored = underlying == typeof(float) ? (float)number : underlying == typeof(double) ? (double)number : number;
+        property.SetValue(entity, stored);
+        return true;
     }
 
     /// <summary>Writes the POS button label and image stored on the Button complex property.</summary>
@@ -1393,10 +1447,10 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return true;
         }
 
-        if (FormDecimal.TryParse(value, out var amount, out var issue) == false)
+        if (FormDecimal.TryParse(value, FormDecimalKind.Money, out var amount, out var issue) == false)
         {
             error = issue == FormDecimalIssue.AmbiguousThousands
-                ? FormDecimal.Rule
+                ? FormDecimal.MoneyRule
                 : $"Valor inválido em {Header(key)}.";
             return true;
         }
@@ -1725,7 +1779,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Kind = "text",
             Group = "Artigos Associados",
             ShowWhen = "IsComposed",
-            Value = quantity.ToString(CultureInfo.CurrentCulture)
+            Value = FormDecimal.Format(quantity, FormDecimalKind.Quantity)
         });
     }
 

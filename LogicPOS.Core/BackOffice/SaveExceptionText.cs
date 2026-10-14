@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace LogicPOS.Core.BackOffice;
+﻿namespace LogicPOS.Core.BackOffice;
 
 /// <summary>
 /// User-facing save errors. Business text is kept; Entity Framework and provider text is logged and replaced.
@@ -8,6 +6,13 @@ namespace LogicPOS.Core.BackOffice;
 public static class SaveExceptionText
 {
     public const string Generic = "Não foi possível concluir a operação.";
+
+    /// <summary>Only these exception types may show their message. Everything else is logged and replaced.</summary>
+    public static readonly Type[] BusinessExceptions =
+    [
+        typeof(InvalidOperationException),
+        typeof(ArgumentException)
+    ];
 
     public static string Describe(Exception exception)
     {
@@ -26,12 +31,7 @@ public static class SaveExceptionText
                 return duplicate;
             }
 
-            if (current is DbUpdateException or DbUpdateConcurrencyException)
-            {
-                continue;
-            }
-
-            if (string.IsNullOrWhiteSpace(current.Message) || IsTechnical(current.Message))
+            if (IsBusiness(current) == false || string.IsNullOrWhiteSpace(current.Message))
             {
                 continue;
             }
@@ -40,6 +40,19 @@ public static class SaveExceptionText
         }
 
         return business ?? Generic;
+    }
+
+    private static bool IsBusiness(Exception exception)
+    {
+        foreach (var type in BusinessExceptions)
+        {
+            if (type.IsInstanceOfType(exception))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string? DuplicateMessage(string? message)
@@ -72,13 +85,4 @@ public static class SaveExceptionText
 
         return "Já existe um registo com estes dados.";
     }
-
-    private static bool IsTechnical(string message)
-        => message.Contains("EntityFramework", StringComparison.OrdinalIgnoreCase)
-            || message.Contains("DbUpdate", StringComparison.Ordinal)
-            || message.Contains("SQLite", StringComparison.OrdinalIgnoreCase)
-            || message.Contains("SqlException", StringComparison.Ordinal)
-            || message.Contains("See the inner exception", StringComparison.OrdinalIgnoreCase)
-            || message.Contains("Microsoft.Data", StringComparison.Ordinal)
-            || message.Contains("MySql", StringComparison.OrdinalIgnoreCase);
 }

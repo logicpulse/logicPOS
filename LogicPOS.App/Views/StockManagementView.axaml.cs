@@ -795,7 +795,7 @@ public partial class StockManagementView : UserControl
             SelectedItem = locations.FirstOrDefault(item => item.Id == currentLocation) ?? locations.FirstOrDefault()
         };
         _locationBox.Classes.Add("bo_entity_input");
-        _quantityBox = Field("Quantidade", quantity.ToString("0.###", CultureInfo.CurrentCulture), out var quantityField);
+        _quantityBox = Field("Quantidade", FormDecimal.Format(quantity), out var quantityField, FormDecimal.QuantityRule);
         EditorNotice.Text = string.Empty;
         EditorHost.Children.Add(Label("Nova localização"));
         EditorHost.Children.Add(_locationBox);
@@ -913,8 +913,8 @@ public partial class StockManagementView : UserControl
         _dateBox = new CalendarDatePicker { SelectedDate = movement.Date };
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", movement.DocumentNumber, out var documentField);
-        _quantityBox = Field("Quantidade", movement.Quantity.ToString("0.###", CultureInfo.CurrentCulture), out var quantityField);
-        _priceBox = Field("Preço", movement.Price.ToString("0.###", CultureInfo.CurrentCulture), out var priceField, FormDecimal.Rule);
+        _quantityBox = Field("Quantidade", FormDecimal.Format(movement.Quantity), out var quantityField, FormDecimal.QuantityRule);
+        _priceBox = Field("Preço", FormDecimal.Format(movement.Price, FormDecimalKind.Money), out var priceField, FormDecimal.MoneyRule);
         _attachLabel = new TextBlock
         {
             Text = movement.HasExternalDocument ? "Anexo atual mantido (escolha outro para substituir)" : "Sem anexo",
@@ -941,8 +941,8 @@ public partial class StockManagementView : UserControl
         _editId = article.Id;
         EditorTitle.Text = $"Stock - {article.Designation}";
         EditorHost.Children.Clear();
-        _totalBox = Field("Total stock", article.TotalStock.ToString("0.###", CultureInfo.CurrentCulture), out var totalField, FormDecimal.Rule);
-        _minimumBox = Field("Stock mínimo", article.MinimumStock.ToString("0.###", CultureInfo.CurrentCulture), out var minimumField, FormDecimal.Rule);
+        _totalBox = Field("Total stock", FormDecimal.Format(article.TotalStock), out var totalField, FormDecimal.QuantityRule);
+        _minimumBox = Field("Stock mínimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
         EditorHost.Children.Add(totalField);
         EditorHost.Children.Add(minimumField);
         EditorOverlay.IsVisible = true;
@@ -1125,8 +1125,9 @@ public partial class StockManagementView : UserControl
         var article = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(article);
         var quantity = new TextBox { Text = "1", Classes = { "bo_entity_input", "bo_numeric" } };
+        ToolTip.SetTip(quantity, FormDecimal.QuantityRule);
         var price = new TextBox { Text = "0", Classes = { "bo_entity_input", "bo_numeric" } };
-        ToolTip.SetTip(price, FormDecimal.Rule);
+        ToolTip.SetTip(price, FormDecimal.MoneyRule);
         var serial = new TextBox { PlaceholderText = "Nº série", Classes = { "bo_entity_input" } };
         var location = new ComboBox
         {
@@ -1226,7 +1227,7 @@ public partial class StockManagementView : UserControl
                         return;
                     }
 
-                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity) == false || quantity == 0)
+                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
                     {
                         if (string.IsNullOrWhiteSpace(EditorNotice.Text))
                         {
@@ -1238,7 +1239,7 @@ public partial class StockManagementView : UserControl
 
                     var price = 0m;
                     if (string.IsNullOrWhiteSpace(line.Price.Text) == false
-                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price) == false)
+                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
                     {
                         return;
                     }
@@ -1270,14 +1271,14 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.EditMovement when _editId is Guid id:
             {
-                if (ReadDecimal(_quantityBox?.Text, "Quantidade inválida.", out var quantity) == false)
+                if (ReadDecimal(_quantityBox?.Text, "Quantidade inválida.", out var quantity, FormDecimalKind.Quantity) == false)
                 {
                     return;
                 }
 
                 var price = 0m;
                 if (string.IsNullOrWhiteSpace(_priceBox?.Text) == false
-                    && ReadDecimal(_priceBox?.Text, "Preço inválido.", out price) == false)
+                    && ReadDecimal(_priceBox?.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
                 {
                     return;
                 }
@@ -1295,8 +1296,8 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.AdjustArticle when _editId is Guid articleId:
             {
-                if (ReadDecimal(_totalBox?.Text, "Valores de stock inválidos.", out var total) == false ||
-                    ReadDecimal(_minimumBox?.Text, "Valores de stock inválidos.", out var minimum) == false)
+                if (ReadDecimal(_totalBox?.Text, "Valores de stock inválidos.", out var total, FormDecimalKind.Quantity) == false ||
+                    ReadDecimal(_minimumBox?.Text, "Valores de stock inválidos.", out var minimum, FormDecimalKind.Quantity) == false)
                 {
                     return;
                 }
@@ -1707,19 +1708,24 @@ public partial class StockManagementView : UserControl
             box?.Text,
             box?.ItemsSource as System.Collections.IEnumerable);
 
-    private bool ReadDecimal(string? text, string invalidMessage, out decimal value)
+    private bool ReadDecimal(string? text, string invalidMessage, out decimal value, FormDecimalKind kind = FormDecimalKind.Quantity)
     {
-        if (FormDecimal.TryParse(text, out value, out var issue))
+        if (FormDecimal.TryParse(text, kind, out value, out var issue))
         {
             return true;
         }
 
-        EditorError(issue == FormDecimalIssue.AmbiguousThousands ? FormDecimal.Rule : invalidMessage);
+        EditorError(issue switch
+        {
+            FormDecimalIssue.AmbiguousThousands => FormDecimal.MoneyRule,
+            FormDecimalIssue.TooManyDecimals => FormDecimal.QuantityRule,
+            _ => invalidMessage
+        });
         return false;
     }
 
     private static bool TryDecimal(string? text, out decimal value)
-        => FormDecimal.TryParse(text, out value);
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out value, out _);
 
     private string DocumentNumberOrReference()
     {
