@@ -125,7 +125,25 @@ public partial class LoginWindow : Window
 
         _registrationPrompted = true;
         var license = AppComposition.Services?.GetService<ILicenseModule>();
-        if (license is null || license.RegistrationRequired == false)
+        if (license is null)
+        {
+            return;
+        }
+
+        bool needsRegistration;
+        try
+        {
+            // May call the API; CloudApiLicenseModule uses a timeout and must not deadlock the UI.
+            needsRegistration = await Task.Run(() => license.RegistrationRequired).ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            // Soft-fail: login stays usable; CloudApiLicenseModule already treats API failure as unlicensed.
+            System.Diagnostics.Debug.WriteLine($"Licence check failed: {ex}");
+            return;
+        }
+
+        if (needsRegistration == false)
         {
             return;
         }

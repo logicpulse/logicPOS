@@ -45,6 +45,9 @@ public static class AppLogging
     public static void Information(string messageTemplate, params object?[] propertyValues)
         => Log.Information(messageTemplate, propertyValues);
 
+    public static void Warning(Exception? exception, string messageTemplate, params object?[] propertyValues)
+        => Log.Warning(exception, messageTemplate, propertyValues);
+
     public static void Fatal(Exception? exception, string messageTemplate, params object?[] propertyValues)
         => Log.Fatal(exception, messageTemplate, propertyValues);
 

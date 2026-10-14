@@ -81,8 +81,10 @@ public partial class App : global::Avalonia.Application
         {
             var login = new LoginWindow();
             desktop.MainWindow = login;
-            login.Show();
+            // Close splash before Show(): Opened may touch ILicenseModule (branding) and must not
+            // leave the loader stuck if a sync licence probe blocks briefly.
             loading.Close();
+            login.Show();
         });
     }
 
