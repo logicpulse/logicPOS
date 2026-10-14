@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -64,6 +64,9 @@ public partial class App : global::Avalonia.Application
 
             await Task.Run(() =>
             {
+                // Free disk space from leftover update packages under %TEMP%.
+                ApplicationUpdater.PurgeStaleUpdateFolders();
+
                 var bootstrap = Bootstrap ?? AppComposition.Configure;
                 bootstrap();
             });

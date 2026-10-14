@@ -12,41 +12,105 @@ internal static class ApplicationUpdater
 {
     public const string PackageUrl = "https://box.logicpulse.com/files/logicPOS/Installation.Windows/Avalonia/logicpos.zip";
 
+    private const string TempFolderPrefix = "logicpos-update-";
+
     public static async Task DownloadAndScheduleAsync(IProgress<string> progress, CancellationToken cancellationToken = default)
     {
+        // Drop leftovers from failed/previous updates before allocating a new unique temp dir.
+        PurgeStaleUpdateFolders();
+
         var install = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-        var tempRoot = Path.Combine(Path.GetTempPath(), "logicpos-update-" + Guid.NewGuid().ToString("N"));
+        var tempRoot = Path.Combine(Path.GetTempPath(), TempFolderPrefix + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempRoot);
         var zipPath = Path.Combine(tempRoot, "logicpos.zip");
         var extractPath = Path.Combine(tempRoot, "files");
 
-        progress.Report("A descarregar o pacote...");
-        await DownloadAsync(zipPath, progress, cancellationToken);
-
-        // Extract/copy prep must not run on the UI sync context — a large zip freezes the
-        // progress UI at 100% and delays Shutdown so the apply script never sees process exit.
-        progress.Report("A extrair ficheiros...");
-        var payload = await Task.Run(() =>
+        try
         {
-            if (Directory.Exists(extractPath))
+            progress.Report("A descarregar o pacote...");
+            await DownloadAsync(zipPath, progress, cancellationToken);
+
+            // Extract/copy prep must not run on the UI sync context — a large zip freezes the
+            // progress UI at 100% and delays Shutdown so the apply script never sees process exit.
+            progress.Report("A extrair ficheiros...");
+            var payload = await Task.Run(() =>
             {
-                Directory.Delete(extractPath, recursive: true);
+                ExtractZipWithRetry(zipPath, extractPath, cancellationToken);
+
+                // Zip is no longer needed; free space before apply runs.
+                TryDeleteFile(zipPath);
+
+                var found = FindPayload(extractPath)
+                    ?? throw new InvalidOperationException("O pacote não contém logicpos.exe.");
+
+                // Never ship install-time defaults over a live cloud/local configuration.
+                StripProtectedFiles(found);
+                return found;
+            }, cancellationToken);
+
+            progress.Report("A preparar a aplicação dos ficheiros...");
+            var scriptPath = Path.Combine(tempRoot, "apply.ps1");
+            await File.WriteAllTextAsync(
+                scriptPath,
+                BuildScript(Environment.ProcessId, payload, install, tempRoot),
+                cancellationToken);
+            StartScript(scriptPath);
+            progress.Report("A fechar para aplicar a atualização (janela de progresso a abrir)...");
+        }
+        catch
+        {
+            TryDeleteDirectory(tempRoot);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Removes leftover logicpos-update-* folders under Local Temp (best-effort).
+    /// </summary>
+    internal static void PurgeStaleUpdateFolders(string? keepTempRoot = null)
+    {
+        string keepFull = string.Empty;
+        if (!string.IsNullOrWhiteSpace(keepTempRoot))
+        {
+            try
+            {
+                keepFull = Path.GetFullPath(keepTempRoot);
+            }
+            catch
+            {
+                keepFull = string.Empty;
+            }
+        }
+
+        string[] dirs;
+        try
+        {
+            dirs = Directory.GetDirectories(Path.GetTempPath(), TempFolderPrefix + "*");
+        }
+        catch
+        {
+            return;
+        }
+
+        foreach (var dir in dirs)
+        {
+            if (keepFull.Length > 0)
+            {
+                try
+                {
+                    if (string.Equals(Path.GetFullPath(dir), keepFull, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+                }
+                catch
+                {
+                    // Fall through and attempt delete.
+                }
             }
 
-            ZipFile.ExtractToDirectory(zipPath, extractPath);
-            var found = FindPayload(extractPath)
-                ?? throw new InvalidOperationException("O pacote não contém logicpos.exe.");
-
-            // Never ship install-time defaults over a live cloud/local configuration.
-            StripProtectedFiles(found);
-            return found;
-        }, cancellationToken);
-
-        progress.Report("A preparar a aplicação dos ficheiros...");
-        var scriptPath = Path.Combine(tempRoot, "apply.ps1");
-        await File.WriteAllTextAsync(scriptPath, BuildScript(Environment.ProcessId, payload, install), cancellationToken);
-        StartScript(scriptPath);
-        progress.Report("A fechar para aplicar a atualização (janela de progresso a abrir)...");
+            TryDeleteDirectory(dir);
+        }
     }
 
     private static void StripProtectedFiles(string payloadRoot)
@@ -56,14 +120,7 @@ internal static class ApplicationUpdater
             var name = Path.GetFileName(path);
             if (IsProtectedFileName(name))
             {
-                try
-                {
-                    File.Delete(path);
-                }
-                catch
-                {
-                    // Apply script still skips these names.
-                }
+                TryDeleteFile(path);
             }
         }
     }
@@ -89,38 +146,85 @@ internal static class ApplicationUpdater
         using var response = await client.GetAsync(PackageUrl, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         response.EnsureSuccessStatusCode();
         var total = response.Content.Headers.ContentLength;
-        await using var input = await response.Content.ReadAsStreamAsync(cancellationToken);
-        await using var output = File.Create(zipPath);
-        var buffer = new byte[81920];
-        long received = 0;
-        int read;
-        var lastPercent = -1;
-        while ((read = await input.ReadAsync(buffer, cancellationToken)) > 0)
+
+        // Dispose write handle before any read/extract — holding File.Create open causes
+        // sharing violations on Windows when opening the same path again.
+        await using (var input = await response.Content.ReadAsStreamAsync(cancellationToken))
+        await using (var output = new FileStream(
+            zipPath,
+            FileMode.Create,
+            FileAccess.Write,
+            FileShare.None,
+            bufferSize: 81920,
+            options: FileOptions.Asynchronous))
         {
-            await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
-            received += read;
-            if (total is > 0)
+            var buffer = new byte[81920];
+            long received = 0;
+            int read;
+            var lastPercent = -1;
+            while ((read = await input.ReadAsync(buffer, cancellationToken)) > 0)
             {
-                // Cap at 99% so the bar does not look finished while extract/apply still run.
-                var percent = Math.Min(99, (int)(received * 100 / total.Value));
-                if (percent != lastPercent)
+                await output.WriteAsync(buffer.AsMemory(0, read), cancellationToken);
+                received += read;
+                if (total is > 0)
                 {
-                    lastPercent = percent;
-                    progress.Report($"A descarregar... {percent}% ({FormatSize(received)} / {FormatSize(total.Value)})");
+                    // Cap at 99% so the bar does not look finished while extract/apply still run.
+                    var percent = Math.Min(99, (int)(received * 100 / total.Value));
+                    if (percent != lastPercent)
+                    {
+                        lastPercent = percent;
+                        progress.Report($"A descarregar... {percent}% ({FormatSize(received)} / {FormatSize(total.Value)})");
+                    }
+                }
+                else
+                {
+                    progress.Report($"A descarregar... {FormatSize(received)}");
                 }
             }
-            else
-            {
-                progress.Report($"A descarregar... {FormatSize(received)}");
-            }
+
+            await output.FlushAsync(cancellationToken);
         }
 
-        await output.FlushAsync(cancellationToken);
-        await using var check = File.OpenRead(zipPath);
+        await ValidateZipSignatureAsync(zipPath, cancellationToken);
+    }
+
+    private static async Task ValidateZipSignatureAsync(string zipPath, CancellationToken cancellationToken)
+    {
+        await using var check = new FileStream(
+            zipPath,
+            FileMode.Open,
+            FileAccess.Read,
+            FileShare.Read,
+            bufferSize: 4096,
+            options: FileOptions.Asynchronous);
         var signature = new byte[2];
         if (await check.ReadAsync(signature, cancellationToken) < 2 || signature[0] != (byte)'P' || signature[1] != (byte)'K')
         {
             throw new InvalidOperationException("A transferência não devolveu um zip válido.");
+        }
+    }
+
+    private static void ExtractZipWithRetry(string zipPath, string extractPath, CancellationToken cancellationToken)
+    {
+        const int maxAttempts = 5;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                if (Directory.Exists(extractPath))
+                {
+                    Directory.Delete(extractPath, recursive: true);
+                }
+
+                ZipFile.ExtractToDirectory(zipPath, extractPath);
+                return;
+            }
+            catch (IOException) when (attempt < maxAttempts)
+            {
+                // Antivirus or delayed handle release after download.
+                Thread.Sleep(200 * attempt);
+            }
         }
     }
 
@@ -171,15 +275,47 @@ internal static class ApplicationUpdater
         }
     }
 
-    private static string BuildScript(int processId, string source, string target)
+    private static void TryDeleteFile(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch
+        {
+            // Best-effort cleanup.
+        }
+    }
+
+    private static void TryDeleteDirectory(string path)
+    {
+        try
+        {
+            if (Directory.Exists(path))
+            {
+                Directory.Delete(path, recursive: true);
+            }
+        }
+        catch
+        {
+            // Best-effort: AV or explorer may hold a handle.
+        }
+    }
+
+    private static string BuildScript(int processId, string source, string target, string tempRoot)
     {
         var sourceLiteral = source.Replace("'", "''");
         var targetLiteral = target.Replace("'", "''");
+        var tempRootLiteral = tempRoot.Replace("'", "''");
         return $$"""
             $ErrorActionPreference = 'Continue'
             $ProcessId = {{processId}}
             $Source = '{{sourceLiteral}}'
             $Target = '{{targetLiteral}}'
+            $TempRoot = '{{tempRootLiteral}}'
             $log = Join-Path $env:TEMP 'logicpos-update.log'
             function Write-Log([string]$message) {
                 Add-Content -Path $log -Value ((Get-Date -Format o) + ' ' + $message)
@@ -190,6 +326,13 @@ internal static class ApplicationUpdater
                        $n.EndsWith('.db') -or $n.EndsWith('.db-wal') -or $n.EndsWith('.db-shm') -or
                        $n.EndsWith('.sqlite') -or $n.EndsWith('.sqlite-wal') -or $n.EndsWith('.sqlite-shm') -or
                        $n -eq 'hardware.id' -or $n -eq 'licence.dat' -or $n -eq 'license.dat'
+            }
+            function Remove-UpdateTempFolders {
+                if ($TempRoot -and (Test-Path -LiteralPath $TempRoot)) {
+                    Remove-Item -LiteralPath $TempRoot -Recurse -Force -ErrorAction SilentlyContinue
+                }
+                Get-ChildItem -LiteralPath $env:TEMP -Directory -Filter 'logicpos-update-*' -ErrorAction SilentlyContinue |
+                    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
             }
 
             Add-Type -AssemblyName System.Windows.Forms
@@ -276,6 +419,8 @@ internal static class ApplicationUpdater
             Start-Process -FilePath (Join-Path $Target 'logicpos.exe') -WorkingDirectory $Target
             Start-Sleep -Milliseconds 800
             $form.Close()
+            Remove-UpdateTempFolders
+            Write-Log 'temp cleaned'
             """;
     }
 }
