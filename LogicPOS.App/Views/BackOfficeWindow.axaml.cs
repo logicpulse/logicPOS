@@ -986,19 +986,20 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         try
         {
             await ApplicationUpdater.DownloadAndScheduleAsync(progress);
+            UpdateStatus.Text = "A fechar para aplicar a atualização...";
             UpdateProgress.IsIndeterminate = false;
             UpdateProgress.Value = 100;
             _allowClose = true;
             _clock.Stop();
-            // Give the progress window a moment to appear before this process exits.
+            // Give the PowerShell progress window a moment to appear before this process exits.
             await Task.Delay(600);
             if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
             {
                 desktop.Shutdown();
-                return;
             }
 
-            Close();
+            // Apply script waits on this PID; Shutdown alone can leave hidden Login/POS windows alive.
+            Environment.Exit(0);
         }
         catch (Exception exception)
         {
