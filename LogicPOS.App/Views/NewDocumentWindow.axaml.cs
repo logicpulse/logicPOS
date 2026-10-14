@@ -1914,6 +1914,13 @@ public partial class NewDocumentWindow : UserControl
         {
             if (draft)
             {
+                // Cloud: drafts must live on the API — never fall back to local-drafts.json.
+                if (IsCloudMode())
+                {
+                    ErrorLabel.Text = issued.Error ?? "Não foi possível gravar o rascunho na API.";
+                    return;
+                }
+
                 var draftId = SaveLocalDraft(type, customerId, _lines.Sum(line => line.GrossTotal));
                 _previewDraftId = draftId;
                 if (close == false)
@@ -2029,6 +2036,12 @@ public partial class NewDocumentWindow : UserControl
                 SerialNumber = line.SerialNumber
             }).ToList()
         });
+    }
+
+    private static bool IsCloudMode()
+    {
+        var configuration = AppComposition.Services?.GetService<Microsoft.Extensions.Configuration.IConfiguration>();
+        return bool.TryParse(configuration?["DatabaseSettings:UseCloud"], out var useCloud) && useCloud;
     }
 
     private static void SelectId(ComboBox box, Guid? id)
