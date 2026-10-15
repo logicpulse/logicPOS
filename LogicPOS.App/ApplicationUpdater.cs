@@ -487,10 +487,13 @@ internal static class ApplicationUpdater
             $Source = '{{sourceLiteral}}'
             $Target = '{{targetLiteral}}'
             $TempRoot = '{{tempRootLiteral}}'
-            $BackupRoot = Join-Path $Target '.update-backup'
+            $BackupRoot = Join-Path $Target ('.update-backup-' + [Guid]::NewGuid().ToString('N'))
             $log = Join-Path $env:TEMP 'logicpos-update.log'
             function Write-Log([string]$message) {
-                Add-Content -Path $log -Value ((Get-Date -Format o) + ' ' + $message)
+                try {
+                    Add-Content -Path $log -Value ((Get-Date -Format o) + ' ' + $message)
+                } catch {
+                }
             }
             function Keep-Local([string]$name) {
                 $n = $name.ToLowerInvariant()
@@ -507,20 +510,23 @@ internal static class ApplicationUpdater
                     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
             }
             function Restore-UpdateBackup {
+                $failures = 0
                 Write-Log 'restoring backup'
                 $label.Text = 'A repor os ficheiros anteriores...'
                 [System.Windows.Forms.Application]::DoEvents()
                 if (Test-Path -LiteralPath $BackupRoot) {
-                    Get-ChildItem -LiteralPath $BackupRoot -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
-                        $rel = $_.FullName.Substring($BackupRoot.Length).TrimStart('\')
+                    $backedUp = @(Get-ChildItem -LiteralPath $BackupRoot -Recurse -File -ErrorAction SilentlyContinue)
+                    foreach ($item in $backedUp) {
+                        $rel = $item.FullName.Substring($BackupRoot.Length).TrimStart('\')
                         $dest = Join-Path $Target $rel
                         $folder = Split-Path -Parent $dest
                         try {
                             if (-not (Test-Path -LiteralPath $folder)) {
                                 New-Item -ItemType Directory -Path $folder -Force | Out-Null
                             }
-                            Copy-Item -LiteralPath $_.FullName -Destination $dest -Force
+                            Copy-Item -LiteralPath $item.FullName -Destination $dest -Force
                         } catch {
+                            $failures = $failures + 1
                             Write-Log ("restore fail " + $rel)
                         }
                     }
@@ -531,20 +537,26 @@ internal static class ApplicationUpdater
                             Remove-Item -LiteralPath $created -Force
                         }
                     } catch {
+                        $failures = $failures + 1
                         Write-Log ("remove new fail " + $created)
                     }
                 }
-                if (Test-Path -LiteralPath $BackupRoot) {
-                    Remove-Item -LiteralPath $BackupRoot -Recurse -Force -ErrorAction SilentlyContinue
+                if ($failures -eq 0 -and (Test-Path -LiteralPath $BackupRoot)) {
+                    try {
+                        Remove-Item -LiteralPath $BackupRoot -Recurse -Force
+                    } catch {
+                        Write-Log 'backup folder left in place after restore'
+                    }
                 }
+                return $failures
             }
 
             Add-Type -AssemblyName System.Windows.Forms
             Add-Type -AssemblyName System.Drawing
             $form = New-Object System.Windows.Forms.Form
             $form.Text = 'logicPOS - A atualizar'
-            $form.Width = 480
-            $form.Height = 160
+            $form.Width = 560
+            $form.Height = 190
             $form.StartPosition = 'CenterScreen'
             $form.FormBorderStyle = 'FixedDialog'
             $form.MaximizeBox = $false
@@ -554,13 +566,13 @@ internal static class ApplicationUpdater
             $label.AutoSize = $false
             $label.Left = 16
             $label.Top = 16
-            $label.Width = 430
-            $label.Height = 40
+            $label.Width = 510
+            $label.Height = 72
             $label.Text = 'A aguardar o fecho da aplicação...'
             $bar = New-Object System.Windows.Forms.ProgressBar
             $bar.Left = 16
-            $bar.Top = 64
-            $bar.Width = 430
+            $bar.Top = 100
+            $bar.Width = 510
             $bar.Height = 24
             $bar.Style = 'Continuous'
             $bar.Minimum = 0
@@ -608,9 +620,6 @@ internal static class ApplicationUpdater
             $copyFailed = $false
             $createdFiles = New-Object System.Collections.Generic.List[string]
             try {
-                if (Test-Path -LiteralPath $BackupRoot) {
-                    Remove-Item -LiteralPath $BackupRoot -Recurse -Force
-                }
                 New-Item -ItemType Directory -Path $BackupRoot -Force | Out-Null
                 foreach ($file in $files) {
                     $index++
@@ -662,12 +671,28 @@ internal static class ApplicationUpdater
             }
 
             if ($copyFailed) {
-                Restore-UpdateBackup
+                $restoreFailures = Restore-UpdateBackup
+                if ($restoreFailures -gt 0) {
+                    Write-Log "restore incomplete $restoreFailures $BackupRoot"
+                    $label.Text = "A atualização falhou. Restauro incompleto ($restoreFailures). Cópia em: $BackupRoot"
+                    [System.Windows.Forms.Application]::DoEvents()
+                    Start-Sleep -Seconds 8
+                    exit 1
+                }
+
                 Write-Log 'update aborted; previous files restored'
                 $label.Text = 'A atualização falhou. Os ficheiros anteriores foram repostos.'
                 [System.Windows.Forms.Application]::DoEvents()
-                Start-Sleep -Seconds 4
-                exit 1
+                Start-Sleep -Seconds 3
+                $label.Text = 'A reiniciar a versão anterior...'
+                [System.Windows.Forms.Application]::DoEvents()
+                Write-Log 'start previous'
+                Start-Process -FilePath (Join-Path $Target 'logicpos.exe') -WorkingDirectory $Target
+                Start-Sleep -Milliseconds 800
+                $form.Close()
+                Remove-UpdateTempFolders
+                Write-Log 'temp cleaned'
+                exit 0
             }
 
             if (Test-Path -LiteralPath $BackupRoot) {

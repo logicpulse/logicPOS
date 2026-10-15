@@ -18,6 +18,7 @@ public class ApplicationVersionComparerTests
     [InlineData("1.6.34+retail", "1.6.33.0")]
     [InlineData("1.6.33.1", "1.6.33+develop.abc")]
     [InlineData("1.7", "1.6.33.0")]
+    [InlineData("1.6.33+retail", "1.6.4")]
     public void Higher_release_is_newer(string package, string installed)
         => Assert.True(ApplicationVersionComparer.IsNewer(package, installed));
 
