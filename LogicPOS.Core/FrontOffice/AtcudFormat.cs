@@ -30,7 +30,8 @@ public static class AtcudFormat
 
     /// <summary>
     /// Whether the ATCUD text on a document should appear on tickets/PDFs.
-    /// Requires a non-empty validation prefix before the last '-', excluding "0".
+    /// Requires a non-empty validation prefix before the last '-' (excluding "0")
+    /// and a non-empty sequential after it.
     /// </summary>
     public static bool ShouldPrint(string? atcud)
     {
@@ -47,8 +48,10 @@ public static class AtcudFormat
         }
 
         var prefix = value[..dash].Trim();
+        var sequential = value[(dash + 1)..].Trim();
         return string.IsNullOrWhiteSpace(prefix) == false
-               && prefix.Equals("0", StringComparison.Ordinal) == false;
+               && prefix.Equals("0", StringComparison.Ordinal) == false
+               && string.IsNullOrWhiteSpace(sequential) == false;
     }
 
     private static string SequentialFromNumber(string? documentNumber)

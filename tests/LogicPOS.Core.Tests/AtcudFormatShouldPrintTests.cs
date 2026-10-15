@@ -11,6 +11,7 @@ public sealed class AtcudFormatShouldPrintTests
     [InlineData("0")]
     [InlineData("-1")]
     [InlineData("0-1")]
+    [InlineData("ABC1234X-")]
     public void ShouldPrint_returns_false_for_missing_or_placeholder_atcud(string? atcud)
         => Assert.False(AtcudFormat.ShouldPrint(atcud));
 

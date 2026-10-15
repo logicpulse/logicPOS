@@ -300,6 +300,7 @@ public sealed class PublicEditionStartupTests
         Assert.Null(AppComposition.StartupError);
 
         var services = AppComposition.Services!;
+        // Fresh installs leave company prefs empty; LoginWindow prompts CompanySetup first.
         var company = services.GetRequiredService<ICompanySetupService>();
         var companyDraft = await company.LoadAsync(CancellationToken.None);
         var companySaved = await company.SaveAsync(new CompanySetupRequest
@@ -310,6 +311,8 @@ public sealed class PublicEditionStartupTests
         }, CancellationToken.None);
         Assert.True(companySaved.Succeeded, companySaved.Error);
 
+        // DocumentSeries are not seeded; production creates them via
+        // "Abertura de ano fiscal" (IFiscalYearWizard) before IssueDocumentAsync.
         var wizard = services.GetRequiredService<IFiscalYearWizard>();
         var draft = await wizard.LoadAsync(CancellationToken.None);
         var setup = await wizard.CreateAsync(new FiscalYearSetupRequest
