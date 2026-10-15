@@ -1,8 +1,10 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Desktop", "LogicPOS.Desktop\LogicPOS.Desktop.csproj", "{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "logicpos", "LogicPOS.App\logicpos.csproj", "{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogicPOS.Core", "LogicPOS.Core\LogicPOS.Core.csproj", "{B8D4F2C3-5E60-4B72-8D9F-2C3E4F506172}"
@@ -41,6 +43,18 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|x64.Build.0 = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Debug|x86.Build.0 = Debug|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|x64.ActiveCfg = Release|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|x64.Build.0 = Release|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC6AC8D6-97B4-4324-B91C-8EA10F9CFF7C}.Release|x86.Build.0 = Release|Any CPU
 		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7C3E1B2-4D5F-4A61-9C8E-1B2D3E4F5061}.Debug|x64.ActiveCfg = Debug|Any CPU
