@@ -1025,7 +1025,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         }
         catch (Exception exception)
         {
-            System.Diagnostics.Debug.WriteLine(exception);
+            AppLogging.Warning(exception, "Updater shutdown failed after the apply script was scheduled");
         }
     }
 

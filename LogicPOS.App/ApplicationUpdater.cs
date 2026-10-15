@@ -2,6 +2,7 @@
 using System.IO.Compression;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 using LogicPOS.Core.Updates;
 
 namespace LogicPOS.App;
@@ -81,9 +82,11 @@ internal static class ApplicationUpdater
 
             progress.Report("A preparar a aplicação dos ficheiros...");
             var scriptPath = Path.Combine(tempRoot, "apply.ps1");
+            // Windows PowerShell 5.1 reads a BOM-less UTF-8 script as the ANSI code page.
             await File.WriteAllTextAsync(
                 scriptPath,
                 BuildScript(Environment.ProcessId, payload, install, tempRoot),
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
                 cancellationToken);
             StartScript(scriptPath);
             progress.Report("A fechar para aplicar a atualização (janela de progresso a abrir)...");
@@ -479,11 +482,12 @@ internal static class ApplicationUpdater
         var targetLiteral = target.Replace("'", "''");
         var tempRootLiteral = tempRoot.Replace("'", "''");
         return $$"""
-            $ErrorActionPreference = 'Continue'
+            $ErrorActionPreference = 'Stop'
             $ProcessId = {{processId}}
             $Source = '{{sourceLiteral}}'
             $Target = '{{targetLiteral}}'
             $TempRoot = '{{tempRootLiteral}}'
+            $BackupRoot = Join-Path $Target '.update-backup'
             $log = Join-Path $env:TEMP 'logicpos-update.log'
             function Write-Log([string]$message) {
                 Add-Content -Path $log -Value ((Get-Date -Format o) + ' ' + $message)
@@ -501,6 +505,38 @@ internal static class ApplicationUpdater
                 }
                 Get-ChildItem -LiteralPath $env:TEMP -Directory -Filter 'logicpos-update-*' -ErrorAction SilentlyContinue |
                     Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+            }
+            function Restore-UpdateBackup {
+                Write-Log 'restoring backup'
+                $label.Text = 'A repor os ficheiros anteriores...'
+                [System.Windows.Forms.Application]::DoEvents()
+                if (Test-Path -LiteralPath $BackupRoot) {
+                    Get-ChildItem -LiteralPath $BackupRoot -Recurse -File -ErrorAction SilentlyContinue | ForEach-Object {
+                        $rel = $_.FullName.Substring($BackupRoot.Length).TrimStart('\')
+                        $dest = Join-Path $Target $rel
+                        $folder = Split-Path -Parent $dest
+                        try {
+                            if (-not (Test-Path -LiteralPath $folder)) {
+                                New-Item -ItemType Directory -Path $folder -Force | Out-Null
+                            }
+                            Copy-Item -LiteralPath $_.FullName -Destination $dest -Force
+                        } catch {
+                            Write-Log ("restore fail " + $rel)
+                        }
+                    }
+                }
+                foreach ($created in $createdFiles) {
+                    try {
+                        if (Test-Path -LiteralPath $created) {
+                            Remove-Item -LiteralPath $created -Force
+                        }
+                    } catch {
+                        Write-Log ("remove new fail " + $created)
+                    }
+                }
+                if (Test-Path -LiteralPath $BackupRoot) {
+                    Remove-Item -LiteralPath $BackupRoot -Recurse -Force -ErrorAction SilentlyContinue
+                }
             }
 
             Add-Type -AssemblyName System.Windows.Forms
@@ -557,48 +593,85 @@ internal static class ApplicationUpdater
             }
             Start-Sleep -Seconds 1
 
+            if (-not (Test-Path -LiteralPath $Source)) {
+                Write-Log "source missing $Source"
+                $label.Text = 'O pacote de atualização não foi encontrado.'
+                [System.Windows.Forms.Application]::DoEvents()
+                Start-Sleep -Seconds 4
+                exit 1
+            }
+
             $sourceRoot = (Resolve-Path -LiteralPath $Source).Path.TrimEnd('\')
             $files = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File | Where-Object { -not (Keep-Local $_.Name) })
             $total = [Math]::Max(1, $files.Count)
             $index = 0
-            $failedRequired = $false
-            foreach ($file in $files) {
-                $index++
-                $relative = $file.FullName.Substring($sourceRoot.Length).TrimStart('\')
-                $destination = Join-Path $Target $relative
-                $folder = Split-Path -Parent $destination
-                if (-not (Test-Path -LiteralPath $folder)) {
-                    New-Item -ItemType Directory -Path $folder -Force | Out-Null
+            $copyFailed = $false
+            $createdFiles = New-Object System.Collections.Generic.List[string]
+            try {
+                if (Test-Path -LiteralPath $BackupRoot) {
+                    Remove-Item -LiteralPath $BackupRoot -Recurse -Force
                 }
-                $percent = [int](($index * 100) / $total)
-                $bar.Value = [Math]::Min(100, $percent)
-                $label.Text = "A copiar ($index / $($files.Count)): $relative"
-                [System.Windows.Forms.Application]::DoEvents()
+                New-Item -ItemType Directory -Path $BackupRoot -Force | Out-Null
+                foreach ($file in $files) {
+                    $index++
+                    $relative = $file.FullName.Substring($sourceRoot.Length).TrimStart('\')
+                    $destination = Join-Path $Target $relative
+                    $folder = Split-Path -Parent $destination
+                    if (-not (Test-Path -LiteralPath $folder)) {
+                        New-Item -ItemType Directory -Path $folder -Force | Out-Null
+                    }
+                    $percent = [int](($index * 100) / $total)
+                    $bar.Value = [Math]::Min(100, $percent)
+                    $label.Text = "A copiar ($index / $($files.Count)): $relative"
+                    [System.Windows.Forms.Application]::DoEvents()
 
-                $copied = $false
-                for ($try = 0; $try -lt 8 -and -not $copied; $try++) {
-                    try {
-                        Copy-Item -LiteralPath $file.FullName -Destination $destination -Force
-                        $copied = $true
-                    } catch {
-                        Start-Sleep -Milliseconds 400
+                    $existed = Test-Path -LiteralPath $destination
+                    if ($existed) {
+                        $backupDest = Join-Path $BackupRoot $relative
+                        $backupFolder = Split-Path -Parent $backupDest
+                        if (-not (Test-Path -LiteralPath $backupFolder)) {
+                            New-Item -ItemType Directory -Path $backupFolder -Force | Out-Null
+                        }
+                        Copy-Item -LiteralPath $destination -Destination $backupDest -Force
+                    }
+
+                    $copied = $false
+                    for ($try = 0; $try -lt 8 -and -not $copied; $try++) {
+                        try {
+                            Copy-Item -LiteralPath $file.FullName -Destination $destination -Force
+                            $copied = $true
+                        } catch {
+                            Start-Sleep -Milliseconds 400
+                        }
+                    }
+                    if (-not $copied) {
+                        Write-Log ("fail " + $relative)
+                        if (-not $existed -and (Test-Path -LiteralPath $destination)) {
+                            Remove-Item -LiteralPath $destination -Force -ErrorAction SilentlyContinue
+                        }
+                        $copyFailed = $true
+                        break
+                    }
+                    if (-not $existed) {
+                        [void]$createdFiles.Add($destination)
                     }
                 }
-                if (-not $copied) {
-                    Write-Log ("fail " + $relative)
-                    $leaf = [System.IO.Path]::GetFileName($relative)
-                    if ($leaf -eq 'logicpos.exe' -or $leaf -eq 'logicpos.dll' -or $leaf -eq 'LogicPOS.App.dll') {
-                        $failedRequired = $true
-                    }
-                }
+            } catch {
+                Write-Log ("copy error " + $_.Exception.Message)
+                $copyFailed = $true
             }
 
-            if ($failedRequired) {
-                Write-Log 'required file was not replaced'
-                $label.Text = 'A atualização não substituiu os ficheiros do programa.'
+            if ($copyFailed) {
+                Restore-UpdateBackup
+                Write-Log 'update aborted; previous files restored'
+                $label.Text = 'A atualização falhou. Os ficheiros anteriores foram repostos.'
                 [System.Windows.Forms.Application]::DoEvents()
                 Start-Sleep -Seconds 4
                 exit 1
+            }
+
+            if (Test-Path -LiteralPath $BackupRoot) {
+                Remove-Item -LiteralPath $BackupRoot -Recurse -Force -ErrorAction SilentlyContinue
             }
 
             $label.Text = 'A reiniciar o logicPOS...'
