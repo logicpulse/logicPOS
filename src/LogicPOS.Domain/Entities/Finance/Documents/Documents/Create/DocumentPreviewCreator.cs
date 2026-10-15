@@ -9,12 +9,15 @@ internal class DocumentPreviewCreator : EntityCreator<Document>
 {
     private readonly CreateDocumentPreviewDto _dto;
     private readonly DocumentReferences _references;
+    private readonly FiscalCountry _country;
 
     public DocumentPreviewCreator(CreateDocumentPreviewDto dto,
-                                  DocumentReferences references) : base(new())
+                                  DocumentReferences references,
+                                  FiscalCountry country) : base(new())
     {
         _dto = dto;
         _references = references;
+        _country = country;
     }
 
     protected override async Task AssignDataAsync(CancellationToken ct = default)
@@ -97,11 +100,14 @@ internal class DocumentPreviewCreator : EntityCreator<Document>
 
         var document = createResult.Value!;
 
+        // Force AO-only on the write path even if the DTO flag was set incorrectly for PT/MZ.
+        var withholdsServiceTax = _dto.WithholdsServiceTax && _country.IsAngola;
         var addDetailsResult = await document.AddDetailsAsync(_dto.Details,
                                                               new DocumentDetailReferences(_references.ArticleRepository,
                                                                                            _references.VatRateRepository,
                                                                                            _references.VatExemptionRepository),
-                                                              _dto.WithholdsServiceTax,
+                                                              _country,
+                                                              withholdsServiceTax,
                                                               ct);
         if (addDetailsResult.IsFailure)
         {

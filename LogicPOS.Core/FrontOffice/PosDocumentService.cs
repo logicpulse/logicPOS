@@ -1566,6 +1566,8 @@ public sealed class PosDocumentService : IPosDocumentService
         document.RelatedDocuments = new List<string>();
 
         var country = SystemCountry;
+        document.WithholdingTaxAmount = DocumentLineCalculator.EffectiveServiceWithholding(
+            country, document.WithholdingTaxAmount);
         var data = new LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentPdfData
         {
             Company = await ReadCompanyAsync(database, cancellationToken),

@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using QuestPDF.Fluent;
 using QuestPDF.Infrastructure;
 
@@ -132,7 +132,7 @@ public class GuideModel : DocumentModel
                 discountTable.Cell().PaddingTop(3).PaddingRight(6).Text($"{Data.Document.TotalTax:N2}")
                     .AlignRight();
 
-                if (Data.Country.IsAngola)
+                if (Data.Country.IsAngola && Data.Document.WithholdingTaxAmount > 0)
                 {
                     discountTable.Cell().PaddingTop(3).Text("Retenção na Fonte").AlignRight();
                     discountTable.Cell().PaddingTop(3).PaddingRight(6)

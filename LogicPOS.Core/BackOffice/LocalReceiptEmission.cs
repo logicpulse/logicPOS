@@ -1,4 +1,4 @@
-using System.Globalization;
+﻿using System.Globalization;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
@@ -142,6 +142,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             return ReceiptPayResult.Fail("No modo local o recibo tem de liquidar o valor total em dívida.");
         }
 
+        var country = _systemInformation.Country;
         var settlementDocs = documents
             .Select(item => new DocumentSettlementService.SettlementDocument(
                 item.Id,
@@ -153,9 +154,10 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 item.CreatedAt))
             .ToList();
         var creditPool = creditAmounts.Sum(amount => amount.Round());
-        var allocations = DocumentSettlementService.AllocateInvoicePayments(settlementDocs, receiptAmount, creditPool);
+        var allocations = DocumentSettlementService.AllocateInvoicePayments(
+            settlementDocs, receiptAmount, creditPool, country);
         var taxPayable = DocumentSettlementService.SumTaxPayable(allocations);
-        var withholding = DocumentSettlementService.SumWithholding(allocations);
+        var withholding = DocumentSettlementService.SumWithholding(allocations, country);
 
         var currency = await database.Currencies.AsNoTracking()
             .FirstOrDefaultAsync(item => item.Id == request.CurrencyId, cancellationToken);

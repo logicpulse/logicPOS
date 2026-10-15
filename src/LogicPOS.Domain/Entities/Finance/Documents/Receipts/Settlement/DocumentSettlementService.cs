@@ -1,4 +1,5 @@
-﻿using LogicPOS.Domain.Entities.Finance.Calculations;
+using LogicPOS.Domain.Entities.Finance.Calculations;
+using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 
@@ -29,11 +30,13 @@ public static class DocumentSettlementService
 
     /// <summary>
     /// Allocates receipt cash and pooled credit-note totals across FT/ND invoices (legacy PayDocuments order).
+    /// Withholding is AO-only: PT/MZ allocations always get 0.
     /// </summary>
     public static IReadOnlyList<InvoicePaymentAllocation> AllocateInvoicePayments(
         IReadOnlyList<SettlementDocument> documents,
         decimal receiptCashAmount,
-        decimal creditNotePoolTotal)
+        decimal creditNotePoolTotal,
+        FiscalCountry country)
     {
         var invoices = documents
             .Where(d => d.Type is "FT" or "ND")
@@ -43,6 +46,7 @@ public static class DocumentSettlementService
         var totalCredit = creditNotePoolTotal.Round();
         var allocations = new List<InvoicePaymentAllocation>();
         var remainingCash = receiptCashAmount;
+        var allowWithholding = country.IsAngola;
 
         foreach (var invoice in invoices)
         {
@@ -63,11 +67,12 @@ public static class DocumentSettlementService
                 continue;
             }
 
+            var invoiceWithholding = allowWithholding ? invoice.WithholdingTaxAmount : 0m;
             allocations.Add(new InvoicePaymentAllocation(
                 invoice.Id,
                 amountToPay,
                 TaxPayableForAmount(invoice.TotalFinal, invoice.TotalTax, amountToPay),
-                WithholdingForAmount(invoice.TotalFinal, invoice.WithholdingTaxAmount, amountToPay)));
+                WithholdingForAmount(invoice.TotalFinal, invoiceWithholding, amountToPay)));
         }
 
         return allocations;
@@ -78,6 +83,10 @@ public static class DocumentSettlementService
 
     public static decimal SumWithholding(IEnumerable<InvoicePaymentAllocation> allocations)
         => allocations.Sum(a => a.WithholdingTaxAmount).Round();
+
+    /// <summary>Receipt withholding total — always 0 outside Angola.</summary>
+    public static decimal SumWithholding(IEnumerable<InvoicePaymentAllocation> allocations, FiscalCountry country)
+        => country.IsAngola ? SumWithholding(allocations) : 0m;
 
     internal static decimal TaxPayableForAmount(decimal totalFinal, decimal totalTax, decimal amount)
     {

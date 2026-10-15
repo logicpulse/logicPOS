@@ -916,6 +916,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            // AO industrial withholding must not appear for PT/MZ tenants (including legacy stored amounts).
+            if (property.Name == "WithholdingTaxAmount" && _system.IsAngola() == false)
+            {
+                continue;
+            }
+
             if (page.EntityType == typeof(Printer) && property.Name.StartsWith("ThermalMaxCharsPerLine", StringComparison.Ordinal))
             {
                 continue;

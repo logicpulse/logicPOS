@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.ValueObjects;
 using QrCodes;
@@ -606,7 +606,7 @@ public abstract class DocumentModel : IDocument
                 discountTable.Cell().PaddingTop(6).PaddingRight(10).Text(UseAgtRounding ? $"{Data.Document.TotalTax.ApplyAgtRounding():N2}" : $"{Data.Document.TotalTax:N2}")
                     .AlignRight();
 
-                if (IsAngola)
+                if (IsAngola && Data.Document.WithholdingTaxAmount > 0)
                 {
                     discountTable.Cell().PaddingTop(6).Text("Retenção na Fonte").AlignRight();
                     discountTable.Cell().PaddingTop(6).PaddingRight(10)

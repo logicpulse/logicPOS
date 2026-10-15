@@ -1,4 +1,4 @@
-using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
 using QrCodes;
 using QrCodes.Renderers;
 using QrCodes.Renderers.Abstractions;
@@ -274,7 +274,7 @@ public class ReceiptModel : IDocument
                     totalTable.Cell().Text($"Total Líquido:\n {Data.Receipt!.Amount:N2} {Data.Receipt.CurrencyCode}\n")
                         .AlignRight().Bold();
 
-                    if (Data.Country.IsAngola)
+                    if (Data.Country.IsAngola && Data.Receipt.WithholdingTaxAmount > 0)
                     {
                         totalTable.Cell()
                             .Text($"Retenção na Fonte:\n {Data.Receipt.WithholdingTaxAmount:N2} {Data.Receipt.CurrencyCode}")
