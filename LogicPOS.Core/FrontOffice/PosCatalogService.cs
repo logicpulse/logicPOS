@@ -122,7 +122,7 @@ public sealed class PosCatalogService : IPosCatalogService
         }
         catch
         {
-            _imageCache.TryRemove(key, out _);
+            _imageCache.TryRemove(KeyValuePair.Create(key, lazyTask));
             throw;
         }
     }
