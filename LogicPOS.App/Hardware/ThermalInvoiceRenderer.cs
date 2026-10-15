@@ -345,8 +345,9 @@ internal sealed class ThermalInvoiceRenderer
     {
         var document = _job.Document;
 
-        // GTK always prints ATCUD on PT tickets (before QR), independent of PRINT_QRCODE.
-        if (string.IsNullOrWhiteSpace(document.Atcud) == false)
+        // GTK prints ATCUD before QR when an AT series code exists. Skip the "-n" public-edition fallback.
+        if (string.IsNullOrWhiteSpace(document.AtDocCodeId) == false
+            && string.IsNullOrWhiteSpace(document.Atcud) == false)
         {
             Center();
             Small();

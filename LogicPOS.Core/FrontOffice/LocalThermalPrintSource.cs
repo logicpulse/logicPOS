@@ -125,6 +125,7 @@ public sealed class LocalThermalPrintSource : IThermalPrintSource
             .Where(item => item.Id == documentId)
             .Select(item => item.Series!.ATDocCodeValidationSeries)
             .FirstOrDefaultAsync(cancellationToken);
+        document.AtDocCodeId = seriesValidation;
         document.Atcud = AtcudFormat.OrFallback(document.Atcud, seriesValidation, document.Number);
 
         var mark = FiscalMarks.Read(scope.ServiceProvider.GetService<IFiscalModule>(), new FiscalDocument

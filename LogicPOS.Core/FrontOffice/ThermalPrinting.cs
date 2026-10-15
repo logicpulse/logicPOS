@@ -120,6 +120,9 @@ public sealed class ThermalDocument
 
     public string? Atcud { get; set; }
 
+    /// <summary>Series ATDocCodeValidationSeries. Empty in public edition without AT registration.</summary>
+    public string? AtDocCodeId { get; set; }
+
     public string? AtQrCode { get; set; }
 
     public string? FiscalCodeLine { get; set; }

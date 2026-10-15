@@ -11,7 +11,7 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.11" />
     <PackageReference Include="coverlet.collector" Version="6.0.4" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.0" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
     <PackageReference Include="UglyToad.PdfPig" Version="1.7.0-custom-5" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\LogicPOS.Core\LogicPOS.Core.csproj" />
+    <ProjectReference Include="..\..\LogicPOS.App\logicpos.csproj" />
     <ProjectReference Include="..\LogicPOS.Core.Tests.FiscalPlugin\LogicPOS.Core.Tests.FiscalPlugin.csproj" />
   </ItemGroup>
 
