@@ -228,7 +228,7 @@ public static class ThermalTicketPdf
         private void ComposeFiscal(ColumnDescriptor column)
         {
             var document = _data.Document!;
-            if (string.IsNullOrWhiteSpace(document.Atcud) == false)
+            if (AtcudFormat.ShouldPrint(document.Atcud))
             {
                 column.Item().AlignCenter().Text($"ATCUD: {document.Atcud}").FontSize(7);
             }
