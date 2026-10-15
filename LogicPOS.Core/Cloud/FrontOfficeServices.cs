@@ -3,6 +3,16 @@
 public interface IPosCatalogService
 {
     Task<PosCatalog> LoadAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Loads the button image (base64) for a family, subfamily, or article on demand.
+    /// Results are cached in memory for subsequent calls.
+    /// </summary>
+    Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)
+        => Task.FromResult<string?>(null);
+
+    /// <summary>Clears the in-memory image cache.</summary>
+    void ClearImageCache() { }
 }
 
 public interface IPosCustomerService
