@@ -403,7 +403,7 @@
     </Style>
 
     <Style Selector="TextBlock.login_version">
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Margin" Value="2,2,2,4" />
         <Setter Property="Foreground" Value="#B8B8B8" />
