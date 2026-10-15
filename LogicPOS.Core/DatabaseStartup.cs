@@ -3,6 +3,7 @@ using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Dtos;
 using LogicPOS.Domain.Repositories;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Services;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

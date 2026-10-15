@@ -1,4 +1,5 @@
-﻿using LogicPOS.Persistence.Database;
+﻿using System.Collections.Concurrent;
+using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,6 +8,7 @@ namespace LogicPOS.Core.FrontOffice;
 public sealed class PosCatalogService : IPosCatalogService
 {
     private readonly IServiceScopeFactory _scopes;
+    private readonly ConcurrentDictionary<Guid, string?> _imageCache = new();
 
     public PosCatalogService(IServiceScopeFactory scopes)
     {
@@ -18,7 +20,7 @@ public sealed class PosCatalogService : IPosCatalogService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
-        var familiesTask = database.ArticleFamilies
+        var families = await database.ArticleFamilies
             .AsNoTracking()
             .Where(family => family.IsDeleted == false)
             .OrderBy(family => family.Order)
@@ -31,7 +33,7 @@ public sealed class PosCatalogService : IPosCatalogService
             })
             .ToListAsync(cancellationToken);
 
-        var subfamiliesTask = database.ArticleSubfamilies
+        var subfamilies = await database.ArticleSubfamilies
             .AsNoTracking()
             .Where(subfamily => subfamily.IsDeleted == false)
             .OrderBy(subfamily => subfamily.Order)
@@ -45,7 +47,7 @@ public sealed class PosCatalogService : IPosCatalogService
             })
             .ToListAsync(cancellationToken);
 
-        var articlesTask = database.Articles
+        var articles = await database.Articles
             .AsNoTracking()
             .Where(article => article.IsDeleted == false)
             .OrderBy(article => article.Order)
@@ -69,11 +71,6 @@ public sealed class PosCatalogService : IPosCatalogService
                 Label = article.Button != null ? article.Button.Label : null
             })
             .ToListAsync(cancellationToken);
-
-        await Task.WhenAll(familiesTask, subfamiliesTask, articlesTask);
-        var families = await familiesTask;
-        var subfamilies = await subfamiliesTask;
-        var articles = await articlesTask;
 
         return new PosCatalog(
             families.Select(item => new PosMenuItem(
@@ -105,8 +102,63 @@ public sealed class PosCatalogService : IPosCatalogService
                 item.VatExemptionReasonId)).ToList());
     }
 
+    public async Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)
+    {
+        var cacheKey = CacheKey(kind, id);
+        if (_imageCache.TryGetValue(cacheKey, out var cached))
+        {
+            return cached;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+        string? image = kind switch
+        {
+            ButtonImageKind.Family => await database.ArticleFamilies
+                .AsNoTracking()
+                .Where(f => f.Id == id && f.Button != null)
+                .Select(f => f.Button!.Image)
+                .FirstOrDefaultAsync(cancellationToken),
+
+            ButtonImageKind.Subfamily => await database.ArticleSubfamilies
+                .AsNoTracking()
+                .Where(s => s.Id == id && s.Button != null)
+                .Select(s => s.Button!.Image)
+                .FirstOrDefaultAsync(cancellationToken),
+
+            ButtonImageKind.Article => await database.Articles
+                .AsNoTracking()
+                .Where(a => a.Id == id && a.Button != null)
+                .Select(a => a.Button!.Image)
+                .FirstOrDefaultAsync(cancellationToken),
+
+            _ => null
+        };
+
+        _imageCache[cacheKey] = image;
+        return image;
+    }
+
+    public void ClearImageCache() => _imageCache.Clear();
+
+    private static Guid CacheKey(ButtonImageKind kind, Guid id)
+    {
+        Span<byte> buffer = stackalloc byte[17];
+        buffer[0] = (byte)kind;
+        id.TryWriteBytes(buffer[1..]);
+        return new Guid(buffer);
+    }
+
     private static string LabelOrDesignation(string? label, string designation)
     {
         return string.IsNullOrWhiteSpace(label) ? designation : label;
     }
+}
+
+public enum ButtonImageKind : byte
+{
+    Family = 1,
+    Subfamily = 2,
+    Article = 3
 }
