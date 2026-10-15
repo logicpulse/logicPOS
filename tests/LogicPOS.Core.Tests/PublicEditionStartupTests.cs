@@ -8,6 +8,35 @@ namespace LogicPOS.Core.Tests;
 
 public sealed class PublicEditionStartupTests
 {
+    private static void CleanupTestDirectory(DirectoryInfo root)
+    {
+        AppLogging.CloseAndFlush();
+        SqliteConnection.ClearAllPools();
+
+        const int maxRetries = 5;
+        const int delayMs = 200;
+
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                if (root.Exists)
+                {
+                    root.Delete(recursive: true);
+                }
+                return;
+            }
+            catch (IOException) when (attempt < maxRetries)
+            {
+                Thread.Sleep(delayMs * attempt);
+            }
+            catch (UnauthorizedAccessException) when (attempt < maxRetries)
+            {
+                Thread.Sleep(delayMs * attempt);
+            }
+        }
+    }
+
     [Fact]
     public void Startup_uses_a_direct_database_when_the_cloud_piece_is_absent()
     {
@@ -43,8 +72,7 @@ public sealed class PublicEditionStartupTests
                 disposable.Dispose();
             }
 
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupTestDirectory(root);
         }
     }
 
@@ -87,8 +115,7 @@ public sealed class PublicEditionStartupTests
                 disposable.Dispose();
             }
 
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupTestDirectory(root);
         }
     }
 
@@ -132,8 +159,7 @@ public sealed class PublicEditionStartupTests
                 disposable.Dispose();
             }
 
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupTestDirectory(root);
         }
     }
 
@@ -171,8 +197,7 @@ public sealed class PublicEditionStartupTests
                 disposable.Dispose();
             }
 
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupTestDirectory(root);
         }
     }
 
@@ -255,8 +280,7 @@ public sealed class PublicEditionStartupTests
                 disposable.Dispose();
             }
 
-            SqliteConnection.ClearAllPools();
-            root.Delete(recursive: true);
+            CleanupTestDirectory(root);
         }
     }
 
