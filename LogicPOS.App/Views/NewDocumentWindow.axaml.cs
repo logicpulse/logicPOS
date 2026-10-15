@@ -134,21 +134,44 @@ public partial class NewDocumentWindow : UserControl
 
     private async Task LoadContentAsync(IServiceProvider services)
     {
-        _posCatalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync();
+        var documents = services.GetRequiredService<IPosDocumentService>();
+        var customers = services.GetRequiredService<IPosCustomerService>();
+
+        var catalogTask = services.GetRequiredService<IPosCatalogService>().LoadAsync();
+        var typesTask = documents.ListDocumentTypesAsync();
+        var conditionsTask = documents.ListPaymentConditionsAsync();
+        var currenciesTask = documents.ListCurrenciesAsync();
+        var sourceDocsTask = documents.ListSourceDocumentsAsync();
+        var vatRatesTask = documents.ListVatRatesAsync();
+        var vatExemptionsTask = documents.ListVatExemptionReasonsAsync();
+        var companyAddressTask = ApplyPortugalAddressesAsync(documents);
+
+        await Task.WhenAll(
+            catalogTask,
+            typesTask,
+            conditionsTask,
+            currenciesTask,
+            sourceDocsTask,
+            vatRatesTask,
+            vatExemptionsTask,
+            companyAddressTask);
+
+        _posCatalog = await catalogTask;
         _catalog.Clear();
         _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
         ApplyFilter();
+
         var stock = services.GetService<IStockManagementService>();
         if (stock is not null)
         {
             var access = await stock.GetModuleAccessAsync();
             SerialButton.IsVisible = access.HasModule;
         }
-        var documents = services.GetRequiredService<IPosDocumentService>();
+
         _filling = true;
-        await Fill(async () =>
+        await Fill(() =>
         {
-            var types = await documents.ListDocumentTypesAsync();
+            var types = typesTask.Result;
             _types.Clear();
             _types.AddRange(types);
             TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
@@ -157,25 +180,28 @@ public partial class NewDocumentWindow : UserControl
             {
                 SelectDocumentType("FS");
             }
+            return Task.CompletedTask;
         });
-        await Fill(async () =>
+        await Fill(() =>
         {
             _conditions.Clear();
-            _conditions.AddRange(await documents.ListPaymentConditionsAsync());
+            _conditions.AddRange(conditionsTask.Result);
             PaymentBox.ItemsSource = Optional(_conditions);
             SelectCode(PaymentBox, "PP");
+            return Task.CompletedTask;
         });
-        await Fill(async () =>
+        await Fill(() =>
         {
             _currencies.Clear();
-            _currencies.AddRange(await documents.ListCurrenciesAsync());
+            _currencies.AddRange(currenciesTask.Result);
             CurrencyBox.ItemsSource = Optional(_currencies);
             SelectCode(CurrencyBox, "EUR");
+            return Task.CompletedTask;
         });
-        await Fill(async () =>
+        await Fill(() =>
         {
             _documents.Clear();
-            _documents.AddRange(await documents.ListSourceDocumentsAsync());
+            _documents.AddRange(sourceDocsTask.Result);
             var choices = Optional(_documents);
             OriginBox.ItemsSource = choices;
             CopyBox.ItemsSource = choices;
@@ -184,22 +210,24 @@ public partial class NewDocumentWindow : UserControl
             ListingFilters.SelectDocument(OriginBox, choices[0]);
             ListingFilters.SelectDocument(CopyBox, choices[0]);
             RefreshDocumentClearButtons();
+            return Task.CompletedTask;
         });
-        await Fill(async () =>
+        await Fill(() =>
         {
             _vatRates.Clear();
-            _vatRates.AddRange(await documents.ListVatRatesAsync());
+            _vatRates.AddRange(vatRatesTask.Result);
             EditVat.ItemsSource = _vatRates.ToList();
+            return Task.CompletedTask;
         });
-        await Fill(async () =>
+        await Fill(() =>
         {
             _vatExemptions.Clear();
-            _vatExemptions.AddRange(await documents.ListVatExemptionReasonsAsync());
+            _vatExemptions.AddRange(vatExemptionsTask.Result);
             EditExemption.ItemsSource = OptionalExemptions(_vatExemptions);
+            return Task.CompletedTask;
         });
-        await Fill(async () => await ApplyPortugalAddressesAsync(documents));
-        await Fill(async () => await SeedDraftAsync(documents, services.GetRequiredService<IPosCustomerService>()));
-        await Fill(async () => await ApplyCopyFromAsync(documents, services.GetRequiredService<IPosCustomerService>()));
+        await Fill(async () => await SeedDraftAsync(documents, customers));
+        await Fill(async () => await ApplyCopyFromAsync(documents, customers));
         await Fill(async () =>
         {
             if (_customerId is not null)
@@ -207,7 +235,7 @@ public partial class NewDocumentWindow : UserControl
                 return;
             }
 
-            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync();
+            var customer = await customers.GetFinalConsumerAsync();
             if (customer is not null)
             {
                 ShowCustomer(customer);

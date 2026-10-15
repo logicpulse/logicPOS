@@ -316,12 +316,14 @@ public static class DatabaseStartup
             }
 
             EnsureMandatoryLookups(services);
+            PerformanceIndexBootstrap.EnsureIndexes(services);
             return;
         }
 
         ApplySchema(services);
         EnsureSeed(services);
         EnsureMandatoryLookups(services);
+        PerformanceIndexBootstrap.EnsureIndexes(services);
     }
 
     /// <summary>

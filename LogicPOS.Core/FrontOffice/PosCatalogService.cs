@@ -18,7 +18,7 @@ public sealed class PosCatalogService : IPosCatalogService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
-        var families = await database.ArticleFamilies
+        var familiesTask = database.ArticleFamilies
             .AsNoTracking()
             .Where(family => family.IsDeleted == false)
             .OrderBy(family => family.Order)
@@ -27,12 +27,11 @@ public sealed class PosCatalogService : IPosCatalogService
             {
                 family.Id,
                 family.Designation,
-                Label = family.Button != null ? family.Button.Label : null,
-                Image = family.Button != null ? family.Button.Image : null
+                Label = family.Button != null ? family.Button.Label : null
             })
             .ToListAsync(cancellationToken);
 
-        var subfamilies = await database.ArticleSubfamilies
+        var subfamiliesTask = database.ArticleSubfamilies
             .AsNoTracking()
             .Where(subfamily => subfamily.IsDeleted == false)
             .OrderBy(subfamily => subfamily.Order)
@@ -42,12 +41,11 @@ public sealed class PosCatalogService : IPosCatalogService
                 subfamily.Id,
                 subfamily.FamilyId,
                 subfamily.Designation,
-                Label = subfamily.Button != null ? subfamily.Button.Label : null,
-                Image = subfamily.Button != null ? subfamily.Button.Image : null
+                Label = subfamily.Button != null ? subfamily.Button.Label : null
             })
             .ToListAsync(cancellationToken);
 
-        var articles = await database.Articles
+        var articlesTask = database.Articles
             .AsNoTracking()
             .Where(article => article.IsDeleted == false)
             .OrderBy(article => article.Order)
@@ -68,24 +66,26 @@ public sealed class PosCatalogService : IPosCatalogService
                 article.VatDirectSellingId,
                 article.VatExemptionReasonId,
                 Vat = article.VatDirectSelling != null ? article.VatDirectSelling.Value : 0m,
-                Label = article.Button != null ? article.Button.Label : null,
-                Image = article.Button != null ? article.Button.Image : null
+                Label = article.Button != null ? article.Button.Label : null
             })
             .ToListAsync(cancellationToken);
+
+        await Task.WhenAll(familiesTask, subfamiliesTask, articlesTask);
+        var families = await familiesTask;
+        var subfamilies = await subfamiliesTask;
+        var articles = await articlesTask;
 
         return new PosCatalog(
             families.Select(item => new PosMenuItem(
                 item.Id,
                 Guid.Empty,
                 LabelOrDesignation(item.Label, item.Designation),
-                false,
-                item.Image)).ToList(),
+                false)).ToList(),
             subfamilies.Select(item => new PosMenuItem(
                 item.Id,
                 item.FamilyId,
                 LabelOrDesignation(item.Label, item.Designation),
-                false,
-                item.Image)).ToList(),
+                false)).ToList(),
             articles.Select(item => new PosArticle(
                 item.Id,
                 item.SubfamilyId,
@@ -100,7 +100,7 @@ public sealed class PosCatalogService : IPosCatalogService
                 item.DefaultQuantity,
                 item.Discount,
                 item.VatDirectSellingId,
-                item.Image,
+                imageBase64: null,
                 item.PVPVariable,
                 item.VatExemptionReasonId)).ToList());
     }
