@@ -28,6 +28,39 @@ if (-not (Test-Path -LiteralPath (Join-Path $PublishDir "logicpos.exe"))) {
     throw "Publish folder missing logicpos.exe: $PublishDir"
 }
 
+function Get-LogicPosAppVersion {
+    param([Parameter(Mandatory = $true)][string]$Directory)
+
+    $dll = Join-Path $Directory "LogicPOS.App.dll"
+    if (-not (Test-Path -LiteralPath $dll)) {
+        $found = @(Get-ChildItem -LiteralPath $Directory -Recurse -Filter "LogicPOS.App.dll" -File -ErrorAction SilentlyContinue)
+        if ($found.Count -eq 0) {
+            throw "LogicPOS.App.dll not found under: $Directory"
+        }
+        $dll = $found[0].FullName
+    }
+
+    $info = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($dll)
+    $version = $info.ProductVersion
+    if ([string]::IsNullOrWhiteSpace($version)) {
+        $version = $info.FileVersion
+    }
+    if ([string]::IsNullOrWhiteSpace($version)) {
+        throw "LogicPOS.App.dll has no ProductVersion or FileVersion: $dll"
+    }
+
+    $version = $version.Trim().Trim([char]0)
+    if ([string]::IsNullOrWhiteSpace($version)) {
+        throw "LogicPOS.App.dll version is empty: $dll"
+    }
+
+    Write-Host "[INFO] LogicPOS.App.dll version: $version ($dll)"
+    return $version
+}
+
+# version.txt follows the built assembly, including -SkipPublish. Do not use -ProductVersion here.
+$versionText = Get-LogicPosAppVersion -Directory $PublishDir
+
 # Staging copy without protected local settings/databases.
 $stage = Join-Path $env:TEMP ("logicpos-update-zip-" + [Guid]::NewGuid().ToString("N"))
 New-Item -ItemType Directory -Path $stage | Out-Null
@@ -93,6 +126,10 @@ try {
         $zip.Dispose()
     }
 
+    $versionFile = Join-Path (Split-Path -Parent $ZipOutput) "version.txt"
+    Set-Content -LiteralPath $versionFile -Value $versionText -Encoding ascii
+    Write-Host "[INFO] Update version file: $versionFile ($versionText)"
+
     if (-not [string]::IsNullOrWhiteSpace($ShareZip)) {
         $shareDir = Split-Path -Parent $ShareZip
         if (-not (Test-Path -LiteralPath $shareDir)) {
@@ -103,7 +140,9 @@ try {
             Copy-Item -LiteralPath $ShareZip -Destination (Join-Path $shareDir "logicpos.$stamp.bak.zip") -Force
         }
         Copy-Item -LiteralPath $ZipOutput -Destination $ShareZip -Force
+        Copy-Item -LiteralPath $versionFile -Destination (Join-Path $shareDir "version.txt") -Force
         Write-Host "[INFO] Published update zip -> $ShareZip"
+        Write-Host "[INFO] Published version.txt -> $(Join-Path $shareDir 'version.txt')"
     }
 
     $info = Get-Item -LiteralPath $ZipOutput
