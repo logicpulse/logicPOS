@@ -11,6 +11,7 @@ using LogicPOS.Domain.Entities.Common;
 using LogicPOS.Domain.Services;
 using LogicPOS.Domain.ValueObjects;
 using LogicPOS.Persistence.Database;
+using LogicPOS.Persistence.Interceptors;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -150,6 +151,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["PVPVariable"] = "Preço variável",
         ["ChildArticleId"] = "Artigo associado",
         ["ChildQuantity"] = "Quantidade",
+        ["ButtonLabel"] = "Etiqueta do botão",
+        ["ButtonImage"] = "Imagem",
         ["SerialNotice"] = "Números de série",
         // Remaining BO table fields — GTK Resx (pt-PT) only
         ["AccessCardNumber"] = "Número do cartão de acesso",
@@ -224,16 +227,19 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private readonly IServiceScopeFactory _scopes;
     private readonly IPasswordHasher _passwords;
     private readonly ISystemInformationService _system;
+    private readonly IAuditingInformationService _auditing;
     private readonly PageSpec[] _pages;
 
     public BackOfficeListingService(
         IServiceScopeFactory scopes,
         IPasswordHasher passwords,
-        ISystemInformationService system)
+        ISystemInformationService system,
+        IAuditingInformationService auditing)
     {
         _scopes = scopes;
         _passwords = passwords;
         _system = system;
+        _auditing = auditing;
         _pages = BuildPages();
     }
 
@@ -268,25 +274,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             PageKind.ReceiptEmission => await QueryOpenDocumentsAsync(database, cancellationToken),
             PageKind.Files => QueryFiles(page),
             PageKind.Notice => NoticePage(page),
-            _ => await QueryEntitiesAsync(database, page, cancellationToken)
+            _ => page.EntityType == typeof(Receipt)
+                ? await QueryReceiptsAsync(database, customerId, cancellationToken)
+                : await QueryEntitiesAsync(database, page, cancellationToken)
         };
 
         var rows = snapshot.Rows;
-        if (customerId is Guid selectedCustomer && selectedCustomer != Guid.Empty && title == "Recibos")
-        {
-            var receiptIds = await database.Payments.AsNoTracking()
-                .Join(
-                    database.Documents.AsNoTracking(),
-                    payment => payment.DocumentId,
-                    document => document.Id,
-                    (payment, document) => new { payment.ReceiptId, document.CustomerId, document.IsDeleted })
-                .Where(item => item.IsDeleted == false && item.CustomerId == selectedCustomer)
-                .Select(item => item.ReceiptId)
-                .Distinct()
-                .ToListAsync(cancellationToken);
-            var allowed = receiptIds.ToHashSet();
-            rows = rows.Where(row => allowed.Contains(row.Id)).ToList();
-        }
 
         if (string.IsNullOrWhiteSpace(search) == false)
         {
@@ -352,6 +345,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (entity is Article article && id is Guid articleId && articleId != Guid.Empty)
         {
             await AddArticleExtrasAsync(database, fields, article, articleId, cancellationToken);
+        }
+        else if (entity is Article && id is null)
+        {
+            AddEmptyCompositionRow(fields);
+        }
+
+        if (entity is UserProfile profile)
+        {
+            await AddProfilePermissionsAsync(database, fields, profile, cancellationToken);
         }
 
         return fields;
@@ -439,7 +441,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             else
             {
                 entity = await FindEntityAsync(database, page.EntityType, id!.Value, cancellationToken)
-                    ?? throw new InvalidOperationException("Registo não encontrado.");
+                    ?? throw new BusinessException("Registo não encontrado.");
                 page.EntityType.GetProperty("UpdatedAt")?.SetValue(entity, DateTime.Now);
                 if (entity is WarehouseArticle article)
                 {
@@ -465,6 +467,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 return ListingSaveResult.Fail(missing);
             }
 
+            if (entity is Article plannedArticle)
+            {
+                var plan = ArticleFormRules.PlanComposition(fields, plannedArticle.Id);
+                if (plan.Error is not null)
+                {
+                    return ListingSaveResult.Fail(plan.Error);
+                }
+            }
+
+            await using var transaction = await database.Database.BeginTransactionAsync(cancellationToken);
             if (creating)
             {
                 database.Add(entity);
@@ -490,9 +502,22 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             await database.SaveChangesAsync(cancellationToken);
             if (entity is Article savedArticle)
             {
-                await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
+                var childError = await SaveArticleChildrenAsync(database, savedArticle.Id, fields, cancellationToken);
+                if (childError is not null)
+                {
+                    return ListingSaveResult.Fail(childError);
+                }
+
                 await database.SaveChangesAsync(cancellationToken);
             }
+
+            if (entity is UserProfile profile)
+            {
+                await SaveProfilePermissionsAsync(database, profile.Id, fields, cancellationToken);
+                await database.SaveChangesAsync(cancellationToken);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
 
             if ((entity is PreferenceParameter preference && preference.Token is "SYSTEM_CURRENCY" or "SYSTEM_CURRENCY_OID")
                 || entity is Currency)
@@ -591,6 +616,124 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         {
             return ListingSaveResult.Fail(DescribeException(exception));
         }
+    }
+
+    private async Task<ListingSnapshot> QueryReceiptsAsync(LogicPOSDbContext database, Guid? customerId, CancellationToken cancellationToken)
+    {
+        var query = database.Receipts.AsNoTracking().Where(item => item.IsDeleted == false);
+        if (customerId is Guid customer && customer != Guid.Empty)
+        {
+            var allowed = await ReceiptIdsForCustomerAsync(database, customer, cancellationToken);
+            if (allowed.Count == 0)
+            {
+                return new ListingSnapshot
+                {
+                    Columns = ListingColumns.For("Recibos", ["Date", "Number", "Status", "CustomerId", "FiscalNumber", "TotalFinal", "UpdatedAt"])
+                };
+            }
+
+            query = query.Where(item => allowed.Contains(item.Id));
+        }
+
+        var receipts = await query
+            .OrderByDescending(item => item.CreatedAt)
+            .Take(RowLimit)
+            .ToListAsync(cancellationToken);
+        var receiptIds = receipts.Select(item => item.Id).ToList();
+        var paymentLinks = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && receiptIds.Contains(item.ReceiptId))
+            .Select(item => new { item.ReceiptId, item.DocumentId })
+            .ToListAsync(cancellationToken);
+        var documentIds = paymentLinks.Select(item => item.DocumentId).ToHashSet();
+        foreach (var receipt in receipts)
+        {
+            foreach (var id in ReceiptListFormatting.DocumentIds(receipt.Notes))
+            {
+                documentIds.Add(id);
+            }
+        }
+
+        var documents = await database.Documents.AsNoTracking()
+            .Where(item => item.IsDeleted == false && documentIds.Contains(item.Id))
+            .Select(item => new { item.Id, item.Number, Name = item.Customer.Name, FiscalNumber = item.Customer.FiscalNumber })
+            .ToListAsync(cancellationToken);
+        var byDocument = documents.ToDictionary(item => item.Id);
+        var paymentsByReceipt = paymentLinks
+            .GroupBy(item => item.ReceiptId)
+            .ToDictionary(group => group.Key, group => group.Select(item => item.DocumentId).ToList());
+        var columns = ListingColumns.For("Recibos", ["Date", "Number", "Status", "CustomerId", "FiscalNumber", "TotalFinal", "UpdatedAt"]);
+        var rows = receipts.Select(receipt =>
+        {
+            var linked = new List<Guid>();
+            if (paymentsByReceipt.TryGetValue(receipt.Id, out var fromPayments))
+            {
+                linked.AddRange(fromPayments);
+            }
+
+            linked.AddRange(ReceiptListFormatting.DocumentIds(receipt.Notes));
+            var related = linked
+                .Distinct()
+                .Select(id => byDocument.GetValueOrDefault(id))
+                .Where(item => item is not null)
+                .ToList();
+            var documentNumbers = related.Select(item => item!.Number).Append(receipt.SourceId);
+            return new ListingRow
+            {
+                Id = receipt.Id,
+                CanDelete = false,
+                Values = new Dictionary<string, string>
+                {
+                    ["Date"] = receipt.CreatedAt.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture),
+                    ["Number"] = string.IsNullOrWhiteSpace(receipt.RefNo) ? receipt.SourceId ?? string.Empty : receipt.RefNo,
+                    ["Status"] = ReceiptListFormatting.StatusLabel(receipt.Status),
+                    ["CustomerId"] = ReceiptListFormatting.JoinDistinct(related.Select(item => item!.Name)),
+                    ["FiscalNumber"] = ReceiptListFormatting.JoinDistinct(related.Select(item => item!.FiscalNumber)),
+                    ["TotalFinal"] = receipt.Amount.ToString("0.00", CultureInfo.CurrentCulture),
+                    ["UpdatedAt"] = receipt.UpdatedAt == default
+                        ? string.Empty
+                        : receipt.UpdatedAt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                    // Not a grid column. Keeps invoice numbers searchable from the same row.
+                    ["Documents"] = ReceiptListFormatting.JoinDistinct(documentNumbers)
+                }
+            };
+        }).ToList();
+        return new ListingSnapshot { Columns = columns, Rows = rows };
+    }
+
+    private static async Task<HashSet<Guid>> ReceiptIdsForCustomerAsync(
+        LogicPOSDbContext database,
+        Guid customerId,
+        CancellationToken cancellationToken)
+    {
+        var documentIds = await database.Documents.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.CustomerId == customerId)
+            .Select(item => item.Id)
+            .ToListAsync(cancellationToken);
+        if (documentIds.Count == 0)
+        {
+            return [];
+        }
+
+        var documents = documentIds.ToHashSet();
+        var fromPayments = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && documents.Contains(item.DocumentId))
+            .Select(item => item.ReceiptId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+        var allowed = fromPayments.ToHashSet();
+        var notes = await database.Receipts.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Notes != null && item.Notes != "")
+            .Select(item => new { item.Id, item.Notes })
+            .ToListAsync(cancellationToken);
+        foreach (var note in notes)
+        {
+            if (ReceiptListFormatting.DocumentIds(note.Notes).Any(documents.Contains))
+            {
+                allowed.Add(note.Id);
+            }
+        }
+
+        return allowed;
     }
 
     private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, CancellationToken cancellationToken)
@@ -813,7 +956,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     Key = property.Name,
                     Label = FieldLabel(page.EntityType, property.Name),
                     Kind = "number",
-                    Value = price.Value.ToString("0.##", CultureInfo.CurrentCulture),
+                    Value = FormDecimal.Format(price.Value, FormDecimalKind.Money),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -822,7 +965,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     Key = property.Name + "Promotion",
                     Label = "Promoção",
                     Kind = "number",
-                    Value = price.PromotionValue.ToString("0.##", CultureInfo.CurrentCulture),
+                    Value = FormDecimal.Format(price.PromotionValue, FormDecimalKind.Money),
                     ReadOnly = readOnly,
                     Group = group
                 });
@@ -880,11 +1023,38 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             });
         }
 
+        if (page.EntityType == typeof(Article) || page.EntityType == typeof(ArticleFamily) || page.EntityType == typeof(ArticleSubfamily))
+        {
+            var button = page.EntityType.GetProperty("Button")?.GetValue(entity) as Button;
+            var group = page.EntityType == typeof(Article) ? "Detalhes 1" : null;
+            fields.Add(new ListingField
+            {
+                Key = "ButtonLabel",
+                Label = Header("ButtonLabel"),
+                Kind = "text",
+                Value = button?.Label ?? string.Empty,
+                Group = group
+            });
+            fields.Add(new ListingField
+            {
+                Key = "ButtonImage",
+                Label = Header("ButtonImage"),
+                Kind = "image",
+                Value = button?.Image ?? string.Empty,
+                Group = group
+            });
+        }
+
         return fields;
     }
 
     private static string? FieldGroup(Type entityType, string propertyName)
     {
+        if (entityType == typeof(UserProfile))
+        {
+            return "Perfil";
+        }
+
         if (entityType == typeof(User))
         {
             return propertyName switch
@@ -1074,7 +1244,13 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         if (value is ArticlePrice price)
         {
-            return price.Value.ToString("0.##", CultureInfo.CurrentCulture);
+            return FormDecimal.Format(price.Value, FormDecimalKind.Money);
+        }
+
+        if (value is decimal or double or float
+            && (FormDecimal.IsQuantityKey(property.Name) || FormDecimal.IsMoneyKey(property.Name)))
+        {
+            return FormDecimal.Format(Convert.ToDecimal(value, CultureInfo.InvariantCulture), FormDecimal.KindFor(property.Name));
         }
 
         if (value is bool flag)
@@ -1102,6 +1278,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private static string? ApplyFields(Type type, object entity, IReadOnlyDictionary<string, string> fields)
     {
+        ApplyButton(entity, fields);
         foreach (var pair in fields)
         {
             if (pair.Key == "Pin")
@@ -1134,6 +1311,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            if (TryApplyMeasuredNumber(entity, property, pair.Value, out var measuredError))
+            {
+                if (measuredError is not null)
+                {
+                    return measuredError;
+                }
+
+                continue;
+            }
+
             var converted = ConvertValue(property.PropertyType, pair.Value);
             if (converted.Failed)
             {
@@ -1144,6 +1331,106 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         return null;
+    }
+
+    private static bool TryApplyMeasuredNumber(object entity, PropertyInfo property, string raw, out string? error)
+    {
+        error = null;
+        if (FormDecimal.IsQuantityKey(property.Name) == false && FormDecimal.IsMoneyKey(property.Name) == false)
+        {
+            return false;
+        }
+
+        var underlying = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+        if (underlying != typeof(decimal) && underlying != typeof(float) && underlying != typeof(double))
+        {
+            return false;
+        }
+
+        var kind = FormDecimal.KindFor(property.Name);
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            if (FormDecimal.ValueWhenEmpty(property.Name) is decimal emptyValue)
+            {
+                if (Nullable.GetUnderlyingType(property.PropertyType) is not null && emptyValue == 0m)
+                {
+                    property.SetValue(entity, null);
+                }
+                else
+                {
+                    object emptyStored = underlying == typeof(float) ? (float)emptyValue
+                        : underlying == typeof(double) ? (double)emptyValue
+                        : emptyValue;
+                    property.SetValue(entity, emptyStored);
+                }
+
+                return true;
+            }
+
+            error = $"Indique {Header(property.Name)}.";
+            return true;
+        }
+
+        if (FormDecimal.TryParse(raw, kind, out var number, out var issue) == false)
+        {
+            error = issue switch
+            {
+                FormDecimalIssue.AmbiguousThousands => FormDecimal.MoneyRule,
+                FormDecimalIssue.TooManyDecimals => FormDecimal.QuantityRule,
+                _ => $"Valor inválido em {Header(property.Name)}."
+            };
+            return true;
+        }
+
+        object stored = underlying == typeof(float) ? (float)number : underlying == typeof(double) ? (double)number : number;
+        property.SetValue(entity, stored);
+        return true;
+    }
+
+    /// <summary>Writes the POS button label and image stored on the Button complex property.</summary>
+    private static void ApplyButton(object entity, IReadOnlyDictionary<string, string> fields)
+    {
+        if (fields.ContainsKey("ButtonLabel") == false && fields.ContainsKey("ButtonImage") == false)
+        {
+            return;
+        }
+
+        var property = entity.GetType().GetProperty("Button");
+        if (property is null || property.PropertyType != typeof(Button) || property.CanWrite == false)
+        {
+            return;
+        }
+
+        var current = property.GetValue(entity) as Button;
+        var button = new Button
+        {
+            Label = current?.Label,
+            Image = current?.Image,
+            ImageExtension = current?.ImageExtension
+        };
+        if (fields.TryGetValue("ButtonLabel", out var label))
+        {
+            button.Label = label;
+        }
+
+        if (fields.TryGetValue("ButtonImage", out var image))
+        {
+            button.Image = string.IsNullOrWhiteSpace(image) ? null : image;
+        }
+
+        if (fields.TryGetValue("ButtonImageExtension", out var extension))
+        {
+            if (string.IsNullOrWhiteSpace(extension) == false)
+            {
+                button.ImageExtension = extension;
+            }
+            else if (string.IsNullOrWhiteSpace(button.Image))
+            {
+                button.ImageExtension = null;
+            }
+        }
+
+        property.SetValue(entity, button);
     }
 
     /// <summary>
@@ -1194,10 +1481,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return true;
         }
 
-        if (decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount) == false
-            && decimal.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out amount) == false)
+        if (FormDecimal.TryParse(value, FormDecimalKind.Money, out var amount, out var issue) == false)
         {
-            error = $"Valor inválido em {Header(key)}.";
+            error = issue == FormDecimalIssue.AmbiguousThousands
+                ? FormDecimal.MoneyRule
+                : $"Valor inválido em {Header(key)}.";
             return true;
         }
 
@@ -1470,29 +1758,22 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private static async Task AddArticleExtrasAsync(LogicPOSDbContext database, List<ListingField> fields, Article article, Guid articleId, CancellationToken cancellationToken)
     {
-        var child = await database.ArticleCompositions.AsNoTracking()
+        var children = await database.ArticleCompositions.AsNoTracking()
             .Where(item => item.ParentId == articleId && item.IsDeleted == false)
+            .OrderBy(item => item.CreatedAt)
             .Select(item => new { item.ChildId, item.Quantity })
-            .FirstOrDefaultAsync(cancellationToken);
-        fields.Add(new ListingField
+            .ToListAsync(cancellationToken);
+        if (children.Count == 0)
         {
-            Key = "ChildArticleId",
-            Label = Header("ChildArticleId"),
-            Kind = "lookup",
-            Lookup = "Article",
-            Group = "Artigos Associados",
-            ShowWhen = "IsComposed",
-            Value = child is null ? string.Empty : child.ChildId.ToString()
-        });
-        fields.Add(new ListingField
+            AddCompositionRow(fields, 0, null, 1m);
+        }
+        else
         {
-            Key = "ChildQuantity",
-            Label = Header("ChildQuantity"),
-            Kind = "text",
-            Group = "Artigos Associados",
-            ShowWhen = "IsComposed",
-            Value = child is null ? "1" : child.Quantity.ToString(CultureInfo.CurrentCulture)
-        });
+            for (var index = 0; index < children.Count; index++)
+            {
+                AddCompositionRow(fields, index, children[index].ChildId, children[index].Quantity);
+            }
+        }
         var serials = await database.WarehouseArticles.AsNoTracking()
             .Where(item => item.ArticleId == articleId && item.IsDeleted == false && item.SerialNumber != null && item.SerialNumber != "")
             .Select(item => item.SerialNumber!)
@@ -1511,47 +1792,75 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         _ = article;
     }
 
-    private static async Task SaveArticleChildrenAsync(LogicPOSDbContext database, Guid articleId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)
+    private static void AddEmptyCompositionRow(List<ListingField> fields) => AddCompositionRow(fields, 0, null, 1m);
+
+    private static void AddCompositionRow(List<ListingField> fields, int index, Guid? childId, decimal quantity)
     {
-        if (fields.TryGetValue("IsComposed", out var composed) == false || composed is not ("true" or "True" or "1"))
+        fields.Add(new ListingField
         {
-            return;
+            Key = "ChildArticleId:" + index.ToString(CultureInfo.InvariantCulture),
+            Label = Header("ChildArticleId"),
+            Kind = "lookup",
+            Lookup = "Article",
+            Group = "Artigos Associados",
+            ShowWhen = "IsComposed",
+            Value = childId is Guid id && id != Guid.Empty ? id.ToString() : string.Empty
+        });
+        fields.Add(new ListingField
+        {
+            Key = "ChildQuantity:" + index.ToString(CultureInfo.InvariantCulture),
+            Label = Header("ChildQuantity"),
+            Kind = "text",
+            Group = "Artigos Associados",
+            ShowWhen = "IsComposed",
+            Value = FormDecimal.Format(quantity, FormDecimalKind.Quantity)
+        });
+    }
+
+    private static async Task<string?> SaveArticleChildrenAsync(LogicPOSDbContext database, Guid articleId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)
+    {
+        var plan = ArticleFormRules.PlanComposition(fields, articleId);
+        if (plan.Error is not null)
+        {
+            return plan.Error;
         }
 
-        if (fields.TryGetValue("ChildArticleId", out var childText) == false || Guid.TryParse(childText, out var childId) == false || childId == Guid.Empty)
+        if (plan.ClearExisting == false && plan.Lines.Count == 0)
         {
-            return;
-        }
-
-        var quantity = 1m;
-        if (fields.TryGetValue("ChildQuantity", out var quantityText))
-        {
-            if (decimal.TryParse(quantityText, NumberStyles.Number, CultureInfo.CurrentCulture, out var parsed) == false)
-            {
-                decimal.TryParse(quantityText, NumberStyles.Number, CultureInfo.InvariantCulture, out parsed);
-            }
-
-            if (parsed > 0)
-            {
-                quantity = parsed;
-            }
+            return null;
         }
 
         var existing = await database.ArticleCompositions
-            .FirstOrDefaultAsync(item => item.ParentId == articleId && item.IsDeleted == false, cancellationToken);
-        if (existing is null)
+            .Where(item => item.ParentId == articleId && item.IsDeleted == false)
+            .ToListAsync(cancellationToken);
+        var keep = new HashSet<Guid>();
+        foreach (var line in plan.Lines)
         {
-            database.ArticleCompositions.Add(new ArticleComposition
+            keep.Add(line.ChildId);
+            var row = existing.FirstOrDefault(item => item.ChildId == line.ChildId);
+            if (row is null)
             {
-                ParentId = articleId,
-                ChildId = childId,
-                Quantity = quantity
-            });
-            return;
+                database.ArticleCompositions.Add(new ArticleComposition
+                {
+                    ParentId = articleId,
+                    ChildId = line.ChildId,
+                    Quantity = line.Quantity
+                });
+                continue;
+            }
+
+            row.Quantity = line.Quantity;
+            row.UpdatedAt = DateTime.Now;
         }
 
-        existing.ChildId = childId;
-        existing.Quantity = quantity;
+        foreach (var row in existing.Where(item => keep.Contains(item.ChildId) == false))
+        {
+            row.IsDeleted = true;
+            row.DeletedAt = DateTime.Now;
+            row.UpdatedAt = DateTime.Now;
+        }
+
+        return null;
     }
 
     private static bool CanRemove(object entity)
@@ -1939,6 +2248,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return ListingSaveResult.Fail("Crie primeiro um método de pagamento.");
         }
 
+        var alreadyPaid = await database.Payments.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.DocumentId == document.Id)
+            .SumAsync(item => (decimal?)item.CreditAmount, cancellationToken) ?? 0m;
+        var due = ReceiptCredit.Outstanding(document.TotalFinal, alreadyPaid);
+        if (due <= 0)
+        {
+            return ListingSaveResult.Fail("O documento já está pago.");
+        }
+
         document.Paid = true;
         document.PaymentDate = DateTime.Now;
         document.UpdatedAt = DateTime.Now;
@@ -1950,21 +2268,173 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             Status = "N",
             SourcePayment = "P",
             Mechanism = "NU",
-            Amount = document.TotalFinal,
-            AmountInWords = document.TotalFinal.ToString("0.00", CultureInfo.CurrentCulture),
+            Amount = due,
+            AmountInWords = due.ToString("0.00", CultureInfo.CurrentCulture),
             SourceId = document.Number,
             CurrencyCode = "EUR",
-            CurrencyAmount = document.TotalFinal,
+            CurrencyAmount = due,
             ExchangeRate = 1,
             Notes = document.Id.ToString()
         };
         database.Receipts.Add(receipt);
+        database.Payments.Add(new Payment
+        {
+            Receipt = receipt,
+            DocumentId = document.Id,
+            CreditAmount = due
+        });
         await database.SaveChangesAsync(cancellationToken);
         return ListingSaveResult.Ok(receipt.Id, "Recibo emitido.");
     }
 
-    public Task<IReadOnlyCollection<string>?> AllowedMenuTitlesAsync(CancellationToken cancellationToken = default)
-        => Task.FromResult<IReadOnlyCollection<string>?>(null);
+    public async Task<IReadOnlyCollection<string>?> AllowedMenuTitlesAsync(CancellationToken cancellationToken = default)
+    {
+        var userId = _auditing.GetUserId();
+        if (userId is null || userId == Guid.Empty)
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var profileId = await database.Users.AsNoTracking()
+            .Where(item => item.Id == userId && item.IsDeleted == false)
+            .Select(item => item.ProfileId)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (profileId == Guid.Empty)
+        {
+            return null;
+        }
+
+        var grants = await database.PermissionProfiles.AsNoTracking()
+            .Where(item => item.UserProfileId == profileId && item.IsDeleted == false)
+            .Select(item => new { item.PermissionItemId, item.Granted })
+            .ToListAsync(cancellationToken);
+        var keepPermissions = ProfileMenuAccess.KeepsPermissionsMenu(profileId);
+        // Profiles that were never edited keep the full menu, including Permissões.
+        if (grants.Count == 0)
+        {
+            return null;
+        }
+
+        var grantedIds = grants.Where(item => item.Granted).Select(item => item.PermissionItemId).ToHashSet();
+        var tokens = await database.PermissionItems.AsNoTracking()
+            .Where(item => item.IsDeleted == false && grantedIds.Contains(item.Id))
+            .Select(item => item.Token)
+            .ToListAsync(cancellationToken);
+        return ProfileMenuAccess.AllowedTitles(tokens, keepPermissions);
+    }
+
+    private static async Task AddProfilePermissionsAsync(LogicPOSDbContext database, List<ListingField> fields, UserProfile profile, CancellationToken cancellationToken)
+    {
+        var items = await database.PermissionItems.AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .OrderBy(item => item.Order)
+            .Select(item => new { item.Id, item.Designation, item.Token, item.PermissionGroupId })
+            .ToListAsync(cancellationToken);
+        if (items.Count == 0)
+        {
+            return;
+        }
+
+        var groups = await database.PermissionGroups.AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .ToDictionaryAsync(item => item.Id, item => item.Designation, cancellationToken);
+        var granted = new HashSet<Guid>();
+        var keepPermissions = false;
+        if (profile.Id != Guid.Empty)
+        {
+            var ids = await database.PermissionProfiles.AsNoTracking()
+                .Where(item => item.UserProfileId == profile.Id && item.IsDeleted == false && item.Granted)
+                .Select(item => item.PermissionItemId)
+                .ToListAsync(cancellationToken);
+            granted = ids.ToHashSet();
+            keepPermissions = ProfileMenuAccess.KeepsPermissionsMenu(profile.Id);
+        }
+
+        foreach (var item in items)
+        {
+            var locked = keepPermissions && item.Token == ProfileMenuAccess.PermissionsMenuToken;
+            fields.Add(new ListingField
+            {
+                Key = "perm:" + item.Id.ToString(),
+                Label = string.IsNullOrWhiteSpace(item.Designation) ? item.Id.ToString() : item.Designation,
+                Kind = "bool",
+                Value = locked || granted.Contains(item.Id) ? "true" : "false",
+                ReadOnly = locked,
+                Group = groups.TryGetValue(item.PermissionGroupId, out var group) && string.IsNullOrWhiteSpace(group) == false
+                    ? group
+                    : "Privilégios"
+            });
+        }
+    }
+
+    private static async Task SaveProfilePermissionsAsync(LogicPOSDbContext database, Guid profileId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)
+    {
+        var submitted = fields.Where(pair => pair.Key.StartsWith("perm:", StringComparison.Ordinal)).ToList();
+        if (submitted.Count == 0 || profileId == Guid.Empty)
+        {
+            return;
+        }
+
+        var existing = await database.PermissionProfiles
+            .Where(item => item.UserProfileId == profileId)
+            .ToListAsync(cancellationToken);
+        foreach (var pair in submitted)
+        {
+            if (Guid.TryParse(pair.Key["perm:".Length..], out var itemId) == false || itemId == Guid.Empty)
+            {
+                continue;
+            }
+
+            var granted = pair.Value is "true" or "True" or "1";
+            var row = existing.FirstOrDefault(item => item.PermissionItemId == itemId);
+            if (row is null)
+            {
+                database.PermissionProfiles.Add(new PermissionProfile
+                {
+                    UserProfileId = profileId,
+                    PermissionItemId = itemId,
+                    Granted = granted
+                });
+                continue;
+            }
+
+            row.Granted = granted;
+            row.IsDeleted = false;
+            row.UpdatedAt = DateTime.Now;
+        }
+
+        if (ProfileMenuAccess.KeepsPermissionsMenu(profileId) == false)
+        {
+            return;
+        }
+
+        var menuItemId = await database.PermissionItems.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Token == ProfileMenuAccess.PermissionsMenuToken)
+            .Select(item => (Guid?)item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (menuItemId is not Guid protectedId || protectedId == Guid.Empty)
+        {
+            return;
+        }
+
+        var protectedRow = existing.FirstOrDefault(item => item.PermissionItemId == protectedId);
+        if (protectedRow is null)
+        {
+            database.PermissionProfiles.Add(new PermissionProfile
+            {
+                UserProfileId = profileId,
+                PermissionItemId = protectedId,
+                Granted = true
+            });
+            return;
+        }
+
+        protectedRow.Granted = true;
+        protectedRow.IsDeleted = false;
+        protectedRow.UpdatedAt = DateTime.Now;
+    }
 
     public async Task<string?> GetPreferenceValueAsync(string token, CancellationToken cancellationToken = default)
     {
@@ -2607,16 +3077,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
     private static decimal ParseDecimal(string value)
         => decimal.TryParse(value, NumberStyles.Number, CultureInfo.CurrentCulture, out var number) ? number : 0;
 
-    private static string DescribeException(Exception exception)
-    {
-        var current = exception;
-        while (current.InnerException is not null)
-        {
-            current = current.InnerException;
-        }
-
-        return current.Message;
-    }
+    private static string DescribeException(Exception exception) => SaveExceptionText.Describe(exception);
 
     private PageSpec? Find(string title) => _pages.FirstOrDefault(page => page.Title == title);
 

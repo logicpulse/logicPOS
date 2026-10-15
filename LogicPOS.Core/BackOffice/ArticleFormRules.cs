@@ -9,8 +9,6 @@ public static class ArticleFormRules
     private const string DealerPattern = @"^[À-ÿ\-_ \s\w]*$";
     private const string DesignationPattern = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
     private const string ButtonPattern = @"^[0-9A-Za-zéúíóáÉÚÍÓÁèùìòàÈÙÌÒÀõãñÕÃÑêûîôâÊÛÎÔÂçÇ€$&@#%ºª()\[\]';:!?<>+\-_ \.\,\s\\\/\*]{2,35}$";
-    private const string DecimalPattern = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,4})?\s*$";
-    private const string DecimalFromZeroPattern = @"^\s*(?=.*[0-9])\d*(?:[\.,]\d{1,})?\s*$";
     private const string DecimalAboveZeroPattern = @"^\s*(?=.*[1-9])\d*(?:[\.,]\d{1,})?\s*$";
     private const string PercentPattern = @"^(100([\.\,][0]{1,})?$|[0-9]{1,2}([\.\,][0-9]{1,})?)$";
     private const string BarcodePattern = @"^[0-9A-Za-z]+$";
@@ -28,22 +26,22 @@ public static class ArticleFormRules
             ?? NeedGuid(fields, "SizeUnitId", "a unidade de tamanho")
             ?? NeedGuid(fields, "VatDirectSellingId", "o IVA de venda direta")
             ?? NeedGuid(fields, "VatOnTableId", "o IVA de mesa")
-            ?? Match(fields, "Price1", "o preço 1", DecimalFromZeroPattern, required: true)
-            ?? Match(fields, "Price2", "o preço 2", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price3", "o preço 3", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price4", "o preço 4", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price5", "o preço 5", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price1Promotion", "a promoção 1", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price2Promotion", "a promoção 2", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price3Promotion", "a promoção 3", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price4Promotion", "a promoção 4", DecimalFromZeroPattern, required: false)
-            ?? Match(fields, "Price5Promotion", "a promoção 5", DecimalFromZeroPattern, required: false)
+            ?? DecimalField(fields, "Price1", "o preço 1", required: true)
+            ?? DecimalField(fields, "Price2", "o preço 2", required: false)
+            ?? DecimalField(fields, "Price3", "o preço 3", required: false)
+            ?? DecimalField(fields, "Price4", "o preço 4", required: false)
+            ?? DecimalField(fields, "Price5", "o preço 5", required: false)
+            ?? DecimalField(fields, "Price1Promotion", "a promoção 1", required: false)
+            ?? DecimalField(fields, "Price2Promotion", "a promoção 2", required: false)
+            ?? DecimalField(fields, "Price3Promotion", "a promoção 3", required: false)
+            ?? DecimalField(fields, "Price4Promotion", "a promoção 4", required: false)
+            ?? DecimalField(fields, "Price5Promotion", "a promoção 5", required: false)
             ?? Match(fields, "Discount", "o desconto", PercentPattern, required: false)
             ?? Match(fields, "Barcode", "o código de barras", BarcodePattern, required: false)
-            ?? Match(fields, "MinimumStock", "o stock mínimo", DecimalPattern, required: false)
-            ?? Match(fields, "Tare", "a tara", DecimalPattern, required: false)
-            ?? Match(fields, "Weight", "o peso", DecimalPattern, required: false)
-            ?? Match(fields, "DefaultQuantity", "a quantidade predefinida", DecimalPattern, required: false);
+            ?? DecimalField(fields, "MinimumStock", "o stock mínimo", required: false)
+            ?? DecimalField(fields, "Tare", "a tara", required: false)
+            ?? DecimalField(fields, "Weight", "o peso", required: false)
+            ?? DecimalField(fields, "DefaultQuantity", "a quantidade predefinida", required: false);
 
         if (error is not null)
         {
@@ -60,25 +58,158 @@ public static class ArticleFormRules
             return null;
         }
 
-        var childText = Cell(fields, "ChildArticleId");
-        if (articleId is not null && string.IsNullOrWhiteSpace(childText))
+        var lines = ReadComposition(fields, articleId, out var compositionError);
+        if (compositionError is not null)
         {
-            return null;
+            return compositionError;
         }
 
-        if (Guid.TryParse(childText, out var child) == false || child == Guid.Empty)
+        // Creating a composed article needs at least one child. Saving an edit with none clears the children.
+        return lines.Count == 0 && articleId is null
+            ? "Indique o artigo associado."
+            : null;
+    }
+
+    public readonly record struct CompositionPlan(bool ClearExisting, IReadOnlyList<CompositionLine> Lines, string? Error);
+
+    /// <summary>
+    /// Decides how a save treats associated articles. Unchecking the composed flag, or leaving no children, removes them.
+    /// A read error is returned and must not be ignored.
+    /// </summary>
+    public static CompositionPlan PlanComposition(IReadOnlyDictionary<string, string> fields, Guid? articleId)
+    {
+        if (fields.ContainsKey("IsComposed") == false)
         {
-            return "Indique o artigo associado.";
+            return new CompositionPlan(false, [], null);
         }
 
-        if (articleId is Guid current && current == child)
+        if (IsOn(fields, "IsComposed") == false)
         {
-            return "O artigo composto não pode incluir o próprio artigo.";
+            return new CompositionPlan(true, [], null);
         }
 
-        if (Regex.IsMatch(Cell(fields, "ChildQuantity"), DecimalAboveZeroPattern) == false)
+        var lines = ReadComposition(fields, articleId, out var error);
+        if (error is not null)
         {
-            return "Indique a quantidade do artigo associado.";
+            return new CompositionPlan(false, [], error);
+        }
+
+        return new CompositionPlan(lines.Count == 0, lines, null);
+    }
+
+    public readonly record struct CompositionLine(Guid ChildId, decimal Quantity);
+
+    /// <summary>
+    /// Reads every associated article. Indexed keys (ChildArticleId:0) and the legacy single key are both accepted.
+    /// Blank rows are ignored so the editor can offer an empty extra line.
+    /// </summary>
+    public static IReadOnlyList<CompositionLine> ReadComposition(IReadOnlyDictionary<string, string> fields, Guid? articleId, out string? error)
+    {
+        error = null;
+        var lines = new List<CompositionLine>();
+        var seen = new HashSet<Guid>();
+        foreach (var suffix in CompositionSuffixes(fields))
+        {
+            var childText = Cell(fields, ArticleKey(suffix));
+            if (Guid.TryParse(childText, out var child) == false || child == Guid.Empty)
+            {
+                continue;
+            }
+
+            if (articleId is Guid current && current == child)
+            {
+                error = "O artigo composto não pode incluir o próprio artigo.";
+                return [];
+            }
+
+            if (seen.Add(child) == false)
+            {
+                error = "O artigo associado está repetido.";
+                return [];
+            }
+
+            var quantityText = Cell(fields, QuantityKey(suffix));
+            if (Regex.IsMatch(quantityText, DecimalAboveZeroPattern) == false)
+            {
+                error = "Indique a quantidade do artigo associado.";
+                return [];
+            }
+
+            if (TryQuantity(quantityText, out var quantity) == false)
+            {
+                error = QuantityError(quantityText);
+                return [];
+            }
+
+            lines.Add(new CompositionLine(child, quantity));
+        }
+
+        return lines;
+    }
+
+    private static IEnumerable<string> CompositionSuffixes(IReadOnlyDictionary<string, string> fields)
+    {
+        var suffixes = new List<string>();
+        foreach (var key in fields.Keys)
+        {
+            string? suffix = null;
+            if (key == "ChildArticleId" || key == "ChildQuantity")
+            {
+                suffix = string.Empty;
+            }
+            else if (key.StartsWith("ChildArticleId:", StringComparison.Ordinal))
+            {
+                suffix = key["ChildArticleId:".Length..];
+            }
+            else if (key.StartsWith("ChildQuantity:", StringComparison.Ordinal))
+            {
+                suffix = key["ChildQuantity:".Length..];
+            }
+
+            if (suffix is not null && suffixes.Contains(suffix) == false)
+            {
+                suffixes.Add(suffix);
+            }
+        }
+
+        return suffixes;
+    }
+
+    private static bool TryQuantity(string text, out decimal value)
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out value, out _) && value > 0;
+
+    private static string QuantityError(string text)
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out _, out var issue) == false
+            && issue == FormDecimalIssue.TooManyDecimals
+            ? FormDecimal.QuantityRule
+            : "Indique a quantidade do artigo associado.";
+
+    private static string ArticleKey(string suffix) => suffix.Length == 0 ? "ChildArticleId" : "ChildArticleId:" + suffix;
+
+    private static string QuantityKey(string suffix) => suffix.Length == 0 ? "ChildQuantity" : "ChildQuantity:" + suffix;
+
+    private static string? DecimalField(IReadOnlyDictionary<string, string> fields, string key, string label, bool required)
+    {
+        var value = Cell(fields, key);
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return required ? $"Indique {label}." : null;
+        }
+
+        var kind = FormDecimal.KindFor(key);
+        if (FormDecimal.TryParse(value, kind, out var parsed, out var issue) == false || parsed < 0)
+        {
+            if (issue == FormDecimalIssue.AmbiguousThousands)
+            {
+                return FormDecimal.MoneyRule;
+            }
+
+            if (issue == FormDecimalIssue.TooManyDecimals)
+            {
+                return FormDecimal.QuantityRule;
+            }
+
+            return $"O valor de {label} não é válido.";
         }
 
         return null;

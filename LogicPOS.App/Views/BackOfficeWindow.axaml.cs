@@ -484,7 +484,8 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             {
                 if (child.Tag is string title)
                 {
-                    child.IsEnabled = allowed.Contains(title);
+                    // Ungated entries (backup, logout, new document) stay available.
+                    child.IsEnabled = ProfileMenuAccess.IsRestricted(title) == false || allowed.Contains(title);
                 }
             }
         }

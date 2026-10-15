@@ -199,6 +199,7 @@
                             </Button>
                         </StackPanel>
                     </Border>
+                    <TextBlock x:Name="EditorNotice" Classes="bo_entity_error" DockPanel.Dock="Bottom" />
                     <ScrollViewer>
                         <StackPanel x:Name="EditorHost" Classes="bo_stock_editor_body" />
                     </ScrollViewer>

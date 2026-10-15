@@ -228,9 +228,13 @@ public sealed class LocalStockService : IStockManagementService
             await ApplyMovementAsync(database, request, cancellationToken);
             return ListingSaveResult.Ok(Guid.Empty, "Movimento de stock registado.");
         }
-        catch (Exception exception)
+        catch (BusinessException exception)
         {
             return ListingSaveResult.Fail(exception.Message);
+        }
+        catch (Exception)
+        {
+            return ListingSaveResult.Fail("Não foi possível registar o movimento de stock.");
         }
     }
 
@@ -623,6 +627,12 @@ public sealed class LocalStockService : IStockManagementService
             .ToList();
     }
 
+    public readonly record struct BulkLocationPlan(bool DeleteSourceWhenEmpty, ArticleSerialNumberStatus DestinationStatus);
+
+    /// <summary>A bulk move keeps the source status and leaves a zero-quantity row in place.</summary>
+    public static BulkLocationPlan PlanBulkLocation(ArticleSerialNumberStatus sourceStatus)
+        => new(DeleteSourceWhenEmpty: false, sourceStatus);
+
     public async Task<ListingSaveResult> ChangeLocationAsync(Guid warehouseArticleId, Guid locationId, decimal quantity, CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -633,7 +643,7 @@ public sealed class LocalStockService : IStockManagementService
             return ListingSaveResult.Fail("Posição de stock não encontrada.");
         }
 
-        if (quantity <= 0 || quantity > source.Quantity)
+        if (quantity <= 0)
         {
             return ListingSaveResult.Fail("A quantidade a transferir é inválida.");
         }
@@ -643,19 +653,70 @@ public sealed class LocalStockService : IStockManagementService
             return ListingSaveResult.Ok(warehouseArticleId, "Localização sem alterações.");
         }
 
+        // A serial number is one row. FindOrCreate would return this same row (the database
+        // still has the old location) and the move would be undone.
+        if (string.IsNullOrWhiteSpace(source.SerialNumber) == false)
+        {
+            var duplicate = await database.WarehouseArticles.AnyAsync(
+                item => item.Id != source.Id
+                    && item.IsDeleted == false
+                    && item.SerialNumber == source.SerialNumber,
+                cancellationToken);
+            if (duplicate)
+            {
+                return ListingSaveResult.Fail("Já existe outro artigo com este número de série.");
+            }
+
+            source.WarehouseLocationId = locationId;
+            source.UpdatedAt = DateTime.Now;
+            await database.SaveChangesAsync(cancellationToken);
+            return ListingSaveResult.Ok(source.Id, "Localização atualizada.");
+        }
+
+        if (quantity > source.Quantity)
+        {
+            return ListingSaveResult.Fail("A quantidade a transferir é inválida.");
+        }
+
+        var destination = await database.WarehouseArticles.FirstOrDefaultAsync(
+            item => item.Id != source.Id
+                && item.IsDeleted == false
+                && item.ArticleId == source.ArticleId
+                && item.WarehouseLocationId == locationId
+                && (item.SerialNumber == null || item.SerialNumber == string.Empty),
+            cancellationToken);
+        if (quantity == source.Quantity && destination is null)
+        {
+            source.WarehouseLocationId = locationId;
+            source.UpdatedAt = DateTime.Now;
+            await database.SaveChangesAsync(cancellationToken);
+            return ListingSaveResult.Ok(source.Id, "Localização atualizada.");
+        }
+
         source.Quantity -= quantity;
         source.UpdatedAt = DateTime.Now;
-        if (source.Quantity <= 0 && string.IsNullOrWhiteSpace(source.SerialNumber) == false)
+        var plan = PlanBulkLocation(source.Status);
+        if (source.Quantity <= 0 && plan.DeleteSourceWhenEmpty)
         {
             source.IsDeleted = true;
         }
 
-        var target = await FindOrCreateWarehouseArticleAsync(database, source.ArticleId, locationId, source.SerialNumber, cancellationToken);
-        target.Quantity += quantity;
-        target.Status = source.Status;
-        target.UpdatedAt = DateTime.Now;
+        if (destination is null)
+        {
+            destination = new WarehouseArticle
+            {
+                ArticleId = source.ArticleId,
+                WarehouseLocationId = locationId,
+                Quantity = 0,
+                Status = plan.DestinationStatus
+            };
+            database.WarehouseArticles.Add(destination);
+        }
+
+        destination.Quantity += quantity;
+        destination.UpdatedAt = DateTime.Now;
         await database.SaveChangesAsync(cancellationToken);
-        return ListingSaveResult.Ok(target.Id, "Localização atualizada.");
+        return ListingSaveResult.Ok(destination.Id, "Localização atualizada.");
     }
 
     public async Task<ListingSaveResult> UpdateUniqueArticleAsync(Guid warehouseArticleId, string? serialNumber, IReadOnlyList<Guid>? children, CancellationToken cancellationToken = default)
@@ -914,7 +975,7 @@ public sealed class LocalStockService : IStockManagementService
             var locationId = line.WarehouseLocationId ?? defaultLocation;
             if (locationId is null)
             {
-                throw new InvalidOperationException("Não há localização de armazém disponível.");
+                throw new BusinessException("Não há localização de armazém disponível.");
             }
 
             var serial = string.IsNullOrWhiteSpace(line.SerialNumber) ? null : line.SerialNumber.Trim();
@@ -924,7 +985,7 @@ public sealed class LocalStockService : IStockManagementService
                     .AnyAsync(item => item.IsDeleted == false && item.SerialNumber == serial, cancellationToken);
                 if (exists)
                 {
-                    throw new InvalidOperationException($"O número de série {serial} já existe.");
+                    throw new BusinessException($"O número de série {serial} já existe.");
                 }
             }
 
