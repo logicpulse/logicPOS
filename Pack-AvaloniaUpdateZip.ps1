@@ -93,6 +93,11 @@ try {
         $zip.Dispose()
     }
 
+    $versionFile = Join-Path (Split-Path -Parent $ZipOutput) "version.txt"
+    $versionText = $ProductVersion.Trim()
+    Set-Content -LiteralPath $versionFile -Value $versionText -Encoding ascii
+    Write-Host "[INFO] Update version file: $versionFile ($versionText)"
+
     if (-not [string]::IsNullOrWhiteSpace($ShareZip)) {
         $shareDir = Split-Path -Parent $ShareZip
         if (-not (Test-Path -LiteralPath $shareDir)) {
@@ -103,7 +108,9 @@ try {
             Copy-Item -LiteralPath $ShareZip -Destination (Join-Path $shareDir "logicpos.$stamp.bak.zip") -Force
         }
         Copy-Item -LiteralPath $ZipOutput -Destination $ShareZip -Force
+        Copy-Item -LiteralPath $versionFile -Destination (Join-Path $shareDir "version.txt") -Force
         Write-Host "[INFO] Published update zip -> $ShareZip"
+        Write-Host "[INFO] Published version.txt -> $(Join-Path $shareDir 'version.txt')"
     }
 
     $info = Get-Item -LiteralPath $ZipOutput

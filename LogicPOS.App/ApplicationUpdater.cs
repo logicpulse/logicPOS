@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Reflection;
+using LogicPOS.Core.Updates;
 
 namespace LogicPOS.App;
 
@@ -12,12 +14,32 @@ internal static class ApplicationUpdater
 {
     public const string PackageUrl = "https://box.logicpulse.com/files/logicPOS/Installation.Windows/Avalonia/logicpos.zip";
 
+    public const string VersionUrl = "https://box.logicpulse.com/files/logicPOS/Installation.Windows/Avalonia/version.txt";
+
     private const string TempFolderPrefix = "logicpos-update-";
 
     public static async Task DownloadAndScheduleAsync(IProgress<string> progress, CancellationToken cancellationToken = default)
     {
         // Drop leftovers from failed/previous updates before allocating a new unique temp dir.
         PurgeStaleUpdateFolders();
+
+        var installed = ReadInstalledVersion();
+        var published = await TryReadPublishedVersionAsync(cancellationToken);
+        if (published is not null && ApplicationVersionComparer.ParseRelease(published) is not null
+            && ApplicationVersionComparer.IsNewer(published, installed) == false)
+        {
+            throw AlreadyCurrent(installed);
+        }
+
+        // No manifest: skip a repeat download of a package we already proved is not newer.
+        if (published is null)
+        {
+            var remoteLength = await TryGetPackageLengthAsync(cancellationToken);
+            if (IsKnownCurrentPackage(remoteLength, installed))
+            {
+                throw AlreadyCurrent(installed);
+            }
+        }
 
         var install = AppContext.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
         var tempRoot = Path.Combine(Path.GetTempPath(), TempFolderPrefix + Guid.NewGuid().ToString("N"));
@@ -29,6 +51,7 @@ internal static class ApplicationUpdater
         {
             progress.Report("A descarregar o pacote...");
             await DownloadAsync(zipPath, progress, cancellationToken);
+            var packageLength = new FileInfo(zipPath).Length;
 
             // Extract/copy prep must not run on the UI sync context — a large zip freezes the
             // progress UI at 100% and delays Shutdown so the apply script never sees process exit.
@@ -47,6 +70,14 @@ internal static class ApplicationUpdater
                 StripProtectedFiles(found);
                 return found;
             }, cancellationToken);
+
+            var packageVersion = ReadPackageVersion(payload);
+            if (packageVersion is not null && ApplicationVersionComparer.IsNewer(packageVersion, installed) == false)
+            {
+                // Same release (1.6.33, 1.6.33.0, 1.6.33+develop[.sha]) must not restart the download.
+                RememberPackage(packageVersion, packageLength);
+                throw AlreadyCurrent(installed);
+            }
 
             progress.Report("A preparar a aplicação dos ficheiros...");
             var scriptPath = Path.Combine(tempRoot, "apply.ps1");
@@ -110,6 +141,143 @@ internal static class ApplicationUpdater
             }
 
             TryDeleteDirectory(dir);
+        }
+    }
+
+    internal static string ReadInstalledVersion()
+    {
+        var informational = typeof(ApplicationUpdater).Assembly
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+            ?.InformationalVersion;
+        if (string.IsNullOrWhiteSpace(informational) == false)
+        {
+            return informational;
+        }
+
+        return typeof(ApplicationUpdater).Assembly.GetName().Version?.ToString() ?? "0.0.0";
+    }
+
+    /// <summary>
+    /// Product version from the payload's LogicPOS.App.dll, without loading the assembly.
+    /// </summary>
+    internal static string? ReadPackageVersion(string payloadRoot)
+    {
+        var dll = Path.Combine(payloadRoot, "LogicPOS.App.dll");
+        if (File.Exists(dll) == false)
+        {
+            dll = Directory.EnumerateFiles(payloadRoot, "LogicPOS.App.dll", SearchOption.AllDirectories).FirstOrDefault()
+                ?? string.Empty;
+        }
+
+        if (dll.Length == 0 || File.Exists(dll) == false)
+        {
+            return null;
+        }
+
+        var info = FileVersionInfo.GetVersionInfo(dll);
+        if (string.IsNullOrWhiteSpace(info.ProductVersion) == false)
+        {
+            return info.ProductVersion.Trim().TrimEnd('\0');
+        }
+
+        return string.IsNullOrWhiteSpace(info.FileVersion) ? null : info.FileVersion.Trim().TrimEnd('\0');
+    }
+
+    private static InvalidOperationException AlreadyCurrent(string installed)
+        => new($"A aplicação já está na versão {ApplicationVersionComparer.Display(installed)}.");
+
+    private static async Task<string?> TryReadPublishedVersionAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("logicpos-updater");
+            using var response = await client.GetAsync(VersionUrl, cancellationToken);
+            if (response.IsSuccessStatusCode == false)
+            {
+                return null;
+            }
+
+            var body = await response.Content.ReadAsStringAsync(cancellationToken);
+            var line = body.Replace("\r", string.Empty).Split('\n')[0].Trim().TrimStart('\uFEFF');
+            return string.IsNullOrWhiteSpace(line) ? null : line;
+        }
+        catch (Exception) when (cancellationToken.IsCancellationRequested == false)
+        {
+            return null;
+        }
+    }
+
+    private static async Task<long?> TryGetPackageLengthAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var client = new HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("logicpos-updater");
+            using var request = new HttpRequestMessage(HttpMethod.Head, PackageUrl);
+            using var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            if (response.IsSuccessStatusCode == false)
+            {
+                return null;
+            }
+
+            return response.Content.Headers.ContentLength;
+        }
+        catch (Exception) when (cancellationToken.IsCancellationRequested == false)
+        {
+            return null;
+        }
+    }
+
+    private static string UpdateStatePath =>
+        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "logicPOS", "update-package.txt");
+
+    private static void RememberPackage(string packageVersion, long length)
+    {
+        var parsed = ApplicationVersionComparer.ParseRelease(packageVersion);
+        if (parsed is null || length <= 0)
+        {
+            return;
+        }
+
+        try
+        {
+            var path = UpdateStatePath;
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            File.WriteAllText(path, parsed + Environment.NewLine + length.ToString());
+        }
+        catch
+        {
+            // The next launch will compare the assembly again.
+        }
+    }
+
+    private static bool IsKnownCurrentPackage(long? remoteLength, string installedVersion)
+    {
+        if (remoteLength is not > 0)
+        {
+            return false;
+        }
+
+        try
+        {
+            var path = UpdateStatePath;
+            if (File.Exists(path) == false)
+            {
+                return false;
+            }
+
+            var lines = File.ReadAllLines(path);
+            if (lines.Length < 2 || long.TryParse(lines[1].Trim(), out var storedLength) == false || storedLength != remoteLength)
+            {
+                return false;
+            }
+
+            return ApplicationVersionComparer.IsNewer(lines[0], installedVersion) == false;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -367,14 +535,22 @@ internal static class ApplicationUpdater
             [System.Windows.Forms.Application]::DoEvents()
 
             Write-Log "waiting $ProcessId"
-            $deadline = (Get-Date).AddMinutes(2)
+            $deadline = (Get-Date).AddSeconds(20)
+            $stopped = $false
             while (Get-Process -Id $ProcessId -ErrorAction SilentlyContinue) {
                 if ((Get-Date) -gt $deadline) {
-                    Write-Log 'timeout waiting for exit'
-                    $label.Text = 'Timeout à espera do fecho da aplicação.'
-                    [System.Windows.Forms.Application]::DoEvents()
-                    Start-Sleep -Seconds 3
-                    exit 1
+                    if (-not $stopped) {
+                        Write-Log 'stopping process so files can be replaced'
+                        Stop-Process -Id $ProcessId -Force -ErrorAction SilentlyContinue
+                        $stopped = $true
+                        $deadline = (Get-Date).AddSeconds(15)
+                    } else {
+                        Write-Log 'timeout waiting for exit'
+                        $label.Text = 'Timeout à espera do fecho da aplicação.'
+                        [System.Windows.Forms.Application]::DoEvents()
+                        Start-Sleep -Seconds 3
+                        exit 1
+                    }
                 }
                 Start-Sleep -Milliseconds 300
                 [System.Windows.Forms.Application]::DoEvents()
@@ -385,6 +561,7 @@ internal static class ApplicationUpdater
             $files = @(Get-ChildItem -LiteralPath $sourceRoot -Recurse -File | Where-Object { -not (Keep-Local $_.Name) })
             $total = [Math]::Max(1, $files.Count)
             $index = 0
+            $failedRequired = $false
             foreach ($file in $files) {
                 $index++
                 $relative = $file.FullName.Substring($sourceRoot.Length).TrimStart('\')
@@ -409,7 +586,19 @@ internal static class ApplicationUpdater
                 }
                 if (-not $copied) {
                     Write-Log ("fail " + $relative)
+                    $leaf = [System.IO.Path]::GetFileName($relative)
+                    if ($leaf -eq 'logicpos.exe' -or $leaf -eq 'logicpos.dll' -or $leaf -eq 'LogicPOS.App.dll') {
+                        $failedRequired = $true
+                    }
                 }
+            }
+
+            if ($failedRequired) {
+                Write-Log 'required file was not replaced'
+                $label.Text = 'A atualização não substituiu os ficheiros do programa.'
+                [System.Windows.Forms.Application]::DoEvents()
+                Start-Sleep -Seconds 4
+                exit 1
             }
 
             $label.Text = 'A reiniciar o logicPOS...'

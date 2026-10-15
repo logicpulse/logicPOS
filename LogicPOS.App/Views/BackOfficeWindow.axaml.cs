@@ -986,27 +986,46 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         try
         {
             await ApplicationUpdater.DownloadAndScheduleAsync(progress);
-            UpdateStatus.Text = "A fechar para aplicar a atualização...";
-            UpdateProgress.IsIndeterminate = false;
-            UpdateProgress.Value = 100;
-            _allowClose = true;
-            _clock.Stop();
-            // Give the PowerShell progress window a moment to appear before this process exits.
-            await Task.Delay(600);
-            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.Shutdown();
-            }
-
-            // Apply script waits on this PID; Shutdown alone can leave hidden Login/POS windows alive.
-            Environment.Exit(0);
         }
         catch (Exception exception)
         {
+            // Any failure before the apply script is running must return to the confirmation
+            // buttons. Once the script is scheduled, that reset would start the download again.
             UpdateStatus.Text = exception.Message;
             UpdateProgress.IsVisible = false;
             UpdateConfirm.IsEnabled = true;
             UpdateDismiss.IsEnabled = true;
+            return;
+        }
+
+        UpdateStatus.Text = "A fechar para aplicar a atualização...";
+        UpdateProgress.IsIndeterminate = false;
+        UpdateProgress.Value = 100;
+        _allowClose = true;
+        _clock.Stop();
+        // Leave the UI thread before Exit. Shutdown() calls Dispatcher.InvokeShutdown on
+        // this thread; doing that inside the download try/catch brought the confirmation
+        // dialog back whenever shutdown threw, and the apply script never saw the process end.
+        var exit = new Thread(() =>
+        {
+            Thread.Sleep(800);
+            Environment.Exit(0);
+        })
+        {
+            IsBackground = false,
+            Name = "logicpos-update-exit"
+        };
+        exit.Start();
+        try
+        {
+            if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                desktop.Shutdown();
+            }
+        }
+        catch (Exception exception)
+        {
+            System.Diagnostics.Debug.WriteLine(exception);
         }
     }
 
