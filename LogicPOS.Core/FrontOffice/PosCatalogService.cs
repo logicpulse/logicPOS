@@ -112,13 +112,19 @@ public sealed class PosCatalogService : IPosCatalogService
     {
         var key = (kind, id);
 
-        var lazyTask = _imageCache.GetOrAdd(key, k => new Lazy<Task<string?>>(() => LoadImageFromDbAsync(k.Kind, k.Id, cancellationToken)));
+        var lazyTask = _imageCache.GetOrAdd(
+            key,
+            k => new Lazy<Task<string?>>(() => LoadImageFromDbAsync(k.Kind, k.Id, CancellationToken.None)));
 
         EvictIfNeeded();
 
         try
         {
-            return await lazyTask.Value;
+            return await lazyTask.Value.WaitAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            throw;
         }
         catch
         {
