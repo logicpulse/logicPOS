@@ -403,7 +403,7 @@
     </Style>
 
     <Style Selector="TextBlock.login_version">
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Margin" Value="2,2,2,4" />
         <Setter Property="Foreground" Value="#B8B8B8" />
@@ -3633,6 +3633,7 @@
         <Setter Property="Margin" Value="0,0,0,16" />
     </Style>
 
+    <!-- Replaces the Fluent button theme. An unnamed ContentPresenter plus the theme presenter draws each tab caption twice. -->
     <Style Selector="Button.bo_entity_tab">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="#6B7785" />
@@ -3647,18 +3648,7 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="Transparent"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Left"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
+        <Setter Property="Theme" Value="{DynamicResource BoEntityTabTheme}" />
     </Style>
 
     <Style Selector="Button.bo_entity_tab:pointerover">

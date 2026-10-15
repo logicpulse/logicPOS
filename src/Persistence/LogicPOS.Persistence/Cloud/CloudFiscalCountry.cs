@@ -7,6 +7,8 @@ namespace LogicPOS.Persistence.Cloud;
 /// Fiscal country for the current request.
 /// Local mode and requests without a client id use the API appsettings country.
 /// A cloud tenant uses the country stored on the LOGICPOS account (Accounts.idCountry).
+/// When a cloud client id is present but the account country cannot be resolved,
+/// Portugal is used — never the host appsettings country (which may be AO on a shared API).
 /// </summary>
 public static class CloudFiscalCountry
 {
@@ -23,10 +25,11 @@ public static class CloudFiscalCountry
             return fallback;
 
         var account = catalog.Find(clientId);
-        if (account.Found == false || FiscalCountry.TryParse(account.CountryCode2, out FiscalCountry country) == false)
-            return fallback;
+        if (account.Found && FiscalCountry.TryParse(account.CountryCode2, out FiscalCountry country))
+            return country;
 
-        return country;
+        // Safe default for unresolved cloud tenants: do not inherit host Country=AO.
+        return FiscalCountry.Portugal;
     }
 
     public static string? CodeFromCountryName(string? name)

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Domain.Entities.Finance.Calculations;
 
@@ -125,10 +126,25 @@ public static class DocumentLineCalculator
     public static string ServiceWithholdingDescription =>
         $"Retenção na fonte de Imposto Industrial ({ServiceWithholdingRate.ToString(CultureInfo.GetCultureInfo("pt-PT"))}%)";
 
+    /// <summary>Pure 6.5% math (caller must already know withholding applies).</summary>
     public static decimal ServiceWithholding(decimal servicesNet)
     {
         return (servicesNet * ServiceWithholdingRate / 100m).Round();
     }
+
+    /// <summary>
+    /// Write-path amount for industrial service withholding.
+    /// Always 0 outside Angola — PT/MZ must never persist a positive value.
+    /// </summary>
+    public static decimal ServiceWithholding(FiscalCountry country, decimal servicesNet)
+        => country.IsAngola ? ServiceWithholding(servicesNet) : 0m;
+
+    /// <summary>
+    /// AO industrial withholding (6.5% II) is only valid for Angola.
+    /// Non-Angola fiscal countries must ignore any stored amount (legacy bad data).
+    /// </summary>
+    public static decimal EffectiveServiceWithholding(FiscalCountry country, decimal storedAmount)
+        => country.IsAngola ? storedAmount : 0m;
 
     /// <summary>
     /// Tax settled once <paramref name="paid"/> of the document is paid. Partial payments take the difference between

@@ -127,7 +127,7 @@ public partial class DashboardView : UserControl
         {
             Label = point.Label,
             Value = _includeVat ? point.Final : point.Net,
-            Caption = (_includeVat ? point.Final : point.Net).ToString("C0", Culture)
+            Caption = MoneyFormat.Format((decimal)(_includeVat ? point.Final : point.Net), "C0")
         }).ToList();
 
     private void FillQuarterLegend(IReadOnlyList<DashboardPoint> quarters)
@@ -154,7 +154,7 @@ public partial class DashboardView : UserControl
         StatusText.IsVisible = true;
     }
 
-    private static string Money(decimal value) => value.ToString("C", Culture);
+    private static string Money(decimal value) => MoneyFormat.Format(value);
 
     private static string Capitalize(string text)
     {

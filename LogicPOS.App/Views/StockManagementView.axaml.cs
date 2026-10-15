@@ -795,10 +795,11 @@ public partial class StockManagementView : UserControl
             SelectedItem = locations.FirstOrDefault(item => item.Id == currentLocation) ?? locations.FirstOrDefault()
         };
         _locationBox.Classes.Add("bo_entity_input");
-        _quantityBox = Field("Quantidade", quantity.ToString("0.###", CultureInfo.CurrentCulture), out _);
+        _quantityBox = Field("Quantidade", FormDecimal.Format(quantity), out var quantityField, FormDecimal.QuantityRule);
+        EditorNotice.Text = string.Empty;
         EditorHost.Children.Add(Label("Nova localização"));
         EditorHost.Children.Add(_locationBox);
-        EditorHost.Children.Add(_quantityBox);
+        EditorHost.Children.Add(quantityField);
         EditorOverlay.IsVisible = true;
     }
 
@@ -881,6 +882,8 @@ public partial class StockManagementView : UserControl
         EditorHost.Children.Add(_supplierBox);
         EditorHost.Children.Add(Label("Data"));
         EditorHost.Children.Add(_dateBox);
+        _dateBox.SelectedDate = DateTime.Today;
+        EditorNotice.Text = string.Empty;
         EditorHost.Children.Add(documentField);
         EditorHost.Children.Add(notesField);
         EditorHost.Children.Add(attachButton);
@@ -910,8 +913,8 @@ public partial class StockManagementView : UserControl
         _dateBox = new CalendarDatePicker { SelectedDate = movement.Date };
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", movement.DocumentNumber, out var documentField);
-        _quantityBox = Field("Quantidade", movement.Quantity.ToString("0.###", CultureInfo.CurrentCulture), out var quantityField);
-        _priceBox = Field("Preço", movement.Price.ToString("0.###", CultureInfo.CurrentCulture), out var priceField);
+        _quantityBox = Field("Quantidade", FormDecimal.Format(movement.Quantity), out var quantityField, FormDecimal.QuantityRule);
+        _priceBox = Field("Preço", FormDecimal.Format(movement.Price, FormDecimalKind.Money), out var priceField, FormDecimal.MoneyRule);
         _attachLabel = new TextBlock
         {
             Text = movement.HasExternalDocument ? "Anexo atual mantido (escolha outro para substituir)" : "Sem anexo",
@@ -938,8 +941,8 @@ public partial class StockManagementView : UserControl
         _editId = article.Id;
         EditorTitle.Text = $"Stock - {article.Designation}";
         EditorHost.Children.Clear();
-        _totalBox = Field("Total stock", article.TotalStock.ToString("0.###", CultureInfo.CurrentCulture), out var totalField);
-        _minimumBox = Field("Stock mínimo", article.MinimumStock.ToString("0.###", CultureInfo.CurrentCulture), out var minimumField);
+        _totalBox = Field("Total stock", FormDecimal.Format(article.TotalStock), out var totalField, FormDecimal.QuantityRule);
+        _minimumBox = Field("Stock mínimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
         EditorHost.Children.Add(totalField);
         EditorHost.Children.Add(minimumField);
         EditorOverlay.IsVisible = true;
@@ -1122,7 +1125,9 @@ public partial class StockManagementView : UserControl
         var article = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(article);
         var quantity = new TextBox { Text = "1", Classes = { "bo_entity_input", "bo_numeric" } };
+        ToolTip.SetTip(quantity, FormDecimal.QuantityRule);
         var price = new TextBox { Text = "0", Classes = { "bo_entity_input", "bo_numeric" } };
+        ToolTip.SetTip(price, FormDecimal.MoneyRule);
         var serial = new TextBox { PlaceholderText = "Nº série", Classes = { "bo_entity_input" } };
         var location = new ComboBox
         {
@@ -1187,25 +1192,30 @@ public partial class StockManagementView : UserControl
         var service = Service;
         if (service is null)
         {
+            EditorError("Serviço de stocks indisponível.");
             return;
         }
 
-        ListingSaveResult result;
+        EditorNotice.Text = string.Empty;
+        var result = ListingSaveResult.Fail("Falha ao guardar.");
+        try
+        {
         switch (_editor)
         {
             case EditorMode.CreateMovement:
             {
-                var supplier = ListingFilters.SelectedLookup(_supplierBox);
-                if (supplier is null || _dateBox?.SelectedDate is null)
+                var supplier = ChosenOption(_supplierBox);
+                var date = ReadEditorDate();
+                if (supplier is null || date is null)
                 {
-                    Notice.Text = "Preencha fornecedor e data.";
+                    EditorError("Preencha fornecedor e data.");
                     return;
                 }
 
                 var lines = new List<StockMovementLineInput>();
                 foreach (var line in _lineControls)
                 {
-                    var article = ListingFilters.SelectedLookup(line.Article);
+                    var article = ChosenOption(line.Article);
                     if (article is null)
                     {
                         if (string.IsNullOrWhiteSpace(line.Article.Text))
@@ -1213,17 +1223,26 @@ public partial class StockManagementView : UserControl
                             continue;
                         }
 
-                        Notice.Text = "Selecione o artigo na lista.";
+                        EditorError("Selecione o artigo na lista.");
                         return;
                     }
 
-                    if (decimal.TryParse(line.Quantity.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false || quantity == 0)
+                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
                     {
-                        Notice.Text = "Quantidade inválida numa das linhas.";
+                        if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                        {
+                            EditorError("Quantidade inválida numa das linhas.");
+                        }
+
                         return;
                     }
 
-                    decimal.TryParse(line.Price.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price);
+                    var price = 0m;
+                    if (string.IsNullOrWhiteSpace(line.Price.Text) == false
+                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
+                    {
+                        return;
+                    }
                     lines.Add(new StockMovementLineInput
                     {
                         ArticleId = article.Id,
@@ -1237,7 +1256,7 @@ public partial class StockManagementView : UserControl
                 result = await service.CreateMovementAsync(new StockMovementCreateRequest
                 {
                     SupplierId = supplier.Id,
-                    Date = _dateBox.SelectedDate.Value.Date,
+                    Date = date.Value,
                     DocumentNumber = DocumentNumberOrReference(),
                     Notes = _notesBox?.Text,
                     ExternalDocument = _attachedPdf,
@@ -1252,13 +1271,17 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.EditMovement when _editId is Guid id:
             {
-                if (decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false)
+                if (ReadDecimal(_quantityBox?.Text, "Quantidade inválida.", out var quantity, FormDecimalKind.Quantity) == false)
                 {
-                    Notice.Text = "Quantidade inválida.";
                     return;
                 }
 
-                decimal.TryParse(_priceBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var price);
+                var price = 0m;
+                if (string.IsNullOrWhiteSpace(_priceBox?.Text) == false
+                    && ReadDecimal(_priceBox?.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
+                {
+                    return;
+                }
                 result = await service.UpdateMovementAsync(new StockMovementUpdateRequest
                 {
                     Id = id,
@@ -1273,10 +1296,9 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.AdjustArticle when _editId is Guid articleId:
             {
-                if (decimal.TryParse(_totalBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var total) == false ||
-                    decimal.TryParse(_minimumBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var minimum) == false)
+                if (ReadDecimal(_totalBox?.Text, "Valores de stock inválidos.", out var total, FormDecimalKind.Quantity) == false ||
+                    ReadDecimal(_minimumBox?.Text, "Valores de stock inválidos.", out var minimum, FormDecimalKind.Quantity) == false)
                 {
-                    Notice.Text = "Valores de stock inválidos.";
                     return;
                 }
 
@@ -1292,10 +1314,14 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.ChangeLocation when _editId is Guid warehouseArticleId:
             {
-                if (_locationBox?.SelectedItem is not StockLocationOption location ||
-                    decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var quantity) == false)
+                if (SelectedLocation() is not StockLocationOption location ||
+                    ReadDecimal(_quantityBox?.Text, "Localização ou quantidade inválida.", out var quantity) == false)
                 {
-                    Notice.Text = "Localização ou quantidade inválida.";
+                    if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                    {
+                        EditorError("Localização ou quantidade inválida.");
+                    }
+
                     return;
                 }
 
@@ -1306,7 +1332,7 @@ public partial class StockManagementView : UserControl
             {
                 if (ListingFilters.SelectedLookup(_exchangeBox) is not LookupOption exchange)
                 {
-                    Notice.Text = "Selecione o artigo de troca.";
+                    EditorError("Selecione o artigo de troca.");
                     return;
                 }
 
@@ -1317,7 +1343,7 @@ public partial class StockManagementView : UserControl
             {
                 if (string.IsNullOrWhiteSpace(_serialBox?.Text))
                 {
-                    Notice.Text = "Indique o número de série.";
+                    EditorError("Indique o número de série.");
                     return;
                 }
 
@@ -1329,7 +1355,7 @@ public partial class StockManagementView : UserControl
                     {
                         if (ListingFilters.SelectedLookup(box) is not LookupOption child || child.Id == Guid.Empty)
                         {
-                            Notice.Text = "Selecione o número de série de cada artigo filho.";
+                            EditorError("Selecione o número de série de cada artigo filho.");
                             return;
                         }
 
@@ -1345,17 +1371,21 @@ public partial class StockManagementView : UserControl
                 if (ListingFilters.SelectedLookup(_articleBox) is not LookupOption article ||
                     _locationBox?.SelectedItem is not StockLocationOption location ||
                     _dateBox?.SelectedDate is null ||
-                    decimal.TryParse(_quantityBox?.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var positionQty) == false ||
+                    ReadDecimal(_quantityBox?.Text, "Preencha artigo, localização, data e quantidade.", out var positionQty) == false ||
                     positionQty == 0)
                 {
-                    Notice.Text = "Preencha artigo, localização, data e quantidade.";
+                    if (string.IsNullOrWhiteSpace(EditorNotice.Text))
+                    {
+                        EditorError("Preencha artigo, localização, data e quantidade.");
+                    }
+
                     return;
                 }
 
-                var supplier = ListingFilters.SelectedLookup(_supplierBox);
+                var supplier = ChosenOption(_supplierBox);
                 if (HasChoices(_supplierBox) && supplier is null)
                 {
-                    Notice.Text = "Selecione o fornecedor.";
+                    EditorError("Selecione o fornecedor.");
                     return;
                 }
 
@@ -1388,13 +1418,21 @@ public partial class StockManagementView : UserControl
             default:
                 return;
         }
-
-        Notice.Text = result.Succeeded ? string.Empty : result.Error ?? "Falha ao guardar.";
-        if (result.Succeeded == false)
+        }
+        catch (Exception)
         {
-            Toast.Error(this, Notice.Text);
+            EditorError("Não foi possível guardar.");
             return;
         }
+
+        if (result.Succeeded == false)
+        {
+            EditorError(result.Error ?? "Falha ao guardar.");
+            return;
+        }
+
+        Notice.Text = string.Empty;
+        EditorNotice.Text = string.Empty;
 
         Toast.Success(this, result.Message ?? "Guardado com sucesso.");
         EditorOverlay.IsVisible = false;
@@ -1641,19 +1679,77 @@ public partial class StockManagementView : UserControl
         return button;
     }
 
+    private void EditorError(string message)
+    {
+        EditorNotice.Text = message;
+        Notice.Text = message;
+        Toast.Error(this, message);
+    }
+
+    private DateTime? ReadEditorDate()
+    {
+        if (_dateBox?.SelectedDate is DateTime date)
+        {
+            return date.Date;
+        }
+
+        return null;
+    }
+
+    private StockLocationOption? SelectedLocation()
+        => _locationBox?.SelectedItem as StockLocationOption
+            ?? _locationBox?.Items.Cast<object?>().OfType<StockLocationOption>()
+                .FirstOrDefault(item => string.Equals(item.Label, _locationBox.SelectionBoxItem?.ToString(), StringComparison.CurrentCulture));
+
+    private static LookupOption? ChosenOption(AutoCompleteBox? box)
+        => LookupChoice.Choose(
+            ListingFilters.SelectedLookup(box),
+            box?.SelectedItem as LookupOption,
+            box?.Text,
+            box?.ItemsSource as System.Collections.IEnumerable);
+
+    private bool ReadDecimal(string? text, string invalidMessage, out decimal value, FormDecimalKind kind = FormDecimalKind.Quantity)
+    {
+        if (FormDecimal.TryParse(text, kind, out value, out var issue))
+        {
+            return true;
+        }
+
+        EditorError(issue switch
+        {
+            FormDecimalIssue.AmbiguousThousands => FormDecimal.MoneyRule,
+            FormDecimalIssue.TooManyDecimals => FormDecimal.QuantityRule,
+            _ => invalidMessage
+        });
+        return false;
+    }
+
+    private static bool TryDecimal(string? text, out decimal value)
+        => FormDecimal.TryParse(text, FormDecimalKind.Quantity, out value, out _);
+
     private string DocumentNumberOrReference()
     {
         var typed = _documentBox?.Text?.Trim();
         return string.IsNullOrWhiteSpace(typed) ? $"ST{DateTime.Now:yyyyMMddHHmmss}" : typed;
     }
 
-    private static TextBox Field(string label, string value, out StackPanel host)
+    private static TextBox Field(string label, string value, out StackPanel host, string? hint = null)
     {
         var box = new TextBox { Text = value };
         box.Classes.Add("bo_entity_input");
+        if (string.IsNullOrWhiteSpace(hint) == false)
+        {
+            ToolTip.SetTip(box, hint);
+        }
+
         host = new StackPanel { Spacing = 2 };
         host.Children.Add(Label(label));
         host.Children.Add(box);
+        if (string.IsNullOrWhiteSpace(hint) == false)
+        {
+            host.Children.Add(new TextBlock { Text = hint, TextWrapping = Avalonia.Media.TextWrapping.Wrap, Classes = { "bo_entity_notice" } });
+        }
+
         return box;
     }
 }

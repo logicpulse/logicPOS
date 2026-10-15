@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
@@ -47,6 +47,9 @@ public static class AppLogging
 
     public static void Warning(Exception? exception, string messageTemplate, params object?[] propertyValues)
         => Log.Warning(exception, messageTemplate, propertyValues);
+
+    public static void Error(Exception? exception, string messageTemplate, params object?[] propertyValues)
+        => Log.Error(exception, messageTemplate, propertyValues);
 
     public static void Fatal(Exception? exception, string messageTemplate, params object?[] propertyValues)
         => Log.Fatal(exception, messageTemplate, propertyValues);

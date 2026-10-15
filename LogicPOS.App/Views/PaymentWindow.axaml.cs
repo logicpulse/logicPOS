@@ -36,6 +36,9 @@ public partial class PaymentWindow : Window
     private Guid? _customerId;
     private string _defaultCountry = string.Empty;
     private readonly string? _shareLabel;
+    private string _saleDocumentType = "FS";
+    private int _customerSearch;
+    private readonly List<PosCustomer> _customerMatches = new();
     private string? _pendingSeriesDocumentType;
     private IReadOnlyList<PosTicketLine>? _pendingSeriesLines;
     private IReadOnlyList<int>? _pendingSeriesPartialIndexes;
@@ -56,6 +59,7 @@ public partial class PaymentWindow : Window
         _shareLabel = shareLabel;
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
+        SelectSaleDocument("FS");
         BuildMethods();
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
@@ -170,6 +174,10 @@ public partial class PaymentWindow : Window
 
     private void ShowCustomer(PosCustomer customer)
     {
+        _customerSearch++;
+        CustomerMatches.Children.Clear();
+        _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = customer.Id;
         _finalConsumer = customer.IsFinalConsumer;
@@ -215,6 +223,10 @@ public partial class PaymentWindow : Window
 
     private void OnClearCustomerClick(object? sender, RoutedEventArgs e)
     {
+        _customerSearch++;
+        CustomerMatches.Children.Clear();
+        _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = null;
         _finalConsumer = false;
@@ -256,7 +268,7 @@ public partial class PaymentWindow : Window
             PartialLines.Children.Add(new CheckBox
             {
                 Classes = { "bo_doc_column_check" },
-                Content = $"{line.Designation}  {line.Quantity:0.##}  {line.Total:C}",
+                Content = $"{line.Designation}  {line.Quantity:0.##}  {MoneyFormat.Format(line.Total)}",
                 IsChecked = true,
                 Tag = index
             });
@@ -280,10 +292,37 @@ public partial class PaymentWindow : Window
 
         PartialOverlay.IsVisible = false;
         var lines = indexes.Select(index => _lines[index]).ToList();
-        await IssueAsync("FS", lines, indexes);
+        await IssueAsync(_saleDocumentType, lines, indexes);
     }
 
     private void OnPartialCancelClick(object? sender, RoutedEventArgs e) => PartialOverlay.IsVisible = false;
+
+    private void OnSaleDocumentClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Button { Tag: string tag })
+        {
+            SelectSaleDocument(tag);
+        }
+    }
+
+    private void SelectSaleDocument(string tag)
+    {
+        _saleDocumentType = tag is "FR" ? "FR" : "FS";
+        DocumentFs.Classes.Set("selected", _saleDocumentType == "FS");
+        DocumentFr.Classes.Set("selected", _saleDocumentType == "FR");
+    }
+
+    private void OnCustomerTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        if (_filling)
+        {
+            return;
+        }
+
+        _customerId = null;
+        _finalConsumer = false;
+        _ = SuggestCustomersAsync(sender is TextBox box ? box.Text : CustomerName.Text, delay: true);
+    }
 
     private async void OnCustomerSearchKey(object? sender, KeyEventArgs e)
     {
@@ -292,52 +331,70 @@ public partial class PaymentWindow : Window
             return;
         }
 
+        e.Handled = true;
         var text = sender is TextBox box ? box.Text : CustomerName.Text;
-        await SearchCustomersAsync(text);
+        await SuggestCustomersAsync(text, delay: false);
     }
 
-    private async Task SearchCustomersAsync(string? text)
+    private async Task SuggestCustomersAsync(string? text, bool delay)
     {
-        var services = AppComposition.Services;
-        if (services is null || string.IsNullOrWhiteSpace(text))
+        var term = text?.Trim() ?? string.Empty;
+        var ticket = ++_customerSearch;
+        CustomerMatches.Children.Clear();
+        _customerMatches.Clear();
+        CustomerSearchNotice.IsVisible = false;
+        if (term.Length == 0 || AppComposition.Services is null)
         {
             return;
         }
 
-        var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
-        if (matches.Count == 0)
+        try
         {
-            ShowNotice("Aviso", "Não foi encontrado nenhum cliente.", error: true);
-            return;
-        }
-
-        if (matches.Count == 1)
-        {
-            ShowCustomer(matches[0]);
-            return;
-        }
-
-        CustomerList.Children.Clear();
-        foreach (var match in matches)
-        {
-            var customer = match;
-            var button = new Button
+            if (delay)
             {
-                Classes = { "pos_list_item" },
-                Content = $"{customer.Name}  {customer.FiscalNumber}"
-            };
-            button.Click += (_, _) =>
-            {
-                ShowCustomer(customer);
-                CustomerOverlay.IsVisible = false;
-            };
-            CustomerList.Children.Add(button);
-        }
+                await Task.Delay(300);
+                if (ticket != _customerSearch)
+                {
+                    return;
+                }
+            }
 
-        CustomerOverlay.IsVisible = true;
+            var matches = await AppComposition.Services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            _customerMatches.AddRange(matches);
+            foreach (var match in _customerMatches)
+            {
+                var customer = match;
+                var button = new Button
+                {
+                    Classes = { "pos_list_item" },
+                    Content = $"{customer.Name}  {customer.FiscalNumber}"
+                };
+                button.Click += (_, _) => ShowCustomer(customer);
+                CustomerMatches.Children.Add(button);
+            }
+
+            if (_customerMatches.Count == 0)
+            {
+                CustomerSearchNotice.Text = "Não foi encontrado nenhum cliente.";
+                CustomerSearchNotice.IsVisible = true;
+            }
+        }
+        catch (Exception)
+        {
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            CustomerSearchNotice.Text = "Não foi possível pesquisar os clientes.";
+            CustomerSearchNotice.IsVisible = true;
+        }
     }
-
-    private void OnCustomerListCloseClick(object? sender, RoutedEventArgs e) => CustomerOverlay.IsVisible = false;
 
     private async void OnNewCustomerClick(object? sender, RoutedEventArgs e)
     {
@@ -371,6 +428,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
+        services.GetService<PosCustomerService>()?.InvalidateSearch();
         var customer = await services.GetRequiredService<IPosCustomerService>().FindAsync(saved.Id);
         if (customer is not null)
         {
@@ -382,7 +440,7 @@ public partial class PaymentWindow : Window
 
     private async void OnConfirmClick(object? sender, RoutedEventArgs e)
     {
-        await IssueAsync("FS", _lines, partialIndexes: null);
+        await IssueAsync(_saleDocumentType, _lines, partialIndexes: null);
     }
 
     private async Task IssueAsync(string documentType, IReadOnlyList<PosTicketLine> lines, IReadOnlyList<int>? partialIndexes)
@@ -396,6 +454,12 @@ public partial class PaymentWindow : Window
         if (_customerId is null)
         {
             ShowNotice("Aviso", "Selecione um cliente.", error: true);
+            return;
+        }
+
+        if (documentType == "FR" && (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text)))
+        {
+            ShowNotice("Aviso", "A fatura-recibo exige um cliente com nome e NIF.", error: true);
             return;
         }
 
@@ -518,7 +582,7 @@ public partial class PaymentWindow : Window
 
             PartialPayment = partialIndexes is not null;
             PaidLineIndexes = partialIndexes ?? [];
-            var message = $"Pagamento efetuado.{Environment.NewLine}{result.Number}{Environment.NewLine}Total: {payable:C}";
+            var message = $"Pagamento efetuado.{Environment.NewLine}{result.Number}{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
             if (string.IsNullOrWhiteSpace(_shareLabel) == false)
             {
                 message = $"{_shareLabel}{Environment.NewLine}{message}";
@@ -526,7 +590,7 @@ public partial class PaymentWindow : Window
 
             if (_cash)
             {
-                message += $"{Environment.NewLine}Troco: {_delivered - payable:C}";
+                message += $"{Environment.NewLine}Troco: {MoneyFormat.Format(_delivered - payable)}";
             }
 
             var printError = await FrontOfficePrinting.PrintInvoiceAsync(result.DocumentId);
@@ -559,7 +623,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (decimal.TryParse(tag, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) == false)
+        if (MoneyFormat.TryParse(tag, out var amount) == false)
         {
             return;
         }
@@ -608,7 +672,7 @@ public partial class PaymentWindow : Window
 
     private void OnCashOkClick(object? sender, RoutedEventArgs e)
     {
-        if (decimal.TryParse(CashEntry.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var value) && value > 0)
+        if (MoneyFormat.TryParse(CashEntry.Text, out var value) && value > 0)
         {
             _delivered = value;
         }
@@ -630,7 +694,7 @@ public partial class PaymentWindow : Window
 
     private decimal DiscountPercent()
     {
-        if (decimal.TryParse(Discount.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var discount) == false || discount < 0)
+        if (MoneyFormat.TryParse(Discount.Text, out var discount) == false || discount < 0)
         {
             return 0;
         }
@@ -654,9 +718,9 @@ public partial class PaymentWindow : Window
         }
 
         var change = _cash ? _delivered - Payable : 0;
-        TotalValue.Text = Payable.ToString("C");
-        DeliveryValue.Text = _delivered.ToString("C");
-        ChangeValue.Text = change.ToString("C");
+        TotalValue.Text = MoneyFormat.Format(Payable);
+        DeliveryValue.Text = MoneyFormat.Format(_delivered);
+        ChangeValue.Text = MoneyFormat.Format(change);
     }
 
     private bool HasCard()

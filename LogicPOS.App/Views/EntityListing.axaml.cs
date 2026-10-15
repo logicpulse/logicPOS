@@ -14,6 +14,7 @@ using Avalonia.VisualTree;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -48,6 +49,8 @@ public partial class EntityListing : UserControl
     private readonly List<(Button Header, Control Page, string? ShowWhen)> _articleTabs = new();
     private readonly List<(Control Block, string ShowWhen)> _articleFieldBlocks = new();
     private ContentControl? _articlePages;
+    private readonly SemaphoreSlim _editorBuild = new(1, 1);
+    private int _editorGeneration;
 
     public EntityListing()
     {
@@ -626,6 +629,26 @@ public partial class EntityListing : UserControl
             return;
         }
 
+        // Overlapping opens (double-click plus the edit button) used to append a second tab strip.
+        var generation = Interlocked.Increment(ref _editorGeneration);
+        await _editorBuild.WaitAsync();
+        try
+        {
+            if (generation != _editorGeneration)
+            {
+                return;
+            }
+
+            await EditCoreAsync(service, id);
+        }
+        finally
+        {
+            _editorBuild.Release();
+        }
+    }
+
+    private async Task EditCoreAsync(IBackOfficeListingService service, Guid? id)
+    {
         _editingId = id;
         EditorTitle.Text = id is null ? "Novo" : "Editar";
         EditorNotice.Text = string.Empty;
@@ -667,7 +690,11 @@ public partial class EntityListing : UserControl
                 }
 
                 var page = await LayoutGroupAsync(service, groupFields);
-                var header = new Button { Classes = { "bo_entity_tab" }, Content = group };
+                var header = new Button
+                {
+                    Classes = { "bo_entity_tab" },
+                    Content = new TextBlock { Text = group }
+                };
                 var showWhen = group == "Detalhes financeiros"
                     ? "TypeHasPrice"
                     : groupFields.Select(item => item.ShowWhen).FirstOrDefault(value => string.IsNullOrWhiteSpace(value) == false);
@@ -847,7 +874,71 @@ public partial class EntityListing : UserControl
             grid.Children.Add(flags);
         }
 
-        return grid;
+        if (fields.Any(field => field.Key.StartsWith("ChildArticleId:", StringComparison.Ordinal)) == false)
+        {
+            return grid;
+        }
+
+        var nextIndex = fields
+            .Select(field => CompositionIndex(field.Key))
+            .Where(index => index >= 0)
+            .DefaultIfEmpty(0)
+            .Max() + 1;
+        var add = new Button { Content = "Adicionar artigo", Classes = { "bo_listing_columns" } };
+        add.Click += async (_, _) =>
+        {
+            await AppendCompositionRowAsync(service, grid, nextIndex);
+            nextIndex++;
+        };
+        var host = new StackPanel { Spacing = 8 };
+        host.Children.Add(grid);
+        host.Children.Add(add);
+        return host;
+    }
+
+    private static int CompositionIndex(string key)
+    {
+        const string prefix = "ChildArticleId:";
+        if (key.StartsWith(prefix, StringComparison.Ordinal) == false)
+        {
+            return -1;
+        }
+
+        return int.TryParse(key[prefix.Length..], NumberStyles.Integer, CultureInfo.InvariantCulture, out var index)
+            ? index
+            : -1;
+    }
+
+    private async Task AppendCompositionRowAsync(IBackOfficeListingService service, Grid grid, int index)
+    {
+        var article = new ListingField
+        {
+            Key = "ChildArticleId:" + index.ToString(CultureInfo.InvariantCulture),
+            Label = "Artigo associado",
+            Kind = "lookup",
+            Lookup = "Article",
+            ShowWhen = "IsComposed",
+            Group = "Artigos Associados"
+        };
+        var quantity = new ListingField
+        {
+            Key = "ChildQuantity:" + index.ToString(CultureInfo.InvariantCulture),
+            Label = "Quantidade",
+            Kind = "text",
+            Value = "1",
+            ShowWhen = "IsComposed",
+            Group = "Artigos Associados"
+        };
+        var row = grid.RowDefinitions.Count;
+        EnsureRow(grid, row);
+        var articleBlock = await CreateFieldBlockAsync(service, article, caption: true);
+        var quantityBlock = await CreateFieldBlockAsync(service, quantity, caption: true);
+        Avalonia.Controls.Grid.SetRow(articleBlock, row);
+        Avalonia.Controls.Grid.SetColumn(articleBlock, 0);
+        Avalonia.Controls.Grid.SetRow(quantityBlock, row);
+        Avalonia.Controls.Grid.SetColumn(quantityBlock, 1);
+        grid.Children.Add(articleBlock);
+        grid.Children.Add(quantityBlock);
     }
 
     private async Task<Control> CreateFieldBlockAsync(IBackOfficeListingService service, ListingField field, bool caption)
@@ -989,6 +1080,15 @@ public partial class EntityListing : UserControl
             box.Classes.Add("bo_numeric");
         }
 
+        if (FormDecimal.IsMoneyKey(field.Key))
+        {
+            ToolTip.SetTip(box, FormDecimal.MoneyRule);
+        }
+        else if (FormDecimal.IsQuantityKey(field.Key))
+        {
+            ToolTip.SetTip(box, FormDecimal.QuantityRule);
+        }
+
         var input = field.ReadOnly ? (Control)box : AttachKeyboard(box);
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
         {
@@ -1098,8 +1198,21 @@ public partial class EntityListing : UserControl
         ShowResultToast(result.Succeeded, result.Error, result.Message ?? "Registo gravado com sucesso.");
         if (result.Succeeded)
         {
+            ClearCatalogImageCacheIfNeeded();
             EditorOverlay.IsVisible = false;
             await ReloadAsync();
+            if (_title == "Permissões" && TopLevel.GetTopLevel(this) is BackOfficeWindow office)
+            {
+                await office.ApplyMenuAccessAsync();
+            }
+        }
+    }
+
+    private void ClearCatalogImageCacheIfNeeded()
+    {
+        if (_title is "Artigos" or "Famílias" or "Subfamílias" or "Families" or "Subfamilies" or "Articles")
+        {
+            AppComposition.Services?.GetService<IPosCatalogService>()?.ClearImageCache();
         }
     }
 

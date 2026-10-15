@@ -268,6 +268,7 @@ internal class DocumentCreator : EntityCreator<Document>
             new DocumentDetailReferences(_references.ArticleRepository,
                 _references.VatRateRepository,
                 _references.VatExemptionRepository),
+            _country,
             withholdsServiceTax,
             ct);
         if (addDetailsResult.IsFailure)

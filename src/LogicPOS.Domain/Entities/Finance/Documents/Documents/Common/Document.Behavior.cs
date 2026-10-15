@@ -19,6 +19,16 @@ public partial class Document
     public decimal GetWithholdingForPayment(decimal amount, decimal paidBefore)
         => DocumentLineCalculator.TaxForPayment(TotalFinal, WithholdingTaxAmount, paidBefore, amount);
 
+    /// <summary>
+    /// Settlement share of withholding. Outside Angola always returns 0 so receipts never copy PT/MZ amounts.
+    /// </summary>
+    public decimal GetWithholdingForPayment(decimal amount, decimal paidBefore, FiscalCountry country)
+        => DocumentLineCalculator.TaxForPayment(
+            TotalFinal,
+            DocumentLineCalculator.EffectiveServiceWithholding(country, WithholdingTaxAmount),
+            paidBefore,
+            amount);
+
     internal void CalculateTotals()
     {
         TotalFinal = TotalNet + TotalTax;
@@ -103,6 +113,7 @@ public partial class Document
 
     internal async Task<Result> AddDetailsAsync(IEnumerable<CreateDocumentDetailDto> createDetailDtos,
         DocumentDetailReferences references,
+        FiscalCountry country,
         bool withholdsServiceTax = false,
         CancellationToken cancellationToken = default)
     {
@@ -110,6 +121,8 @@ public partial class Document
         var lookup = references.Lookup
             ?? await DocumentDetailLookup.LoadAsync(detailList, references, cancellationToken);
         var referencesWithLookup = references with { Lookup = lookup };
+        // AO-only: never accumulate or persist industrial withholding for PT/MZ.
+        var applyWithholding = withholdsServiceTax && country.IsAngola;
         decimal servicesNet = 0;
 
         foreach (var createDetailDto in detailList)
@@ -123,7 +136,7 @@ public partial class Document
                 return addDetailResult;
             }
 
-            if (withholdsServiceTax)
+            if (applyWithholding)
             {
                 var detail = Details!.Last();
                 if (await IsServiceAsync(detail.ArticleId, referencesWithLookup, cancellationToken))
@@ -133,9 +146,8 @@ public partial class Document
             }
         }
 
-        WithholdingTaxAmount = withholdsServiceTax
-            ? DocumentLineCalculator.ServiceWithholding(servicesNet)
-            : 0;
+        WithholdingTaxAmount = DocumentLineCalculator.ServiceWithholding(
+            country, applyWithholding ? servicesNet : 0m);
 
         return Result.Success();
     }
@@ -186,9 +198,10 @@ public partial class Document
 
     public static async Task<Result<Document>> CreatePreviewAsync(CreateDocumentPreviewDto dto,
         DocumentReferences references,
+        FiscalCountry country,
         CancellationToken cancellationToken = default)
     {
-        var documentCreator = new DocumentPreviewCreator(dto, references);
+        var documentCreator = new DocumentPreviewCreator(dto, references, country);
 
         return await documentCreator.CreateAsync(cancellationToken);
     }

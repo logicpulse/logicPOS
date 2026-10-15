@@ -97,7 +97,7 @@ public static class ListingColumns
         [
             ("Code", "Código"),
             ("Designation", "Designação"),
-            ("PrinterTypeId", "Tipos de impressoras"),
+            ("TypeId", "Tipo de Impressora"),
             ("UpdatedAt", "Atualizado em")
         ],
         ["Tipos de impressora"] =

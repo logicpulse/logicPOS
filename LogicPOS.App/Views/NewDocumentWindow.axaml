@@ -113,11 +113,15 @@
                                      PlaceholderText="nome, NIF ou cartão"
                                      KeyDown="OnCustomerSearchKey"
                                      TextChanged="OnCustomerEdited" />
-                            <Border x:Name="CustomerSuggest" Classes="bo_new_doc_suggest" IsVisible="False">
-                                <ScrollViewer>
-                                    <StackPanel x:Name="CustomerSuggestList" />
-                                </ScrollViewer>
-                            </Border>
+                            <Popup x:Name="CustomerSuggest"
+                                   Placement="Bottom"
+                                   IsLightDismissEnabled="True">
+                                <Border Classes="bo_new_doc_suggest" MinWidth="360">
+                                    <ScrollViewer MaxHeight="220">
+                                        <StackPanel x:Name="CustomerSuggestList" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
                         </StackPanel>
                         <StackPanel Grid.Column="1">
                             <TextBlock Classes="bo_new_doc_caption" Text="NIF" />

@@ -118,6 +118,55 @@ public sealed class ListingSaveResult
     };
 }
 
+public static class LookupChoice
+{
+    /// <summary>
+    /// Uses an explicit selection. A typed value is accepted only when it equals one label;
+    /// a fragment of the label or search text is never chosen on its own.
+    /// </summary>
+    public static LookupOption? Choose(LookupOption? selectedLookup, LookupOption? selectedItem, string? text, System.Collections.IEnumerable? items)
+    {
+        if (selectedLookup is { Id: var selectedId } && selectedId != Guid.Empty)
+        {
+            return selectedLookup;
+        }
+
+        if (selectedItem is { Id: var itemId } && itemId != Guid.Empty)
+        {
+            return selectedItem;
+        }
+
+        text = (text ?? string.Empty).Trim();
+        if (text.Length == 0 || items is null)
+        {
+            return null;
+        }
+
+        LookupOption? match = null;
+        foreach (var item in items)
+        {
+            if (item is not LookupOption candidate || candidate.Id == Guid.Empty)
+            {
+                continue;
+            }
+
+            if (string.Equals(candidate.Label, text, StringComparison.CurrentCultureIgnoreCase) == false)
+            {
+                continue;
+            }
+
+            if (match is not null)
+            {
+                return null;
+            }
+
+            match = candidate;
+        }
+
+        return match;
+    }
+}
+
 public sealed class LookupOption
 {
     public Guid Id { get; init; }

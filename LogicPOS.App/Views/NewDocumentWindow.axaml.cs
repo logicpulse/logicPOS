@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Concurrent;
+using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -60,6 +61,7 @@ public partial class NewDocumentWindow : UserControl
     public NewDocumentWindow()
     {
         InitializeComponent();
+        CustomerSuggest.PlacementTarget = CustomerName;
         TouchFields.Attach(this);
         _load = new ListingLoad(Busy);
     }
@@ -88,7 +90,7 @@ public partial class NewDocumentWindow : UserControl
         NewArticleOverlay.IsVisible = false;
         SerialOverlay.IsVisible = false;
         ArticleSuggest.IsVisible = false;
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
         CustomerEditButton.IsVisible = false;
         _customerId = null;
         _customer = null;
@@ -134,21 +136,97 @@ public partial class NewDocumentWindow : UserControl
 
     private async Task LoadContentAsync(IServiceProvider services)
     {
-        _posCatalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync();
-        _catalog.Clear();
-        _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
-        ApplyFilter();
+        var documents = services.GetRequiredService<IPosDocumentService>();
+        var customers = services.GetRequiredService<IPosCustomerService>();
+        var errors = new ConcurrentQueue<string>();
+
+        PosCatalog? catalog = null;
+        IReadOnlyList<PosDocumentTypeOption>? types = null;
+        IReadOnlyList<PosLookupItem>? conditions = null;
+        IReadOnlyList<PosLookupItem>? currencies = null;
+        IReadOnlyList<PosLookupItem>? sourceDocs = null;
+        IReadOnlyList<PosVatOption>? vatRates = null;
+        IReadOnlyList<PosLookupItem>? vatExemptions = null;
+        PosCompanyAddress? companyAddress = null;
+
+        var tasks = new List<Task>
+        {
+            Task.Run(async () =>
+            {
+                try { catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(); }
+                catch (Exception ex) { LogLookupError("catálogo", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { types = await documents.ListDocumentTypesAsync(); }
+                catch (Exception ex) { LogLookupError("tipos de documento", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { conditions = await documents.ListPaymentConditionsAsync(); }
+                catch (Exception ex) { LogLookupError("condições de pagamento", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { currencies = await documents.ListCurrenciesAsync(); }
+                catch (Exception ex) { LogLookupError("moedas", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { sourceDocs = await documents.ListSourceDocumentsAsync(); }
+                catch (Exception ex) { LogLookupError("documentos de origem", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { vatRates = await documents.ListVatRatesAsync(); }
+                catch (Exception ex) { LogLookupError("taxas de IVA", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { vatExemptions = await documents.ListVatExemptionReasonsAsync(); }
+                catch (Exception ex) { LogLookupError("motivos de isenção", ex, errors); }
+            }),
+            Task.Run(async () =>
+            {
+                try { companyAddress = await documents.GetCompanyAddressAsync(); }
+                catch (Exception ex) { LogLookupError("morada da empresa", ex, errors); }
+            })
+        };
+
+        await Task.WhenAll(tasks);
+
+        if (catalog is not null)
+        {
+            _posCatalog = catalog;
+            _catalog.Clear();
+            _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
+            ApplyFilter();
+        }
+
+        if (companyAddress is not null)
+        {
+            _company = companyAddress;
+        }
+        ApplyPortugalAddressesOnUiThread();
+
         var stock = services.GetService<IStockManagementService>();
         if (stock is not null)
         {
-            var access = await stock.GetModuleAccessAsync();
-            SerialButton.IsVisible = access.HasModule;
+            try
+            {
+                var access = await stock.GetModuleAccessAsync();
+                SerialButton.IsVisible = access.HasModule;
+            }
+            catch
+            {
+                SerialButton.IsVisible = false;
+            }
         }
-        var documents = services.GetRequiredService<IPosDocumentService>();
+
         _filling = true;
-        await Fill(async () =>
+
+        if (types is not null)
         {
-            var types = await documents.ListDocumentTypesAsync();
             _types.Clear();
             _types.AddRange(types);
             TypeBox.ItemsSource = _types.Select(type => type.Designation).ToList();
@@ -157,25 +235,28 @@ public partial class NewDocumentWindow : UserControl
             {
                 SelectDocumentType("FS");
             }
-        });
-        await Fill(async () =>
+        }
+
+        if (conditions is not null)
         {
             _conditions.Clear();
-            _conditions.AddRange(await documents.ListPaymentConditionsAsync());
+            _conditions.AddRange(conditions);
             PaymentBox.ItemsSource = Optional(_conditions);
             SelectCode(PaymentBox, "PP");
-        });
-        await Fill(async () =>
+        }
+
+        if (currencies is not null)
         {
             _currencies.Clear();
-            _currencies.AddRange(await documents.ListCurrenciesAsync());
+            _currencies.AddRange(currencies);
             CurrencyBox.ItemsSource = Optional(_currencies);
             SelectCode(CurrencyBox, "EUR");
-        });
-        await Fill(async () =>
+        }
+
+        if (sourceDocs is not null)
         {
             _documents.Clear();
-            _documents.AddRange(await documents.ListSourceDocumentsAsync());
+            _documents.AddRange(sourceDocs);
             var choices = Optional(_documents);
             OriginBox.ItemsSource = choices;
             CopyBox.ItemsSource = choices;
@@ -184,30 +265,39 @@ public partial class NewDocumentWindow : UserControl
             ListingFilters.SelectDocument(OriginBox, choices[0]);
             ListingFilters.SelectDocument(CopyBox, choices[0]);
             RefreshDocumentClearButtons();
-        });
-        await Fill(async () =>
+        }
+
+        if (vatRates is not null)
         {
             _vatRates.Clear();
-            _vatRates.AddRange(await documents.ListVatRatesAsync());
+            _vatRates.AddRange(vatRates);
             EditVat.ItemsSource = _vatRates.ToList();
-        });
-        await Fill(async () =>
+        }
+
+        if (vatExemptions is not null)
         {
             _vatExemptions.Clear();
-            _vatExemptions.AddRange(await documents.ListVatExemptionReasonsAsync());
+            _vatExemptions.AddRange(vatExemptions);
             EditExemption.ItemsSource = OptionalExemptions(_vatExemptions);
-        });
-        await Fill(async () => await ApplyPortugalAddressesAsync(documents));
-        await Fill(async () => await SeedDraftAsync(documents, services.GetRequiredService<IPosCustomerService>()));
-        await Fill(async () => await ApplyCopyFromAsync(documents, services.GetRequiredService<IPosCustomerService>()));
-        await Fill(async () =>
+        }
+
+        string? lookupErrors = null;
+        if (errors.IsEmpty == false)
+        {
+            lookupErrors = string.Join("; ", errors);
+            ErrorLabel.Text = lookupErrors;
+        }
+
+        await FillPreservingErrors(lookupErrors, async () => await SeedDraftAsync(documents, customers));
+        await FillPreservingErrors(lookupErrors, async () => await ApplyCopyFromAsync(documents, customers));
+        await FillPreservingErrors(lookupErrors, async () =>
         {
             if (_customerId is not null)
             {
                 return;
             }
 
-            var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync();
+            var customer = await customers.GetFinalConsumerAsync();
             if (customer is not null)
             {
                 ShowCustomer(customer);
@@ -215,6 +305,32 @@ public partial class NewDocumentWindow : UserControl
         });
         _filling = false;
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
+    }
+
+    private static void LogLookupError(string lookupName, Exception ex, ConcurrentQueue<string> errors)
+    {
+        var message = $"Erro ao carregar {lookupName}";
+        errors.Enqueue(message);
+        AppLogging.Warning(ex, "[NewDocumentWindow] {LookupName}: {Message}", lookupName, ex.Message);
+    }
+
+    private void ApplyPortugalAddressesOnUiThread()
+    {
+        var dispatch = DateTime.Now.AddMinutes(10);
+        FillShip(ToAddress, ToRegion, ToPostal, ToCity, ToCountry, PosDocumentRules.Unknown, PosDocumentRules.Unknown, "0000-000", PosDocumentRules.Unknown, "Portugal");
+        SetWhen(ToDate, ToTime, dispatch.AddHours(1));
+        FillShip(
+            FromAddress,
+            FromRegion,
+            FromPostal,
+            FromCity,
+            FromCountry,
+            string.IsNullOrWhiteSpace(_company.Address) ? PosDocumentRules.Unknown : _company.Address,
+            PosDocumentRules.Unknown,
+            string.IsNullOrWhiteSpace(_company.PostalCode) ? "0000-000" : _company.PostalCode,
+            string.IsNullOrWhiteSpace(_company.City) ? PosDocumentRules.Unknown : _company.City,
+            string.IsNullOrWhiteSpace(_company.Country) ? "Portugal" : _company.Country);
+        SetWhen(FromDate, FromTime, dispatch);
     }
 
     private async Task ApplyCopyFromAsync(IPosDocumentService documents, IPosCustomerService customers)
@@ -344,26 +460,6 @@ public partial class NewDocumentWindow : UserControl
             || string.Equals(TypeBox.SelectedItem as string, _types[typeIndex].Designation, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task ApplyPortugalAddressesAsync(IPosDocumentService documents)
-    {
-        _company = await documents.GetCompanyAddressAsync();
-        var dispatch = DateTime.Now.AddMinutes(10);
-        FillShip(ToAddress, ToRegion, ToPostal, ToCity, ToCountry, PosDocumentRules.Unknown, PosDocumentRules.Unknown, "0000-000", PosDocumentRules.Unknown, "Portugal");
-        // Delivery must be after dispatch; leave ten minutes so the time does not lapse while the document is filled.
-        SetWhen(ToDate, ToTime, dispatch.AddHours(1));
-        FillShip(
-            FromAddress,
-            FromRegion,
-            FromPostal,
-            FromCity,
-            FromCountry,
-            string.IsNullOrWhiteSpace(_company.Address) ? PosDocumentRules.Unknown : _company.Address,
-            PosDocumentRules.Unknown,
-            string.IsNullOrWhiteSpace(_company.PostalCode) ? "0000-000" : _company.PostalCode,
-            string.IsNullOrWhiteSpace(_company.City) ? PosDocumentRules.Unknown : _company.City,
-            string.IsNullOrWhiteSpace(_company.Country) ? "Portugal" : _company.Country);
-        SetWhen(FromDate, FromTime, dispatch);
-    }
 
     private async Task SeedDraftAsync(IPosDocumentService documents, IPosCustomerService customers)
     {
@@ -433,6 +529,26 @@ public partial class NewDocumentWindow : UserControl
         catch (Exception exception)
         {
             ErrorLabel.Text = exception.Message;
+        }
+    }
+
+    private async Task FillPreservingErrors(string? lookupErrors, Func<Task> load)
+    {
+        try
+        {
+            await load();
+        }
+        catch (Exception exception)
+        {
+            ErrorLabel.Text = string.IsNullOrEmpty(lookupErrors)
+                ? exception.Message
+                : $"{lookupErrors}; {exception.Message}";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(ErrorLabel.Text) && lookupErrors is not null)
+        {
+            ErrorLabel.Text = lookupErrors;
         }
     }
 
@@ -1059,7 +1175,7 @@ public partial class NewDocumentWindow : UserControl
 
         var hasSerial = string.IsNullOrWhiteSpace(EditSerial.Text) == false;
         EditQuantity.IsReadOnly = hasSerial;
-        if (hasSerial && ParseDecimal(EditQuantity.Text) != 1)
+        if (hasSerial && ParseQuantity(EditQuantity.Text) != 1)
         {
             EditQuantity.Text = "1";
         }
@@ -1109,7 +1225,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var vat = SelectedVat()?.Percentage ?? _editing.VatPercentage;
         var totals = NewDocumentLine.Totals(_editing.PriceIncludesVat, price, quantity, discount, vat);
@@ -1126,7 +1242,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var serial = EditSerial.Text?.Trim();
         if (string.IsNullOrWhiteSpace(serial) == false && quantity != 1)
@@ -1250,14 +1366,17 @@ public partial class NewDocumentWindow : UserControl
 
     private static decimal ParseDecimal(string? text)
     {
-        return decimal.TryParse(text, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.CurrentCulture, out var value)
-            ? value
-            : 0m;
+        return MoneyFormat.TryParse(text, out var value) ? value : 0m;
+    }
+
+    private static decimal ParseQuantity(string? text)
+    {
+        return QuantityFormat.TryParse(text, out var value) ? value : 0m;
     }
 
     private static string Money(decimal value)
     {
-        return value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-PT"));
+        return MoneyFormat.Format(value);
     }
 
     private string FamilyNameOf(PosArticle article)
@@ -1326,7 +1445,7 @@ public partial class NewDocumentWindow : UserControl
 
         _customerId = null;
         _customer = null;
-        _customerIsFinal = true;
+        _customerIsFinal = false;
         CustomerEditButton.IsVisible = false;
         _ = SuggestCustomersAsync(sender is TextBox box ? box.Text : CustomerName.Text);
     }
@@ -1375,7 +1494,7 @@ public partial class NewDocumentWindow : UserControl
     {
         _customerMatches.Clear();
         CustomerSuggestList.Children.Clear();
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
     }
 
     private async Task SuggestCustomersAsync(string? text)
@@ -1394,29 +1513,49 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
-        if (ticket != _customerSearch)
+        try
         {
-            return;
-        }
-
-        _customerMatches.Clear();
-        CustomerSuggestList.Children.Clear();
-        _customerMatches.AddRange(matches.Take(8));
-        foreach (var match in _customerMatches)
-        {
-            var customer = match;
-            var button = new Button
+            await Task.Delay(300);
+            if (ticket != _customerSearch)
             {
-                Classes = { "bo_report_row" },
-                Content = $"{customer.Name}  {customer.FiscalNumber}",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
-            };
-            button.Click += (_, _) => ShowCustomer(customer);
-            CustomerSuggestList.Children.Add(button);
-        }
+                return;
+            }
 
-        CustomerSuggest.IsVisible = _customerMatches.Count > 0;
+            var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            _customerMatches.Clear();
+            CustomerSuggestList.Children.Clear();
+            _customerMatches.AddRange(matches.Take(8));
+            foreach (var match in _customerMatches)
+            {
+                var customer = match;
+                var button = new Button
+                {
+                    Classes = { "bo_report_row" },
+                    Content = $"{customer.Name}  {customer.FiscalNumber}",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+                };
+                button.Click += (_, _) => ShowCustomer(customer);
+                CustomerSuggestList.Children.Add(button);
+            }
+
+            CustomerSuggest.IsOpen = _customerMatches.Count > 0;
+            ErrorLabel.Text = _customerMatches.Count == 0 ? "Não foi encontrado nenhum cliente." : string.Empty;
+        }
+        catch (Exception)
+        {
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            HideCustomerSuggest();
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+        }
     }
 
     private async void OnCustomerSearchKey(object? sender, KeyEventArgs e)
@@ -1426,23 +1565,18 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        if (_customerMatches.Count > 0)
-        {
-            ShowCustomer(_customerMatches[0]);
-            return;
-        }
-
+        e.Handled = true;
         var text = sender is TextBox box ? box.Text : CustomerName.Text;
-        await SearchCustomersAsync(text);
+        await SearchCustomersAsync(text, selectUnique: false);
     }
 
     private async void OnCustomerSearchClick(object? sender, RoutedEventArgs e)
     {
         var text = string.IsNullOrWhiteSpace(CustomerName.Text) ? CustomerFiscal.Text : CustomerName.Text;
-        await SearchCustomersAsync(text);
+        await SearchCustomersAsync(text, selectUnique: true);
     }
 
-    private async Task SearchCustomersAsync(string? text)
+    private async Task SearchCustomersAsync(string? text, bool selectUnique)
     {
         var services = AppComposition.Services;
         if (services is null || string.IsNullOrWhiteSpace(text))
@@ -1451,20 +1585,34 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
+        IReadOnlyList<PosCustomer> matches;
+        try
+        {
+            matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
+        }
+        catch (Exception)
+        {
+            CustomerOverlay.IsVisible = false;
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+            return;
+        }
+
         if (matches.Count == 0)
         {
+            CustomerOverlay.IsVisible = false;
             ErrorLabel.Text = "Não foi encontrado nenhum cliente.";
             return;
         }
 
-        ErrorLabel.Text = string.Empty;
-        if (matches.Count == 1)
+        if (selectUnique && matches.Count == 1)
         {
+            ErrorLabel.Text = string.Empty;
+            CustomerOverlay.IsVisible = false;
             ShowCustomer(matches[0]);
             return;
         }
 
+        ErrorLabel.Text = string.Empty;
         CustomerList.Children.Clear();
         foreach (var match in matches)
         {
@@ -1773,6 +1921,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        services.GetService<PosCustomerService>()?.InvalidateSearch();
         PosCustomer? customer = null;
         if (saved.Id != Guid.Empty)
         {
