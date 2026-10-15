@@ -136,6 +136,7 @@ public partial class NewDocumentWindow : UserControl
     {
         var documents = services.GetRequiredService<IPosDocumentService>();
         var customers = services.GetRequiredService<IPosCustomerService>();
+        var errors = new List<string>();
 
         PosCatalog? catalog = null;
         IReadOnlyList<PosDocumentTypeOption>? types = null;
@@ -144,48 +145,49 @@ public partial class NewDocumentWindow : UserControl
         IReadOnlyList<PosLookupItem>? sourceDocs = null;
         IReadOnlyList<PosVatOption>? vatRates = null;
         IReadOnlyList<PosLookupItem>? vatExemptions = null;
+        PosCompanyAddress? companyAddress = null;
 
         var tasks = new List<Task>
         {
             Task.Run(async () =>
             {
                 try { catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] catalog: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("catálogo", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { types = await documents.ListDocumentTypesAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] types: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("tipos de documento", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { conditions = await documents.ListPaymentConditionsAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] conditions: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("condições de pagamento", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { currencies = await documents.ListCurrenciesAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] currencies: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("moedas", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { sourceDocs = await documents.ListSourceDocumentsAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] sourceDocs: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("documentos de origem", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { vatRates = await documents.ListVatRatesAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] vatRates: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("taxas de IVA", ex, errors); }
             }),
             Task.Run(async () =>
             {
                 try { vatExemptions = await documents.ListVatExemptionReasonsAsync(); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] vatExemptions: {ex.Message}"); }
+                catch (Exception ex) { LogLookupError("motivos de isenção", ex, errors); }
             }),
             Task.Run(async () =>
             {
-                try { await ApplyPortugalAddressesAsync(documents); }
-                catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"[NewDocumentWindow] address: {ex.Message}"); }
+                try { companyAddress = await documents.GetCompanyAddressAsync(); }
+                catch (Exception ex) { LogLookupError("morada da empresa", ex, errors); }
             })
         };
 
@@ -198,6 +200,12 @@ public partial class NewDocumentWindow : UserControl
             _catalog.AddRange(_posCatalog.Articles.Select(article => new CatalogChoice(article, FamilyName(_posCatalog, article))));
             ApplyFilter();
         }
+
+        if (companyAddress is not null)
+        {
+            _company = companyAddress;
+        }
+        ApplyPortugalAddressesOnUiThread();
 
         var stock = services.GetService<IStockManagementService>();
         if (stock is not null)
@@ -271,6 +279,11 @@ public partial class NewDocumentWindow : UserControl
             EditExemption.ItemsSource = OptionalExemptions(_vatExemptions);
         }
 
+        if (errors.Count > 0)
+        {
+            ErrorLabel.Text = string.Join("; ", errors);
+        }
+
         await Fill(async () => await SeedDraftAsync(documents, customers));
         await Fill(async () => await ApplyCopyFromAsync(documents, customers));
         await Fill(async () =>
@@ -288,6 +301,32 @@ public partial class NewDocumentWindow : UserControl
         });
         _filling = false;
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
+    }
+
+    private static void LogLookupError(string lookupName, Exception ex, List<string> errors)
+    {
+        var message = $"Erro ao carregar {lookupName}";
+        errors.Add(message);
+        AppLogging.Warning(ex, "[NewDocumentWindow] {LookupName}: {Message}", lookupName, ex.Message);
+    }
+
+    private void ApplyPortugalAddressesOnUiThread()
+    {
+        var dispatch = DateTime.Now.AddMinutes(10);
+        FillShip(ToAddress, ToRegion, ToPostal, ToCity, ToCountry, PosDocumentRules.Unknown, PosDocumentRules.Unknown, "0000-000", PosDocumentRules.Unknown, "Portugal");
+        SetWhen(ToDate, ToTime, dispatch.AddHours(1));
+        FillShip(
+            FromAddress,
+            FromRegion,
+            FromPostal,
+            FromCity,
+            FromCountry,
+            string.IsNullOrWhiteSpace(_company.Address) ? PosDocumentRules.Unknown : _company.Address,
+            PosDocumentRules.Unknown,
+            string.IsNullOrWhiteSpace(_company.PostalCode) ? "0000-000" : _company.PostalCode,
+            string.IsNullOrWhiteSpace(_company.City) ? PosDocumentRules.Unknown : _company.City,
+            string.IsNullOrWhiteSpace(_company.Country) ? "Portugal" : _company.Country);
+        SetWhen(FromDate, FromTime, dispatch);
     }
 
     private async Task ApplyCopyFromAsync(IPosDocumentService documents, IPosCustomerService customers)
@@ -417,26 +456,6 @@ public partial class NewDocumentWindow : UserControl
             || string.Equals(TypeBox.SelectedItem as string, _types[typeIndex].Designation, StringComparison.OrdinalIgnoreCase);
     }
 
-    private async Task ApplyPortugalAddressesAsync(IPosDocumentService documents)
-    {
-        _company = await documents.GetCompanyAddressAsync();
-        var dispatch = DateTime.Now.AddMinutes(10);
-        FillShip(ToAddress, ToRegion, ToPostal, ToCity, ToCountry, PosDocumentRules.Unknown, PosDocumentRules.Unknown, "0000-000", PosDocumentRules.Unknown, "Portugal");
-        // Delivery must be after dispatch; leave ten minutes so the time does not lapse while the document is filled.
-        SetWhen(ToDate, ToTime, dispatch.AddHours(1));
-        FillShip(
-            FromAddress,
-            FromRegion,
-            FromPostal,
-            FromCity,
-            FromCountry,
-            string.IsNullOrWhiteSpace(_company.Address) ? PosDocumentRules.Unknown : _company.Address,
-            PosDocumentRules.Unknown,
-            string.IsNullOrWhiteSpace(_company.PostalCode) ? "0000-000" : _company.PostalCode,
-            string.IsNullOrWhiteSpace(_company.City) ? PosDocumentRules.Unknown : _company.City,
-            string.IsNullOrWhiteSpace(_company.Country) ? "Portugal" : _company.Country);
-        SetWhen(FromDate, FromTime, dispatch);
-    }
 
     private async Task SeedDraftAsync(IPosDocumentService documents, IPosCustomerService customers)
     {

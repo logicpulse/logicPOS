@@ -14,6 +14,7 @@ using Avalonia.VisualTree;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
+using LogicPOS.Core.FrontOffice;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
@@ -1098,8 +1099,17 @@ public partial class EntityListing : UserControl
         ShowResultToast(result.Succeeded, result.Error, result.Message ?? "Registo gravado com sucesso.");
         if (result.Succeeded)
         {
+            ClearCatalogImageCacheIfNeeded();
             EditorOverlay.IsVisible = false;
             await ReloadAsync();
+        }
+    }
+
+    private void ClearCatalogImageCacheIfNeeded()
+    {
+        if (_title is "Artigos" or "Famílias" or "Subfamílias" or "Families" or "Subfamilies" or "Articles")
+        {
+            AppComposition.Services?.GetService<IPosCatalogService>()?.ClearImageCache();
         }
     }
 

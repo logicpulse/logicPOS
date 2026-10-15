@@ -437,9 +437,9 @@ public partial class PosWindow : Window, IOfficeSurface
                 family.Text,
                 false,
                 family.Id == _familyId && _showFavorites == false,
-                () => SelectFamily(family.Id),
-                imageBase64: family.ImageBase64);
+                () => SelectFamily(family.Id));
             PlaceMenu(button, layout.FamilyX, layout.FamilyY + (index * layout.ButtonHeight), layout.ButtonWidth, layout.ButtonHeight);
+            LoadButtonImageAsync(button, ButtonImageKind.Family, family.Id, fill: false);
         }
 
         PlaceEmptySlots(families.Count, 1, layout.FamilyRows, layout.FamilyX, layout.FamilyY);
@@ -453,9 +453,9 @@ public partial class PosWindow : Window, IOfficeSurface
                 subfamily.Text,
                 false,
                 subfamily.Id == _subfamilyId && _showFavorites == false,
-                () => SelectSubfamily(subfamily.Id),
-                imageBase64: subfamily.ImageBase64);
+                () => SelectSubfamily(subfamily.Id));
             PlaceMenu(button, layout.SubfamilyX + (index * layout.ButtonWidth), layout.SubfamilyY, layout.ButtonWidth, layout.ButtonHeight);
+            LoadButtonImageAsync(button, ButtonImageKind.Subfamily, subfamily.Id, fill: false);
         }
 
         PlaceEmptySlots(subfamilies.Count, subfamilyColumns, 1, layout.SubfamilyX, layout.SubfamilyY);
@@ -471,14 +471,14 @@ public partial class PosWindow : Window, IOfficeSurface
                 article.Text,
                 true,
                 false,
-                () => AddArticle(article),
-                imageBase64: article.ImageBase64);
+                () => AddArticle(article));
             PlaceMenu(
                 button,
                 layout.ArticleX + (column * layout.ButtonWidth),
                 layout.ArticleY + (row * layout.ButtonHeight),
                 layout.ButtonWidth,
                 layout.ButtonHeight);
+            LoadButtonImageAsync(button, ButtonImageKind.Article, article.Id, fill: true);
         }
 
         PlaceEmptySlots(articles.Count, layout.ArticleColumns, layout.ArticleRows, layout.ArticleX, layout.ArticleY);
@@ -490,6 +490,61 @@ public partial class PosWindow : Window, IOfficeSurface
         SetScrollEnabled(_articlePrevious, _articlePage > 0);
         SetScrollEnabled(_articleNext, _articlePage < ArticlePageCount() - 1);
         ApplyFrontOfficeRules();
+    }
+
+    private void LoadButtonImageAsync(Button button, ButtonImageKind kind, Guid id, bool fill)
+    {
+        var catalogService = AppComposition.Services?.GetService<IPosCatalogService>();
+        if (catalogService is null)
+        {
+            return;
+        }
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                var imageBase64 = await catalogService.GetButtonImageAsync(kind, id);
+                if (string.IsNullOrWhiteSpace(imageBase64))
+                {
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                {
+                    if (button.Content is not TextBlock textBlock)
+                    {
+                        return;
+                    }
+
+                    var bitmap = TryLoadBitmapFromBase64(imageBase64);
+                    if (bitmap is null)
+                    {
+                        return;
+                    }
+
+                    var text = textBlock.Text ?? string.Empty;
+                    var imageClass = fill ? "pos_menu_image_fill" : "pos_menu_image";
+                    var image = new Image
+                    {
+                        Classes = { imageClass },
+                        Source = bitmap,
+                        ClipToBounds = true
+                    };
+                    var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
+                    var content = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
+                    Grid.SetRow(image, 0);
+                    Grid.SetRow(caption, 1);
+                    content.Children.Add(image);
+                    content.Children.Add(caption);
+                    button.Content = content;
+                });
+            }
+            catch
+            {
+                // Ignore image load failures
+            }
+        });
     }
 
     private void SelectFamily(Guid familyId)

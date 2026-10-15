@@ -7,8 +7,12 @@ namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosCatalogService : IPosCatalogService
 {
+    private const int MaxCacheEntries = 500;
+
     private readonly IServiceScopeFactory _scopes;
-    private readonly ConcurrentDictionary<Guid, string?> _imageCache = new();
+    private readonly ConcurrentDictionary<(ButtonImageKind Kind, Guid Id), Lazy<Task<string?>>> _imageCache = new();
+    private readonly SemaphoreSlim _loadSemaphore = new(4);
+    private readonly object _evictionLock = new();
 
     public PosCatalogService(IServiceScopeFactory scopes)
     {
@@ -17,6 +21,8 @@ public sealed class PosCatalogService : IPosCatalogService
 
     public async Task<PosCatalog> LoadAsync(CancellationToken cancellationToken = default)
     {
+        ClearImageCache();
+
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
@@ -104,50 +110,77 @@ public sealed class PosCatalogService : IPosCatalogService
 
     public async Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)
     {
-        var cacheKey = CacheKey(kind, id);
-        if (_imageCache.TryGetValue(cacheKey, out var cached))
-        {
-            return cached;
-        }
+        var key = (kind, id);
 
-        await using var scope = _scopes.CreateAsyncScope();
-        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var lazyTask = _imageCache.GetOrAdd(key, k => new Lazy<Task<string?>>(() => LoadImageFromDbAsync(k.Kind, k.Id, cancellationToken)));
 
-        string? image = kind switch
-        {
-            ButtonImageKind.Family => await database.ArticleFamilies
-                .AsNoTracking()
-                .Where(f => f.Id == id && f.Button != null)
-                .Select(f => f.Button!.Image)
-                .FirstOrDefaultAsync(cancellationToken),
+        EvictIfNeeded();
 
-            ButtonImageKind.Subfamily => await database.ArticleSubfamilies
-                .AsNoTracking()
-                .Where(s => s.Id == id && s.Button != null)
-                .Select(s => s.Button!.Image)
-                .FirstOrDefaultAsync(cancellationToken),
-
-            ButtonImageKind.Article => await database.Articles
-                .AsNoTracking()
-                .Where(a => a.Id == id && a.Button != null)
-                .Select(a => a.Button!.Image)
-                .FirstOrDefaultAsync(cancellationToken),
-
-            _ => null
-        };
-
-        _imageCache[cacheKey] = image;
-        return image;
+        return await lazyTask.Value;
     }
 
-    public void ClearImageCache() => _imageCache.Clear();
-
-    private static Guid CacheKey(ButtonImageKind kind, Guid id)
+    public void ClearImageCache()
     {
-        Span<byte> buffer = stackalloc byte[17];
-        buffer[0] = (byte)kind;
-        id.TryWriteBytes(buffer[1..]);
-        return new Guid(buffer);
+        _imageCache.Clear();
+    }
+
+    private async Task<string?> LoadImageFromDbAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken)
+    {
+        await _loadSemaphore.WaitAsync(cancellationToken);
+        try
+        {
+            await using var scope = _scopes.CreateAsyncScope();
+            var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+
+            return kind switch
+            {
+                ButtonImageKind.Family => await database.ArticleFamilies
+                    .AsNoTracking()
+                    .Where(f => f.Id == id && f.Button != null)
+                    .Select(f => f.Button!.Image)
+                    .FirstOrDefaultAsync(cancellationToken),
+
+                ButtonImageKind.Subfamily => await database.ArticleSubfamilies
+                    .AsNoTracking()
+                    .Where(s => s.Id == id && s.Button != null)
+                    .Select(s => s.Button!.Image)
+                    .FirstOrDefaultAsync(cancellationToken),
+
+                ButtonImageKind.Article => await database.Articles
+                    .AsNoTracking()
+                    .Where(a => a.Id == id && a.Button != null)
+                    .Select(a => a.Button!.Image)
+                    .FirstOrDefaultAsync(cancellationToken),
+
+                _ => null
+            };
+        }
+        finally
+        {
+            _loadSemaphore.Release();
+        }
+    }
+
+    private void EvictIfNeeded()
+    {
+        if (_imageCache.Count <= MaxCacheEntries)
+        {
+            return;
+        }
+
+        lock (_evictionLock)
+        {
+            if (_imageCache.Count <= MaxCacheEntries)
+            {
+                return;
+            }
+
+            var toRemove = _imageCache.Count - MaxCacheEntries + 50;
+            foreach (var key in _imageCache.Keys.Take(toRemove))
+            {
+                _imageCache.TryRemove(key, out _);
+            }
+        }
     }
 
     private static string LabelOrDesignation(string? label, string designation)

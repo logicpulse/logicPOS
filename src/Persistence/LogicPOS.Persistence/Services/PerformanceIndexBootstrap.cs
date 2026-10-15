@@ -106,7 +106,11 @@ public static class PerformanceIndexBootstrap
     {
         var columnList = string.Join(", ", columns.Select(c => c == "Order" ? "[Order]" : $"[{c}]"));
         var sql = $@"
-            IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = '{name}' AND object_id = OBJECT_ID('{table}'))
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.indexes i
+                INNER JOIN sys.objects o ON i.object_id = o.object_id
+                WHERE i.name = N'{name}' AND o.name = N'{table}' AND o.type = 'U'
+            )
             BEGIN
                 CREATE INDEX [{name}] ON [{table}] ({columnList})
             END";
