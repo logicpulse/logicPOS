@@ -315,7 +315,7 @@ public partial class PosWindow : Window, IOfficeSurface
         totalGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
         totalGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
         var totalLabel = new TextBlock { Classes = { "pos_ticket_total_label" }, Text = "Total" };
-        _ticketTotal = new TextBlock { Classes = { "pos_ticket_total_value" }, Text = 0m.ToString("C") };
+        _ticketTotal = new TextBlock { Classes = { "pos_ticket_total_value" }, Text = MoneyFormat.Format(0m) };
         Grid.SetColumn(_ticketTotal, 1);
         totalGrid.Children.Add(totalLabel);
         totalGrid.Children.Add(_ticketTotal);
@@ -1770,7 +1770,7 @@ public partial class PosWindow : Window, IOfficeSurface
             if (table.State == PosTableState.Open)
             {
                 status.Classes.Add("pos_table_status_open");
-                status.Child = new TextBlock { Classes = { "pos_table_status_text" }, Text = table.Total.ToString("C") };
+                status.Child = new TextBlock { Classes = { "pos_table_status_text" }, Text = MoneyFormat.Format(table.Total) };
             }
             else if (table.State == PosTableState.Reserved)
             {
@@ -1974,8 +1974,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private bool TryGetVoltaQuantity(out decimal quantity)
     {
-        var text = (VoltaQuantity.Text ?? string.Empty).Trim().Replace(',', '.');
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out quantity) && quantity > 0;
+        return QuantityFormat.TryParse(VoltaQuantity.Text, out quantity) && quantity > 0;
     }
 
     private void UpdateVoltaTitle()
@@ -1989,7 +1988,7 @@ public partial class PosWindow : Window, IOfficeSurface
                 .Round();
         }
 
-        VoltaTitle.Text = $"{VoltaTitleBase} - Total a reembolsar: {total:N2}€";
+        VoltaTitle.Text = $"{VoltaTitleBase} - Total a reembolsar: {MoneyFormat.Format(total)}";
     }
 
     private void OnVoltaQuantityChanged(object? sender, TextChangedEventArgs e)
@@ -2687,11 +2686,10 @@ public partial class PosWindow : Window, IOfficeSurface
     private async void OnShowCashDrawerClick(object? sender, RoutedEventArgs e)
     {
         _cashTotal = await LoadCashTotalAsync();
-        var totalText = _cashTotal.ToString("0.00", CultureInfo.CurrentCulture);
 
         SessionHome.IsVisible = false;
         SessionCash.IsVisible = true;
-        SessionTitle.Text = $"Caixa :: Total em Caixa: {totalText} €";
+        SessionTitle.Text = $"Caixa :: Total em Caixa: {MoneyFormat.Format(_cashTotal)}";
         SessionFrame.Width = 680;
         SessionFrame.Height = 360;
         SessionAmount.IsVisible = true;
@@ -2785,10 +2783,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         // Parse the amount
-        var hasAmount = decimal.TryParse(SessionAmount.Text,
-            System.Globalization.NumberStyles.Number,
-            System.Globalization.CultureInfo.CurrentCulture, out var amount)
-            && amount >= 0;
+        var hasAmount = MoneyFormat.TryParse(SessionAmount.Text, out var amount) && amount >= 0;
 
         if (_sessionAction == "close-session")
         {
@@ -2872,8 +2867,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         var result = await services.GetRequiredService<IBackOfficeListingService>().RunActionAsync("cash-total", null, null);
-        if (result.Succeeded
-            && decimal.TryParse(result.Message, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount))
+        if (result.Succeeded && MoneyFormat.TryParse(result.Message, out var amount))
         {
             return amount;
         }
@@ -2886,7 +2880,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var drawerError = await FrontOfficePrinting.OpenDrawerAsync();
         if (action is "cash-in" or "cash-out")
         {
-            decimal.TryParse(SessionAmount.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out var amount);
+            MoneyFormat.TryParse(SessionAmount.Text, out var amount);
             var total = await LoadCashTotalAsync();
             var title = action == "cash-in" ? "Entrada de caixa" : "Saída de caixa";
             var printError = await FrontOfficePrinting.PrintCashMovementAsync(title, amount, SessionNote.Text, total);
@@ -3379,7 +3373,7 @@ public partial class PosWindow : Window, IOfficeSurface
             return;
         }
 
-        if (decimal.TryParse(tag, NumberStyles.Number, CultureInfo.InvariantCulture, out var amount) == false)
+        if (MoneyFormat.TryParse(tag, out var amount) == false)
         {
             return;
         }
@@ -3428,7 +3422,12 @@ public partial class PosWindow : Window, IOfficeSurface
     private bool TryReadKeypad(out decimal value)
     {
         var text = _prompt == TicketPrompt.Price ? PriceEntry.Text : _keypadValue?.Text;
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value);
+        if (_prompt is TicketPrompt.Quantity or TicketPrompt.Weight)
+        {
+            return QuantityFormat.TryParse(text, out value);
+        }
+
+        return MoneyFormat.TryParse(text, out value);
     }
 
     private bool TryAddArticleByCode(string? code)
@@ -3515,7 +3514,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var orderTotal = _orderLines.Sum(line => line.Total);
         if (_ticketTotal is not null)
         {
-            _ticketTotal.Text = (_orderListMode ? orderTotal : _ticket.Total).ToString("C");
+            _ticketTotal.Text = MoneyFormat.Format(_orderListMode ? orderTotal : _ticket.Total);
         }
 
         if (_amountDue is not null)

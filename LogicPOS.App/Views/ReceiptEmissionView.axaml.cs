@@ -578,16 +578,7 @@ public partial class ReceiptEmissionView : UserControl
         return null;
     }
 
-    private static bool TryMoney(string? text, out decimal value)
-    {
-        text = (text ?? string.Empty).Trim();
-        if (decimal.TryParse(text, NumberStyles.Number, CultureInfo.CurrentCulture, out value))
-        {
-            return true;
-        }
-
-        return decimal.TryParse(text, NumberStyles.Number, CultureInfo.InvariantCulture, out value);
-    }
+    private static bool TryMoney(string? text, out decimal value) => MoneyFormat.TryParse(text, out value);
 }
 
 public sealed class ReceiptGridRow : INotifyPropertyChanged

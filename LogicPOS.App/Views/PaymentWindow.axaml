@@ -78,6 +78,29 @@
                         <Border Grid.Column="1" Classes="pos_pay_totals">
                             <StackPanel Spacing="8">
                                 <StackPanel>
+                                    <TextBlock Classes="pos_pay_caption" Text="Documento" />
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <Button x:Name="DocumentFs"
+                                                Classes="pos_pay_method selected"
+                                                Width="96"
+                                                Height="40"
+                                                Click="OnSaleDocumentClick"
+                                                Tag="FS"
+                                                ToolTip.Tip="Fatura simplificada">
+                                            <TextBlock Classes="pos_pay_method_text" Text="FS" />
+                                        </Button>
+                                        <Button x:Name="DocumentFr"
+                                                Classes="pos_pay_method"
+                                                Width="96"
+                                                Height="40"
+                                                Click="OnSaleDocumentClick"
+                                                Tag="FR"
+                                                ToolTip.Tip="Fatura-recibo">
+                                            <TextBlock Classes="pos_pay_method_text" Text="FR" />
+                                        </Button>
+                                    </StackPanel>
+                                </StackPanel>
+                                <StackPanel>
                                     <TextBlock Classes="pos_pay_caption" Text="Total a pagar:" />
                                     <TextBlock x:Name="TotalValue" Classes="pos_pay_total" Text="0" />
                                 </StackPanel>
@@ -96,7 +119,7 @@
                     <Grid Grid.Row="1" ColumnDefinitions="*,*">
                         <StackPanel Margin="0,0,6,0">
                             <TextBlock Classes="pos_pay_label" Text="NIF" />
-                            <TextBox x:Name="FiscalNumber" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" />
+                            <TextBox x:Name="FiscalNumber" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="6,0,0,0">
                             <TextBlock Classes="pos_pay_label" Text="Número do Cartão de Cliente" />
@@ -107,7 +130,9 @@
                     <Grid Grid.Row="2" ColumnDefinitions="*,160">
                         <StackPanel Margin="0,0,6,0">
                             <TextBlock Classes="pos_pay_label" Text="Cliente" />
-                            <TextBox x:Name="CustomerName" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" />
+                            <TextBox x:Name="CustomerName" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
+                            <TextBlock x:Name="CustomerSearchNotice" Classes="bo_entity_error" IsVisible="False" />
+                            <StackPanel x:Name="CustomerMatches" />
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="6,0,0,0">
                             <TextBlock Classes="pos_pay_label" Text="Desconto" />
@@ -183,28 +208,6 @@
                         <Image x:Name="NoticeSymbol" Classes="login_alert_symbol" />
                         <TextBlock x:Name="NoticeMessage" Classes="login_alert_message" TextWrapping="Wrap" />
                     </Grid>
-                </DockPanel>
-            </Border>
-        </Panel>
-
-        <Panel x:Name="CustomerOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="480" MaxHeight="420">
-                <DockPanel Classes="login_alert_inner">
-                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                        <TextBlock Classes="login_alert_title" Text="Clientes" />
-                    </Border>
-                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <Button Classes="login_alert_action" Click="OnCustomerListCloseClick">
-                            <StackPanel Classes="login_alert_action_content">
-                                <Image Classes="login_alert_action_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
-                            </StackPanel>
-                        </Button>
-                    </Border>
-                    <ScrollViewer>
-                        <StackPanel x:Name="CustomerList" />
-                    </ScrollViewer>
                 </DockPanel>
             </Border>
         </Panel>

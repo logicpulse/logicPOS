@@ -60,6 +60,7 @@ public partial class NewDocumentWindow : UserControl
     public NewDocumentWindow()
     {
         InitializeComponent();
+        CustomerSuggest.PlacementTarget = CustomerName;
         TouchFields.Attach(this);
         _load = new ListingLoad(Busy);
     }
@@ -88,7 +89,7 @@ public partial class NewDocumentWindow : UserControl
         NewArticleOverlay.IsVisible = false;
         SerialOverlay.IsVisible = false;
         ArticleSuggest.IsVisible = false;
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
         CustomerEditButton.IsVisible = false;
         _customerId = null;
         _customer = null;
@@ -1059,7 +1060,7 @@ public partial class NewDocumentWindow : UserControl
 
         var hasSerial = string.IsNullOrWhiteSpace(EditSerial.Text) == false;
         EditQuantity.IsReadOnly = hasSerial;
-        if (hasSerial && ParseDecimal(EditQuantity.Text) != 1)
+        if (hasSerial && ParseQuantity(EditQuantity.Text) != 1)
         {
             EditQuantity.Text = "1";
         }
@@ -1109,7 +1110,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var vat = SelectedVat()?.Percentage ?? _editing.VatPercentage;
         var totals = NewDocumentLine.Totals(_editing.PriceIncludesVat, price, quantity, discount, vat);
@@ -1126,7 +1127,7 @@ public partial class NewDocumentWindow : UserControl
         }
 
         var price = ParseDecimal(EditPrice.Text);
-        var quantity = ParseDecimal(EditQuantity.Text);
+        var quantity = ParseQuantity(EditQuantity.Text);
         var discount = ParseDecimal(EditDiscount.Text);
         var serial = EditSerial.Text?.Trim();
         if (string.IsNullOrWhiteSpace(serial) == false && quantity != 1)
@@ -1250,14 +1251,17 @@ public partial class NewDocumentWindow : UserControl
 
     private static decimal ParseDecimal(string? text)
     {
-        return decimal.TryParse(text, System.Globalization.NumberStyles.Number, System.Globalization.CultureInfo.CurrentCulture, out var value)
-            ? value
-            : 0m;
+        return MoneyFormat.TryParse(text, out var value) ? value : 0m;
+    }
+
+    private static decimal ParseQuantity(string? text)
+    {
+        return QuantityFormat.TryParse(text, out var value) ? value : 0m;
     }
 
     private static string Money(decimal value)
     {
-        return value.ToString("C", System.Globalization.CultureInfo.GetCultureInfo("pt-PT"));
+        return MoneyFormat.Format(value);
     }
 
     private string FamilyNameOf(PosArticle article)
@@ -1326,7 +1330,7 @@ public partial class NewDocumentWindow : UserControl
 
         _customerId = null;
         _customer = null;
-        _customerIsFinal = true;
+        _customerIsFinal = false;
         CustomerEditButton.IsVisible = false;
         _ = SuggestCustomersAsync(sender is TextBox box ? box.Text : CustomerName.Text);
     }
@@ -1375,7 +1379,7 @@ public partial class NewDocumentWindow : UserControl
     {
         _customerMatches.Clear();
         CustomerSuggestList.Children.Clear();
-        CustomerSuggest.IsVisible = false;
+        CustomerSuggest.IsOpen = false;
     }
 
     private async Task SuggestCustomersAsync(string? text)
@@ -1394,29 +1398,49 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
-        if (ticket != _customerSearch)
+        try
         {
-            return;
-        }
-
-        _customerMatches.Clear();
-        CustomerSuggestList.Children.Clear();
-        _customerMatches.AddRange(matches.Take(8));
-        foreach (var match in _customerMatches)
-        {
-            var customer = match;
-            var button = new Button
+            await Task.Delay(300);
+            if (ticket != _customerSearch)
             {
-                Classes = { "bo_report_row" },
-                Content = $"{customer.Name}  {customer.FiscalNumber}",
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
-            };
-            button.Click += (_, _) => ShowCustomer(customer);
-            CustomerSuggestList.Children.Add(button);
-        }
+                return;
+            }
 
-        CustomerSuggest.IsVisible = _customerMatches.Count > 0;
+            var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(term);
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            _customerMatches.Clear();
+            CustomerSuggestList.Children.Clear();
+            _customerMatches.AddRange(matches.Take(8));
+            foreach (var match in _customerMatches)
+            {
+                var customer = match;
+                var button = new Button
+                {
+                    Classes = { "bo_report_row" },
+                    Content = $"{customer.Name}  {customer.FiscalNumber}",
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch
+                };
+                button.Click += (_, _) => ShowCustomer(customer);
+                CustomerSuggestList.Children.Add(button);
+            }
+
+            CustomerSuggest.IsOpen = _customerMatches.Count > 0;
+            ErrorLabel.Text = _customerMatches.Count == 0 ? "Não foi encontrado nenhum cliente." : string.Empty;
+        }
+        catch (Exception)
+        {
+            if (ticket != _customerSearch)
+            {
+                return;
+            }
+
+            HideCustomerSuggest();
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+        }
     }
 
     private async void OnCustomerSearchKey(object? sender, KeyEventArgs e)
@@ -1426,23 +1450,18 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        if (_customerMatches.Count > 0)
-        {
-            ShowCustomer(_customerMatches[0]);
-            return;
-        }
-
+        e.Handled = true;
         var text = sender is TextBox box ? box.Text : CustomerName.Text;
-        await SearchCustomersAsync(text);
+        await SearchCustomersAsync(text, selectUnique: false);
     }
 
     private async void OnCustomerSearchClick(object? sender, RoutedEventArgs e)
     {
         var text = string.IsNullOrWhiteSpace(CustomerName.Text) ? CustomerFiscal.Text : CustomerName.Text;
-        await SearchCustomersAsync(text);
+        await SearchCustomersAsync(text, selectUnique: true);
     }
 
-    private async Task SearchCustomersAsync(string? text)
+    private async Task SearchCustomersAsync(string? text, bool selectUnique)
     {
         var services = AppComposition.Services;
         if (services is null || string.IsNullOrWhiteSpace(text))
@@ -1451,20 +1470,34 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        var matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
+        IReadOnlyList<PosCustomer> matches;
+        try
+        {
+            matches = await services.GetRequiredService<IPosCustomerService>().SearchAsync(text);
+        }
+        catch (Exception)
+        {
+            CustomerOverlay.IsVisible = false;
+            ErrorLabel.Text = "Não foi possível pesquisar os clientes.";
+            return;
+        }
+
         if (matches.Count == 0)
         {
+            CustomerOverlay.IsVisible = false;
             ErrorLabel.Text = "Não foi encontrado nenhum cliente.";
             return;
         }
 
-        ErrorLabel.Text = string.Empty;
-        if (matches.Count == 1)
+        if (selectUnique && matches.Count == 1)
         {
+            ErrorLabel.Text = string.Empty;
+            CustomerOverlay.IsVisible = false;
             ShowCustomer(matches[0]);
             return;
         }
 
+        ErrorLabel.Text = string.Empty;
         CustomerList.Children.Clear();
         foreach (var match in matches)
         {
@@ -1773,6 +1806,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
+        services.GetService<PosCustomerService>()?.InvalidateSearch();
         PosCustomer? customer = null;
         if (saved.Id != Guid.Empty)
         {
