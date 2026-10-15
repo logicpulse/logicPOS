@@ -1,4 +1,5 @@
 using Microsoft.Data.Sqlite;
+using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Core.FrontOffice;
@@ -217,6 +218,35 @@ public sealed class PublicEditionStartupTests
             Assert.Null(AppComposition.StartupError);
 
             var services = AppComposition.Services!;
+            // Fresh installs leave company prefs empty; LoginWindow prompts CompanySetup first.
+            var company = services.GetRequiredService<ICompanySetupService>();
+            var companyDraft = await company.LoadAsync(CancellationToken.None);
+            var companySaved = await company.SaveAsync(new CompanySetupRequest
+            {
+                CountryId = companyDraft.CountryId ?? Guid.Empty,
+                CurrencyId = companyDraft.CurrencyId ?? Guid.Empty,
+                Values = LocalCompanySetupService.DemoCompanyValues
+            }, CancellationToken.None);
+            Assert.True(companySaved.Succeeded, companySaved.Error);
+
+            // DocumentSeries are not seeded; production creates them via
+            // "Abertura de ano fiscal" (IFiscalYearWizard) before IssueDocumentAsync.
+            var wizard = services.GetRequiredService<IFiscalYearWizard>();
+            var draft = await wizard.LoadAsync(CancellationToken.None);
+            var setup = await wizard.CreateAsync(new FiscalYearSetupRequest
+            {
+                Designation = draft.Designation,
+                Year = draft.Year,
+                Acronym = draft.Acronym,
+                CloseCurrent = false,
+                CreateSeries = true,
+                SeriesForEachTerminal = false,
+                CommunicateWithAt = false,
+                TerminalIds = draft.Terminals.Select(item => item.Id).ToList(),
+                DocumentTypeIds = draft.DocumentTypes.Select(item => item.Id).ToList()
+            }, CancellationToken.None);
+            Assert.True(setup.Ok, setup.Message);
+
             var customer = await services.GetRequiredService<IPosCustomerService>().GetFinalConsumerAsync(CancellationToken.None);
             Assert.NotNull(customer);
             var catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync(CancellationToken.None);
