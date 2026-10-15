@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.Concurrent;
+using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -136,7 +137,7 @@ public partial class NewDocumentWindow : UserControl
     {
         var documents = services.GetRequiredService<IPosDocumentService>();
         var customers = services.GetRequiredService<IPosCustomerService>();
-        var errors = new List<string>();
+        var errors = new ConcurrentQueue<string>();
 
         PosCatalog? catalog = null;
         IReadOnlyList<PosDocumentTypeOption>? types = null;
@@ -279,14 +280,16 @@ public partial class NewDocumentWindow : UserControl
             EditExemption.ItemsSource = OptionalExemptions(_vatExemptions);
         }
 
-        if (errors.Count > 0)
+        string? lookupErrors = null;
+        if (errors.IsEmpty == false)
         {
-            ErrorLabel.Text = string.Join("; ", errors);
+            lookupErrors = string.Join("; ", errors);
+            ErrorLabel.Text = lookupErrors;
         }
 
-        await Fill(async () => await SeedDraftAsync(documents, customers));
-        await Fill(async () => await ApplyCopyFromAsync(documents, customers));
-        await Fill(async () =>
+        await FillPreservingErrors(lookupErrors, async () => await SeedDraftAsync(documents, customers));
+        await FillPreservingErrors(lookupErrors, async () => await ApplyCopyFromAsync(documents, customers));
+        await FillPreservingErrors(lookupErrors, async () =>
         {
             if (_customerId is not null)
             {
@@ -303,10 +306,10 @@ public partial class NewDocumentWindow : UserControl
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
     }
 
-    private static void LogLookupError(string lookupName, Exception ex, List<string> errors)
+    private static void LogLookupError(string lookupName, Exception ex, ConcurrentQueue<string> errors)
     {
         var message = $"Erro ao carregar {lookupName}";
-        errors.Add(message);
+        errors.Enqueue(message);
         AppLogging.Warning(ex, "[NewDocumentWindow] {LookupName}: {Message}", lookupName, ex.Message);
     }
 
@@ -525,6 +528,26 @@ public partial class NewDocumentWindow : UserControl
         catch (Exception exception)
         {
             ErrorLabel.Text = exception.Message;
+        }
+    }
+
+    private async Task FillPreservingErrors(string? lookupErrors, Func<Task> load)
+    {
+        try
+        {
+            await load();
+        }
+        catch (Exception exception)
+        {
+            ErrorLabel.Text = string.IsNullOrEmpty(lookupErrors)
+                ? exception.Message
+                : $"{lookupErrors}; {exception.Message}";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(ErrorLabel.Text) && lookupErrors is not null)
+        {
+            ErrorLabel.Text = lookupErrors;
         }
     }
 

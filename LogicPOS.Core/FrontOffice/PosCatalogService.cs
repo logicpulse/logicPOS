@@ -116,7 +116,15 @@ public sealed class PosCatalogService : IPosCatalogService
 
         EvictIfNeeded();
 
-        return await lazyTask.Value;
+        try
+        {
+            return await lazyTask.Value;
+        }
+        catch
+        {
+            _imageCache.TryRemove(key, out _);
+            throw;
+        }
     }
 
     public void ClearImageCache()

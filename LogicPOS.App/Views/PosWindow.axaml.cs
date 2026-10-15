@@ -540,9 +540,9 @@ public partial class PosWindow : Window, IOfficeSurface
                     button.Content = content;
                 });
             }
-            catch
+            catch (Exception ex)
             {
-                // Ignore image load failures
+                AppLogging.Warning(ex, "[PosWindow] Failed to load button image for {Kind} {Id}", kind, id);
             }
         });
     }
