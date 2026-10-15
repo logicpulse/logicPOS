@@ -1332,16 +1332,18 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         var kind = FormDecimal.KindFor(property.Name);
         if (string.IsNullOrWhiteSpace(raw))
         {
-            if (FormDecimal.EmptyPolicy(property.Name) == FormDecimal.MeasuredEmpty.StoreZero)
+            if (FormDecimal.ValueWhenEmpty(property.Name) is decimal emptyValue)
             {
-                if (Nullable.GetUnderlyingType(property.PropertyType) is not null)
+                if (Nullable.GetUnderlyingType(property.PropertyType) is not null && emptyValue == 0m)
                 {
                     property.SetValue(entity, null);
                 }
                 else
                 {
-                    object zero = underlying == typeof(float) ? 0f : underlying == typeof(double) ? 0d : 0m;
-                    property.SetValue(entity, zero);
+                    object emptyStored = underlying == typeof(float) ? (float)emptyValue
+                        : underlying == typeof(double) ? (double)emptyValue
+                        : emptyValue;
+                    property.SetValue(entity, emptyStored);
                 }
 
                 return true;

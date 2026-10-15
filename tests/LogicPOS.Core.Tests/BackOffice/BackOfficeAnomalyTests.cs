@@ -300,7 +300,7 @@ public class BackOfficeAnomalyTests
         Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Quantity"));
         Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Price"));
         Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("Price1"));
-        Assert.Equal(FormDecimal.MeasuredEmpty.Required, FormDecimal.EmptyPolicy("DefaultQuantity"));
+        Assert.Equal(FormDecimal.MeasuredEmpty.StoreOne, FormDecimal.EmptyPolicy("DefaultQuantity"));
         Assert.Equal(FormDecimal.MeasuredEmpty.NotMeasured, FormDecimal.EmptyPolicy("Discount"));
 
         var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
@@ -317,6 +317,28 @@ public class BackOfficeAnomalyTests
 
         var required = ArticleFormRules.Validate(
             ValidArticle(parent, new Dictionary<string, string> { ["Price1"] = "" }),
+            vatRequiresExemption: false,
+            parent);
+        Assert.Equal("Indique o preço 1.", required);
+    }
+
+    [Fact]
+    public void Empty_default_quantity_is_optional_and_stores_one()
+    {
+        Assert.Equal(1m, FormDecimal.ValueWhenEmpty("DefaultQuantity"));
+        Assert.Equal(0m, FormDecimal.ValueWhenEmpty("MinimumStock"));
+        Assert.Null(FormDecimal.ValueWhenEmpty("Quantity"));
+        Assert.Null(FormDecimal.ValueWhenEmpty("Price1"));
+
+        var parent = Guid.Parse("11111111-1111-1111-1111-111111111111");
+        var saved = ArticleFormRules.Validate(
+            ValidArticle(parent, new Dictionary<string, string> { ["DefaultQuantity"] = "" }),
+            vatRequiresExemption: false,
+            parent);
+        Assert.Null(saved);
+
+        var required = ArticleFormRules.Validate(
+            ValidArticle(parent, new Dictionary<string, string> { ["Price1"] = " " }),
             vatRequiresExemption: false,
             parent);
         Assert.Equal("Indique o preço 1.", required);

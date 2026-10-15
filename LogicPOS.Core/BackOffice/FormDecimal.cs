@@ -84,11 +84,18 @@ public static class FormDecimal
     {
         NotMeasured,
         StoreZero,
+        StoreOne,
         Required
     }
 
     public static MeasuredEmpty EmptyPolicy(string? key)
     {
+        // dev ArticleCreator stores 1 when DefaultQuantity is omitted, and the article form does not require it.
+        if (key == "DefaultQuantity")
+        {
+            return MeasuredEmpty.StoreOne;
+        }
+
         if (IsOptionalMeasuredKey(key))
         {
             return MeasuredEmpty.StoreZero;
@@ -101,6 +108,15 @@ public static class FormDecimal
 
         return MeasuredEmpty.NotMeasured;
     }
+
+    /// <summary>Value written when a measured field is left blank. Null means the field is required.</summary>
+    public static decimal? ValueWhenEmpty(string? key)
+        => EmptyPolicy(key) switch
+        {
+            MeasuredEmpty.StoreZero => 0m,
+            MeasuredEmpty.StoreOne => 1m,
+            _ => null
+        };
 
     public static string Format(decimal value, FormDecimalKind kind = FormDecimalKind.Quantity)
     {
