@@ -11,15 +11,27 @@ namespace LogicPOS.Persistence.Services;
 /// </summary>
 public static class PerformanceIndexBootstrap
 {
-    private static readonly (string Table, string Name, string[] Columns)[] IndexDefinitions =
+    /// <summary>
+    /// Fixed whitelist of index definitions. DDL identifiers (table, index, column names)
+    /// are built only from these constants, never from external input.
+    /// </summary>
+    private static readonly IndexDefinition[] IndexDefinitions =
     [
-        ("Articles", "IX_Articles_IsDeleted_Order", ["IsDeleted", "Order"]),
-        ("Articles", "IX_Articles_Favorite", ["Favorite"]),
-        ("ArticleFamilies", "IX_ArticleFamilies_IsDeleted_Order", ["IsDeleted", "Order"]),
-        ("ArticleSubfamilies", "IX_ArticleSubfamilies_IsDeleted_Order", ["IsDeleted", "Order"]),
-        ("Documents", "IX_Documents_IsDeleted_CreatedAt", ["IsDeleted", "CreatedAt"]),
-        ("Customers", "IX_Customers_IsDeleted", ["IsDeleted"])
+        new("Articles", "IX_Articles_IsDeleted_Order", ["IsDeleted", "Order"]),
+        new("Articles", "IX_Articles_Favorite", ["Favorite"]),
+        new("ArticleFamilies", "IX_ArticleFamilies_IsDeleted_Order", ["IsDeleted", "Order"]),
+        new("ArticleSubfamilies", "IX_ArticleSubfamilies_IsDeleted_Order", ["IsDeleted", "Order"]),
+        new("Documents", "IX_Documents_IsDeleted_CreatedAt", ["IsDeleted", "CreatedAt"]),
+        new("Customers", "IX_Customers_IsDeleted", ["IsDeleted"])
     ];
+
+    private static readonly HashSet<string> AllowedTables = new(
+        IndexDefinitions.Select(d => d.Table),
+        StringComparer.OrdinalIgnoreCase);
+
+    private static readonly HashSet<string> AllowedIndexNames = new(
+        IndexDefinitions.Select(d => d.Name),
+        StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// Ensures performance indexes exist on the database.
@@ -37,29 +49,29 @@ public static class PerformanceIndexBootstrap
             var providerName = database.Database.ProviderName ?? string.Empty;
             var isSqlite = providerName.Contains("Sqlite", StringComparison.OrdinalIgnoreCase);
             var isMySql = providerName.Contains("MySql", StringComparison.OrdinalIgnoreCase)
-                       || providerName.Contains("Pomelo", StringComparison.OrdinalIgnoreCase);
+                          || providerName.Contains("Pomelo", StringComparison.OrdinalIgnoreCase);
             var isSqlServer = providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase);
 
-            foreach (var (table, name, columns) in IndexDefinitions)
+            foreach (var definition in IndexDefinitions)
             {
                 try
                 {
                     if (isSqlite)
                     {
-                        CreateIndexSqlite(database, table, name, columns);
+                        CreateIndexSqlite(database, definition);
                     }
                     else if (isMySql)
                     {
-                        CreateIndexMySql(database, table, name, columns, logger);
+                        CreateIndexMySql(database, definition, logger);
                     }
                     else if (isSqlServer)
                     {
-                        CreateIndexSqlServer(database, table, name, columns);
+                        CreateIndexSqlServer(database, definition);
                     }
                 }
                 catch (Exception ex)
                 {
-                    logger?.LogWarning(ex, "Index {IndexName} creation failed (non-fatal)", name);
+                    logger?.LogWarning(ex, "Index {IndexName} creation failed (non-fatal)", definition.Name);
                 }
             }
 
@@ -71,19 +83,24 @@ public static class PerformanceIndexBootstrap
         }
     }
 
-    private static void CreateIndexSqlite(LogicPOSDbContext database, string table, string name, string[] columns)
+    private static void CreateIndexSqlite(LogicPOSDbContext database, IndexDefinition definition)
     {
-        var columnList = string.Join(", ", columns.Select(c => c == "Order" ? "\"Order\"" : c));
-        var sql = $"CREATE INDEX IF NOT EXISTS \"{name}\" ON \"{table}\" ({columnList})";
+        ValidateDefinition(definition);
+        var columnList = FormatColumns(definition.Columns, c => c == "Order" ? "\"Order\"" : $"\"{c}\"");
+        var sql = $"CREATE INDEX IF NOT EXISTS \"{definition.Name}\" ON \"{definition.Table}\" ({columnList})";
         database.Database.ExecuteSqlRaw(sql);
     }
 
-    private static void CreateIndexMySql(LogicPOSDbContext database, string table, string name, string[] columns, ILogger? logger)
+    private static void CreateIndexMySql(LogicPOSDbContext database, IndexDefinition definition, ILogger? logger)
     {
+        ValidateDefinition(definition);
         try
         {
             var exists = database.Database
-                .SqlQueryRaw<int>($"SELECT COUNT(*) AS Value FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '{table}' AND INDEX_NAME = '{name}'")
+                .SqlQueryRaw<int>(
+                    "SELECT COUNT(*) AS Value FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = {0} AND INDEX_NAME = {1}",
+                    definition.Table,
+                    definition.Name)
                 .AsEnumerable()
                 .FirstOrDefault();
 
@@ -92,28 +109,59 @@ public static class PerformanceIndexBootstrap
                 return;
             }
 
-            var columnList = string.Join(", ", columns.Select(c => c == "Order" ? "`Order`" : $"`{c}`"));
-            var sql = $"CREATE INDEX `{name}` ON `{table}` ({columnList})";
+            var columnList = FormatColumns(definition.Columns, c => c == "Order" ? "`Order`" : $"`{c}`");
+            var sql = $"CREATE INDEX `{definition.Name}` ON `{definition.Table}` ({columnList})";
             database.Database.ExecuteSqlRaw(sql);
         }
         catch (Exception ex)
         {
-            logger?.LogWarning(ex, "MySQL index {IndexName} check/create failed", name);
+            logger?.LogWarning(ex, "MySQL index {IndexName} check/create failed", definition.Name);
         }
     }
 
-    private static void CreateIndexSqlServer(LogicPOSDbContext database, string table, string name, string[] columns)
+    private static void CreateIndexSqlServer(LogicPOSDbContext database, IndexDefinition definition)
     {
-        var columnList = string.Join(", ", columns.Select(c => c == "Order" ? "[Order]" : $"[{c}]"));
-        var sql = $@"
-            IF NOT EXISTS (
-                SELECT 1 FROM sys.indexes i
-                INNER JOIN sys.objects o ON i.object_id = o.object_id
-                WHERE i.name = N'{name}' AND o.name = N'{table}' AND o.type = 'U'
-            )
-            BEGIN
-                CREATE INDEX [{name}] ON [{table}] ({columnList})
-            END";
+        ValidateDefinition(definition);
+
+        var existsQuery = database.Database
+            .SqlQueryRaw<int>(
+                @"SELECT CASE WHEN EXISTS (
+                    SELECT 1 FROM sys.indexes i
+                    INNER JOIN sys.objects o ON i.object_id = o.object_id
+                    WHERE i.name = {0} AND o.name = {1} AND o.type = 'U'
+                ) THEN 1 ELSE 0 END AS Value",
+                definition.Name,
+                definition.Table)
+            .AsEnumerable()
+            .FirstOrDefault();
+
+        if (existsQuery > 0)
+        {
+            return;
+        }
+
+        var columnList = FormatColumns(definition.Columns, c => c == "Order" ? "[Order]" : $"[{c}]");
+        var sql = $"CREATE INDEX [{definition.Name}] ON [{definition.Table}] ({columnList})";
         database.Database.ExecuteSqlRaw(sql);
     }
+
+    private static void ValidateDefinition(IndexDefinition definition)
+    {
+        if (!AllowedTables.Contains(definition.Table))
+        {
+            throw new InvalidOperationException($"Table '{definition.Table}' is not in the allowed whitelist.");
+        }
+
+        if (!AllowedIndexNames.Contains(definition.Name))
+        {
+            throw new InvalidOperationException($"Index '{definition.Name}' is not in the allowed whitelist.");
+        }
+    }
+
+    private static string FormatColumns(string[] columns, Func<string, string> formatter)
+    {
+        return string.Join(", ", columns.Select(formatter));
+    }
+
+    private sealed record IndexDefinition(string Table, string Name, string[] Columns);
 }
