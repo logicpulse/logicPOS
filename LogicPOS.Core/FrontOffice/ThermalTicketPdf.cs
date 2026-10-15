@@ -228,7 +228,9 @@ public static class ThermalTicketPdf
         private void ComposeFiscal(ColumnDescriptor column)
         {
             var document = _data.Document!;
-            if (string.IsNullOrWhiteSpace(document.Atcud) == false)
+            // Public edition / no AT series code: OrFallback yields "-n" — do not print ATCUD.
+            if (string.IsNullOrWhiteSpace(document.AtDocCodeId) == false
+                && string.IsNullOrWhiteSpace(document.Atcud) == false)
             {
                 column.Item().AlignCenter().Text($"ATCUD: {document.Atcud}").FontSize(7);
             }
