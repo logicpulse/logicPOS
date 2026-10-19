@@ -47,6 +47,7 @@ public partial class PosWindow : Window, IOfficeSurface
     private int _familyPage;
     private int _subfamilyPage;
     private int _articlePage;
+    private int _menuVersion;
     private readonly PosTicket _ticket = new();
     private readonly ScannerInputReader _scanner;
     private TextBlock? _amountDue;
@@ -414,7 +415,9 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         _menuControls.Clear();
+        var version = ++_menuVersion;
         var layout = _layout;
+        var images = new List<MenuImageRequest>();
 
         var favoritesButton = CreateMenuButton(
             "Favoritos",
@@ -439,7 +442,7 @@ public partial class PosWindow : Window, IOfficeSurface
                 family.Id == _familyId && _showFavorites == false,
                 () => SelectFamily(family.Id));
             PlaceMenu(button, layout.FamilyX, layout.FamilyY + (index * layout.ButtonHeight), layout.ButtonWidth, layout.ButtonHeight);
-            LoadButtonImageAsync(button, ButtonImageKind.Family, family.Id, fill: false);
+            images.Add(new MenuImageRequest(button, ButtonImageKind.Family, family.Id, false));
         }
 
         PlaceEmptySlots(families.Count, 1, layout.FamilyRows, layout.FamilyX, layout.FamilyY);
@@ -455,7 +458,7 @@ public partial class PosWindow : Window, IOfficeSurface
                 subfamily.Id == _subfamilyId && _showFavorites == false,
                 () => SelectSubfamily(subfamily.Id));
             PlaceMenu(button, layout.SubfamilyX + (index * layout.ButtonWidth), layout.SubfamilyY, layout.ButtonWidth, layout.ButtonHeight);
-            LoadButtonImageAsync(button, ButtonImageKind.Subfamily, subfamily.Id, fill: false);
+            images.Add(new MenuImageRequest(button, ButtonImageKind.Subfamily, subfamily.Id, false));
         }
 
         PlaceEmptySlots(subfamilies.Count, subfamilyColumns, 1, layout.SubfamilyX, layout.SubfamilyY);
@@ -478,7 +481,7 @@ public partial class PosWindow : Window, IOfficeSurface
                 layout.ArticleY + (row * layout.ButtonHeight),
                 layout.ButtonWidth,
                 layout.ButtonHeight);
-            LoadButtonImageAsync(button, ButtonImageKind.Article, article.Id, fill: true);
+            images.Add(new MenuImageRequest(button, ButtonImageKind.Article, article.Id, true));
         }
 
         PlaceEmptySlots(articles.Count, layout.ArticleColumns, layout.ArticleRows, layout.ArticleX, layout.ArticleY);
@@ -490,62 +493,82 @@ public partial class PosWindow : Window, IOfficeSurface
         SetScrollEnabled(_articlePrevious, _articlePage > 0);
         SetScrollEnabled(_articleNext, _articlePage < ArticlePageCount() - 1);
         ApplyFrontOfficeRules();
+        if (images.Count > 0)
+        {
+            _ = ApplyMenuImagesAsync(images, version);
+        }
     }
 
-    private void LoadButtonImageAsync(Button button, ButtonImageKind kind, Guid id, bool fill)
+    private async Task ApplyMenuImagesAsync(List<MenuImageRequest> requests, int version)
     {
         var catalogService = AppComposition.Services?.GetService<IPosCatalogService>();
-        if (catalogService is null)
+        if (catalogService is null || version != _menuVersion)
         {
             return;
         }
 
-        _ = Task.Run(async () =>
+        try
         {
-            try
+            var images = await catalogService.GetButtonImagesAsync(
+                requests.Where(item => item.Kind == ButtonImageKind.Family).Select(item => item.Id).ToList(),
+                requests.Where(item => item.Kind == ButtonImageKind.Subfamily).Select(item => item.Id).ToList(),
+                requests.Where(item => item.Kind == ButtonImageKind.Article).Select(item => item.Id).ToList());
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var imageBase64 = await catalogService.GetButtonImageAsync(kind, id);
-                if (string.IsNullOrWhiteSpace(imageBase64))
+                if (version != _menuVersion)
                 {
                     return;
                 }
 
-                await Dispatcher.UIThread.InvokeAsync(() =>
+                foreach (var request in requests)
                 {
-                    if (button.Content is not TextBlock textBlock)
+                    if (request.Button.Content is not TextBlock textBlock)
                     {
-                        return;
+                        continue;
+                    }
+
+                    var source = request.Kind switch
+                    {
+                        ButtonImageKind.Family => images.Families,
+                        ButtonImageKind.Subfamily => images.Subfamilies,
+                        _ => images.Articles
+                    };
+                    if (source.TryGetValue(request.Id, out var imageBase64) == false
+                        || string.IsNullOrWhiteSpace(imageBase64))
+                    {
+                        continue;
                     }
 
                     var bitmap = TryLoadBitmapFromBase64(imageBase64);
                     if (bitmap is null)
                     {
-                        return;
+                        continue;
                     }
 
-                    var text = textBlock.Text ?? string.Empty;
-                    var imageClass = fill ? "pos_menu_image_fill" : "pos_menu_image";
+                    var imageClass = request.Fill ? "pos_menu_image_fill" : "pos_menu_image";
                     var image = new Image
                     {
                         Classes = { imageClass },
                         Source = bitmap,
                         ClipToBounds = true
                     };
-                    var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
+                    var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = textBlock.Text ?? string.Empty };
                     var content = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
                     Grid.SetRow(image, 0);
                     Grid.SetRow(caption, 1);
                     content.Children.Add(image);
                     content.Children.Add(caption);
-                    button.Content = content;
-                });
-            }
-            catch (Exception ex)
-            {
-                AppLogging.Warning(ex, "[PosWindow] Failed to load button image for {Kind} {Id}", kind, id);
-            }
-        });
+                    request.Button.Content = content;
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            AppLogging.Warning(ex, "[PosWindow] Failed to load button images");
+        }
     }
+
+    private readonly record struct MenuImageRequest(Button Button, ButtonImageKind Kind, Guid Id, bool Fill);
 
     private void SelectFamily(Guid familyId)
     {
@@ -760,8 +783,20 @@ public partial class PosWindow : Window, IOfficeSurface
         try
         {
             var bytes = Convert.FromBase64String(payload);
-            using var stream = new MemoryStream(bytes);
-            var bitmap = new Bitmap(stream);
+            // Keep the stream alive: Avalonia decodes from it while the bitmap is in use.
+            var bitmap = new Bitmap(new MemoryStream(bytes));
+            _bitmaps[payload] = bitmap;
+            return bitmap;
+        }
+        catch (FormatException)
+        {
+            var path = ResolveButtonImagePath(payload);
+            if (path is null)
+            {
+                return null;
+            }
+
+            var bitmap = new Bitmap(path);
             _bitmaps[payload] = bitmap;
             return bitmap;
         }
@@ -769,6 +804,18 @@ public partial class PosWindow : Window, IOfficeSurface
         {
             return null;
         }
+    }
+
+    private static string? ResolveButtonImagePath(string value)
+    {
+        if (File.Exists(value))
+        {
+            return value;
+        }
+
+        var relative = value.TrimStart('\\', '/');
+        var besideApp = Path.Combine(AppContext.BaseDirectory, relative);
+        return File.Exists(besideApp) ? besideApp : null;
     }
 
     private Button CreateScroll(string iconUri, Action click)

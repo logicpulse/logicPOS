@@ -233,7 +233,7 @@ public class ReceiptModel : IDocument
 
 
                     customerTable.Cell().Border(0.5f).BorderColor(Color.FromRGB(192, 194, 196)).AlignCenter().Padding(1)
-                        .Text($"{Data.Document!.CustomerOrder}");
+                        .Text($"{Data.Receipt!.Customer.Order}");
                     customerTable.Cell().Border(0.5f).BorderColor(Color.FromRGB(192, 194, 196)).AlignCenter().Padding(1)
                         .Text(Data.Receipt!.Customer.FiscalNumber);
                     customerTable.Cell().Border(0.5f).BorderColor(Color.FromRGB(192, 194, 196)).AlignCenter().Padding(1)
@@ -398,6 +398,8 @@ public class ReceiptModel : IDocument
             });
         });
     }
+
+    public byte[] ToPdf() => this.GeneratePdf();
 
     public void Compose(IDocumentContainer container)
     {

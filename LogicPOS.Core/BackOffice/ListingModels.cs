@@ -35,7 +35,7 @@ public sealed class ListingField
 
     public required string Kind { get; init; }
 
-    public string Value { get; init; } = string.Empty;
+    public string Value { get; set; } = string.Empty;
 
     public string? Lookup { get; init; }
 

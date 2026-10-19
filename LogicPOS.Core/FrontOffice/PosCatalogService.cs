@@ -10,8 +10,8 @@ public sealed class PosCatalogService : IPosCatalogService
     private const int MaxCacheEntries = 500;
 
     private readonly IServiceScopeFactory _scopes;
-    private readonly ConcurrentDictionary<(ButtonImageKind Kind, Guid Id), Lazy<Task<string?>>> _imageCache = new();
-    private readonly SemaphoreSlim _loadSemaphore = new(4);
+    private readonly ConcurrentDictionary<(ButtonImageKind Kind, Guid Id), string?> _imageCache = new();
+    private readonly SemaphoreSlim _loadSemaphore = new(1);
     private readonly object _evictionLock = new();
 
     public PosCatalogService(IServiceScopeFactory scopes)
@@ -110,27 +110,121 @@ public sealed class PosCatalogService : IPosCatalogService
 
     public async Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)
     {
-        var key = (kind, id);
+        if (_imageCache.TryGetValue((kind, id), out var cached))
+        {
+            return cached;
+        }
 
-        var lazyTask = _imageCache.GetOrAdd(
-            key,
-            k => new Lazy<Task<string?>>(() => LoadImageFromDbAsync(k.Kind, k.Id, CancellationToken.None)));
+        var image = await LoadImageFromDbAsync(kind, id, cancellationToken);
+        _imageCache[(kind, id)] = image;
+        EvictIfNeeded();
+        return image;
+    }
+
+    public async Task<PosButtonImages> GetButtonImagesAsync(
+        IReadOnlyCollection<Guid> familyIds,
+        IReadOnlyCollection<Guid> subfamilyIds,
+        IReadOnlyCollection<Guid> articleIds,
+        CancellationToken cancellationToken = default)
+    {
+        var families = Missing(ButtonImageKind.Family, familyIds);
+        var subfamilies = Missing(ButtonImageKind.Subfamily, subfamilyIds);
+        var articles = Missing(ButtonImageKind.Article, articleIds);
+        if (families.Count > 0 || subfamilies.Count > 0 || articles.Count > 0)
+        {
+            await _loadSemaphore.WaitAsync(cancellationToken);
+            try
+            {
+                families = Missing(ButtonImageKind.Family, familyIds);
+                subfamilies = Missing(ButtonImageKind.Subfamily, subfamilyIds);
+                articles = Missing(ButtonImageKind.Article, articleIds);
+                await using var scope = _scopes.CreateAsyncScope();
+                var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+                if (families.Count > 0)
+                {
+                    var rows = await database.ArticleFamilies.AsNoTracking()
+                        .Where(item => families.Contains(item.Id))
+                        .Select(item => new { item.Id, Image = item.Button == null ? null : item.Button.Image })
+                        .ToListAsync(cancellationToken);
+                    Remember(ButtonImageKind.Family, rows.Select(item => (item.Id, item.Image)), families);
+                }
+
+                if (subfamilies.Count > 0)
+                {
+                    var rows = await database.ArticleSubfamilies.AsNoTracking()
+                        .Where(item => subfamilies.Contains(item.Id))
+                        .Select(item => new { item.Id, Image = item.Button == null ? null : item.Button.Image })
+                        .ToListAsync(cancellationToken);
+                    Remember(ButtonImageKind.Subfamily, rows.Select(item => (item.Id, item.Image)), subfamilies);
+                }
+
+                if (articles.Count > 0)
+                {
+                    var rows = await database.Articles.AsNoTracking()
+                        .Where(item => articles.Contains(item.Id))
+                        .Select(item => new { item.Id, item.Button.Image })
+                        .ToListAsync(cancellationToken);
+                    Remember(ButtonImageKind.Article, rows.Select(item => (item.Id, item.Image)), articles);
+                }
+            }
+            finally
+            {
+                _loadSemaphore.Release();
+            }
+        }
+
+        return new PosButtonImages(
+            ReadCached(ButtonImageKind.Family, familyIds),
+            ReadCached(ButtonImageKind.Subfamily, subfamilyIds),
+            ReadCached(ButtonImageKind.Article, articleIds));
+    }
+
+    private List<Guid> Missing(ButtonImageKind kind, IReadOnlyCollection<Guid> ids)
+    {
+        var missing = new List<Guid>();
+        foreach (var id in ids)
+        {
+            if (_imageCache.ContainsKey((kind, id)) == false)
+            {
+                missing.Add(id);
+            }
+        }
+
+        return missing;
+    }
+
+    private void Remember(ButtonImageKind kind, IEnumerable<(Guid Id, string? Image)> rows, IReadOnlyCollection<Guid> requested)
+    {
+        var found = new HashSet<Guid>();
+        foreach (var row in rows)
+        {
+            found.Add(row.Id);
+            _imageCache[(kind, row.Id)] = row.Image;
+        }
+
+        foreach (var id in requested)
+        {
+            if (found.Contains(id) == false)
+            {
+                _imageCache[(kind, id)] = null;
+            }
+        }
 
         EvictIfNeeded();
+    }
 
-        try
+    private Dictionary<Guid, string?> ReadCached(ButtonImageKind kind, IReadOnlyCollection<Guid> ids)
+    {
+        var images = new Dictionary<Guid, string?>();
+        foreach (var id in ids)
         {
-            return await lazyTask.Value.WaitAsync(cancellationToken);
+            if (_imageCache.TryGetValue((kind, id), out var image))
+            {
+                images[id] = image;
+            }
         }
-        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
-        {
-            throw;
-        }
-        catch
-        {
-            _imageCache.TryRemove(KeyValuePair.Create(key, lazyTask));
-            throw;
-        }
+
+        return images;
     }
 
     public void ClearImageCache()
@@ -150,20 +244,20 @@ public sealed class PosCatalogService : IPosCatalogService
             {
                 ButtonImageKind.Family => await database.ArticleFamilies
                     .AsNoTracking()
-                    .Where(f => f.Id == id && f.Button != null)
-                    .Select(f => f.Button!.Image)
+                    .Where(f => f.Id == id)
+                    .Select(f => f.Button == null ? null : f.Button.Image)
                     .FirstOrDefaultAsync(cancellationToken),
 
                 ButtonImageKind.Subfamily => await database.ArticleSubfamilies
                     .AsNoTracking()
-                    .Where(s => s.Id == id && s.Button != null)
-                    .Select(s => s.Button!.Image)
+                    .Where(s => s.Id == id)
+                    .Select(s => s.Button == null ? null : s.Button.Image)
                     .FirstOrDefaultAsync(cancellationToken),
 
                 ButtonImageKind.Article => await database.Articles
                     .AsNoTracking()
-                    .Where(a => a.Id == id && a.Button != null)
-                    .Select(a => a.Button!.Image)
+                    .Where(a => a.Id == id)
+                    .Select(a => a.Button.Image)
                     .FirstOrDefaultAsync(cancellationToken),
 
                 _ => null

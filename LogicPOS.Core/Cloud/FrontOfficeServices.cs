@@ -11,8 +11,40 @@ public interface IPosCatalogService
     Task<string?> GetButtonImageAsync(ButtonImageKind kind, Guid id, CancellationToken cancellationToken = default)
         => Task.FromResult<string?>(null);
 
+    /// <summary>Loads button images for the ids on screen in one database round.</summary>
+    Task<PosButtonImages> GetButtonImagesAsync(
+        IReadOnlyCollection<Guid> familyIds,
+        IReadOnlyCollection<Guid> subfamilyIds,
+        IReadOnlyCollection<Guid> articleIds,
+        CancellationToken cancellationToken = default)
+        => Task.FromResult(PosButtonImages.Empty);
+
     /// <summary>Clears the in-memory image cache.</summary>
     void ClearImageCache() { }
+}
+
+public sealed class PosButtonImages
+{
+    public PosButtonImages(
+        IReadOnlyDictionary<Guid, string?> families,
+        IReadOnlyDictionary<Guid, string?> subfamilies,
+        IReadOnlyDictionary<Guid, string?> articles)
+    {
+        Families = families;
+        Subfamilies = subfamilies;
+        Articles = articles;
+    }
+
+    public IReadOnlyDictionary<Guid, string?> Families { get; }
+
+    public IReadOnlyDictionary<Guid, string?> Subfamilies { get; }
+
+    public IReadOnlyDictionary<Guid, string?> Articles { get; }
+
+    public static PosButtonImages Empty { get; } = new(
+        new Dictionary<Guid, string?>(),
+        new Dictionary<Guid, string?>(),
+        new Dictionary<Guid, string?>());
 }
 
 public interface IPosCustomerService
@@ -97,6 +129,8 @@ public interface IPosDocumentService
         CancellationToken cancellationToken = default);
 
     Task<string?> CreateA4FileAsync(Guid documentId, CancellationToken cancellationToken = default);
+
+    Task<string?> CreateReceiptFileAsync(Guid receiptId, CancellationToken cancellationToken = default);
 
     /// <summary>GTK PosDocumentFinancePrintDialog options for an already-printed document.</summary>
     Task<DocumentPrintDialogOptions?> GetPrintDialogOptionsAsync(Guid documentId, CancellationToken cancellationToken = default);

@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PdfDocument = LogicPOS.Application.Features.Finance.Documents.PdfGeneration.Document;
 using PdfDocumentDetail = LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentDetail;
 using PdfPaymentMethod = LogicPOS.Application.Features.Finance.Documents.PdfGeneration.PaymentMethod;
+using PdfReceipt = LogicPOS.Application.Features.Finance.Documents.PdfGeneration.Receipt;
 
 namespace LogicPOS.Core.FrontOffice;
 
@@ -1615,6 +1616,122 @@ public sealed class PosDocumentService : IPosDocumentService
         var bytes = useTicketLayout
             ? ThermalTicketPdf.Render(data, isSecondCopy)
             : A4DocumentPdf.Render(data, isSecondCopy);
+        await File.WriteAllBytesAsync(path, bytes, cancellationToken);
+        return path;
+    }
+
+    public async Task<string?> CreateReceiptFileAsync(Guid receiptId, CancellationToken cancellationToken = default)
+    {
+        if (receiptId == Guid.Empty)
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var receipt = await database.Receipts
+            .AsNoTracking()
+            .Include(item => item.PaymentMethod)
+            .FirstOrDefaultAsync(item => item.Id == receiptId && item.IsDeleted == false, cancellationToken);
+        if (receipt is null)
+        {
+            return null;
+        }
+
+        var links = await database.Payments
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.ReceiptId == receiptId)
+            .Select(item => new { item.DocumentId, item.CreditAmount, item.DebitAmount })
+            .ToListAsync(cancellationToken);
+        var documentIds = links.Select(item => item.DocumentId).ToHashSet();
+        var documents = await database.Documents
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false && documentIds.Contains(item.Id))
+            .Select(item => new
+            {
+                item.Id,
+                item.Number,
+                item.CreatedAt,
+                item.TotalFinal,
+                item.Paid,
+                item.CustomerId,
+                item.Customer
+            })
+            .ToListAsync(cancellationToken);
+        var byId = documents.ToDictionary(item => item.Id);
+        var customer = documents.Select(item => item.Customer).FirstOrDefault(item => item is not null);
+        var customerId = documents.Select(item => item.CustomerId).FirstOrDefault(item => item != Guid.Empty);
+        var customerOrder = customerId == Guid.Empty
+            ? 0u
+            : await database.Customers.AsNoTracking()
+                .Where(item => item.Id == customerId)
+                .Select(item => item.Order)
+                .FirstOrDefaultAsync(cancellationToken);
+        var currency = await database.Currencies.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Acronym == receipt.CurrencyCode)
+            .Select(item => new { item.Designation, item.Acronym })
+            .FirstOrDefaultAsync(cancellationToken);
+
+        var pdf = new PdfReceipt
+        {
+            RefNo = string.IsNullOrWhiteSpace(receipt.RefNo) ? receipt.SourceId : receipt.RefNo,
+            Amount = receipt.Amount,
+            AmountInWords = receipt.AmountInWords,
+            Notes = receipt.Notes,
+            CurrencyCode = receipt.CurrencyCode,
+            CurrencyDesignation = currency?.Designation ?? receipt.CurrencyCode,
+            CurrencyAcronym = currency?.Acronym ?? receipt.CurrencyCode,
+            Atcud = receipt.Atcud,
+            QrCode = receipt.QrCode,
+            CreatedAt = receipt.CreatedAt,
+            Status = receipt.Status,
+            WithholdingTaxAmount = receipt.WithholdingTaxAmount,
+            PaymentMethod = receipt.PaymentMethod?.Designation ?? string.Empty,
+            RelatedDocs = documents.Select(item => item.Number).ToArray(),
+            Customer = new PdfReceipt.ReceiptCustomer
+            {
+                Id = customerId,
+                Name = customer?.Name ?? string.Empty,
+                Order = customerOrder,
+                FiscalNumber = customer?.FiscalNumber ?? string.Empty,
+                Address = customer?.Address,
+                City = customer?.City,
+                ZipCode = customer?.ZipCode,
+                Country = customer?.Country
+            },
+            Payments = links
+                .Where(item => byId.ContainsKey(item.DocumentId))
+                .Select(item =>
+                {
+                    var document = byId[item.DocumentId];
+                    return new PdfReceipt.ReceiptPayment
+                    {
+                        CreditAmount = item.CreditAmount,
+                        DebitAmount = item.DebitAmount,
+                        Document = new PdfReceipt.ReceiptPayment.ReceiptPaymentDocument
+                        {
+                            Id = document.Id,
+                            CreatedAt = document.CreatedAt,
+                            Number = document.Number,
+                            TotalFinal = document.TotalFinal,
+                            Paid = document.Paid
+                        }
+                    };
+                })
+                .ToList()
+        };
+
+        var data = new LogicPOS.Application.Features.Finance.Documents.PdfGeneration.DocumentPdfData
+        {
+            Company = await ReadCompanyAsync(database, cancellationToken),
+            Country = SystemCountry,
+            UseAgtRounding = UseAgtRoundingForDocuments(),
+            Receipt = pdf,
+            SoftwareVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0"
+        };
+        var safeNumber = string.Concat((pdf.RefNo ?? "recibo").Select(character => Path.GetInvalidFileNameChars().Contains(character) ? '_' : character));
+        var path = Path.Combine(Path.GetTempPath(), $"logicpos-recibo-{safeNumber}.pdf");
+        var bytes = new Pdf.ReceiptModel(data).ToPdf();
         await File.WriteAllBytesAsync(path, bytes, cancellationToken);
         return path;
     }

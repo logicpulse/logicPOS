@@ -313,7 +313,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return actions
             .Where(action => action.Key switch
             {
-                "register-at" => _system.IsPortugal(),
+                "register-at" => _system.IsPortugal() && AtSeriesCommunication.IsRequired(_system.GetCulture()),
                 "request-agt" or "request-series" => _system.IsAngola(),
                 _ => true
             })
@@ -342,6 +342,14 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         entity ??= Activator.CreateInstance(page.EntityType)!;
         var fields = Describe(page, entity, id is null);
+        if (entity is PreferenceParameter companyCountry && companyCountry.Token == "COMPANY_COUNTRY")
+        {
+            var countryField = fields.FirstOrDefault(field => field.Key == "Value");
+            if (countryField is not null)
+            {
+                countryField.Value = await CompanyCountryIdAsync(database, companyCountry.Value, cancellationToken);
+            }
+        }
         if (entity is Article article && id is Guid articleId && articleId != Guid.Empty)
         {
             await AddArticleExtrasAsync(database, fields, article, articleId, cancellationToken);
@@ -370,6 +378,23 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        if (type == typeof(Country))
+        {
+            var countries = await database.Countries.AsNoTracking()
+                .Where(item => item.IsDeleted == false)
+                .OrderBy(item => item.Designation)
+                .Select(item => new { item.Id, item.Designation, item.Code2 })
+                .ToListAsync(cancellationToken);
+            return countries
+                .Select(item => new LookupOption
+                {
+                    Id = item.Id,
+                    Label = item.Designation,
+                    Meta = item.Code2
+                })
+                .ToList();
+        }
+
         var rows = await MaterializeAsync(database, type, cancellationToken);
         var articles = type.Name == "Article";
         return rows
@@ -453,6 +478,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             if (error is not null)
             {
                 return ListingSaveResult.Fail(error);
+            }
+
+            if (entity is PreferenceParameter companyCountry && companyCountry.Token == "COMPANY_COUNTRY")
+            {
+                var countryError = await ApplyCompanyCountryAsync(database, companyCountry, fields, cancellationToken);
+                if (countryError is not null)
+                {
+                    return ListingSaveResult.Fail(countryError);
+                }
             }
 
             PrepareRequired(page.EntityType, entity, database);
@@ -947,6 +981,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             }
 
             var readOnly = page.CanEdit == false || (page.EntityType == typeof(PreferenceParameter) && property.Name is not ("Value" or "Notes"));
+            if (entity is PreferenceParameter lockedCountry
+                && lockedCountry.Token is "COMPANY_COUNTRY_CODE2" or "COMPANY_COUNTRY_OID"
+                && property.Name == "Value")
+            {
+                readOnly = true;
+            }
             if (creating && property.Name is "Code")
             {
                 readOnly = true;
@@ -983,6 +1023,23 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                     Value = price.UsePromotion ? "true" : "false",
                     ReadOnly = readOnly,
                     Group = group
+                });
+                continue;
+            }
+
+            if (entity is PreferenceParameter companyCountry
+                && companyCountry.Token == "COMPANY_COUNTRY"
+                && property.Name == "Value")
+            {
+                fields.Add(new ListingField
+                {
+                    Key = "Value",
+                    Label = FieldLabel(page.EntityType, property.Name),
+                    Kind = "lookup",
+                    Lookup = nameof(Country),
+                    Value = string.Empty,
+                    Required = true,
+                    Group = FieldGroup(page.EntityType, property.Name)
                 });
                 continue;
             }
@@ -1869,6 +1926,85 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         return null;
     }
 
+    private async Task<string> CompanyCountryIdAsync(LogicPOSDbContext database, string? designation, CancellationToken cancellationToken)
+    {
+        var storedId = await database.PreferenceParameters.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Token == "COMPANY_COUNTRY_OID")
+            .Select(item => item.Value)
+            .FirstOrDefaultAsync(cancellationToken);
+        if (Guid.TryParse(storedId, out var countryId) && countryId != Guid.Empty
+            && await database.Countries.AsNoTracking().AnyAsync(item => item.Id == countryId && item.IsDeleted == false, cancellationToken))
+        {
+            return countryId.ToString();
+        }
+
+        if (string.IsNullOrWhiteSpace(designation))
+        {
+            return string.Empty;
+        }
+
+        var match = await database.Countries.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.Designation == designation)
+            .Select(item => item.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+        return match == Guid.Empty ? string.Empty : match.ToString();
+    }
+
+    private static async Task<string?> ApplyCompanyCountryAsync(
+        LogicPOSDbContext database,
+        PreferenceParameter companyCountry,
+        IReadOnlyDictionary<string, string> fields,
+        CancellationToken cancellationToken)
+    {
+        if (fields.TryGetValue("Value", out var raw) == false || string.IsNullOrWhiteSpace(raw))
+        {
+            return "Escolha o país.";
+        }
+
+        var country = Guid.TryParse(raw, out var countryId) && countryId != Guid.Empty
+            ? await database.Countries.AsNoTracking()
+                .FirstOrDefaultAsync(item => item.Id == countryId && item.IsDeleted == false, cancellationToken)
+            : await database.Countries.AsNoTracking()
+                .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Designation == raw.Trim(), cancellationToken);
+        if (country is null)
+        {
+            return "País inválido.";
+        }
+
+        companyCountry.Value = country.Designation;
+        var related = await database.PreferenceParameters
+            .Where(item => item.IsDeleted == false && (item.Token == "COMPANY_COUNTRY_OID" || item.Token == "COMPANY_COUNTRY_CODE2"))
+            .ToListAsync(cancellationToken);
+        WriteCountryParameter(database, related, "COMPANY_COUNTRY_OID", country.Id.ToString());
+        WriteCountryParameter(database, related, "COMPANY_COUNTRY_CODE2", country.Code2);
+        return null;
+    }
+
+    private static void WriteCountryParameter(LogicPOSDbContext database, List<PreferenceParameter> related, string token, string value)
+    {
+        var row = related.FirstOrDefault(item => string.Equals(item.Token, token, StringComparison.OrdinalIgnoreCase));
+        if (row is null)
+        {
+            row = new PreferenceParameter
+            {
+                Id = Guid.NewGuid(),
+                Token = token,
+                Code = token == "COMPANY_COUNTRY_OID" ? "71" : "80",
+                Order = token == "COMPANY_COUNTRY_OID" ? 71u : 80u,
+                Required = true,
+                RegEx = token == "COMPANY_COUNTRY_OID" ? "RegexGuid" : "RegexAlfaCountryCode2",
+                ResourceString = token == "COMPANY_COUNTRY_OID" ? "prefparam_company_country_oid" : "prefparam_company_country_code2",
+                FormType = 1,
+                InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.Text,
+                CreatedAt = DateTime.Now
+            };
+            database.PreferenceParameters.Add(row);
+        }
+
+        row.Value = value;
+        row.UpdatedAt = DateTime.Now;
+    }
+
     private static bool CanRemove(object entity)
     {
         if (entity is User user && user.Name is "Proprietário" or "Utilizador")
@@ -2491,23 +2627,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         await using var scope = _scopes.CreateAsyncScope();
-        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var documents = scope.ServiceProvider.GetRequiredService<IPosDocumentService>();
-        var documentId = receiptId;
-        var receipt = await database.Receipts.AsNoTracking().FirstOrDefaultAsync(item => item.Id == receiptId, cancellationToken);
-        if (receipt is not null)
-        {
-            var match = await database.Documents.AsNoTracking()
-                .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Number == receipt.RefNo, cancellationToken);
-            if (match is null)
-            {
-                return ListingSaveResult.Fail("Não foi possível abrir o recibo.");
-            }
-
-            documentId = match.Id;
-        }
-
-        var path = await documents.CreateA4FileAsync(documentId, cancellationToken);
+        var path = await documents.CreateReceiptFileAsync(receiptId, cancellationToken);
         return string.IsNullOrWhiteSpace(path)
             ? ListingSaveResult.Fail("Não foi possível abrir o recibo.")
             : ListingSaveResult.Ok(receiptId, path);

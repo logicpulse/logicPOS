@@ -1,8 +1,13 @@
+using System.Globalization;
+using System.Text;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,8 +21,11 @@ public partial class SettingsPage : UserControl
         "Empresa", "Geral", "SAFT", "Email", "Impressão", "Backup", "Stock", "Relatórios", "Pastas", "Notificações", "Outros"
     ];
 
-    private readonly List<(Guid Id, string Order, string Code, string Notes, Func<string> Read)> _fields = new();
+    private readonly List<(Guid Id, string Token, string Order, string Code, string Notes, Func<string> Read)> _fields = new();
     private readonly Dictionary<string, Grid> _pages = new();
+    private readonly Dictionary<string, Control> _byToken = new(StringComparer.OrdinalIgnoreCase);
+    private List<LookupOption> _countries = [];
+    private static List<LookupOption>? _countryCache;
     private string _title = string.Empty;
     private string _tab = string.Empty;
 
@@ -33,6 +41,8 @@ public partial class SettingsPage : UserControl
         Notice.Text = string.Empty;
         _fields.Clear();
         _pages.Clear();
+        _byToken.Clear();
+        _countries.Clear();
         FieldsHost.Children.Clear();
         TabBar.Children.Clear();
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
@@ -50,6 +60,26 @@ public partial class SettingsPage : UserControl
             rows = snapshot.Rows.ToList();
         }
 
+        if (rows.Any(row => row["Token"].Equals("COMPANY_COUNTRY", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (_countryCache is { Count: > 0 })
+            {
+                _countries = _countryCache;
+            }
+            else
+            {
+                _countries = (await service.LookupAsync("País")).ToList();
+                if (_countries.Count == 0)
+                {
+                    Notice.Text = "Não foi possível carregar a lista de países.";
+                }
+                else
+                {
+                    _countryCache = _countries;
+                }
+            }
+        }
+
         var groups = rows.GroupBy(row => Category(row["Token"])).ToDictionary(group => group.Key, group => group.ToList());
         var tabs = CategoryOrder.Where(groups.ContainsKey).ToList();
         foreach (var extra in groups.Keys.Where(key => tabs.Contains(key) == false))
@@ -65,6 +95,11 @@ public partial class SettingsPage : UserControl
             page.Opacity = tab == _tab ? 1 : 0;
             _pages[tab] = page;
             FieldsHost.Children.Add(page);
+        }
+
+        if (_byToken.TryGetValue("COMPANY_COUNTRY", out var countryInput) && countryInput.Tag is CountryPick countryPick)
+        {
+            ApplyCountryChoice(countryPick.Country);
         }
 
         BuildTabs(tabs);
@@ -98,15 +133,22 @@ public partial class SettingsPage : UserControl
         stack.Children.Add(new TextBlock { Classes = { "bo_doc_label" }, Text = PreferenceLabels.Title(label) });
         var input = CreateInput(row);
         stack.Children.Add(input);
+        _byToken[row["Token"]] = input;
         Grid.SetRow(stack, rowIndex);
         Grid.SetColumn(stack, column);
         grid.Children.Add(stack);
-        _fields.Add((row.Id, row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
+        _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
     }
 
     private Control CreateInput(ListingRow row)
     {
         var value = row["Value"];
+        var token = row["Token"];
+        if (token.Equals("COMPANY_COUNTRY", StringComparison.OrdinalIgnoreCase))
+        {
+            return CreateCountryField(value);
+        }
+
         var kind = row["InputType"];
         if (kind.Contains("FilePicker", StringComparison.OrdinalIgnoreCase))
         {
@@ -126,7 +168,9 @@ public partial class SettingsPage : UserControl
         {
             Classes = { kind.Contains("Multi", StringComparison.OrdinalIgnoreCase) ? "bo_entity_multiline" : "bo_entity_input" },
             Text = value,
-            AcceptsReturn = kind.Contains("Multi", StringComparison.OrdinalIgnoreCase)
+            AcceptsReturn = kind.Contains("Multi", StringComparison.OrdinalIgnoreCase),
+            IsReadOnly = token.Equals("COMPANY_COUNTRY_CODE2", StringComparison.OrdinalIgnoreCase)
+                || token.Equals("COMPANY_COUNTRY_OID", StringComparison.OrdinalIgnoreCase)
         };
         if (kind.Contains("Password", StringComparison.OrdinalIgnoreCase))
         {
@@ -134,6 +178,119 @@ public partial class SettingsPage : UserControl
         }
 
         return box;
+    }
+
+    private Control CreateCountryField(string designation)
+    {
+        var current = _countries.FirstOrDefault(item =>
+            string.Equals(item.Label, designation, StringComparison.CurrentCultureIgnoreCase));
+        var box = new TextBox
+        {
+            Classes = { "bo_entity_input" },
+            Text = current?.Label ?? designation,
+            Watermark = "Escreva para filtrar o país"
+        };
+        var list = new ListBox
+        {
+            Classes = { "bo_entity_input" },
+            MaxHeight = 220,
+            IsVisible = false,
+            ItemTemplate = new FuncDataTemplate<LookupOption>((option, _) =>
+                new TextBlock { Text = option?.Label ?? string.Empty, Margin = new Avalonia.Thickness(4, 2) })
+        };
+        var pick = new CountryPick { Country = current, Box = box, List = list };
+        var stack = new StackPanel { Tag = pick };
+        stack.Children.Add(box);
+        stack.Children.Add(list);
+
+        void Show(bool all)
+        {
+            var term = Fold(box.Text);
+            var matches = all || term.Length == 0
+                ? _countries
+                : _countries.Where(item =>
+                    Fold(item.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || Fold(item.Meta).Contains(term, StringComparison.OrdinalIgnoreCase)).ToList();
+            list.ItemsSource = matches;
+            list.IsVisible = matches.Count > 0;
+        }
+
+        var writing = false;
+        box.GotFocus += (_, _) => Show(string.Equals(box.Text?.Trim(), pick.Country?.Label, StringComparison.CurrentCultureIgnoreCase));
+        box.TextChanged += (_, _) =>
+        {
+            if (writing)
+            {
+                return;
+            }
+
+            pick.Country = _countries.FirstOrDefault(item =>
+                string.Equals(item.Label, box.Text?.Trim(), StringComparison.CurrentCultureIgnoreCase));
+            ApplyCountryChoice(pick.Country);
+            if (box.IsFocused)
+            {
+                Show(false);
+            }
+        };
+        box.LostFocus += (_, _) => Dispatcher.UIThread.Post(() =>
+        {
+            if (list.IsPointerOver == false && list.IsFocused == false)
+            {
+                list.IsVisible = false;
+            }
+        }, DispatcherPriority.Background);
+        list.AddHandler(InputElement.PointerPressedEvent, (_, args) =>
+        {
+            var source = args.Source as Control;
+            var row = source?.FindAncestorOfType<ListBoxItem>();
+            if (row?.DataContext is not LookupOption option)
+            {
+                return;
+            }
+
+            writing = true;
+            pick.Country = option;
+            box.Text = option.Label;
+            writing = false;
+            ApplyCountryChoice(option);
+            list.IsVisible = false;
+            args.Handled = true;
+        }, RoutingStrategies.Tunnel, true);
+        return stack;
+    }
+
+    private static string Fold(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var form = value.Trim().Normalize(NormalizationForm.FormD);
+        var chars = form.Where(character => CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark);
+        return string.Concat(chars);
+    }
+
+    private sealed class CountryPick
+    {
+        public LookupOption? Country { get; set; }
+
+        public required TextBox Box { get; init; }
+
+        public required ListBox List { get; init; }
+    }
+
+    private void ApplyCountryChoice(LookupOption? country)
+    {
+        if (_byToken.TryGetValue("COMPANY_COUNTRY_CODE2", out var code) && code is TextBox codeBox)
+        {
+            codeBox.Text = country?.Meta ?? string.Empty;
+        }
+
+        if (_byToken.TryGetValue("COMPANY_COUNTRY_OID", out var oid) && oid is TextBox oidBox)
+        {
+            oidBox.Text = country is null ? string.Empty : country.Id.ToString();
+        }
     }
 
     private static string ReadInput(Control input)
@@ -146,6 +303,22 @@ public partial class SettingsPage : UserControl
         if (input is CheckBox check)
         {
             return check.IsChecked == true ? "1" : "0";
+        }
+
+        if (input.Tag is CountryPick country)
+        {
+            if (country.Country is not null
+                && string.Equals(country.Country.Label, country.Box.Text?.Trim(), StringComparison.CurrentCultureIgnoreCase))
+            {
+                return country.Country.Id.ToString();
+            }
+
+            return country.Box.Text?.Trim() ?? string.Empty;
+        }
+
+        if (input is AutoCompleteBox search)
+        {
+            return ListingFilters.SelectedLookup(search)?.Id.ToString() ?? string.Empty;
         }
 
         return input is TextBox box ? box.Text ?? string.Empty : string.Empty;
@@ -316,7 +489,7 @@ public partial class SettingsPage : UserControl
             return;
         }
 
-        foreach (var field in _fields)
+        foreach (var field in _fields.OrderBy(item => item.Token.Equals("COMPANY_COUNTRY", StringComparison.OrdinalIgnoreCase) ? 1 : 0))
         {
             var result = await service.SaveAsync(_title, field.Id, new Dictionary<string, string>
             {
