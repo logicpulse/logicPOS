@@ -14,6 +14,7 @@ public partial class MobileHostView : UserControl
     public MobileHostView()
     {
         InitializeComponent();
+        DevEditionBanner.Apply(DevBanner);
         AttachedToVisualTree += (_, _) => _ = StartAsync();
     }
 
@@ -60,7 +61,6 @@ public partial class MobileHostView : UserControl
                 login = new LoginWindow();
                 Host.Children.Clear();
                 Host.Children.Add(login);
-                DevEditionBanner.Attach(Host);
             });
 
             if (login is not null)

@@ -9,5 +9,16 @@
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
         Background="#111111">
-    <views:LoginWindow x:Name="Login" />
+    <DockPanel>
+        <Border x:Name="DevBanner"
+                Classes="dev_edition_banner"
+                DockPanel.Dock="Top"
+                IsVisible="False">
+            <TextBlock Classes="dev_edition_banner_text"
+                       Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center" />
+        </Border>
+        <views:LoginWindow x:Name="Login" />
+    </DockPanel>
 </Window>

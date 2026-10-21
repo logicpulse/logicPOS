@@ -1832,7 +1832,7 @@
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <!-- Public / development edition: top strip on every window (red variant of bo_setup_alert). -->
+    <!-- Public / development edition: one top strip (red variant of bo_setup_alert). -->
     <Style Selector="Border.dev_edition_banner">
         <Setter Property="Background" Value="#FDECEA" />
         <Setter Property="BorderBrush" Value="#C0392B" />
@@ -1840,7 +1840,6 @@
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="ZIndex" Value="9999" />
     </Style>
 
     <Style Selector="TextBlock.dev_edition_banner_text">
@@ -1848,7 +1847,8 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="TextWrapping" Value="NoWrap" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
 
     <Style Selector="Button.bo_setup_alert_action">

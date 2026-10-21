@@ -11,6 +11,15 @@
         WindowStartupLocation="CenterScreen">
     <Panel>
     <DockPanel>
+        <Border x:Name="DevBanner"
+                Classes="dev_edition_banner"
+                DockPanel.Dock="Top"
+                IsVisible="False">
+            <TextBlock Classes="dev_edition_banner_text"
+                       Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center" />
+        </Border>
         <Border Classes="bo_status" DockPanel.Dock="Top" PointerPressed="OnStatusPointerPressed">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                 <TextBlock x:Name="TerminalLabel" Classes="bo_status_text bo_status_terminal" />

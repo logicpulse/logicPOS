@@ -2,12 +2,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.Views.MobileHostView"
              Background="#111111">
-    <Panel x:Name="Host">
-        <TextBlock x:Name="Status"
-                   Text="A carregar logicPOS…"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="22"
-                   Foreground="White" />
-    </Panel>
+    <DockPanel>
+        <Border x:Name="DevBanner"
+                Classes="dev_edition_banner"
+                DockPanel.Dock="Top"
+                IsVisible="False">
+            <TextBlock Classes="dev_edition_banner_text"
+                       Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center" />
+        </Border>
+        <Panel x:Name="Host">
+            <TextBlock x:Name="Status"
+                       Text="A carregar logicPOS…"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="22"
+                       Foreground="White" />
+        </Panel>
+    </DockPanel>
 </UserControl>

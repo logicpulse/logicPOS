@@ -128,7 +128,7 @@ public partial class PosWindow : Window, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
-        DevEditionBanner.Attach(this);
+        DevEditionBanner.Apply(DevBanner);
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
