@@ -35,6 +35,7 @@ public partial class MobileHostView : UserControl
                 ? "A abrir a base de dados…"
                 : "A criar a base de dados…";
 
+            // Leave the UI sync context so the post-bootstrap InvokeAsync cannot deadlock.
             await Task.Run(() =>
             {
                 var bootstrap = App.Bootstrap ?? AppComposition.Configure;
@@ -52,7 +53,7 @@ public partial class MobileHostView : UserControl
 
         try
         {
-            // Do not nest await inside InvokeAsync — that deadlocks the Avalonia UI thread on Android.
+            // Never nest await inside InvokeAsync — that deadlocks Avalonia's UI thread on Android.
             LoginWindow? login = null;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -65,11 +66,11 @@ public partial class MobileHostView : UserControl
                 {
                     Host.Children.Add(content);
                 }
-            }).ConfigureAwait(false);
+            });
 
             if (login is not null)
             {
-                await Dispatcher.UIThread.InvokeAsync(login.ActivateHostedAsync).ConfigureAwait(false);
+                await Dispatcher.UIThread.InvokeAsync(login.ActivateHostedAsync);
             }
         }
         catch (Exception ex)
@@ -78,7 +79,7 @@ public partial class MobileHostView : UserControl
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Status.Text = $"Erro ao abrir login: {ex.Message}";
-            }).ConfigureAwait(false);
+            });
         }
     }
 }
