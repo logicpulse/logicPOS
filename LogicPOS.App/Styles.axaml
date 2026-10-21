@@ -44,65 +44,6 @@
         <Setter Property="Margin" Value="0,16,48,0" />
     </Style>
 
-    <!-- Portrait phone/tablet: logo top-center, users as horizontal strip, pinpad lower-center. -->
-    <Style Selector="UserControl.login_portrait Image.login_logo">
-        <Setter Property="Width" Value="420" />
-        <Setter Property="Height" Value="140" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Margin" Value="0,56,0,0" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait Border.login_users_frame">
-        <Setter Property="Width" Value="1000" />
-        <Setter Property="Height" Value="160" />
-        <Setter Property="Margin" Value="40,220,40,0" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait StackPanel.login_users_column">
-        <Setter Property="Orientation" Value="Horizontal" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="Margin" Value="0,236,0,0" />
-        <Setter Property="Width" Value="960" />
-        <Setter Property="Spacing" Value="8" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait ItemsControl.login_users">
-        <Setter Property="Width" Value="760" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait Button.login_scroll">
-        <Setter Property="Width" Value="72" />
-        <Setter Property="Height" Value="120" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait Border.login_pinpad_frame">
-        <Setter Property="Width" Value="420" />
-        <Setter Property="Height" Value="560" />
-        <Setter Property="Margin" Value="0,0,0,120" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait Border.login_pinpad">
-        <Setter Property="Width" Value="390" />
-        <Setter Property="Height" Value="560" />
-        <Setter Property="Margin" Value="0,0,0,140" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Padding" Value="0,40,0,12" />
-    </Style>
-
-    <Style Selector="UserControl.login_portrait Button.login_minimize">
-        <Setter Property="IsVisible" Value="False" />
-    </Style>
-
     <Style Selector="Border.login_users_frame">
         <Setter Property="Width" Value="148" />
         <Setter Property="Height" Value="861" />
@@ -1832,14 +1773,16 @@
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
 
-    <!-- Public / development edition: one top strip (red variant of bo_setup_alert). -->
+    <!-- Public / development edition: translucent top overlay so chrome behind stays visible. -->
     <Style Selector="Border.dev_edition_banner">
-        <Setter Property="Background" Value="#FDECEA" />
-        <Setter Property="BorderBrush" Value="#C0392B" />
+        <Setter Property="Background" Value="#99FDECEA" />
+        <Setter Property="BorderBrush" Value="#99C0392B" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
         <Setter Property="Padding" Value="12,8" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="ZIndex" Value="9999" />
+        <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
     <Style Selector="TextBlock.dev_edition_banner_text">

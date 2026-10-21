@@ -9,16 +9,6 @@
         WindowState="FullScreen"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen">
-    <DockPanel>
-        <Border x:Name="DevBanner"
-                Classes="dev_edition_banner"
-                DockPanel.Dock="Top"
-                IsVisible="False">
-            <TextBlock Classes="dev_edition_banner_text"
-                       Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."
-                       HorizontalAlignment="Center"
-                       TextAlignment="Center" />
-        </Border>
     <Panel>
         <Image Classes="app_background"
                Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
@@ -566,6 +556,14 @@
         <Panel x:Name="PdfOverlay" Classes="login_alert_overlay" IsVisible="False">
             <views:PdfDocumentView x:Name="PdfHost" />
         </Panel>
+
+        <Border x:Name="DevBanner"
+                Classes="dev_edition_banner"
+                IsVisible="False">
+            <TextBlock Classes="dev_edition_banner_text"
+                       Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center" />
+        </Border>
     </Panel>
-    </DockPanel>
 </Window>
