@@ -10,6 +10,7 @@ using Avalonia.Platform;
 using Avalonia.Threading;
 using LogicPOS.App.Branding;
 using LogicPOS.Core;
+using LogicPOS.Core.Authentication;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Core.Licensing;
@@ -42,6 +43,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     public BackOfficeWindow(string sessionLabel)
     {
         InitializeComponent();
+        DevEditionBanner.Attach(this);
         ArticleDashboardHost.OpenStockRequested += (_, _) => ShowPage("Gestão de Stocks");
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
@@ -1055,6 +1057,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
 
     private void OnAboutClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        RefreshAboutDetails();
         AboutOverlay.IsVisible = true;
     }
 
@@ -1063,13 +1066,34 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         AboutOverlay.IsVisible = false;
     }
 
+    private void RefreshAboutDetails()
+    {
+        var version = Assembly.GetExecutingAssembly()
+            .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        var number = string.IsNullOrWhiteSpace(version)
+            ? Assembly.GetExecutingAssembly().GetName().Version?.ToString(3)
+            : version.Split('+')[0];
+        VersionLabel.Text = string.IsNullOrWhiteSpace(number) ? "Versão" : $"Versão {number}";
+        AboutCopyright.Text = $"{DateTime.Now.Year} Copyright © Logicpulse";
+
+        var hardwareId = AppComposition.Services?.GetService<ILicenseModule>()?.HardwareId;
+        if (string.IsNullOrWhiteSpace(hardwareId))
+        {
+            hardwareId = MachineIdentity.HardwareId;
+        }
+
+        AboutHardwareId.Text = string.IsNullOrWhiteSpace(hardwareId) ? "—" : hardwareId;
+        AboutHardwareId.IsVisible = true;
+    }
+
     private void OnQuitDismissClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         QuitOverlay.IsVisible = false;
     }
 
-    private void OnQuitConfirmClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void OnQuitConfirmClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
+        await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         _allowClose = true;
         if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -1080,12 +1104,34 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         Close();
     }
 
-    private void RaiseLogout()
+    private async void RaiseLogout()
     {
+        await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         _allowClose = true;
         _clock.Stop();
         LoggedOut?.Invoke(this, EventArgs.Empty);
         Close();
+    }
+
+    /// <summary>
+    /// Releases the concurrent licence seat on the API so Web/other clients can claim it immediately.
+    /// </summary>
+    private static async Task ReleaseLicenceSeatAsync()
+    {
+        var login = AppComposition.Services?.GetService<ILoginService>();
+        if (login is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await login.SignOutAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Licence seat release failed: {ex}");
+        }
     }
 
 }

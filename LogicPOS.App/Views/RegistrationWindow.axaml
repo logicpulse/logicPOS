@@ -53,7 +53,10 @@
                             <Button Classes="register_btn register_btn_secondary" Click="OnExitClick" IsEnabled="{Binding !Busy}">
                                 <TextBlock Text="{Binding ButtonExit}" />
                             </Button>
-                            <Button Classes="register_btn register_btn_secondary" Click="OnSkipClick" IsEnabled="{Binding !Busy}">
+                            <Button Classes="register_btn register_btn_secondary"
+                                    Click="OnSkipClick"
+                                    IsVisible="{Binding ShowContinue}"
+                                    IsEnabled="{Binding !Busy}">
                                 <TextBlock Text="{Binding ButtonContinue}" />
                             </Button>
                             <Button Classes="register_btn register_btn_primary" Click="OnRegisterClick" IsEnabled="{Binding !Busy}">

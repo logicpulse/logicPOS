@@ -19,13 +19,15 @@ public partial class RegistrationWindow : Window
     {
     }
 
-    public RegistrationWindow(ILicenseModule license)
+    public RegistrationWindow(ILicenseModule license, bool requireRegistration = true)
     {
         _license = license;
         _form = new RegistrationForm
         {
             HardwareId = license.HardwareId,
-            Notice = string.Empty
+            Notice = string.Empty,
+            // Soft-lock "Continue" only when registration is optional.
+            ShowContinue = requireRegistration == false
         };
         InitializeComponent();
         DataContext = _form;

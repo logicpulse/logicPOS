@@ -1,8 +1,11 @@
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using LogicPOS.App.Branding;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
@@ -12,10 +15,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
 
-public partial class LoginWindow : Window
+/// <summary>
+/// Login UI as UserControl so Android (no Window platform) and desktop shell can host the same view.
+/// </summary>
+public partial class LoginWindow : UserControl
 {
     private readonly LoginViewModel _viewModel;
     private bool _registrationPrompted;
+    private bool _activated;
+    private UiViewport _viewport;
 
     public LoginWindow()
     {
@@ -24,21 +32,46 @@ public partial class LoginWindow : Window
 
         var loginService = AppComposition.Services?.GetService<ILoginService>();
         _viewModel = new LoginViewModel(loginService, AppComposition.StartupError);
-        _viewModel.QuitConfirmed += (_, _) => Close();
+        _viewModel.QuitConfirmed += (_, _) => RequestClose();
         _viewModel.TerminalChoiceRequested += (_, _) => ShowTerminalChoice();
         _viewModel.SessionStarted += (_, userName) => _ = ShowSessionAsync(userName);
         DataContext = _viewModel;
 
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
-        Opened += async (_, _) =>
+        SizeChanged += (_, _) => ApplyViewportLayout();
+    }
+
+    /// <summary>
+    /// Shared startup for desktop shell and Android single-view host.
+    /// </summary>
+    public async Task ActivateHostedAsync()
+    {
+        if (_activated)
         {
-            ApplyBranding();
-            ApplyScreenLayout();
-            await _viewModel.LoadAsync();
-            PinEntryFocus();
-            // Defer so the login window finishes opening before a modal dialog (fullscreen-safe).
-            Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
-        };
+            return;
+        }
+
+        _activated = true;
+        ApplyBranding();
+        ApplyViewportLayout();
+        await _viewModel.LoadAsync();
+        PinEntryFocus();
+        // Defer so the host finishes attaching before a modal dialog.
+        Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
+    }
+
+    private void RequestClose()
+    {
+        if (ResolveDialogOwner() is { } owner)
+        {
+            owner.Close();
+            return;
+        }
+
+        if (global::Avalonia.Application.Current?.ApplicationLifetime is IControlledApplicationLifetime life)
+        {
+            life.Shutdown();
+        }
     }
 
     private async Task PromptStartupDialogsAsync()
@@ -68,7 +101,26 @@ public partial class LoginWindow : Window
             return;
         }
 
-        await new CompanySetupWindow(setup).ShowDialog(this);
+        var owner = ResolveDialogOwner();
+        if (owner is null)
+        {
+            return;
+        }
+
+        await new CompanySetupWindow(setup).ShowDialog(owner);
+    }
+
+    /// <summary>
+    /// Desktop: LoginShellWindow. Android: no Window owner (modals skipped).
+    /// </summary>
+    private Window? ResolveDialogOwner()
+    {
+        if (TopLevel.GetTopLevel(this) is Window top)
+        {
+            return top;
+        }
+
+        return this.GetVisualAncestors().OfType<Window>().FirstOrDefault();
     }
 
     private void ApplyBranding()
@@ -133,7 +185,9 @@ public partial class LoginWindow : Window
         bool needsRegistration;
         try
         {
-            // May call the API; CloudApiLicenseModule uses a timeout and must not deadlock the UI.
+            // Re-sync with ERP (soft-delete / revoke) then read RegistrationRequired.
+            // CloudApiLicenseModule uses a timeout and must not deadlock the UI.
+            await Task.Run(async () => await license.RefreshAsync().ConfigureAwait(false)).ConfigureAwait(true);
             needsRegistration = await Task.Run(() => license.RegistrationRequired).ConfigureAwait(true);
         }
         catch (Exception ex)
@@ -148,8 +202,21 @@ public partial class LoginWindow : Window
             return;
         }
 
-        await new RegistrationWindow(license).ShowDialog(this);
+        // Mandatory: no soft-lock skip. Exit closes the login window; Register must succeed.
+        var owner = ResolveDialogOwner();
+        if (owner is null)
+        {
+            return;
+        }
+
+        await new RegistrationWindow(license, requireRegistration: true).ShowDialog(owner);
         ApplyBranding();
+
+        if (license.RegistrationRequired)
+        {
+            // Still unlicensed after dismiss/exit — do not leave a usable login screen.
+            RequestClose();
+        }
     }
 
     private Guid? _selectedTerminalId;
@@ -244,12 +311,55 @@ public partial class LoginWindow : Window
         TerminalOverlay.IsVisible = false;
     }
 
-    private void ApplyScreenLayout()
+    private bool? _usersPanelPortrait;
+
+    private void ApplyViewportLayout()
     {
-        var screen = Screens?.ScreenFromVisual(this) ?? Screens?.Primary;
-        var height = (int)Math.Round(screen?.Bounds.Height ?? 1080d);
-        var rows = (height - (120 * 2) - (60 * 2)) / 102;
-        _viewModel.SetPageSize(rows < 1 ? 1 : rows);
+        _viewport = UiViewport.From(this);
+        LoginArtboard.Width = _viewport.DesignWidth;
+        LoginArtboard.Height = _viewport.DesignHeight;
+        Classes.Set("login_portrait", _viewport.IsPortrait);
+        Classes.Set("login_landscape", _viewport.IsLandscape);
+
+        // Portrait chrome (logo / frames / pinpad) is in Styles.axaml via UserControl.login_portrait.
+        if (_usersPanelPortrait != _viewport.IsPortrait)
+        {
+            _usersPanelPortrait = _viewport.IsPortrait;
+            var orientation = _viewport.IsPortrait
+                ? Avalonia.Layout.Orientation.Horizontal
+                : Avalonia.Layout.Orientation.Vertical;
+
+            // Reuse the XAML ItemsPanel StackPanel; only flip orientation.
+            if (LoginUsers.ItemsPanelRoot is StackPanel usersPanel)
+            {
+                usersPanel.Orientation = orientation;
+            }
+
+            // Up/down glyphs rotated → left/right for the horizontal strip.
+            LoginUsersPrevIcon.RenderTransform = _viewport.IsPortrait
+                ? new Avalonia.Media.RotateTransform(-90)
+                : null;
+            LoginUsersNextIcon.RenderTransform = _viewport.IsPortrait
+                ? new Avalonia.Media.RotateTransform(-90)
+                : null;
+        }
+
+        if (_viewport.IsPortrait)
+        {
+            TerminalFrame.Width = 1000;
+            TerminalFrame.Height = 1400;
+        }
+        else
+        {
+            TerminalFrame.Width = 980;
+            TerminalFrame.Height = 520;
+        }
+
+        // Landscape: vertical column. Portrait: one horizontal strip (~5 slots).
+        var pageSize = _viewport.IsPortrait
+            ? 5
+            : (_viewport.DesignHeight - (120 * 2) - (60 * 2)) / 102;
+        _viewModel.SetPageSize(pageSize < 1 ? 1 : pageSize);
     }
 
     private async Task ShowSessionAsync(string userName)
@@ -268,7 +378,15 @@ public partial class LoginWindow : Window
             }
         }
 
-        Hide();
+        // Avalonia Android has no Window platform — POS/BackOffice still require Window.
+        if (OperatingSystem.IsAndroid())
+        {
+            // POS/BackOffice still use Window — host navigation comes next.
+            System.Diagnostics.Debug.WriteLine("ShowSessionAsync skipped on Android (no Window platform).");
+            return;
+        }
+
+        IsVisible = false;
         try
         {
             if (backOfficeOnly)
@@ -278,7 +396,7 @@ public partial class LoginWindow : Window
                 office.LoggedOut += (_, _) =>
                 {
                     _viewModel.ClearSession();
-                    Show();
+                    IsVisible = true;
                     PinEntryFocus();
                 };
                 office.Show();
@@ -289,7 +407,7 @@ public partial class LoginWindow : Window
             pos.LoggedOut += (_, _) =>
             {
                 _viewModel.ClearSession();
-                Show();
+                IsVisible = true;
                 PinEntryFocus();
             };
             pos.Show();
@@ -297,8 +415,14 @@ public partial class LoginWindow : Window
         catch (Exception exception)
         {
             App.WriteCrash("ShowSessionAsync", exception);
-            Show();
+            IsVisible = true;
             PinEntryFocus();
+            var owner = ResolveDialogOwner();
+            if (owner is null)
+            {
+                return;
+            }
+
             var box = new Window
             {
                 Title = "Erro após login",
@@ -316,7 +440,7 @@ public partial class LoginWindow : Window
                     }
                 }
             };
-            box.Show();
+            await box.ShowDialog(owner);
         }
     }
 
@@ -438,5 +562,11 @@ public partial class LoginWindow : Window
         }
     }
 
-    private void OnMinimizeClick(object? sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+    private void OnMinimizeClick(object? sender, RoutedEventArgs e)
+    {
+        if (ResolveDialogOwner() is { } owner)
+        {
+            owner.WindowState = Avalonia.Controls.WindowState.Minimized;
+        }
+    }
 }

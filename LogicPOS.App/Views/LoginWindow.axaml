@@ -1,17 +1,14 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LogicPOS.App.Views"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="LogicPOS.App.Views.LoginWindow"
         x:DataType="vm:LoginViewModel"
         x:CompileBindings="True"
-        Classes="login_window"
-        Title="logicpos"
-        Icon="avares://LogicPOS.App/Assets/application.ico"
-        WindowState="FullScreen"
-        WindowDecorations="None"
-        WindowStartupLocation="CenterScreen">
-    <Panel>
+        Background="#111111">
+    <!-- Design artboard (landscape 1920x1080 or portrait 1080x1920); Viewbox keeps aspect ratio. -->
+    <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel x:Name="LoginArtboard" Width="1920" Height="1080">
         <Image Classes="app_background"
                Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
@@ -19,17 +16,17 @@
                Classes="login_logo"
                Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
-        <Border Classes="login_users_frame" />
-        <Border Classes="login_pinpad_frame" />
+        <Border x:Name="LoginUsersFrame" Classes="login_users_frame" />
+        <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
 
-        <Button Classes="login_minimize" Click="OnMinimizeClick" />
+        <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
 
-        <StackPanel Classes="login_users_column">
-            <Button Classes="login_scroll" Click="OnPreviousUsersClick">
-                <Image Classes="login_scroll_icon"
+        <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
+            <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
+                <Image x:Name="LoginUsersPrevIcon" Classes="login_scroll_icon"
                        Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
             </Button>
-            <ItemsControl Classes="login_users" ItemsSource="{Binding UserSlots}">
+            <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Spacing="0" />
@@ -55,13 +52,13 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Button Classes="login_scroll" Click="OnNextUsersClick">
-                <Image Classes="login_scroll_icon"
+            <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
+                <Image x:Name="LoginUsersNextIcon" Classes="login_scroll_icon"
                        Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png" />
             </Button>
         </StackPanel>
 
-        <Border Classes="login_pinpad">
+        <Border x:Name="LoginPinpad" Classes="login_pinpad">
             <Grid Classes="login_pinpad_keys"
                   ColumnDefinitions="105,105,105"
                   RowDefinitions="46,56,56,56,56,4,Auto,*">
@@ -189,7 +186,7 @@
         </Panel>
 
         <Panel x:Name="TerminalOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="980" Height="520">
+            <Border x:Name="TerminalFrame" Classes="login_alert_frame" Width="980" Height="520">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
@@ -244,4 +241,5 @@
             </Border>
         </Panel>
     </Panel>
-</Window>
+    </Viewbox>
+</UserControl>

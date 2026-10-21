@@ -41,15 +41,15 @@ public partial class FiscalYearWizard : UserControl
 
     public async Task ShowAsync()
     {
-        Notice.Text = "A carregar...";
+        Notice.Text = string.Empty;
         _step = 0;
-        SetNavigationEnabled(false);
+        SetBusy(true, "A carregar o assistente de ano fiscal...");
         var wizard = AppComposition.Services?.GetService<IFiscalYearWizard>();
         if (wizard is null)
         {
+            SetBusy(false);
             Notice.Text = "O assistente de ano fiscal não está disponível.";
             ShowStep();
-            SetNavigationEnabled(true);
             return;
         }
 
@@ -59,9 +59,9 @@ public partial class FiscalYearWizard : UserControl
         }
         catch (Exception exception)
         {
+            SetBusy(false);
             Notice.Text = exception.GetBaseException().Message;
             ShowStep();
-            SetNavigationEnabled(true);
             return;
         }
 
@@ -80,14 +80,26 @@ public partial class FiscalYearWizard : UserControl
         await LoadAtParametersAsync();
         Notice.Text = string.Empty;
         ShowStep();
-        SetNavigationEnabled(true);
+        SetBusy(false);
     }
 
-    private void SetNavigationEnabled(bool enabled)
+    private void SetBusy(bool busy, string? message = null)
     {
-        BackButton.IsEnabled = enabled;
-        NextButton.IsEnabled = enabled;
-        FinishButton.IsEnabled = enabled;
+        _busy = busy;
+        BackButton.IsEnabled = busy == false;
+        NextButton.IsEnabled = busy == false;
+        FinishButton.IsEnabled = busy == false;
+        CloseButton.IsEnabled = busy == false;
+        TestAtButton.IsEnabled = busy == false;
+        TabBar.IsEnabled = busy == false;
+        if (busy)
+        {
+            Busy.Show(message);
+        }
+        else
+        {
+            Busy.Hide();
+        }
     }
 
     private void BuildSeries()
@@ -333,8 +345,12 @@ public partial class FiscalYearWizard : UserControl
             return;
         }
 
-        _busy = true;
-        FinishButton.IsEnabled = false;
+        var communicateWithAt = _draft.Portugal && Communicate.IsChecked == true && SelectedSeries().Count > 0;
+        var busyMessage = communicateWithAt
+            ? "A criar o ano fiscal e a comunicar as séries com a AT..."
+            : "A criar o ano fiscal e as séries...";
+        Notice.Text = string.Empty;
+        SetBusy(true, busyMessage);
         try
         {
             var result = await wizard.CreateAsync(new FiscalYearSetupRequest
@@ -346,7 +362,7 @@ public partial class FiscalYearWizard : UserControl
                 CloseCurrent = CloseCurrent.IsChecked == true,
                 CreateSeries = SelectedSeries().Count > 0,
                 SeriesForEachTerminal = PerTerminal.IsChecked == true,
-                CommunicateWithAt = _draft.Portugal && Communicate.IsChecked == true && SelectedSeries().Count > 0,
+                CommunicateWithAt = communicateWithAt,
                 TerminalIds = SelectedTerminals().Select(item => item.Id).ToList(),
                 DocumentTypeIds = SelectedSeries().Select(item => item.Id).ToList()
             });
@@ -364,8 +380,7 @@ public partial class FiscalYearWizard : UserControl
         }
         finally
         {
-            _busy = false;
-            FinishButton.IsEnabled = true;
+            SetBusy(false);
         }
     }
 
@@ -518,9 +533,8 @@ public partial class FiscalYearWizard : UserControl
             return;
         }
 
-        _busy = true;
-        TestAtButton.IsEnabled = false;
-        Notice.Text = "A testar a comunicação com a AT...";
+        Notice.Text = string.Empty;
+        SetBusy(true, "A testar a comunicação com a AT...");
         try
         {
             foreach (var field in _atFields)
@@ -548,8 +562,7 @@ public partial class FiscalYearWizard : UserControl
         }
         finally
         {
-            _busy = false;
-            TestAtButton.IsEnabled = true;
+            SetBusy(false);
         }
     }
 }

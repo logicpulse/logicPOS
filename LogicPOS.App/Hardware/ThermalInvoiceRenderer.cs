@@ -448,7 +448,7 @@ internal sealed class ThermalInvoiceRenderer
         Small();
         Line(_job.TerminalName);
         Line($"{L("global_printed_on_date", "Impresso em")}: {DateTime.Now.ToString(CultureInfo.CurrentCulture)}");
-        Line("LogicPulse: LogicPOS");
+        Line("LogicPOS");
         if (_isSecondCopy)
         {
             Bold("2ª Via — conteúdo idêntico ao original");

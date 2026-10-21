@@ -108,6 +108,9 @@ public interface IPosDocumentService
 
     Task<IReadOnlyList<PosLookupItem>> ListVatExemptionReasonsAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>Regras de código postal das tabelas auxiliares de países.</summary>
+    Task<IReadOnlyList<PosCountryPostalRule>> ListCountryPostalRulesAsync(CancellationToken cancellationToken = default);
+
     Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<PosCopiedLine>> LoadDocumentLinesAsync(Guid documentId, CancellationToken cancellationToken = default);
@@ -132,11 +135,38 @@ public interface IPosDocumentService
 
     Task<string?> CreateReceiptFileAsync(Guid receiptId, CancellationToken cancellationToken = default);
 
+    /// <summary>Volta a comunicar uma guia já emitida à AT. Devolve o código ou o erro da AT.</summary>
+    Task<PosAtSendResult> SendTransportDocumentToAtAsync(Guid documentId, CancellationToken cancellationToken = default);
+
     /// <summary>GTK PosDocumentFinancePrintDialog options for an already-printed document.</summary>
     Task<DocumentPrintDialogOptions?> GetPrintDialogOptionsAsync(Guid documentId, CancellationToken cancellationToken = default);
 }
 
 /// <summary>Copy/motive options from the document type (GTK PrintCopies / PrintRequestMotive).</summary>
+public sealed class PosAtSendResult
+{
+    public bool Succeeded { get; init; }
+
+    public string? AtDocCodeId { get; init; }
+
+    public string Message { get; init; } = string.Empty;
+
+    public static PosAtSendResult Ok(string? code) => new()
+    {
+        Succeeded = string.IsNullOrWhiteSpace(code) == false,
+        AtDocCodeId = code,
+        Message = string.IsNullOrWhiteSpace(code)
+            ? "A AT não devolveu o código."
+            : $"Código AT: {code}."
+    };
+
+    public static PosAtSendResult Fail(string message) => new()
+    {
+        Succeeded = false,
+        Message = message
+    };
+}
+
 public sealed class DocumentPrintDialogOptions
 {
     public string Number { get; init; } = string.Empty;

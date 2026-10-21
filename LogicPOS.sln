@@ -33,6 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Persistence.Migrat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Persistence.Migrators.SQLServer", "src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLServer\LogicPOS.Persistence.Migrators.SQLServer.csproj", "{0EE80832-7ED0-435D-8570-E6F4B1BAD229}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicPOS.Android", "LogicPOS.Android\LogicPOS.Android.csproj", "{FDC231B9-F273-4381-8B75-DADE973E8D5C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogicPOS.App", "LogicPOS.App", "{F5CB0B4E-2AB1-386B-0891-5109E8A00CDC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +179,18 @@ Global
 		{0EE80832-7ED0-435D-8570-E6F4B1BAD229}.Release|x64.Build.0 = Release|Any CPU
 		{0EE80832-7ED0-435D-8570-E6F4B1BAD229}.Release|x86.ActiveCfg = Release|Any CPU
 		{0EE80832-7ED0-435D-8570-E6F4B1BAD229}.Release|x86.Build.0 = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|x64.Build.0 = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|x64.Build.0 = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{FDC231B9-F273-4381-8B75-DADE973E8D5C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -522,7 +522,7 @@ public abstract class DocumentModel : IDocument
                 txt.CurrentPageNumber();
                 txt.Span(" /");
                 txt.TotalPages();
-                txt.Span($" || LogicPulse: LogicPOS v{Data.SoftwareVersion}\n").Bold();
+                txt.Span($" || LogicPOS v{Data.SoftwareVersion}\n").Bold();
                 txt.Span($"{Data.Company.DocumentFinalLine1}\n");
                 txt.Span($"{Data.Company.DocumentFinalLine2}\n");
             });

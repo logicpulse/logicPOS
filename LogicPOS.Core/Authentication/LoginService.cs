@@ -96,6 +96,9 @@ public sealed class LoginService : ILoginService
         return new LoginAttemptResult(true, terminal.Designation);
     }
 
+    public Task SignOutAsync(CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
+
     public async Task<LoginAttemptResult> SignInAsync(Guid userId, string pin, CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();

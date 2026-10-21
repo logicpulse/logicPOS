@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
 using LogicPOS.Domain.Enums;
+using LogicPOS.Domain.ValueObjects;
 
 namespace LogicPOS.Core.Tests.BackOffice;
 
@@ -202,7 +203,8 @@ public class BackOfficeAnomalyTests
                 CreatedAt: DateTime.UtcNow)
         ],
         receiptCashAmount: 60m,
-        creditNotePoolTotal: 0m);
+        creditNotePoolTotal: 0m,
+        FiscalCountry.Portugal);
 
         Assert.Equal(60m, allocations[0].AmountToPay);
         Assert.NotEqual(100m, allocations[0].AmountToPay);

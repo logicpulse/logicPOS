@@ -15,6 +15,9 @@ public sealed class NullLicenseModule : ILicenseModule
     public Task<IReadOnlyList<LicenseCountry>> GetCountriesAsync(CancellationToken cancellationToken = default)
         => Task.FromResult<IReadOnlyList<LicenseCountry>>([new LicenseCountry(168, "Portugal")]);
 
+    public Task RefreshAsync(CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
+
     public Task<LicenseRegistrationResult> RegisterAsync(
         LicenseRegistrationRequest request,
         CancellationToken cancellationToken = default)

@@ -56,7 +56,7 @@ public static class AppComposition
                 .AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     ["DatabaseSettings:UseCloud"] = "false",
-                    ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(),
+                    ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(baseDirectory),
                     ["DatabaseSettings:UseSeed"] = "true",
                     // Module comes from appsettings.json (e.g. restaurant, cafe, default).
                     ["DatabaseSettings:Module"] = configuration["DatabaseSettings:Module"] ?? "default"

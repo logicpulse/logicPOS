@@ -55,6 +55,7 @@ public sealed class RegistrationForm : INotifyPropertyChanged
     private string _buttonExit = string.Empty;
     private string _buttonContinue = string.Empty;
     private string _buttonRegister = string.Empty;
+    private bool _showContinue = true;
 
     private bool _countriesFromApi;
 
@@ -311,6 +312,15 @@ public sealed class RegistrationForm : INotifyPropertyChanged
     {
         get => _buttonContinue;
         private set => Set(ref _buttonContinue, value);
+    }
+
+    /// <summary>
+    /// When false, the soft-lock "Continue without registering" action is hidden (mandatory registration).
+    /// </summary>
+    public bool ShowContinue
+    {
+        get => _showContinue;
+        set => Set(ref _showContinue, value);
     }
 
     public string ButtonRegister

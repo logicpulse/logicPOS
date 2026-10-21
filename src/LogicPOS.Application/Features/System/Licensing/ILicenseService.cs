@@ -15,5 +15,12 @@ public interface ILicenseService
     Task<string?> GetLogicPosLicensingSystemVersionAsync();
     Task<byte[]?> DownloadLicenseFileAsync(string hardwareId, string version, bool haveLicense);
     Task<int> UpdateAppVersionInServerAsync(string hardwareId, string productId, string versionApp);
+
+    /// <summary>Geo countries from the licensing ERP (id + name) for registration combo boxes.</summary>
+    Task<IReadOnlyList<LicensingCountryOption>> GetLicensingCountriesAsync(CancellationToken cancellationToken = default);
+
     public ILicenseData Information { get; }
 }
+
+/// <summary>Country option for licence registration (ERP GeoCountries id).</summary>
+public sealed record LicensingCountryOption(int Id, string Name);

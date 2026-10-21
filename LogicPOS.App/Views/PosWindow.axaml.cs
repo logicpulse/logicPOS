@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.IO;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -28,10 +29,12 @@ public partial class PosWindow : Window, IOfficeSurface
     private string _terminalName = string.Empty;
     private BackOfficeWindow? _backOffice;
     private readonly DispatcherTimer _clock = new() { Interval = TimeSpan.FromSeconds(1) };
+    private readonly DispatcherTimer _relayoutTimer = new() { Interval = TimeSpan.FromMilliseconds(200) };
     private readonly Dictionary<string, Bitmap> _bitmaps = new();
 
     private readonly List<Control> _menuControls = new();
     private PosLayout _layout = PosLayout.For(1920, 1080);
+    private UiViewport _viewport = new(1920, 1080);
     private PosCatalog _catalog = PosCatalog.Empty;
     private TextBlock? _terminalLabel;
     private TextBlock? _clockLabel;
@@ -125,6 +128,7 @@ public partial class PosWindow : Window, IOfficeSurface
         _scanner = ScannerInputReader.FromConfiguration(configuration);
         _scanner.Captured += OnScannerCaptured;
         InitializeComponent();
+        DevEditionBanner.Attach(this);
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
@@ -132,6 +136,16 @@ public partial class PosWindow : Window, IOfficeSurface
         TouchFields.Attach(this);
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
         _clock.Tick += (_, _) => UpdateClock();
+        _relayoutTimer.Tick += (_, _) =>
+        {
+            _relayoutTimer.Stop();
+            RelayoutForViewport();
+        };
+        SizeChanged += (_, _) =>
+        {
+            _relayoutTimer.Stop();
+            _relayoutTimer.Start();
+        };
         Opened += async (_, _) =>
         {
             try
@@ -146,6 +160,7 @@ public partial class PosWindow : Window, IOfficeSurface
         Closed += (_, _) =>
         {
             _clock.Stop();
+            _relayoutTimer.Stop();
             _scanner.Reset();
             _scanner.Captured -= OnScannerCaptured;
         };
@@ -155,11 +170,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private async Task OpenAsync()
     {
-        var screen = Screens?.ScreenFromVisual(this) ?? Screens?.Primary;
-        var width = (int)Math.Round(screen?.Bounds.Width ?? 1920d);
-        var height = (int)Math.Round(screen?.Bounds.Height ?? 1080d);
-        _layout = PosLayout.For(width, height);
-        BuildChrome();
+        RelayoutForViewport();
         UpdateClock();
         _clock.Start();
 
@@ -182,6 +193,24 @@ public partial class PosWindow : Window, IOfficeSurface
         await RefreshWorkSessionAsync();
         RefreshMenus();
         await LoadDefaultTableAsync();
+    }
+
+    private void RelayoutForViewport()
+    {
+        var next = UiViewport.From(this);
+        if (next.Width == _viewport.Width
+            && next.Height == _viewport.Height
+            && Surface.Children.Count > 0)
+        {
+            return;
+        }
+
+        _viewport = next;
+        _layout = PosLayout.For(_viewport.Width, _viewport.Height);
+        Classes.Set("pos_portrait", _viewport.IsPortrait);
+        Classes.Set("pos_landscape", _viewport.IsLandscape);
+        BuildChrome();
+        RefreshMenus();
     }
 
     private async Task ReloadCatalogAsync()
@@ -1222,14 +1251,16 @@ public partial class PosWindow : Window, IOfficeSurface
         QuitOverlay.IsVisible = true;
     }
 
-    private void Logout()
+    private async void Logout()
     {
+        await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         LoggedOut?.Invoke(this, EventArgs.Empty);
         Close();
     }
 
-    private void OnQuitConfirmClick(object? sender, RoutedEventArgs e)
+    private async void OnQuitConfirmClick(object? sender, RoutedEventArgs e)
     {
+        await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         QuitOverlay.IsVisible = false;
         if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
         {
@@ -1237,6 +1268,24 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         Close();
+    }
+
+    private static async Task ReleaseLicenceSeatAsync()
+    {
+        var login = AppComposition.Services?.GetService<ILoginService>();
+        if (login is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await login.SignOutAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"Licence seat release failed: {ex}");
+        }
     }
 
     private void OnQuitDismissClick(object? sender, RoutedEventArgs e)

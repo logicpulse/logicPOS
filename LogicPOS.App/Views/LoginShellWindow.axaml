@@ -1,0 +1,13 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:LogicPOS.App.Views"
+        x:Class="LogicPOS.App.Views.LoginShellWindow"
+        Classes="login_window"
+        Title="logicpos"
+        Icon="avares://LogicPOS.App/Assets/application.ico"
+        WindowState="FullScreen"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        Background="#111111">
+    <views:LoginWindow x:Name="Login" />
+</Window>

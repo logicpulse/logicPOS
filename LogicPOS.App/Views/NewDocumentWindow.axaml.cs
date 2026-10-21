@@ -381,23 +381,26 @@ public partial class NewDocumentWindow : UserControl
             foreach (var line in source.Lines)
             {
                 var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
-                _lines.Add(article is null
-                    ? NewDocumentLine.FromCopy(line, string.Empty, source.DocumentDiscount)
-                    : NewDocumentLine.FromCopy(line, FamilyNameOf(article), source.DocumentDiscount));
+                _lines.Add(NewDocumentLine.FromCopy(
+                    line,
+                    article is null ? string.Empty : FamilyNameOf(article),
+                    source.DocumentDiscount,
+                    article?.VatExemptionReasonId));
             }
 
             RefreshLines();
+
+            // A ficha do cliente preenche o destino. A morada gravada no documento fica por cima.
+            if (customers is not null && source.CustomerId != Guid.Empty)
+            {
+                await RestoreCustomerAsync(customers, source.CustomerId, customerName: null, fiscalNumber: null);
+            }
 
             if (source.ShipTo is not null || source.ShipFrom is not null)
             {
                 TransportBox.IsChecked = true;
                 ApplyStoredShip(source.ShipTo, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
                 ApplyStoredShip(source.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
-            }
-
-            if (customers is not null && source.CustomerId != Guid.Empty)
-            {
-                await RestoreCustomerAsync(customers, source.CustomerId, customerName: null, fiscalNumber: null);
             }
         }
         finally
@@ -2006,7 +2009,8 @@ public partial class NewDocumentWindow : UserControl
         var transport = RequiresTransport();
         if (transport && draft == false)
         {
-            var transportError = PosDocumentRules.ValidateTransport(ReadDestination(), ReadOrigin());
+            var countries = await services.GetRequiredService<IPosDocumentService>().ListCountryPostalRulesAsync();
+            var transportError = PosDocumentRules.ValidateTransport(ReadDestination(), ReadOrigin(), countries);
             if (transportError is not null)
             {
                 ErrorLabel.Text = transportError;
@@ -2530,11 +2534,13 @@ public partial class NewDocumentWindow : UserControl
             SerialNumber = serialNumber.Trim();
         }
 
-        private NewDocumentLine(PosCopiedLine line, string family, decimal documentDiscount)
+        private NewDocumentLine(PosCopiedLine line, string family, decimal documentDiscount, Guid? articleExemptionId)
         {
             ArticleId = line.ArticleId;
             VatRateId = line.VatRateId;
-            VatExemptionId = line.VatPercentage == 0m ? line.VatExemptionId : null;
+            // Se o rascunho não trouxer o motivo, usa o motivo do artigo quando o IVA é 0%.
+            var storedExemption = line.VatExemptionId is Guid stored && stored != Guid.Empty ? stored : articleExemptionId;
+            VatExemptionId = line.VatPercentage == 0m ? storedExemption : null;
             Code = line.Code;
             Designation = line.Designation;
             Family = family;
@@ -2548,9 +2554,9 @@ public partial class NewDocumentWindow : UserControl
             RecalculateNet();
         }
 
-        public static NewDocumentLine FromCopy(PosCopiedLine line, string family, decimal documentDiscount)
+        public static NewDocumentLine FromCopy(PosCopiedLine line, string family, decimal documentDiscount, Guid? articleExemptionId = null)
         {
-            return new NewDocumentLine(line, family, documentDiscount);
+            return new NewDocumentLine(line, family, documentDiscount, articleExemptionId);
         }
 
         public Guid ArticleId { get; }

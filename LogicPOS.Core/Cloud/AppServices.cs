@@ -16,5 +16,10 @@ public interface ILoginService
 
     Task<LoginAttemptResult> SignInAsync(Guid userId, string pin, CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Best-effort release of cloud licence seats (no-op in the local edition).
+    /// </summary>
+    Task SignOutAsync(CancellationToken cancellationToken = default);
+
     Task<LoginAttemptResult> ReplaceDefaultPinAsync(Guid userId, string newPin, string? oldPin = null, CancellationToken cancellationToken = default);
 }

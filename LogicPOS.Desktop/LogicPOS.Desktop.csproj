@@ -17,6 +17,8 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
+    <!-- Match SkiaSharp 4.150.x used by Avalonia; older NativeAssets.Linux break Linux publish. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.150.1" />
   </ItemGroup>
 
   <ItemGroup>

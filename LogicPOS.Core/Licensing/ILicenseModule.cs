@@ -24,6 +24,11 @@ public interface ILicenseModule
     /// <summary>Countries for the registration combo (from ERP AllCountries when available).</summary>
     Task<IReadOnlyList<LicenseCountry>> GetCountriesAsync(CancellationToken cancellationToken = default);
 
+    /// <summary>
+    /// Re-check licence with the licensing server (e.g. after ERP soft-delete) before prompting registration.
+    /// </summary>
+    Task RefreshAsync(CancellationToken cancellationToken = default);
+
     Task<LicenseRegistrationResult> RegisterAsync(
         LicenseRegistrationRequest request,
         CancellationToken cancellationToken = default);

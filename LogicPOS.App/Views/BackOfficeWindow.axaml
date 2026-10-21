@@ -221,13 +221,14 @@
                     <DockPanel Classes="login_alert_inner">
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
-                                <Image Classes="login_alert_title_icon"
-                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                                <Border Classes="bo_about_info_badge">
+                                    <TextBlock Classes="bo_about_info_mark" Text="i" />
+                                </Border>
                                 <TextBlock Classes="login_alert_title" Text="Acerca" />
                             </StackPanel>
                         </Border>
                         <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                            <StackPanel Classes="login_alert_action_buttons">
+                            <StackPanel Classes="login_alert_action_buttons" HorizontalAlignment="Right">
                                 <Button Classes="login_alert_action" Click="OnAboutCloseClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
@@ -241,7 +242,8 @@
                             <Border Classes="bo_about_logo_band">
                                 <Image x:Name="AboutLogo" Classes="bo_about_logo" Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png" />
                             </Border>
-                            <TextBlock x:Name="VersionLabel" Classes="bo_about_text" />
+                            <TextBlock x:Name="VersionLabel" Classes="bo_about_text bo_about_version" />
+                            <TextBlock x:Name="AboutHardwareId" Classes="bo_about_text bo_about_hardware" />
                             <TextBlock x:Name="AboutCopyright" Classes="bo_about_text" />
                         </StackPanel>
                     </DockPanel>

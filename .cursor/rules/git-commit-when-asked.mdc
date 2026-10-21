@@ -1,0 +1,11 @@
+﻿---
+description: Never git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>" or push unless the user explicitly asks
+alwaysApply: true
+---
+
+# Git — commit only when asked
+
+- **Never** run `git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>"`, `git push`, or merge to `main`/`master` unless the user **explicitly** requests it in the current message.
+- Implementing, fixing, and leaving changes unstaged/uncommitted is fine and expected.
+- Do **not** auto-push after every fix or after finishing a task.
+- If unclear whether to commit, ask first; do not assume.
