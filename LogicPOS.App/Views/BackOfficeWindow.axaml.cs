@@ -43,6 +43,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     public BackOfficeWindow(string sessionLabel)
     {
         InitializeComponent();
+        DevEditionBanner.Attach(this);
         ArticleDashboardHost.OpenStockRequested += (_, _) => ShowPage("Gestão de Stocks");
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);

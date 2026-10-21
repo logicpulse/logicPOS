@@ -94,7 +94,7 @@ public partial class App : global::Avalonia.Application
 
         await Dispatcher.UIThread.InvokeAsync(() =>
         {
-            var login = new LoginWindow();
+            var login = new LoginShellWindow();
             desktop.MainWindow = login;
             // Close splash before Show(): Opened may touch ILicenseModule (branding) and must not
             // leave the loader stuck if a sync licence probe blocks briefly.

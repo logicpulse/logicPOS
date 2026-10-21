@@ -82,6 +82,8 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         private set => SetField(ref _statusMessage, value);
     }
 
+    public void SetStatusMessage(string text) => StatusMessage = text ?? string.Empty;
+
     public string OkText
     {
         get => _okText;

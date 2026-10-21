@@ -53,19 +53,14 @@ public partial class MobileHostView : UserControl
 
         try
         {
-            // Never nest await inside InvokeAsync — that deadlocks Avalonia's UI thread on Android.
             LoginWindow? login = null;
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Status.Text = "A preparar o ecrã de login…";
                 login = new LoginWindow();
-                var content = login.Content as Control;
-                login.Content = null;
                 Host.Children.Clear();
-                if (content is not null)
-                {
-                    Host.Children.Add(content);
-                }
+                Host.Children.Add(login);
+                DevEditionBanner.Attach(Host);
             });
 
             if (login is not null)

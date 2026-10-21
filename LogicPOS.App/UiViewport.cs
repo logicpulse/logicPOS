@@ -22,19 +22,34 @@ public readonly record struct UiViewport(int Width, int Height)
     public int DesignWidth => IsPortrait ? DesignPortraitWidth : DesignLandscapeWidth;
     public int DesignHeight => IsPortrait ? DesignPortraitHeight : DesignLandscapeHeight;
 
-    public static UiViewport From(Window window)
+    public static UiViewport From(Control control)
     {
-        var client = window.ClientSize;
-        if (client.Width >= 320 && client.Height >= 320)
+        var bounds = control.Bounds;
+        if (bounds.Width >= 320 && bounds.Height >= 320)
         {
             return new UiViewport(
-                Math.Max(1, (int)Math.Round(client.Width)),
-                Math.Max(1, (int)Math.Round(client.Height)));
+                Math.Max(1, (int)Math.Round(bounds.Width)),
+                Math.Max(1, (int)Math.Round(bounds.Height)));
         }
 
-        var screen = window.Screens?.ScreenFromVisual(window) ?? window.Screens?.Primary;
-        return From(screen);
+        if (TopLevel.GetTopLevel(control) is { } top)
+        {
+            var client = top.ClientSize;
+            if (client.Width >= 320 && client.Height >= 320)
+            {
+                return new UiViewport(
+                    Math.Max(1, (int)Math.Round(client.Width)),
+                    Math.Max(1, (int)Math.Round(client.Height)));
+            }
+
+            var screen = top.Screens?.ScreenFromVisual(control) ?? top.Screens?.Primary;
+            return From(screen);
+        }
+
+        return new UiViewport(DesignLandscapeWidth, DesignLandscapeHeight);
     }
+
+    public static UiViewport From(Window window) => From((Control)window);
 
     public static UiViewport From(Screen? screen)
     {
