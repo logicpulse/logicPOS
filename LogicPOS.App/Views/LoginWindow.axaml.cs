@@ -1,4 +1,5 @@
 using System.Reflection;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -16,6 +17,7 @@ public partial class LoginWindow : Window
 {
     private readonly LoginViewModel _viewModel;
     private bool _registrationPrompted;
+    private UiViewport _viewport;
 
     public LoginWindow()
     {
@@ -30,15 +32,21 @@ public partial class LoginWindow : Window
         DataContext = _viewModel;
 
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
-        Opened += async (_, _) =>
-        {
-            ApplyBranding();
-            ApplyScreenLayout();
-            await _viewModel.LoadAsync();
-            PinEntryFocus();
-            // Defer so the login window finishes opening before a modal dialog (fullscreen-safe).
-            Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
-        };
+        SizeChanged += (_, _) => ApplyViewportLayout();
+        Opened += async (_, _) => await ActivateHostedAsync();
+    }
+
+    /// <summary>
+    /// Shared startup for desktop Window and Android single-view host.
+    /// </summary>
+    public async Task ActivateHostedAsync()
+    {
+        ApplyBranding();
+        ApplyViewportLayout();
+        await _viewModel.LoadAsync();
+        PinEntryFocus();
+        // Defer so the host finishes attaching before a modal dialog.
+        Dispatcher.UIThread.Post(() => _ = PromptStartupDialogsAsync(), DispatcherPriority.Background);
     }
 
     private async Task PromptStartupDialogsAsync()
@@ -68,8 +76,21 @@ public partial class LoginWindow : Window
             return;
         }
 
-        await new CompanySetupWindow(setup).ShowDialog(this);
+        var owner = ResolveDialogOwner();
+        if (owner is null)
+        {
+            return;
+        }
+
+        await new CompanySetupWindow(setup).ShowDialog(owner);
     }
+
+    /// <summary>
+    /// Desktop: this window. Android single-view: content is hosted in MobileHostView,
+    /// so ShowDialog(this) has no visual root — skip modal until an owner Window exists.
+    /// </summary>
+    private Window? ResolveDialogOwner()
+        => VisualRoot as Window ?? (IsVisible ? this : null);
 
     private void ApplyBranding()
     {
@@ -133,7 +154,9 @@ public partial class LoginWindow : Window
         bool needsRegistration;
         try
         {
-            // May call the API; CloudApiLicenseModule uses a timeout and must not deadlock the UI.
+            // Re-sync with ERP (soft-delete / revoke) then read RegistrationRequired.
+            // CloudApiLicenseModule uses a timeout and must not deadlock the UI.
+            await Task.Run(async () => await license.RefreshAsync().ConfigureAwait(false)).ConfigureAwait(true);
             needsRegistration = await Task.Run(() => license.RegistrationRequired).ConfigureAwait(true);
         }
         catch (Exception ex)
@@ -148,8 +171,21 @@ public partial class LoginWindow : Window
             return;
         }
 
-        await new RegistrationWindow(license).ShowDialog(this);
+        // Mandatory: no soft-lock skip. Exit closes the login window; Register must succeed.
+        var owner = ResolveDialogOwner();
+        if (owner is null)
+        {
+            return;
+        }
+
+        await new RegistrationWindow(license, requireRegistration: true).ShowDialog(owner);
         ApplyBranding();
+
+        if (license.RegistrationRequired)
+        {
+            // Still unlicensed after dismiss/exit — do not leave a usable login screen.
+            Close();
+        }
     }
 
     private Guid? _selectedTerminalId;
@@ -244,11 +280,72 @@ public partial class LoginWindow : Window
         TerminalOverlay.IsVisible = false;
     }
 
-    private void ApplyScreenLayout()
+    private void ApplyViewportLayout()
     {
-        var screen = Screens?.ScreenFromVisual(this) ?? Screens?.Primary;
-        var height = (int)Math.Round(screen?.Bounds.Height ?? 1080d);
-        var rows = (height - (120 * 2) - (60 * 2)) / 102;
+        _viewport = UiViewport.From(this);
+        LoginArtboard.Width = _viewport.DesignWidth;
+        LoginArtboard.Height = _viewport.DesignHeight;
+        Classes.Set("login_portrait", _viewport.IsPortrait);
+        Classes.Set("login_landscape", _viewport.IsLandscape);
+
+        if (_viewport.IsPortrait)
+        {
+            // Portrait: users on top strip, pinpad centered below.
+            LoginUsersFrame.Margin = new Thickness(40, 120, 40, 0);
+            LoginUsersFrame.Width = 1000;
+            LoginUsersFrame.Height = 280;
+            LoginUsersFrame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            LoginUsersFrame.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+
+            LoginUsersColumn.Margin = new Thickness(0, 140, 0, 0);
+            LoginUsersColumn.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            LoginUsersColumn.Width = 960;
+
+            LoginPinpadFrame.Margin = new Thickness(0, 0, 0, 80);
+            LoginPinpadFrame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            LoginPinpadFrame.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
+
+            LoginPinpad.Margin = new Thickness(0, 0, 0, 100);
+            LoginPinpad.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            LoginPinpad.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom;
+
+            LoginLogo.Margin = new Thickness(0, 24, 0, 0);
+            LoginLogo.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center;
+            LoginLogo.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        }
+        else
+        {
+            // Restore landscape styles (Styles.axaml defaults).
+            LoginUsersFrame.ClearValue(MarginProperty);
+            LoginUsersFrame.ClearValue(WidthProperty);
+            LoginUsersFrame.ClearValue(HeightProperty);
+            LoginUsersFrame.ClearValue(HorizontalAlignmentProperty);
+            LoginUsersFrame.ClearValue(VerticalAlignmentProperty);
+
+            LoginUsersColumn.ClearValue(MarginProperty);
+            LoginUsersColumn.ClearValue(HorizontalAlignmentProperty);
+            LoginUsersColumn.ClearValue(WidthProperty);
+
+            LoginPinpadFrame.ClearValue(MarginProperty);
+            LoginPinpadFrame.ClearValue(HorizontalAlignmentProperty);
+            LoginPinpadFrame.ClearValue(VerticalAlignmentProperty);
+
+            LoginPinpad.ClearValue(MarginProperty);
+            LoginPinpad.ClearValue(HorizontalAlignmentProperty);
+            LoginPinpad.ClearValue(VerticalAlignmentProperty);
+
+            LoginLogo.ClearValue(MarginProperty);
+            LoginLogo.ClearValue(HorizontalAlignmentProperty);
+            LoginLogo.ClearValue(VerticalAlignmentProperty);
+        }
+
+        var rows = (_viewport.DesignHeight - (120 * 2) - (60 * 2)) / 102;
+        if (_viewport.IsPortrait)
+        {
+            // Horizontal user strip: fewer rows, more columns via page size.
+            rows = 2;
+        }
+
         _viewModel.SetPageSize(rows < 1 ? 1 : rows);
     }
 

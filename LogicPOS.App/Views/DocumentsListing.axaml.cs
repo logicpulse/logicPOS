@@ -753,17 +753,71 @@ public partial class DocumentsListing : UserControl
 
     private async Task CopyDocumentAsync(PosDocumentRow row)
     {
-        if (row.Status == "Anulado")
-        {
-            ActionNotice.IsVisible = true;
-            ActionNotice.Text = "Não é possível copiar um documento anulado.";
-            return;
-        }
-
         if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
         {
             await office.ShowNewDocumentAsync(copyFromDocumentId: row.Id);
         }
+    }
+
+    private async void OnSendToAtClick(object? sender, RoutedEventArgs e)
+    {
+        if (FocusedRow() is not PosDocumentRow row)
+        {
+            ActionNotice.Text = "Selecione uma guia.";
+            return;
+        }
+
+        var blocked = TransportSendBlock(row);
+        if (blocked is not null)
+        {
+            ActionNotice.Text = blocked;
+            return;
+        }
+
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        if (documents is null)
+        {
+            return;
+        }
+
+        ActionNotice.Text = "A comunicar a guia à AT…";
+        var result = await documents.SendTransportDocumentToAtAsync(row.Id);
+        if (result.Succeeded == false)
+        {
+            ActionNotice.Text = result.Message;
+            return;
+        }
+
+        var path = await CreatePdfAsync(row);
+        if (path is not null && TopLevel.GetTopLevel(this) is IOfficeSurface office)
+        {
+            await office.ShowPdfAsync(path, row.Number, row.Id);
+        }
+
+        ActionNotice.Text = path is null
+            ? $"{result.Message} Não foi possível abrir o PDF."
+            : $"{result.Message} O PDF foi aberto com esse código.";
+    }
+
+    private static string? TransportSendBlock(PosDocumentRow row)
+    {
+        if (row.Status == "Rascunho")
+        {
+            return "Emita a guia antes de a comunicar à AT.";
+        }
+
+        if (row.Status == "Anulado")
+        {
+            return "Não é possível comunicar uma guia anulada.";
+        }
+
+        var token = row.Number.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+        if (token is { Length: <= 3 } && PosDocumentRules.IsWayBill(token) == false)
+        {
+            return "Só as guias (GT, GR, GA, GC e GD) são comunicadas à AT.";
+        }
+
+        return null;
     }
 
     private async void OnOpenA4Click(object? sender, RoutedEventArgs e)
@@ -1372,7 +1426,7 @@ public partial class DocumentsListing : UserControl
 
         public bool CanView => Source.CanView;
 
-        public bool CanCopy => Source.Status != "Anulado";
+        public bool CanCopy => true;
 
         public void ApplySelected(bool selected)
         {

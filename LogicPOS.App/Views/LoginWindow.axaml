@@ -11,7 +11,9 @@
         WindowState="FullScreen"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen">
-    <Panel>
+    <!-- Design artboard (landscape 1920x1080 or portrait 1080x1920); Viewbox keeps aspect ratio. -->
+    <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <Panel x:Name="LoginArtboard" Width="1920" Height="1080">
         <Image Classes="app_background"
                Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
@@ -19,12 +21,12 @@
                Classes="login_logo"
                Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
-        <Border Classes="login_users_frame" />
-        <Border Classes="login_pinpad_frame" />
+        <Border x:Name="LoginUsersFrame" Classes="login_users_frame" />
+        <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
 
         <Button Classes="login_minimize" Click="OnMinimizeClick" />
 
-        <StackPanel Classes="login_users_column">
+        <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
             <Button Classes="login_scroll" Click="OnPreviousUsersClick">
                 <Image Classes="login_scroll_icon"
                        Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
@@ -61,7 +63,7 @@
             </Button>
         </StackPanel>
 
-        <Border Classes="login_pinpad">
+        <Border x:Name="LoginPinpad" Classes="login_pinpad">
             <Grid Classes="login_pinpad_keys"
                   ColumnDefinitions="105,105,105"
                   RowDefinitions="46,56,56,56,56,4,Auto,*">
@@ -244,4 +246,5 @@
             </Border>
         </Panel>
     </Panel>
+    </Viewbox>
 </Window>

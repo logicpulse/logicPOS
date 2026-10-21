@@ -272,7 +272,7 @@ public static class ThermalTicketPdf
                 .Text($"Impresso em: {DateTime.Now.ToString("g", CultureInfo.CurrentCulture)}")
                 .FontSize(6);
             column.Item().AlignCenter()
-                .Text($"LogicPulse: LogicPOS v{_data.SoftwareVersion}")
+                .Text($"LogicPOS v{_data.SoftwareVersion}")
                 .FontSize(6);
             if (_isSecondCopy)
             {

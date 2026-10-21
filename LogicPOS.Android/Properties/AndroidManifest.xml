@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:installLocation="auto">
+	<uses-permission android:name="android.permission.INTERNET" />
+	<application
+		android:label="logicPOS"
+		android:icon="@drawable/Icon"
+		android:usesCleartextTraffic="true"
+		android:resizeableActivity="true"
+		android:supportsRtl="true" />
+	<!-- Explicitly allow portrait + landscape on tablets/phones. -->
+	<supports-screens
+		android:smallScreens="true"
+		android:normalScreens="true"
+		android:largeScreens="true"
+		android:xlargeScreens="true"
+		android:anyDensity="true" />
+</manifest>

@@ -151,7 +151,7 @@ public partial class CompanySetupWindow : Window
 
     private void OnDemoClick(object? sender, RoutedEventArgs e)
     {
-        // GTK Demo button: refill company fields with LogicPulse sample data.
+        // Demo button: refill company fields with generic sample data.
         if (_countryBox is not null && _draft is not null)
         {
             _countryBox.SelectedItem = _draft.Countries.FirstOrDefault(item => item.Code == "PT")

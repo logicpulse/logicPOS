@@ -8,11 +8,10 @@
     </Style>
 
     <Style Selector="Image.app_background">
-        <Setter Property="Stretch" Value="None" />
-        <Setter Property="Width" Value="1920" />
-        <Setter Property="Height" Value="1080" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+        <!-- Fill any aspect ratio / portrait artboard without letterboxing the chrome. -->
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="IsHitTestVisible" Value="False" />
     </Style>
 
@@ -2259,25 +2258,42 @@
 
     <Style Selector="Border.bo_about">
         <Setter Property="Width" Value="420" />
-        <Setter Property="MinHeight" Value="280" />
+        <Setter Property="MinHeight" Value="300" />
+    </Style>
+
+    <Style Selector="Border.bo_about_info_badge">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="CornerRadius" Value="11" />
+        <Setter Property="BorderBrush" Value="#FFFFFF" />
+        <Setter Property="BorderThickness" Value="1.5" />
+        <Setter Property="Margin" Value="0,0,8,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_about_info_mark">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="StackPanel.bo_about_body">
-        <Setter Property="Spacing" Value="8" />
-        <Setter Property="Margin" Value="24,20" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Spacing" Value="10" />
+        <Setter Property="Margin" Value="28,24" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Border.bo_about_logo_band">
         <Setter Property="Background" Value="#9bbe1d" />
-        <Setter Property="Padding" Value="16,10" />
-        <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="20,12" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Image.bo_about_logo">
-        <Setter Property="Width" Value="260" />
-        <Setter Property="Height" Value="72" />
+        <Setter Property="Height" Value="56" />
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
@@ -2287,6 +2303,18 @@
         <Setter Property="FontSize" Value="13" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="TextAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_about_version">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_about_hardware">
+        <Setter Property="FontFamily" Value="Consolas, Courier New, monospace" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="#55595C" />
     </Style>
 
     <Style Selector="Grid.bo_dashboard">

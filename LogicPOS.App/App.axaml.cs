@@ -43,9 +43,21 @@ public partial class App : global::Avalonia.Application
             var loading = new StartupLoadingWindow();
             desktop.MainWindow = loading;
             loading.Opened += (_, _) => _ = RunBootstrapAsync(desktop, loading);
+            base.OnFrameworkInitializationCompleted();
+            return;
         }
 
+        // Android: call base first so AvaloniaView is ready, then assign MainView once.
+        // Setting MainView before base makes InitializeAvaloniaView re-parent the same control → blank crash.
         base.OnFrameworkInitializationCompleted();
+
+        if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
+        {
+            if (singleView.MainView is null || singleView.MainView.Parent is not null)
+            {
+                singleView.MainView = new MobileHostView();
+            }
+        }
     }
 
     private static async Task RunBootstrapAsync(

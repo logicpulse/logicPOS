@@ -251,22 +251,58 @@ public static class DatabaseStartup
     private static bool IsLocalGuidHardwareId(string? value)
         => value is { Length: 32 } && value.All(Uri.IsHexDigit);
 
-    public static string ResolveSeedPath()
+    public static string ResolveSeedPath(string? baseDirectory = null)
     {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
+        foreach (var root in SeedSearchRoots(baseDirectory))
         {
-            var candidate = Path.Combine(directory.FullName, "db_seeds");
-            var usersSeed = Path.Combine(candidate, "modules", "default", "users.json");
-            if (File.Exists(usersSeed))
+            var directory = new DirectoryInfo(root);
+            while (directory is not null)
             {
-                return candidate;
-            }
+                var candidate = Path.Combine(directory.FullName, "db_seeds");
+                var usersSeed = Path.Combine(candidate, "modules", "default", "users.json");
+                if (File.Exists(usersSeed))
+                {
+                    return candidate;
+                }
 
-            directory = directory.Parent;
+                directory = directory.Parent;
+            }
         }
 
         throw new InvalidOperationException("Não encontrei a pasta db_seeds com os utilizadores por defeito.");
+    }
+
+    private static IEnumerable<string> SeedSearchRoots(string? baseDirectory)
+    {
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var raw in new[]
+                 {
+                     baseDirectory,
+                     AppContext.BaseDirectory,
+                     Path.GetDirectoryName(Environment.ProcessPath),
+                     Directory.GetCurrentDirectory()
+                 })
+        {
+            if (string.IsNullOrWhiteSpace(raw))
+            {
+                continue;
+            }
+
+            string full;
+            try
+            {
+                full = Path.GetFullPath(raw);
+            }
+            catch
+            {
+                continue;
+            }
+
+            if (seen.Add(full))
+            {
+                yield return full;
+            }
+        }
     }
 
     public static void EnsureSeed(IServiceProvider services)

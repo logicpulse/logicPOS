@@ -202,6 +202,17 @@ public sealed class PosCompanyAddress
     public string Country { get; init; } = "Portugal";
 }
 
+public sealed class PosCountryPostalRule
+{
+    public string Designation { get; init; } = string.Empty;
+
+    public string Code2 { get; init; } = string.Empty;
+
+    public string Code3 { get; init; } = string.Empty;
+
+    public string ZipCodeRegex { get; init; } = string.Empty;
+}
+
 public static class PosDocumentRules
 {
     public const string Unknown = "Desconhecido";
@@ -221,23 +232,34 @@ public static class PosDocumentRules
         return string.IsNullOrWhiteSpace(acronym) == false && new DocumentTypeAnalyzer(acronym).IsSalesInvoiceFamily();
     }
 
-    public static string? ValidateTransport(PosShipAddress destination, PosShipAddress origin)
+    public static string? ValidateTransport(
+        PosShipAddress destination,
+        PosShipAddress origin,
+        IReadOnlyList<PosCountryPostalRule> countries)
     {
         var shipTo = ToAddress(destination);
         var shipFrom = ToAddress(origin);
         if (shipTo.HasRequiredTransportFields(true) == false || IsPlaceholder(destination))
         {
-            return "Preencha a morada de destino. Em Portugal o código postal é obrigatório.";
+            return "Preencha a morada de destino. O código postal é obrigatório.";
         }
 
         if (shipFrom.HasRequiredTransportFields(true) == false || IsPlaceholder(origin))
         {
-            return "Preencha a morada de origem. Em Portugal o código postal é obrigatório.";
+            return "Preencha a morada de origem. O código postal é obrigatório.";
         }
 
-        if (IsPostalCode(destination.PostalCode) == false || IsPostalCode(origin.PostalCode) == false)
+        // A regra vem da ficha do país (tabelas auxiliares), não de um formato único.
+        var destinationPostal = PostalRuleError(destination, countries, "destino");
+        if (destinationPostal is not null)
         {
-            return "O código postal tem de ter o formato 0000-000.";
+            return destinationPostal;
+        }
+
+        var originPostal = PostalRuleError(origin, countries, "origem");
+        if (originPostal is not null)
+        {
+            return originPostal;
         }
 
         var dates = CheckTransportDates(ParseWhen(origin.When), ParseWhen(destination.When));
@@ -289,7 +311,7 @@ public static class PosDocumentRules
         return (dispatchValid, arrivalValid, message);
     }
 
-    public static ShipAddress ToAddress(PosShipAddress address)
+    public static ShipAddress ToAddress(PosShipAddress address, IReadOnlyList<PosCountryPostalRule>? countries = null)
     {
         return new ShipAddress
         {
@@ -297,7 +319,7 @@ public static class PosDocumentRules
             Region = address.Region?.Trim(),
             PostalCode = address.PostalCode?.Trim(),
             City = address.City?.Trim(),
-            Country = CountryCode(address.Country),
+            Country = ToIsoCountry(address.Country, countries),
             DeliveryDate = ParseWhen(address.When),
             DeliveryID = address.DeliveryId?.Trim(),
             WarehouseID = address.WarehouseId?.Trim(),
@@ -305,10 +327,36 @@ public static class PosDocumentRules
         };
     }
 
+    /// <summary>Espanha na ficha fica ES na comunicação às Finanças.</summary>
+    public static string ToIsoCountry(string? value, IReadOnlyList<PosCountryPostalRule>? countries)
+    {
+        var text = value?.Trim() ?? string.Empty;
+        if (text.Length == 0)
+        {
+            return "PT";
+        }
+
+        if (countries is not null)
+        {
+            var match = FindCountry(countries, text);
+            if (match is not null && string.IsNullOrWhiteSpace(match.Code2) == false)
+            {
+                return match.Code2.Trim().ToUpperInvariant();
+            }
+        }
+
+        if (text.Equals("Portugal", StringComparison.OrdinalIgnoreCase) || text.Equals("PT", StringComparison.OrdinalIgnoreCase))
+        {
+            return "PT";
+        }
+
+        return text.Length == 2 ? text.ToUpperInvariant() : text;
+    }
+
     private static bool IsPlaceholder(PosShipAddress address)
     {
+        // O distrito é opcional: a AT não o exige e o botão Empresa preenche "Desconhecido".
         return IsUnknown(address.Address)
-            || IsUnknown(address.Region)
             || IsUnknown(address.City)
             || IsUnknown(address.Country)
             || IsPlaceholderPostal(address.PostalCode);
@@ -325,20 +373,108 @@ public static class PosDocumentRules
         return string.IsNullOrWhiteSpace(text) || text is "0000-000" or "000-000";
     }
 
-    private static bool IsPostalCode(string? value)
+    private static string? PostalRuleError(PosShipAddress address, IReadOnlyList<PosCountryPostalRule> countries, string side)
     {
-        return System.Text.RegularExpressions.Regex.IsMatch(value?.Trim() ?? string.Empty, @"^\d{4}-\d{3}$");
-    }
-
-    private static string CountryCode(string? value)
-    {
-        var text = value?.Trim() ?? string.Empty;
-        if (text.Length == 0 || text.Equals("Portugal", StringComparison.OrdinalIgnoreCase) || text.Equals("PT", StringComparison.OrdinalIgnoreCase))
+        var country = FindCountry(countries, address.Country);
+        var typed = string.IsNullOrWhiteSpace(address.Country) ? "Portugal" : address.Country.Trim();
+        if (country is null)
         {
-            return "PT";
+            return $"O país de {side} ({typed}) não está nas tabelas auxiliares.";
         }
 
-        return text;
+        if (string.IsNullOrWhiteSpace(country.ZipCodeRegex))
+        {
+            return null;
+        }
+
+        var postal = address.PostalCode?.Trim() ?? string.Empty;
+        bool matches;
+        try
+        {
+            matches = System.Text.RegularExpressions.Regex.IsMatch(
+                postal,
+                country.ZipCodeRegex,
+                System.Text.RegularExpressions.RegexOptions.CultureInvariant,
+                TimeSpan.FromSeconds(1));
+        }
+        catch (ArgumentException)
+        {
+            return $"A regra de código postal de {CountryLabel(country)} nas tabelas auxiliares é inválida.";
+        }
+        catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
+        {
+            return $"A regra de código postal de {CountryLabel(country)} demorou demasiado.";
+        }
+
+        return matches
+            ? null
+            : $"O código postal de {side} não cumpre a regra do país {CountryLabel(country)}.";
+    }
+
+    private static PosCountryPostalRule? FindCountry(IReadOnlyList<PosCountryPostalRule> countries, string? country)
+    {
+        var text = string.IsNullOrWhiteSpace(country) ? "Portugal" : country.Trim();
+        return countries.FirstOrDefault(item =>
+            string.Equals(item.Designation, text, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(item.Code2, text, StringComparison.OrdinalIgnoreCase)
+            || string.Equals(item.Code3, text, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string CountryLabel(PosCountryPostalRule country)
+    {
+        return string.IsNullOrWhiteSpace(country.Designation) ? country.Code2 : country.Designation;
+    }
+
+    /// <summary>
+    /// O documento guarda o motivo como sigla (M06) ou código, não como identificador.
+    /// </summary>
+    public static Guid? MatchVatExemptionId(IEnumerable<PosLookupItem> reasons, string? storedCode, string? storedDesignation)
+    {
+        var code = storedCode?.Trim();
+        var name = storedDesignation?.Trim();
+        if (string.IsNullOrEmpty(code) && string.IsNullOrEmpty(name))
+        {
+            return null;
+        }
+
+        if (string.IsNullOrEmpty(code) == false)
+        {
+            foreach (var item in reasons)
+            {
+                if (item.Id == Guid.Empty)
+                {
+                    continue;
+                }
+
+                if (string.Equals(item.Code, code, StringComparison.OrdinalIgnoreCase)
+                    || item.Label.StartsWith(code + " - ", StringComparison.OrdinalIgnoreCase))
+                {
+                    return item.Id;
+                }
+            }
+        }
+
+        if (string.IsNullOrEmpty(name))
+        {
+            return null;
+        }
+
+        foreach (var item in reasons)
+        {
+            if (item.Id == Guid.Empty)
+            {
+                continue;
+            }
+
+            var separator = item.Label.IndexOf(" - ", StringComparison.Ordinal);
+            var labelName = (separator >= 0 ? item.Label[(separator + 3)..] : item.Label).Trim();
+            if (string.Equals(labelName, name, StringComparison.OrdinalIgnoreCase))
+            {
+                return item.Id;
+            }
+        }
+
+        return null;
     }
 
     private static DateTime? ParseWhen(string? value)
@@ -1163,6 +1299,24 @@ public sealed class PosDocumentService : IPosDocumentService
             .ToList();
     }
 
+    public async Task<IReadOnlyList<PosCountryPostalRule>> ListCountryPostalRulesAsync(CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var countries = await database.Countries
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .Select(item => new PosCountryPostalRule
+            {
+                Designation = item.Designation,
+                Code2 = item.Code2,
+                Code3 = item.Code3,
+                ZipCodeRegex = item.ZipCodeRegex
+            })
+            .ToListAsync(cancellationToken);
+        return countries;
+    }
+
     public async Task<IReadOnlyList<PosLookupItem>> ListVatExemptionReasonsAsync(CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
@@ -1174,15 +1328,17 @@ public sealed class PosDocumentService : IPosDocumentService
             .ToListAsync(cancellationToken);
         return reasons
             .OrderBy(item => item.Code)
-            .Select(item =>
-            {
-                var code = string.IsNullOrWhiteSpace(item.Acronym) ? item.Code : item.Acronym;
-                var label = string.IsNullOrWhiteSpace(code)
-                    ? item.Designation
-                    : code + " - " + item.Designation;
-                return new PosLookupItem(item.Id, label, item.Code);
-            })
+            .Select(item => ToExemptionLookup(item.Id, item.Code, item.Designation, item.Acronym))
             .ToList();
+    }
+
+    private static PosLookupItem ToExemptionLookup(Guid id, string? code, string? designation, string? acronym)
+    {
+        var token = string.IsNullOrWhiteSpace(acronym) ? code : acronym;
+        var label = string.IsNullOrWhiteSpace(token)
+            ? designation ?? string.Empty
+            : token + " - " + designation;
+        return new PosLookupItem(id, label, code);
     }
 
     public async Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default)
@@ -1191,7 +1347,7 @@ public sealed class PosDocumentService : IPosDocumentService
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var documents = await database.Documents
             .AsNoTracking()
-            .Where(item => item.IsDeleted == false && item.IsDraft == false && item.Status != "A")
+            .Where(item => item.IsDeleted == false && item.IsDraft == false)
             .OrderByDescending(item => item.CreatedAt)
             .Take(250)
             .Select(item => new
@@ -1297,9 +1453,19 @@ public sealed class PosDocumentService : IPosDocumentService
                 VatRateId = item.Tax.TaxId,
                 VatPercentage = item.Tax.Percentage,
                 item.SerialNumber,
-                item.Notes
+                item.Notes,
+                item.VatExemptionCode,
+                item.VatExemptionReason
             })
             .ToListAsync(cancellationToken);
+        var exemptionLookup = await database.VatExemptionReasons
+            .AsNoTracking()
+            .Where(item => item.IsDeleted == false)
+            .Select(item => new { item.Id, item.Code, item.Designation, item.Acronym })
+            .ToListAsync(cancellationToken);
+        var exemptions = exemptionLookup
+            .Select(item => ToExemptionLookup(item.Id, item.Code, item.Designation, item.Acronym))
+            .ToList();
 
         return new PosDocumentCopySource
         {
@@ -1327,7 +1493,8 @@ public sealed class PosDocumentService : IPosDocumentService
                     item.VatRateId,
                     item.VatPercentage,
                     item.SerialNumber,
-                    item.Notes))
+                    item.Notes,
+                    PosDocumentRules.MatchVatExemptionId(exemptions, item.VatExemptionCode, item.VatExemptionReason)))
                 .ToList()
         };
     }
@@ -1444,6 +1611,7 @@ public sealed class PosDocumentService : IPosDocumentService
         var country = SystemCountry;
         var useAgtRounding = UseAgtRoundingForDocuments();
         var details = lines.Select(line => ToCreateDetail(line, country, useAgtRounding)).ToList();
+        var postalRules = await ListCountryPostalRulesAsync(cancellationToken);
 
         var dto = new CreateDocumentDto(
             Type: documentType,
@@ -1451,8 +1619,8 @@ public sealed class PosDocumentService : IPosDocumentService
             PaymentConditionId: header?.PaymentConditionId is Guid paymentCondition && paymentCondition != Guid.Empty ? paymentCondition : null,
             CurrencyId: currencyId,
             ParentId: header?.ParentDocumentId is Guid parent && parent != Guid.Empty ? parent : null,
-            ShipToAddress: header?.ShipTo is null ? null : PosDocumentRules.ToAddress(header.ShipTo),
-            ShipFromAddress: header?.ShipFrom is null ? null : PosDocumentRules.ToAddress(header.ShipFrom),
+            ShipToAddress: header?.ShipTo is null ? null : PosDocumentRules.ToAddress(header.ShipTo, postalRules),
+            ShipFromAddress: header?.ShipFrom is null ? null : PosDocumentRules.ToAddress(header.ShipFrom, postalRules),
             Discount: 0,
             Customer: null,
             ExchangeRate: exchangeRate,
@@ -1491,6 +1659,13 @@ public sealed class PosDocumentService : IPosDocumentService
         await database.SaveChangesAsync(cancellationToken);
         InvalidateCustomerSearchIfCreated(dto);
         return PosDocumentResult.Ok(document.Id, document.Number);
+    }
+
+    public Task<PosAtSendResult> SendTransportDocumentToAtAsync(Guid documentId, CancellationToken cancellationToken = default)
+    {
+        _ = documentId;
+        _ = cancellationToken;
+        return Task.FromResult(PosAtSendResult.Fail("A comunicação à AT só está disponível com o posto em modo cloud."));
     }
 
     public async Task<string?> CreateA4FileAsync(Guid documentId, CancellationToken cancellationToken = default)

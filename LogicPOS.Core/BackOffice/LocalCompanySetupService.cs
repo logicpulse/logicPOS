@@ -261,19 +261,19 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         return string.Empty;
     }
 
-    /// <summary>LogicPulse demo company values (GTK Demo button / useDataDemo).</summary>
+    /// <summary>Generic demo company values (setup Demo button / useDataDemo).</summary>
     public static IReadOnlyDictionary<string, string> DemoCompanyValues { get; } =
         new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
-            ["COMPANY_NAME"] = "LogicPulse",
-            ["COMPANY_BUSINESS_NAME"] = "Technologies, Ltda",
-            ["COMPANY_ADDRESS"] = "Rua Capitão Salgueiro Maia, 7",
-            ["COMPANY_CITY"] = "Figueira da Foz",
-            ["COMPANY_POSTALCODE"] = "3080-000",
+            ["COMPANY_NAME"] = "Demo Company",
+            ["COMPANY_BUSINESS_NAME"] = "Demo Business, Ltda",
+            ["COMPANY_ADDRESS"] = "Rua Exemplo, 1",
+            ["COMPANY_CITY"] = "Lisboa",
+            ["COMPANY_POSTALCODE"] = "1000-001",
             ["COMPANY_FISCALNUMBER"] = "999999990",
             ["COMPANY_STOCK_CAPITAL"] = "1000",
             ["COMPANY_TAX_ENTITY"] = "Global",
-            ["COMPANY_EMAIL"] = "comercial@logicpulse.com",
-            ["COMPANY_WEBSITE"] = "www.logicpulse.com"
+            ["COMPANY_EMAIL"] = "demo@example.com",
+            ["COMPANY_WEBSITE"] = "www.example.com"
         };
 }
