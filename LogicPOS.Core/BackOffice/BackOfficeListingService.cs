@@ -772,6 +772,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
 
     private async Task<ListingSnapshot> QueryEntitiesAsync(LogicPOSDbContext database, PageSpec page, CancellationToken cancellationToken)
     {
+        if (page.Filter == "company" && page.EntityType == typeof(PreferenceParameter))
+        {
+            await EnsureAgtFeCompanyParametersAsync(database, cancellationToken);
+        }
+
         var rows = (await MaterializeAsync(database, page.EntityType!, cancellationToken))
             .Cast<object>()
             .Where(row => ReadBool(row, "IsDeleted") == false)
@@ -2033,8 +2038,70 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         }
 
         var company = parameter.Token.StartsWith("COMPANY", StringComparison.OrdinalIgnoreCase)
-            || parameter.Token.StartsWith("REPORT", StringComparison.OrdinalIgnoreCase);
+            || parameter.Token.StartsWith("REPORT", StringComparison.OrdinalIgnoreCase)
+            || parameter.Token.StartsWith("AGT_FE", StringComparison.OrdinalIgnoreCase);
         return page.Filter == "company" ? company : company == false;
+    }
+
+    /// <summary>
+    /// Ensures the AGT-FE private key preference exists so BackOffice company settings can edit it
+    /// even when the database was seeded without the Angola-specific row.
+    /// </summary>
+    private static async Task EnsureAgtFeCompanyParametersAsync(LogicPOSDbContext database, CancellationToken cancellationToken)
+    {
+        const string token = "AGT_FE_RSA_PRIVATE_KEY";
+        var row = await database.PreferenceParameters
+            .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Token == token, cancellationToken);
+        if (row is not null)
+        {
+            // Existing DBs may have Text + AlfaNumeric regex that rejects PEM (dashes, newlines, +/=).
+            var dirty = false;
+            if (row.InputType != LogicPOS.Domain.Enums.PreferenceParameterInputType.Multiline)
+            {
+                row.InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.Multiline;
+                dirty = true;
+            }
+
+            if (string.Equals(row.RegEx, "RegexAlfaNumericExtended", StringComparison.OrdinalIgnoreCase))
+            {
+                row.RegEx = string.Empty;
+                dirty = true;
+            }
+
+            if (row.Order < 999)
+            {
+                row.Order = 999;
+                row.Code = "999";
+                dirty = true;
+            }
+
+            if (dirty)
+            {
+                row.UpdatedAt = DateTime.Now;
+                await database.SaveChangesAsync(cancellationToken);
+            }
+
+            return;
+        }
+
+        var now = DateTime.Now;
+        database.PreferenceParameters.Add(new PreferenceParameter
+        {
+            Id = new Guid("f2d460a4-5a90-4c19-9fd9-382e3266ad3e"),
+            Token = token,
+            Value = null,
+            Required = false,
+            RegEx = string.Empty,
+            ResourceString = "Chave Privada AGT-FE",
+            FormType = 1,
+            FormPageNo = 1,
+            InputType = LogicPOS.Domain.Enums.PreferenceParameterInputType.Multiline,
+            Order = 999,
+            Code = "999",
+            CreatedAt = now,
+            UpdatedAt = now
+        });
+        await database.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<ListingSaveResult> OpenDayAsync(CancellationToken cancellationToken)

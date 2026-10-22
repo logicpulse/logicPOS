@@ -1010,7 +1010,13 @@ public partial class EntityListing : UserControl
 
         if (field.Kind == "bool")
         {
-            return new CheckBox { Classes = { "bo_entity_input" }, IsChecked = field.Value == "true", IsEnabled = field.ReadOnly == false };
+            // LoadFields uses ReadRaw → "Sim"/"Não"; save writes "true"/"false".
+            return new CheckBox
+            {
+                Classes = { "bo_entity_input" },
+                IsChecked = IsTruthy(field.Value),
+                IsEnabled = field.ReadOnly == false
+            };
         }
 
         if (field.Kind == "lookup" && field.Lookup is not null)
@@ -1341,6 +1347,12 @@ public partial class EntityListing : UserControl
             ? option
             : null;
     }
+
+    private static bool IsTruthy(string? value)
+        => value is "1"
+            || string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(value, "sim", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(value, "yes", StringComparison.OrdinalIgnoreCase);
 
     private static string ReadInput(Control input)
     {

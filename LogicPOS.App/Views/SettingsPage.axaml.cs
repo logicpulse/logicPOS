@@ -108,22 +108,68 @@ public partial class SettingsPage : UserControl
 
     private Grid BuildPage(IReadOnlyList<ListingRow> rows)
     {
+        // Capital Social (left) + Chave Privada AGT-FE (right) on the same row.
+        var pem = rows.FirstOrDefault(row => AgtFePrivateKeyBox.IsToken(row["Token"]));
+        var capital = rows.FirstOrDefault(row =>
+            row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase));
+        var regular = rows
+            .Where(row => AgtFePrivateKeyBox.IsToken(row["Token"]) == false
+                && row["Token"].Equals("COMPANY_STOCK_CAPITAL", StringComparison.OrdinalIgnoreCase) == false)
+            .OrderBy(row => ParseOrder(row["Order"]))
+            .ThenBy(row => row["Code"], StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var capitalOrder = capital is null ? int.MaxValue : ParseOrder(capital["Order"]);
+        var before = regular.Where(row => ParseOrder(row["Order"]) < capitalOrder).ToList();
+        var after = regular.Where(row => ParseOrder(row["Order"]) >= capitalOrder).ToList();
+
         var grid = new Grid { ColumnDefinitions = new ColumnDefinitions("*,*") };
+        var rowIndex = 0;
+        rowIndex = AddTwoColumnBlock(grid, before, rowIndex);
+
+        if (capital is not null || pem is not null)
+        {
+            grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
+            if (capital is not null)
+            {
+                AddField(grid, capital, rowIndex, 0, columnSpan: 1);
+            }
+
+            if (pem is not null)
+            {
+                AddField(grid, pem, rowIndex, capital is null ? 0 : 1, columnSpan: 1);
+            }
+
+            rowIndex++;
+        }
+
+        AddTwoColumnBlock(grid, after, rowIndex);
+        return grid;
+    }
+
+    private int AddTwoColumnBlock(Grid grid, IReadOnlyList<ListingRow> rows, int startRow)
+    {
         var half = (int)Math.Ceiling(rows.Count / 2d);
         for (var index = 0; index < half; index++)
         {
             grid.RowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            AddField(grid, rows[index], index, 0);
+            var rowIndex = startRow + index;
+            AddField(grid, rows[index], rowIndex, 0, columnSpan: 1);
             if (index + half < rows.Count)
             {
-                AddField(grid, rows[index + half], index, 1);
+                AddField(grid, rows[index + half], rowIndex, 1, columnSpan: 1);
             }
         }
 
-        return grid;
+        return startRow + half;
     }
 
-    private void AddField(Grid grid, ListingRow row, int rowIndex, int column)
+    private static int ParseOrder(string? text)
+        => int.TryParse(text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var order)
+            ? order
+            : int.MaxValue;
+
+    private void AddField(Grid grid, ListingRow row, int rowIndex, int column, int columnSpan)
     {
         var stack = new StackPanel { Margin = new Avalonia.Thickness(8, 6) };
         var translated = row["ResourceStringValue"];
@@ -136,6 +182,7 @@ public partial class SettingsPage : UserControl
         _byToken[row["Token"]] = input;
         Grid.SetRow(stack, rowIndex);
         Grid.SetColumn(stack, column);
+        Grid.SetColumnSpan(stack, columnSpan);
         grid.Children.Add(stack);
         _fields.Add((row.Id, row["Token"], row["Order"], row["Code"], row["Notes"], () => ReadInput(input)));
     }
@@ -164,11 +211,17 @@ public partial class SettingsPage : UserControl
             };
         }
 
+        if (AgtFePrivateKeyBox.IsToken(token))
+        {
+            return AgtFePrivateKeyBox.Create(value);
+        }
+
+        var multiline = kind.Contains("Multi", StringComparison.OrdinalIgnoreCase);
         var box = new TextBox
         {
-            Classes = { kind.Contains("Multi", StringComparison.OrdinalIgnoreCase) ? "bo_entity_multiline" : "bo_entity_input" },
+            Classes = { multiline ? "bo_entity_multiline" : "bo_entity_input" },
             Text = value,
-            AcceptsReturn = kind.Contains("Multi", StringComparison.OrdinalIgnoreCase),
+            AcceptsReturn = multiline,
             IsReadOnly = token.Equals("COMPANY_COUNTRY_CODE2", StringComparison.OrdinalIgnoreCase)
                 || token.Equals("COMPANY_COUNTRY_OID", StringComparison.OrdinalIgnoreCase)
         };
@@ -319,6 +372,11 @@ public partial class SettingsPage : UserControl
         if (input is AutoCompleteBox search)
         {
             return ListingFilters.SelectedLookup(search)?.Id.ToString() ?? string.Empty;
+        }
+
+        if (AgtFePrivateKeyBox.TryRead(input, out var pem))
+        {
+            return pem;
         }
 
         return input is TextBox box ? box.Text ?? string.Empty : string.Empty;
@@ -535,7 +593,7 @@ public partial class SettingsPage : UserControl
             return "Outros";
         }
 
-        if (key.StartsWith("COMPANY") || key == "SYSTEM_CURRENCY")
+        if (key.StartsWith("COMPANY") || key.StartsWith("AGT_FE") || key == "SYSTEM_CURRENCY")
         {
             return "Empresa";
         }

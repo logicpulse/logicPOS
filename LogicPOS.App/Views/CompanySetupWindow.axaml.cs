@@ -11,6 +11,7 @@ public partial class CompanySetupWindow : Window
 {
     private readonly ICompanySetupService _service;
     private readonly Dictionary<string, TextBox> _inputs = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, TextBlock> _captions = new(StringComparer.OrdinalIgnoreCase);
     private CompanySetupDraft? _draft;
     private ComboBox? _countryBox;
     private ComboBox? _currencyBox;
@@ -65,6 +66,7 @@ public partial class CompanySetupWindow : Window
         Notice.Text = "Indique os dados da empresa (obrigatório na primeira utilização).";
         FieldsHost.Children.Clear();
         _inputs.Clear();
+        _captions.Clear();
 
         try
         {
@@ -88,18 +90,20 @@ public partial class CompanySetupWindow : Window
         _countryBox.SelectionChanged += (_, _) => RefreshValidation();
         _currencyBox.SelectionChanged += (_, _) => RefreshValidation();
 
-        foreach (var field in _draft.Fields)
+        // AGT-FE private key last: expand-on-focus multiline for the full PEM.
+        foreach (var field in _draft.Fields.OrderBy(item => AgtFePrivateKeyBox.IsToken(item.Token) ? 1 : 0))
         {
-            var label = PreferenceLabels.Get(field.Label, field.Token);
-            var caption = field.Required ? $"{PreferenceLabels.Title(label)} *" : PreferenceLabels.Title(label);
-            var box = new TextBox
-            {
-                Classes = { "bo_entity_input" },
-                Text = field.Value
-            };
+            var caption = new TextBlock { Classes = { "bo_new_doc_caption" } };
+            var box = AgtFePrivateKeyBox.IsToken(field.Token)
+                ? AgtFePrivateKeyBox.Create(field.Value)
+                : new TextBox { Classes = { "bo_entity_input" }, Text = field.Value };
             box.TextChanged += (_, _) => RefreshValidation();
             _inputs[field.Token] = box;
-            FieldsHost.Children.Add(Wrap(caption, box));
+            _captions[field.Token] = caption;
+            var stack = new StackPanel { Spacing = 4 };
+            stack.Children.Add(caption);
+            stack.Children.Add(box);
+            FieldsHost.Children.Add(stack);
         }
 
         TouchFields.Attach(FieldsHost);
@@ -129,12 +133,14 @@ public partial class CompanySetupWindow : Window
 
     private void RefreshValidation()
     {
+        RefreshFieldCaptions();
+
         var country = _countryBox?.SelectedItem as CompanySetupChoice;
         var currency = _currencyBox?.SelectedItem as CompanySetupChoice;
         var ok = country is not null && currency is not null;
         foreach (var field in _draft?.Fields ?? [])
         {
-            if (field.Required == false)
+            if (IsRequired(field) == false)
             {
                 continue;
             }
@@ -149,6 +155,37 @@ public partial class CompanySetupWindow : Window
 
         OkButton.IsEnabled = ok;
     }
+
+    private void RefreshFieldCaptions()
+    {
+        foreach (var field in _draft?.Fields ?? [])
+        {
+            if (_captions.TryGetValue(field.Token, out var caption) == false)
+            {
+                continue;
+            }
+
+            var label = PreferenceLabels.Get(field.Label, field.Token);
+            caption.Text = IsRequired(field)
+                ? $"{PreferenceLabels.Title(label)} *"
+                : PreferenceLabels.Title(label);
+        }
+    }
+
+    private bool IsRequired(CompanySetupField field)
+    {
+        // AGT-FE private key is never mandatory for Angola (seed marks it required).
+        if (AgtFePrivateKeyBox.IsToken(field.Token) && IsAngolaSelected())
+        {
+            return false;
+        }
+
+        return field.Required;
+    }
+
+    private bool IsAngolaSelected()
+        => _countryBox?.SelectedItem is CompanySetupChoice country
+           && string.Equals(country.Code, "AO", StringComparison.OrdinalIgnoreCase);
 
     private void OnDemoClick(object? sender, RoutedEventArgs e)
     {
@@ -188,7 +225,9 @@ public partial class CompanySetupWindow : Window
 
         var values = _inputs.ToDictionary(
             item => item.Key,
-            item => item.Value.Text?.Trim() ?? string.Empty,
+            item => AgtFePrivateKeyBox.TryRead(item.Value, out var pem)
+                ? pem
+                : item.Value.Text?.Trim() ?? string.Empty,
             StringComparer.OrdinalIgnoreCase);
 
         Notice.Text = "A gravar...";
