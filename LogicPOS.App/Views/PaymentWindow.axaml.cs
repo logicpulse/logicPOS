@@ -6,7 +6,9 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using LogicPOS.App.Hardware;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Core.FrontOffice;
@@ -59,7 +61,8 @@ public partial class PaymentWindow : Window
         _shareLabel = shareLabel;
         _orderTotal = lines.Sum(line => line.Total);
         InitializeComponent();
-        SelectSaleDocument("FS");
+        CustomerSuggest.PlacementTarget = CustomerName;
+        ApplySaleDocumentType();
         BuildMethods();
         TouchFields.Attach(this);
         Opened += (_, _) => CoverOwner();
@@ -175,8 +178,7 @@ public partial class PaymentWindow : Window
     private void ShowCustomer(PosCustomer customer)
     {
         _customerSearch++;
-        CustomerMatches.Children.Clear();
-        _customerMatches.Clear();
+        HideCustomerSuggest();
         CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = customer.Id;
@@ -191,7 +193,8 @@ public partial class PaymentWindow : Window
         ZipCode.Text = customer.ZipCode ?? string.Empty;
         City.Text = customer.City ?? string.Empty;
         Country.Text = _defaultCountry;
-        _filling = false;
+        // TextChanged is posted after this call; keep ignoring it until the UI queue drains.
+        Dispatcher.UIThread.Post(() => _filling = false, DispatcherPriority.Input);
         SetEnabled(_customerCard, HasCard());
         RefreshTotals();
     }
@@ -224,8 +227,7 @@ public partial class PaymentWindow : Window
     private void OnClearCustomerClick(object? sender, RoutedEventArgs e)
     {
         _customerSearch++;
-        CustomerMatches.Children.Clear();
-        _customerMatches.Clear();
+        HideCustomerSuggest();
         CustomerSearchNotice.IsVisible = false;
         _filling = true;
         _customerId = null;
@@ -240,7 +242,7 @@ public partial class PaymentWindow : Window
         City.Text = string.Empty;
         Country.Text = _defaultCountry;
         Notes.Text = string.Empty;
-        _filling = false;
+        Dispatcher.UIThread.Post(() => _filling = false, DispatcherPriority.Input);
         SetEnabled(_customerCard, false);
         RefreshTotals();
     }
@@ -297,19 +299,25 @@ public partial class PaymentWindow : Window
 
     private void OnPartialCancelClick(object? sender, RoutedEventArgs e) => PartialOverlay.IsVisible = false;
 
-    private void OnSaleDocumentClick(object? sender, RoutedEventArgs e)
+    private void ApplySaleDocumentType()
     {
-        if (sender is Button { Tag: string tag })
-        {
-            SelectSaleDocument(tag);
-        }
+        _saleDocumentType = ResolveSaleDocumentType();
+        DocumentTypeValue.Text = _saleDocumentType;
     }
 
-    private void SelectSaleDocument(string tag)
+    /// <summary>
+    /// Portugal issues FS; Angola issues FR. Other countries keep FS as the FrontOffice default.
+    /// </summary>
+    private static string ResolveSaleDocumentType() => IsAngolaSystem() ? "FR" : "FS";
+
+    private static bool IsAngolaSystem()
+        => AppComposition.Services?.GetService<ISystemInformationService>()?.IsAngola() == true;
+
+    private void HideCustomerSuggest()
     {
-        _saleDocumentType = tag is "FR" ? "FR" : "FS";
-        DocumentFs.Classes.Set("selected", _saleDocumentType == "FS");
-        DocumentFr.Classes.Set("selected", _saleDocumentType == "FR");
+        _customerMatches.Clear();
+        CustomerSuggestList.Children.Clear();
+        CustomerSuggest.IsOpen = false;
     }
 
     private void OnCustomerTextChanged(object? sender, TextChangedEventArgs e)
@@ -340,11 +348,10 @@ public partial class PaymentWindow : Window
     {
         var term = text?.Trim() ?? string.Empty;
         var ticket = ++_customerSearch;
-        CustomerMatches.Children.Clear();
-        _customerMatches.Clear();
         CustomerSearchNotice.IsVisible = false;
         if (term.Length == 0 || AppComposition.Services is null)
         {
+            HideCustomerSuggest();
             return;
         }
 
@@ -365,19 +372,36 @@ public partial class PaymentWindow : Window
                 return;
             }
 
-            _customerMatches.AddRange(matches);
+            _customerMatches.Clear();
+            CustomerSuggestList.Children.Clear();
+            _customerMatches.AddRange(matches.Take(8));
             foreach (var match in _customerMatches)
             {
                 var customer = match;
                 var button = new Button
                 {
-                    Classes = { "pos_list_item" },
-                    Content = $"{customer.Name}  {customer.FiscalNumber}"
+                    Classes = { "bo_report_row" },
+                    Content = $"{customer.Name}  {customer.FiscalNumber}",
+                    HorizontalAlignment = HorizontalAlignment.Stretch
                 };
-                button.Click += (_, _) => ShowCustomer(customer);
-                CustomerMatches.Children.Add(button);
+                // Tunnel + Handled so the popup light-dismiss does not eat the first press.
+                button.AddHandler(
+                    InputElement.PointerPressedEvent,
+                    (_, args) =>
+                    {
+                        if (args.GetCurrentPoint(button).Properties.IsLeftButtonPressed == false)
+                        {
+                            return;
+                        }
+
+                        args.Handled = true;
+                        ShowCustomer(customer);
+                    },
+                    RoutingStrategies.Tunnel);
+                CustomerSuggestList.Children.Add(button);
             }
 
+            CustomerSuggest.IsOpen = _customerMatches.Count > 0;
             if (_customerMatches.Count == 0)
             {
                 CustomerSearchNotice.Text = "Não foi encontrado nenhum cliente.";
@@ -391,6 +415,7 @@ public partial class PaymentWindow : Window
                 return;
             }
 
+            HideCustomerSuggest();
             CustomerSearchNotice.Text = "Não foi possível pesquisar os clientes.";
             CustomerSearchNotice.IsVisible = true;
         }
@@ -457,7 +482,10 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        if (documentType == "FR" && (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text)))
+        // Angola has no FS on the direct sale: FR may use Consumidor Final.
+        if (documentType == "FR"
+            && IsAngolaSystem() == false
+            && (_finalConsumer || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(FiscalNumber.Text)))
         {
             ShowNotice("Aviso", "A fatura-recibo exige um cliente com nome e NIF.", error: true);
             return;

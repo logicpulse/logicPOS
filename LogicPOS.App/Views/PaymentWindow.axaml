@@ -79,26 +79,7 @@
                             <StackPanel Spacing="8">
                                 <StackPanel>
                                     <TextBlock Classes="pos_pay_caption" Text="Documento" />
-                                    <StackPanel Orientation="Horizontal" Spacing="6">
-                                        <Button x:Name="DocumentFs"
-                                                Classes="pos_pay_method selected"
-                                                Width="96"
-                                                Height="40"
-                                                Click="OnSaleDocumentClick"
-                                                Tag="FS"
-                                                ToolTip.Tip="Fatura simplificada">
-                                            <TextBlock Classes="pos_pay_method_text" Text="FS" />
-                                        </Button>
-                                        <Button x:Name="DocumentFr"
-                                                Classes="pos_pay_method"
-                                                Width="96"
-                                                Height="40"
-                                                Click="OnSaleDocumentClick"
-                                                Tag="FR"
-                                                ToolTip.Tip="Fatura-recibo">
-                                            <TextBlock Classes="pos_pay_method_text" Text="FR" />
-                                        </Button>
-                                    </StackPanel>
+                                    <TextBlock x:Name="DocumentTypeValue" Classes="pos_pay_total" Text="FS" />
                                 </StackPanel>
                                 <StackPanel>
                                     <TextBlock Classes="pos_pay_caption" Text="Total a pagar:" />
@@ -132,7 +113,15 @@
                             <TextBlock Classes="pos_pay_label" Text="Cliente" />
                             <TextBox x:Name="CustomerName" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
                             <TextBlock x:Name="CustomerSearchNotice" Classes="bo_entity_error" IsVisible="False" />
-                            <StackPanel x:Name="CustomerMatches" />
+                            <Popup x:Name="CustomerSuggest"
+                                   Placement="Bottom"
+                                   IsLightDismissEnabled="True">
+                                <Border Classes="bo_new_doc_suggest" MinWidth="280">
+                                    <ScrollViewer MaxHeight="180">
+                                        <StackPanel x:Name="CustomerSuggestList" />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
                         </StackPanel>
                         <StackPanel Grid.Column="1" Margin="6,0,0,0">
                             <TextBlock Classes="pos_pay_label" Text="Desconto" />

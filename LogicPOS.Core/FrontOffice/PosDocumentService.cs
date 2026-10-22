@@ -223,8 +223,14 @@ public static class PosDocumentRules
         return string.IsNullOrWhiteSpace(acronym) == false && new DocumentTypeAnalyzer(acronym).IsWayBill();
     }
 
-    public static bool RequiresNamedCustomer(string? acronym)
+    public static bool RequiresNamedCustomer(string? acronym, bool isAngola = false)
     {
+        // Angola has no FS on the direct sale: FR may use Consumidor Final.
+        if (isAngola && string.Equals(acronym, "FR", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
         return acronym is "FT" or "FR" or "NC" or "ND";
     }
 
@@ -661,7 +667,9 @@ public sealed class PosDocumentService : IPosDocumentService
             return PosDocumentResult.Fail("Método de pagamento não encontrado.");
         }
 
-        if (string.Equals(documentType, "FR", StringComparison.OrdinalIgnoreCase))
+        // Angola has no FS on the direct sale: FR may use Consumidor Final (same as DocumentTypeAnalyzer.AllowsFinalConsumer).
+        if (string.Equals(documentType, "FR", StringComparison.OrdinalIgnoreCase)
+            && _systemInformation.IsAngola() == false)
         {
             var buyer = await database.Customers.AsNoTracking()
                 .Where(item => item.Id == customerId && item.IsDeleted == false)
