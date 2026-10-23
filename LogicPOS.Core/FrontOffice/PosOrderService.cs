@@ -402,6 +402,62 @@ public sealed class PosOrderService : IPosOrderService
         return PosDocumentResult.Ok(string.Empty);
     }
 
+    public async Task<PosDocumentResult> SetLineRemainingAsync(Guid orderId, Guid articleId, decimal unitPrice, decimal quantity, decimal remainingQuantity, decimal remainingNetUnitPrice, CancellationToken cancellationToken = default)
+    {
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var order = await database.Orders
+            .Include(item => item.Tickets!)
+            .ThenInclude(ticket => ticket.Details)
+            .FirstOrDefaultAsync(item => item.Id == orderId && item.IsDeleted == false, cancellationToken);
+        if (order is null)
+        {
+            return PosDocumentResult.Fail("Ordem não encontrada.");
+        }
+
+        OrderDetail? detail = null;
+        Ticket? owner = null;
+        foreach (var ticket in order.Tickets ?? [])
+        {
+            detail = ticket.Details?.FirstOrDefault(item =>
+                item.IsDeleted == false
+                && item.ArticleId == articleId
+                && item.Price == unitPrice
+                && item.Quantity == quantity);
+            if (detail is not null)
+            {
+                owner = ticket;
+                break;
+            }
+        }
+
+        if (detail is null || owner is null)
+        {
+            return PosDocumentResult.Fail("Linha da ordem não encontrada.");
+        }
+
+        if (remainingQuantity <= 0)
+        {
+            owner.Details!.Remove(detail);
+            if (owner.Details.Count == 0)
+            {
+                order.Tickets!.Remove(owner);
+            }
+        }
+        else
+        {
+            var totals = DocumentLineCalculator.Calculate(remainingNetUnitPrice, remainingQuantity, detail.Discount, detail.Vat, useAgtRounding: false);
+            detail.Quantity = remainingQuantity;
+            detail.Price = remainingNetUnitPrice;
+            detail.TotalDiscount = totals.TotalDiscount;
+            detail.TotalTax = totals.TotalTax;
+            detail.TotalFinal = totals.TotalFinal;
+        }
+
+        await database.SaveChangesAsync(cancellationToken);
+        return PosDocumentResult.Ok(string.Empty);
+    }
+
     public async Task<PosDocumentResult> ChangeTableAsync(Guid orderId, Guid newTableId, CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();

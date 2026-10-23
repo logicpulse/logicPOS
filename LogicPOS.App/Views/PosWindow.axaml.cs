@@ -58,6 +58,14 @@ public partial class PosWindow : Window, IOfficeSurface
     private ScrollViewer? _ticketLines;
     private StackPanel? _ticketRows;
     private TextBlock? _keypadValue;
+    private Grid? _quantityPad;
+    private StackPanel? _splitHost;
+    private TextBlock? _splitNotice;
+    private StackPanel? _splitList;
+    private ScrollViewer? _splitScroll;
+    private readonly List<SplitSeat> _splitSeats = new();
+    private int _splitPeople;
+    private bool _splitFilling;
     private bool _orderListMode;
     private int _orderSelectedIndex = -1;
     private bool _orderEditBusy;
@@ -1678,14 +1686,263 @@ public partial class PosWindow : Window, IOfficeSurface
             return;
         }
 
+        _splitPeople = 0;
         ShowKeypad(TicketPrompt.Split, "Dividir conta", 2);
     }
 
-    private async Task RunSplitAsync(int people)
+    private void OnSplitPeopleClick(object? sender, RoutedEventArgs e)
     {
-        if (_openOrderId is not Guid orderId || people < 2 || people > 8)
+        if (sender is not Button button || button.Tag is not string tag || int.TryParse(tag, NumberStyles.Integer, CultureInfo.InvariantCulture, out var delta) == false)
         {
-            ShowQuestion(TicketPrompt.Notice, "Dividir conta", "Indique entre 2 e 8 pessoas.", question: false, confirmText: "Ok", showCancel: false);
+            return;
+        }
+
+        SetSplitPeople(_splitPeople + delta);
+    }
+
+    private void SetSplitPeople(int people)
+    {
+        if (_splitHost is null || _splitList is null || _splitNotice is null)
+        {
+            return;
+        }
+
+        if (_prompt != TicketPrompt.Split)
+        {
+            _splitHost.IsVisible = false;
+            SplitPeopleButtons.IsVisible = false;
+            return;
+        }
+
+        _splitHost.IsVisible = true;
+        SplitPeopleButtons.IsVisible = true;
+        if (people is < 2 or > 8)
+        {
+            _splitNotice.Text = people < 2
+                ? "A divisão precisa de pelo menos 2 pessoas."
+                : "O máximo é 8 pessoas.";
+            UpdateSplitPeopleButtons();
+            return;
+        }
+
+        if (_splitSeats.Any(seat => seat.Paid) && people != _splitPeople)
+        {
+            _splitNotice.Text = "O número de divisores fica bloqueado depois do primeiro pagamento.";
+            UpdateSplitPeopleButtons();
+            return;
+        }
+
+        if (people == _splitPeople && _splitSeats.Count == people)
+        {
+            _splitNotice.Text = string.Empty;
+            UpdateSplitPeopleButtons();
+            return;
+        }
+
+        _splitPeople = people;
+        _splitNotice.Text = string.Empty;
+        ClearSplitSeats();
+        var total = OrderBill();
+        var share = people == 0 ? 0m : MoneyRound(total / people);
+        decimal used = 0;
+        _splitFilling = true;
+        for (var number = 1; number <= people; number++)
+        {
+            var amount = number == people ? MoneyRound(total - used) : share;
+            used += amount;
+            _splitList.Children.Add(CreateSplitSeat(number, amount));
+        }
+
+        _splitFilling = false;
+        FitSplitFrame();
+        UpdateSplitPeopleButtons();
+    }
+
+    private void UpdateSplitPeopleButtons()
+    {
+        var locked = _splitSeats.Any(seat => seat.Paid);
+        SplitAddButton.IsEnabled = locked == false && _splitPeople < 8;
+        SplitRemoveButton.IsEnabled = locked == false && _splitPeople > 2;
+    }
+
+    private void FitSplitFrame()
+    {
+        var rows = Math.Clamp(_splitSeats.Count, 2, 6);
+        TicketFrame.Width = 460;
+        TicketFrame.Height = 196 + (rows * 34);
+        if (_splitScroll is not null)
+        {
+            _splitScroll.MaxHeight = rows * 34;
+        }
+    }
+
+    private Control CreateSplitSeat(int number, decimal amount)
+    {
+        var seat = new SplitSeat { Number = number };
+        var caption = new TextBlock
+        {
+            Text = number.ToString(CultureInfo.CurrentCulture),
+            Classes = { "pos_ticket_cell" },
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        var box = new TextBox
+        {
+            Classes = { "pos_split_amount", "bo_touch_ready" },
+            Text = amount.ToString("0.00", CultureInfo.CurrentCulture)
+        };
+        var keyboard = new Button
+        {
+            Classes = { "bo_touch_key" },
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_touch_key_icon" },
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
+            }
+        };
+        keyboard.Click += (_, _) =>
+        {
+            if (seat.Paid)
+            {
+                return;
+            }
+
+            box.Focus();
+            TouchKeyboard.Show(numeric: true);
+        };
+        var pay = new Button
+        {
+            Classes = { "pos_split_pay" },
+            Content = "Pagar"
+        };
+        seat.Amount = box;
+        seat.Keyboard = keyboard;
+        seat.Pay = pay;
+        box.LostFocus += (_, _) =>
+        {
+            if (_splitFilling == false && seat.Paid == false)
+            {
+                DistributeFrom(seat);
+            }
+        };
+        pay.Click += async (_, _) => await PaySplitSeatAsync(seat);
+        _splitSeats.Add(seat);
+
+        var row = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("48,*,36,88"),
+            Margin = new Avalonia.Thickness(0, 2)
+        };
+        Grid.SetColumn(box, 1);
+        Grid.SetColumn(keyboard, 2);
+        Grid.SetColumn(pay, 3);
+        row.Children.Add(caption);
+        row.Children.Add(box);
+        row.Children.Add(keyboard);
+        row.Children.Add(pay);
+        return row;
+    }
+
+    private void DistributeFrom(SplitSeat edited)
+    {
+        var index = _splitSeats.IndexOf(edited);
+        if (index < 0 || edited.Paid || TrySeatAmount(edited, out var value) == false || value < 0)
+        {
+            return;
+        }
+
+        var before = 0m;
+        for (var i = 0; i < index; i++)
+        {
+            if (_splitSeats[i].Paid)
+            {
+                continue;
+            }
+
+            if (TrySeatAmount(_splitSeats[i], out var prior))
+            {
+                before += prior;
+            }
+        }
+
+        var room = Math.Max(0m, OrderBill() - before);
+        if (index == _splitSeats.Count - 1)
+        {
+            _splitFilling = true;
+            SetSeatAmount(edited, Math.Min(value, room));
+            _splitFilling = false;
+            return;
+        }
+
+        var copies = Math.Max(0, _splitSeats.Count - index - 2);
+        var group = copies + 1;
+        decimal last;
+        if (value * group > room)
+        {
+            value = MoneyRound(room / (group + 1));
+            last = MoneyRound(room - (value * group));
+        }
+        else
+        {
+            last = MoneyRound(room - (value * group));
+        }
+
+        _splitFilling = true;
+        SetSeatAmount(edited, value);
+        for (var i = index + 1; i < _splitSeats.Count - 1; i++)
+        {
+            if (_splitSeats[i].Paid == false)
+            {
+                SetSeatAmount(_splitSeats[i], value);
+            }
+        }
+
+        if (_splitSeats.Count > index + 1 && _splitSeats[^1].Paid == false)
+        {
+            SetSeatAmount(_splitSeats[^1], Math.Max(0m, last));
+        }
+
+        _splitFilling = false;
+    }
+
+    private async Task PaySplitSeatAsync(SplitSeat seat)
+    {
+        if (seat.Paid || _openOrderId is not Guid orderId || _splitNotice is null)
+        {
+            return;
+        }
+
+        if (TrySeatAmount(seat, out var amount) == false || amount <= 0)
+        {
+            _splitNotice.Text = "Indique o valor a pagar.";
+            return;
+        }
+
+        var total = OrderBill();
+        var lastSeat = _splitSeats.Count(item => item.Paid == false) == 1;
+        if (lastSeat == false && amount > total + 0.009m)
+        {
+            _splitNotice.Text = "O valor é superior ao que falta na conta.";
+            return;
+        }
+
+        var remainingTarget = lastSeat ? 0m : (total - amount).Round();
+        var remaining = OrderSplitBalance.Remaining(_orderLines, remainingTarget);
+        var removed = new List<PosTicketLine>();
+        for (var i = 0; i < _orderLines.Count; i++)
+        {
+            var quantity = _orderLines[i].Quantity - remaining[i].Quantity;
+            if (quantity > 0)
+            {
+                removed.Add(_orderLines[i].WithQuantity(quantity));
+            }
+        }
+
+        var share = SplitBillShare.ForAmount(removed, amount, takeAll: true);
+        var billed = share.Sum(item => item.Line.Total).Round();
+        if (share.Count == 0 || billed != amount.Round())
+        {
+            _splitNotice.Text = "O valor não chega para igualar o pagamento à divisão.";
             return;
         }
 
@@ -1695,48 +1952,102 @@ public partial class PosWindow : Window, IOfficeSurface
             return;
         }
 
-        var orderService = services.GetRequiredService<IPosOrderService>();
-        var stored = _orderLines.Select(line => new PosStoredLine(line.ArticleId, line.Quantity, line.NetUnitPrice)).ToList();
-        var share = _orderLines.Select(line => line.WithQuantity(line.Quantity / people)).Where(line => line.Quantity > 0).ToList();
-        if (share.Count == 0)
+        seat.Pay.IsEnabled = false;
+        var payment = new PaymentWindow(share.Select(item => item.Line).ToList(), _saleCustomer, $"Divisor {seat.Number} de {_splitPeople}");
+        var paid = await payment.ShowDialog<bool>(this);
+        if (paid != true)
         {
-            ShowQuestion(TicketPrompt.Notice, "Dividir conta", "As quantidades não chegam para dividir.", question: false, confirmText: "Ok", showCancel: false);
+            seat.Pay.IsEnabled = true;
             return;
         }
 
-        for (var part = 1; part <= people; part++)
+        var orders = services.GetRequiredService<IPosOrderService>();
+        for (var i = 0; i < _orderLines.Count; i++)
         {
-            var payment = new PaymentWindow(share, _saleCustomer, $"Cliente {part} de {people}");
-            var paid = await payment.ShowDialog<bool>(this);
-            if (paid != true)
+            var line = _orderLines[i];
+            var next = remaining[i];
+            if (next.Quantity == line.Quantity && next.NetUnitPrice == line.NetUnitPrice)
             {
+                continue;
+            }
+
+            var reduced = await orders.SetLineRemainingAsync(orderId, line.ArticleId, line.NetUnitPrice, line.Quantity, next.Quantity, next.NetUnitPrice);
+            if (reduced.Succeeded == false)
+            {
+                _splitNotice.Text = reduced.Error ?? "Não foi possível reduzir a ordem.";
+                seat.Pay.IsEnabled = true;
                 await ReloadCurrentTableAsync();
                 return;
             }
-
-            if (part == 1)
-            {
-                var split = await orderService.SplitAsync(orderId, people, stored);
-                if (split.Succeeded == false)
-                {
-                    ShowQuestion(TicketPrompt.Notice, "Dividir conta", split.Error ?? "Não foi possível dividir a ordem.", question: false, confirmText: "Ok", showCancel: false);
-                    await ReloadCurrentTableAsync();
-                    return;
-                }
-            }
         }
 
-        try
-        {
-            await orderService.CloseAsync(orderId);
-        }
-        catch (Exception exception)
-        {
-            ShowQuestion(TicketPrompt.Notice, "Dividir conta", $"Os pagamentos foram registados, mas a ordem não fechou: {exception.Message}", question: false, confirmText: "Ok", showCancel: false);
-        }
-
-        _saleCustomer = null;
+        seat.Paid = true;
+        seat.Amount.IsReadOnly = true;
+        seat.Keyboard.IsEnabled = false;
+        seat.Pay.Content = "Pago";
+        seat.Pay.IsEnabled = false;
+        _splitNotice.Text = string.Empty;
         await ReloadCurrentTableAsync();
+
+        if (_splitSeats.All(item => item.Paid) || _orderLines.Count == 0)
+        {
+            try
+            {
+                await orders.CloseAsync(orderId);
+            }
+            catch (Exception exception)
+            {
+                _splitNotice.Text = $"Os pagamentos foram registados, mas a ordem não fechou: {exception.Message}";
+                return;
+            }
+
+            _saleCustomer = null;
+            CloseTicketDialog();
+            await ReloadCurrentTableAsync();
+        }
+    }
+
+    private void ClearSplitSeats()
+    {
+        _splitSeats.Clear();
+        _splitList?.Children.Clear();
+    }
+
+    private decimal OrderBill() => _orderLines.Sum(line => line.Total);
+
+    private static decimal MoneyRound(decimal value) => decimal.Round(value, 2, MidpointRounding.AwayFromZero);
+
+    private static string FormatQuantity(decimal quantity)
+    {
+        var thousandths = decimal.Round(quantity, 3, MidpointRounding.AwayFromZero);
+        var cents = decimal.Round(quantity, 2, MidpointRounding.AwayFromZero);
+        var format = thousandths == cents ? "0.00" : "0.000";
+        return quantity.ToString(format, CultureInfo.CurrentCulture);
+    }
+
+    private static bool TrySeatAmount(SplitSeat seat, out decimal amount)
+        => MoneyFormat.TryParse(seat.Amount.Text, out amount);
+
+    private static void SetSeatAmount(SplitSeat seat, decimal amount)
+    {
+        var text = amount.ToString("0.00", CultureInfo.CurrentCulture);
+        if (seat.Amount.Text != text)
+        {
+            seat.Amount.Text = text;
+        }
+    }
+
+    private sealed class SplitSeat
+    {
+        public int Number { get; init; }
+
+        public TextBox Amount { get; set; } = null!;
+
+        public Button Keyboard { get; set; } = null!;
+
+        public Button Pay { get; set; } = null!;
+
+        public bool Paid { get; set; }
     }
 
     private void RequestChangeTable()
@@ -3126,15 +3437,15 @@ public partial class PosWindow : Window, IOfficeSurface
                 var orders = AppComposition.Services?.GetService<IPosOrderService>();
                 if (orders is not null)
                 {
-                    foreach (var index in payment.PaidLineIndexes)
+                    foreach (var paidLine in payment.PaidLines)
                     {
-                        if (index < 0 || index >= _orderLines.Count)
+                        if (paidLine.Index < 0 || paidLine.Index >= _orderLines.Count)
                         {
                             continue;
                         }
 
-                        var line = _orderLines[index];
-                        var reduced = await orders.ReduceLineAsync(partialOrderId, line.ArticleId, line.NetUnitPrice, line.Quantity);
+                        var line = _orderLines[paidLine.Index];
+                        var reduced = await orders.ReduceLineAsync(partialOrderId, line.ArticleId, line.NetUnitPrice, paidLine.Quantity);
                         if (reduced.Succeeded == false)
                         {
                             await ReloadCurrentTableAsync();
@@ -3162,11 +3473,21 @@ public partial class PosWindow : Window, IOfficeSurface
                 }
             }
 
-            foreach (var index in payment.PaidLineIndexes.OrderByDescending(item => item))
+            foreach (var paidLine in payment.PaidLines.OrderByDescending(item => item.Index))
             {
-                if (index >= 0 && index < _orderLines.Count)
+                if (paidLine.Index < 0 || paidLine.Index >= _orderLines.Count)
                 {
-                    _orderLines.RemoveAt(index);
+                    continue;
+                }
+
+                var line = _orderLines[paidLine.Index];
+                if (paidLine.Quantity >= line.Quantity)
+                {
+                    _orderLines.RemoveAt(paidLine.Index);
+                }
+                else
+                {
+                    line.Quantity -= paidLine.Quantity;
                 }
             }
 
@@ -3215,6 +3536,7 @@ public partial class PosWindow : Window, IOfficeSurface
         TicketDialogMessage.Text = message;
         TicketQuestionBody.IsVisible = true;
         TicketKeypad.IsVisible = false;
+        SplitPeopleButtons.IsVisible = false;
         PricePad.IsVisible = false;
         TicketBarcode.IsVisible = false;
     }
@@ -3247,6 +3569,39 @@ public partial class PosWindow : Window, IOfficeSurface
         TicketKeypad.IsVisible = true;
         TicketFrame.Width = 420;
         TicketFrame.Height = 390;
+        if (prompt == TicketPrompt.Split)
+        {
+            if (_keypadValue is not null)
+            {
+                _keypadValue.IsVisible = false;
+            }
+
+            if (_quantityPad is not null)
+            {
+                _quantityPad.IsVisible = false;
+            }
+
+            SetSplitPeople(2);
+            return;
+        }
+
+        if (_keypadValue is not null)
+        {
+            _keypadValue.IsVisible = true;
+        }
+
+        if (_quantityPad is not null)
+        {
+            _quantityPad.IsVisible = true;
+        }
+
+        TicketFrame.Width = 420;
+        TicketFrame.Height = 390;
+        SplitPeopleButtons.IsVisible = false;
+        if (_splitHost is not null)
+        {
+            _splitHost.IsVisible = false;
+        }
     }
 
     private void ShowDialogChrome(string title, bool question, string confirmText, bool showCancel)
@@ -3278,53 +3633,72 @@ public partial class PosWindow : Window, IOfficeSurface
         };
         TicketKeypad.Children.Add(_keypadValue);
 
-        var pad = new Grid
+        _splitNotice = new TextBlock
         {
-            ColumnDefinitions = new ColumnDefinitions("72,*,72"),
+            Classes = { "pos_ticket_cell" },
+            FontSize = 12,
+            TextWrapping = TextWrapping.Wrap,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            Margin = new Avalonia.Thickness(8, 0, 8, 2)
+        };
+        _splitList = new StackPanel();
+        _splitScroll = new ScrollViewer
+        {
+            MaxHeight = 68,
+            Content = _splitList
+        };
+        var splitScroll = _splitScroll;
+        var splitHeader = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("48,*,88"),
+            Margin = new Avalonia.Thickness(0, 2, 0, 0)
+        };
+        splitHeader.Children.Add(new TextBlock { Text = "Nº", Classes = { "pos_ticket_cell" }, HorizontalAlignment = HorizontalAlignment.Center });
+        var valueHeader = new TextBlock { Text = "Valor", Classes = { "pos_ticket_cell" }, HorizontalAlignment = HorizontalAlignment.Center };
+        Grid.SetColumn(valueHeader, 1);
+        splitHeader.Children.Add(valueHeader);
+        _splitHost = new StackPanel { IsVisible = false, Width = 400 };
+        _splitHost.Children.Add(splitHeader);
+        _splitHost.Children.Add(splitScroll);
+        _splitHost.Children.Add(_splitNotice);
+        TicketKeypad.Children.Add(_splitHost);
+
+        _quantityPad = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("*,*,*,*,*"),
             RowDefinitions = new RowDefinitions("*,*,*,*,*"),
+            Width = 400,
             Height = 250
         };
+        var pad = _quantityPad;
 
         AddQuantityShortcut(pad, "1", 0, 0);
         AddQuantityShortcut(pad, "2", 1, 0);
         AddQuantityShortcut(pad, "3", 2, 0);
         AddQuantityShortcut(pad, "4", 3, 0);
         AddQuantityShortcut(pad, "5", 4, 0);
-        AddQuantityShortcut(pad, "6", 0, 2);
-        AddQuantityShortcut(pad, "7", 1, 2);
-        AddQuantityShortcut(pad, "8", 2, 2);
-        AddQuantityShortcut(pad, "9", 3, 2);
-        AddQuantityShortcut(pad, "10", 4, 2);
+        AddQuantityShortcut(pad, "6", 0, 4);
+        AddQuantityShortcut(pad, "7", 1, 4);
+        AddQuantityShortcut(pad, "8", 2, 4);
+        AddQuantityShortcut(pad, "9", 3, 4);
+        AddQuantityShortcut(pad, "10", 4, 4);
 
-        var keys = new Grid
-        {
-            ColumnDefinitions = new ColumnDefinitions("*,*,*"),
-            RowDefinitions = new RowDefinitions("*,*,*,*"),
-            Margin = new Avalonia.Thickness(4, 0)
-        };
-        Grid.SetRowSpan(keys, 5);
-        Grid.SetColumn(keys, 1);
-        AddQuantityDigit(keys, "7", 0, 0);
-        AddQuantityDigit(keys, "8", 0, 1);
-        AddQuantityDigit(keys, "9", 0, 2);
-        AddQuantityDigit(keys, "4", 1, 0);
-        AddQuantityDigit(keys, "5", 1, 1);
-        AddQuantityDigit(keys, "6", 1, 2);
-        AddQuantityDigit(keys, "1", 2, 0);
-        AddQuantityDigit(keys, "2", 2, 1);
-        AddQuantityDigit(keys, "3", 2, 2);
-        AddQuantityDigit(keys, "0", 3, 0);
-        AddQuantityDigit(keys, ",", 3, 1);
+        AddQuantityDigit(pad, "7", 0, 1);
+        AddQuantityDigit(pad, "8", 0, 2);
+        AddQuantityDigit(pad, "9", 0, 3);
+        AddQuantityDigit(pad, "4", 1, 1);
+        AddQuantityDigit(pad, "5", 1, 2);
+        AddQuantityDigit(pad, "6", 1, 3);
+        AddQuantityDigit(pad, "1", 2, 1);
+        AddQuantityDigit(pad, "2", 2, 2);
+        AddQuantityDigit(pad, "3", 2, 3);
+        AddQuantityDigit(pad, "0", 3, 1);
+        AddQuantityDigit(pad, ",", 3, 2);
 
         var clear = new Button
         {
-            Classes = { "login_pin_key", "login_pin_ce" },
-            Content = "CE",
-            Width = double.NaN,
-            Height = double.NaN,
-            HorizontalAlignment = HorizontalAlignment.Stretch,
-            VerticalAlignment = VerticalAlignment.Stretch,
-            Margin = new Avalonia.Thickness(2)
+            Classes = { "pos_price_money", "pos_qty_clear" },
+            Content = "CE"
         };
         clear.Click += (_, _) =>
         {
@@ -3336,9 +3710,8 @@ public partial class PosWindow : Window, IOfficeSurface
             _replaceKeypad = true;
         };
         Grid.SetRow(clear, 3);
-        Grid.SetColumn(clear, 2);
-        keys.Children.Add(clear);
-        pad.Children.Add(keys);
+        Grid.SetColumn(clear, 3);
+        pad.Children.Add(clear);
         TicketKeypad.Children.Add(pad);
     }
 
@@ -3346,7 +3719,7 @@ public partial class PosWindow : Window, IOfficeSurface
     {
         var button = new Button
         {
-            Classes = { "pos_price_money" },
+            Classes = { "pos_price_money", "pos_qty_shortcut" },
             Content = caption
         };
         button.Click += (_, _) =>
@@ -3420,14 +3793,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
                 break;
             case TicketPrompt.Split:
-                if (TryReadKeypad(out var people) && people == decimal.Truncate(people))
-                {
-                    CloseTicketDialog();
-                    await RunSplitAsync((int)people);
-                    return;
-                }
-
-                ShowQuestion(TicketPrompt.Notice, "Dividir conta", "Indique um número inteiro de pessoas.", question: false, confirmText: "Ok", showCancel: false);
+                CloseTicketDialog();
                 return;
             case TicketPrompt.Quantity:
             case TicketPrompt.Weight:
@@ -3510,6 +3876,24 @@ public partial class PosWindow : Window, IOfficeSurface
         _prompt = TicketPrompt.None;
         TicketOverlay.IsVisible = false;
         TicketKeypad.IsVisible = false;
+        SplitPeopleButtons.IsVisible = false;
+        if (_keypadValue is not null)
+        {
+            _keypadValue.IsVisible = true;
+        }
+
+        if (_quantityPad is not null)
+        {
+            _quantityPad.IsVisible = true;
+        }
+
+        if (_splitHost is not null)
+        {
+            _splitHost.IsVisible = false;
+        }
+
+        ClearSplitSeats();
+        _splitPeople = 0;
         PricePad.IsVisible = false;
         TicketBarcode.IsVisible = false;
         TicketQuestionBody.IsVisible = true;
@@ -3641,7 +4025,7 @@ public partial class PosWindow : Window, IOfficeSurface
             columns.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(_layout.TotalColumnWidth)));
             AddTicketCell(columns, line.Designation, 0, false);
             AddTicketCell(columns, line.DisplayUnitPrice.ToString("0.00"), 1, true);
-            AddTicketCell(columns, line.Quantity.ToString("0.00"), 2, true);
+            AddTicketCell(columns, FormatQuantity(line.Quantity), 2, true);
             AddTicketCell(columns, line.Total.ToString("0.00"), 3, true);
             row.Child = columns;
             row.PointerPressed += (_, args) =>

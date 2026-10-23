@@ -751,6 +751,93 @@
         <Setter Property="Margin" Value="10,8,10,4" />
     </Style>
 
+    <Style Selector="TextBox.pos_split_amount">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Margin" Value="4,0" />
+        <Setter Property="Padding" Value="6,0" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Background" Value="#FFFFFF" />
+        <Setter Property="Foreground" Value="#000000" />
+        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalContentAlignment" Value="Right" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Button.pos_split_pay">
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Background" Value="#3B6EA5" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_split_pay:pointerover">
+        <Setter Property="Background" Value="#4C82B8" />
+    </Style>
+
+    <Style Selector="Button.pos_split_pay:disabled">
+        <Setter Property="Background" Value="#9AA7B2" />
+    </Style>
+
+    <Style Selector="Button.pos_split_step">
+        <Setter Property="Width" Value="52" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="Background" Value="#A3C749" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_split_step:pointerover">
+        <Setter Property="Background" Value="#B5D45C" />
+    </Style>
+
+    <Style Selector="Button.pos_split_step:disabled">
+        <Setter Property="Background" Value="#C5D4A4" />
+        <Setter Property="Foreground" Value="#F4F7EE" />
+    </Style>
+
     <Style Selector="TextBox.pos_price_entry">
         <Setter Property="Height" Value="42" />
         <Setter Property="Margin" Value="2,0,2,8" />
@@ -834,6 +921,22 @@
 
     <Style Selector="Button.pos_price_digit:pointerover">
         <Setter Property="Background" Value="#5C738C" />
+    </Style>
+
+    <Style Selector="Button.pos_price_money.pos_qty_shortcut">
+        <Setter Property="Background" Value="#3B6EA5" />
+    </Style>
+
+    <Style Selector="Button.pos_price_money.pos_qty_shortcut:pointerover">
+        <Setter Property="Background" Value="#4C82B8" />
+    </Style>
+
+    <Style Selector="Button.pos_price_money.pos_qty_clear">
+        <Setter Property="Background" Value="#C25E4F" />
+    </Style>
+
+    <Style Selector="Button.pos_price_money.pos_qty_clear:pointerover">
+        <Setter Property="Background" Value="#D17A6C" />
     </Style>
 
     <Style Selector="Border.pos_menu_slot">

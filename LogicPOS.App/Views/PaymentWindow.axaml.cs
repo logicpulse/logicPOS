@@ -43,11 +43,14 @@ public partial class PaymentWindow : Window
     private readonly List<PosCustomer> _customerMatches = new();
     private string? _pendingSeriesDocumentType;
     private IReadOnlyList<PosTicketLine>? _pendingSeriesLines;
-    private IReadOnlyList<int>? _pendingSeriesPartialIndexes;
+    private IReadOnlyList<PartialPaidLine>? _pendingSeriesPartial;
+    private readonly List<PartialRow> _partialRows = new();
 
     public bool PartialPayment { get; private set; }
 
-    public IReadOnlyList<int> PaidLineIndexes { get; private set; } = [];
+    public IReadOnlyList<PartialPaidLine> PaidLines { get; private set; } = [];
+
+    public IReadOnlyList<int> PaidLineIndexes => PaidLines.Select(line => line.Index).ToList();
 
     public PaymentWindow()
         : this(Array.Empty<PosTicketLine>())
@@ -258,22 +261,73 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        await IssueAsync("FT", _lines, partialIndexes: null);
+        await IssueAsync("FT", _lines, partial: null);
     }
 
     private void OnPartialPaymentClick(object? sender, RoutedEventArgs e)
     {
         PartialLines.Children.Clear();
+        _partialRows.Clear();
         for (var index = 0; index < _lines.Count; index++)
         {
             var line = _lines[index];
-            PartialLines.Children.Add(new CheckBox
+            var payQuantity = line.Quantity >= 1m ? 1m : line.Quantity;
+            var check = new CheckBox
             {
                 Classes = { "bo_doc_column_check" },
-                Content = $"{line.Designation}  {line.Quantity:0.##}  {MoneyFormat.Format(line.Total)}",
+                Content = line.Designation,
                 IsChecked = true,
-                Tag = index
-            });
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            var quantity = new TextBox
+            {
+                Classes = { "pos_split_amount", "bo_touch_ready" },
+                Width = 72,
+                Text = payQuantity.ToString("0.###", CultureInfo.CurrentCulture),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            var keyboard = new Button
+            {
+                Classes = { "bo_touch_key" },
+                Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+                {
+                    Classes = { "bo_touch_key_icon" },
+                    Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_teclado.svg"
+                }
+            };
+            keyboard.Click += (_, _) =>
+            {
+                quantity.Focus();
+                TouchKeyboard.Show(numeric: true);
+            };
+            var total = new TextBlock
+            {
+                Classes = { "pos_ticket_cell" },
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Text = MoneyFormat.Format(line.WithQuantity(payQuantity).Total)
+            };
+            quantity.TextChanged += (_, _) =>
+            {
+                if (TryPartialQuantity(quantity.Text, line.Quantity, out var typed))
+                {
+                    total.Text = MoneyFormat.Format(line.WithQuantity(typed).Total);
+                }
+            };
+            var row = new Grid
+            {
+                ColumnDefinitions = new ColumnDefinitions("*,80,36,110"),
+                Margin = new Avalonia.Thickness(0, 4)
+            };
+            Grid.SetColumn(quantity, 1);
+            Grid.SetColumn(keyboard, 2);
+            Grid.SetColumn(total, 3);
+            row.Children.Add(check);
+            row.Children.Add(quantity);
+            row.Children.Add(keyboard);
+            row.Children.Add(total);
+            PartialLines.Children.Add(row);
+            _partialRows.Add(new PartialRow(index, line.Quantity, check, quantity));
         }
 
         PartialOverlay.IsVisible = true;
@@ -281,20 +335,41 @@ public partial class PaymentWindow : Window
 
     private async void OnPartialConfirmClick(object? sender, RoutedEventArgs e)
     {
-        var indexes = PartialLines.Children
-            .OfType<CheckBox>()
-            .Where(box => box.IsChecked == true && box.Tag is int)
-            .Select(box => (int)box.Tag!)
-            .ToList();
-        if (indexes.Count == 0)
+        var selected = new List<PartialPaidLine>();
+        var lines = new List<PosTicketLine>();
+        foreach (var row in _partialRows)
+        {
+            if (row.Check.IsChecked != true)
+            {
+                continue;
+            }
+
+            if (TryPartialQuantity(row.Quantity.Text, row.Available, out var quantity) == false)
+            {
+                ShowNotice("Aviso", $"Indique uma quantidade até {row.Available:0.###}.", error: true);
+                return;
+            }
+
+            selected.Add(new PartialPaidLine(row.Index, quantity));
+            lines.Add(_lines[row.Index].WithQuantity(quantity));
+        }
+
+        if (selected.Count == 0)
         {
             ShowNotice("Aviso", "Selecione pelo menos um artigo.", error: true);
             return;
         }
 
         PartialOverlay.IsVisible = false;
-        var lines = indexes.Select(index => _lines[index]).ToList();
-        await IssueAsync(_saleDocumentType, lines, indexes);
+        await IssueAsync(_saleDocumentType, lines, selected);
+    }
+
+    private static bool TryPartialQuantity(string? text, decimal available, out decimal quantity)
+    {
+        quantity = 0m;
+        return MoneyFormat.TryParse(text, out quantity)
+            && quantity > 0m
+            && quantity <= available + 0.0000001m;
     }
 
     private void OnPartialCancelClick(object? sender, RoutedEventArgs e) => PartialOverlay.IsVisible = false;
@@ -465,10 +540,10 @@ public partial class PaymentWindow : Window
 
     private async void OnConfirmClick(object? sender, RoutedEventArgs e)
     {
-        await IssueAsync(_saleDocumentType, _lines, partialIndexes: null);
+        await IssueAsync(_saleDocumentType, _lines, partial: null);
     }
 
-    private async Task IssueAsync(string documentType, IReadOnlyList<PosTicketLine> lines, IReadOnlyList<int>? partialIndexes)
+    private async Task IssueAsync(string documentType, IReadOnlyList<PosTicketLine> lines, IReadOnlyList<PartialPaidLine>? partial)
     {
         if (_methodToken is null)
         {
@@ -497,7 +572,7 @@ public partial class PaymentWindow : Window
             return;
         }
 
-        await IssueWithSeriesAsync(documentType, lines, partialIndexes, createMissingSeries: false);
+        await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: false);
     }
 
     private void OnCancelClick(object? sender, RoutedEventArgs e)
@@ -510,7 +585,7 @@ public partial class PaymentWindow : Window
         NoticeOverlay.IsVisible = false;
         _pendingSeriesDocumentType = null;
         _pendingSeriesLines = null;
-        _pendingSeriesPartialIndexes = null;
+        _pendingSeriesPartial = null;
         SetNoticeButtons(confirm: false);
         if (_confirmPayment)
         {
@@ -522,12 +597,12 @@ public partial class PaymentWindow : Window
     {
         var documentType = _pendingSeriesDocumentType ?? "FS";
         var lines = _pendingSeriesLines ?? _lines;
-        var partial = _pendingSeriesPartialIndexes;
+        var partial = _pendingSeriesPartial;
         NoticeOverlay.IsVisible = false;
         SetNoticeButtons(confirm: false);
         _pendingSeriesDocumentType = null;
         _pendingSeriesLines = null;
-        _pendingSeriesPartialIndexes = null;
+        _pendingSeriesPartial = null;
         await IssueWithSeriesAsync(documentType, lines, partial, createMissingSeries: true);
     }
 
@@ -562,7 +637,7 @@ public partial class PaymentWindow : Window
     private async Task IssueWithSeriesAsync(
         string documentType,
         IReadOnlyList<PosTicketLine> lines,
-        IReadOnlyList<int>? partialIndexes,
+        IReadOnlyList<PartialPaidLine>? partial,
         bool createMissingSeries)
     {
         if (_methodToken is null || _customerId is null || AppComposition.Services is null)
@@ -595,7 +670,7 @@ public partial class PaymentWindow : Window
             {
                 _pendingSeriesDocumentType = result.MissingSeriesDocumentType ?? documentType;
                 _pendingSeriesLines = lines;
-                _pendingSeriesPartialIndexes = partialIndexes;
+                _pendingSeriesPartial = partial;
                 ShowConfirm(
                     "Série fiscal",
                     $"Não existe série activa para «{_pendingSeriesDocumentType}».{Environment.NewLine}{Environment.NewLine}Deseja criar o ano fiscal e a série automaticamente?");
@@ -608,8 +683,8 @@ public partial class PaymentWindow : Window
                 return;
             }
 
-            PartialPayment = partialIndexes is not null;
-            PaidLineIndexes = partialIndexes ?? [];
+            PartialPayment = partial is not null;
+            PaidLines = partial ?? [];
             var message = $"Pagamento efetuado.{Environment.NewLine}{result.Number}{Environment.NewLine}Total: {MoneyFormat.Format(payable)}";
             if (string.IsNullOrWhiteSpace(_shareLabel) == false)
             {
@@ -781,4 +856,25 @@ public partial class PaymentWindow : Window
         _bitmaps[uri] = bitmap;
         return bitmap;
     }
+
+    private sealed class PartialRow
+    {
+        public PartialRow(int index, decimal available, CheckBox check, TextBox quantity)
+        {
+            Index = index;
+            Available = available;
+            Check = check;
+            Quantity = quantity;
+        }
+
+        public int Index { get; }
+
+        public decimal Available { get; }
+
+        public CheckBox Check { get; }
+
+        public TextBox Quantity { get; }
+    }
 }
+
+public readonly record struct PartialPaidLine(int Index, decimal Quantity);

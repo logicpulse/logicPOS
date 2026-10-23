@@ -494,7 +494,12 @@
                         </Grid>
                     </Border>
                     <Border x:Name="TicketDialogActions" Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                        <StackPanel Classes="login_alert_action_buttons">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <StackPanel x:Name="SplitPeopleButtons" Orientation="Horizontal" Spacing="8" Margin="12,0,0,0" VerticalAlignment="Center" IsVisible="False">
+                                <Button x:Name="SplitAddButton" Classes="pos_split_step" Content="+" Click="OnSplitPeopleClick" Tag="1" />
+                                <Button x:Name="SplitRemoveButton" Classes="pos_split_step" Content="−" Click="OnSplitPeopleClick" Tag="-1" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Classes="login_alert_action_buttons">
                             <Button Classes="login_alert_action" Click="OnTicketDialogConfirmClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image x:Name="TicketDialogConfirmIcon" Classes="login_alert_action_icon" />
@@ -508,7 +513,8 @@
                                     <TextBlock x:Name="TicketDialogCancelText" Classes="login_alert_action_text" Text="Não" />
                                 </StackPanel>
                             </Button>
-                        </StackPanel>
+                            </StackPanel>
+                        </Grid>
                     </Border>
                     <Grid>
                         <Grid x:Name="TicketQuestionBody" Classes="login_alert_body">

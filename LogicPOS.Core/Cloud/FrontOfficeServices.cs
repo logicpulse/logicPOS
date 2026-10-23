@@ -235,6 +235,8 @@ public interface IPosOrderService
 
     Task<PosDocumentResult> ReduceLineAsync(Guid orderId, Guid articleId, decimal unitPrice, decimal quantity, CancellationToken cancellationToken = default);
 
+    Task<PosDocumentResult> SetLineRemainingAsync(Guid orderId, Guid articleId, decimal unitPrice, decimal quantity, decimal remainingQuantity, decimal remainingNetUnitPrice, CancellationToken cancellationToken = default);
+
     Task<PosDocumentResult> ChangeTableAsync(Guid orderId, Guid newTableId, CancellationToken cancellationToken = default);
 
     Task<PosDocumentResult> MoveLineAsync(Guid orderId, Guid destinationTableId, Guid articleId, decimal unitPrice, CancellationToken cancellationToken = default);

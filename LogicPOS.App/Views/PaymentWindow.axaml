@@ -202,7 +202,7 @@
         </Panel>
 
         <Panel x:Name="PartialOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="480" MaxHeight="420">
+            <Border Classes="login_alert_frame" Width="560" MaxHeight="460">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <TextBlock Classes="login_alert_title" Text="Pagamento parcial" />
