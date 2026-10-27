@@ -26,6 +26,9 @@ internal static class DatabaseDependencyInjectionExtension
                 case DatabaseType.Sqlite:
                     services.AddSqlite(databaseSettings);
                     break;
+                case DatabaseType.PostgreSql:
+                    services.AddPostgreSql(databaseSettings);
+                    break;
             }
 
             services.AddHostedService<ScheduledBackupService>();

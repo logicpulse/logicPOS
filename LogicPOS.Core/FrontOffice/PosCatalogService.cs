@@ -162,7 +162,7 @@ public sealed class PosCatalogService : IPosCatalogService
                 {
                     var rows = await database.Articles.AsNoTracking()
                         .Where(item => articles.Contains(item.Id))
-                        .Select(item => new { item.Id, item.Button.Image })
+                        .Select(item => new { item.Id, Image = item.Button == null ? null : item.Button.Image })
                         .ToListAsync(cancellationToken);
                     Remember(ButtonImageKind.Article, rows.Select(item => (item.Id, item.Image)), articles);
                 }
@@ -257,7 +257,7 @@ public sealed class PosCatalogService : IPosCatalogService
                 ButtonImageKind.Article => await database.Articles
                     .AsNoTracking()
                     .Where(a => a.Id == id)
-                    .Select(a => a.Button.Image)
+                    .Select(a => a.Button == null ? null : a.Button.Image)
                     .FirstOrDefaultAsync(cancellationToken),
 
                 _ => null

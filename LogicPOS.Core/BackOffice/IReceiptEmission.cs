@@ -64,6 +64,8 @@ public sealed class ReceiptPayOption
 
     public string Name { get; init; } = string.Empty;
 
+    public string Code { get; init; } = string.Empty;
+
     public decimal ExchangeRate { get; init; } = 1m;
 
     public override string ToString() => Name;
@@ -114,6 +116,30 @@ public sealed class ReceiptPayResult
         Message = message
     };
 }
+
+public static class ReceiptPayDefaults
+{
+    public static bool ShowExchange(bool portugal) => portugal == false;
+
+    public static ReceiptPaySetup For(bool portugal, decimal net, Guid documentCurrencyId, IReadOnlyList<ReceiptPayOption> currencies)
+    {
+        if (portugal)
+        {
+            var euro = currencies.FirstOrDefault(item => item.Code.Equals("EUR", StringComparison.OrdinalIgnoreCase))
+                ?? currencies.FirstOrDefault(item => item.Name.Equals("Euro", StringComparison.OrdinalIgnoreCase))
+                ?? currencies.FirstOrDefault(item => item.Id == documentCurrencyId)
+                ?? currencies.FirstOrDefault();
+            return new ReceiptPaySetup(euro, 1m, net);
+        }
+
+        var currency = currencies.FirstOrDefault(item => item.Id == documentCurrencyId) ?? currencies.FirstOrDefault();
+        var rate = currency is null || currency.ExchangeRate <= 0 ? 1m : currency.ExchangeRate;
+        var delivered = DocumentLineCalculator.FullCurrencyAmount(net, rate);
+        return new ReceiptPaySetup(currency, rate, delivered);
+    }
+}
+
+public readonly record struct ReceiptPaySetup(ReceiptPayOption? Currency, decimal Rate, decimal Delivered);
 
 public static class ReceiptSettlement
 {

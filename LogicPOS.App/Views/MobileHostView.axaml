@@ -3,16 +3,43 @@
              x:Class="LogicPOS.App.Views.MobileHostView"
              Background="#111111">
     <Panel>
-        <Panel x:Name="Host">
-            <TextBlock x:Name="Status"
-                       Text="A carregar logicPOS…"
+        <!-- Conteúdo (login / POS / BO). O overlay fica por cima e não limpa este painel. -->
+        <Panel x:Name="Host" />
+
+        <!-- Loading sempre acima do Host — visível no bootstrap e durante Entrar → sessão. -->
+        <Panel x:Name="LoadingOverlay"
+               Background="#111111"
+               ZIndex="100"
+               IsVisible="True"
+               IsHitTestVisible="True">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Spacing="14">
+                <Image x:Name="LoadingLogo"
+                       Width="120"
+                       Height="120"
+                       Stretch="Uniform"
                        HorizontalAlignment="Center"
-                       VerticalAlignment="Center"
-                       FontSize="22"
-                       Foreground="White" />
+                       Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png"
+                       RenderOptions.BitmapInterpolationMode="HighQuality"
+                       Margin="0,0,0,8" />
+                <TextBlock x:Name="Status"
+                           Classes="startup_status"
+                           Text="A carregar logicPOS…"
+                           Foreground="White"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center" />
+                <ProgressBar x:Name="LoadingBar"
+                             Classes="startup_progress"
+                             IsIndeterminate="True"
+                             Foreground="#9bbe1d"
+                             Background="#333333" />
+            </StackPanel>
         </Panel>
+
         <Border x:Name="DevBanner"
                 Classes="dev_edition_banner"
+                ZIndex="200"
                 IsVisible="False">
             <TextBlock Classes="dev_edition_banner_text"
                        Text="Versão de desenvolvimento — não utilize para emitir documentos fiscais verdadeiros."

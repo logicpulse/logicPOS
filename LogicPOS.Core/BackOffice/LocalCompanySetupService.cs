@@ -192,7 +192,8 @@ public sealed class LocalCompanySetupService : ICompanySetupService
         }
 
         await database.SaveChangesAsync(cancellationToken);
-        AppComposition.Services?.GetRequiredService<CompanyCurrency>().Reload(database);
+        // Host composition may omit CompanyCurrency; never fail company save because of formatting cache.
+        AppComposition.Services?.GetService<CompanyCurrency>()?.Reload(database);
         return ListingSaveResult.Ok(Guid.Empty, "Dados da empresa gravados.");
     }
 

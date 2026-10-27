@@ -233,21 +233,30 @@ public partial class CompanySetupWindow : Window
         Notice.Text = "A gravar...";
         OkButton.IsEnabled = false;
         DemoButton.IsEnabled = false;
-        var result = await _service.SaveAsync(new CompanySetupRequest
+        try
         {
-            CountryId = country.Id,
-            CurrencyId = currency.Id,
-            Values = values
-        });
-        if (result.Succeeded == false)
+            var result = await _service.SaveAsync(new CompanySetupRequest
+            {
+                CountryId = country.Id,
+                CurrencyId = currency.Id,
+                Values = values
+            });
+            if (result.Succeeded == false)
+            {
+                Notice.Text = result.Error ?? "Não foi possível gravar.";
+                DemoButton.IsEnabled = true;
+                RefreshValidation();
+                return;
+            }
+
+            _saved = true;
+            Close();
+        }
+        catch (Exception ex)
         {
-            Notice.Text = result.Error ?? "Não foi possível gravar.";
+            Notice.Text = ex.Message;
             DemoButton.IsEnabled = true;
             RefreshValidation();
-            return;
         }
-
-        _saved = true;
-        Close();
     }
 }

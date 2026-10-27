@@ -1,14 +1,10 @@
-﻿    <Window xmlns="https://github.com/avaloniaui"
+﻿    <UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         xmlns:views="using:LogicPOS.App.Views"
         x:Class="LogicPOS.App.Views.PosWindow"
         Classes="pos_window"
-        Title="logicpos"
-        Icon="avares://LogicPOS.App/Assets/application.ico"
-        WindowState="FullScreen"
-        WindowDecorations="None"
-        WindowStartupLocation="CenterScreen">
+        Background="#111111">
     <Panel>
         <Image Classes="app_background"
                Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
@@ -105,7 +101,7 @@
         </Panel>
 
         <Panel x:Name="OrdersOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="560" MaxHeight="360">
+            <Border x:Name="OrdersFrame" Classes="login_alert_frame" Width="560" MaxHeight="360">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
@@ -136,7 +132,7 @@
         </Panel>
 
         <Panel x:Name="VoltaOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="620" MaxHeight="430">
+            <Border x:Name="VoltaFrame" Classes="login_alert_frame" Width="620" MaxHeight="430">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
@@ -275,7 +271,7 @@
         </Panel>
 
         <Panel x:Name="DocumentsMenuOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="581" Height="286">
+            <Border x:Name="DocumentsMenuFrame" Classes="login_alert_frame" Width="581" Height="286">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <Grid ColumnDefinitions="*,Auto">
@@ -339,7 +335,7 @@
         </Panel>
 
         <Panel x:Name="QuitOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="400" Height="300">
+            <Border x:Name="QuitFrame" Classes="login_alert_frame" Width="400" Height="300">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">
@@ -563,6 +559,20 @@
             <views:PdfDocumentView x:Name="PdfHost" />
         </Panel>
 
+        <!-- Portrait: docked outside the Canvas. ZIndex below login_alert_overlay (100). -->
+        <Border x:Name="FloatingToolbarHost"
+                Classes="pos_toolbar_float"
+                IsVisible="False"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                Margin="10,0,10,10"
+                MinHeight="64"
+                ZIndex="10">
+            <UniformGrid x:Name="FloatingToolbarButtons"
+                         Rows="1"
+                         Margin="6" />
+        </Border>
+
         <Border x:Name="DevBanner"
                 Classes="dev_edition_banner"
                 IsVisible="False">
@@ -572,4 +582,4 @@
                        TextAlignment="Center" />
         </Border>
     </Panel>
-</Window>
+</UserControl>

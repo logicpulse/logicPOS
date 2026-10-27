@@ -2,14 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
-             x:Class="LogicPOS.App.Views.DocumentsListing">
+             x:Class="LogicPOS.App.Views.DocumentsListing"
+             Classes="bo_listing">
     <Panel>
     <Border Classes="bo_doc_page">
     <DockPanel>
         <StackPanel Classes="bo_doc_header" DockPanel.Dock="Top">
             <Border Classes="bo_page_header">
                 <DockPanel>
-                    <StackPanel Classes="bo_page_actions" DockPanel.Dock="Right">
+                    <StackPanel x:Name="ActionBar" Classes="bo_page_actions" DockPanel.Dock="Right">
                         <Button Classes="bo_page_action" Click="OnNewClick" ToolTip.Tip="Novo">
                             <StackPanel Classes="bo_doc_action_content">
                                 <svg:Svg Classes="bo_doc_action_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_novo_w.svg" />
@@ -69,8 +70,24 @@
                     <TextBlock Classes="bo_page_title" Text="Documentos" />
                 </DockPanel>
             </Border>
-            <DockPanel Classes="bo_doc_tools">
-                <StackPanel Classes="bo_doc_filters" DockPanel.Dock="Left">
+            <DockPanel x:Name="MobileBar" Classes="bo_mobile_bar" IsVisible="False">
+                <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Mais" Click="OnMobileMoreClick" />
+                <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Filtros" Click="OnMobileFilterClick" />
+                <Border Classes="bo_listing_search">
+                    <DockPanel>
+                        <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                            <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                        </Button>
+                        <TextBox x:Name="MobileSearchBox"
+                                 Classes="bo_listing_search_box"
+                                 PlaceholderText="Procurar"
+                                 TextChanged="OnMobileSearchChanged"
+                                 KeyUp="OnSearchKeyUp" />
+                    </DockPanel>
+                </Border>
+            </DockPanel>
+            <DockPanel x:Name="DesktopTools" Classes="bo_doc_tools">
+                <StackPanel x:Name="DocFilters" Classes="bo_doc_filters" DockPanel.Dock="Left">
                     <StackPanel Classes="bo_doc_date_field">
                         <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
                         <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
@@ -139,6 +156,11 @@
         </Border>
 
         <Panel>
+            <ListBox x:Name="CardList"
+                     Classes="bo_listing_cards"
+                     IsVisible="False"
+                     SelectionMode="Single"
+                     Tapped="OnCardTapped" />
             <DataGrid x:Name="DocumentGrid"
                       x:CompileBindings="False"
                       Classes="bo_doc_grid"
@@ -213,6 +235,53 @@
         </Panel>
     </DockPanel>
     </Border>
+        <Panel x:Name="FilterSheet" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_mobile_sheet">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <TextBlock Classes="login_alert_title" Text="Filtros" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnMobileFilterApplyClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Filtrar" />
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnMobileFilterCloseClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel x:Name="FilterSheetHost" Classes="bo_entity_form" Spacing="12" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
+        <Panel x:Name="MoreSheet" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_mobile_sheet">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <TextBlock Classes="login_alert_title" Text="Mais" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnMobileMoreCloseClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel x:Name="MoreSheetHost" Classes="bo_entity_form" Spacing="8" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
         <Panel x:Name="PromptOverlay" Classes="login_alert_overlay" IsVisible="False">
             <Border x:Name="PromptFrame" Classes="login_alert_frame bo_entity_prompt">
                 <DockPanel Classes="login_alert_inner">

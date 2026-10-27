@@ -1,22 +1,41 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         xmlns:views="using:LogicPOS.App.Views"
         x:Class="LogicPOS.App.Views.BackOfficeWindow"
         Classes="bo_window"
-        Title="logicpos"
-        Icon="avares://LogicPOS.App/Assets/application.ico"
-        WindowState="FullScreen"
-        WindowDecorations="None"
-        WindowStartupLocation="CenterScreen">
+        Background="#585858">
     <Panel>
     <DockPanel>
-        <Border Classes="bo_status" DockPanel.Dock="Top" PointerPressed="OnStatusPointerPressed">
+        <Border x:Name="PortraitAppBar"
+                Classes="bo_portrait_appbar"
+                DockPanel.Dock="Top"
+                IsVisible="False">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Button x:Name="DrawerToggle"
+                        Classes="bo_drawer_toggle"
+                        Click="OnDrawerToggleClick"
+                        ToolTip.Tip="Menu">
+                    <svg:Svg Classes="bo_sidebar_toggle_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/menu_icon.svg" />
+                </Button>
+                <TextBlock x:Name="PortraitTitle"
+                           Grid.Column="1"
+                           Classes="bo_portrait_title"
+                           Text="Painel"
+                           VerticalAlignment="Center" />
+                <TextBlock x:Name="PortraitSession"
+                           Grid.Column="2"
+                           Classes="bo_portrait_session"
+                           VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+
+        <Border x:Name="StatusBar" Classes="bo_status" DockPanel.Dock="Top" PointerPressed="OnStatusPointerPressed">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto">
                 <TextBlock x:Name="TerminalLabel" Classes="bo_status_text bo_status_terminal" />
                 <TextBlock x:Name="PageTitle" Grid.Column="1" Classes="bo_status_text" />
                 <TextBlock x:Name="ClockLabel" Grid.Column="2" Classes="bo_status_text" />
-                <StackPanel Grid.Column="3" Classes="bo_window_buttons">
+                <StackPanel x:Name="WindowButtons" Grid.Column="3" Classes="bo_window_buttons">
                     <Button Classes="bo_window_button" Click="OnMinimizeClick" ToolTip.Tip="Minimizar">
                         <svg:Svg Classes="bo_window_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/botao_minimizar_w.svg" />
                     </Button>
@@ -38,11 +57,12 @@
                     DockPanel.Dock="Top"
                     IsVisible="False" />
 
-        <Border x:Name="Sidebar" Classes="bo_sidebar" DockPanel.Dock="Left">
+        <Grid x:Name="ShellGrid" ColumnDefinitions="Auto,*">
+        <Border x:Name="Sidebar" Classes="bo_sidebar" Grid.Column="0" ZIndex="20">
             <DockPanel>
                 <Border Classes="bo_sidebar_header" DockPanel.Dock="Top">
                     <Grid ColumnDefinitions="*,Auto">
-                        <Button Classes="bo_sidebar_brand" Click="OnDashboardClick" ToolTip.Tip="Dashboard">
+                        <Button Classes="bo_sidebar_brand" Click="OnDashboardClick" ToolTip.Tip="Painel">
                             <Image x:Name="SidebarLogo" Classes="bo_sidebar_logo" Source="avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png" />
                         </Button>
                         <Button x:Name="SidebarToggle" Classes="bo_sidebar_toggle" Grid.Column="1" Click="OnSidebarToggleClick" ToolTip.Tip="Recolher menu">
@@ -51,7 +71,7 @@
                     </Grid>
                 </Border>
                 <StackPanel Classes="bo_sidebar_footer" DockPanel.Dock="Bottom">
-                    <Button Classes="bo_nav" Click="OnExitClick" ToolTip.Tip="Sair da Aplicação">
+                    <Button x:Name="ExitButton" Classes="bo_nav" Click="OnExitClick" ToolTip.Tip="Sair da Aplicação">
                         <StackPanel Classes="bo_menu_row">
                             <Border Classes="bo_menu_glyph">
                                 <Border.OpacityMask>
@@ -77,7 +97,7 @@
                         </Border>
                     </StackPanel>
                     <Border Classes="bo_sidebar_line" />
-                    <Button Classes="bo_sidebar_about" Click="OnAboutClick" ToolTip.Tip="Acerca">
+                    <Button x:Name="AboutButton" Classes="bo_sidebar_about" Click="OnAboutClick" ToolTip.Tip="Acerca">
                         <StackPanel Classes="bo_menu_row">
                             <TextBlock Classes="bo_sidebar_about_mark" Text="i" />
                             <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Acerca" />
@@ -88,14 +108,14 @@
                 </StackPanel>
                 <ScrollViewer>
                     <StackPanel>
-                        <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick" ToolTip.Tip="Dashboard">
+                        <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick" ToolTip.Tip="Painel">
                             <StackPanel Classes="bo_menu_row">
                                 <Border Classes="bo_menu_glyph">
                                     <Border.OpacityMask>
                                         <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_dashboard.png" />
                                     </Border.OpacityMask>
                                 </Border>
-                                <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Dashboard" />
+                                <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Painel" />
                             </StackPanel>
                         </Button>
                         <StackPanel x:Name="MenuHost" />
@@ -114,7 +134,7 @@
             </DockPanel>
         </Border>
 
-        <Panel>
+        <Panel x:Name="PageArea" Grid.Column="1">
             <views:DashboardView x:Name="DashboardHost" />
             <views:ArticleDashboardView x:Name="ArticleDashboardHost" IsVisible="False" />
 
@@ -129,10 +149,19 @@
                 <views:SettingsPage x:Name="SettingsHost" IsVisible="False" />
             </Grid>
         </Panel>
+
+        <Border x:Name="DrawerScrim"
+                Classes="bo_drawer_scrim"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                IsVisible="False"
+                ZIndex="15"
+                PointerPressed="OnDrawerScrimPressed" />
+        </Grid>
     </DockPanel>
 
             <Panel x:Name="QuitOverlay" Classes="login_alert_overlay" IsVisible="False">
-                <Border Classes="login_alert_frame" Width="400" Height="300">
+                <Border x:Name="QuitFrame" Classes="login_alert_frame" Width="400" Height="300">
                     <DockPanel Classes="login_alert_inner">
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
@@ -263,7 +292,7 @@
             </Panel>
 
             <Panel x:Name="SaftConfirmOverlay" Classes="login_alert_overlay" IsVisible="False">
-                <Border Classes="login_alert_frame" Width="420" Height="300">
+                <Border x:Name="SaftConfirmFrame" Classes="login_alert_frame" Width="420" Height="300">
                     <DockPanel Classes="login_alert_inner">
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
@@ -385,4 +414,4 @@
                        TextAlignment="Center" />
         </Border>
     </Panel>
-</Window>
+</UserControl>

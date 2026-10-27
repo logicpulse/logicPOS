@@ -2,9 +2,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
-             x:Class="LogicPOS.App.Views.NewDocumentWindow">
+             x:Class="LogicPOS.App.Views.NewDocumentWindow"
+             Classes="bo_new_doc">
     <Grid>
-    <Border Classes="login_alert_frame" Width="1180" Height="860">
+    <Border x:Name="DocumentFrame" Classes="login_alert_frame">
         <DockPanel>
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">
@@ -22,7 +23,7 @@
                             <Image Classes="bo_line_icon_image bo_transport_icon" Source="avares://LogicPOS.App/Assets/Images/Documents/menu_listagem_de_veiculos.png" />
                         </Button>
                     </StackPanel>
-                <StackPanel Classes="login_alert_action_buttons">
+                <StackPanel x:Name="DocumentActions" Classes="login_alert_action_buttons">
                     <Button Classes="login_alert_action bo_new_doc_preview" Click="OnPreviewClick">
                         <StackPanel Classes="login_alert_action_content">
                             <Image Classes="login_alert_action_icon"
@@ -48,7 +49,12 @@
                 </DockPanel>
             </Border>
             <DockPanel Classes="bo_new_doc_body">
-                <Grid Classes="bo_new_doc_fields" DockPanel.Dock="Top" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
+                <ScrollViewer x:Name="HeaderScroll"
+                              Classes="bo_new_doc_header_scroll"
+                              DockPanel.Dock="Top"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Auto">
+                <Grid x:Name="HeaderFields" Classes="bo_new_doc_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto">
                     <StackPanel>
                         <TextBlock Classes="bo_new_doc_caption" Text="Tipo documento" />
                         <ComboBox x:Name="TypeBox" Classes="bo_new_doc_combo" SelectionChanged="OnTypeChanged" />
@@ -150,6 +156,7 @@
                         <TextBox x:Name="NotesBox" Classes="bo_new_doc_notes" />
                     </StackPanel>
                 </Grid>
+                </ScrollViewer>
                 <TextBlock x:Name="ErrorLabel" Classes="bo_new_doc_error" DockPanel.Dock="Bottom" />
                 <StackPanel DockPanel.Dock="Bottom">
                     <TextBlock Classes="bo_new_doc_ship_title" Text="Artigos" />
@@ -214,7 +221,7 @@
         </DockPanel>
     </Border>
     <Border x:Name="LineEditor" Classes="bo_line_editor">
-        <Border Classes="login_alert_frame bo_line_editor_frame">
+        <Border x:Name="LineEditorFrame" Classes="login_alert_frame bo_line_editor_frame">
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
@@ -224,7 +231,7 @@
                     </StackPanel>
                 </Border>
                 <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
-                    <StackPanel Classes="login_alert_action_buttons">
+                    <StackPanel x:Name="LineEditorActions" Classes="login_alert_action_buttons">
                         <Button Classes="login_alert_action" Click="OnLineOk">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
@@ -255,7 +262,8 @@
                         </Button>
                     </StackPanel>
                 </Border>
-                <Grid Classes="bo_line_editor_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <Grid x:Name="LineEditorFields" Classes="bo_line_editor_fields" ColumnDefinitions="*,*,*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
                     <StackPanel>
                         <TextBlock Classes="bo_new_doc_caption" Text="Código" />
                         <TextBox x:Name="EditCode" Classes="bo_line_editor_input" IsReadOnly="True" />
@@ -310,11 +318,12 @@
                     </StackPanel>
                     <TextBlock x:Name="EditError" Grid.Row="5" Grid.ColumnSpan="4" Classes="bo_new_doc_error" />
                 </Grid>
+                </ScrollViewer>
             </DockPanel>
         </Border>
     </Border>
     <Panel x:Name="CustomerEditor" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="820" MaxHeight="640">
+        <Border x:Name="CustomerEditorFrame" Classes="login_alert_frame">
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
@@ -415,7 +424,7 @@
         </Border>
     </Panel>
     <Panel x:Name="ArticlePad" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="980" Height="680">
+        <Border x:Name="ArticlePadFrame" Classes="login_alert_frame">
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
@@ -448,7 +457,7 @@
         </Border>
     </Panel>
     <Panel x:Name="CustomerOverlay" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="480" MaxHeight="420">
+        <Border x:Name="CustomerListFrame" Classes="login_alert_frame">
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <TextBlock Classes="login_alert_title" Text="Clientes" />
@@ -469,7 +478,7 @@
         </Border>
     </Panel>
     <Panel x:Name="TransportOverlay" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="980" MaxHeight="420">
+        <Border x:Name="TransportFrame" Classes="login_alert_frame">
             <DockPanel>
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
@@ -585,7 +594,7 @@
         </Border>
     </Panel>
     <Panel x:Name="NewArticleOverlay" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="520" Height="520">
+        <Border x:Name="NewArticleFrame" Classes="login_alert_frame">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <TextBlock Classes="login_alert_title" Text="Novo artigo" />
@@ -620,7 +629,7 @@
         </Border>
     </Panel>
     <Panel x:Name="SerialOverlay" Classes="login_alert_overlay" IsVisible="False">
-        <Border Classes="login_alert_frame" Width="640" Height="560">
+        <Border x:Name="SerialFrame" Classes="login_alert_frame">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <TextBlock Classes="login_alert_title" Text="Artigo único" />

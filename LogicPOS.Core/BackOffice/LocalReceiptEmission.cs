@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
@@ -95,7 +96,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var currencies = await database.Currencies.AsNoTracking()
             .Where(item => item.IsDeleted == false)
             .OrderBy(item => item.Designation)
-            .Select(item => new ReceiptPayOption { Id = item.Id, Name = item.Designation, ExchangeRate = item.ExchangeRate })
+            .Select(item => new ReceiptPayOption { Id = item.Id, Name = item.Designation, Code = item.Acronym, ExchangeRate = item.ExchangeRate })
             .ToListAsync(cancellationToken);
         return new ReceiptEmissionCatalog { PaymentMethods = methods, Currencies = currencies };
     }
@@ -172,7 +173,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             Amount = receiptAmount,
             TaxPayable = taxPayable,
             WithholdingTaxAmount = withholding,
-            AmountInWords = receiptAmount.ToString("0.00", CultureInfo.CurrentCulture),
+            AmountInWords = PortugueseMoneyWords.Convert(receiptAmount, currency?.Acronym ?? "EUR"),
             SourceId = documents.First().Number,
             CurrencyCode = currency?.Acronym ?? "EUR",
             CurrencyAmount = request.CurrencyAmount,

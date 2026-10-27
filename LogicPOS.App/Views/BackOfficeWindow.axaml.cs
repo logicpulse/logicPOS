@@ -19,7 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
 
-public partial class BackOfficeWindow : Window, IOfficeSurface
+public partial class BackOfficeWindow : UserControl, IOfficeSurface
 {
     private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
     private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
@@ -34,6 +34,9 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
     private bool _setupToastsShown;
     private StockManagementView? _stockView;
     private string? _pendingSaftAction;
+    private bool _portrait;
+    private bool _drawerOpen;
+    private UiViewport _viewport;
 
     public BackOfficeWindow()
         : this(string.Empty)
@@ -49,6 +52,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
         MarkFlag(UiCulture.Read(null));
+        ApplySidebarTexts();
         SetSessionLabel(sessionLabel);
         var version = Assembly.GetExecutingAssembly()
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
@@ -61,19 +65,151 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         AboutCopyright.Text = copyright;
         ApplyBranding(number ?? "1.6.0");
         BuildMenu();
-        _clock.Tick += (_, _) => ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
-        Opened += (_, _) => RefreshSession();
-        EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshSetupAlertsAsync();
-        Closing += (_, e) =>
+        _clock.Tick += (_, _) =>
         {
-            if (_allowClose)
-            {
-                return;
-            }
-
-            e.Cancel = true;
-            QuitOverlay.IsVisible = true;
+            var text = DateTime.Now.ToString(ClockFormat);
+            ClockLabel.Text = text;
         };
+        EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshSetupAlertsAsync();
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnLayoutUpdated;
+    }
+
+    public async Task ActivateHostedAsync()
+    {
+        // Ceder o UI thread antes/depois do relayout para reduzir risco de ANR no Android.
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+        await Task.Delay(16);
+        RelayoutForViewport();
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+        RefreshSession();
+    }
+
+    public bool TryRequestClose()
+    {
+        if (_allowClose)
+        {
+            return true;
+        }
+
+        QuitOverlay.IsVisible = true;
+        return false;
+    }
+
+    private Window? HostWindow => TopLevel.GetTopLevel(this) as Window;
+
+    private void RequestHostClose()
+    {
+        if (HostWindow is Window window)
+        {
+            _allowClose = true;
+            window.Close();
+        }
+    }
+
+    private void OnLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        var next = UiViewport.From(this);
+        if (next.Width == _viewport.Width && next.Height == _viewport.Height && Bounds.Width > 0)
+        {
+            return;
+        }
+
+        _viewport = next;
+        // Portrait follows the real viewport so rotating a tablet restores the desktop shell.
+        _portrait = next.IsPortrait;
+        Classes.Set("bo_portrait", _portrait);
+        Classes.Set("bo_landscape", _portrait == false);
+        ApplyShellLayout();
+    }
+
+    private void ApplyShellLayout()
+    {
+        PortraitAppBar.IsVisible = _portrait;
+        StatusBar.IsVisible = _portrait == false;
+        WindowButtons.IsVisible = _portrait == false && OperatingSystem.IsAndroid() == false;
+        SidebarToggle.IsVisible = _portrait == false;
+
+        if (_portrait)
+        {
+            ShellGrid.ColumnDefinitions = new ColumnDefinitions("*");
+            Grid.SetColumn(Sidebar, 0);
+            Grid.SetColumnSpan(Sidebar, 1);
+            Grid.SetColumn(PageArea, 0);
+            Grid.SetColumnSpan(PageArea, 1);
+            Grid.SetColumn(DrawerScrim, 0);
+            Grid.SetColumnSpan(DrawerScrim, 1);
+            SetDrawerOpen(_drawerOpen);
+            PortraitTitle.Text = string.IsNullOrWhiteSpace(PageTitle.Text) ? AppText.Get("Painel") : PageTitle.Text;
+            PortraitSession.Text = TerminalLabel.Text;
+            PortraitChrome.ApplyOverlayFrame(QuitFrame, true, 400, 300);
+            PortraitChrome.ApplyOverlayFrame(SaftConfirmFrame, true, 420, 300);
+        }
+        else
+        {
+            ShellGrid.ColumnDefinitions = new ColumnDefinitions("Auto,*");
+            Grid.SetColumn(Sidebar, 0);
+            Grid.SetColumnSpan(Sidebar, 1);
+            Grid.SetColumn(PageArea, 1);
+            Grid.SetColumnSpan(PageArea, 1);
+            Grid.SetColumn(DrawerScrim, 0);
+            Grid.SetColumnSpan(DrawerScrim, 2);
+            DrawerScrim.IsVisible = false;
+            Sidebar.IsVisible = true;
+            Sidebar.Classes.Remove("bo_sidebar_drawer");
+            // Repor alinhamento do sidebar quando volta a landscape.
+            Sidebar.HorizontalAlignment = HorizontalAlignment.Stretch;
+            Sidebar.VerticalAlignment = VerticalAlignment.Stretch;
+            Sidebar.Width = double.NaN;
+            _drawerOpen = false;
+            PortraitChrome.ApplyOverlayFrame(QuitFrame, false, 400, 300);
+            PortraitChrome.ApplyOverlayFrame(SaftConfirmFrame, false, 420, 300);
+        }
+    }
+
+    private void SetDrawerOpen(bool open)
+    {
+        _drawerOpen = open;
+        if (_portrait == false)
+        {
+            return;
+        }
+
+        Sidebar.Classes.Set("bo_sidebar_drawer", true);
+        // Forçar alinhamento esquerdo e stretch vertical em código para garantir drawer lateral.
+        Sidebar.HorizontalAlignment = HorizontalAlignment.Left;
+        Sidebar.VerticalAlignment = VerticalAlignment.Stretch;
+        Sidebar.Width = 280;
+        Sidebar.IsVisible = open;
+        DrawerScrim.IsVisible = open;
+    }
+
+    private void OnDrawerToggleClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        => SetDrawerOpen(_drawerOpen == false);
+
+    private void OnDrawerScrimPressed(object? sender, PointerPressedEventArgs e)
+        => SetDrawerOpen(false);
+
+    private void SyncPortraitChrome(string? title = null)
+    {
+        if (PortraitTitle is null)
+        {
+            return;
+        }
+
+        var text = title ?? PageTitle.Text;
+        PortraitTitle.Text = string.IsNullOrWhiteSpace(text) ? AppText.Get("Painel") : text;
+        PortraitSession.Text = TerminalLabel.Text;
+        if (_portrait)
+        {
+            SetDrawerOpen(false);
+        }
     }
 
     private void ApplyBranding(string productVersion)
@@ -130,14 +266,22 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         ReportsOverlay.IsVisible = reportsOpen;
     }
 
-    public void SetSessionLabel(string sessionLabel) => TerminalLabel.Text = sessionLabel;
+    public void SetSessionLabel(string sessionLabel)
+    {
+        TerminalLabel.Text = sessionLabel;
+        if (PortraitSession is not null)
+        {
+            PortraitSession.Text = sessionLabel;
+        }
+    }
 
     public void RefreshSession()
     {
         ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
         _clock.Start();
-        _ = ReloadDashboardSafeAsync();
-        _ = RefreshSetupAlertsAsync();
+        // Diferir carregamentos pesados para não bloquear o UI thread (evita ANR no Android).
+        Dispatcher.UIThread.Post(() => _ = ReloadDashboardSafeAsync(), DispatcherPriority.Background);
+        Dispatcher.UIThread.Post(() => _ = RefreshSetupAlertsAsync(), DispatcherPriority.Background);
     }
 
     private async Task ReloadDashboardSafeAsync()
@@ -654,7 +798,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             SaftBusy.Hide();
         }
 
-        var message = await SaftExportUi.FormatResultAsync(result, this);
+        var message = await SaftExportUi.FormatResultAsync(result, TopLevel.GetTopLevel(this));
         ShowSaftMessage(message);
     }
 
@@ -689,6 +833,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         }
 
         PageTitle.Text = title;
+        SyncPortraitChrome(title);
         _articleDashboardRequest++;
         ReportsOverlay.IsVisible = false;
 
@@ -794,6 +939,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         _sectionPanels.Clear();
         _sectionButtons.Clear();
         BuildMenu();
+        ApplySidebarTexts();
     }
 
     private void MarkFlag(string culture)
@@ -805,6 +951,52 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             {
                 child.Classes.Add("bo_sidebar_flag_on");
             }
+        }
+    }
+
+    /// <summary>
+    /// Atualiza textos fixos do sidebar (Dashboard, FrontOffice, Sair, Acerca) conforme a cultura ativa.
+    /// </summary>
+    private void ApplySidebarTexts()
+    {
+        var dashLabel = AppText.Get("Painel");
+        SetMenuButtonText(DashboardButton, dashLabel);
+        ToolTip.SetTip(DashboardButton, dashLabel);
+
+        var foLabel = AppText.Get("FrontOffice");
+        SetMenuButtonText(FrontOfficeButton, foLabel);
+        ToolTip.SetTip(FrontOfficeButton, foLabel);
+
+        var exitLabel = AppText.Get("Sair da Aplicação");
+        SetMenuButtonText(ExitButton, exitLabel);
+        ToolTip.SetTip(ExitButton, exitLabel);
+
+        var aboutLabel = AppText.Get("Acerca");
+        SetMenuButtonText(AboutButton, aboutLabel);
+        ToolTip.SetTip(AboutButton, aboutLabel);
+
+        if (_portrait && string.IsNullOrWhiteSpace(PageTitle.Text))
+        {
+            PortraitTitle.Text = dashLabel;
+        }
+    }
+
+    private static void SetMenuButtonText(Button button, string text)
+    {
+        // O conteúdo é um StackPanel com bo_menu_row contendo um TextBlock com bo_menu_label.
+        if (button.Content is StackPanel row)
+        {
+            var label = row.Children.OfType<TextBlock>()
+                .FirstOrDefault(t => t.Classes.Contains("bo_menu_label"));
+            if (label is not null)
+            {
+                label.Text = text;
+            }
+        }
+        else if (button.GetVisualDescendants().OfType<TextBlock>()
+                     .FirstOrDefault(t => t.Classes.Contains("bo_menu_label")) is { } nested)
+        {
+            nested.Text = text;
         }
     }
 
@@ -845,6 +1037,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         _selectedItem?.Classes.Remove("bo_menu_on");
         _selectedItem = null;
         PageTitle.Text = "Artigos";
+        SyncPortraitChrome("Artigos");
         ReportsOverlay.IsVisible = false;
         DashboardHost.IsVisible = false;
         PageHost.IsVisible = false;
@@ -857,6 +1050,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         SelectMenuItem(DashboardButton);
         _articleDashboardRequest++;
         PageTitle.Text = string.Empty;
+        SyncPortraitChrome(AppText.Get("Painel"));
         DashboardHost.IsVisible = true;
         ArticleDashboardHost.IsVisible = false;
         PageHost.IsVisible = false;
@@ -873,30 +1067,44 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             return;
         }
 
+        SetDrawerOpen(false);
         _clock.Stop();
         ReturnToPos?.Invoke(this, EventArgs.Empty);
     }
 
     private void OnMinimizeClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        WindowState = WindowState.Minimized;
+        if (HostWindow is Window window)
+        {
+            window.WindowState = WindowState.Minimized;
+        }
     }
 
     private void OnMaximizeClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        WindowDecorations = WindowDecorations.None;
-        CanResize = false;
-        WindowState = WindowState.Maximized;
+        if (HostWindow is not Window window)
+        {
+            return;
+        }
+
+        window.WindowDecorations = WindowDecorations.None;
+        window.CanResize = false;
+        window.WindowState = WindowState.Maximized;
     }
 
     private void OnRestoreClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        WindowDecorations = WindowDecorations.BorderOnly;
-        CanResize = true;
-        WindowState = WindowState.Normal;
-        Width = 1400;
-        Height = 860;
-        CenterOnScreen();
+        if (HostWindow is not Window window)
+        {
+            return;
+        }
+
+        window.WindowDecorations = WindowDecorations.BorderOnly;
+        window.CanResize = true;
+        window.WindowState = WindowState.Normal;
+        window.Width = 1400;
+        window.Height = 860;
+        CenterHostOnScreen(window);
     }
 
     private void OnWindowCloseClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -913,7 +1121,9 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
 
     private void OnStatusPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (WindowState != WindowState.Normal || e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == false)
+        if (HostWindow is not Window window
+            || window.WindowState != WindowState.Normal
+            || e.GetCurrentPoint(this).Properties.IsLeftButtonPressed == false)
         {
             return;
         }
@@ -923,12 +1133,12 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             return;
         }
 
-        BeginMoveDrag(e);
+        window.BeginMoveDrag(e);
     }
 
-    private void CenterOnScreen()
+    private void CenterHostOnScreen(Window window)
     {
-        var screen = Screens.ScreenFromVisual(this);
+        var screen = window.Screens.ScreenFromVisual(window);
         if (screen is null)
         {
             return;
@@ -936,9 +1146,9 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
 
         var area = screen.WorkingArea;
         var scale = screen.Scaling;
-        var width = (int)(Width * scale);
-        var height = (int)(Height * scale);
-        Position = new PixelPoint(
+        var width = (int)(window.Width * scale);
+        var height = (int)(window.Height * scale);
+        window.Position = new PixelPoint(
             area.X + Math.Max(0, (area.Width - width) / 2),
             area.Y + Math.Max(0, (area.Height - height) / 2));
     }
@@ -1101,7 +1311,8 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
             return;
         }
 
-        Close();
+        // Android: sem janela — usar callback registado pelo MainActivity.
+        App.ExitApplication?.Invoke();
     }
 
     private async void RaiseLogout()
@@ -1110,7 +1321,7 @@ public partial class BackOfficeWindow : Window, IOfficeSurface
         _allowClose = true;
         _clock.Stop();
         LoggedOut?.Invoke(this, EventArgs.Empty);
-        Close();
+        RequestHostClose();
     }
 
     /// <summary>

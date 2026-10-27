@@ -1,8 +1,11 @@
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Android.Views;
+using Android.Views.InputMethods;
 using Avalonia.Android;
 using Avalonia.Controls.ApplicationLifetimes;
+using LogicPOS.App;
 using LogicPOS.App.Views;
 
 namespace LogicPOS.Android;
@@ -12,6 +15,7 @@ namespace LogicPOS.Android;
     Theme = "@style/MyTheme.NoActionBar",
     Icon = "@drawable/Icon",
     MainLauncher = true,
+    WindowSoftInputMode = SoftInput.StateAlwaysHidden | SoftInput.AdjustNothing,
     ConfigurationChanges = ConfigChanges.Orientation
         | ConfigChanges.ScreenSize
         | ConfigChanges.UiMode
@@ -29,6 +33,39 @@ public class MainActivity : AvaloniaMainActivity
             single.MainView = new MobileHostView();
         }
 
+        // Registar callback para que os ecrãs Avalonia consigam fechar a app no Android.
+        LogicPOS.App.App.ExitApplication ??= () =>
+        {
+            FinishAffinity();
+            Java.Lang.JavaSystem.Exit(0);
+        };
+
         base.OnCreate(savedInstanceState);
+        HideSoftInput();
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        HideSoftInput();
+    }
+
+    private void HideSoftInput()
+    {
+        try
+        {
+            var imm = GetSystemService(InputMethodService) as InputMethodManager;
+            var token = CurrentFocus?.WindowToken ?? Window?.DecorView?.WindowToken;
+            if (imm is not null && token is not null)
+            {
+                imm.HideSoftInputFromWindow(token, HideSoftInputFlags.None);
+            }
+
+            Window?.SetSoftInputMode(SoftInput.StateAlwaysHidden | SoftInput.AdjustNothing);
+        }
+        catch
+        {
+            // Ignore IME failures on exotic firmwares.
+        }
     }
 }

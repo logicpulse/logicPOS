@@ -295,7 +295,8 @@ public sealed class LoginViewModel : INotifyPropertyChanged
 
         var choice = TerminalChoices.FirstOrDefault(item => item.Id == terminalId);
         _loginService.RememberTerminal(terminalId, choice?.Designation ?? "Terminal");
-        var claimed = await _loginService.ClaimTerminalAsync(terminalId);
+        var claimed = await Task.Run(() => _loginService.ClaimTerminalAsync(terminalId))
+            .ConfigureAwait(true);
         if (claimed.Succeeded == false)
         {
             return claimed.Message;
@@ -432,7 +433,9 @@ public sealed class LoginViewModel : INotifyPropertyChanged
             return;
         }
 
-        var result = await _loginService.SignInAsync(_selectedUser.Id, Pin);
+        var userId = _selectedUser.Id;
+        var pin = Pin;
+        var result = await Task.Run(() => _loginService.SignInAsync(userId, pin)).ConfigureAwait(true);
         if (result.Succeeded == false)
         {
             ShowLoginFailure(result.Message);
@@ -495,7 +498,10 @@ public sealed class LoginViewModel : INotifyPropertyChanged
             return;
         }
 
-        var result = await _loginService.SignInAsync(_selectedUser.Id, Pin);
+        var userId = _selectedUser.Id;
+        var pin = Pin;
+        // Auth (EF + hash) fora do UI thread para não congelar o ecrã de login.
+        var result = await Task.Run(() => _loginService.SignInAsync(userId, pin)).ConfigureAwait(true);
         if (result.Succeeded == false)
         {
             ShowLoginFailure(result.Message);
@@ -543,7 +549,11 @@ public sealed class LoginViewModel : INotifyPropertyChanged
             return;
         }
 
-        var result = await _loginService.ReplaceDefaultPinAsync(_selectedUser.Id, Pin, _previousPin);
+        var userId = _selectedUser.Id;
+        var pin = Pin;
+        var previous = _previousPin;
+        var result = await Task.Run(() => _loginService.ReplaceDefaultPinAsync(userId, pin, previous))
+            .ConfigureAwait(true);
         if (result.Succeeded == false)
         {
             _pendingNewPin = null;

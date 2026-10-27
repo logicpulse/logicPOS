@@ -3,6 +3,7 @@ using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
@@ -14,6 +15,8 @@ namespace LogicPOS.App.Views;
 
 public partial class NewDocumentWindow : UserControl
 {
+    private UiViewport _viewport;
+    private bool _portrait;
     private readonly List<PosDocumentTypeOption> _types = new();
     private readonly List<NewDocumentLine> _lines = new();
     private readonly List<CatalogChoice> _catalog = new();
@@ -64,10 +67,17 @@ public partial class NewDocumentWindow : UserControl
         CustomerSuggest.PlacementTarget = CustomerName;
         TouchFields.Attach(this);
         _load = new ListingLoad(Busy);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnNewDocLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnNewDocLayoutUpdated;
     }
 
     public Task<bool> ShowAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
+        RelayoutForViewport();
         _seedDraftId = draftId;
         _copyFromDocumentId = copyFromDocumentId;
         _lines.Clear();
@@ -103,6 +113,35 @@ public partial class NewDocumentWindow : UserControl
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync();
         return _closed.Task;
+    }
+
+    private void OnNewDocLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false
+            && DocumentFrame.Bounds.Width > 0)
+        {
+            return;
+        }
+
+        // Reserva inferior em portrait FO para o dock flutuante não tapar Emitir/Pré-visualizar.
+        var bottomReserve = _portrait ? PortraitChrome.FloatingToolbarReserve : 0;
+        PortraitChrome.FitOverlay(DocumentFrame, this, 1180, 860, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(LineEditorFrame, this, 980, 720, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(CustomerEditorFrame, this, 820, 640, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(ArticlePadFrame, this, 980, 680, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(CustomerListFrame, this, 480, 420, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(TransportFrame, this, 980, 520, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(NewArticleFrame, this, 520, 520, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(SerialFrame, this, 640, 560, bottomReserve: bottomReserve);
+
+        // Portrait: keep header compact so the lines grid still has room.
+        HeaderScroll.MaxHeight = _portrait ? Math.Max(160, _viewport.Height * 0.32) : double.PositiveInfinity;
+        HeaderScroll.Classes.Set("bo_new_doc_header_compact", _portrait);
+        DocumentActions.Orientation = _portrait ? Orientation.Vertical : Orientation.Horizontal;
+        LineEditorActions.Orientation = _portrait ? Orientation.Vertical : Orientation.Horizontal;
+        LinesGrid.Classes.Set("bo_line_grid_compact", _portrait);
     }
 
     private async Task LoadAsync()

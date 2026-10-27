@@ -2,7 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
-             x:Class="LogicPOS.App.Views.ReceiptEmissionView">
+             x:Class="LogicPOS.App.Views.ReceiptEmissionView"
+             Classes="bo_listing">
     <Panel>
         <Border Classes="bo_doc_page">
             <DockPanel>
@@ -23,8 +24,23 @@
                             <TextBlock Classes="bo_page_title" Text="Emissão Recibos" />
                         </DockPanel>
                     </Border>
-                    <DockPanel Classes="bo_doc_tools">
-                        <StackPanel Classes="bo_doc_filters" DockPanel.Dock="Left">
+                    <DockPanel x:Name="MobileBar" Classes="bo_mobile_bar" IsVisible="False">
+                        <Button Classes="bo_mobile_bar_button" DockPanel.Dock="Right" Content="Filtros" Click="OnMobileFilterClick" />
+                        <Border Classes="bo_listing_search">
+                            <DockPanel>
+                                <Button Classes="bo_listing_icon_button" DockPanel.Dock="Right" Click="OnSearchClick" ToolTip.Tip="Procurar">
+                                    <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg" />
+                                </Button>
+                                <TextBox x:Name="MobileSearchBox"
+                                         Classes="bo_listing_search_box"
+                                         PlaceholderText="Procurar"
+                                         TextChanged="OnMobileSearchChanged"
+                                         KeyUp="OnSearchKeyUp" />
+                            </DockPanel>
+                        </Border>
+                    </DockPanel>
+                    <DockPanel x:Name="DesktopTools" Classes="bo_doc_tools">
+                        <StackPanel x:Name="ReceiptFilters" Classes="bo_doc_filters" DockPanel.Dock="Left">
                             <StackPanel Classes="bo_doc_date_field">
                                 <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
                                 <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
@@ -76,6 +92,11 @@
                 </Border>
 
                 <Panel>
+                <ListBox x:Name="CardList"
+                         Classes="bo_listing_cards"
+                         IsVisible="False"
+                         SelectionMode="Single"
+                         Tapped="OnCardTapped" />
                 <DataGrid x:Name="DocumentGrid"
                           x:CompileBindings="False"
                           Classes="bo_doc_grid"
@@ -84,12 +105,19 @@
                           CanUserReorderColumns="True"
                           CanUserResizeColumns="True"
                           CanUserSortColumns="True"
-                          SelectionMode="Single"
+                          SelectionMode="Extended"
                           GridLinesVisibility="Horizontal"
                           HeadersVisibility="Column"
+                          SelectionChanged="OnSelectionChanged"
                           DoubleTapped="OnGridDoubleTapped">
                     <DataGrid.Columns>
-                        <DataGridCheckBoxColumn Header="" Binding="{Binding IsSelected, Mode=TwoWay}" Width="36" CanUserSort="False" CanUserReorder="False" />
+                        <DataGridTemplateColumn Width="36" MinWidth="36" MaxWidth="36" CanUserSort="False" CanUserReorder="False">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:CompileBindings="False">
+                                    <CheckBox Classes="bo_doc_pick" IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                         <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="190" MinWidth="190" IsReadOnly="True" />
                         <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
                         <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
@@ -115,8 +143,33 @@
             </DockPanel>
         </Border>
 
+        <Panel x:Name="FilterSheet" Classes="login_alert_overlay" IsVisible="False">
+            <Border Classes="login_alert_frame bo_mobile_sheet">
+                <DockPanel Classes="login_alert_inner">
+                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                        <StackPanel Classes="login_alert_title_row">
+                            <TextBlock Classes="login_alert_title" Text="Filtros" />
+                        </StackPanel>
+                    </Border>
+                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                        <StackPanel Classes="login_alert_action_buttons">
+                            <Button Classes="login_alert_action" Click="OnMobileFilterApplyClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Filtrar" />
+                            </Button>
+                            <Button Classes="login_alert_action" Click="OnMobileFilterCloseClick">
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <ScrollViewer>
+                        <StackPanel x:Name="FilterSheetHost" Classes="bo_entity_form" Spacing="12" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Panel>
+
         <Panel x:Name="PayOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame bo_pay_dialog">
+            <Border x:Name="PayFrame" Classes="login_alert_frame bo_pay_dialog">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <TextBlock x:Name="PayTitle" Classes="login_alert_title" Text="Liquidar Faturas" />
@@ -141,10 +194,12 @@
                     <StackPanel Classes="bo_entity_form" Spacing="8">
                         <TextBlock Classes="bo_doc_label" Text="Método de Pagamento" />
                         <ComboBox x:Name="PaymentMethodBox" Classes="bo_entity_input" />
-                        <TextBlock Classes="bo_doc_label" Text="Moeda" />
-                        <ComboBox x:Name="CurrencyBox" Classes="bo_entity_input" SelectionChanged="OnCurrencyChanged" />
-                        <TextBlock Classes="bo_doc_label" Text="Câmbio" />
-                        <TextBox x:Name="ExchangeRate" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                        <StackPanel x:Name="ExchangeFields" Spacing="8">
+                            <TextBlock Classes="bo_doc_label" Text="Moeda" />
+                            <ComboBox x:Name="CurrencyBox" Classes="bo_entity_input" SelectionChanged="OnCurrencyChanged" />
+                            <TextBlock Classes="bo_doc_label" Text="Câmbio" />
+                            <TextBox x:Name="ExchangeRate" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
+                        </StackPanel>
                         <TextBlock Classes="bo_doc_label" Text="Total entregue" />
                         <TextBox x:Name="TotalPaid" Classes="bo_entity_input bo_numeric" TextChanged="OnAmountChanged" />
                         <TextBox x:Name="SystemAmount" Classes="bo_entity_input" IsReadOnly="True" />

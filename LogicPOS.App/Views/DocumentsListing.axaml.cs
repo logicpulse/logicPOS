@@ -1,8 +1,11 @@
 ﻿using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using LogicPOS.App;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
@@ -30,6 +33,9 @@ public partial class DocumentsListing : UserControl
     private bool _updatingColumnChecks;
     private bool _updatingPick;
     private bool _syncingSelection;
+    private bool _portrait;
+    private UiViewport _viewport;
+    private Panel? _filtersHome;
     private ListingLoad _load = null!;
 
     public DocumentsListing()
@@ -39,6 +45,18 @@ public partial class DocumentsListing : UserControl
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(ActionNotice);
         TouchFields.Attach(this);
+        CardList.ItemTemplate = new FuncDataTemplate<CheckedDocument>((item, _) =>
+            PortraitChrome.Card(
+                item.Number,
+                $"{item.DocumentDateText} · {item.Status}",
+                $"{item.EntityName} · {item.FinalTotalText}",
+                item), true);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnDocsLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnDocsLayoutUpdated;
     }
 
     public async Task ReloadAsync()
@@ -1266,9 +1284,11 @@ public partial class DocumentsListing : UserControl
 
     private void ShowPage()
     {
-        DocumentGrid.ItemsSource = _rows
+        var items = _rows
             .Select(row => new CheckedDocument(this, row, _picked.Contains(row.Id)))
             .ToList();
+        DocumentGrid.ItemsSource = items;
+        CardList.ItemsSource = items;
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
         if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "Não existem documentos neste período.")
@@ -1372,6 +1392,117 @@ public partial class DocumentsListing : UserControl
                 ? true
                 : null;
         _updatingPick = false;
+    }
+
+    // ── Portrait layout ──
+
+    private void OnDocsLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false)
+        {
+            return;
+        }
+
+        MobileBar.IsVisible = _portrait;
+        DesktopTools.IsVisible = _portrait == false;
+        DocumentGrid.IsVisible = _portrait == false;
+        CardList.IsVisible = _portrait;
+        ActionBar.Classes.Set("bo_page_actions_compact", _portrait);
+        PortraitChrome.FitOverlay(PromptFrame, this, 480, 320, lockHeight: false);
+        if (_portrait == false)
+        {
+            FilterSheet.IsVisible = false;
+            MoreSheet.IsVisible = false;
+            RestoreDocFilters();
+        }
+
+        ShowPage();
+    }
+
+    private void OnMobileSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchBox.Text = MobileSearchBox.Text;
+        OnSearchChanged(sender, e);
+    }
+
+    private void OnMobileFilterClick(object? sender, RoutedEventArgs e)
+    {
+        _filtersHome ??= DocFilters.Parent as Panel;
+        if (DocFilters.Parent is Panel parent)
+        {
+            parent.Children.Remove(DocFilters);
+        }
+
+        if (FilterSheetHost.Children.Contains(DocFilters) == false)
+        {
+            FilterSheetHost.Children.Add(DocFilters);
+        }
+
+        FilterSheet.IsVisible = true;
+    }
+
+    private void OnMobileFilterApplyClick(object? sender, RoutedEventArgs e)
+    {
+        OnFilterClick(sender, e);
+        FilterSheet.IsVisible = false;
+        RestoreDocFilters();
+    }
+
+    private void OnMobileFilterCloseClick(object? sender, RoutedEventArgs e)
+    {
+        FilterSheet.IsVisible = false;
+        RestoreDocFilters();
+    }
+
+    private void RestoreDocFilters()
+    {
+        if (DocFilters.Parent != FilterSheetHost)
+        {
+            return;
+        }
+
+        FilterSheetHost.Children.Remove(DocFilters);
+        _filtersHome?.Children.Insert(0, DocFilters);
+        DockPanel.SetDock(DocFilters, Dock.Left);
+    }
+
+    private void OnMobileMoreClick(object? sender, RoutedEventArgs e)
+    {
+        MoreSheetHost.Children.Clear();
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Novo", OnNewClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Copiar", OnCopyClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Editar", OnEditDraftClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Anular", OnCancelClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imprimir", OnPrintClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Imp.Como", OnPrintAsClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("AT", OnSendToAtClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Abrir", OnOpenA4Click));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Email", OnEmailClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Colunas", OnChooseColumnsClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Exportar Excel", OnExportExcelClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Exportar PDF", OnExportPdfClick));
+        MoreSheet.IsVisible = true;
+    }
+
+    private void OnMobileMoreCloseClick(object? sender, RoutedEventArgs e)
+        => MoreSheet.IsVisible = false;
+
+    private async void OnCardTapped(object? sender, TappedEventArgs e)
+    {
+        if (CardList.SelectedItem is not CheckedDocument item)
+        {
+            return;
+        }
+
+        if (item.CanEdit)
+        {
+            await EditDraftAsync(item.Source);
+            return;
+        }
+
+        await OpenPdfAsync(item.Source);
     }
 
     private sealed class CheckedDocument : INotifyPropertyChanged

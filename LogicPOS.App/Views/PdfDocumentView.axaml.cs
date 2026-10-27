@@ -27,15 +27,23 @@ public partial class PdfDocumentView : UserControl
     private int _pageIndex;
     private double _zoom = 1;
     private ZoomMode _zoomMode = ZoomMode.Page;
+    private UiViewport _viewport;
 
     public PdfDocumentView()
     {
         InitializeComponent();
         PageScroll.SizeChanged += (_, _) => ApplyFit();
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnPdfLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnPdfLayoutUpdated;
     }
 
     public Task ShowAsync(string path, string? title, Guid? documentId = null)
     {
+        RelayoutForViewport();
         _pdfPath = path;
         _documentId = documentId;
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
@@ -52,6 +60,19 @@ public partial class PdfDocumentView : UserControl
         _closed = new TaskCompletionSource<bool>();
         _ = LoadAsync(path);
         return _closed.Task;
+    }
+
+    private void OnPdfLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out var portrait) == false && PdfFrame.Bounds.Width > 0)
+        {
+            return;
+        }
+
+        var bottomReserve = portrait ? PortraitChrome.FloatingToolbarReserve : 0;
+        PortraitChrome.FitOverlay(PdfFrame, this, 1200, 860, bottomReserve: bottomReserve);
     }
 
     private async Task LoadAsync(string path)

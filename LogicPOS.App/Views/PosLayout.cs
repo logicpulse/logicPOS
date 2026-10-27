@@ -11,11 +11,12 @@ public sealed class PosLayout
     public const int TicketColumns = 4;
     public const int TicketRows = 4;
 
-    private PosLayout(int screenWidth, int screenHeight)
+    private PosLayout(int screenWidth, int screenHeight, bool portrait)
     {
         ScreenWidth = Math.Max(320, screenWidth);
         ScreenHeight = Math.Max(320, screenHeight);
-        IsPortrait = ScreenHeight > ScreenWidth;
+        // portrait pode ser forçado (ex.: Android estreito) mesmo se Width >= Height.
+        IsPortrait = portrait;
         var bucket = BucketFor(ScreenWidth, ScreenHeight);
         TicketFontSize = bucket.TicketFont;
         ToolbarIconSize = bucket.Icon;
@@ -24,6 +25,8 @@ public sealed class PosLayout
         TicketButtonHeight = bucket.ToolbarHeight;
         ToolbarButtonWidth = bucket.ToolbarWidth;
         ToolbarButtonHeight = bucket.ToolbarHeight;
+        PadColumns = TicketColumns;
+        PadRows = TicketRows;
 
         if (IsPortrait)
         {
@@ -46,9 +49,9 @@ public sealed class PosLayout
     public int ArticleRows { get; private set; }
     public int TicketFontSize { get; }
     public int ToolbarIconSize { get; }
-    public int TicketIconSize { get; }
-    public int TicketButtonWidth { get; }
-    public int TicketButtonHeight { get; }
+    public int TicketIconSize { get; private set; }
+    public int TicketButtonWidth { get; private set; }
+    public int TicketButtonHeight { get; private set; }
     public int ToolbarButtonWidth { get; }
     public int ToolbarButtonHeight { get; }
     public int LogoX { get; private set; }
@@ -100,8 +103,32 @@ public sealed class PosLayout
     public int TicketPadY { get; private set; }
     public int TicketPadWidth { get; private set; }
     public int TicketPadHeight { get; private set; }
+    /// <summary>Pad grid columns (4 landscape, 6 portrait compact).</summary>
+    public int PadColumns { get; private set; }
+    /// <summary>Pad grid rows (4 landscape, 2 portrait compact).</summary>
+    public int PadRows { get; private set; }
+    public int TabBarX { get; private set; }
+    public int TabBarY { get; private set; }
+    public int TabBarWidth { get; private set; }
+    public int TabBarHeight { get; private set; }
+    public int CategoryStripX { get; private set; }
+    public int CategoryStripY { get; private set; }
+    public int CategoryStripWidth { get; private set; }
+    public int CategoryStripHeight { get; private set; }
+    public int SearchBarX { get; private set; }
+    public int SearchBarY { get; private set; }
+    public int SearchBarWidth { get; private set; }
+    public int SearchBarHeight { get; private set; }
 
-    public static PosLayout For(int screenWidth, int screenHeight) => new(screenWidth, screenHeight);
+    public static PosLayout For(int screenWidth, int screenHeight)
+        => For(screenWidth, screenHeight, portrait: screenHeight > screenWidth);
+
+    /// <summary>
+    /// Builds FO chrome for the given size. Pass <paramref name="portrait"/> to force the
+    /// tab/strip/search layout (Android) without relying only on Height &gt; Width.
+    /// </summary>
+    public static PosLayout For(int screenWidth, int screenHeight, bool portrait)
+        => new(screenWidth, screenHeight, portrait);
 
     private void BuildLandscape((int BaseWidth, int BaseHeight, int ToolbarWidth, int ToolbarHeight, int Icon, int TicketFont) bucket)
     {
@@ -193,89 +220,122 @@ public sealed class PosLayout
 
     private void BuildPortrait((int BaseWidth, int BaseHeight, int ToolbarWidth, int ToolbarHeight, int Icon, int TicketFont) bucket)
     {
-        const int arrowGap = 8;
-        const int arrowRowGap = 6;
-        var ticketPadHeight = (TicketButtonHeight * TicketRows) + Margin;
-        var ticketListHeight = Math.Max(120, ScreenHeight / 4);
-        var toolbarHeight = ToolbarButtonHeight + (Margin * 2);
-        var bottomStack = ticketPadHeight + ticketListHeight + toolbarHeight;
-        var menuBottom = ScreenHeight - bottomStack;
-        LogoWidth = Math.Min(ScreenWidth - (Margin * 2), (int)Math.Round(ScreenWidth * 0.55));
-        LogoHeight = (int)Math.Round(LogoWidth * (350.0 / 1024.0));
-        LogoX = (ScreenWidth - LogoWidth) / 2;
-        LogoY = 8;
+        const int floatInset = 10;
+        const int floatInnerPad = 6;
+        const int tabBarHeight = 48;
+        const int searchBarHeight = 40;
+        const int sectionGap = 6;
+        var floatBarHeight = ToolbarButtonHeight + (floatInnerPad * 2);
 
-        StatusBar1X = Margin;
-        StatusBar1Y = LogoY + LogoHeight + 4;
-        StatusBar1Width = ScreenWidth - (Margin * 2);
-        StatusBar1Height = StatusBarHeight;
+        // Sem logo / terminal / relógio em portrait — só ticket + artigos.
+        LogoX = LogoY = LogoWidth = LogoHeight = 0;
+        StatusBar1X = StatusBar1Y = StatusBar1Width = 0;
+        StatusBar1Height = searchBarHeight;
+        StatusBar2X = StatusBar2Y = StatusBar2Width = StatusBar2Height = 0;
 
-        StatusBar2Y = StatusBar1Y + StatusBarHeight + 4;
-        StatusBar2Height = StatusBarHeight;
+        ToolbarWidth = ScreenWidth - (floatInset * 2);
+        ToolbarHeight = floatBarHeight;
+        ToolbarX = floatInset;
+        ToolbarY = ScreenHeight - floatInset - floatBarHeight;
 
-        var menuTop = StatusBar2Y + StatusBarHeight + Margin;
-        var usefulWidth = Math.Max(bucket.BaseWidth, ScreenWidth - (Margin * 2));
-        var usefulHeight = Math.Max(bucket.BaseHeight, menuBottom - menuTop - StatusBarHeight);
-        var guessedColumns = Math.Max(1, usefulWidth / bucket.BaseWidth);
-        var guessedRows = Math.Max(1, usefulHeight / bucket.BaseHeight);
-        ButtonWidth = bucket.BaseWidth + ((usefulWidth - (bucket.BaseWidth * guessedColumns)) / guessedColumns);
-        ButtonHeight = bucket.BaseHeight + ((usefulHeight - (bucket.BaseHeight * guessedRows)) / guessedRows);
-        var gridBottom = menuTop + (ButtonHeight * guessedRows);
-        var overflow = gridBottom + arrowRowGap + StatusBarHeight - menuBottom;
-        if (overflow > 0 && guessedRows > 0)
+        var contentTop = Margin;
+        var contentBottom = ToolbarY - floatInset;
+        var contentHeight = Math.Max(200, contentBottom - contentTop);
+
+        // Pad compacto 6×2 (referência FO portrait) — botões quase quadrados.
+        PadColumns = 6;
+        PadRows = 2;
+        TicketButtonWidth = Math.Max(40, (ScreenWidth - (Margin * 2)) / PadColumns);
+        TicketButtonHeight = Math.Max(44, Math.Min(TicketButtonWidth - 4, 56));
+        TicketIconSize = Math.Min(TicketIconSize, 24);
+        var ticketPadHeight = (TicketButtonHeight * PadRows) + sectionGap;
+
+        // Lista de ticket generosa (~28% do conteúdo útil), como na referência.
+        var ticketListHeight = Math.Max(200, Math.Min(contentHeight * 28 / 100, 340));
+
+        // Tabs + faixa de categorias (sempre) + pesquisa.
+        var categoryTileHeight = Math.Max(72, Math.Min(bucket.BaseHeight, 96));
+        var chromeHeight = tabBarHeight + sectionGap + categoryTileHeight + sectionGap + searchBarHeight + sectionGap;
+        var remainingForArticles = contentHeight - ticketListHeight - ticketPadHeight - chromeHeight;
+        if (remainingForArticles < bucket.BaseHeight * 2)
         {
-            ButtonHeight -= (overflow + guessedRows - 1) / guessedRows;
-            gridBottom = menuTop + (ButtonHeight * guessedRows);
+            // Se faltar altura para a grelha, encolher a lista (mínimo ainda generoso).
+            var need = (bucket.BaseHeight * 2) - remainingForArticles;
+            ticketListHeight = Math.Max(160, ticketListHeight - need);
+            remainingForArticles = contentHeight - ticketListHeight - ticketPadHeight - chromeHeight;
         }
 
-        StatusBar2X = ButtonWidth + Margin;
-        StatusBar2Width = Math.Max(0, guessedColumns - 2) * ButtonWidth;
-
-        FamilyRows = Math.Max(1, guessedRows - 1);
-        SubfamilyColumns = Math.Max(1, guessedColumns - 1);
-        ArticleColumns = SubfamilyColumns;
-        ArticleRows = FamilyRows;
-
-        FavoritesX = Margin;
-        FavoritesY = menuTop;
-        FamilyX = Margin;
-        FamilyY = menuTop + ButtonHeight;
-        SubfamilyX = Margin + ButtonWidth;
-        SubfamilyY = FavoritesY;
-        ArticleX = SubfamilyX;
-        ArticleY = FamilyY;
-
-        FamilyPreviousX = Margin;
-        FamilyPreviousY = StatusBar2Y;
-        FamilyNextX = Margin;
-        FamilyNextY = gridBottom + arrowRowGap;
-        var arrowColumnX = Margin + (ButtonWidth * (guessedColumns - 1));
-        var arrowSpan = Math.Max(ButtonWidth - (arrowGap * 2), 36);
-        ScrollWidth = Math.Max(18, arrowSpan / 2);
-        SubfamilyPreviousX = arrowColumnX + arrowGap;
-        SubfamilyPreviousY = FamilyPreviousY;
-        SubfamilyNextX = SubfamilyPreviousX + ScrollWidth;
-        SubfamilyNextY = FamilyPreviousY;
-        ArticlePreviousX = SubfamilyPreviousX;
-        ArticlePreviousY = FamilyNextY;
-        ArticleNextX = SubfamilyNextX;
-        ArticleNextY = FamilyNextY;
-
-        ToolbarX = 0;
-        ToolbarY = ScreenHeight - ticketPadHeight - ticketListHeight - toolbarHeight;
-        ToolbarWidth = ScreenWidth;
-        ToolbarHeight = toolbarHeight;
-
         TicketListX = 0;
-        TicketListY = ToolbarY + ToolbarHeight;
+        TicketListY = contentTop;
         TicketListWidth = ScreenWidth;
         TicketListHeight = ticketListHeight;
         AssignTicketColumns(ScreenWidth - (Margin * 2));
 
         TicketPadX = 0;
-        TicketPadY = ScreenHeight - ticketPadHeight;
+        TicketPadY = TicketListY + ticketListHeight;
         TicketPadWidth = ScreenWidth;
         TicketPadHeight = ticketPadHeight;
+
+        var y = TicketPadY + ticketPadHeight + sectionGap;
+        TabBarX = Margin;
+        TabBarY = y;
+        TabBarWidth = ScreenWidth - (Margin * 2);
+        TabBarHeight = tabBarHeight;
+        y += tabBarHeight + sectionGap;
+
+        CategoryStripX = Margin;
+        CategoryStripY = y;
+        CategoryStripWidth = ScreenWidth - (Margin * 2);
+        CategoryStripHeight = categoryTileHeight;
+        y += categoryTileHeight + sectionGap;
+
+        SearchBarX = Margin;
+        SearchBarY = y;
+        SearchBarWidth = ScreenWidth - (Margin * 2);
+        SearchBarHeight = searchBarHeight;
+        y += searchBarHeight + sectionGap;
+
+        var articlesBottom = contentBottom;
+        var usefulWidth = Math.Max(bucket.BaseWidth, ScreenWidth - (Margin * 2));
+        var usefulHeight = Math.Max(bucket.BaseHeight, articlesBottom - y);
+        // Referência: grelha de artigos sempre 4 colunas.
+        var guessedColumns = 4;
+        var guessedRows = Math.Max(2, usefulHeight / Math.Max(72, bucket.BaseHeight * 2 / 3));
+        ButtonWidth = usefulWidth / guessedColumns;
+        ButtonHeight = usefulHeight / guessedRows;
+        var gridBottom = y + (ButtonHeight * guessedRows);
+        var overflow = gridBottom - articlesBottom;
+        if (overflow > 0 && guessedRows > 0)
+        {
+            ButtonHeight -= (overflow + guessedRows - 1) / guessedRows;
+        }
+
+        // Faixa horizontal de famílias/subfamílias (1 linha); artigos em largura total.
+        FamilyRows = 1;
+        SubfamilyColumns = Math.Max(4, guessedColumns + 1);
+        ArticleColumns = guessedColumns;
+        ArticleRows = guessedRows;
+
+        FavoritesX = TabBarX;
+        FavoritesY = TabBarY;
+        FamilyX = CategoryStripX;
+        FamilyY = CategoryStripY;
+        SubfamilyX = CategoryStripX;
+        SubfamilyY = CategoryStripY;
+        ArticleX = Margin;
+        ArticleY = y;
+
+        // Setas da lista de artigos flanqueiam a barra de pesquisa (cima/baixo).
+        var navSize = searchBarHeight;
+        FamilyPreviousX = FamilyNextX = -1000;
+        FamilyPreviousY = FamilyNextY = -1000;
+        SubfamilyPreviousX = SubfamilyNextX = -1000;
+        SubfamilyPreviousY = SubfamilyNextY = -1000;
+        ScrollWidth = navSize;
+        ArticlePreviousX = SearchBarX;
+        ArticlePreviousY = SearchBarY;
+        ArticleNextX = SearchBarX + SearchBarWidth - navSize;
+        ArticleNextY = SearchBarY;
     }
 
     private void AssignTicketColumns(int ticketColumn)

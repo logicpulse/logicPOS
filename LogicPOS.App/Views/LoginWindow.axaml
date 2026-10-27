@@ -6,128 +6,232 @@
         x:DataType="vm:LoginViewModel"
         x:CompileBindings="True"
         Background="#111111">
-    <!-- Design artboard (landscape 1920x1080 or portrait 1080x1920); Viewbox keeps aspect ratio. -->
     <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
     <Panel x:Name="LoginArtboard" Width="1920" Height="1080">
         <Image Classes="app_background"
                Source="avares://LogicPOS.App/Assets/Images/background_logicpos.png"
                RenderOptions.BitmapInterpolationMode="HighQuality" />
-        <Image x:Name="LoginLogo"
-               Classes="login_logo"
-               Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
-               RenderOptions.BitmapInterpolationMode="HighQuality" />
-        <Border x:Name="LoginUsersFrame" Classes="login_users_frame" />
-        <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
 
-        <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
+        <!-- ═══ LANDSCAPE ═══ (hidden in portrait via code) -->
+        <Panel x:Name="LandscapePanel">
+            <Image x:Name="LoginLogo"
+                   Classes="login_logo"
+                   Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
+                   RenderOptions.BitmapInterpolationMode="HighQuality" />
+            <Border x:Name="LoginUsersFrame" Classes="login_users_frame" />
+            <Border x:Name="LoginPinpadFrame" Classes="login_pinpad_frame" />
+            <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
+            <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
+                <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
+                    <Image x:Name="LoginUsersPrevIcon" Classes="login_scroll_icon"
+                           Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
+                </Button>
+                <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Spacing="0" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:UserSlot">
+                            <Panel Classes="login_user_slot">
+                                <Button Classes="login_user"
+                                        Classes.selected="{Binding IsSelected}"
+                                        IsVisible="{Binding HasUser}"
+                                        Click="OnUserClick"
+                                        Tag="{Binding}">
+                                    <Panel>
+                                        <Image Classes="login_user_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
+                                        <Border Classes="login_user_caption">
+                                            <TextBlock Classes="login_user_name" Text="{Binding Name}" />
+                                        </Border>
+                                    </Panel>
+                                </Button>
+                            </Panel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
+                    <Image x:Name="LoginUsersNextIcon" Classes="login_scroll_icon"
+                           Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png" />
+                </Button>
+            </StackPanel>
+            <Border x:Name="LoginPinpad" Classes="login_pinpad">
+                <Grid Classes="login_pinpad_keys"
+                      ColumnDefinitions="105,105,105"
+                      RowDefinitions="46,56,56,56,56,4,Auto,*">
+                    <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+                        <TextBox x:Name="PinEntry"
+                                 Classes="login_pin_entry"
+                                 Classes.error="{Binding PinIsError}"
+                                 Text="{Binding Pin}"
+                                 PasswordChar="{Binding PinMask}"
+                                 IsReadOnly="True"
+                                 Focusable="True"
+                                 CaretBrush="Transparent" />
+                        <Button Classes="login_pin_reveal"
+                                IsVisible="{Binding !PinIsError}"
+                                ToolTip.Tip="{Binding PinVisibilityTip}"
+                                Click="OnTogglePinClick">
+                            <Panel>
+                                <svg:Svg Classes="login_pin_eye"
+                                         Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg"
+                                         IsVisible="{Binding !PinVisible}" />
+                                <svg:Svg Classes="login_pin_eye"
+                                         Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg"
+                                         IsVisible="{Binding PinVisible}" />
+                            </Panel>
+                        </Button>
+                    </Panel>
+                    <Button Classes="login_pin_reset"
+                            Grid.Row="0" Grid.Column="2"
+                            IsEnabled="{Binding CanResetPassword}"
+                            Click="OnResetPasswordClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="7" Tag="7" Grid.Row="1" Grid.Column="0" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="8" Tag="8" Grid.Row="1" Grid.Column="1" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="9" Tag="9" Grid.Row="1" Grid.Column="2" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="4" Tag="4" Grid.Row="2" Grid.Column="0" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="5" Tag="5" Grid.Row="2" Grid.Column="1" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="6" Tag="6" Grid.Row="2" Grid.Column="2" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="1" Tag="1" Grid.Row="3" Grid.Column="0" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="2" Tag="2" Grid.Row="3" Grid.Column="1" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="3" Tag="3" Grid.Row="3" Grid.Column="2" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_ce" Content="CE" Grid.Row="4" Grid.Column="0" Click="OnClearClick" />
+                    <Button Classes="login_pin_key login_pin_digit" Content="0" Tag="0" Grid.Row="4" Grid.Column="1" Click="OnDigitClick" />
+                    <Button Classes="login_pin_key login_pin_quit" Content="Sair" Grid.Row="4" Grid.Column="2" Click="OnQuitClick" />
+                    <TextBlock Classes="login_pin_status"
+                               Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"
+                               Text="{Binding StatusMessage}" />
+                    <DockPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" LastChildFill="False">
+                        <Button Classes="login_pin_key login_pin_ok"
+                                DockPanel.Dock="Bottom"
+                                Content="{Binding OkText}"
+                                IsEnabled="{Binding CanSubmit}"
+                                Click="OnSubmitClick" />
+                        <TextBlock Classes="login_version"
+                                   DockPanel.Dock="Bottom"
+                                   Text="{Binding VersionText}" />
+                    </DockPanel>
+                </Grid>
+            </Border>
+        </Panel>
 
-        <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
-            <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
-                <Image x:Name="LoginUsersPrevIcon" Classes="login_scroll_icon"
-                       Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
-            </Button>
-            <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Spacing="0" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:UserSlot">
-                        <Panel Classes="login_user_slot">
-                            <Button Classes="login_user"
-                                    Classes.selected="{Binding IsSelected}"
-                                    IsVisible="{Binding HasUser}"
-                                    Click="OnUserClick"
-                                    Tag="{Binding}">
-                                <Panel>
-                                    <Image Classes="login_user_icon"
-                                           Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
-                                    <Border Classes="login_user_caption">
-                                        <TextBlock Classes="login_user_name" Text="{Binding Name}" />
-                                    </Border>
-                                </Panel>
-                            </Button>
-                        </Panel>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
-                <Image x:Name="LoginUsersNextIcon" Classes="login_scroll_icon"
-                       Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png" />
-            </Button>
-        </StackPanel>
+        <!-- ═══ PORTRAIT ═══ (hidden in landscape via code) -->
+        <Panel x:Name="PortraitLoginPanel" IsVisible="False"
+               HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-        <Border x:Name="LoginPinpad" Classes="login_pinpad">
-            <Grid Classes="login_pinpad_keys"
-                  ColumnDefinitions="105,105,105"
-                  RowDefinitions="46,56,56,56,56,4,Auto,*">
-                <Panel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
-                    <TextBox x:Name="PinEntry"
-                             Classes="login_pin_entry"
-                             Classes.error="{Binding PinIsError}"
-                             Text="{Binding Pin}"
-                             PasswordChar="{Binding PinMask}" />
-                    <Button Classes="login_pin_reveal"
-                            IsVisible="{Binding !PinIsError}"
-                            ToolTip.Tip="{Binding PinVisibilityTip}"
-                            Click="OnTogglePinClick">
-                        <Panel>
-                            <svg:Svg Classes="login_pin_eye"
-                                     Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg"
-                                     IsVisible="{Binding !PinVisible}" />
-                            <svg:Svg Classes="login_pin_eye"
-                                     Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg"
-                                     IsVisible="{Binding PinVisible}" />
-                        </Panel>
-                    </Button>
-                </Panel>
-                <Button Classes="login_pin_reset"
-                        Grid.Row="0"
-                        Grid.Column="2"
-                        IsEnabled="{Binding CanResetPassword}"
-                        Click="OnResetPasswordClick" />
+            <StackPanel x:Name="PortraitCenterStack"
+                        HorizontalAlignment="Center" VerticalAlignment="Center"
+                        Spacing="12">
+                <Image x:Name="PortraitLogo" Classes="login_portrait_logo"
+                       Source="avares://LogicPOS.App/Assets/Images/logicpos_logo.png"
+                       RenderOptions.BitmapInterpolationMode="HighQuality"
+                       HorizontalAlignment="Center" />
 
-                <Button Classes="login_pin_key login_pin_digit" Content="7" Tag="7" Grid.Row="1" Grid.Column="0" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="8" Tag="8" Grid.Row="1" Grid.Column="1" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="9" Tag="9" Grid.Row="1" Grid.Column="2" Click="OnDigitClick" />
+            <Border x:Name="PortraitCard" Classes="login_portrait_card">
+                <StackPanel Classes="login_portrait_card_content">
 
-                <Button Classes="login_pin_key login_pin_digit" Content="4" Tag="4" Grid.Row="2" Grid.Column="0" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="5" Tag="5" Grid.Row="2" Grid.Column="1" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="6" Tag="6" Grid.Row="2" Grid.Column="2" Click="OnDigitClick" />
+                    <StackPanel Classes="login_portrait_section_header">
+                        <Image Classes="login_portrait_section_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png"
+                               RenderOptions.BitmapInterpolationMode="HighQuality" />
+                        <TextBlock Classes="login_portrait_section_title"
+                                   Text="SELECIONE O OPERADOR" />
+                    </StackPanel>
 
-                <Button Classes="login_pin_key login_pin_digit" Content="1" Tag="1" Grid.Row="3" Grid.Column="0" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="2" Tag="2" Grid.Row="3" Grid.Column="1" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="3" Tag="3" Grid.Row="3" Grid.Column="2" Click="OnDigitClick" />
+                    <Border Classes="login_portrait_users_strip">
+                        <ItemsControl x:Name="PortraitUsers" Classes="login_portrait_users"
+                                      ItemsSource="{Binding UserSlots}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="10" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:UserSlot">
+                                    <Button Classes="login_portrait_user"
+                                            Classes.selected="{Binding IsSelected}"
+                                            IsVisible="{Binding HasUser}"
+                                            Click="OnUserClick"
+                                            Tag="{Binding}">
+                                        <StackPanel HorizontalAlignment="Center" Spacing="2">
+                                            <Image Classes="login_portrait_user_icon"
+                                                   Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
+                                            <TextBlock Classes="login_portrait_user_name"
+                                                       Text="{Binding Name}" />
+                                        </StackPanel>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Border>
 
-                <Button Classes="login_pin_key login_pin_ce" Content="CE" Grid.Row="4" Grid.Column="0" Click="OnClearClick" />
-                <Button Classes="login_pin_key login_pin_digit" Content="0" Tag="0" Grid.Row="4" Grid.Column="1" Click="OnDigitClick" />
-                <Button Classes="login_pin_key login_pin_quit" Content="Sair" Grid.Row="4" Grid.Column="2" Click="OnQuitClick" />
+                    <Panel Classes="login_portrait_pin_row">
+                        <TextBox x:Name="PortraitPinEntry"
+                                 Classes="login_portrait_pin_entry"
+                                 Classes.error="{Binding PinIsError}"
+                                 Text="{Binding Pin}"
+                                 PasswordChar="{Binding PinMask}"
+                                 IsReadOnly="True"
+                                 Focusable="True"
+                                 CaretBrush="Transparent" />
+                        <Button Classes="login_portrait_pin_reveal"
+                                IsVisible="{Binding !PinIsError}"
+                                Click="OnTogglePinClick">
+                            <Panel>
+                                <svg:Svg Classes="login_pin_eye"
+                                         Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_invisivel.svg"
+                                         IsVisible="{Binding !PinVisible}" />
+                                <svg:Svg Classes="login_pin_eye"
+                                         Path="avares://LogicPOS.App/Assets/Images/Login/botao_password_visivel.svg"
+                                         IsVisible="{Binding PinVisible}" />
+                            </Panel>
+                        </Button>
+                    </Panel>
 
-                <TextBlock Classes="login_pin_status"
-                           Grid.Row="6"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           Text="{Binding StatusMessage}" />
+                    <Grid x:Name="PortraitKeypad" Classes="login_portrait_keypad"
+                          ColumnDefinitions="*,*,*"
+                          RowDefinitions="Auto,Auto,Auto,Auto">
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="7" Tag="7" Grid.Row="0" Grid.Column="0" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="8" Tag="8" Grid.Row="0" Grid.Column="1" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="9" Tag="9" Grid.Row="0" Grid.Column="2" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="4" Tag="4" Grid.Row="1" Grid.Column="0" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="5" Tag="5" Grid.Row="1" Grid.Column="1" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="6" Tag="6" Grid.Row="1" Grid.Column="2" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="1" Tag="1" Grid.Row="2" Grid.Column="0" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="2" Tag="2" Grid.Row="2" Grid.Column="1" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="3" Tag="3" Grid.Row="2" Grid.Column="2" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_ce" Content="CE" Grid.Row="3" Grid.Column="0" Click="OnClearClick" />
+                        <Button Classes="login_portrait_key login_portrait_digit" Content="0" Tag="0" Grid.Row="3" Grid.Column="1" Click="OnDigitClick" />
+                        <Button Classes="login_portrait_key login_portrait_quit" Content="Sair" Grid.Row="3" Grid.Column="2" Click="OnQuitClick" />
+                    </Grid>
 
-                <DockPanel Grid.Row="7"
-                           Grid.Column="0"
-                           Grid.ColumnSpan="3"
-                           LastChildFill="False">
-                    <Button Classes="login_pin_key login_pin_ok"
-                            DockPanel.Dock="Bottom"
-                            Content="{Binding OkText}"
+                    <TextBlock Classes="login_portrait_status" Text="{Binding StatusMessage}" />
+
+                    <Button x:Name="PortraitSubmit" Classes="login_portrait_submit"
                             IsEnabled="{Binding CanSubmit}"
-                            Click="OnSubmitClick" />
-                    <TextBlock Classes="login_version"
-                               DockPanel.Dock="Bottom"
-                               Text="{Binding VersionText}" />
-                </DockPanel>
-            </Grid>
-        </Border>
+                            Click="OnSubmitClick">
+                        <Grid ColumnDefinitions="*,Auto" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{Binding OkText}"
+                                       Classes="login_portrait_submit_text"
+                                       HorizontalAlignment="Center"
+                                       Grid.ColumnSpan="2" />
+                            <TextBlock Text="→"
+                                       Classes="login_portrait_submit_arrow"
+                                       Grid.Column="1" />
+                        </Grid>
+                    </Button>
 
+                    <TextBlock Classes="login_portrait_version" Text="{Binding VersionText}" />
+                </StackPanel>
+            </Border>
+            </StackPanel>
+        </Panel>
+
+        <!-- ═══ OVERLAYS (sempre visíveis) ═══ -->
         <Panel Classes="login_alert_overlay" IsVisible="{Binding AlertVisible}">
-            <Border Classes="login_alert_frame"
+            <Border x:Name="AlertFrame" Classes="login_alert_frame"
                     Width="{Binding AlertWidth}"
                     Height="{Binding AlertHeight}">
                 <DockPanel Classes="login_alert_inner">

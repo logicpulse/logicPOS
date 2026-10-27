@@ -13,6 +13,7 @@ public partial class ReportsWindow : UserControl
     private readonly List<Button> _rows = new();
     private ReportDefinition? _selected;
     private string _group = string.Empty;
+    private UiViewport _viewport;
 
     public event Func<string, string?, Task>? PreviewRequested;
 
@@ -25,10 +26,17 @@ public partial class ReportsWindow : UserControl
         EndDate.SelectedDate = DateTime.Today;
         TouchFields.Attach(Filters);
         ApplyFilterVisibility(null);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnReportsLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnReportsLayoutUpdated;
     }
 
     public async Task ShowAsync()
     {
+        RelayoutForViewport();
         Notice.Text = string.Empty;
         _selected = null;
         _catalog.Clear();
@@ -40,6 +48,19 @@ public partial class ReportsWindow : UserControl
         ShowGroup(_group);
         ApplyFilterVisibility(null);
         await LoadLookupsAsync();
+    }
+
+    private void OnReportsLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out var portrait) == false && ReportsFrame.Bounds.Width > 0)
+        {
+            return;
+        }
+
+        var bottomReserve = portrait ? PortraitChrome.FloatingToolbarReserve : 0;
+        PortraitChrome.FitOverlay(ReportsFrame, this, 1080, 720, bottomReserve: bottomReserve);
     }
 
     private void BuildTabs(IReadOnlyList<string> groups)

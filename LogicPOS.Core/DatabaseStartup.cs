@@ -251,7 +251,10 @@ public static class DatabaseStartup
     private static bool IsLocalGuidHardwareId(string? value)
         => value is { Length: 32 } && value.All(Uri.IsHexDigit);
 
-    public static string ResolveSeedPath(string? baseDirectory = null)
+    /// <summary>Binary-compatible entry used by LogicPOS.Host / Cloud (no-arg call sites).</summary>
+    public static string ResolveSeedPath() => ResolveSeedPath(baseDirectory: null);
+
+    public static string ResolveSeedPath(string? baseDirectory)
     {
         foreach (var root in SeedSearchRoots(baseDirectory))
         {

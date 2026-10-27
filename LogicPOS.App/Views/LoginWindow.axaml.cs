@@ -23,6 +23,7 @@ public partial class LoginWindow : UserControl
     private readonly LoginViewModel _viewModel;
     private bool _registrationPrompted;
     private bool _activated;
+    private bool _sessionOpening;
     private UiViewport _viewport;
 
     public LoginWindow()
@@ -34,7 +35,11 @@ public partial class LoginWindow : UserControl
         _viewModel = new LoginViewModel(loginService, AppComposition.StartupError);
         _viewModel.QuitConfirmed += (_, _) => RequestClose();
         _viewModel.TerminalChoiceRequested += (_, _) => ShowTerminalChoice();
-        _viewModel.SessionStarted += (_, userName) => _ = ShowSessionAsync(userName);
+        _viewModel.SessionStarted += (_, userName) =>
+        {
+            _sessionOpening = true;
+            _ = ShowSessionAsync(userName);
+        };
         DataContext = _viewModel;
 
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
@@ -71,7 +76,11 @@ public partial class LoginWindow : UserControl
         if (global::Avalonia.Application.Current?.ApplicationLifetime is IControlledApplicationLifetime life)
         {
             life.Shutdown();
+            return;
         }
+
+        // Android: sem janela nem desktop lifetime — usar callback registado pelo MainActivity.
+        App.ExitApplication?.Invoke();
     }
 
     private async Task PromptStartupDialogsAsync()
@@ -128,7 +137,9 @@ public partial class LoginWindow : UserControl
         try
         {
             _viewModel.VersionText = FormatLoginVersion();
-            LoginLogo.Source = AppBranding.LoadLoginLogo();
+            var logo = AppBranding.LoadLoginLogo();
+            LoginLogo.Source = logo;
+            PortraitLogo.Source = logo;
         }
         catch
         {
@@ -185,14 +196,11 @@ public partial class LoginWindow : UserControl
         bool needsRegistration;
         try
         {
-            // Re-sync with ERP (soft-delete / revoke) then read RegistrationRequired.
-            // CloudApiLicenseModule uses a timeout and must not deadlock the UI.
             await Task.Run(async () => await license.RefreshAsync().ConfigureAwait(false)).ConfigureAwait(true);
             needsRegistration = await Task.Run(() => license.RegistrationRequired).ConfigureAwait(true);
         }
         catch (Exception ex)
         {
-            // Soft-fail: login stays usable; CloudApiLicenseModule already treats API failure as unlicensed.
             System.Diagnostics.Debug.WriteLine($"Licence check failed: {ex}");
             return;
         }
@@ -202,7 +210,6 @@ public partial class LoginWindow : UserControl
             return;
         }
 
-        // Mandatory: no soft-lock skip. Exit closes the login window; Register must succeed.
         var owner = ResolveDialogOwner();
         if (owner is null)
         {
@@ -214,7 +221,6 @@ public partial class LoginWindow : UserControl
 
         if (license.RegistrationRequired)
         {
-            // Still unlicensed after dismiss/exit — do not leave a usable login screen.
             RequestClose();
         }
     }
@@ -295,14 +301,32 @@ public partial class LoginWindow : UserControl
 
     private async void OnTerminalConfirmClick(object? sender, RoutedEventArgs e)
     {
+        var isAndroid = OperatingSystem.IsAndroid();
+        if (isAndroid)
+        {
+            MobileHostView.ShowLoadingOverlay("A associar terminal…");
+            await MobileHostView.YieldForPaintAsync();
+        }
+
+        _sessionOpening = false;
         var error = await _viewModel.ConfirmTerminalAsync();
         TerminalNotice.Text = error ?? string.Empty;
         if (string.IsNullOrWhiteSpace(error) == false)
         {
+            if (isAndroid)
+            {
+                MobileHostView.HideLoadingOverlay();
+            }
+
             return;
         }
 
         TerminalOverlay.IsVisible = false;
+        if (isAndroid && _sessionOpening == false)
+        {
+            MobileHostView.HideLoadingOverlay();
+        }
+
         PinEntryFocus();
     }
 
@@ -311,66 +335,143 @@ public partial class LoginWindow : UserControl
         TerminalOverlay.IsVisible = false;
     }
 
-    private bool? _usersPanelPortrait;
+    private bool? _lastPortrait;
 
     private void ApplyViewportLayout()
     {
         _viewport = UiViewport.From(this);
-        LoginArtboard.Width = _viewport.DesignWidth;
-        LoginArtboard.Height = _viewport.DesignHeight;
+
+        if (_viewport.IsPortrait)
+        {
+            LoginArtboard.Width = _viewport.Width;
+            LoginArtboard.Height = _viewport.Height;
+        }
+        else
+        {
+            LoginArtboard.Width = _viewport.DesignWidth;
+            LoginArtboard.Height = _viewport.DesignHeight;
+        }
+
         Classes.Set("login_portrait", _viewport.IsPortrait);
         Classes.Set("login_landscape", _viewport.IsLandscape);
 
-        // Portrait chrome (logo / frames / pinpad) is in Styles.axaml via UserControl.login_portrait.
-        if (_usersPanelPortrait != _viewport.IsPortrait)
+        // Alternar painéis landscape / portrait — única fonte de verdade para visibilidade.
+        LandscapePanel.IsVisible = !_viewport.IsPortrait;
+        PortraitLoginPanel.IsVisible = _viewport.IsPortrait;
+
+        if (_lastPortrait != _viewport.IsPortrait)
         {
-            _usersPanelPortrait = _viewport.IsPortrait;
-            var orientation = _viewport.IsPortrait
-                ? Avalonia.Layout.Orientation.Horizontal
-                : Avalonia.Layout.Orientation.Vertical;
+            _lastPortrait = _viewport.IsPortrait;
 
-            // Reuse the XAML ItemsPanel StackPanel; only flip orientation.
-            if (LoginUsers.ItemsPanelRoot is StackPanel usersPanel)
+            // Landscape: restaurar orientação vertical dos utilizadores.
+            if (_viewport.IsLandscape && LoginUsers.ItemsPanelRoot is StackPanel usersPanel)
             {
-                usersPanel.Orientation = orientation;
+                usersPanel.Orientation = Avalonia.Layout.Orientation.Vertical;
             }
-
-            // Up/down glyphs rotated → left/right for the horizontal strip.
-            LoginUsersPrevIcon.RenderTransform = _viewport.IsPortrait
-                ? new Avalonia.Media.RotateTransform(-90)
-                : null;
-            LoginUsersNextIcon.RenderTransform = _viewport.IsPortrait
-                ? new Avalonia.Media.RotateTransform(-90)
-                : null;
         }
 
         if (_viewport.IsPortrait)
         {
-            TerminalFrame.Width = 1000;
-            TerminalFrame.Height = 1400;
+            ApplyPortraitChrome();
+            TerminalFrame.Width = Math.Min(_viewport.Width - 40, 700);
+            TerminalFrame.Height = Math.Min(_viewport.Height - 120, 900);
+            // Limitar alertas ao viewport em portrait para nunca transbordar o ecrã.
+            AlertFrame.MaxWidth = Math.Max(240, _viewport.Width - 32);
+            AlertFrame.MaxHeight = Math.Max(200, _viewport.Height - 80);
         }
         else
         {
+            ApplyLandscapeChrome();
             TerminalFrame.Width = 980;
             TerminalFrame.Height = 520;
+            AlertFrame.ClearValue(Avalonia.Layout.Layoutable.MaxWidthProperty);
+            AlertFrame.ClearValue(Avalonia.Layout.Layoutable.MaxHeightProperty);
         }
 
-        // Landscape: vertical column. Portrait: one horizontal strip (~5 slots).
         var pageSize = _viewport.IsPortrait
-            ? 5
+            ? 4
             : (_viewport.DesignHeight - (120 * 2) - (60 * 2)) / 102;
         _viewModel.SetPageSize(pageSize < 1 ? 1 : pageSize);
     }
 
+    /// <summary>
+    /// Portrait: dimensionar o cartão e logo proporcionalmente ao ecrã; centrado verticalmente.
+    /// </summary>
+    private void ApplyPortraitChrome()
+    {
+        var w = _viewport.Width;
+
+        var logoWidth = Math.Min(300, w * 0.42);
+        PortraitLogo.Width = logoWidth;
+        PortraitLogo.Height = double.NaN;
+
+        var cardWidth = Math.Min(520, w - 40);
+        PortraitCard.Width = cardWidth;
+        PortraitCard.Margin = default;
+    }
+
+    /// <summary>
+    /// Landscape: restaurar posições do artboard fixo 1920×1080.
+    /// </summary>
+    private void ApplyLandscapeChrome()
+    {
+        LoginLogo.Width = 460;
+        LoginLogo.Height = 157;
+        LoginLogo.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+        LoginLogo.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        LoginLogo.Margin = new Avalonia.Thickness(0, 16, 48, 0);
+
+        LoginUsersFrame.Width = 148;
+        LoginUsersFrame.Height = 861;
+        LoginUsersFrame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        LoginUsersFrame.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        LoginUsersFrame.Margin = new Avalonia.Thickness(108, 105, 0, 0);
+
+        LoginUsersColumn.Width = 120;
+        LoginUsersColumn.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        LoginUsersColumn.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        LoginUsersColumn.Margin = new Avalonia.Thickness(120, 120, 0, 0);
+
+        LoginUsers.Width = 120;
+        LoginUsers.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        LoginUsersPrev.Width = 120;
+        LoginUsersPrev.Height = 60;
+        LoginUsersPrev.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+        LoginUsersNext.Width = 120;
+        LoginUsersNext.Height = 60;
+        LoginUsersNext.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
+
+        LoginPinpadFrame.Width = 344;
+        LoginPinpadFrame.Height = 466;
+        LoginPinpadFrame.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+        LoginPinpadFrame.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        LoginPinpadFrame.Margin = new Avalonia.Thickness(0, 0, 104, 0);
+
+        LoginPinpad.Width = 315;
+        LoginPinpad.Height = 466;
+        LoginPinpad.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Right;
+        LoginPinpad.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
+        LoginPinpad.Margin = new Avalonia.Thickness(0, 0, 120, 0);
+    }
+
     private async Task ShowSessionAsync(string userName)
     {
+        var isAndroid = OperatingSystem.IsAndroid();
+        if (isAndroid)
+        {
+            // Overlay por cima do login (não limpar o Host) — já pode estar visível desde o Entrar.
+            MobileHostView.ShowLoadingOverlay("A preparar o ecrã…");
+            await MobileHostView.YieldForPaintAsync();
+        }
+
         var backOfficeOnly = false;
         var mode = AppComposition.Services?.GetService<IOperationMode>();
         if (mode is not null)
         {
             try
             {
-                backOfficeOnly = await mode.IsBackOfficeOnlyAsync();
+                backOfficeOnly = await Task.Run(async () => await mode.IsBackOfficeOnlyAsync())
+                    .ConfigureAwait(true);
             }
             catch (Exception)
             {
@@ -378,43 +479,84 @@ public partial class LoginWindow : UserControl
             }
         }
 
-        // Avalonia Android has no Window platform — POS/BackOffice still require Window.
-        if (OperatingSystem.IsAndroid())
-        {
-            // POS/BackOffice still use Window — host navigation comes next.
-            System.Diagnostics.Debug.WriteLine("ShowSessionAsync skipped on Android (no Window platform).");
-            return;
-        }
-
-        IsVisible = false;
         try
         {
             if (backOfficeOnly)
             {
-                var office = new BackOfficeWindow(await SessionLabelAsync(userName));
+                if (isAndroid)
+                {
+                    MobileHostView.UpdateLoadingMessage("A abrir o BackOffice…");
+                    await MobileHostView.YieldForPaintAsync();
+                }
+
+                var label = await Task.Run(async () => await SessionLabelAsync(userName))
+                    .ConfigureAwait(true);
+                var office = new BackOfficeWindow(label);
                 office.UseBackOfficeOnly();
-                office.LoggedOut += (_, _) =>
+                void OnBoLoggedOut()
                 {
                     _viewModel.ClearSession();
                     IsVisible = true;
                     PinEntryFocus();
-                };
-                office.Show();
+                }
+
+                if (isAndroid)
+                {
+                    MobileHostView.ShowSession(office, OnBoLoggedOut);
+                    await office.ActivateHostedAsync();
+                    MobileHostView.HideLoadingOverlay();
+                    return;
+                }
+
+                office.LoggedOut += (_, _) => OnBoLoggedOut();
+                var boShell = new BoShellWindow(office);
+                boShell.Show();
                 return;
             }
 
+            if (isAndroid)
+            {
+                MobileHostView.UpdateLoadingMessage("A construir o ecrã POS…");
+                await MobileHostView.YieldForPaintAsync();
+            }
+
+            // Construtor pesado (InitializeComponent) — overlay já pintado por cima.
             var pos = new PosWindow(userName);
-            pos.LoggedOut += (_, _) =>
+
+            if (isAndroid)
+            {
+                await MobileHostView.YieldForPaintAsync();
+                MobileHostView.UpdateLoadingMessage("A carregar o catálogo…");
+            }
+
+            void OnLoggedOut()
             {
                 _viewModel.ClearSession();
                 IsVisible = true;
                 PinEntryFocus();
-            };
-            pos.Show();
+            }
+
+            if (isAndroid)
+            {
+                // POS fica por baixo do overlay até ActivateHostedAsync terminar.
+                MobileHostView.ShowSession(pos, OnLoggedOut);
+                await pos.ActivateHostedAsync();
+                MobileHostView.HideLoadingOverlay();
+                return;
+            }
+
+            pos.LoggedOut += (_, _) => OnLoggedOut();
+            var shell = new PosShellWindow(pos);
+            shell.Show();
         }
         catch (Exception exception)
         {
             App.WriteCrash("ShowSessionAsync", exception);
+            if (isAndroid)
+            {
+                MobileHostView.HideLoadingOverlay();
+            }
+
             IsVisible = true;
             PinEntryFocus();
             var owner = ResolveDialogOwner();
@@ -444,6 +586,28 @@ public partial class LoginWindow : UserControl
         }
     }
 
+    /// <summary>
+    /// Entrar / tecla Enter: loading imediato no Android, depois auth.
+    /// </summary>
+    private async Task SubmitLoginAsync()
+    {
+        var isAndroid = OperatingSystem.IsAndroid();
+        if (isAndroid)
+        {
+            MobileHostView.ShowLoadingOverlay("A autenticar…");
+            await MobileHostView.YieldForPaintAsync();
+        }
+
+        _sessionOpening = false;
+        await _viewModel.SubmitAsync();
+
+        // Falha de login / PIN errado: esconder overlay. Sucesso: ShowSessionAsync trata.
+        if (isAndroid && _sessionOpening == false)
+        {
+            MobileHostView.HideLoadingOverlay();
+        }
+    }
+
     private static async Task<string> SessionLabelAsync(string userName)
     {
         var login = AppComposition.Services?.GetService<ILoginService>();
@@ -465,8 +629,15 @@ public partial class LoginWindow : UserControl
 
     private void PinEntryFocus()
     {
-        var entry = this.FindControl<TextBox>("PinEntry");
-        entry?.Focus();
+        var name = _viewport.IsPortrait ? "PortraitPinEntry" : "PinEntry";
+        var entry = this.FindControl<TextBox>(name);
+        if (entry is null)
+        {
+            return;
+        }
+
+        entry.IsReadOnly = true;
+        entry.Focus();
     }
 
     private void OnWindowKeyDown(object? sender, KeyEventArgs e)
@@ -504,7 +675,7 @@ public partial class LoginWindow : UserControl
 
         if (e.Key == Key.Enter)
         {
-            _ = _viewModel.SubmitAsync();
+            _ = SubmitLoginAsync();
             e.Handled = true;
         }
     }
@@ -540,9 +711,29 @@ public partial class LoginWindow : UserControl
 
     private void OnClearClick(object? sender, RoutedEventArgs e) => _viewModel.ClearPin();
 
-    private async void OnSubmitClick(object? sender, RoutedEventArgs e) => await _viewModel.SubmitAsync();
+    private async void OnSubmitClick(object? sender, RoutedEventArgs e) => await SubmitLoginAsync();
 
-    private async void OnResetPasswordClick(object? sender, RoutedEventArgs e) => await _viewModel.BeginPasswordResetAsync();
+    private async void OnResetPasswordClick(object? sender, RoutedEventArgs e)
+    {
+        if (OperatingSystem.IsAndroid())
+        {
+            MobileHostView.ShowLoadingOverlay("A autenticar…");
+            await MobileHostView.YieldForPaintAsync();
+        }
+
+        try
+        {
+            await _viewModel.BeginPasswordResetAsync();
+        }
+        finally
+        {
+            // Alterar PIN fica no ecrã de login — esconder overlay (excepto se sessão já arrancou).
+            if (OperatingSystem.IsAndroid() && _sessionOpening == false)
+            {
+                MobileHostView.HideLoadingOverlay();
+            }
+        }
+    }
 
     private void OnQuitClick(object? sender, RoutedEventArgs e) => _viewModel.RequestQuit();
 

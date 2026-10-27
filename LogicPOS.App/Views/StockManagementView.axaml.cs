@@ -9,6 +9,8 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using Avalonia.VisualTree;
+using LogicPOS.App;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,6 +66,7 @@ public partial class StockManagementView : UserControl
     private readonly List<MovementLineControls> _lineControls = [];
     private readonly List<AutoCompleteBox> _childBoxes = [];
     private readonly HashSet<Guid> _labelIds = [];
+    private bool _syncingSelection;
     private ComboBox? _saleDocumentBox;
     private CalendarDatePicker? _saleDateBox;
     private decimal _editPrice;
@@ -72,6 +75,9 @@ public partial class StockManagementView : UserControl
     private bool _simpleOnly;
     private bool _filtersLoaded;
     private bool _printLabels = true;
+    private bool _portrait;
+    private UiViewport _viewport;
+    private Panel? _stockFiltersHome;
 
     private sealed class MovementLineControls
     {
@@ -85,6 +91,7 @@ public partial class StockManagementView : UserControl
     public StockManagementView()
     {
         InitializeComponent();
+        Grid.SelectionChanged += OnGridSelectionChanged;
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(Notice);
         StartDate.SelectedDate = DateTime.Today.AddMonths(-1);
@@ -98,6 +105,13 @@ public partial class StockManagementView : UserControl
                 TouchFields.Attach(EditorHost);
             }
         };
+        CardList.ItemTemplate = new FuncDataTemplate<object>((row, _) => BuildStockCard(row), true);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnStockLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnStockLayoutUpdated;
     }
 
     public async Task ReloadAsync()
@@ -237,8 +251,16 @@ public partial class StockManagementView : UserControl
                 break;
         }
 
+        var page = _rows.ToList();
+        _syncingSelection = true;
         Grid.ItemsSource = null;
-        Grid.ItemsSource = _rows.ToList();
+        Grid.ItemsSource = page;
+        CardList.ItemsSource = page;
+        _syncingSelection = false;
+        if (_tab == StockTab.History)
+        {
+            SyncGridSelectionFromLabels();
+        }
     }
 
     private void AddText(string binding, string header, double minWidth, bool star = false)
@@ -271,7 +293,7 @@ public partial class StockManagementView : UserControl
             "Editar",
             row =>
             {
-                Grid.SelectedItem = row;
+                SelectRowWithoutLabelSync(row);
                 if (_tab == StockTab.Warehouse)
                 {
                     OnChangeLocationClick(null, new RoutedEventArgs());
@@ -290,7 +312,7 @@ public partial class StockManagementView : UserControl
             "Apagar",
             row =>
             {
-                Grid.SelectedItem = row;
+                SelectRowWithoutLabelSync(row);
                 OnDeleteClick(null, new RoutedEventArgs());
             },
             _ => true));
@@ -349,6 +371,11 @@ public partial class StockManagementView : UserControl
                 };
                 box.IsCheckedChanged += (_, _) =>
                 {
+                    if (_syncingSelection)
+                    {
+                        return;
+                    }
+
                     if (box.IsChecked == true)
                     {
                         _labelIds.Add(history.Id);
@@ -357,10 +384,99 @@ public partial class StockManagementView : UserControl
                     {
                         _labelIds.Remove(history.Id);
                     }
+
+                    SyncGridSelectionFromLabels();
                 };
                 return box;
             }, true)
         });
+    }
+
+    private void OnGridSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_syncingSelection || _tab != StockTab.History)
+        {
+            return;
+        }
+
+        SyncLabelsFromGridSelection();
+    }
+
+    private void SelectRowWithoutLabelSync(object row)
+    {
+        _syncingSelection = true;
+        try
+        {
+            Grid.SelectedItem = row;
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    private void SyncLabelsFromGridSelection()
+    {
+        _syncingSelection = true;
+        try
+        {
+            var visible = _rows.OfType<StockHistoryRow>().Select(row => row.Id).ToHashSet();
+            var selected = Grid.SelectedItems?.OfType<StockHistoryRow>().Select(row => row.Id).ToHashSet() ?? [];
+            foreach (var id in visible)
+            {
+                _labelIds.Remove(id);
+            }
+
+            foreach (var id in selected)
+            {
+                _labelIds.Add(id);
+            }
+
+            ApplyLabelChecks();
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    private void SyncGridSelectionFromLabels()
+    {
+        _syncingSelection = true;
+        try
+        {
+            Grid.SelectedItems.Clear();
+            foreach (var row in _rows.OfType<StockHistoryRow>())
+            {
+                if (_labelIds.Contains(row.Id))
+                {
+                    Grid.SelectedItems.Add(row);
+                }
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
+    private void ApplyLabelChecks()
+    {
+        foreach (var row in Grid.GetVisualDescendants().OfType<DataGridRow>())
+        {
+            if (row.DataContext is not StockHistoryRow history)
+            {
+                continue;
+            }
+
+            var box = row.GetVisualDescendants().OfType<CheckBox>().FirstOrDefault();
+            if (box is null || box.IsChecked == _labelIds.Contains(history.Id))
+            {
+                continue;
+            }
+
+            box.IsChecked = _labelIds.Contains(history.Id);
+        }
     }
 
     private void ApplyToolbar()
@@ -1751,6 +1867,148 @@ public partial class StockManagementView : UserControl
         }
 
         return box;
+    }
+
+    // ── Portrait layout ──
+
+    private void OnStockLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false)
+        {
+            return;
+        }
+
+        MobileBar.IsVisible = _portrait;
+        DesktopTools.IsVisible = _portrait == false;
+        Grid.IsVisible = _portrait == false;
+        CardList.IsVisible = _portrait;
+        ActionBar.Classes.Set("bo_page_actions_compact", _portrait);
+        PortraitChrome.FitOverlay(EditorFrame, this, 760, 680);
+        if (_portrait == false)
+        {
+            FilterSheet.IsVisible = false;
+            MoreSheet.IsVisible = false;
+            RestoreStockFilters();
+        }
+    }
+
+    private Border BuildStockCard(object row)
+    {
+        return _tab switch
+        {
+            StockTab.Articles => PortraitChrome.Card(
+                Prop(row, "Designation"),
+                Prop(row, "Code"),
+                $"Stock: {Prop(row, "TotalStock")} · Min: {Prop(row, "MinimumStock")}",
+                row),
+            StockTab.Movements => PortraitChrome.Card(
+                Prop(row, "Article"),
+                $"{Prop(row, "Movement")} · {Prop(row, "Date")}",
+                $"{Prop(row, "Customer")} · Qty {Prop(row, "Quantity")}",
+                row),
+            StockTab.History => PortraitChrome.Card(
+                Prop(row, "Article"),
+                Prop(row, "Status"),
+                $"{Prop(row, "Warehouse")} · {Prop(row, "Location")}",
+                row),
+            _ => PortraitChrome.Card(
+                Prop(row, "Article"),
+                $"{Prop(row, "Warehouse")} · {Prop(row, "Location")}",
+                $"Qty {Prop(row, "Quantity")}",
+                row)
+        };
+    }
+
+    private static string Prop(object row, string name)
+        => row.GetType().GetProperty(name)?.GetValue(row)?.ToString() ?? string.Empty;
+
+    private void OnSearchClick(object? sender, RoutedEventArgs e)
+        => _ = LoadAsync(resetPage: true);
+
+    private void OnMobileSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchBox.Text = MobileSearchBox.Text;
+        OnSearchTextChanged(sender, e);
+    }
+
+    private void OnMobileFilterClick(object? sender, RoutedEventArgs e)
+    {
+        _stockFiltersHome ??= StockFilters.Parent as Panel;
+        if (StockFilters.Parent is Panel parent)
+        {
+            parent.Children.Remove(StockFilters);
+        }
+
+        if (FilterSheetHost.Children.Contains(StockFilters) == false)
+        {
+            FilterSheetHost.Children.Add(StockFilters);
+        }
+
+        FilterSheet.IsVisible = true;
+    }
+
+    private void OnMobileFilterApplyClick(object? sender, RoutedEventArgs e)
+    {
+        OnFilterClick(sender, e);
+        FilterSheet.IsVisible = false;
+        RestoreStockFilters();
+    }
+
+    private void OnMobileFilterCloseClick(object? sender, RoutedEventArgs e)
+    {
+        FilterSheet.IsVisible = false;
+        RestoreStockFilters();
+    }
+
+    private void RestoreStockFilters()
+    {
+        if (StockFilters.Parent != FilterSheetHost)
+        {
+            return;
+        }
+
+        FilterSheetHost.Children.Remove(StockFilters);
+        _stockFiltersHome?.Children.Insert(0, StockFilters);
+        DockPanel.SetDock(StockFilters, Dock.Left);
+    }
+
+    private void OnMobileMoreClick(object? sender, RoutedEventArgs e)
+    {
+        MoreSheetHost.Children.Clear();
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Inserir", OnInsertClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Editar", OnEditClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Apagar", OnDeleteClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Doc. origem", OnOriginClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Doc. venda", OnSaleClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Cod. barras", OnBarcodeClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Modif. Loc.", OnChangeLocationClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Trocar", OnExchangeClick));
+        MoreSheetHost.Children.Add(PortraitChrome.SheetButton("Mais resultados", OnMoreClick));
+        MoreSheet.IsVisible = true;
+    }
+
+    private void OnMobileMoreCloseClick(object? sender, RoutedEventArgs e)
+        => MoreSheet.IsVisible = false;
+
+    private void OnCardTapped(object? sender, TappedEventArgs e)
+    {
+        object? row = null;
+        if (e.Source is Visual visual)
+        {
+            row = visual.FindAncestorOfType<Border>()?.Tag
+                ?? visual.FindAncestorOfType<ListBoxItem>()?.Content;
+        }
+
+        row ??= CardList.SelectedItem;
+        if (row is null)
+        {
+            return;
+        }
+
+        Grid.SelectedItem = row;
+        OnEditClick(sender, new RoutedEventArgs());
     }
 }
 

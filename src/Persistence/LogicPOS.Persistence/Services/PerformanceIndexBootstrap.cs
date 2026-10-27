@@ -51,6 +51,8 @@ public static class PerformanceIndexBootstrap
             var isMySql = providerName.Contains("MySql", StringComparison.OrdinalIgnoreCase)
                           || providerName.Contains("Pomelo", StringComparison.OrdinalIgnoreCase);
             var isSqlServer = providerName.Contains("SqlServer", StringComparison.OrdinalIgnoreCase);
+            var isPostgreSql = providerName.Contains("Npgsql", StringComparison.OrdinalIgnoreCase)
+                               || providerName.Contains("PostgreSQL", StringComparison.OrdinalIgnoreCase);
 
             foreach (var definition in IndexDefinitions)
             {
@@ -67,6 +69,10 @@ public static class PerformanceIndexBootstrap
                     else if (isSqlServer)
                     {
                         CreateIndexSqlServer(database, definition);
+                    }
+                    else if (isPostgreSql)
+                    {
+                        CreateIndexPostgreSql(database, definition);
                     }
                 }
                 catch (Exception ex)
@@ -142,6 +148,14 @@ public static class PerformanceIndexBootstrap
 
         var columnList = FormatColumns(definition.Columns, c => c == "Order" ? "[Order]" : $"[{c}]");
         var sql = $"CREATE INDEX [{definition.Name}] ON [{definition.Table}] ({columnList})";
+        database.Database.ExecuteSqlRaw(sql);
+    }
+
+    private static void CreateIndexPostgreSql(LogicPOSDbContext database, IndexDefinition definition)
+    {
+        ValidateDefinition(definition);
+        var columnList = FormatColumns(definition.Columns, c => $"\"{c}\"");
+        var sql = $"CREATE INDEX IF NOT EXISTS \"{definition.Name}\" ON \"{definition.Table}\" ({columnList})";
         database.Database.ExecuteSqlRaw(sql);
     }
 

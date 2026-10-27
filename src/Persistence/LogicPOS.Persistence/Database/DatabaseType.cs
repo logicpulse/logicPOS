@@ -4,5 +4,6 @@ public enum DatabaseType
 {
     Sqlite,
     MySql,
-    SqlServer
+    SqlServer,
+    PostgreSql
 }

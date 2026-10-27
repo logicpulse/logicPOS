@@ -28,9 +28,11 @@ internal static class AppText
             ["Séries AGT"] = "AGT series",
             ["Documentos AGT"] = "AGT documents",
             ["Sistema"] = "System",
+            ["Painel"] = "Dashboard",
             ["Dashboard"] = "Dashboard",
             ["FrontOffice"] = "Front office",
             ["Sair da Aplicação"] = "Exit",
+            ["Acerca"] = "About",
             ["Novo Doc."] = "New document",
             ["Emissão Recibos"] = "Issue receipts",
             ["Recibos"] = "Receipts",
@@ -83,6 +85,7 @@ internal static class AppText
         },
         ["fr"] = new(StringComparer.Ordinal)
         {
+            ["Painel"] = "Tableau de bord",
             ["Documentos"] = "Documents",
             ["Relatórios"] = "Rapports",
             ["Artigos"] = "Articles",
@@ -91,10 +94,12 @@ internal static class AppText
             ["Configuração"] = "Configuration",
             ["Sistema"] = "Système",
             ["Sair da Aplicação"] = "Quitter",
+            ["Acerca"] = "À propos",
             ["FrontOffice"] = "Caisse"
         },
         ["es"] = new(StringComparer.Ordinal)
         {
+            ["Painel"] = "Panel",
             ["Documentos"] = "Documentos",
             ["Relatórios"] = "Informes",
             ["Artigos"] = "Artículos",
@@ -103,6 +108,7 @@ internal static class AppText
             ["Configuração"] = "Configuración",
             ["Sistema"] = "Sistema",
             ["Sair da Aplicação"] = "Salir",
+            ["Acerca"] = "Acerca de",
             ["FrontOffice"] = "Punto de venta"
         }
     };

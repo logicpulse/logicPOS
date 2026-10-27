@@ -16,6 +16,12 @@ public partial class App : global::Avalonia.Application
     /// </summary>
     public static Action? Bootstrap { get; set; }
 
+    /// <summary>
+    /// Android: MainActivity define esta acção para chamar FinishAffinity + kill.
+    /// Login/POS/BO invocam-na quando IClassicDesktopStyleApplicationLifetime não existe.
+    /// </summary>
+    public static Action? ExitApplication { get; set; }
+
     public override void Initialize()
     {
         AppDomain.CurrentDomain.UnhandledException += (_, args) =>

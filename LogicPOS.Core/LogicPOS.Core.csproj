@@ -28,6 +28,7 @@
     <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLite\LogicPOS.Persistence.Migrators.SQLite.csproj" />
     <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.MySQL\LogicPOS.Persistence.Migrators.MySQL.csproj" />
     <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.SQLServer\LogicPOS.Persistence.Migrators.SQLServer.csproj" />
+    <ProjectReference Include="..\src\Persistence\Migrators\LogicPOS.Persistence.Migrators.PostgreSQL\LogicPOS.Persistence.Migrators.PostgreSQL.csproj" />
   </ItemGroup>
 
 </Project>

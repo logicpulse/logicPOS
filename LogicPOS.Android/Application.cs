@@ -3,12 +3,12 @@ using Android.Runtime;
 using Avalonia;
 using Avalonia.Android;
 using Avalonia.Media;
-using LogicPOS.Core;
+using LogicPOS.Host;
 
-namespace LogicPOS.Android;
+namespace LogicPOS.Host.Android;
 
 /// <summary>
-/// Avalonia 12 Android: Application is generic; MainActivity is not.
+/// Avalonia 12 Android retail entry (LogicPulse Host composition).
 /// </summary>
 [Application]
 public class Application : AvaloniaAndroidApplication<LogicPOS.App.App>
@@ -21,8 +21,8 @@ public class Application : AvaloniaAndroidApplication<LogicPOS.App.App>
     public override void OnCreate()
     {
         // Bootstrap must be set before Avalonia creates App / MobileHostView.
-        var dataDir = AndroidData.EnsureDataDirectory(this);
-        LogicPOS.App.App.Bootstrap = () => AppComposition.Configure(dataDir);
+        var dataDir = LogicPOS.Android.AndroidData.EnsureDataDirectory(this);
+        LogicPOS.App.App.Bootstrap = () => LogicPulseComposition.Configure(dataDir);
         base.OnCreate();
     }
 

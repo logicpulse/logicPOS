@@ -4,8 +4,12 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
+using LogicPOS.App;
+using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using LogicPOS.Domain.Entities.Finance.Calculations;
@@ -30,6 +34,10 @@ public partial class ReceiptEmissionView : UserControl
     private string _loadedSearch = string.Empty;
     private CancellationTokenSource? _searchDelay;
     private decimal _net;
+    private bool _syncingSelection;
+    private bool _portrait;
+    private UiViewport _viewport;
+    private Panel? _receiptFiltersHome;
     private ListingLoad _load = null!;
 
     public ReceiptEmissionView()
@@ -40,6 +48,19 @@ public partial class ReceiptEmissionView : UserControl
         ListingNotice.HideWhenEmpty(Notice);
         DocumentGrid.ItemsSource = _visible;
         TouchFields.Attach(this);
+        CardList.ItemsSource = _visible;
+        CardList.ItemTemplate = new FuncDataTemplate<ReceiptGridRow>((item, _) =>
+            PortraitChrome.Card(
+                item.Number,
+                $"{item.DateText} · {item.Status}",
+                $"{item.CustomerName} · {item.TotalToPayText}",
+                item), true);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnReceiptLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnReceiptLayoutUpdated;
     }
 
     public async Task ReloadAsync()
@@ -139,6 +160,89 @@ public partial class ReceiptEmissionView : UserControl
         }
     }
 
+    private void OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_syncingSelection)
+        {
+            return;
+        }
+
+        SyncPicksFromGridSelection();
+    }
+
+    internal void OnRowPicked()
+    {
+        if (_syncingSelection)
+        {
+            return;
+        }
+
+        SyncGridSelectionFromPicks();
+    }
+
+    private void SyncPicksFromGridSelection()
+    {
+        _syncingSelection = true;
+        ReceiptGridRow? rejected = null;
+        try
+        {
+            var selected = DocumentGrid.SelectedItems?.OfType<ReceiptGridRow>().ToHashSet() ?? [];
+            var rejectedRows = new List<ReceiptGridRow>();
+            foreach (var item in _visible)
+            {
+                if (selected.Contains(item) == false)
+                {
+                    item.ApplySelected(false);
+                }
+            }
+
+            foreach (var item in _visible)
+            {
+                if (selected.Contains(item) && item.ApplySelected(true) == false)
+                {
+                    rejectedRows.Add(item);
+                }
+            }
+
+            foreach (var item in rejectedRows)
+            {
+                DocumentGrid.SelectedItems?.Remove(item);
+            }
+
+            rejected = rejectedRows.FirstOrDefault();
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+
+        RefreshSelection();
+        if (rejected is not null)
+        {
+            Allow(rejected);
+        }
+    }
+
+    private void SyncGridSelectionFromPicks()
+    {
+        _syncingSelection = true;
+        try
+        {
+            DocumentGrid.SelectedItems.Clear();
+            foreach (var item in _visible)
+            {
+                if (item.IsSelected)
+                {
+                    DocumentGrid.SelectedItems.Add(item);
+                }
+            }
+        }
+        finally
+        {
+            _syncingSelection = false;
+        }
+    }
+
     private async void OnFilterClick(object? sender, RoutedEventArgs e)
     {
         _page = 1;
@@ -214,15 +318,17 @@ public partial class ReceiptEmissionView : UserControl
         Notice.Text = string.Empty;
         await EnsureCatalogAsync();
         _net = ReceiptSettlement.Net(selected);
+        var portugal = AppComposition.Services?.GetService<ISystemInformationService>()?.IsPortugal() == true;
+        var pay = ReceiptPayDefaults.For(portugal, _net, selected[0].CurrencyId, _catalog.Currencies);
+        ExchangeFields.IsVisible = ReceiptPayDefaults.ShowExchange(portugal);
+        SystemAmount.IsVisible = ExchangeFields.IsVisible;
         _filling = true;
         PaymentMethodBox.ItemsSource = _catalog.PaymentMethods;
         PaymentMethodBox.SelectedItem = null;
         CurrencyBox.ItemsSource = _catalog.Currencies;
-        var currency = _catalog.Currencies.FirstOrDefault(item => item.Id == selected[0].CurrencyId) ?? _catalog.Currencies.FirstOrDefault();
-        CurrencyBox.SelectedItem = currency;
-        var rate = currency is null || currency.ExchangeRate <= 0 ? 1m : currency.ExchangeRate;
-        ExchangeRate.Text = rate.ToString("0.00", CultureInfo.CurrentCulture);
-        TotalPaid.Text = (rate <= 0 ? _net : DocumentLineCalculator.FullCurrencyAmount(_net, rate)).ToString("0.00", CultureInfo.CurrentCulture);
+        CurrencyBox.SelectedItem = pay.Currency;
+        ExchangeRate.Text = pay.Rate.ToString("0.00", CultureInfo.CurrentCulture);
+        TotalPaid.Text = pay.Delivered.ToString("0.00", CultureInfo.CurrentCulture);
         PayDate.Text = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture);
         PayNotes.Text = string.Empty;
         PayError.Text = string.Empty;
@@ -445,12 +551,14 @@ public partial class ReceiptEmissionView : UserControl
 
     private void ApplySearch()
     {
+        _syncingSelection = true;
         _visible.Clear();
         foreach (var row in _rows)
         {
             _visible.Add(new ReceiptGridRow(row, this));
         }
 
+        _syncingSelection = false;
         PageLabel.Text = $"{_page} / {_totalPages}";
         RefreshSelection();
     }
@@ -579,6 +687,92 @@ public partial class ReceiptEmissionView : UserControl
     }
 
     private static bool TryMoney(string? text, out decimal value) => MoneyFormat.TryParse(text, out value);
+
+    // ── Portrait layout ──
+
+    private void OnReceiptLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false)
+        {
+            return;
+        }
+
+        MobileBar.IsVisible = _portrait;
+        DesktopTools.IsVisible = _portrait == false;
+        DocumentGrid.IsVisible = _portrait == false;
+        CardList.IsVisible = _portrait;
+        PortraitChrome.FitOverlay(PayFrame, this, 1080, 720);
+        if (_portrait == false)
+        {
+            FilterSheet.IsVisible = false;
+            RestoreReceiptFilters();
+        }
+    }
+
+    private void OnMobileSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchBox.Text = MobileSearchBox.Text;
+        OnSearchChanged(sender, e);
+    }
+
+    private void OnMobileFilterClick(object? sender, RoutedEventArgs e)
+    {
+        _receiptFiltersHome ??= ReceiptFilters.Parent as Panel;
+        if (ReceiptFilters.Parent is Panel parent)
+        {
+            parent.Children.Remove(ReceiptFilters);
+        }
+
+        if (FilterSheetHost.Children.Contains(ReceiptFilters) == false)
+        {
+            FilterSheetHost.Children.Add(ReceiptFilters);
+        }
+
+        FilterSheet.IsVisible = true;
+    }
+
+    private void OnMobileFilterApplyClick(object? sender, RoutedEventArgs e)
+    {
+        OnFilterClick(sender, e);
+        FilterSheet.IsVisible = false;
+        RestoreReceiptFilters();
+    }
+
+    private void OnMobileFilterCloseClick(object? sender, RoutedEventArgs e)
+    {
+        FilterSheet.IsVisible = false;
+        RestoreReceiptFilters();
+    }
+
+    private void RestoreReceiptFilters()
+    {
+        if (ReceiptFilters.Parent != FilterSheetHost)
+        {
+            return;
+        }
+
+        FilterSheetHost.Children.Remove(ReceiptFilters);
+        _receiptFiltersHome?.Children.Insert(0, ReceiptFilters);
+        DockPanel.SetDock(ReceiptFilters, Dock.Left);
+    }
+
+    private async void OnCardTapped(object? sender, TappedEventArgs e)
+    {
+        ReceiptGridRow? row = null;
+        if (e.Source is Visual visual)
+        {
+            row = visual.FindAncestorOfType<Border>()?.Tag as ReceiptGridRow
+                ?? visual.FindAncestorOfType<ListBoxItem>()?.Content as ReceiptGridRow;
+        }
+
+        row ??= CardList.SelectedItem as ReceiptGridRow;
+        if (row is not null)
+        {
+            await OpenDocumentAsync(row);
+        }
+    }
 }
 
 public sealed class ReceiptGridRow : INotifyPropertyChanged
@@ -633,7 +827,26 @@ public sealed class ReceiptGridRow : INotifyPropertyChanged
             _selected = value;
             OnPropertyChanged();
             _owner.RefreshSelection();
+            _owner.OnRowPicked();
         }
+    }
+
+    public bool ApplySelected(bool selected)
+    {
+        if (selected && _selected == false && _owner.Allow(this) == false)
+        {
+            OnPropertyChanged(nameof(IsSelected));
+            return false;
+        }
+
+        if (_selected == selected)
+        {
+            return true;
+        }
+
+        _selected = selected;
+        OnPropertyChanged(nameof(IsSelected));
+        return true;
     }
 
     private void OnPropertyChanged([CallerMemberName] string? name = null)

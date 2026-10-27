@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,8 @@ public partial class DashboardView : UserControl
     private bool _includeVat = true;
     private bool _suppressYear;
     private int _year = DateTime.Today.Year;
+    private int _loadGeneration;
+    private CancellationTokenSource? _loadCts;
 
     public DashboardView()
     {
@@ -65,26 +68,65 @@ public partial class DashboardView : UserControl
 
     private async Task LoadAsync(int year)
     {
+        var generation = ++_loadGeneration;
+        _loadCts?.Cancel();
+        _loadCts?.Dispose();
+        _loadCts = new CancellationTokenSource();
+        var cancellationToken = _loadCts.Token;
+
         var service = AppComposition.Services?.GetService<IDashboardBillingService>();
         if (service is null)
         {
-            ShowStatus("Não foi possível ler a faturação.");
+            await ShowStatusOnUiAsync("Não foi possível ler a faturação.");
             return;
         }
 
-        ShowStatus("A carregar faturação...");
+        await ShowStatusOnUiAsync("A carregar faturação...");
         try
         {
-            _snapshot = await service.LoadAsync(year);
-            _year = _snapshot.Year;
-            FillYears(_snapshot.Years, _snapshot.Year);
-            StatusText.IsVisible = false;
-            ApplySnapshot();
+            // Queries SQLite fora do UI thread — evita ANR no Android.
+            var snapshot = await Task.Run(
+                    async () => await service.LoadAsync(year, cancellationToken),
+                    cancellationToken)
+                .ConfigureAwait(false);
+
+            if (generation != _loadGeneration || cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (generation != _loadGeneration)
+                {
+                    return;
+                }
+
+                _snapshot = snapshot;
+                _year = snapshot.Year;
+                FillYears(snapshot.Years, snapshot.Year);
+                StatusText.IsVisible = false;
+                ApplySnapshot();
+            });
+        }
+        catch (OperationCanceledException)
+        {
+            // Pedido mais recente substituiu este carregamento.
         }
         catch
         {
-            ShowStatus("Não foi possível ler a faturação.");
+            if (generation != _loadGeneration)
+            {
+                return;
+            }
+
+            await ShowStatusOnUiAsync("Não foi possível ler a faturação.");
         }
+    }
+
+    private async Task ShowStatusOnUiAsync(string message)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => ShowStatus(message));
     }
 
     private void FillYears(IReadOnlyList<int> years, int selected)

@@ -47,9 +47,17 @@ public sealed class BackupFiles
         }
 
         var databaseName = database.Database.GetDbConnection().Database;
-        return database.Database.IsMySql()
-            ? new BackupFiles(folderPath, "mysql", databaseName, "sql")
-            : new BackupFiles(folderPath, "mssqlserver", databaseName, "bak");
+        if (database.Database.IsMySql())
+        {
+            return new BackupFiles(folderPath, "mysql", databaseName, "sql");
+        }
+
+        if (database.Database.IsNpgsql())
+        {
+            return new BackupFiles(folderPath, "postgresql", databaseName, "sql");
+        }
+
+        return new BackupFiles(folderPath, "mssqlserver", databaseName, "bak");
     }
 
     public void EnsureFolderExists() => Directory.CreateDirectory(FolderPath);

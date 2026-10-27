@@ -7,6 +7,7 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using LogicPOS.App;
 using Avalonia.Layout;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
@@ -46,6 +47,11 @@ public partial class EntityListing : UserControl
     private readonly Dictionary<string, bool> _defaultVisible = new(StringComparer.Ordinal);
     private readonly List<(DataGridColumn Column, bool Visible)> _columnSnapshot = new();
     private static readonly string[] DateKeys = ["Date", "StartDate", "ReadingDate", "CreatedAt", "UpdatedAt", "EndDate"];
+    private bool _portrait;
+    private UiViewport _viewport;
+    private readonly List<string> _cardKeys = new();
+    private Panel? _dateFiltersHome;
+    private Panel? _modeBoxHome;
     private readonly List<(Button Header, Control Page, string? ShowWhen)> _articleTabs = new();
     private readonly List<(Control Block, string ShowWhen)> _articleFieldBlocks = new();
     private ContentControl? _articlePages;
@@ -59,6 +65,13 @@ public partial class EntityListing : UserControl
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(Notice);
         FiscalYearHost.Finished += OnFiscalYearFinished;
+        CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), true);
+        AttachedToVisualTree += (_, _) =>
+        {
+            RelayoutForViewport();
+            LayoutUpdated += OnListingLayoutUpdated;
+        };
+        DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnListingLayoutUpdated;
     }
 
     public event EventHandler? FiscalYearCompleted;
@@ -367,6 +380,7 @@ public partial class EntityListing : UserControl
         _columnSignature = signature;
         _columnKeys.Clear();
         _defaultVisible.Clear();
+        _cardKeys.Clear();
         Grid.Columns.Clear();
         var starred = false;
         foreach (var column in snapshot.Columns)
@@ -391,6 +405,10 @@ public partial class EntityListing : UserControl
             });
             _columnKeys[column.Header] = column.Key;
             _defaultVisible[column.Header] = column.Visible;
+            if (column.Visible && _cardKeys.Count < 3)
+            {
+                _cardKeys.Add(column.Key);
+            }
         }
 
         if (starred == false && Grid.Columns.Count > 0)
@@ -445,6 +463,7 @@ public partial class EntityListing : UserControl
         var rows = _rows.Where(InDateRange).Where(row =>
             string.IsNullOrEmpty(term) || row.Values.Values.Any(value => value.Contains(term, StringComparison.CurrentCultureIgnoreCase))).ToList();
         Grid.ItemsSource = rows;
+        CardList.ItemsSource = rows;
         Notice.Text = string.IsNullOrEmpty(term) && rows.Count == _rows.Count && _notice is not null ? _notice : $"{rows.Count} registo(s)";
     }
 
@@ -1207,7 +1226,7 @@ public partial class EntityListing : UserControl
             ClearCatalogImageCacheIfNeeded();
             EditorOverlay.IsVisible = false;
             await ReloadAsync();
-            if (_title == "Permissões" && TopLevel.GetTopLevel(this) is BackOfficeWindow office)
+            if (_title == "Permissões" && this.FindAncestorOfType<BackOfficeWindow>() is BackOfficeWindow office)
             {
                 await office.ApplyMenuAccessAsync();
             }
@@ -1858,7 +1877,7 @@ public partial class EntityListing : UserControl
             }
 
             await SaveEditorAsync();
-            if (TopLevel.GetTopLevel(this) is BackOfficeWindow office)
+            if (this.FindAncestorOfType<BackOfficeWindow>() is BackOfficeWindow office)
             {
                 await office.ApplyMenuAccessAsync();
             }
@@ -2306,4 +2325,161 @@ public partial class EntityListing : UserControl
 
         Notice.Text = notice;
     }
+
+    // ── Portrait layout ──
+
+    private void OnListingLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
+
+    private void RelayoutForViewport()
+    {
+        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false)
+        {
+            return;
+        }
+
+        MobileBar.IsVisible = _portrait;
+        DesktopTools.IsVisible = _portrait == false;
+        Grid.IsVisible = _portrait == false;
+        CardList.IsVisible = _portrait;
+        PortraitChrome.FitOverlay(EditorFrame, this, 1080, 720);
+        if (PromptFrame is not null)
+        {
+            PortraitChrome.FitOverlay(PromptFrame, this, 480, 320, lockHeight: false);
+        }
+
+        if (_portrait == false)
+        {
+            FilterSheet.IsVisible = false;
+            MoreSheet.IsVisible = false;
+            RestoreFilterControls();
+        }
+
+        ApplyFilter();
+    }
+
+    private Control BuildCard(ListingRow row)
+    {
+        var title = CardText(row, 0);
+        var subtitle = CardText(row, 1);
+        var meta = CardText(row, 2);
+        return PortraitChrome.Card(title, subtitle, meta, row);
+    }
+
+    private string CardText(ListingRow row, int index)
+    {
+        if (index >= _cardKeys.Count)
+        {
+            return string.Empty;
+        }
+
+        var key = _cardKeys[index];
+        return row.Values.TryGetValue(key, out var value) ? value : string.Empty;
+    }
+
+    private async void OnCardTapped(object? sender, TappedEventArgs e)
+    {
+        if (CardList.SelectedItem is not ListingRow row)
+        {
+            return;
+        }
+
+        await OpenRowAsync(row);
+    }
+
+    private async Task OpenRowAsync(ListingRow row)
+    {
+        if (ShowsDocument)
+        {
+            await OpenListedDocumentAsync(row);
+            return;
+        }
+
+        if (_canEdit)
+        {
+            await EditAsync(row.Id);
+        }
+    }
+
+    private void OnMobileSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        SearchBox.Text = MobileSearchBox.Text;
+        ApplyFilter();
+    }
+
+    private void OnSearchKeyUp(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if (e.Key == Avalonia.Input.Key.Enter)
+        {
+            ApplyFilter();
+        }
+    }
+
+    private void OnMobileFilterClick(object? sender, RoutedEventArgs e)
+    {
+        _dateFiltersHome ??= DateFilters.Parent as Panel;
+        _modeBoxHome ??= ModeBox.Parent as Panel;
+        if (DateFilters.Parent is Panel dateParent)
+        {
+            dateParent.Children.Remove(DateFilters);
+        }
+
+        DateFilters.IsVisible = UsesDateFilter(_title) || CustomerFilterField.IsVisible;
+        if (FilterSheetHost.Children.Contains(DateFilters) == false)
+        {
+            FilterSheetHost.Children.Add(DateFilters);
+        }
+
+        if (ModeBox.IsVisible)
+        {
+            if (ModeBox.Parent is Panel modeParent)
+            {
+                modeParent.Children.Remove(ModeBox);
+            }
+
+            if (FilterSheetHost.Children.Contains(ModeBox) == false)
+            {
+                FilterSheetHost.Children.Add(ModeBox);
+            }
+        }
+
+        FilterSheet.IsVisible = true;
+    }
+
+    private void OnMobileFilterApplyClick(object? sender, RoutedEventArgs e)
+    {
+        ApplyFilter();
+        FilterSheet.IsVisible = false;
+        RestoreFilterControls();
+    }
+
+    private void OnMobileFilterCloseClick(object? sender, RoutedEventArgs e)
+    {
+        FilterSheet.IsVisible = false;
+        RestoreFilterControls();
+    }
+
+    private void RestoreFilterControls()
+    {
+        if (DateFilters.Parent == FilterSheetHost)
+        {
+            FilterSheetHost.Children.Remove(DateFilters);
+            _dateFiltersHome?.Children.Insert(0, DateFilters);
+            DockPanel.SetDock(DateFilters, Dock.Left);
+        }
+
+        if (ModeBox.Parent == FilterSheetHost)
+        {
+            FilterSheetHost.Children.Remove(ModeBox);
+            _modeBoxHome?.Children.Add(ModeBox);
+            DockPanel.SetDock(ModeBox, Dock.Left);
+        }
+    }
+
+    private void OnMobileMoreClick(object? sender, RoutedEventArgs e)
+    {
+        MoreSheet.IsVisible = true;
+    }
+
+    private void OnMobileMoreCloseClick(object? sender, RoutedEventArgs e)
+        => MoreSheet.IsVisible = false;
 }

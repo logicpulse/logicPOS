@@ -1,7 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="LogicPOS.App.Views.ReportsWindow">
-    <Border Classes="login_alert_frame bo_entity_editor">
+    <Border x:Name="ReportsFrame" Classes="login_alert_frame bo_entity_editor">
         <DockPanel Classes="login_alert_inner">
             <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                 <StackPanel Classes="login_alert_title_row">

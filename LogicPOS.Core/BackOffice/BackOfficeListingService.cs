@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using System.Reflection;
 using System.Text;
+using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.Authentication;
@@ -2478,7 +2479,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             SourcePayment = "P",
             Mechanism = "NU",
             Amount = due,
-            AmountInWords = due.ToString("0.00", CultureInfo.CurrentCulture),
+            AmountInWords = PortugueseMoneyWords.Convert(due, "EUR"),
             SourceId = document.Number,
             CurrencyCode = "EUR",
             CurrencyAmount = due,

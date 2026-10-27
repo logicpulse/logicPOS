@@ -5,12 +5,21 @@
     <SupportedOSPlatformVersion>24</SupportedOSPlatformVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>LogicPOS.Android</RootNamespace>
+    <!-- Retail entry: DevEditionBanner hides when name contains Host or +retail. -->
+    <RootNamespace>LogicPOS.Host.Android</RootNamespace>
+    <AssemblyName>LogicPOS.Host.Android</AssemblyName>
     <ApplicationId>com.logicpulse.logicpos</ApplicationId>
-    <ApplicationVersion>1</ApplicationVersion>
-    <ApplicationDisplayVersion>1.6.2</ApplicationDisplayVersion>
+    <ApplicationVersion>5</ApplicationVersion>
+    <ApplicationDisplayVersion>1.6.7</ApplicationDisplayVersion>
+    <Version>1.6.7</Version>
+    <InformationalVersion>1.6.7+retail</InformationalVersion>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <AndroidPackageFormat>apk</AndroidPackageFormat>
     <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <!-- AOT Release falha em System.Private.Windows.Core (Nrbf); JIT basta no tablet. -->
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <!-- APK autónomo para adb install (sem Fast Deployment / .__override__). -->
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <RuntimeIdentifiers>android-x64;android-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
@@ -20,9 +29,9 @@
     </AndroidResource>
   </ItemGroup>
 
-  <!-- Ship appsettings + db_seeds into the APK and extract on first run. -->
+  <!-- Retail local SQLite (not public Desktop opensource defaults). -->
   <ItemGroup>
-    <AndroidAsset Include="..\LogicPOS.Desktop\appsettings.json" Link="assets\appsettings.json" />
+    <AndroidAsset Include="appsettings.json" Link="assets\appsettings.json" />
     <AndroidAsset Include="..\db_seeds\**\*" Link="assets\db_seeds\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
@@ -35,5 +44,14 @@
   <ItemGroup>
     <ProjectReference Include="..\LogicPOS.App\logicpos.csproj" />
     <ProjectReference Include="..\LogicPOS.Core\LogicPOS.Core.csproj" />
+    <ProjectReference Include="..\..\logicPOS-internal\client\src\LogicPOS.Cloud\LogicPOS.Cloud.csproj" />
+    <ProjectReference Include="..\..\logicPOS-internal\api\src\LogicPOS.Licence\LogicPOS.Licence.csproj" />
+  </ItemGroup>
+
+  <!-- LogicPulse Host composition (retail) without Avalonia.Desktop. -->
+  <ItemGroup>
+    <Compile Include="..\..\logicPOS-internal\host\LogicPOS.Host\LogicPulseComposition.cs" Link="Host\LogicPulseComposition.cs" />
+    <Compile Include="..\..\logicPOS-internal\host\LogicPOS.Host\LogicPulseCompositionOptions.cs" Link="Host\LogicPulseCompositionOptions.cs" />
+    <Compile Include="..\..\logicPOS-internal\host\LogicPOS.Host\Licensing\*.cs" Link="Host\Licensing\%(Filename)%(Extension)" />
   </ItemGroup>
 </Project>

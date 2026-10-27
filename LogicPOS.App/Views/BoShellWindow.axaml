@@ -1,0 +1,11 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LogicPOS.App.Views.BoShellWindow"
+        Title="logicpos"
+        Icon="avares://LogicPOS.App/Assets/application.ico"
+        WindowState="FullScreen"
+        WindowDecorations="None"
+        WindowStartupLocation="CenterScreen"
+        Background="#585858">
+    <Panel x:Name="Host" />
+</Window>

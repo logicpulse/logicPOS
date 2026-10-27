@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Interactivity;
 using Avalonia.Media;
+using Avalonia.Threading;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -68,14 +69,23 @@ public partial class ArticleDashboardView : UserControl
         {
             StockStatus.Text = "A carregar stocks...";
             StockStatus.IsVisible = true;
-            var snapshot = await stock.LoadDashboardAsync(year);
+            // Queries fora do UI thread — mesmo padrão anti-ANR do dashboard de faturação.
+            var snapshot = await Task.Run(async () => await stock.LoadDashboardAsync(year)).ConfigureAwait(false);
             if (generation != _generation)
             {
                 return;
             }
 
-            ApplyStock(snapshot);
-            StockStatus.IsVisible = false;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                if (generation != _generation)
+                {
+                    return;
+                }
+
+                ApplyStock(snapshot);
+                StockStatus.IsVisible = false;
+            });
         }
         catch
         {
@@ -84,8 +94,11 @@ public partial class ArticleDashboardView : UserControl
                 return;
             }
 
-            StockStatus.Text = "Não foi possível ler os stocks.";
-            StockStatus.IsVisible = true;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                StockStatus.Text = "Não foi possível ler os stocks.";
+                StockStatus.IsVisible = true;
+            });
         }
     }
 

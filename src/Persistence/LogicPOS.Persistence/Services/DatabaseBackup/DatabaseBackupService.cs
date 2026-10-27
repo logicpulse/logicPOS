@@ -81,6 +81,13 @@ public sealed class DatabaseBackupService : IDatabaseBackupService
             return mysqlBackupResult.IsSuccess ? BackupSettings.BackupFilePath : mysqlBackupResult.ToGenericFailure<string>();
         }
 
+        // Embedded file backup is SQLite-only; PostgreSQL uses external tools (pg_dump), like MySQL.
+        if (_database.Database.IsNpgsql())
+        {
+            _logger.LogWarning("Embedded PostgreSQL backup is not supported; use pg_dump outside the application.");
+            return Result.InvalidOperation<string>("Embedded PostgreSQL backup is not supported.");
+        }
+
         var backupFiles = BackupFiles.For(_database, _logger);
         var isSqlite = _database.Database.IsSqlite();
         SystemBackup backup;
@@ -177,6 +184,12 @@ public sealed class DatabaseBackupService : IDatabaseBackupService
             var mysqlBackupService = new MySqlBackupService(_database, _mysqlLogger);
             var mysqlRestoreResult = mysqlBackupService.Restore();
             return mysqlRestoreResult.IsSuccess ? BackupSettings.BackupFilePath : mysqlRestoreResult.ToGenericFailure<string>();
+        }
+
+        if (_database.Database.IsNpgsql())
+        {
+            _logger.LogWarning("Embedded PostgreSQL restore is not supported; use pg_restore outside the application.");
+            return Result.InvalidOperation<string>("Embedded PostgreSQL restore is not supported.");
         }
 
         var backupFiles = BackupFiles.For(_database, _logger);

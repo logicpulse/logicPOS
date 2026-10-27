@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace LogicPOS.App.Views;
 
-public partial class PosWindow : Window, IOfficeSurface
+public partial class PosWindow : UserControl, IOfficeSurface
 {
     private const string ClockFormat = "dddd, dd' de 'MMMM' de 'yyyy' || 'HH:mm:ss tt";
 
@@ -47,10 +47,24 @@ public partial class PosWindow : Window, IOfficeSurface
     private Guid? _familyId;
     private Guid? _subfamilyId;
     private bool _showFavorites;
+    private PortraitBrowseTab _portraitTab = PortraitBrowseTab.Favorites;
+    /// <summary>
+    /// Em Subfamílias: true = raiz da árvore (famílias); false = filhos da família seleccionada.
+    /// </summary>
+    private bool _subfamilyTreeAtRoot;
+    private string _articleSearch = string.Empty;
+    private TextBox? _articleSearchBox;
     private int _familyPage;
     private int _subfamilyPage;
     private int _articlePage;
     private int _menuVersion;
+
+    private enum PortraitBrowseTab
+    {
+        Favorites,
+        Families,
+        Subfamilies
+    }
     private readonly PosTicket _ticket = new();
     private readonly ScannerInputReader _scanner;
     private TextBlock? _amountDue;
@@ -101,6 +115,12 @@ public partial class PosWindow : Window, IOfficeSurface
     private PosArticle? _pendingPriceArticle;
     private TicketPrompt _prompt = TicketPrompt.None;
     private StockManagementView? _stockView;
+    /// <summary>
+    /// True durante ActivateHostedAsync — evita tempestade de Relayout por SizeChanged no Android.
+    /// </summary>
+    private bool _openingHost;
+    private int _relayoutGeneration;
+    private int _chromeBuildGeneration;
 
     private enum TicketPrompt
     {
@@ -151,21 +171,15 @@ public partial class PosWindow : Window, IOfficeSurface
         };
         SizeChanged += (_, _) =>
         {
+            if (_openingHost)
+            {
+                return;
+            }
+
             _relayoutTimer.Stop();
             _relayoutTimer.Start();
         };
-        Opened += async (_, _) =>
-        {
-            try
-            {
-                await OpenAsync();
-            }
-            catch (Exception exception)
-            {
-                App.WriteCrash("PosWindow.OpenAsync", exception);
-            }
-        };
-        Closed += (_, _) =>
+        DetachedFromVisualTree += (_, _) =>
         {
             _clock.Stop();
             _relayoutTimer.Stop();
@@ -176,52 +190,237 @@ public partial class PosWindow : Window, IOfficeSurface
 
     public event EventHandler? LoggedOut;
 
+    /// <summary>
+    /// Shared startup for desktop shell and Android host (Window.Opened is not available on UserControl).
+    /// </summary>
+    public async Task ActivateHostedAsync()
+    {
+        try
+        {
+            await OpenAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("PosWindow.OpenAsync", exception);
+        }
+    }
+
     private async Task OpenAsync()
     {
-        RelayoutForViewport();
-        UpdateClock();
-        _clock.Start();
-
-        var services = AppComposition.Services;
-        if (services is null)
+        _openingHost = true;
+        try
         {
-            RefreshMenus();
+            // Yield antes do chrome pesado — no Android o overlay de login ainda está por cima.
+            await YieldUiAsync();
+
+            // Só mede o viewport; o chrome completo constrói-se uma vez após o catálogo.
+            ApplyViewportMetrics(force: true);
+            UpdateClock();
+            _clock.Start();
+
+            await YieldUiAsync();
+
+            var services = AppComposition.Services;
+            if (services is null)
+            {
+                await BuildChromeAndMenusAsync();
+                return;
+            }
+
+            _terminalName = await Task.Run(async () =>
+                    await services.GetRequiredService<ILoginService>().GetFirstTerminalNameAsync() ?? string.Empty)
+                .ConfigureAwait(true);
+
+            await YieldUiAsync();
+
+            if (OperatingSystem.IsAndroid())
+            {
+                MobileHostView.UpdateLoadingMessage("A carregar o catálogo…");
+            }
+
+            await ReloadCatalogAsync(refreshMenus: false);
+            ApplyCatalogSelectionDefaults();
+
+            await YieldUiAsync();
+
+            if (OperatingSystem.IsAndroid())
+            {
+                MobileHostView.UpdateLoadingMessage("A preparar menus…");
+            }
+
+            await RefreshWorkSessionAsync();
+            await YieldUiAsync();
+
+            // Bounds/ClientSize já estáveis: um único BuildChrome + menus (chunked no Android).
+            ApplyViewportMetrics(force: true);
+            await BuildChromeAndMenusAsync();
+            if (_terminalLabel is not null)
+            {
+                _terminalLabel.Text = SessionCaption.Format(_terminalName, _userName);
+            }
+
+            await YieldUiAsync();
+            await LoadDefaultTableAsync();
+        }
+        finally
+        {
+            _openingHost = false;
+        }
+    }
+
+    /// <summary>
+    /// Liberta o UI thread (prioridade Background + frame) para o Android não disparar ANR.
+    /// </summary>
+    private static async Task YieldUiAsync(bool paintFrame = true)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+        if (paintFrame == false)
+        {
             return;
         }
 
-        _terminalName = await services.GetRequiredService<ILoginService>().GetFirstTerminalNameAsync() ?? string.Empty;
-        if (_terminalLabel is not null)
-        {
-            _terminalLabel.Text = SessionCaption.Format(_terminalName, _userName);
-        }
-
-        await ReloadCatalogAsync();
-        _familyId = _catalog.Families.FirstOrDefault()?.Id;
-        _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
-        await RefreshWorkSessionAsync();
-        RefreshMenus();
-        await LoadDefaultTableAsync();
+        await Task.Delay(16);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
     }
 
-    private void RelayoutForViewport()
+    private void RelayoutForViewport(bool force = false)
     {
+        if (_openingHost && force == false)
+        {
+            return;
+        }
+
         var next = UiViewport.From(this);
-        if (next.Width == _viewport.Width
+        var preferPortrait = next.PreferFrontOfficePortrait;
+        if (force == false
+            && next.Width == _viewport.Width
             && next.Height == _viewport.Height
+            && preferPortrait == _layout.IsPortrait
             && Surface.Children.Count > 0)
         {
             return;
         }
 
+        ApplyViewportMetrics(force: true);
+        if (OperatingSystem.IsAndroid() && preferPortrait)
+        {
+            var generation = ++_relayoutGeneration;
+            _ = RelayoutChromeAsync(generation);
+            return;
+        }
+
+        BuildChrome();
+        RefreshMenus();
+        FitHostedOverlays();
+    }
+
+    private void ApplyViewportMetrics(bool force)
+    {
+        var next = UiViewport.From(this);
+        var preferPortrait = next.PreferFrontOfficePortrait;
+        if (force == false
+            && next.Width == _viewport.Width
+            && next.Height == _viewport.Height
+            && preferPortrait == _layout.IsPortrait)
+        {
+            return;
+        }
+
         _viewport = next;
-        _layout = PosLayout.For(_viewport.Width, _viewport.Height);
-        Classes.Set("pos_portrait", _viewport.IsPortrait);
-        Classes.Set("pos_landscape", _viewport.IsLandscape);
+        // Android FO: PreferFrontOfficePortrait força tabs mesmo se IsPortrait falhar.
+        _layout = PosLayout.For(_viewport.Width, _viewport.Height, preferPortrait);
+        Classes.Set("pos_portrait", preferPortrait);
+        Classes.Set("pos_landscape", preferPortrait == false);
+        if (preferPortrait)
+        {
+            _showFavorites = _portraitTab == PortraitBrowseTab.Favorites;
+        }
+    }
+
+    private async Task RelayoutChromeAsync(int generation)
+    {
+        await YieldUiAsync();
+        if (generation != _relayoutGeneration)
+        {
+            return;
+        }
+
+        await BuildChromeAndMenusAsync();
+        if (generation != _relayoutGeneration)
+        {
+            return;
+        }
+
+        FitHostedOverlays();
+    }
+
+    private async Task BuildChromeAndMenusAsync()
+    {
+        // Cancela refresh chunked em curso (SizeChanged / Relayout a meio do OpenAsync).
+        var chromeGeneration = ++_chromeBuildGeneration;
+        _menuVersion++;
+
+        if (OperatingSystem.IsAndroid())
+        {
+            BuildChrome();
+            await YieldUiAsync();
+            if (chromeGeneration != _chromeBuildGeneration)
+            {
+                return;
+            }
+
+            await RefreshMenusChunkedAsync();
+            return;
+        }
+
         BuildChrome();
         RefreshMenus();
     }
 
-    private async Task ReloadCatalogAsync()
+    private void ApplyCatalogSelectionDefaults()
+    {
+        _familyId = _catalog.Families.FirstOrDefault()?.Id;
+        _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
+
+        // Portrait/Android: Favoritos vazio ⇒ começar em Famílias (viewport inicial pode ainda ser fallback).
+        var preferPortrait = _layout.IsPortrait || _viewport.PreferFrontOfficePortrait;
+        if (preferPortrait
+            && _portraitTab == PortraitBrowseTab.Favorites
+            && _catalog.Articles.Any(item => item.Favorite) == false)
+        {
+            _portraitTab = PortraitBrowseTab.Families;
+            _showFavorites = false;
+        }
+    }
+
+    private int OverlayBottomReserve()
+        => FloatingToolbarHost.IsVisible ? PortraitChrome.FloatingToolbarReserve : 0;
+
+    private void FitHostedOverlays()
+    {
+        // Dock FO: reserva inferior em portrait para o modal não colidir com a toolbar.
+        var bottomReserve = OverlayBottomReserve();
+        var sessionW = SessionCash.IsVisible ? 680.0 : 428.0;
+        var sessionH = SessionCash.IsVisible ? 360.0 : 165.0;
+        var listW = TablesBar.IsVisible ? 760.0 : 560.0;
+        var listH = TablesBar.IsVisible ? 520.0 : 360.0;
+        var ticketW = PricePad.IsVisible ? 540.0 : TicketKeypad.IsVisible ? 420.0 : 400.0;
+        var ticketH = PricePad.IsVisible ? 530.0 : TicketKeypad.IsVisible ? 390.0 : 300.0;
+
+        PortraitChrome.FitOverlay(DocumentsFrame, this, 1100, 700, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(ReceiptFrame, this, 1100, 700, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(EntityFrame, this, 1100, 700, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(StockFrame, this, 1100, 700, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(ListFrame, this, listW, listH, lockHeight: TablesBar.IsVisible, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(OrdersFrame, this, 560, 360, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(VoltaFrame, this, 620, 430, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(SessionFrame, this, sessionW, sessionH, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(TicketFrame, this, ticketW, ticketH, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(QuitFrame, this, 400, 300, lockHeight: false, bottomReserve: bottomReserve);
+    }
+
+    private async Task ReloadCatalogAsync(bool refreshMenus = true)
     {
         var services = AppComposition.Services;
         if (services is null)
@@ -231,10 +430,20 @@ public partial class PosWindow : Window, IOfficeSurface
 
         try
         {
-            _catalog = await services.GetRequiredService<IPosCatalogService>().LoadAsync();
+            // Carga EF no thread pool — evita bloquear o UI durante queries longas.
+            _catalog = await Task.Run(async () =>
+                    await services.GetRequiredService<IPosCatalogService>().LoadAsync())
+                .ConfigureAwait(true);
+            AppLogging.Information(
+                "[PosWindow] Catalog loaded: {Families} families, {Subfamilies} subfamilies, {Articles} articles, {Favorites} favorites",
+                _catalog.Families.Count,
+                _catalog.Subfamilies.Count,
+                _catalog.Articles.Count,
+                _catalog.Articles.Count(item => item.Favorite));
         }
-        catch
+        catch (Exception ex)
         {
+            AppLogging.Warning(ex, "[PosWindow] Failed to load POS catalog");
             return;
         }
 
@@ -249,7 +458,19 @@ public partial class PosWindow : Window, IOfficeSurface
             _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
         }
 
-        RefreshMenus();
+        var preferPortrait = _layout.IsPortrait || _viewport.PreferFrontOfficePortrait;
+        if (preferPortrait
+            && _portraitTab == PortraitBrowseTab.Favorites
+            && _catalog.Articles.Any(item => item.Favorite) == false)
+        {
+            _portraitTab = PortraitBrowseTab.Families;
+            _showFavorites = false;
+        }
+
+        if (refreshMenus)
+        {
+            RefreshMenus();
+        }
     }
 
     private void BuildChrome()
@@ -260,69 +481,79 @@ public partial class PosWindow : Window, IOfficeSurface
         _padButtons.Clear();
         var layout = _layout;
 
-        Avalonia.Media.IImage? logoSource = null;
-        try
-        {
-            logoSource = AppBranding.LoadLoginLogo();
-        }
-        catch
-        {
-            // BrandingItens / missing assets must not block POS after login.
-        }
+        _terminalLabel = null;
+        _sessionStateLabel = null;
+        _clockLabel = null;
+        _currentTableLabel = null;
+        _amountDue = null;
 
-        var logoImage = new Image
+        // Portrait: no logo / terminal / clock — only articles + ticket zones.
+        if (layout.IsPortrait == false)
         {
-            Classes = { "pos_logo" },
-            Source = logoSource
-        };
-        RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
-        var logo = new Border { Classes = { "pos_logo_box" } };
-        logo.Child = logoImage;
-        logo.DoubleTapped += async (_, _) =>
-        {
-            var error = await FrontOfficePrinting.OpenDrawerAsync();
-            if (string.IsNullOrWhiteSpace(error) == false)
+            Avalonia.Media.IImage? logoSource = null;
+            try
             {
-                ShowQuestion(TicketPrompt.Notice, "Gaveta", error, question: false, confirmText: "Ok", showCancel: false);
+                logoSource = AppBranding.LoadLoginLogo();
             }
-        };
-        Place(logo, layout.LogoX, layout.LogoY, layout.LogoWidth, layout.LogoHeight);
+            catch
+            {
+                // BrandingItens / missing assets must not block POS after login.
+            }
 
-        var status = new Border { Classes = { "pos_status_bar_1" } };
-        var statusGrid = new Grid { Classes = { "pos_status_bar_content" } };
-        statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-        statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-        statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
-        _terminalLabel = new TextBlock { Classes = { "pos_status_text" }, Text = SessionCaption.Format(_terminalName, _userName) };
-        _sessionStateLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Center, Foreground = Brushes.White };
-        Grid.SetColumn(_sessionStateLabel, 1);
-        _clockLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Right };
-        Grid.SetColumn(_clockLabel, 2);
-        statusGrid.Children.Add(_terminalLabel);
-        statusGrid.Children.Add(_sessionStateLabel);
-        statusGrid.Children.Add(_clockLabel);
-        status.Child = statusGrid;
-        Place(status, layout.StatusBar1X, layout.StatusBar1Y, layout.StatusBar1Width, layout.StatusBar1Height);
+            var logoImage = new Image
+            {
+                Classes = { "pos_logo" },
+                Source = logoSource
+            };
+            RenderOptions.SetBitmapInterpolationMode(logoImage, BitmapInterpolationMode.HighQuality);
+            var logo = new Border { Classes = { "pos_logo_box" } };
+            logo.Child = logoImage;
+            logo.DoubleTapped += async (_, _) =>
+            {
+                var error = await FrontOfficePrinting.OpenDrawerAsync();
+                if (string.IsNullOrWhiteSpace(error) == false)
+                {
+                    ShowQuestion(TicketPrompt.Notice, "Gaveta", error, question: false, confirmText: "Ok", showCancel: false);
+                }
+            };
+            Place(logo, layout.LogoX, layout.LogoY, layout.LogoWidth, layout.LogoHeight);
 
-        if (layout.StatusBar2Width > 0)
-        {
-            var order = new Border { Classes = { "pos_status_bar_2" } };
-            var orderGrid = new Grid { Classes = { "pos_status_bar_content" } };
-            orderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-            orderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
-            orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
-            orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
-            AddStatusText(orderGrid, "Ordem", 0, 0, "pos_status_text_small", HorizontalAlignment.Left);
-            _currentTableLabel = new TextBlock { Classes = { "pos_status_text" }, Text = CurrentTableCaption(), HorizontalAlignment = HorizontalAlignment.Left };
-            Grid.SetRow(_currentTableLabel, 1);
-            orderGrid.Children.Add(_currentTableLabel);
-            AddStatusText(orderGrid, "Total a pagar", 0, 1, "pos_status_text_small", HorizontalAlignment.Right);
-            _amountDue = new TextBlock { Classes = { "pos_status_text" }, Text = "0", HorizontalAlignment = HorizontalAlignment.Right };
-            Grid.SetRow(_amountDue, 1);
-            Grid.SetColumn(_amountDue, 1);
-            orderGrid.Children.Add(_amountDue);
-            order.Child = orderGrid;
-            Place(order, layout.StatusBar2X, layout.StatusBar2Y, layout.StatusBar2Width, layout.StatusBar2Height);
+            var status = new Border { Classes = { "pos_status_bar_1" } };
+            var statusGrid = new Grid { Classes = { "pos_status_bar_content" } };
+            statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            _terminalLabel = new TextBlock { Classes = { "pos_status_text" }, Text = SessionCaption.Format(_terminalName, _userName) };
+            _sessionStateLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Center, Foreground = Brushes.White };
+            Grid.SetColumn(_sessionStateLabel, 1);
+            _clockLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Right };
+            Grid.SetColumn(_clockLabel, 2);
+            statusGrid.Children.Add(_terminalLabel);
+            statusGrid.Children.Add(_sessionStateLabel);
+            statusGrid.Children.Add(_clockLabel);
+            status.Child = statusGrid;
+            Place(status, layout.StatusBar1X, layout.StatusBar1Y, layout.StatusBar1Width, layout.StatusBar1Height);
+
+            if (layout.StatusBar2Width > 0)
+            {
+                var order = new Border { Classes = { "pos_status_bar_2" } };
+                var orderGrid = new Grid { Classes = { "pos_status_bar_content" } };
+                orderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                orderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+                orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+                orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+                AddStatusText(orderGrid, "Ordem", 0, 0, "pos_status_text_small", HorizontalAlignment.Left);
+                _currentTableLabel = new TextBlock { Classes = { "pos_status_text" }, Text = CurrentTableCaption(), HorizontalAlignment = HorizontalAlignment.Left };
+                Grid.SetRow(_currentTableLabel, 1);
+                orderGrid.Children.Add(_currentTableLabel);
+                AddStatusText(orderGrid, "Total a pagar", 0, 1, "pos_status_text_small", HorizontalAlignment.Right);
+                _amountDue = new TextBlock { Classes = { "pos_status_text" }, Text = "0", HorizontalAlignment = HorizontalAlignment.Right };
+                Grid.SetRow(_amountDue, 1);
+                Grid.SetColumn(_amountDue, 1);
+                orderGrid.Children.Add(_amountDue);
+                order.Child = orderGrid;
+                Place(order, layout.StatusBar2X, layout.StatusBar2Y, layout.StatusBar2Width, layout.StatusBar2Height);
+            }
         }
 
         PlaceTicketList(layout);
@@ -333,14 +564,29 @@ public partial class PosWindow : Window, IOfficeSurface
         _familyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png", () => ChangePage(ref _familyPage, 1, FamilyPageCount()));
         _subfamilyPrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _subfamilyPage, -1, SubfamilyPageCount()));
         _subfamilyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _subfamilyPage, 1, SubfamilyPageCount()));
-        _articlePrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
-        _articleNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
-        Place(_familyPrevious, layout.FamilyPreviousX, layout.FamilyPreviousY, layout.ButtonWidth, layout.StatusBar1Height);
-        Place(_familyNext, layout.FamilyNextX, layout.FamilyNextY, layout.ButtonWidth, layout.StatusBar1Height);
-        Place(_subfamilyPrevious, layout.SubfamilyPreviousX, layout.SubfamilyPreviousY, layout.ScrollWidth, layout.StatusBar1Height);
-        Place(_subfamilyNext, layout.SubfamilyNextX, layout.SubfamilyNextY, layout.ScrollWidth, layout.StatusBar1Height);
-        Place(_articlePrevious, layout.ArticlePreviousX, layout.ArticlePreviousY, layout.ScrollWidth, layout.StatusBar1Height);
-        Place(_articleNext, layout.ArticleNextX, layout.ArticleNextY, layout.ScrollWidth, layout.StatusBar1Height);
+        if (layout.IsPortrait)
+        {
+            // Em portrait as setas flanqueiam a pesquisa (cima / baixo).
+            _articlePrevious = CreateScroll(
+                "avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png",
+                () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
+            _articleNext = CreateScroll(
+                "avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png",
+                () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
+            Place(_articlePrevious, layout.ArticlePreviousX, layout.ArticlePreviousY, layout.ScrollWidth, layout.SearchBarHeight);
+            Place(_articleNext, layout.ArticleNextX, layout.ArticleNextY, layout.ScrollWidth, layout.SearchBarHeight);
+        }
+        else
+        {
+            _articlePrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
+            _articleNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
+            Place(_familyPrevious, layout.FamilyPreviousX, layout.FamilyPreviousY, layout.ButtonWidth, layout.StatusBar1Height);
+            Place(_familyNext, layout.FamilyNextX, layout.FamilyNextY, layout.ButtonWidth, layout.StatusBar1Height);
+            Place(_subfamilyPrevious, layout.SubfamilyPreviousX, layout.SubfamilyPreviousY, layout.ScrollWidth, layout.StatusBar1Height);
+            Place(_subfamilyNext, layout.SubfamilyNextX, layout.SubfamilyNextY, layout.ScrollWidth, layout.StatusBar1Height);
+            Place(_articlePrevious, layout.ArticlePreviousX, layout.ArticlePreviousY, layout.ScrollWidth, layout.StatusBar1Height);
+            Place(_articleNext, layout.ArticleNextX, layout.ArticleNextY, layout.ScrollWidth, layout.StatusBar1Height);
+        }
     }
 
     private void PlaceTicketList(PosLayout layout)
@@ -348,6 +594,11 @@ public partial class PosWindow : Window, IOfficeSurface
         var list = new Border { Classes = { "pos_ticket_list" } };
         var dock = new DockPanel { LastChildFill = true };
         var total = new Border { Classes = { "pos_ticket_total" } };
+        if (layout.IsPortrait)
+        {
+            total.Classes.Add("pos_ticket_total_portrait");
+        }
+
         DockPanel.SetDock(total, Dock.Bottom);
         var totalGrid = new Grid { Classes = { "pos_status_bar_content" } };
         totalGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
@@ -378,32 +629,65 @@ public partial class PosWindow : Window, IOfficeSurface
         dock.Children.Add(header);
         dock.Children.Add(_ticketLines);
         list.Child = dock;
-        var buttonLeft = layout.TicketPadX + PosLayout.Margin + 2;
-        var buttonTop = layout.TicketPadY + PosLayout.Margin + 2;
-        var buttonWidth = (layout.TicketButtonWidth * PosLayout.TicketColumns) - 4;
         const int totalGap = 12;
-        Place(list, buttonLeft, layout.TicketListY, buttonWidth, Math.Max(0, buttonTop - layout.TicketListY - totalGap));
+        if (layout.IsPortrait)
+        {
+            Place(
+                list,
+                layout.TicketListX + PosLayout.Margin,
+                layout.TicketListY,
+                Math.Max(0, layout.TicketListWidth - (PosLayout.Margin * 2)),
+                Math.Max(0, layout.TicketListHeight));
+        }
+        else
+        {
+            var buttonLeft = layout.TicketPadX + PosLayout.Margin + 2;
+            var buttonTop = layout.TicketPadY + PosLayout.Margin + 2;
+            var buttonWidth = (layout.TicketButtonWidth * PosLayout.TicketColumns) - 4;
+            Place(list, buttonLeft, layout.TicketListY, buttonWidth, Math.Max(0, buttonTop - layout.TicketListY - totalGap));
+        }
+
         RefreshTicket();
     }
 
     private void PlaceTicketPad(PosLayout layout)
     {
-        AddPadButton("Anterior", "icon_pos_ticketpad_prev.png", 0, 0, 1, "pos_pad_button_grey", SelectPreviousLine);
-        AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
-        AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 0, 2, 1, "pos_pad_button_grey", RequestDeleteTicket);
-        AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 0, 3, 1, "pos_pad_button_grey", RequestQuantity);
-        AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
-        AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
-        AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
-        AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 1, 3, 1, "pos_pad_button_grey", RequestPrice);
-        AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
-        AddPadButton("Dividir", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
-        AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_green", RequestPayments);
-        AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
-        AddPadButton("Ordens", "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
-        AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 3, 2, 1, "pos_pad_button_grey", RequestCard);
-        AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
-        AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight);
+        if (layout.IsPortrait)
+        {
+            // Compacto 6×2 (ícones só) — alinhado à referência FO portrait.
+            AddPadButton("Anterior", "icon_pos_ticketpad_prev.png", 0, 0, 1, "pos_pad_button_grey", SelectPreviousLine);
+            AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
+            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_green", RequestPayments);
+            AddPadButton("Ordens", "icon_pos_retail_view_orders.png", 4, 0, 1, "pos_pad_button_green", ShowOrders);
+            AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 5, 0, 1, "pos_pad_button_grey", RequestDeleteTicket);
+            AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
+            AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
+            AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 2, 1, 1, "pos_pad_button_grey", RequestQuantity);
+            AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 3, 1, 1, "pos_pad_button_grey", RequestPrice);
+            AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 4, 1, 1, "pos_pad_button_grey", RequestCard);
+            AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 5, 1, 1, "pos_pad_button_grey", ToggleListMode);
+        }
+        else
+        {
+            AddPadButton("Anterior", "icon_pos_ticketpad_prev.png", 0, 0, 1, "pos_pad_button_grey", SelectPreviousLine);
+            AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
+            AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 0, 2, 1, "pos_pad_button_grey", RequestDeleteTicket);
+            AddPadButton("Quantidade", "icon_pos_ticketpad_change_quantity.png", 0, 3, 1, "pos_pad_button_grey", RequestQuantity);
+            AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
+            AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
+            AddPadButton("Alt. lista", "icon_pos_ticketpad_list_mode.png", 1, 2, 1, "pos_pad_button_grey", ToggleListMode);
+            AddPadButton("Preço", "icon_pos_ticketpad_change_price.png", 1, 3, 1, "pos_pad_button_grey", RequestPrice);
+            AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
+            AddPadButton("Dividir", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
+            AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_green", RequestPayments);
+            AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
+            AddPadButton("Ordens", "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
+            AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 3, 2, 1, "pos_pad_button_grey", RequestCard);
+            AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
+            AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight);
+        }
+
         ApplyFrontOfficeRules();
     }
 
@@ -421,30 +705,131 @@ public partial class PosWindow : Window, IOfficeSurface
             ("Novo Doc.", "icon_pos_toolbar_finance_new_document.png", "pos_toolbar_button", () => _ = ShowNewDocumentAsync())
         };
 
-        var x = layout.ToolbarX + PosLayout.Margin;
-        var y = layout.ToolbarY + PosLayout.Margin;
-        foreach (var item in buttons)
-        {
-            var button = new Button
-            {
-                Classes = { item.Style },
-                Content = CreateIconContent($"avares://LogicPOS.App/Assets/Images/Pos/{item.Icon}", item.Text, layout.ToolbarIconSize)
-            };
-            if (item.Click is not null)
-            {
-                var click = item.Click;
-                button.Click += (_, _) => click();
-            }
+        // Portrait uses the floating pill; landscape keeps the classic bottom toolbar.
+        var useFloating = layout.IsPortrait;
+        FloatingToolbarHost.IsVisible = useFloating;
+        FloatingToolbarButtons.Children.Clear();
 
-            Place(button, x, y, layout.ToolbarButtonWidth, layout.ToolbarButtonHeight, inset: 2);
-            _toolbarButtons[item.Text] = button;
-            x += layout.ToolbarButtonWidth;
+        if (useFloating)
+        {
+            PlaceFloatingToolbar(layout, buttons);
+        }
+        else
+        {
+            var x = layout.ToolbarX + PosLayout.Margin;
+            var y = layout.ToolbarY + PosLayout.Margin;
+            foreach (var item in buttons)
+            {
+                var button = CreateToolbarButton(item.Text, item.Icon, item.Style, item.Click, layout.ToolbarIconSize);
+                Place(button, x, y, layout.ToolbarButtonWidth, layout.ToolbarButtonHeight, inset: 2);
+                _toolbarButtons[item.Text] = button;
+                x += layout.ToolbarButtonWidth;
+            }
         }
 
         ApplyFrontOfficeRules();
     }
 
+    private void PlaceFloatingToolbar(
+        PosLayout layout,
+        (string Text, string Icon, string Style, Action? Click)[] buttons)
+    {
+        FloatingToolbarButtons.Columns = buttons.Length;
+        FloatingToolbarButtons.Rows = 1;
+        var iconSize = Math.Min(layout.ToolbarIconSize, 28);
+        foreach (var item in buttons)
+        {
+            var button = CreateToolbarButton(item.Text, item.Icon, item.Style, item.Click, iconSize, iconOnly: true);
+            button.Classes.Add("pos_toolbar_float_button");
+            ToolTip.SetTip(button, item.Text);
+            FloatingToolbarButtons.Children.Add(button);
+            _toolbarButtons[item.Text] = button;
+        }
+    }
+
+    private Button CreateToolbarButton(
+        string text,
+        string icon,
+        string style,
+        Action? click,
+        int iconSize,
+        bool iconOnly = false)
+    {
+        var button = new Button
+        {
+            Classes = { style },
+            Content = CreateIconContent($"avares://LogicPOS.App/Assets/Images/Pos/{icon}", text, iconSize, iconOnly)
+        };
+        if (click is not null)
+        {
+            button.Click += (_, _) => click();
+        }
+
+        return button;
+    }
+
     private void RefreshMenus()
+    {
+        // Android portrait: criar tabs/faixa/grelha com yields para não ANR.
+        if (OperatingSystem.IsAndroid() && _layout.IsPortrait)
+        {
+            _ = RefreshMenusChunkedAsync();
+            return;
+        }
+
+        RefreshMenusCore();
+    }
+
+    private void RefreshMenusCore()
+    {
+        ClearMenuControls();
+        var version = ++_menuVersion;
+        var layout = _layout;
+        var images = layout.IsPortrait
+            ? RefreshPortraitMenus(layout)
+            : RefreshLandscapeMenus(layout);
+
+        FinishMenuRefresh(images, version);
+    }
+
+    private async Task RefreshMenusChunkedAsync()
+    {
+        ClearMenuControls();
+        var version = ++_menuVersion;
+        var layout = _layout;
+        var images = new List<MenuImageRequest>();
+
+        PlacePortraitTabs(layout);
+        await YieldUiAsync(paintFrame: false);
+        if (version != _menuVersion)
+        {
+            return;
+        }
+
+        PlacePortraitCategoryStrip(layout, images);
+        await YieldUiAsync(paintFrame: false);
+        if (version != _menuVersion)
+        {
+            return;
+        }
+
+        PlacePortraitSearchBar(layout);
+        await YieldUiAsync(paintFrame: false);
+        if (version != _menuVersion)
+        {
+            return;
+        }
+
+        await PlaceArticleGridChunkedAsync(layout, images, version);
+        if (version != _menuVersion)
+        {
+            return;
+        }
+
+        FinishMenuRefresh(images, version);
+    }
+
+    private void ClearMenuControls()
     {
         foreach (var control in _menuControls)
         {
@@ -452,8 +837,26 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         _menuControls.Clear();
-        var version = ++_menuVersion;
-        var layout = _layout;
+        _articleSearchBox = null;
+    }
+
+    private void FinishMenuRefresh(List<MenuImageRequest> images, int version)
+    {
+        SetScrollEnabled(_familyPrevious, _familyPage > 0);
+        SetScrollEnabled(_familyNext, _familyPage < FamilyPageCount() - 1);
+        SetScrollEnabled(_subfamilyPrevious, _subfamilyPage > 0);
+        SetScrollEnabled(_subfamilyNext, _subfamilyPage < SubfamilyPageCount() - 1);
+        SetScrollEnabled(_articlePrevious, _articlePage > 0);
+        SetScrollEnabled(_articleNext, _articlePage < ArticlePageCount() - 1);
+        ApplyFrontOfficeRules();
+        if (images.Count > 0)
+        {
+            _ = ApplyMenuImagesAsync(images, version);
+        }
+    }
+
+    private List<MenuImageRequest> RefreshLandscapeMenus(PosLayout layout)
+    {
         var images = new List<MenuImageRequest>();
 
         var favoritesButton = CreateMenuButton(
@@ -499,9 +902,337 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         PlaceEmptySlots(subfamilies.Count, subfamilyColumns, 1, layout.SubfamilyX, layout.SubfamilyY);
+        PlaceArticleGrid(layout, images);
+        return images;
+    }
 
-        var articleCount = layout.ArticleColumns * layout.ArticleRows;
-        var articles = Page(ArticlesForCurrentView(), _articlePage, articleCount);
+    private List<MenuImageRequest> RefreshPortraitMenus(PosLayout layout)
+    {
+        var images = new List<MenuImageRequest>();
+        PlacePortraitTabs(layout);
+        PlacePortraitCategoryStrip(layout, images);
+        PlacePortraitSearchBar(layout);
+        PlaceArticleGrid(layout, images);
+        return images;
+    }
+
+    private void PlacePortraitTabs(PosLayout layout)
+    {
+        var tabWidth = layout.TabBarWidth / 3;
+        PlacePortraitTab(layout, "Favoritos", PortraitBrowseTab.Favorites, layout.TabBarX, tabWidth);
+        PlacePortraitTab(layout, "Famílias", PortraitBrowseTab.Families, layout.TabBarX + tabWidth, tabWidth);
+        PlacePortraitTab(layout, "Subfamílias", PortraitBrowseTab.Subfamilies, layout.TabBarX + (tabWidth * 2), tabWidth);
+    }
+
+    private void PlacePortraitTab(
+        PosLayout layout,
+        string text,
+        PortraitBrowseTab tab,
+        int x,
+        int width)
+    {
+        var selected = _portraitTab == tab;
+        var row = new StackPanel
+        {
+            Classes = { "pos_fo_tab_row" },
+            Orientation = Orientation.Horizontal,
+            Spacing = 6,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        row.Children.Add(CreatePortraitTabGlyph(tab));
+        row.Children.Add(new TextBlock { Classes = { "pos_fo_tab_caption" }, Text = text });
+
+        var button = new Button
+        {
+            Classes = { "pos_fo_tab" },
+            Content = row
+        };
+        if (selected)
+        {
+            button.Classes.Add("active");
+        }
+
+        button.Click += (_, _) => SelectPortraitTab(tab);
+        PlaceMenu(button, x, layout.TabBarY, width, layout.TabBarHeight);
+    }
+
+    private static Control CreatePortraitTabGlyph(PortraitBrowseTab tab)
+    {
+        // Ícones vectoriais (estrela / cubos / árvore) alinhados ao mockup.
+        var data = tab switch
+        {
+            PortraitBrowseTab.Favorites =>
+                StreamGeometry.Parse(
+                    "M12,2.2 14.85,8.55 21.8,9.2 16.5,13.8 18.05,20.8 12,17.2 5.95,20.8 7.5,13.8 2.2,9.2 9.15,8.55 Z"),
+            PortraitBrowseTab.Families =>
+                StreamGeometry.Parse(
+                    "M2.5,11 H10.5 V19 H2.5 Z M8,5.5 H16 V13.5 H11.5 V11 H8 Z M13.5,11 H21.5 V19 H13.5 Z"),
+            _ =>
+                StreamGeometry.Parse(
+                    "M12,2.5 A2.2,2.2 0 1 1 11.99,2.5 M12,6.8 V11.2 M12,11.2 L6.2,17.2 M12,11.2 L17.8,17.2 M6.2,17.2 A2,2 0 1 1 6.19,17.2 M17.8,17.2 A2,2 0 1 1 17.79,17.2")
+        };
+
+        return new Avalonia.Controls.Shapes.Path
+        {
+            Classes = { "pos_fo_tab_glyph" },
+            Data = data
+        };
+    }
+
+    private void SelectPortraitTab(PortraitBrowseTab tab)
+    {
+        _portraitTab = tab;
+        _showFavorites = tab == PortraitBrowseTab.Favorites;
+        _articlePage = 0;
+
+        if (tab == PortraitBrowseTab.Favorites)
+        {
+            RefreshMenus();
+            return;
+        }
+
+        if (tab == PortraitBrowseTab.Families)
+        {
+            if (_familyId is null)
+            {
+                _familyId = _catalog.Families.FirstOrDefault()?.Id;
+            }
+
+            RefreshMenus();
+            return;
+        }
+
+        // Subfamílias: árvore família → filhos; se já há família, entra nos filhos.
+        if (_familyId is null)
+        {
+            _subfamilyTreeAtRoot = true;
+            _subfamilyId = null;
+        }
+        else
+        {
+            _subfamilyTreeAtRoot = false;
+            if (_subfamilyId is null
+                || SubfamiliesOfSelectedFamily().Any(item => item.Id == _subfamilyId) == false)
+            {
+                _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
+            }
+        }
+
+        RefreshMenus();
+    }
+
+    private void PlacePortraitCategoryStrip(PosLayout layout, List<MenuImageRequest> images)
+    {
+        // Faixa sempre visível (incluindo Favoritos) — paridade visual com a referência.
+        var strip = new Border { Classes = { "pos_fo_category_strip" } };
+        var scroll = new ScrollViewer
+        {
+            Classes = { "pos_fo_category_scroll" },
+            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden,
+            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled
+        };
+        var row = new StackPanel
+        {
+            Classes = { "pos_fo_category_row" },
+            Orientation = Orientation.Horizontal,
+            Spacing = 6
+        };
+
+        var tileWidth = Math.Max(72, layout.ButtonWidth);
+        var tileHeight = layout.CategoryStripHeight - 4;
+
+        if (_portraitTab == PortraitBrowseTab.Favorites
+            || _portraitTab == PortraitBrowseTab.Families)
+        {
+            // Favoritos: famílias de topo para contexto; toque muda para Famílias.
+            // Famílias: filtra artigos da família seleccionada.
+            foreach (var family in _catalog.Families)
+            {
+                var selected = _portraitTab == PortraitBrowseTab.Families && family.Id == _familyId;
+                var button = CreateMenuButton(
+                    family.Text,
+                    false,
+                    selected,
+                    () => SelectPortraitFamily(family.Id, openSubfamilies: false));
+                button.Width = tileWidth;
+                button.Height = tileHeight;
+                row.Children.Add(button);
+                images.Add(new MenuImageRequest(button, ButtonImageKind.Family, family.Id, false));
+            }
+        }
+        else if (_subfamilyTreeAtRoot)
+        {
+            // Raiz da árvore: escolher família para descer aos filhos.
+            foreach (var family in _catalog.Families)
+            {
+                var button = CreateMenuButton(
+                    family.Text,
+                    false,
+                    false,
+                    () => DrillIntoFamilySubfamilies(family.Id));
+                button.Width = tileWidth;
+                button.Height = tileHeight;
+                row.Children.Add(button);
+                images.Add(new MenuImageRequest(button, ButtonImageKind.Family, family.Id, false));
+            }
+        }
+        else
+        {
+            // Filhos da família + voltar ao pai (raiz).
+            var back = CreateMenuButton(
+                "▲",
+                false,
+                false,
+                NavigateSubfamilyTreeUp);
+            back.Classes.Add("pos_fo_tree_back");
+            back.Width = Math.Min(tileWidth, 56);
+            back.Height = tileHeight;
+            row.Children.Add(back);
+
+            foreach (var subfamily in SubfamiliesOfSelectedFamily())
+            {
+                var button = CreateMenuButton(
+                    subfamily.Text,
+                    false,
+                    subfamily.Id == _subfamilyId,
+                    () => SelectSubfamily(subfamily.Id));
+                button.Width = tileWidth;
+                button.Height = tileHeight;
+                row.Children.Add(button);
+                images.Add(new MenuImageRequest(button, ButtonImageKind.Subfamily, subfamily.Id, false));
+            }
+        }
+
+        scroll.Content = row;
+        strip.Child = scroll;
+        PlaceMenu(strip, layout.CategoryStripX, layout.CategoryStripY, layout.CategoryStripWidth, layout.CategoryStripHeight);
+    }
+
+    private void PlacePortraitSearchBar(PosLayout layout)
+    {
+        var nav = layout.ScrollWidth;
+        var searchX = layout.SearchBarX + nav + 4;
+        var searchY = layout.SearchBarY;
+        var searchWidth = Math.Max(80, layout.SearchBarWidth - (nav * 2) - 8);
+        var shell = new Border
+        {
+            Classes = { "bo_listing_search", "pos_fo_search" },
+            Width = double.NaN
+        };
+        var dock = new DockPanel { LastChildFill = true };
+        var iconButton = new Button
+        {
+            Classes = { "bo_listing_icon_button" },
+            IsHitTestVisible = false,
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+            {
+                Classes = { "bo_listing_icon", "pos_fo_search_icon" },
+                Path = "avares://LogicPOS.App/Assets/Images/Listing/botao_pesquisar_b.svg"
+            }
+        };
+        DockPanel.SetDock(iconButton, Dock.Right);
+        _articleSearchBox = new TextBox
+        {
+            Classes = { "bo_listing_search_box", "pos_fo_search_box" },
+            PlaceholderText = "Pesquisar artigo...",
+            Text = _articleSearch
+        };
+        _articleSearchBox.TextChanged += OnArticleSearchChanged;
+        dock.Children.Add(iconButton);
+        dock.Children.Add(_articleSearchBox);
+        shell.Child = dock;
+        PlaceMenu(shell, searchX, searchY, searchWidth, layout.SearchBarHeight);
+
+        if (_articlePrevious is not null)
+        {
+            Place(_articlePrevious, layout.ArticlePreviousX, searchY, layout.ScrollWidth, layout.SearchBarHeight);
+        }
+
+        if (_articleNext is not null)
+        {
+            Place(_articleNext, layout.ArticleNextX, searchY, layout.ScrollWidth, layout.SearchBarHeight);
+        }
+    }
+
+    private void OnArticleSearchChanged(object? sender, TextChangedEventArgs e)
+    {
+        var next = _articleSearchBox?.Text ?? string.Empty;
+        if (string.Equals(next, _articleSearch, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        var caret = _articleSearchBox?.CaretIndex ?? next.Length;
+        _articleSearch = next;
+        _articlePage = 0;
+        RefreshMenus();
+        if (_articleSearchBox is null)
+        {
+            return;
+        }
+
+        _articleSearchBox.Focus();
+        _articleSearchBox.CaretIndex = Math.Min(caret, _articleSearchBox.Text?.Length ?? 0);
+    }
+
+    private void PlaceArticleGrid(PosLayout layout, List<MenuImageRequest> images)
+    {
+        PlaceArticleTiles(layout, images, ArticlesForCurrentViewPage(layout));
+    }
+
+    private async Task PlaceArticleGridChunkedAsync(
+        PosLayout layout,
+        List<MenuImageRequest> images,
+        int version)
+    {
+        var articles = ArticlesForCurrentViewPage(layout);
+        var articleY = layout.ArticleY;
+        for (var index = 0; index < articles.Count; index++)
+        {
+            if (version != _menuVersion)
+            {
+                return;
+            }
+
+            var column = index % layout.ArticleColumns;
+            var row = index / layout.ArticleColumns;
+            var article = articles[index];
+            var button = CreateMenuButton(
+                article.Text,
+                true,
+                false,
+                () => AddArticle(article));
+            PlaceMenu(
+                button,
+                layout.ArticleX + (column * layout.ButtonWidth),
+                articleY + (row * layout.ButtonHeight),
+                layout.ButtonWidth,
+                layout.ButtonHeight);
+            images.Add(new MenuImageRequest(button, ButtonImageKind.Article, article.Id, true));
+
+            // Cede o UI a cada linha da grelha (4 colunas).
+            if (column == layout.ArticleColumns - 1)
+            {
+                await YieldUiAsync(paintFrame: false);
+            }
+        }
+
+        PlaceEmptySlots(articles.Count, layout.ArticleColumns, layout.ArticleRows, layout.ArticleX, articleY);
+    }
+
+    private IReadOnlyList<PosArticle> ArticlesForCurrentViewPage(PosLayout layout)
+    {
+        var articleCount = Math.Max(1, layout.ArticleColumns * layout.ArticleRows);
+        return Page(ArticlesForCurrentView(), _articlePage, articleCount);
+    }
+
+    private void PlaceArticleTiles(
+        PosLayout layout,
+        List<MenuImageRequest> images,
+        IReadOnlyList<PosArticle> articles)
+    {
+        var articleY = layout.ArticleY;
         for (var index = 0; index < articles.Count; index++)
         {
             var column = index % layout.ArticleColumns;
@@ -515,25 +1246,13 @@ public partial class PosWindow : Window, IOfficeSurface
             PlaceMenu(
                 button,
                 layout.ArticleX + (column * layout.ButtonWidth),
-                layout.ArticleY + (row * layout.ButtonHeight),
+                articleY + (row * layout.ButtonHeight),
                 layout.ButtonWidth,
                 layout.ButtonHeight);
             images.Add(new MenuImageRequest(button, ButtonImageKind.Article, article.Id, true));
         }
 
-        PlaceEmptySlots(articles.Count, layout.ArticleColumns, layout.ArticleRows, layout.ArticleX, layout.ArticleY);
-
-        SetScrollEnabled(_familyPrevious, _familyPage > 0);
-        SetScrollEnabled(_familyNext, _familyPage < FamilyPageCount() - 1);
-        SetScrollEnabled(_subfamilyPrevious, _subfamilyPage > 0);
-        SetScrollEnabled(_subfamilyNext, _subfamilyPage < SubfamilyPageCount() - 1);
-        SetScrollEnabled(_articlePrevious, _articlePage > 0);
-        SetScrollEnabled(_articleNext, _articlePage < ArticlePageCount() - 1);
-        ApplyFrontOfficeRules();
-        if (images.Count > 0)
-        {
-            _ = ApplyMenuImagesAsync(images, version);
-        }
+        PlaceEmptySlots(articles.Count, layout.ArticleColumns, layout.ArticleRows, layout.ArticleX, articleY);
     }
 
     private async Task ApplyMenuImagesAsync(List<MenuImageRequest> requests, int version)
@@ -546,24 +1265,17 @@ public partial class PosWindow : Window, IOfficeSurface
 
         try
         {
-            var images = await catalogService.GetButtonImagesAsync(
-                requests.Where(item => item.Kind == ButtonImageKind.Family).Select(item => item.Id).ToList(),
-                requests.Where(item => item.Kind == ButtonImageKind.Subfamily).Select(item => item.Id).ToList(),
-                requests.Where(item => item.Kind == ButtonImageKind.Article).Select(item => item.Id).ToList());
-            await Dispatcher.UIThread.InvokeAsync(() =>
-            {
-                if (version != _menuVersion)
-                {
-                    return;
-                }
+            var familyIds = requests.Where(item => item.Kind == ButtonImageKind.Family).Select(item => item.Id).ToList();
+            var subfamilyIds = requests.Where(item => item.Kind == ButtonImageKind.Subfamily).Select(item => item.Id).ToList();
+            var articleIds = requests.Where(item => item.Kind == ButtonImageKind.Article).Select(item => item.Id).ToList();
 
+            // Queries + decode Base64 fora do UI thread.
+            var prepared = await Task.Run(async () =>
+            {
+                var images = await catalogService.GetButtonImagesAsync(familyIds, subfamilyIds, articleIds);
+                var bitmaps = new Dictionary<(ButtonImageKind Kind, Guid Id), Bitmap?>();
                 foreach (var request in requests)
                 {
-                    if (request.Button.Content is not TextBlock textBlock)
-                    {
-                        continue;
-                    }
-
                     var source = request.Kind switch
                     {
                         ButtonImageKind.Family => images.Families,
@@ -576,28 +1288,53 @@ public partial class PosWindow : Window, IOfficeSurface
                         continue;
                     }
 
-                    var bitmap = TryLoadBitmapFromBase64(imageBase64);
-                    if (bitmap is null)
-                    {
-                        continue;
-                    }
-
-                    var imageClass = request.Fill ? "pos_menu_image_fill" : "pos_menu_image";
-                    var image = new Image
-                    {
-                        Classes = { imageClass },
-                        Source = bitmap,
-                        ClipToBounds = true
-                    };
-                    var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = textBlock.Text ?? string.Empty };
-                    var content = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
-                    Grid.SetRow(image, 0);
-                    Grid.SetRow(caption, 1);
-                    content.Children.Add(image);
-                    content.Children.Add(caption);
-                    request.Button.Content = content;
+                    bitmaps[(request.Kind, request.Id)] = DecodeBitmapOffUi(imageBase64);
                 }
-            });
+
+                return bitmaps;
+            }).ConfigureAwait(true);
+
+            if (version != _menuVersion)
+            {
+                return;
+            }
+
+            const int chunk = 6;
+            for (var index = 0; index < requests.Count; index++)
+            {
+                if (version != _menuVersion)
+                {
+                    return;
+                }
+
+                var request = requests[index];
+                if (prepared.TryGetValue((request.Kind, request.Id), out var bitmap) == false
+                    || bitmap is null)
+                {
+                    continue;
+                }
+
+                var label = ExtractMenuButtonLabel(request.Button);
+                if (string.IsNullOrEmpty(label))
+                {
+                    continue;
+                }
+
+                var imageClass = request.Fill ? "pos_menu_image_fill" : "pos_menu_image";
+                var image = new Image
+                {
+                    Classes = { imageClass },
+                    Source = bitmap,
+                    ClipToBounds = true
+                };
+                var portraitArticle = request.Fill && _layout.IsPortrait;
+                request.Button.Content = BuildMenuTileContent(label, image, portraitArticle);
+
+                if ((index + 1) % chunk == 0)
+                {
+                    await YieldUiAsync(paintFrame: false);
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -607,9 +1344,50 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private readonly record struct MenuImageRequest(Button Button, ButtonImageKind Kind, Guid Id, bool Fill);
 
+    private void SelectPortraitFamily(Guid familyId, bool openSubfamilies)
+    {
+        _showFavorites = false;
+        _portraitTab = openSubfamilies ? PortraitBrowseTab.Subfamilies : PortraitBrowseTab.Families;
+        _familyId = familyId;
+        _subfamilyPage = 0;
+        _articlePage = 0;
+        if (openSubfamilies)
+        {
+            _subfamilyTreeAtRoot = false;
+        }
+
+        _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
+        RefreshMenus();
+    }
+
+    private void DrillIntoFamilySubfamilies(Guid familyId)
+    {
+        _showFavorites = false;
+        _portraitTab = PortraitBrowseTab.Subfamilies;
+        _subfamilyTreeAtRoot = false;
+        _familyId = familyId;
+        _subfamilyPage = 0;
+        _articlePage = 0;
+        _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
+        RefreshMenus();
+    }
+
+    private void NavigateSubfamilyTreeUp()
+    {
+        _subfamilyTreeAtRoot = true;
+        _subfamilyId = null;
+        _articlePage = 0;
+        RefreshMenus();
+    }
+
     private void SelectFamily(Guid familyId)
     {
         _showFavorites = false;
+        if (_layout.IsPortrait)
+        {
+            _portraitTab = PortraitBrowseTab.Families;
+        }
+
         _familyId = familyId;
         _subfamilyPage = 0;
         _articlePage = 0;
@@ -620,6 +1398,12 @@ public partial class PosWindow : Window, IOfficeSurface
     private void SelectSubfamily(Guid subfamilyId)
     {
         _showFavorites = false;
+        if (_layout.IsPortrait)
+        {
+            _portraitTab = PortraitBrowseTab.Subfamilies;
+            _subfamilyTreeAtRoot = false;
+        }
+
         _subfamilyId = subfamilyId;
         _articlePage = 0;
         RefreshMenus();
@@ -637,17 +1421,69 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private IReadOnlyList<PosArticle> ArticlesForCurrentView()
     {
-        if (_showFavorites)
+        IEnumerable<PosArticle> articles;
+        if (_showFavorites || (_layout.IsPortrait && _portraitTab == PortraitBrowseTab.Favorites))
         {
-            return _catalog.Articles.Where(item => item.Favorite).ToList();
+            // Artigos com tag favorito; se a BD não tiver nenhum, mostra todos (evita grelha vazia).
+            var favorites = _catalog.Articles.Where(item => item.Favorite).ToList();
+            articles = favorites.Count > 0 ? favorites : _catalog.Articles;
         }
-
-        if (_subfamilyId is null)
+        else if (_layout.IsPortrait
+                 && _portraitTab == PortraitBrowseTab.Subfamilies
+                 && _subfamilyTreeAtRoot)
         {
             return Array.Empty<PosArticle>();
         }
+        else if (_layout.IsPortrait && _portraitTab == PortraitBrowseTab.Families && _familyId is Guid familyId)
+        {
+            var subIds = _catalog.Subfamilies
+                .Where(item => item.ParentId == familyId)
+                .Select(item => item.Id)
+                .ToHashSet();
+            articles = _catalog.Articles.Where(item => subIds.Contains(item.SubfamilyId));
+            // Família sem match: não deixar a grelha vazia se o catálogo tem artigos.
+            var matched = articles.ToList();
+            if (matched.Count == 0 && _catalog.Articles.Count > 0)
+            {
+                articles = _catalog.Articles;
+            }
+            else
+            {
+                articles = matched;
+            }
+        }
+        else if (_subfamilyId is null)
+        {
+            // Landscape sem subfamília: mostrar todos da família (via subIds) ou catálogo completo.
+            if (_familyId is Guid selectedFamilyId)
+            {
+                var subIds = _catalog.Subfamilies
+                    .Where(item => item.ParentId == selectedFamilyId)
+                    .Select(item => item.Id)
+                    .ToHashSet();
+                var matched = _catalog.Articles.Where(item => subIds.Contains(item.SubfamilyId)).ToList();
+                articles = matched.Count > 0 ? matched : _catalog.Articles;
+            }
+            else
+            {
+                articles = _catalog.Articles;
+            }
+        }
+        else
+        {
+            articles = _catalog.Articles.Where(item => item.SubfamilyId == _subfamilyId.Value);
+        }
 
-        return _catalog.Articles.Where(item => item.SubfamilyId == _subfamilyId.Value).ToList();
+        if (_layout.IsPortrait && string.IsNullOrWhiteSpace(_articleSearch) == false)
+        {
+            var term = _articleSearch.Trim();
+            articles = articles.Where(item =>
+                (item.Text?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (item.Code?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)
+                || (item.Barcode?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
+        }
+
+        return articles.ToList();
     }
 
     private int FamilyPageCount() => PageCount(_catalog.Families.Count, _layout.FamilyRows);
@@ -724,24 +1560,23 @@ public partial class PosWindow : Window, IOfficeSurface
         string? imageBase64 = null,
         string? assetImageUri = null)
     {
+        // Em portrait os artigos seguem a referência: fundo verde (não cinzento landscape).
+        var colorClass = article && _layout.IsPortrait == false
+            ? "pos_menu_button_grey"
+            : "pos_menu_button_green";
         var button = new Button
         {
-            Classes = { "pos_menu_button", article ? "pos_menu_button_grey" : "pos_menu_button_green" }
+            Classes = { "pos_menu_button", colorClass }
         };
+        if (article && _layout.IsPortrait)
+        {
+            button.Classes.Add("pos_fo_article");
+        }
 
         var image = TryLoadMenuImage(imageBase64, assetImageUri, fill: article);
-        if (image is not null)
+        if (image is not null || (article && _layout.IsPortrait))
         {
-            var caption = new TextBlock { Classes = { "pos_menu_caption" }, Text = text };
-            var content = new Grid
-            {
-                RowDefinitions = new RowDefinitions("*,Auto")
-            };
-            Grid.SetRow(image, 0);
-            Grid.SetRow(caption, 1);
-            content.Children.Add(image);
-            content.Children.Add(caption);
-            button.Content = content;
+            button.Content = BuildMenuTileContent(text, image, article && _layout.IsPortrait);
         }
         else
         {
@@ -769,6 +1604,55 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         return button;
+    }
+
+    private static Control BuildMenuTileContent(string text, Image? image, bool portraitArticle)
+    {
+        var caption = new TextBlock
+        {
+            Classes = { portraitArticle ? "pos_fo_article_caption" : "pos_menu_caption" },
+            Text = text
+        };
+        var content = new Grid { RowDefinitions = new RowDefinitions("*,Auto") };
+        if (image is not null)
+        {
+            Grid.SetRow(image, 0);
+            content.Children.Add(image);
+        }
+
+        Grid.SetRow(caption, 1);
+        content.Children.Add(caption);
+
+        if (portraitArticle == false)
+        {
+            return content;
+        }
+
+        // Badge "+" canto superior direito (referência FO portrait).
+        var host = new Panel();
+        host.Children.Add(content);
+        host.Children.Add(new Border
+        {
+            Classes = { "pos_fo_article_plus" },
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Top,
+            Child = new TextBlock { Classes = { "pos_fo_article_plus_text" }, Text = "+" }
+        });
+        return host;
+    }
+
+    private static string ExtractMenuButtonLabel(Button button)
+    {
+        return button.Content switch
+        {
+            TextBlock text => text.Text ?? string.Empty,
+            Grid grid => grid.Children.OfType<TextBlock>().LastOrDefault()?.Text ?? string.Empty,
+            Panel panel => panel.Children.OfType<Grid>().SelectMany(g => g.Children.OfType<TextBlock>())
+                .LastOrDefault()?.Text
+                ?? panel.Children.OfType<TextBlock>().LastOrDefault()?.Text
+                ?? string.Empty,
+            _ => string.Empty
+        };
     }
 
     private Image? TryLoadMenuImage(string? imageBase64, string? assetImageUri, bool fill)
@@ -805,37 +1689,42 @@ public partial class PosWindow : Window, IOfficeSurface
             return null;
         }
 
-        var payload = imageBase64.Trim();
-        var comma = payload.IndexOf(',');
-        if (payload.StartsWith("data:", StringComparison.OrdinalIgnoreCase) && comma > 0)
-        {
-            payload = payload[(comma + 1)..];
-        }
-
+        var payload = NormalizeImagePayload(imageBase64);
         if (_bitmaps.TryGetValue(payload, out var cached))
         {
             return cached;
         }
 
+        var bitmap = DecodeBitmapOffUi(payload);
+        if (bitmap is not null)
+        {
+            _bitmaps[payload] = bitmap;
+        }
+
+        return bitmap;
+    }
+
+    /// <summary>
+    /// Decode Base64 / ficheiro sem tocar no cache de instância (seguro em Task.Run).
+    /// </summary>
+    private static Bitmap? DecodeBitmapOffUi(string? imageBase64)
+    {
+        if (string.IsNullOrWhiteSpace(imageBase64))
+        {
+            return null;
+        }
+
+        var payload = NormalizeImagePayload(imageBase64);
         try
         {
             var bytes = Convert.FromBase64String(payload);
             // Keep the stream alive: Avalonia decodes from it while the bitmap is in use.
-            var bitmap = new Bitmap(new MemoryStream(bytes));
-            _bitmaps[payload] = bitmap;
-            return bitmap;
+            return new Bitmap(new MemoryStream(bytes));
         }
         catch (FormatException)
         {
             var path = ResolveButtonImagePath(payload);
-            if (path is null)
-            {
-                return null;
-            }
-
-            var bitmap = new Bitmap(path);
-            _bitmaps[payload] = bitmap;
-            return bitmap;
+            return path is null ? null : new Bitmap(path);
         }
         catch
         {
@@ -843,16 +1732,35 @@ public partial class PosWindow : Window, IOfficeSurface
         }
     }
 
-    private static string? ResolveButtonImagePath(string value)
+    private static string NormalizeImagePayload(string imageBase64)
     {
-        if (File.Exists(value))
+        var payload = imageBase64.Trim();
+        var comma = payload.IndexOf(',');
+        if (payload.StartsWith("data:", StringComparison.OrdinalIgnoreCase) && comma > 0)
         {
-            return value;
+            payload = payload[(comma + 1)..];
         }
 
-        var relative = value.TrimStart('\\', '/');
-        var besideApp = Path.Combine(AppContext.BaseDirectory, relative);
-        return File.Exists(besideApp) ? besideApp : null;
+        return payload;
+    }
+
+    private static string? ResolveButtonImagePath(string value)
+    {
+        try
+        {
+            if (File.Exists(value))
+            {
+                return value;
+            }
+
+            var relative = value.TrimStart('\\', '/');
+            var besideApp = Path.Combine(AppContext.BaseDirectory, relative);
+            return File.Exists(besideApp) ? besideApp : null;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private Button CreateScroll(string iconUri, Action click)
@@ -873,11 +1781,22 @@ public partial class PosWindow : Window, IOfficeSurface
     private void AddPadButton(string text, string iconFile, int column, int row, int columnSpan, string styleClass, Action click)
     {
         var layout = _layout;
+        var iconOnly = layout.IsPortrait;
         var button = new Button
         {
             Classes = { "pos_pad_button", styleClass },
-            Content = CreateIconContent($"avares://LogicPOS.App/Assets/Images/Pos/{iconFile}", text, layout.TicketIconSize)
+            Content = CreateIconContent(
+                $"avares://LogicPOS.App/Assets/Images/Pos/{iconFile}",
+                text,
+                layout.TicketIconSize,
+                iconOnly)
         };
+        if (iconOnly)
+        {
+            ToolTip.SetTip(button, text);
+            button.Classes.Add("pos_pad_button_compact");
+        }
+
         button.Click += (_, _) => click();
         _padButtons[text] = button;
         Place(
@@ -889,21 +1808,27 @@ public partial class PosWindow : Window, IOfficeSurface
             inset: 2);
     }
 
-    private Control CreateIconContent(string iconUri, string text, int iconSize)
+    private Control CreateIconContent(string iconUri, string text, int iconSize, bool iconOnly = false)
     {
+        var image = new Image
+        {
+            Classes = { "pos_button_icon" },
+            Width = iconSize,
+            Height = iconSize,
+            Source = LoadBitmap(iconUri)
+        };
+        if (iconOnly)
+        {
+            return image;
+        }
+
         var panel = new StackPanel
         {
             Spacing = 2,
             HorizontalAlignment = HorizontalAlignment.Center,
             VerticalAlignment = VerticalAlignment.Center
         };
-        panel.Children.Add(new Image
-        {
-            Classes = { "pos_button_icon" },
-            Width = iconSize,
-            Height = iconSize,
-            Source = LoadBitmap(iconUri)
-        });
+        panel.Children.Add(image);
         panel.Children.Add(new TextBlock
         {
             Classes = { "pos_button_caption" },
@@ -949,6 +1874,17 @@ public partial class PosWindow : Window, IOfficeSurface
         control.Height = height - (inset * 2);
         Canvas.SetLeft(control, x + inset);
         Canvas.SetTop(control, y + inset);
+        // Reposicionar no mesmo Canvas (ex.: setas da pesquisa portrait) sem Add duplicado — evita ANR/crash.
+        if (ReferenceEquals(control.Parent, Surface))
+        {
+            return;
+        }
+
+        if (control.Parent is Panel panel)
+        {
+            panel.Children.Remove(control);
+        }
+
         Surface.Children.Add(control);
     }
 
@@ -962,7 +1898,9 @@ public partial class PosWindow : Window, IOfficeSurface
 
         try
         {
-            var state = await services.GetRequiredService<IPosOrderService>().GetWorkSessionAsync();
+            var state = await Task.Run(async () =>
+                    await services.GetRequiredService<IPosOrderService>().GetWorkSessionAsync())
+                .ConfigureAwait(true);
             _dayOpen = state.DayOpen;
             _terminalOpen = state.TerminalOpen;
         }
@@ -984,7 +1922,9 @@ public partial class PosWindow : Window, IOfficeSurface
 
         foreach (var control in _menuControls)
         {
-            if (control is Button button && button.Classes.Contains("pos_menu_button_grey"))
+            if (control is Button button
+                && (button.Classes.Contains("pos_menu_button_grey")
+                    || button.Classes.Contains("pos_fo_article")))
             {
                 button.IsEnabled = selling;
             }
@@ -1057,6 +1997,7 @@ public partial class PosWindow : Window, IOfficeSurface
     public async Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
         NewDocumentOverlay.IsVisible = true;
+        FitHostedOverlays();
         var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId);
         NewDocumentOverlay.IsVisible = false;
         if (created)
@@ -1078,6 +2019,7 @@ public partial class PosWindow : Window, IOfficeSurface
         var reportsOpen = ReportsOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
+        FitHostedOverlays();
         await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
         ReportsOverlay.IsVisible = reportsOpen;
@@ -1087,6 +2029,7 @@ public partial class PosWindow : Window, IOfficeSurface
     {
         HideListingOverlays();
         ReportsOverlay.IsVisible = true;
+        FitHostedOverlays();
         _ = ReportsHost.ShowAsync();
     }
 
@@ -1105,6 +2048,7 @@ public partial class PosWindow : Window, IOfficeSurface
     {
         HideListingOverlays();
         DocumentsOverlay.IsVisible = true;
+        FitHostedOverlays();
         await DocumentsHost.ReloadAsync();
     }
 
@@ -1112,6 +2056,7 @@ public partial class PosWindow : Window, IOfficeSurface
     {
         HideListingOverlays();
         ReceiptOverlay.IsVisible = true;
+        FitHostedOverlays();
         await ReceiptHost.ReloadAsync();
     }
 
@@ -1120,6 +2065,7 @@ public partial class PosWindow : Window, IOfficeSurface
         HideListingOverlays();
         EntityTitle.Text = title;
         EntityOverlay.IsVisible = true;
+        FitHostedOverlays();
         await EntityHost.ShowAsync(title);
     }
 
@@ -1127,6 +2073,7 @@ public partial class PosWindow : Window, IOfficeSurface
     {
         HideListingOverlays();
         StockOverlay.IsVisible = true;
+        FitHostedOverlays();
         EnsureStockView();
         if (_stockView is not null)
         {
@@ -1227,6 +2174,8 @@ public partial class PosWindow : Window, IOfficeSurface
 
     private void ShowBackOffice() => ShowBackOffice(null);
 
+    private BoShellWindow? _boShell;
+
     private void ShowBackOffice(string? page)
     {
         var session = SessionCaption.Format(_terminalName, _userName);
@@ -1235,35 +2184,66 @@ public partial class PosWindow : Window, IOfficeSurface
             _backOffice = new BackOfficeWindow(session);
             _backOffice.ReturnToPos += async (_, _) =>
             {
-                _backOffice.Hide();
-                Show();
-                Activate();
+                if (OperatingSystem.IsAndroid())
+                {
+                    MobileHostView.SetHostedContent(this);
+                }
+                else if (_boShell is not null)
+                {
+                    _boShell.Hide();
+                }
+
+                IsVisible = true;
                 await ReloadCatalogAsync();
             };
             _backOffice.LoggedOut += (_, _) => Logout();
         }
 
         _backOffice.SetSessionLabel(session);
-        Hide();
-        _backOffice.Show();
-        _backOffice.Activate();
-        _backOffice.RefreshSession();
+        IsVisible = false;
+
+        if (OperatingSystem.IsAndroid())
+        {
+            MobileHostView.SetHostedContent(_backOffice);
+            _ = _backOffice.ActivateHostedAsync();
+        }
+        else
+        {
+            if (_boShell is null)
+            {
+                _boShell = new BoShellWindow(_backOffice);
+            }
+
+            _boShell.Show();
+            _boShell.Activate();
+            _ = _backOffice.ActivateHostedAsync();
+        }
+
         if (string.IsNullOrWhiteSpace(page) == false)
         {
             _backOffice.OpenPage(page);
         }
     }
 
+    private void RequestHostClose()
+    {
+        if (TopLevel.GetTopLevel(this) is Window window)
+        {
+            window.Close();
+        }
+    }
+
     private void ShowQuit()
     {
         QuitOverlay.IsVisible = true;
+        FitHostedOverlays();
     }
 
     private async void Logout()
     {
         await ReleaseLicenceSeatAsync().ConfigureAwait(true);
         LoggedOut?.Invoke(this, EventArgs.Empty);
-        Close();
+        RequestHostClose();
     }
 
     private async void OnQuitConfirmClick(object? sender, RoutedEventArgs e)
@@ -1273,9 +2253,22 @@ public partial class PosWindow : Window, IOfficeSurface
         if (global::Avalonia.Application.Current?.ApplicationLifetime is Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow?.Close();
+            return;
         }
 
-        Close();
+        // Android: sem janela — usar callback registado pelo MainActivity.
+        App.ExitApplication?.Invoke();
+    }
+
+    private async Task<bool> ShowPaymentDialogAsync(PaymentWindow payment)
+    {
+        if (TopLevel.GetTopLevel(this) is Window owner)
+        {
+            return await payment.ShowDialog<bool>(owner);
+        }
+
+        Toast.Warning(this, "Pagamento ainda não está disponível neste dispositivo.");
+        return false;
     }
 
     private static async Task ReleaseLicenceSeatAsync()
@@ -1320,7 +2313,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         if (e.Key == Key.Escape
-            && FocusManager?.GetFocusedElement() is not TextBox
+            && TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is not TextBox
             && TryCloseListingOverlay())
         {
             e.Handled = true;
@@ -1372,7 +2365,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         // Do not steal keys while the operator types in a focused text box.
-        if (FocusManager?.GetFocusedElement() is TextBox)
+        if (TopLevel.GetTopLevel(this)?.FocusManager?.GetFocusedElement() is TextBox)
         {
             return false;
         }
@@ -1954,7 +2947,7 @@ public partial class PosWindow : Window, IOfficeSurface
 
         seat.Pay.IsEnabled = false;
         var payment = new PaymentWindow(share.Select(item => item.Line).ToList(), _saleCustomer, $"Divisor {seat.Number} de {_splitPeople}");
-        var paid = await payment.ShowDialog<bool>(this);
+        var paid = await ShowPaymentDialogAsync(payment);
         if (paid != true)
         {
             seat.Pay.IsEnabled = true;
@@ -2144,6 +3137,7 @@ public partial class PosWindow : Window, IOfficeSurface
         ListActions.IsVisible = false;
         RenderTables();
         ListOverlay.IsVisible = true;
+        FitHostedOverlays();
     }
 
     private void RestoreListChrome()
@@ -2364,6 +3358,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         OrdersOverlay.IsVisible = true;
+        FitHostedOverlays();
     }
 
     private void OnOrdersDismissClick(object? sender, RoutedEventArgs e)
@@ -2412,6 +3407,7 @@ public partial class PosWindow : Window, IOfficeSurface
         VoltaNotice.Text = string.Empty;
         UpdateVoltaTitle();
         VoltaOverlay.IsVisible = true;
+        FitHostedOverlays();
         VoltaQuantity.Focus();
     }
 
@@ -2746,6 +3742,7 @@ public partial class PosWindow : Window, IOfficeSurface
     private void ShowDocuments()
     {
         DocumentsMenuOverlay.IsVisible = true;
+        FitHostedOverlays();
     }
 
     private void OnDocumentsMenuCloseClick(object? sender, RoutedEventArgs e)
@@ -3101,6 +4098,7 @@ public partial class PosWindow : Window, IOfficeSurface
         SessionFrame.Width = 428;
         SessionFrame.Height = 165;
         _sessionAction = null;
+        FitHostedOverlays();
     }
 
     private async void OnDaySessionClick(object? sender, RoutedEventArgs e)
@@ -3157,6 +4155,7 @@ public partial class PosWindow : Window, IOfficeSurface
         SessionAmount.IsVisible = true;
         SessionConfirm.IsVisible = true;
         SessionNotice.Text = string.Empty;
+        FitHostedOverlays();
 
         // GTK: button enable state and initial selection depend on terminal session state
         if (_terminalOpen)
@@ -3424,7 +4423,7 @@ public partial class PosWindow : Window, IOfficeSurface
         }
 
         var payment = new PaymentWindow(_orderLines.ToList(), _saleCustomer);
-        var paid = await payment.ShowDialog<bool>(this);
+        var paid = await ShowPaymentDialogAsync(payment);
         if (paid == false)
         {
             return;
@@ -3619,6 +4618,7 @@ public partial class PosWindow : Window, IOfficeSurface
             : "avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png");
         TicketDialogActions.IsVisible = true;
         TicketOverlay.IsVisible = true;
+        FitHostedOverlays();
     }
 
     private void BuildKeypad()
