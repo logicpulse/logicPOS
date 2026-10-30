@@ -9,7 +9,7 @@
         Background="Transparent"
         CanResize="False">
     <Panel>
-        <Panel Classes="login_alert_overlay" />
+        <Panel Classes="login_alert_overlay" IsVisible="False" />
         <Border Classes="login_alert_frame" Width="633" Height="680">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">

@@ -547,7 +547,12 @@ public partial class LoginWindow : UserControl
 
             pos.LoggedOut += (_, _) => OnLoggedOut();
             var shell = new PosShellWindow(pos);
-            shell.Show();
+            if (TopLevel.GetTopLevel(this) is Window owner)
+            { 
+                shell.Show();
+                owner.Hide();
+            }
+            
         }
         catch (Exception exception)
         {
