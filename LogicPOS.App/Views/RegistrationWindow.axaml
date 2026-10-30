@@ -16,7 +16,7 @@
     <!-- Popup chrome like PaymentWindow / CompanySetup (no OS title bar). -->
     <Panel>
         <Panel Classes="login_alert_overlay" />
-        <Border Classes="register_card register_card_popup" Width="1100" Height="720" MaxWidth="1100" MaxHeight="720">
+        <Border Classes="register_card register_card_popup" MinWidth="720" MaxWidth="1100" Width="NaN" Height="NaN" MaxHeight="720">
             <DockPanel>
                 <Border Classes="register_topbar" DockPanel.Dock="Top">
                     <DockPanel>

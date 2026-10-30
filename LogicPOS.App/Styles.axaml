@@ -752,16 +752,27 @@
         <Setter Property="Opacity" Value="0.85" />
     </Style>
 
-    <!-- ZIndex alto: overlays FO ficam acima do dock flutuante (pos_toolbar_float ≈ 10). -->
     <Style Selector="Panel.login_alert_overlay">
         <Setter Property="Background" Value="#99000000" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
+    </Style>
+
+    <!-- ZIndex só no host FO/BO (acima do dock). PaymentWindow usa overlay como irmão do frame — ZIndex global tapava o diálogo. -->
+    <Style Selector="UserControl.pos_window Panel.login_alert_overlay">
+        <Setter Property="ZIndex" Value="100" />
+    </Style>
+    <Style Selector="UserControl.bo_window Panel.login_alert_overlay">
         <Setter Property="ZIndex" Value="100" />
     </Style>
 
     <Style Selector="Panel.login_alert_overlay.bo_clear_overlay">
         <Setter Property="Background" Value="#33000000" />
+    </Style>
+
+    <!-- Spinner do Novo documento: sem scrim branco — o overlay da janela já escurece o fundo. -->
+    <Style Selector="UserControl.bo_new_doc Panel.bo_listing_busy">
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style Selector="Border.login_alert_frame">
@@ -785,6 +796,75 @@
         <Setter Property="Background" Value="#3D3D3D" />
         <Setter Property="CornerRadius" Value="8,8,0,0" />
         <Setter Property="Padding" Value="8,0,8,0" />
+    </Style>
+
+    <Style Selector="Border.login_alert_titlebar.bo_dialog_drag">
+        <Setter Property="Cursor" Value="SizeAll" />
+    </Style>
+
+    <Style Selector="Panel.bo_dialog_shell">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="ClipToBounds" Value="False" />
+    </Style>
+
+    <Style Selector="Border.bo_resize_edge">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ZIndex" Value="20" />
+    </Style>
+    <Style Selector="Border.bo_resize_corner">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Width" Value="12" />
+        <Setter Property="Height" Value="12" />
+        <Setter Property="ZIndex" Value="21" />
+    </Style>
+    <Style Selector="Border.bo_resize_n">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Margin" Value="10,0,10,0" />
+        <Setter Property="Cursor" Value="SizeNorthSouth" />
+    </Style>
+    <Style Selector="Border.bo_resize_s">
+        <Setter Property="Height" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Margin" Value="10,0,10,0" />
+        <Setter Property="Cursor" Value="SizeNorthSouth" />
+    </Style>
+    <Style Selector="Border.bo_resize_e">
+        <Setter Property="Width" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,10,0,10" />
+        <Setter Property="Cursor" Value="SizeWestEast" />
+    </Style>
+    <Style Selector="Border.bo_resize_w">
+        <Setter Property="Width" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="Margin" Value="0,10,0,10" />
+        <Setter Property="Cursor" Value="SizeWestEast" />
+    </Style>
+    <Style Selector="Border.bo_resize_nw">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Cursor" Value="TopLeftCorner" />
+    </Style>
+    <Style Selector="Border.bo_resize_ne">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Cursor" Value="TopRightCorner" />
+    </Style>
+    <Style Selector="Border.bo_resize_sw">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Cursor" Value="BottomLeftCorner" />
+    </Style>
+    <Style Selector="Border.bo_resize_se">
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="Cursor" Value="BottomRightCorner" />
     </Style>
 
     <Style Selector="StackPanel.login_alert_title_row">
@@ -821,8 +901,20 @@
     </Style>
 
     <Style Selector="Border.bo_update_frame">
-        <Setter Property="Width" Value="520" />
-        <Setter Property="Height" Value="360" />
+        <Setter Property="MinWidth" Value="360" />
+        <Setter Property="MaxWidth" Value="520" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="220" />
+    </Style>
+
+    <!-- Confirmações / mensagens: cresce com o texto, sem janela fixa alta. -->
+    <Style Selector="Border.login_alert_message_box">
+        <Setter Property="MinWidth" Value="360" />
+        <Setter Property="MaxWidth" Value="520" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="200" />
     </Style>
 
     <Style Selector="StackPanel.bo_update_progress_panel">
@@ -3098,8 +3190,11 @@
     </Style>
 
     <Style Selector="Border.bo_about">
-        <Setter Property="Width" Value="420" />
-        <Setter Property="MinHeight" Value="300" />
+        <Setter Property="MinWidth" Value="360" />
+        <Setter Property="MaxWidth" Value="480" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="240" />
     </Style>
 
     <Style Selector="Border.bo_about_info_badge">
@@ -4921,8 +5016,8 @@
             <ControlTemplate>
                 <Border Background="Transparent" Padding="{TemplateBinding Padding}">
                     <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -4930,6 +5025,36 @@
 
     <Style Selector="Button.bo_lookup_clear:pointerover">
         <Setter Property="Foreground" Value="#B00020" />
+    </Style>
+
+    <!-- Same chevron geometry as Fluent ComboBox DropDownGlyph, for AutoCompleteBox lookups. -->
+    <Style Selector="Button.bo_lookup_chevron">
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="MinWidth" Value="28" />
+        <Setter Property="MinHeight" Value="28" />
+        <Setter Property="Margin" Value="0,0,2,0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_lookup_chevron:pointerover /template/ Border">
+        <Setter Property="Background" Value="#14000000" />
     </Style>
 
     <Style Selector="svg|Svg.bo_touch_key_icon">
@@ -4974,7 +5099,7 @@
         <Setter Property="MaxHeight" Value="NaN" />
     </Style>
 
-    <!-- Preferred desktop size; PortraitChrome.FitOverlay clamps / full-bleeds at runtime. -->
+    <!-- Preferred desktop size; PortraitChrome.FitOverlay / FitToContent apply at runtime. -->
     <Style Selector="Border.bo_entity_editor">
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -4986,11 +5111,14 @@
     </Style>
 
     <Style Selector="Border.bo_entity_editor.bo_entity_editor_fit">
+        <Setter Property="Width" Value="NaN" />
         <Setter Property="Height" Value="NaN" />
     </Style>
 
     <Style Selector="Border.bo_entity_editor.bo_entity_editor_narrow">
-        <Setter Property="Width" Value="640" />
+        <Setter Property="MinWidth" Value="420" />
+        <Setter Property="MaxWidth" Value="640" />
+        <Setter Property="Width" Value="NaN" />
     </Style>
 
     <Style Selector="StackPanel.bo_stock_editor_body">
@@ -5009,28 +5137,36 @@
     </Style>
 
     <Style Selector="Border.bo_pay_dialog">
-        <Setter Property="Width" Value="520" />
-        <Setter Property="MaxHeight" Value="560" />
+        <Setter Property="MinWidth" Value="420" />
+        <Setter Property="MaxWidth" Value="640" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MaxHeight" Value="680" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.bo_entity_prompt">
-        <Setter Property="Width" Value="420" />
-        <Setter Property="MinHeight" Value="240" />
+        <Setter Property="MinWidth" Value="360" />
+        <Setter Property="MaxWidth" Value="480" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="MinHeight" Value="180" />
         <Setter Property="Height" Value="NaN" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.bo_entity_prompt.bo_reprint_prompt">
-        <Setter Property="Width" Value="460" />
-        <Setter Property="MinHeight" Value="420" />
+        <Setter Property="MinWidth" Value="400" />
+        <Setter Property="MaxWidth" Value="520" />
+        <Setter Property="MinHeight" Value="280" />
     </Style>
 
     <Style Selector="Border.bo_email_dialog">
-        <Setter Property="Width" Value="640" />
-        <Setter Property="MinHeight" Value="520" />
+        <Setter Property="MinWidth" Value="480" />
+        <Setter Property="MaxWidth" Value="640" />
+        <Setter Property="Width" Value="NaN" />
+        <Setter Property="Height" Value="NaN" />
         <Setter Property="MaxHeight" Value="640" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
@@ -5114,12 +5250,22 @@
     <Style Selector="UserControl.bo_listing_busy_host">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="ZIndex" Value="50" />
     </Style>
 
+    <!-- Listings / popups / login: spinner only — no scrim over the grid or dialog. -->
     <Style Selector="Panel.bo_listing_busy">
-        <Setter Property="Background" Value="#E6FFFFFF" />
+        <Setter Property="Background" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+    </Style>
+
+    <Style Selector="UserControl.bo_listing_busy_host.login_busy Panel.bo_listing_busy">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="UserControl.bo_listing_busy_host.login_busy TextBlock.bo_listing_busy_label">
+        <Setter Property="Foreground" Value="#FFFFFF" />
     </Style>
 
     <Style Selector="StackPanel.bo_listing_busy_box">

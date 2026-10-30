@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
 
 namespace LogicPOS.App.Views;
 
@@ -28,10 +29,11 @@ internal sealed class ListingLoad
     public async Task RunAsync(Func<Task> action)
     {
         _depth++;
-        var gate = new CancellationTokenSource();
         if (_depth == 1)
         {
-            _ = ShowWhenSlowAsync(gate.Token);
+            // Show immediately — a delay made Documentos look like it had no loading
+            // when ListByPeriod finished under ~180ms.
+            ShowOverlay();
         }
 
         try
@@ -44,26 +46,54 @@ internal sealed class ListingLoad
             if (_depth <= 0)
             {
                 _depth = 0;
-                gate.Cancel();
-                _overlay.IsVisible = false;
+                HideOverlay();
             }
         }
     }
 
-    private async Task ShowWhenSlowAsync(CancellationToken cancellationToken)
+    private void ShowOverlay()
     {
-        try
+        void Apply()
         {
-            await Task.Delay(180, cancellationToken);
-        }
-        catch (OperationCanceledException)
-        {
-            return;
+            if (_overlay is ListingBusy busy)
+            {
+                busy.Show();
+                return;
+            }
+
+            _overlay.IsVisible = true;
         }
 
-        if (cancellationToken.IsCancellationRequested == false && _depth > 0)
+        if (Dispatcher.UIThread.CheckAccess())
         {
-            _overlay.IsVisible = true;
+            Apply();
+        }
+        else
+        {
+            Dispatcher.UIThread.Post(Apply);
+        }
+    }
+
+    private void HideOverlay()
+    {
+        void Apply()
+        {
+            if (_overlay is ListingBusy busy)
+            {
+                busy.Hide();
+                return;
+            }
+
+            _overlay.IsVisible = false;
+        }
+
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            Apply();
+        }
+        else
+        {
+            Dispatcher.UIThread.Post(Apply);
         }
     }
 }

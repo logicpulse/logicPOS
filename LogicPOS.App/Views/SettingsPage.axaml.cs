@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -258,12 +257,12 @@ public partial class SettingsPage : UserControl
 
         void Show(bool all)
         {
-            var term = Fold(box.Text);
+            var term = TextSearch.Fold(box.Text?.Trim());
             var matches = all || term.Length == 0
                 ? _countries
                 : _countries.Where(item =>
-                    Fold(item.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
-                    || Fold(item.Meta).Contains(term, StringComparison.OrdinalIgnoreCase)).ToList();
+                    TextSearch.Fold(item.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+                    || TextSearch.Fold(item.Meta).Contains(term, StringComparison.OrdinalIgnoreCase)).ToList();
             list.ItemsSource = matches;
             list.IsVisible = matches.Count > 0;
         }
@@ -310,18 +309,6 @@ public partial class SettingsPage : UserControl
             args.Handled = true;
         }, RoutingStrategies.Tunnel, true);
         return stack;
-    }
-
-    private static string Fold(string? value)
-    {
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return string.Empty;
-        }
-
-        var form = value.Trim().Normalize(NormalizationForm.FormD);
-        var chars = form.Where(character => CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark);
-        return string.Concat(chars);
     }
 
     private sealed class CountryPick

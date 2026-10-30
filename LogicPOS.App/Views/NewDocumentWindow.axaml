@@ -5,9 +5,17 @@
              x:Class="LogicPOS.App.Views.NewDocumentWindow"
              Classes="bo_new_doc">
     <Grid>
-    <Border x:Name="DocumentFrame" Classes="login_alert_frame">
+    <Panel x:Name="DocumentShell" Classes="bo_dialog_shell">
+    <Border x:Name="DocumentFrame" Classes="login_alert_frame"
+            HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <DockPanel>
-            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+            <Border x:Name="DocumentTitlebar"
+                    Classes="login_alert_titlebar bo_dialog_drag"
+                    DockPanel.Dock="Top"
+                    PointerPressed="OnDocumentTitlePointerPressed"
+                    PointerMoved="OnDocumentTitlePointerMoved"
+                    PointerReleased="OnDocumentTitlePointerReleased"
+                    PointerCaptureLost="OnDocumentTitlePointerCaptureLost">
                 <StackPanel Classes="login_alert_title_row">
                     <Image Classes="login_alert_title_icon"
                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
@@ -220,6 +228,16 @@
             </DockPanel>
         </DockPanel>
     </Border>
+    <!-- Pegas de redimensionamento (bordas + cantos). -->
+    <Border Classes="bo_resize_edge bo_resize_n" Tag="N" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_edge bo_resize_s" Tag="S" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_edge bo_resize_e" Tag="E" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_edge bo_resize_w" Tag="W" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_corner bo_resize_nw" Tag="NW" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_corner bo_resize_ne" Tag="NE" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_corner bo_resize_sw" Tag="SW" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    <Border Classes="bo_resize_corner bo_resize_se" Tag="SE" PointerPressed="OnDocumentResizePointerPressed" PointerMoved="OnDocumentResizePointerMoved" PointerReleased="OnDocumentResizePointerReleased" PointerCaptureLost="OnDocumentResizePointerCaptureLost" />
+    </Panel>
     <Border x:Name="LineEditor" Classes="bo_line_editor">
         <Border x:Name="LineEditorFrame" Classes="login_alert_frame bo_line_editor_frame">
             <DockPanel>

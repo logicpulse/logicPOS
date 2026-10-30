@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Globalization;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -15,8 +16,33 @@ namespace LogicPOS.App.Views;
 
 public partial class NewDocumentWindow : UserControl
 {
+    private const double DocumentMinWidth = 640;
+    private const double DocumentMinHeight = 480;
+    private const double DocumentDefaultWidth = 960;
+    private const double DocumentDefaultHeight = 780;
+
+    // Último tamanho/posição entre aberturas (mesma sessão da app).
+    private static double _savedLeft;
+    private static double _savedTop;
+    private static double _savedWidth;
+    private static double _savedHeight;
+    private static bool _hasSavedShell;
+
     private UiViewport _viewport;
     private bool _portrait;
+    private bool _draggingDocument;
+    private bool _resizingDocument;
+    private bool _documentPlaced;
+    private string? _resizeEdge;
+    private Point _dragStart;
+    private double _shellLeft;
+    private double _shellTop;
+    private double _shellWidth;
+    private double _shellHeight;
+    private double _resizeStartLeft;
+    private double _resizeStartTop;
+    private double _resizeStartWidth;
+    private double _resizeStartHeight;
     private readonly List<PosDocumentTypeOption> _types = new();
     private readonly List<NewDocumentLine> _lines = new();
     private readonly List<CatalogChoice> _catalog = new();
@@ -32,6 +58,8 @@ public partial class NewDocumentWindow : UserControl
     private readonly List<PosLookupItem> _documents = new();
     private readonly List<PosVatOption> _vatRates = new();
     private readonly List<PosLookupItem> _vatExemptions = new();
+    private CancellationTokenSource? _sourceSearchDelay;
+    private string _loadedSourceSearch = string.Empty;
     private TaskCompletionSource<bool>? _closed;
     private bool _filling;
     private int _customerLock;
@@ -66,6 +94,7 @@ public partial class NewDocumentWindow : UserControl
         InitializeComponent();
         CustomerSuggest.PlacementTarget = CustomerName;
         TouchFields.Attach(this);
+        Busy.UseTransparentScrim();
         _load = new ListingLoad(Busy);
         AttachedToVisualTree += (_, _) =>
         {
@@ -77,7 +106,11 @@ public partial class NewDocumentWindow : UserControl
 
     public Task<bool> ShowAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
     {
-        RelayoutForViewport();
+        _draggingDocument = false;
+        _resizingDocument = false;
+        _resizeEdge = null;
+        _documentPlaced = false;
+        RestoreOrPlaceDocumentShell();
         _seedDraftId = draftId;
         _copyFromDocumentId = copyFromDocumentId;
         _lines.Clear();
@@ -117,24 +150,285 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnNewDocLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
 
-    private void RelayoutForViewport()
+    private void OnDocumentTitlePointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (PortraitChrome.TryUpdate(this, ref _viewport, out _portrait) == false
-            && DocumentFrame.Bounds.Width > 0)
+        if (e.GetCurrentPoint(DocumentTitlebar).Properties.IsLeftButtonPressed == false)
         {
             return;
         }
 
+        _draggingDocument = true;
+        _dragStart = e.GetPosition(this);
+        _resizeStartLeft = _shellLeft;
+        _resizeStartTop = _shellTop;
+        e.Pointer.Capture(DocumentTitlebar);
+        e.Handled = true;
+    }
+
+    private void OnDocumentTitlePointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_draggingDocument == false)
+        {
+            return;
+        }
+
+        var current = e.GetPosition(this);
+        PlaceDocumentShell(
+            _resizeStartLeft + (current.X - _dragStart.X),
+            _resizeStartTop + (current.Y - _dragStart.Y),
+            _shellWidth,
+            _shellHeight,
+            persist: false);
+        e.Handled = true;
+    }
+
+    private void OnDocumentTitlePointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        EndDocumentDrag();
+        e.Pointer.Capture(null);
+        e.Handled = true;
+    }
+
+    private void OnDocumentTitlePointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+        => EndDocumentDrag();
+
+    private void EndDocumentDrag()
+    {
+        if (_draggingDocument == false)
+        {
+            return;
+        }
+
+        _draggingDocument = false;
+        PersistDocumentShell();
+    }
+
+    private void OnDocumentResizePointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is not Border { Tag: string edge })
+        {
+            return;
+        }
+
+        if (e.GetCurrentPoint(sender as Control).Properties.IsLeftButtonPressed == false)
+        {
+            return;
+        }
+
+        _resizingDocument = true;
+        _resizeEdge = edge;
+        _dragStart = e.GetPosition(this);
+        _resizeStartLeft = _shellLeft;
+        _resizeStartTop = _shellTop;
+        _resizeStartWidth = _shellWidth;
+        _resizeStartHeight = _shellHeight;
+        e.Pointer.Capture(sender as IInputElement);
+        e.Handled = true;
+    }
+
+    private void OnDocumentResizePointerMoved(object? sender, PointerEventArgs e)
+    {
+        if (_resizingDocument == false || string.IsNullOrEmpty(_resizeEdge))
+        {
+            return;
+        }
+
+        var current = e.GetPosition(this);
+        var dx = current.X - _dragStart.X;
+        var dy = current.Y - _dragStart.Y;
+        var left = _resizeStartLeft;
+        var top = _resizeStartTop;
+        var width = _resizeStartWidth;
+        var height = _resizeStartHeight;
+        var edge = _resizeEdge;
+
+        if (edge.Contains('E', StringComparison.Ordinal))
+        {
+            width = Math.Max(DocumentMinWidth, _resizeStartWidth + dx);
+        }
+
+        if (edge.Contains('S', StringComparison.Ordinal))
+        {
+            height = Math.Max(DocumentMinHeight, _resizeStartHeight + dy);
+        }
+
+        if (edge.Contains('W', StringComparison.Ordinal))
+        {
+            width = Math.Max(DocumentMinWidth, _resizeStartWidth - dx);
+            left = _resizeStartLeft + (_resizeStartWidth - width);
+        }
+
+        if (edge.Contains('N', StringComparison.Ordinal))
+        {
+            height = Math.Max(DocumentMinHeight, _resizeStartHeight - dy);
+            top = _resizeStartTop + (_resizeStartHeight - height);
+        }
+
+        PlaceDocumentShell(left, top, width, height, persist: false);
+        e.Handled = true;
+    }
+
+    private void OnDocumentResizePointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        EndDocumentResize();
+        e.Pointer.Capture(null);
+        e.Handled = true;
+    }
+
+    private void OnDocumentResizePointerCaptureLost(object? sender, PointerCaptureLostEventArgs e)
+        => EndDocumentResize();
+
+    private void EndDocumentResize()
+    {
+        if (_resizingDocument == false)
+        {
+            return;
+        }
+
+        _resizingDocument = false;
+        _resizeEdge = null;
+        PersistDocumentShell();
+    }
+
+    private void PersistDocumentShell()
+    {
+        if (_shellWidth < DocumentMinWidth || _shellHeight < DocumentMinHeight)
+        {
+            return;
+        }
+
+        _savedLeft = _shellLeft;
+        _savedTop = _shellTop;
+        _savedWidth = _shellWidth;
+        _savedHeight = _shellHeight;
+        _hasSavedShell = true;
+    }
+
+    private void RestoreOrPlaceDocumentShell()
+    {
+        PortraitChrome.TryUpdate(this, ref _viewport, out _portrait);
+        if (_hasSavedShell)
+        {
+            PlaceDocumentShell(_savedLeft, _savedTop, _savedWidth, _savedHeight, persist: false);
+            return;
+        }
+
+        PlaceDefaultDocumentShell();
+    }
+
+    private void PlaceDefaultDocumentShell()
+    {
+        var docW = OperatingSystem.IsAndroid() ? 1180 : DocumentDefaultWidth;
+        var docH = OperatingSystem.IsAndroid() ? 860 : DocumentDefaultHeight;
+        var bounds = MeasureShellHost();
+        var margin = PortraitChrome.DefaultMargin;
+        var width = Math.Min(docW, Math.Max(DocumentMinWidth, bounds.Width - (margin * 2)));
+        var height = Math.Min(docH, Math.Max(DocumentMinHeight, bounds.Height - (margin * 2)));
+        var left = margin + Math.Max(0, (bounds.Width - (margin * 2) - width) / 2);
+        var top = margin + Math.Max(0, (bounds.Height - (margin * 2) - height) / 2);
+        PlaceDocumentShell(left, top, width, height, persist: false);
+    }
+
+    private Rect MeasureShellHost()
+    {
+        // Margin é relativo ao NewDocumentWindow (preenche o overlay) — não ao TopLevel.
+        if (Bounds.Width >= 280 && Bounds.Height >= 280)
+        {
+            return Bounds;
+        }
+
+        if (_viewport.Width >= 280 && _viewport.Height >= 280)
+        {
+            return new Rect(0, 0, _viewport.Width, _viewport.Height);
+        }
+
+        var top = TopLevel.GetTopLevel(this) as Control;
+        if (top is not null && top.Bounds.Width >= 280 && top.Bounds.Height >= 280)
+        {
+            return top.Bounds;
+        }
+
+        return new Rect(0, 0, 1280, 800);
+    }
+
+    private void PlaceDocumentShell(double left, double top, double width, double height, bool persist)
+    {
+        var bounds = MeasureShellHost();
+        var margin = PortraitChrome.DefaultMargin;
+        var maxW = Math.Max(DocumentMinWidth, bounds.Width - (margin * 2));
+        var maxH = Math.Max(DocumentMinHeight, bounds.Height - (margin * 2));
+        width = Math.Clamp(width, DocumentMinWidth, maxW);
+        height = Math.Clamp(height, DocumentMinHeight, maxH);
+        left = Math.Clamp(left, margin, Math.Max(margin, bounds.Width - margin - width));
+        top = Math.Clamp(top, margin, Math.Max(margin, bounds.Height - margin - height));
+
+        _shellLeft = left;
+        _shellTop = top;
+        _shellWidth = width;
+        _shellHeight = height;
+        _documentPlaced = true;
+
+        DocumentShell.Width = width;
+        DocumentShell.Height = height;
+        DocumentShell.Margin = new Thickness(left, top, 0, 0);
+        DocumentShell.HorizontalAlignment = HorizontalAlignment.Left;
+        DocumentShell.VerticalAlignment = VerticalAlignment.Top;
+        DocumentShell.ClearValue(MaxWidthProperty);
+        DocumentShell.ClearValue(MaxHeightProperty);
+        DocumentFrame.ClearValue(WidthProperty);
+        DocumentFrame.ClearValue(HeightProperty);
+        DocumentFrame.ClearValue(MarginProperty);
+        DocumentFrame.ClearValue(MaxWidthProperty);
+        DocumentFrame.ClearValue(MaxHeightProperty);
+        DocumentFrame.HorizontalAlignment = HorizontalAlignment.Stretch;
+        DocumentFrame.VerticalAlignment = VerticalAlignment.Stretch;
+
+        if (persist)
+        {
+            PersistDocumentShell();
+        }
+    }
+
+    private void RelayoutForViewport()
+    {
+        var viewportChanged = PortraitChrome.TryUpdate(this, ref _viewport, out _portrait);
+        if (_draggingDocument || _resizingDocument)
+        {
+            return;
+        }
+
+        if (viewportChanged == false && _documentPlaced && LineEditorFrame.Bounds.Width > 0)
+        {
+            return;
+        }
+
+        // Só reposicionar o shell se o viewport mudou ou ainda não foi colocado.
+        if (viewportChanged || _documentPlaced == false)
+        {
+            if (_hasSavedShell)
+            {
+                PlaceDocumentShell(_savedLeft, _savedTop, _savedWidth, _savedHeight, persist: false);
+            }
+            else if (_shellWidth > 0 && _shellHeight > 0)
+            {
+                PlaceDocumentShell(_shellLeft, _shellTop, _shellWidth, _shellHeight, persist: false);
+            }
+            else
+            {
+                PlaceDefaultDocumentShell();
+            }
+        }
+
         // Reserva inferior em portrait FO para o dock flutuante não tapar Emitir/Pré-visualizar.
         var bottomReserve = _portrait ? PortraitChrome.FloatingToolbarReserve : 0;
-        PortraitChrome.FitOverlay(DocumentFrame, this, 1180, 860, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(LineEditorFrame, this, 980, 720, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(CustomerEditorFrame, this, 820, 640, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(ArticlePadFrame, this, 980, 680, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(CustomerListFrame, this, 480, 420, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(TransportFrame, this, 980, 520, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(NewArticleFrame, this, 520, 520, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(SerialFrame, this, 640, 560, bottomReserve: bottomReserve);
+        var host = this;
+        PortraitChrome.FitOverlay(LineEditorFrame, host, 980, 720, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(CustomerEditorFrame, host, 820, 640, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(ArticlePadFrame, host, 980, 680, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitToContent(CustomerListFrame, host, 480, minWidth: 360, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(TransportFrame, host, 980, 520, lockHeight: false, bottomReserve: bottomReserve);
+        PortraitChrome.FitToContent(NewArticleFrame, host, 520, minWidth: 360, bottomReserve: bottomReserve);
+        PortraitChrome.FitOverlay(SerialFrame, host, 640, 560, lockHeight: false, bottomReserve: bottomReserve);
 
         // Portrait: keep header compact so the lines grid still has room.
         HeaderScroll.MaxHeight = _portrait ? Math.Max(160, _viewport.Height * 0.32) : double.PositiveInfinity;
@@ -154,14 +448,11 @@ public partial class NewDocumentWindow : UserControl
 
         var loadingDraft = _seedDraftId is not null;
         var loadingCopy = _copyFromDocumentId is not null;
-        if (loadingDraft)
-        {
-            Busy.Show("A carregar rascunho...");
-        }
-        else if (loadingCopy)
-        {
-            Busy.Show("A carregar documento...");
-        }
+        Busy.Show(loadingDraft
+            ? "A carregar rascunho..."
+            : loadingCopy
+                ? "A carregar documento..."
+                : "A carregar...");
 
         try
         {
@@ -281,7 +572,7 @@ public partial class NewDocumentWindow : UserControl
             _conditions.Clear();
             _conditions.AddRange(conditions);
             PaymentBox.ItemsSource = Optional(_conditions);
-            SelectCode(PaymentBox, "PP");
+            ApplyPaymentConditionForType(SelectedType()?.Acronym);
         }
 
         if (currencies is not null)
@@ -296,6 +587,7 @@ public partial class NewDocumentWindow : UserControl
         {
             _documents.Clear();
             _documents.AddRange(sourceDocs);
+            _loadedSourceSearch = string.Empty;
             var choices = Optional(_documents);
             OriginBox.ItemsSource = choices;
             CopyBox.ItemsSource = choices;
@@ -596,7 +888,8 @@ public partial class NewDocumentWindow : UserControl
 
     private static List<PosLookupItem> Optional(IEnumerable<PosLookupItem> items)
     {
-        var list = new List<PosLookupItem> { new(Guid.Empty, "—") };
+        // Blank label: field shows PlaceholderText + chevron (not an em-dash glyph).
+        var list = new List<PosLookupItem> { new(Guid.Empty, string.Empty) };
         list.AddRange(items);
         return list;
     }
@@ -624,9 +917,165 @@ public partial class NewDocumentWindow : UserControl
 
     private void OnOriginChanged(object? sender, SelectionChangedEventArgs e) => RefreshOriginClear();
 
-    private void OnOriginTextChanged(object? sender, TextChangedEventArgs e) => RefreshOriginClear();
+    private void OnOriginTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        RefreshOriginClear();
+        QueueSourceDocumentSearch(OriginBox);
+    }
 
-    private void OnCopyTextChanged(object? sender, TextChangedEventArgs e) => RefreshCopyClear();
+    private void OnCopyTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        RefreshCopyClear();
+        QueueSourceDocumentSearch(CopyBox);
+    }
+
+    private void QueueSourceDocumentSearch(AutoCompleteBox box)
+    {
+        if (_filling)
+        {
+            return;
+        }
+
+        _sourceSearchDelay?.Cancel();
+        _sourceSearchDelay = new CancellationTokenSource();
+        _ = SearchSourceDocumentsAfterPauseAsync(box, _sourceSearchDelay.Token);
+    }
+
+    private async Task SearchSourceDocumentsAfterPauseAsync(AutoCompleteBox box, CancellationToken token)
+    {
+        try
+        {
+            await Task.Delay(350, token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        var text = (box.Text ?? string.Empty).Trim();
+        var selectedLabel = (box.SelectedItem as PosLookupItem)?.Label;
+        // Empty / placeholder / current selection: restore the recent window if we had narrowed.
+        if (string.IsNullOrEmpty(text)
+            || text == "—"
+            || string.Equals(text, selectedLabel, StringComparison.CurrentCultureIgnoreCase))
+        {
+            if (_loadedSourceSearch.Length == 0)
+            {
+                return;
+            }
+
+            await ReloadSourceDocumentsAsync(search: null, preserveTypedText: false, token);
+            return;
+        }
+
+        if (string.Equals(text, _loadedSourceSearch, StringComparison.CurrentCultureIgnoreCase))
+        {
+            return;
+        }
+
+        await ReloadSourceDocumentsAsync(text, preserveTypedText: true, token);
+    }
+
+    private async Task ReloadSourceDocumentsAsync(string? search, bool preserveTypedText, CancellationToken token)
+    {
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        if (documents is null)
+        {
+            return;
+        }
+
+        IReadOnlyList<PosLookupItem> sourceDocs;
+        try
+        {
+            sourceDocs = await documents.ListSourceDocumentsAsync(search, token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (token.IsCancellationRequested)
+        {
+            return;
+        }
+
+        var originId = ListingFilters.SelectedDocumentId(OriginBox);
+        var copyId = ListingFilters.SelectedDocumentId(CopyBox);
+        var originText = OriginBox.Text;
+        var copyText = CopyBox.Text;
+
+        _documents.Clear();
+        _documents.AddRange(sourceDocs);
+        EnsureDocumentInList(originId);
+        EnsureDocumentInList(copyId);
+
+        var choices = Optional(_documents);
+        var wasFilling = _filling;
+        _filling = true;
+        try
+        {
+            OriginBox.ItemsSource = choices;
+            CopyBox.ItemsSource = choices;
+            if (originId is Guid origin)
+            {
+                SelectDocumentId(OriginBox, origin);
+            }
+            else if (preserveTypedText == false)
+            {
+                ListingFilters.SelectDocument(OriginBox, choices[0]);
+            }
+
+            if (copyId is Guid copy)
+            {
+                SelectDocumentId(CopyBox, copy);
+            }
+            else if (preserveTypedText == false)
+            {
+                ListingFilters.SelectDocument(CopyBox, choices[0]);
+            }
+
+            if (preserveTypedText)
+            {
+                if (originId is null)
+                {
+                    OriginBox.Text = originText;
+                }
+
+                if (copyId is null)
+                {
+                    CopyBox.Text = copyText;
+                }
+            }
+        }
+        finally
+        {
+            _filling = wasFilling;
+        }
+
+        _loadedSourceSearch = search ?? string.Empty;
+        RefreshDocumentClearButtons();
+    }
+
+    private void EnsureDocumentInList(Guid? id)
+    {
+        if (id is null || id == Guid.Empty || _documents.Any(item => item.Id == id))
+        {
+            return;
+        }
+
+        // Keep a previously selected origin/copy visible even when the search result set changed.
+        var previous = OriginBox.ItemsSource as IEnumerable<PosLookupItem>
+            ?? CopyBox.ItemsSource as IEnumerable<PosLookupItem>;
+        var match = previous?.FirstOrDefault(item => item.Id == id);
+        if (match is not null)
+        {
+            _documents.Insert(0, match);
+        }
+    }
 
     private void OnClearOriginClick(object? sender, RoutedEventArgs e)
     {
@@ -663,12 +1112,46 @@ public partial class NewDocumentWindow : UserControl
 
         var service = AppComposition.Services?.GetService<IPosDocumentService>();
         SeriesLabel.Text = service is null ? string.Empty : await service.GetSeriesLabelAsync(type.Acronym);
+        if (_filling == false)
+        {
+            ApplyPaymentConditionForType(type.Acronym);
+        }
+
         UpdateTransport(openPopup: _filling == false && PosDocumentRules.IsWayBill(type.Acronym));
         if (_filling == false && PosDocumentRules.RequiresNamedCustomer(type.Acronym) && ShowsFinalConsumer())
         {
             ClearCustomer();
             ErrorLabel.Text = "Escolha um cliente para este documento.";
         }
+    }
+
+    /// <summary>
+    /// FT (e afins): condições em branco para o utilizador escolher. FS/FR: Pronto Pagamento por defeito.
+    /// </summary>
+    private void ApplyPaymentConditionForType(string? acronym)
+    {
+        PaymentBox.IsEnabled = true;
+        if (PosDocumentRules.RequiresPaymentCondition(acronym))
+        {
+            SelectBlank(PaymentBox);
+            return;
+        }
+
+        SelectCode(PaymentBox, "PP");
+    }
+
+    private static void SelectBlank(ComboBox box)
+    {
+        if (box.ItemsSource is not IEnumerable<PosLookupItem> items)
+        {
+            box.SelectedIndex = -1;
+            box.SelectedItem = null;
+            return;
+        }
+
+        var blank = items.FirstOrDefault(item => item.Id == Guid.Empty) ?? items.FirstOrDefault();
+        box.SelectedIndex = -1;
+        box.SelectedItem = blank;
     }
 
     private void OnTransportChanged(object? sender, RoutedEventArgs e)
@@ -1437,7 +1920,7 @@ public partial class NewDocumentWindow : UserControl
             return;
         }
 
-        _matches.AddRange(_catalog.Where(item => item.SearchText.Contains(term, StringComparison.OrdinalIgnoreCase)).Take(8));
+        _matches.AddRange(_catalog.Where(item => TextSearch.Contains(item.SearchText, term)).Take(8));
         foreach (var choice in _matches)
         {
             var match = choice;
@@ -2070,6 +2553,16 @@ public partial class NewDocumentWindow : UserControl
             && (_customerIsFinal || string.IsNullOrWhiteSpace(CustomerName.Text) || string.IsNullOrWhiteSpace(CustomerFiscal.Text)))
         {
             ErrorLabel.Text = "Não pode criar faturas com o cliente consumidor final ou com um cliente sem nome/NIF. Use um cliente válido e tente novamente.";
+            return;
+        }
+
+        if (draft == false
+            && PosDocumentRules.RequiresPaymentCondition(type.Acronym)
+            && SelectedId(PaymentBox) is null)
+        {
+            ErrorLabel.Text = "Indique as condições de pagamento.";
+            PaymentBox.IsEnabled = true;
+            PaymentBox.Focus();
             return;
         }
 

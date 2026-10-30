@@ -29,8 +29,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
     private bool _alertVisible;
     private string _alertTitle = string.Empty;
     private string _alertMessage = string.Empty;
-    private double _alertWidth = 600;
-    private double _alertHeight = 400;
+    private double _alertWidth = 480;
     private bool _alertIsQuestion;
     private bool _alertIsError;
     private bool _alertIsInformation;
@@ -169,12 +168,6 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         private set => SetField(ref _alertWidth, value);
     }
 
-    public double AlertHeight
-    {
-        get => _alertHeight;
-        private set => SetField(ref _alertHeight, value);
-    }
-
     public bool AlertIsQuestion
     {
         get => _alertIsQuestion;
@@ -256,7 +249,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
 
             if (string.IsNullOrWhiteSpace(_startupError) == false)
             {
-                ShowAlert("Erro", _startupError, AlertKind.Error, 600, 400, false, null);
+                ShowAlert("Erro", _startupError, AlertKind.Error, 520, false, null);
             }
             else if (_chooseTerminalAfterLogin == false && _terminalId is null && lookup.NeedsSelection == false)
             {
@@ -449,7 +442,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
 
     public void RequestQuit()
     {
-        ShowAlert("Sair", "Sair da Aplicação?", AlertKind.Question, 400, 300, true, () =>
+        ShowAlert("Sair", "Sair da Aplicação?", AlertKind.Question, 420, true, () =>
         {
             QuitConfirmed?.Invoke(this, EventArgs.Empty);
         });
@@ -473,15 +466,13 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         string title,
         string message,
         AlertKind kind,
-        double width,
-        double height,
+        double maxWidth,
         bool yesNo,
         Action? onConfirm)
     {
         AlertTitle = title;
         AlertMessage = message;
-        AlertWidth = width;
-        AlertHeight = height;
+        AlertWidth = maxWidth;
         AlertIsQuestion = kind == AlertKind.Question;
         AlertIsError = kind == AlertKind.Error;
         AlertIsInformation = kind == AlertKind.Information;
@@ -526,7 +517,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         if (Pin == "0000")
         {
             Pin = string.Empty;
-            ShowAlert(ChangePasswordTitle, EqualPasswordText, AlertKind.Error, 600, 400, false, null);
+            ShowAlert(ChangePasswordTitle, EqualPasswordText, AlertKind.Error, 520, false, null);
             return;
         }
 
@@ -545,7 +536,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         {
             _pendingNewPin = null;
             SetMode(PinMode.PasswordNew);
-            ShowAlert(ChangePasswordTitle, PinsDoNotMatchText, AlertKind.Error, 600, 400, false, null);
+            ShowAlert(ChangePasswordTitle, PinsDoNotMatchText, AlertKind.Error, 520, false, null);
             return;
         }
 
@@ -558,7 +549,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         {
             _pendingNewPin = null;
             SetMode(result.RequiresNormalLogin ? PinMode.Password : PinMode.PasswordNew);
-            ShowAlert("Erro", result.Message, AlertKind.Error, 600, 400, false, null);
+            ShowAlert("Erro", result.Message, AlertKind.Error, 520, false, null);
             return;
         }
 
@@ -568,7 +559,7 @@ public sealed class LoginViewModel : INotifyPropertyChanged
         _pendingNewPin = null;
         SetMode(PinMode.Password);
         var userName = _selectedUser.Name;
-        ShowAlert(ChangePasswordTitle, PasswordChangedText, AlertKind.Information, 600, 400, false, () =>
+        ShowAlert(ChangePasswordTitle, PasswordChangedText, AlertKind.Information, 480, false, () =>
         {
             EnterApplication(userName);
         });

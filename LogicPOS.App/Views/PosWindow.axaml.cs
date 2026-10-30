@@ -291,7 +291,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         var next = UiViewport.From(this);
-        var preferPortrait = next.PreferFrontOfficePortrait;
+        // Chrome portrait (tabs) só no Android — Windows mantém FO landscape clássico.
+        var preferPortrait = OperatingSystem.IsAndroid() && next.PreferFrontOfficePortrait;
         if (force == false
             && next.Width == _viewport.Width
             && next.Height == _viewport.Height
@@ -302,7 +303,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         ApplyViewportMetrics(force: true);
-        if (OperatingSystem.IsAndroid() && preferPortrait)
+        if (preferPortrait)
         {
             var generation = ++_relayoutGeneration;
             _ = RelayoutChromeAsync(generation);
@@ -317,7 +318,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void ApplyViewportMetrics(bool force)
     {
         var next = UiViewport.From(this);
-        var preferPortrait = next.PreferFrontOfficePortrait;
+        var preferPortrait = OperatingSystem.IsAndroid() && next.PreferFrontOfficePortrait;
         if (force == false
             && next.Width == _viewport.Width
             && next.Height == _viewport.Height
@@ -327,7 +328,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         _viewport = next;
-        // Android FO: PreferFrontOfficePortrait força tabs mesmo se IsPortrait falhar.
+        // Android FO: PreferFrontOfficePortrait força tabs; Windows nunca.
         _layout = PosLayout.For(_viewport.Width, _viewport.Height, preferPortrait);
         Classes.Set("pos_portrait", preferPortrait);
         Classes.Set("pos_landscape", preferPortrait == false);
@@ -382,8 +383,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _familyId = _catalog.Families.FirstOrDefault()?.Id;
         _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
 
-        // Portrait/Android: Favoritos vazio ⇒ começar em Famílias (viewport inicial pode ainda ser fallback).
-        var preferPortrait = _layout.IsPortrait || _viewport.PreferFrontOfficePortrait;
+        // Android portrait: Favoritos vazio ⇒ começar em Famílias.
+        var preferPortrait = OperatingSystem.IsAndroid()
+            && (_layout.IsPortrait || _viewport.PreferFrontOfficePortrait);
         if (preferPortrait
             && _portraitTab == PortraitBrowseTab.Favorites
             && _catalog.Articles.Any(item => item.Favorite) == false)
@@ -404,9 +406,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var sessionH = SessionCash.IsVisible ? 360.0 : 165.0;
         var listW = TablesBar.IsVisible ? 760.0 : 560.0;
         var listH = TablesBar.IsVisible ? 520.0 : 360.0;
-        var ticketW = PricePad.IsVisible ? 540.0 : TicketKeypad.IsVisible ? 420.0 : 400.0;
-        var ticketH = PricePad.IsVisible ? 530.0 : TicketKeypad.IsVisible ? 390.0 : 300.0;
-
         PortraitChrome.FitOverlay(DocumentsFrame, this, 1100, 700, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(ReceiptFrame, this, 1100, 700, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(EntityFrame, this, 1100, 700, bottomReserve: bottomReserve);
@@ -416,8 +415,20 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(VoltaFrame, this, 620, 430, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(SessionFrame, this, sessionW, sessionH, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(TicketFrame, this, ticketW, ticketH, lockHeight: false, bottomReserve: bottomReserve);
-        PortraitChrome.FitOverlay(QuitFrame, this, 400, 300, lockHeight: false, bottomReserve: bottomReserve);
+        if (PricePad.IsVisible)
+        {
+            PortraitChrome.FitOverlay(TicketFrame, this, 540, 530, lockHeight: false, bottomReserve: bottomReserve);
+        }
+        else if (TicketKeypad.IsVisible)
+        {
+            PortraitChrome.FitOverlay(TicketFrame, this, 420, 390, lockHeight: false, bottomReserve: bottomReserve);
+        }
+        else
+        {
+            PortraitChrome.FitToContent(TicketFrame, this, 480, minWidth: 360, bottomReserve: bottomReserve);
+        }
+
+        PortraitChrome.FitToContent(QuitFrame, this, 480, minWidth: 360, bottomReserve: bottomReserve);
     }
 
     private async Task ReloadCatalogAsync(bool refreshMenus = true)
@@ -458,7 +469,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _subfamilyId = SubfamiliesOfSelectedFamily().FirstOrDefault()?.Id;
         }
 
-        var preferPortrait = _layout.IsPortrait || _viewport.PreferFrontOfficePortrait;
+        var preferPortrait = OperatingSystem.IsAndroid()
+            && (_layout.IsPortrait || _viewport.PreferFrontOfficePortrait);
         if (preferPortrait
             && _portraitTab == PortraitBrowseTab.Favorites
             && _catalog.Articles.Any(item => item.Favorite) == false)
@@ -1478,9 +1490,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             var term = _articleSearch.Trim();
             articles = articles.Where(item =>
-                (item.Text?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)
-                || (item.Code?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false)
-                || (item.Barcode?.Contains(term, StringComparison.OrdinalIgnoreCase) ?? false));
+                TextSearch.Contains(item.Text, term)
+                || TextSearch.Contains(item.Code, term)
+                || TextSearch.Contains(item.Barcode, term));
         }
 
         return articles.ToList();
@@ -2017,11 +2029,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
     public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
+        var newDocOpen = NewDocumentOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
+        // PDF por cima do Novo documento (senão o preview fica tapado).
+        NewDocumentOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
         FitHostedOverlays();
         await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
+        NewDocumentOverlay.IsVisible = newDocOpen;
         ReportsOverlay.IsVisible = reportsOpen;
     }
 
@@ -4559,15 +4575,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
             PricePad.IsVisible = true;
             TicketDialogCancelText.Text = "Cancelar";
             TicketDialogIcon.Source = LoadBitmap("avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png");
-            TicketFrame.Width = 540;
-            TicketFrame.Height = 530;
             return;
         }
 
         PricePad.IsVisible = false;
         TicketKeypad.IsVisible = true;
-        TicketFrame.Width = 420;
-        TicketFrame.Height = 390;
         if (prompt == TicketPrompt.Split)
         {
             if (_keypadValue is not null)
@@ -4594,8 +4606,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _quantityPad.IsVisible = true;
         }
 
-        TicketFrame.Width = 420;
-        TicketFrame.Height = 390;
         SplitPeopleButtons.IsVisible = false;
         if (_splitHost is not null)
         {
@@ -4605,8 +4615,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void ShowDialogChrome(string title, bool question, string confirmText, bool showCancel)
     {
-        TicketFrame.Width = 400;
-        TicketFrame.Height = 300;
         TicketDialogTitle.Text = title;
         TicketDialogConfirmText.Text = confirmText;
         TicketDialogCancel.IsVisible = showCancel;
@@ -4898,7 +4906,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         TicketBarcode.IsVisible = false;
         TicketQuestionBody.IsVisible = true;
         TicketDialogCancelText.Text = "Não";
-        TicketFrame.Height = 300;
+        FitHostedOverlays();
     }
 
     private void OnPriceMoneyClick(object? sender, RoutedEventArgs e)

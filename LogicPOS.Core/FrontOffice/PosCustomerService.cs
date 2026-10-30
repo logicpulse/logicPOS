@@ -1,5 +1,4 @@
-using System.Globalization;
-using System.Text;
+using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Persistence.Database;
 using Microsoft.EntityFrameworkCore;
@@ -95,17 +94,19 @@ public sealed class PosCustomerService : IPosCustomerService
     public async Task<IReadOnlyList<PosCustomer>> SearchAsync(string text, CancellationToken cancellationToken = default)
     {
         var term = text.Trim();
+        var customers = await CachedAsync(cancellationToken);
         if (term.Length == 0)
         {
-            return [];
+            return customers
+                .OrderBy(item => item.Customer.Name)
+                .Select(item => item.Customer)
+                .ToList();
         }
 
-        var folded = Fold(term);
-        var customers = await CachedAsync(cancellationToken);
         return customers
-            .Where(item => item.Name.Contains(folded, StringComparison.Ordinal)
-                || item.FiscalNumber.Contains(folded, StringComparison.Ordinal)
-                || item.CardNumber.Contains(folded, StringComparison.Ordinal))
+            .Where(item => TextSearch.Contains(item.Name, term)
+                || TextSearch.Contains(item.FiscalNumber, term)
+                || TextSearch.Contains(item.CardNumber, term))
             .OrderBy(item => item.Customer.Name)
             .Take(20)
             .Select(item => item.Customer)
@@ -158,9 +159,9 @@ public sealed class PosCustomerService : IPosCustomerService
         var rows = customers
             .Select(item => new CachedCustomer(
                 Map(item.Id, item.Name, item.FiscalNumber, item.CardNumber, item.Discount, item.Address, item.Locality, item.ZipCode, item.City, item.Country),
-                Fold(item.Name),
-                Fold(item.FiscalNumber),
-                Fold(item.CardNumber)))
+                TextSearch.Fold(item.Name),
+                TextSearch.Fold(item.FiscalNumber),
+                TextSearch.Fold(item.CardNumber)))
             .ToList();
 
         lock (_cacheGate)
@@ -172,26 +173,6 @@ public sealed class PosCustomerService : IPosCustomerService
 
             return _cache?.Rows ?? rows;
         }
-    }
-
-    private static string Fold(string? value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
-            return string.Empty;
-        }
-
-        var decomposed = value.Normalize(NormalizationForm.FormD);
-        var builder = new StringBuilder(decomposed.Length);
-        foreach (var character in decomposed)
-        {
-            if (CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark)
-            {
-                builder.Append(character);
-            }
-        }
-
-        return builder.ToString().ToLowerInvariant();
     }
 
     private sealed class CachedCustomers(List<CachedCustomer> rows)

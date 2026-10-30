@@ -148,8 +148,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             SetDrawerOpen(_drawerOpen);
             PortraitTitle.Text = string.IsNullOrWhiteSpace(PageTitle.Text) ? AppText.Get("Painel") : PageTitle.Text;
             PortraitSession.Text = TerminalLabel.Text;
-            PortraitChrome.ApplyOverlayFrame(QuitFrame, true, 400, 300);
-            PortraitChrome.ApplyOverlayFrame(SaftConfirmFrame, true, 420, 300);
+            PortraitChrome.FitToContent(QuitFrame, this, 480, minWidth: 360);
+            PortraitChrome.FitToContent(SaftConfirmFrame, this, 520, minWidth: 360);
         }
         else
         {
@@ -168,8 +168,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             Sidebar.VerticalAlignment = VerticalAlignment.Stretch;
             Sidebar.Width = double.NaN;
             _drawerOpen = false;
-            PortraitChrome.ApplyOverlayFrame(QuitFrame, false, 400, 300);
-            PortraitChrome.ApplyOverlayFrame(SaftConfirmFrame, false, 420, 300);
+            PortraitChrome.FitToContent(QuitFrame, this, 480, minWidth: 360);
+            PortraitChrome.FitToContent(SaftConfirmFrame, this, 520, minWidth: 360);
         }
     }
 
@@ -259,10 +259,14 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
+        var newDocOpen = NewDocumentOverlay.IsVisible;
         ReportsOverlay.IsVisible = false;
+        // PDF por cima do Novo documento (senão o preview fica tapado).
+        NewDocumentOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
         await PdfHost.ShowAsync(path, title, documentId);
         PdfOverlay.IsVisible = false;
+        NewDocumentOverlay.IsVisible = newDocOpen;
         ReportsOverlay.IsVisible = reportsOpen;
     }
 

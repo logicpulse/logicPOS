@@ -18,7 +18,7 @@ For AI-assisted editing, see [AGENTS.md](AGENTS.md).
 | **`LogicPOS.Core`** | Startup, direct database, documents, fiscal plugin loader. |
 | **`tests`** | Public-edition tests. |
 | **`LogicPOS.Globalization`** | Localized strings (RESX), embedded by the Avalonia app. |
-| **`src/`** | Direct-database model and the SQLite, MySQL, and SQL Server migrators. |
+| **`src/`** | Direct-database model and the SQLite, MySQL, SQL Server, and PostgreSQL migrators. |
 | **`db_seeds/`** | Seed data for a fresh database. |
 
 ---

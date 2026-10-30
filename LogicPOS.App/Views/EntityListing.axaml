@@ -102,7 +102,7 @@
                               CanUserResizeColumns="True"
                               CanUserSortColumns="True"
                               DoubleTapped="OnGridDoubleTapped" />
-                    <views:ListingBusy x:Name="Busy" />
+                    <views:ListingBusy x:Name="Busy" ZIndex="100" />
                     <Border x:Name="ColumnChooser" Classes="login_alert_frame bo_doc_chooser" IsVisible="False">
                         <DockPanel Classes="bo_doc_chooser_body">
                             <TextBlock Classes="bo_doc_title" DockPanel.Dock="Top" Text="Escolher coluna" />

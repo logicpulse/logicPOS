@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -29,6 +29,8 @@ public partial class LoginWindow : UserControl
     public LoginWindow()
     {
         InitializeComponent();
+        // Spinner only on dark wallpaper â€” no full-area scrim.
+        LoginBusy.UseLoginBusy();
         TouchFields.Attach(this);
 
         var loginService = AppComposition.Services?.GetService<ILoginService>();
@@ -79,8 +81,48 @@ public partial class LoginWindow : UserControl
             return;
         }
 
-        // Android: sem janela nem desktop lifetime — usar callback registado pelo MainActivity.
+        // Android: sem janela nem desktop lifetime â€” usar callback registado pelo MainActivity.
         App.ExitApplication?.Invoke();
+    }
+
+    /// <summary>
+    /// Desktop: trocar MainWindow para o shell da sessÃ£o e esconder o login (evita duas janelas).
+    /// </summary>
+    private void PresentDesktopShell(Window shell)
+    {
+        IsVisible = false;
+        if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var loginShell = desktop.MainWindow;
+            desktop.MainWindow = shell;
+            shell.Show();
+            loginShell?.Hide();
+            return;
+        }
+
+        shell.Show();
+    }
+
+    /// <summary>
+    /// Desktop: logout â€” repor o login como MainWindow antes do shell fechar (ShutdownMode).
+    /// </summary>
+    private void RestoreDesktopLogin()
+    {
+        _viewModel.ClearSession();
+        IsVisible = true;
+        if (Avalonia.Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            var loginShell = TopLevel.GetTopLevel(this) as Window;
+            if (loginShell is null)
+            {
+                loginShell = new LoginShellWindow();
+            }
+
+            desktop.MainWindow = loginShell;
+            loginShell.Show();
+        }
+
+        PinEntryFocus();
     }
 
     private async Task PromptStartupDialogsAsync()
@@ -150,7 +192,7 @@ public partial class LoginWindow : UserControl
     private static string FormatLoginVersion()
     {
         var version = ReadAssemblyVersion();
-        return $"Powered by LogicPulse Technologies © Vers. v{version}";
+        return $"Powered by LogicPulse Technologies Â© Vers. v{version}";
     }
 
     private static string ReadAssemblyVersion()
@@ -259,9 +301,9 @@ public partial class LoginWindow : UserControl
         var query = TerminalSearch.Text?.Trim() ?? string.Empty;
         var rows = _viewModel.TerminalChoices.Where(terminal =>
             query.Length == 0
-            || terminal.Code.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || terminal.Designation.Contains(query, StringComparison.OrdinalIgnoreCase)
-            || terminal.HardwareId.Contains(query, StringComparison.OrdinalIgnoreCase));
+            || TextSearch.Contains(terminal.Code, query)
+            || TextSearch.Contains(terminal.Designation, query)
+            || TextSearch.Contains(terminal.HardwareId, query));
 
         foreach (var terminal in rows)
         {
@@ -273,7 +315,7 @@ public partial class LoginWindow : UserControl
             };
             AddTerminalCell(columns, choice.Code, 0);
             AddTerminalCell(columns, choice.Designation, 1);
-            AddTerminalCell(columns, choice.IsDefault ? "Sim" : "Não", 2);
+            AddTerminalCell(columns, choice.IsDefault ? "Sim" : "NÃ£o", 2);
             AddTerminalCell(columns, choice.HardwareId, 3);
             AddTerminalCell(columns, choice.UpdatedAt?.ToString("dd/MM/yyyy HH:mm") ?? string.Empty, 4);
             var button = new Button
@@ -301,30 +343,21 @@ public partial class LoginWindow : UserControl
 
     private async void OnTerminalConfirmClick(object? sender, RoutedEventArgs e)
     {
-        var isAndroid = OperatingSystem.IsAndroid();
-        if (isAndroid)
-        {
-            MobileHostView.ShowLoadingOverlay("A associar terminal…");
-            await MobileHostView.YieldForPaintAsync();
-        }
+        await ShowAuthLoadingAsync("A associar terminalâ€¦");
 
         _sessionOpening = false;
         var error = await _viewModel.ConfirmTerminalAsync();
         TerminalNotice.Text = error ?? string.Empty;
         if (string.IsNullOrWhiteSpace(error) == false)
         {
-            if (isAndroid)
-            {
-                MobileHostView.HideLoadingOverlay();
-            }
-
+            HideAuthLoading();
             return;
         }
 
         TerminalOverlay.IsVisible = false;
-        if (isAndroid && _sessionOpening == false)
+        if (_sessionOpening == false)
         {
-            MobileHostView.HideLoadingOverlay();
+            HideAuthLoading();
         }
 
         PinEntryFocus();
@@ -355,7 +388,7 @@ public partial class LoginWindow : UserControl
         Classes.Set("login_portrait", _viewport.IsPortrait);
         Classes.Set("login_landscape", _viewport.IsLandscape);
 
-        // Alternar painéis landscape / portrait — única fonte de verdade para visibilidade.
+        // Alternar painÃ©is landscape / portrait â€” Ãºnica fonte de verdade para visibilidade.
         LandscapePanel.IsVisible = !_viewport.IsPortrait;
         PortraitLoginPanel.IsVisible = _viewport.IsPortrait;
 
@@ -363,7 +396,7 @@ public partial class LoginWindow : UserControl
         {
             _lastPortrait = _viewport.IsPortrait;
 
-            // Landscape: restaurar orientação vertical dos utilizadores.
+            // Landscape: restaurar orientaÃ§Ã£o vertical dos utilizadores.
             if (_viewport.IsLandscape && LoginUsers.ItemsPanelRoot is StackPanel usersPanel)
             {
                 usersPanel.Orientation = Avalonia.Layout.Orientation.Vertical;
@@ -375,7 +408,7 @@ public partial class LoginWindow : UserControl
             ApplyPortraitChrome();
             TerminalFrame.Width = Math.Min(_viewport.Width - 40, 700);
             TerminalFrame.Height = Math.Min(_viewport.Height - 120, 900);
-            // Limitar alertas ao viewport em portrait para nunca transbordar o ecrã.
+            // Limitar alertas ao viewport em portrait para nunca transbordar o ecrÃ£.
             AlertFrame.MaxWidth = Math.Max(240, _viewport.Width - 32);
             AlertFrame.MaxHeight = Math.Max(200, _viewport.Height - 80);
         }
@@ -395,7 +428,7 @@ public partial class LoginWindow : UserControl
     }
 
     /// <summary>
-    /// Portrait: dimensionar o cartão e logo proporcionalmente ao ecrã; centrado verticalmente.
+    /// Portrait: dimensionar o cartÃ£o e logo proporcionalmente ao ecrÃ£; centrado verticalmente.
     /// </summary>
     private void ApplyPortraitChrome()
     {
@@ -411,7 +444,7 @@ public partial class LoginWindow : UserControl
     }
 
     /// <summary>
-    /// Landscape: restaurar posições do artboard fixo 1920×1080.
+    /// Landscape: restaurar posiÃ§Ãµes do artboard fixo 1920Ã—1080.
     /// </summary>
     private void ApplyLandscapeChrome()
     {
@@ -457,12 +490,9 @@ public partial class LoginWindow : UserControl
     private async Task ShowSessionAsync(string userName)
     {
         var isAndroid = OperatingSystem.IsAndroid();
-        if (isAndroid)
-        {
-            // Overlay por cima do login (não limpar o Host) — já pode estar visível desde o Entrar.
-            MobileHostView.ShowLoadingOverlay("A preparar o ecrã…");
-            await MobileHostView.YieldForPaintAsync();
-        }
+        // JÃ¡ pode estar visÃ­vel desde o Entrar â€” reforÃ§a mensagem e garante paint.
+        UpdateAuthLoading("A preparar o ecrÃ£â€¦");
+        await YieldLoginPaintAsync();
 
         var backOfficeOnly = false;
         var mode = AppComposition.Services?.GetService<IOperationMode>();
@@ -483,11 +513,8 @@ public partial class LoginWindow : UserControl
         {
             if (backOfficeOnly)
             {
-                if (isAndroid)
-                {
-                    MobileHostView.UpdateLoadingMessage("A abrir o BackOffice…");
-                    await MobileHostView.YieldForPaintAsync();
-                }
+                UpdateAuthLoading("A abrir o BackOfficeâ€¦");
+                await YieldLoginPaintAsync();
 
                 var label = await Task.Run(async () => await SessionLabelAsync(userName))
                     .ConfigureAwait(true);
@@ -504,29 +531,27 @@ public partial class LoginWindow : UserControl
                 {
                     MobileHostView.ShowSession(office, OnBoLoggedOut);
                     await office.ActivateHostedAsync();
-                    MobileHostView.HideLoadingOverlay();
+                    HideAuthLoading();
                     return;
                 }
 
-                office.LoggedOut += (_, _) => OnBoLoggedOut();
-                var boShell = new BoShellWindow(office);
-                boShell.Show();
+                // Desktop: uma sÃ³ janela â€” esconder login, POS/BO passa a MainWindow.
+                office.LoggedOut += (_, _) => RestoreDesktopLogin();
+                PresentDesktopShell(new BoShellWindow(office));
+                HideAuthLoading();
                 return;
             }
 
-            if (isAndroid)
-            {
-                MobileHostView.UpdateLoadingMessage("A construir o ecrã POS…");
-                await MobileHostView.YieldForPaintAsync();
-            }
+            UpdateAuthLoading("A construir o ecrÃ£ POSâ€¦");
+            await YieldLoginPaintAsync();
 
-            // Construtor pesado (InitializeComponent) — overlay já pintado por cima.
+            // Construtor pesado (InitializeComponent) â€” overlay jÃ¡ pintado por cima.
             var pos = new PosWindow(userName);
 
             if (isAndroid)
             {
-                await MobileHostView.YieldForPaintAsync();
-                MobileHostView.UpdateLoadingMessage("A carregar o catálogo…");
+                await YieldLoginPaintAsync();
+                UpdateAuthLoading("A carregar o catÃ¡logoâ€¦");
             }
 
             void OnLoggedOut()
@@ -538,29 +563,22 @@ public partial class LoginWindow : UserControl
 
             if (isAndroid)
             {
-                // POS fica por baixo do overlay até ActivateHostedAsync terminar.
+                // POS fica por baixo do overlay atÃ© ActivateHostedAsync terminar.
                 MobileHostView.ShowSession(pos, OnLoggedOut);
                 await pos.ActivateHostedAsync();
-                MobileHostView.HideLoadingOverlay();
+                HideAuthLoading();
                 return;
             }
 
-            pos.LoggedOut += (_, _) => OnLoggedOut();
-            var shell = new PosShellWindow(pos);
-            if (TopLevel.GetTopLevel(this) is Window owner)
-            { 
-                shell.Show();
-                owner.Hide();
-            }
-            
+            // Desktop: uma só janela — esconder login, POS passa a MainWindow.
+            pos.LoggedOut += (_, _) => RestoreDesktopLogin();
+            PresentDesktopShell(new PosShellWindow(pos));
+            HideAuthLoading();
         }
         catch (Exception exception)
         {
             App.WriteCrash("ShowSessionAsync", exception);
-            if (isAndroid)
-            {
-                MobileHostView.HideLoadingOverlay();
-            }
+            HideAuthLoading();
 
             IsVisible = true;
             PinEntryFocus();
@@ -572,12 +590,15 @@ public partial class LoginWindow : UserControl
 
             var box = new Window
             {
-                Title = "Erro após login",
-                Width = 720,
-                Height = 420,
+                Title = "Erro apÃ³s login",
+                SizeToContent = SizeToContent.WidthAndHeight,
+                MinWidth = 420,
+                MaxWidth = 720,
+                MaxHeight = 480,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Content = new ScrollViewer
                 {
+                    MaxHeight = 420,
                     Content = new TextBox
                     {
                         Text = exception.ToString(),
@@ -592,25 +613,62 @@ public partial class LoginWindow : UserControl
     }
 
     /// <summary>
-    /// Entrar / tecla Enter: loading imediato no Android, depois auth.
+    /// Entrar / tecla Enter: loading imediato atÃ© validar o PIN (e abrir sessÃ£o se ok).
     /// </summary>
     private async Task SubmitLoginAsync()
     {
-        var isAndroid = OperatingSystem.IsAndroid();
-        if (isAndroid)
-        {
-            MobileHostView.ShowLoadingOverlay("A autenticar…");
-            await MobileHostView.YieldForPaintAsync();
-        }
+        await ShowAuthLoadingAsync("A autenticarâ€¦");
 
         _sessionOpening = false;
         await _viewModel.SubmitAsync();
 
         // Falha de login / PIN errado: esconder overlay. Sucesso: ShowSessionAsync trata.
-        if (isAndroid && _sessionOpening == false)
+        if (_sessionOpening == false)
+        {
+            HideAuthLoading();
+        }
+    }
+
+    private async Task ShowAuthLoadingAsync(string message)
+    {
+        LoginBusy.Show(message);
+        if (OperatingSystem.IsAndroid())
+        {
+            MobileHostView.ShowLoadingOverlay(message);
+        }
+
+        await YieldLoginPaintAsync();
+    }
+
+    private void HideAuthLoading()
+    {
+        LoginBusy.Hide();
+        if (OperatingSystem.IsAndroid())
         {
             MobileHostView.HideLoadingOverlay();
         }
+    }
+
+    private void UpdateAuthLoading(string message)
+    {
+        LoginBusy.Show(message);
+        if (OperatingSystem.IsAndroid())
+        {
+            MobileHostView.UpdateLoadingMessage(message);
+        }
+    }
+
+    private static async Task YieldLoginPaintAsync()
+    {
+        if (OperatingSystem.IsAndroid())
+        {
+            await MobileHostView.YieldForPaintAsync();
+            return;
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Background);
+        await Task.Delay(40);
+        await Dispatcher.UIThread.InvokeAsync(() => { }, DispatcherPriority.Loaded);
     }
 
     private static async Task<string> SessionLabelAsync(string userName)
@@ -720,11 +778,7 @@ public partial class LoginWindow : UserControl
 
     private async void OnResetPasswordClick(object? sender, RoutedEventArgs e)
     {
-        if (OperatingSystem.IsAndroid())
-        {
-            MobileHostView.ShowLoadingOverlay("A autenticar…");
-            await MobileHostView.YieldForPaintAsync();
-        }
+        await ShowAuthLoadingAsync("A autenticarâ€¦");
 
         try
         {
@@ -732,10 +786,10 @@ public partial class LoginWindow : UserControl
         }
         finally
         {
-            // Alterar PIN fica no ecrã de login — esconder overlay (excepto se sessão já arrancou).
-            if (OperatingSystem.IsAndroid() && _sessionOpening == false)
+            // Alterar PIN fica no ecrÃ£ de login â€” esconder overlay (excepto se sessÃ£o jÃ¡ arrancou).
+            if (_sessionOpening == false)
             {
-                MobileHostView.HideLoadingOverlay();
+                HideAuthLoading();
             }
         }
     }

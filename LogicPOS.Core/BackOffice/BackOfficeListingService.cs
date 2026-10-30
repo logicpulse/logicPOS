@@ -285,7 +285,7 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (string.IsNullOrWhiteSpace(search) == false)
         {
             rows = rows.Where(row => row.Values.Values.Any(value =>
-                value.Contains(search, StringComparison.CurrentCultureIgnoreCase))).ToList();
+                TextSearch.Contains(value, search))).ToList();
         }
 
         return new ListingSnapshot
@@ -1095,7 +1095,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         if (page.EntityType == typeof(Article) || page.EntityType == typeof(ArticleFamily) || page.EntityType == typeof(ArticleSubfamily))
         {
             var button = page.EntityType.GetProperty("Button")?.GetValue(entity) as Button;
-            var group = page.EntityType == typeof(Article) ? "Detalhes 1" : null;
+            // GTK DialogArticle tab1 = Resx.global_record_main_detail ("Detalhes")
+            var group = page.EntityType == typeof(Article) ? "Detalhes" : null;
             fields.Add(new ListingField
             {
                 Key = "ButtonLabel",
@@ -1141,28 +1142,42 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             return null;
         }
 
-        // Tab titles match GTK Resx: article_edit_dialog_tab1 / dialog_edit_article_tab2..tab4
+        // GTK DialogArticle AppendPage order / labels:
+        // 1) global_record_main_detail ("Detalhes")
+        // 2) dialog_edit_article_tab2_label ("Detalhes financeiros")
+        // 3) dialog_edit_article_tab3_label ("Outros detalhes")
+        // 4) dialog_edit_article_tab4_label1 ("Artigos Associados")
+        // 5) global_serial_number ("Número de série")
         return propertyName switch
         {
-            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "Barcode" or "FamilyId" or "SubfamilyId"
+            "Ord" or "Order" or "Code" or "CodeDealer" or "Designation" or "FamilyId" or "SubfamilyId"
                 or "TypeId" or "IsComposed" or "Favorite" or "UseWeighingBalance" or "Disabled"
-                => "Detalhes 1",
+                => "Detalhes",
             "Price1" or "Price2" or "Price3" or "Price4" or "Price5" or "PriceWithVat" or "Discount"
                 or "PVPVariable" or "ClassId" or "VatOnTableId" or "VatDirectSellingId" or "VatExemptionReasonId"
                 => "Detalhes financeiros",
             "UniqueArticles" => "Número de série",
+            // Barcode lives on GTK tab3 (Outros), not tab1
             _ => "Outros detalhes"
         };
     }
 
-    /// <summary>Stable article editor tab order (GTK order; reflection must not decide first tab).</summary>
+    /// <summary>Stable article editor tab order (GTK AppendPage order; reflection must not decide).</summary>
     public static IReadOnlyList<string> ArticleTabOrder { get; } =
     [
-        "Detalhes 1",
+        "Detalhes",
         "Detalhes financeiros",
         "Outros detalhes",
-        "Número de série",
-        "Artigos Associados"
+        "Artigos Associados",
+        "Número de série"
+    ];
+
+    /// <summary>Stable user editor tab order (GTK-style; reflection must not decide).</summary>
+    public static IReadOnlyList<string> UserTabOrder { get; } =
+    [
+        "Detalhe",
+        "Contactos",
+        "Outros"
     ];
 
     private static List<ListingColumn> PickColumns(IReadOnlyList<ListingField> fields)

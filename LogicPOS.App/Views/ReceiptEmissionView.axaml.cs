@@ -1,4 +1,4 @@
-Ôªøusing System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -52,8 +52,8 @@ public partial class ReceiptEmissionView : UserControl
         CardList.ItemTemplate = new FuncDataTemplate<ReceiptGridRow>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
-                $"{item.DateText} ¬∑ {item.Status}",
-                $"{item.CustomerName} ¬∑ {item.TotalToPayText}",
+                $"{item.DateText} ∑ {item.Status}",
+                $"{item.CustomerName} ∑ {item.TotalToPayText}",
                 item), true);
         AttachedToVisualTree += (_, _) =>
         {
@@ -351,7 +351,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || TryMoney(ExchangeRate.Text, out var rate) == false)
         {
-            PayError.Text = "A taxa de c√¢mbio tem de ser superior a zero.";
+            PayError.Text = "A taxa de c‚mbio tem de ser superior a zero.";
             return;
         }
 
@@ -364,7 +364,7 @@ public partial class ReceiptEmissionView : UserControl
             var service = AppComposition.Services?.GetService<IReceiptEmission>();
             if (service is null)
             {
-                PayError.Text = "Emiss√£o de recibos indispon√≠vel.";
+                PayError.Text = "Emiss„o de recibos indisponÌvel.";
                 return;
             }
 
@@ -387,7 +387,7 @@ public partial class ReceiptEmissionView : UserControl
             PayOverlay.IsVisible = false;
             Notice.Text = result.Message;
             await LoadAsync();
-            if (string.IsNullOrWhiteSpace(result.PdfPath) == false && TopLevel.GetTopLevel(this) is IOfficeSurface office)
+            if (string.IsNullOrWhiteSpace(result.PdfPath) == false && OfficeSurface.Find(this) is { } office)
             {
                 await office.ShowPdfAsync(result.PdfPath, "Recibo");
             }
@@ -445,11 +445,11 @@ public partial class ReceiptEmissionView : UserControl
             var path = documents is null ? null : await documents.CreateA4FileAsync(row.Source.Id);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Notice.Text = "N√£o foi poss√≠vel abrir o documento.";
+                Notice.Text = "N„o foi possÌvel abrir o documento.";
                 return;
             }
 
-            if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
+            if (OfficeSurface.Find(this) is { } office)
             {
                 await office.ShowPdfAsync(path, row.Number);
             }
@@ -511,7 +511,7 @@ public partial class ReceiptEmissionView : UserControl
         var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
         if (start > end)
         {
-            Notice.Text = "A data inicial n√£o pode ser posterior √† data final.";
+            Notice.Text = "A data inicial n„o pode ser posterior ‡ data final.";
             return;
         }
 
@@ -613,28 +613,28 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (selected.Count == 0)
         {
-            return "√â necess√°rio seleccionar pelo menos um documento.";
+            return "… necess·rio seleccionar pelo menos um documento.";
         }
 
         if (selected.Any(item => item.IsDraft))
         {
-            return "Rascunhos n√£o podem ser liquidados";
+            return "Rascunhos n„o podem ser liquidados";
         }
 
         var paid = string.Join(",", selected.Where(item => item.Paid).Select(item => item.Number));
         if (paid.Length > 0)
         {
-            return $"Os seguintes documentos j√° foram pagos: {paid}";
+            return $"Os seguintes documentos j· foram pagos: {paid}";
         }
 
         if (selected.All(item => item.Type == "NC"))
         {
-            return "√â necess√°rio pelo menos uma fatura ou nota de d√©bito para liquidar.";
+            return "… necess·rio pelo menos uma fatura ou nota de dÈbito para liquidar.";
         }
 
         if (ReceiptSettlement.Net(selected) < 0)
         {
-            return "O total das notas de cr√©dito seleccionadas excede a d√≠vida das faturas.";
+            return "O total das notas de crÈdito seleccionadas excede a dÌvida das faturas.";
         }
 
         if (selected.Select(item => item.CustomerId).Distinct().Count() > 1)
@@ -649,22 +649,22 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (PaymentMethodBox.SelectedItem is not ReceiptPayOption)
         {
-            return "O m√©todo de pagamento √© obrigat√≥rio.";
+            return "O mÈtodo de pagamento È obrigatÛrio.";
         }
 
         if (CurrencyBox.SelectedItem is not ReceiptPayOption)
         {
-            return "A moeda √© obrigat√≥ria.";
+            return "A moeda È obrigatÛria.";
         }
 
         if (TryMoney(ExchangeRate.Text, out var rate) == false || rate <= 0)
         {
-            return "A taxa de c√¢mbio tem de ser superior a zero.";
+            return "A taxa de c‚mbio tem de ser superior a zero.";
         }
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || currencyAmount < 0)
         {
-            return "O montante em moeda n√£o pode ser negativo.";
+            return "O montante em moeda n„o pode ser negativo.";
         }
 
         var amount = DocumentLineCalculator.ReceiptAmount(_net, currencyAmount, rate);
@@ -675,12 +675,12 @@ public partial class ReceiptEmissionView : UserControl
 
         if (amount > _net)
         {
-            return "O valor do pagamento √© superior ao total em d√≠vida dos documentos seleccionados.";
+            return "O valor do pagamento È superior ao total em dÌvida dos documentos seleccionados.";
         }
 
         if (DateTime.TryParseExact(PayDate.Text?.Trim(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out _) == false)
         {
-            return "Data inv√°lida.";
+            return "Data inv·lida.";
         }
 
         return null;
@@ -688,7 +688,7 @@ public partial class ReceiptEmissionView : UserControl
 
     private static bool TryMoney(string? text, out decimal value) => MoneyFormat.TryParse(text, out value);
 
-    // ‚îÄ‚îÄ Portrait layout ‚îÄ‚îÄ
+    // -- Portrait layout --
 
     private void OnReceiptLayoutUpdated(object? sender, EventArgs e) => RelayoutForViewport();
 

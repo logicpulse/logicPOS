@@ -7,7 +7,6 @@ public static class GtkFormRules
     // Patterns copied from the GTK SettingsApp dialogs.
     private const string NamePattern = @"^[À-ÿ€$&@#%ºª(){}\[\]';:!?<>+\-_ \.\,\s\\\/\*\w]{1,200}$";
     private const string AddressPattern = @"^[0-9A-Za-zÀ-ÿ&ºª,;'./\\* _-]*$";
-    private const string EmailPattern = @"^(|([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+([,.](([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5}){1,25})+)*$";
     private const string PhonePattern = @"^\+?([- ]?\d)*$";
     private const string FiscalPattern = @"^(PT)?[0-9]{9}$";
     private const string ZipPattern = @"^\d{4}(-\d{3})?$";
@@ -31,7 +30,7 @@ public static class GtkFormRules
         {
             "Clientes" => Customer(fields),
             "Utilizadores" => Optional(fields, "Name", "o nome", NamePattern, required: true)
-                ?? Optional(fields, "Email", "o email", EmailPattern, required: false)
+                ?? Email(fields, required: false)
                 ?? Optional(fields, "Phone", "o telefone", PhonePattern, required: false)
                 ?? Optional(fields, "MobilePhone", "o telemóvel", PhonePattern, required: false)
                 ?? Optional(fields, "FiscalNumber", "o NIF", FiscalPattern, required: false)
@@ -67,7 +66,7 @@ public static class GtkFormRules
             ?? RequiredLookup(fields, "PriceTypeId", "o tipo de preço")
             ?? RequiredLookup(fields, "CountryId", "o país")
             ?? Optional(fields, "Discount", "o desconto", PercentPattern, required: true)
-            ?? Optional(fields, "Email", "o email", EmailPattern, required: false)
+            ?? Email(fields, required: false)
             ?? Optional(fields, "Phone", "o telefone", PhonePattern, required: false)
             ?? Optional(fields, "MobilePhone", "o telemóvel", PhonePattern, required: false)
             ?? Optional(fields, "Fax", "o fax", PhonePattern, required: false)
@@ -143,6 +142,47 @@ public static class GtkFormRules
         }
 
         return string.IsNullOrWhiteSpace(value) ? $"Indique {label}." : null;
+    }
+
+    // Customer/user Email is a single persisted string; multiple addresses use ',' or ';'
+    // (same separators as document email send). Spaces around separators are allowed.
+    private static string? Email(IReadOnlyDictionary<string, string> fields, bool required)
+    {
+        if (fields.TryGetValue("Email", out var value) == false)
+        {
+            return null;
+        }
+
+        var text = value?.Trim() ?? string.Empty;
+        if (text.Length == 0)
+        {
+            return required ? "Indique o email." : null;
+        }
+
+        return IsValidEmails(text) ? null : "Indique um valor válido para o email.";
+    }
+
+    /// <summary>
+    /// Accepts one or more addresses separated by <c>;</c> or <c>,</c> (trimmed).
+    /// Used by Clientes/Utilizadores save validation (Avalonia EntityListing → GtkFormRules).
+    /// </summary>
+    public static bool IsValidEmails(string value)
+    {
+        var emails = value.Split([',', ';'], StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (emails.Length == 0)
+        {
+            return false;
+        }
+
+        foreach (var email in emails)
+        {
+            if (System.Net.Mail.MailAddress.TryCreate(email, out _) == false)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static string? Optional(IReadOnlyDictionary<string, string> fields, string key, string label, string pattern, bool required)

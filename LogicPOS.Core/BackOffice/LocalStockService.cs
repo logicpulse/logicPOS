@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Enums;
@@ -30,22 +31,31 @@ public sealed class LocalStockService : IStockManagementService
         var query = database.Articles.AsNoTracking()
             .Include(item => item.MeasurementUnit)
             .Where(item => item.IsDeleted == false);
-        if (string.IsNullOrWhiteSpace(request.Search) == false)
-        {
-            var search = request.Search.Trim();
-            query = query.Where(item =>
-                (item.Code != null && item.Code.Contains(search)) ||
-                (item.Designation != null && item.Designation.Contains(search)));
-        }
-
-        var totalCount = await query.CountAsync(cancellationToken);
         var pageSize = Math.Max(1, request.PageSize);
         var page = Math.Max(1, request.Page);
-        var articles = await query
-            .OrderBy(item => item.Code)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        List<Article> articles;
+        int totalCount;
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            totalCount = await query.CountAsync(cancellationToken);
+            articles = await query
+                .OrderBy(item => item.Code)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var search = request.Search.Trim();
+            var matched = (await query.OrderBy(item => item.Code).ToListAsync(cancellationToken))
+                .Where(item => TextSearch.ContainsAny(search, item.Code, item.Designation))
+                .ToList();
+            totalCount = matched.Count;
+            articles = matched
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
 
         var ids = articles.Select(item => item.Id).ToList();
         var totals = await database.StockMovements.AsNoTracking()
@@ -160,25 +170,40 @@ public sealed class LocalStockService : IStockManagementService
             query = query.Where(item => item.CustomerId == customerId);
         }
 
-        if (string.IsNullOrWhiteSpace(request.Search) == false)
-        {
-            var search = request.Search.Trim();
-            query = query.Where(item =>
-                (item.DocumentNumber != null && item.DocumentNumber.Contains(search)) ||
-                (item.Article != null && item.Article.Designation != null && item.Article.Designation.Contains(search)) ||
-                (item.SerialNumber != null && item.SerialNumber.Contains(search)) ||
-                (item.Customer != null && item.Customer.Name != null && item.Customer.Name.Contains(search)));
-        }
-
-        var totalCount = await query.CountAsync(cancellationToken);
         var pageSize = Math.Max(1, request.PageSize);
         var page = Math.Max(1, request.Page);
-        var items = await query
-            .OrderByDescending(item => item.Date)
-            .ThenByDescending(item => item.CreatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        List<StockMovement> items;
+        int totalCount;
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            totalCount = await query.CountAsync(cancellationToken);
+            items = await query
+                .OrderByDescending(item => item.Date)
+                .ThenByDescending(item => item.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var search = request.Search.Trim();
+            var matched = (await query
+                .OrderByDescending(item => item.Date)
+                .ThenByDescending(item => item.CreatedAt)
+                .ToListAsync(cancellationToken))
+                .Where(item => TextSearch.ContainsAny(
+                    search,
+                    item.DocumentNumber,
+                    item.Article?.Designation,
+                    item.SerialNumber,
+                    item.Customer?.Name))
+                .ToList();
+            totalCount = matched.Count;
+            items = matched
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
 
         return new StockPageResult<StockMovementRow>
         {
@@ -391,28 +416,39 @@ public sealed class LocalStockService : IStockManagementService
             query = query.Where(item => item.ArticleId == articleId);
         }
 
-        if (string.IsNullOrWhiteSpace(request.Search) == false)
-        {
-            var search = request.Search.Trim();
-            query = query.Where(item =>
-                (item.SerialNumber != null && item.SerialNumber.Contains(search)) ||
-                (item.Article != null && item.Article.Designation != null && item.Article.Designation.Contains(search)));
-        }
-
         if (string.IsNullOrWhiteSpace(request.Status) == false &&
             Enum.TryParse<ArticleSerialNumberStatus>(request.Status, true, out var status))
         {
             query = query.Where(item => item.Status == status);
         }
 
-        var totalCount = await query.CountAsync(cancellationToken);
         var pageSize = Math.Max(1, request.PageSize);
         var page = Math.Max(1, request.Page);
-        var items = await query
-            .OrderByDescending(item => item.UpdatedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        List<WarehouseArticle> items;
+        int totalCount;
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            totalCount = await query.CountAsync(cancellationToken);
+            items = await query
+                .OrderByDescending(item => item.UpdatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var search = request.Search.Trim();
+            var matched = (await query
+                .OrderByDescending(item => item.UpdatedAt)
+                .ToListAsync(cancellationToken))
+                .Where(item => TextSearch.ContainsAny(search, item.SerialNumber, item.Article?.Designation))
+                .ToList();
+            totalCount = matched.Count;
+            items = matched
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
 
         var serials = items.Select(item => item.SerialNumber!).ToList();
         var movements = await database.StockMovements.AsNoTracking()
@@ -825,17 +861,9 @@ public sealed class LocalStockService : IStockManagementService
                 && item.Status == ArticleSerialNumberStatus.Available
                 && item.SerialNumber != null
                 && item.SerialNumber != "");
-        if (string.IsNullOrWhiteSpace(term) == false)
-        {
-            query = query.Where(item =>
-                item.SerialNumber!.Contains(term)
-                || (item.Article != null && item.Article.Code.Contains(term))
-                || (item.Article != null && item.Article.Designation != null && item.Article.Designation.Contains(term)));
-        }
-
-        return await query
+        var rows = await query
+            .Include(item => item.Article)
             .OrderBy(item => item.SerialNumber)
-            .Take(80)
             .Select(item => new StockSerialChoice
             {
                 ArticleId = item.ArticleId,
@@ -844,6 +872,14 @@ public sealed class LocalStockService : IStockManagementService
                 SerialNumber = item.SerialNumber ?? string.Empty
             })
             .ToListAsync(cancellationToken);
+        if (string.IsNullOrWhiteSpace(term) == false)
+        {
+            rows = rows
+                .Where(item => TextSearch.ContainsAny(term, item.SerialNumber, item.Code, item.Designation))
+                .ToList();
+        }
+
+        return rows.Take(80).ToList();
     }
 
     public async Task<IReadOnlyList<LookupOption>> GetAvailableSerialsAsync(Guid articleId, CancellationToken cancellationToken = default)
@@ -879,23 +915,37 @@ public sealed class LocalStockService : IStockManagementService
             query = query.Where(item => item.ArticleId == articleId);
         }
 
-        if (string.IsNullOrWhiteSpace(request.Search) == false)
-        {
-            var search = request.Search.Trim();
-            query = query.Where(item =>
-                (item.Article != null && item.Article.Designation != null && item.Article.Designation.Contains(search)) ||
-                (item.SerialNumber != null && item.SerialNumber.Contains(search)) ||
-                (item.WarehouseLocation != null && item.WarehouseLocation.Designation.Contains(search)));
-        }
-
-        var totalCount = await query.CountAsync(cancellationToken);
         var pageSize = Math.Max(1, request.PageSize);
         var page = Math.Max(1, request.Page);
-        var items = await query
-            .OrderBy(item => item.Article!.Designation)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync(cancellationToken);
+        List<WarehouseArticle> items;
+        int totalCount;
+        if (string.IsNullOrWhiteSpace(request.Search))
+        {
+            totalCount = await query.CountAsync(cancellationToken);
+            items = await query
+                .OrderBy(item => item.Article!.Designation)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var search = request.Search.Trim();
+            var matched = (await query
+                .OrderBy(item => item.Article!.Designation)
+                .ToListAsync(cancellationToken))
+                .Where(item => TextSearch.ContainsAny(
+                    search,
+                    item.Article?.Designation,
+                    item.SerialNumber,
+                    item.WarehouseLocation?.Designation))
+                .ToList();
+            totalCount = matched.Count;
+            items = matched
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+        }
 
         return new StockPageResult<StockWarehouseRow>
         {

@@ -3,8 +3,8 @@
              x:Class="LogicPOS.App.Views.ListingBusy"
              Classes="bo_listing_busy_host"
              IsVisible="False"
-             IsHitTestVisible="True">
-    <Panel Classes="bo_listing_busy">
+             IsHitTestVisible="False">
+    <Panel x:Name="Scrim" Classes="bo_listing_busy">
         <StackPanel Classes="bo_listing_busy_box">
             <Panel Classes="bo_listing_spinner_host">
                 <Ellipse Classes="bo_listing_spinner_track" />

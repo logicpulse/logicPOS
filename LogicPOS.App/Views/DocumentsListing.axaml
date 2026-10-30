@@ -213,7 +213,6 @@
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
             </DataGrid>
-            <views:ListingBusy x:Name="Busy" />
             <TextBlock x:Name="EmptyLabel" Classes="bo_doc_empty" Text="Não existem documentos neste período." IsVisible="False" />
             <Border x:Name="ColumnChooser" Classes="login_alert_frame bo_doc_chooser" IsVisible="False">
                 <DockPanel Classes="bo_doc_chooser_body">
@@ -235,6 +234,8 @@
         </Panel>
     </DockPanel>
     </Border>
+        <!-- Outside the grid Panel so Avalonia DataGrid cannot paint over it; above page, below modal sheets. -->
+        <views:ListingBusy x:Name="Busy" ZIndex="100" IsHitTestVisible="False" />
         <Panel x:Name="FilterSheet" Classes="login_alert_overlay" IsVisible="False">
             <Border Classes="login_alert_frame bo_mobile_sheet">
                 <DockPanel Classes="login_alert_inner">

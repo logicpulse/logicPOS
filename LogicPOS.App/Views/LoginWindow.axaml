@@ -5,6 +5,7 @@
         x:Class="LogicPOS.App.Views.LoginWindow"
         x:DataType="vm:LoginViewModel"
         x:CompileBindings="True"
+        Classes="login_window"
         Background="#111111">
     <Viewbox Stretch="Uniform" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
     <Panel x:Name="LoginArtboard" Width="1920" Height="1080">
@@ -230,10 +231,12 @@
         </Panel>
 
         <!-- ═══ OVERLAYS (sempre visíveis) ═══ -->
+        <!-- Loading imediato após Entrar/Ok até validar PIN (desktop + Android). -->
+        <vm:ListingBusy x:Name="LoginBusy" Classes="login_busy" ZIndex="300" />
+
         <Panel Classes="login_alert_overlay" IsVisible="{Binding AlertVisible}">
-            <Border x:Name="AlertFrame" Classes="login_alert_frame"
-                    Width="{Binding AlertWidth}"
-                    Height="{Binding AlertHeight}">
+            <Border x:Name="AlertFrame" Classes="login_alert_frame login_alert_message_box"
+                    MaxWidth="{Binding AlertWidth}">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">

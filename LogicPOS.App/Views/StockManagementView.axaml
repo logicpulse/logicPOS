@@ -157,7 +157,7 @@
         </Border>
 
         <Panel x:Name="ConfirmOverlay" Classes="login_alert_overlay" IsVisible="False">
-            <Border Classes="login_alert_frame" Width="400" Height="300">
+            <Border Classes="login_alert_frame login_alert_message_box">
                 <DockPanel Classes="login_alert_inner">
                     <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                         <StackPanel Classes="login_alert_title_row">

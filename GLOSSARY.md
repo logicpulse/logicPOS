@@ -61,7 +61,7 @@ O identificador da máquina no formato `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`, gerado c
 _Avoid_: IntelliLock, MachineGuid
 
 **Migrations**:
-A atualização do esquema da base. O modelo é um só, em `logicPOS/src`. Cada motor (SQLite, MySQL, SQL Server) tem o seu projeto de migrations, e a app e a API usam esses mesmos projetos. No modo local a app aplica-as ao arrancar. No modo LogicPulse correm na API. O instalador não as corre.
+A atualização do esquema da base. O modelo é um só, em `logicPOS/src`. Cada motor (SQLite, MySQL, SQL Server, PostgreSQL) tem o seu projeto de migrations, e a app e a API usam esses mesmos projetos. No modo local a app aplica-as ao arrancar. No modo LogicPulse correm na API. O instalador não as corre.
 _Avoid_: migração da 1.4, migrador, modelo da API
 
 **Migração da 1.4**:
@@ -69,9 +69,13 @@ A cópia dos dados de uma instalação 1.4 para uma base nova do modo local. A b
 _Avoid_: migração de esquema, API, escrever por cima da base 1.4
 
 **Passagem da 1.5**:
-Desinstalar a 1.5 sem mostrar o assistente. Idioma, cultura e modo de operação vêm dessa instalação. A base SQLite copia-se para a pasta raiz da instalação nova. SQL Server e MySQL ficam no servidor, com a mesma ligação.
+Desinstalar a 1.5 sem mostrar o assistente. Idioma, cultura e modo de operação vêm dessa instalação. A base SQLite copia-se para a pasta raiz da instalação nova. SQL Server, MySQL e PostgreSQL ficam no servidor, com a mesma ligação.
 _Avoid_: migração da 1.4, atualização da 1.6
 
 **Base SQLite**:
 O ficheiro da base fica sempre na pasta raiz da instalação, `C:\Program Files\Logicpulse\logicpos`.
 _Avoid_: ProgramData, pasta da API
+
+**Email (vários endereços)**:
+No campo Email de Clientes/Utilizadores (e no envio de documentos) podem ir vários endereços na mesma string, separados por `;` ou `,` (com ou sem espaços). Ex.: `a@b.com; c@d.com`.
+_Avoid_: um campo por email, só um endereço válido

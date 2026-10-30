@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Mail;
 using LogicPOS.Application.Features.System;
+using LogicPOS.Core;
 using LogicPOS.Core.Fiscal;
 using LogicPOS.Core.Licensing;
 using LogicPOS.Domain.Entities.Finance.Calculations;
@@ -108,7 +109,9 @@ public sealed class PosLookupItem
         string? fiscalNumber = null,
         DateTime? createdAt = null)
     {
-        var label = $"{type} {number}".Trim();
+        // Document.Number already includes the series/type token (e.g. "FT 2026A864/1008").
+        // Do not prefix Type again or the picker shows "FT FT …".
+        var label = DocumentLabel(type, number);
         if (string.IsNullOrWhiteSpace(label))
         {
             label = id.ToString();
@@ -131,6 +134,25 @@ public sealed class PosLookupItem
         }
 
         return new PosLookupItem(id, label, type, parts.Count == 0 ? null : string.Join(" · ", parts));
+    }
+
+    public static string DocumentLabel(string? type, string? number)
+    {
+        var typeToken = (type ?? string.Empty).Trim();
+        var numberToken = (number ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(numberToken))
+        {
+            return typeToken;
+        }
+
+        if (string.IsNullOrWhiteSpace(typeToken)
+            || numberToken.StartsWith(typeToken + " ", StringComparison.OrdinalIgnoreCase)
+            || numberToken.Equals(typeToken, StringComparison.OrdinalIgnoreCase))
+        {
+            return numberToken;
+        }
+
+        return $"{typeToken} {numberToken}";
     }
 }
 
@@ -233,6 +255,14 @@ public static class PosDocumentRules
 
         return acronym is "FT" or "FR" or "NC" or "ND";
     }
+
+    public static bool RequiresPaymentCondition(string? acronym)
+        => string.IsNullOrWhiteSpace(acronym) == false
+            && new DocumentTypeAnalyzer(acronym).RequiresPaymentCondition();
+
+    public static bool RequireFullPayment(string? acronym)
+        => string.IsNullOrWhiteSpace(acronym) == false
+            && new DocumentTypeAnalyzer(acronym).RequireFullPayment();
 
     public static bool SupportsOptionalTransport(string? acronym)
     {
@@ -975,22 +1005,11 @@ public sealed class PosDocumentService : IPosDocumentService
             query = query.Where(document => document.Type == type);
         }
 
-        if (string.IsNullOrWhiteSpace(search) == false)
-        {
-            var term = search.Trim();
-            query = query.Where(document =>
-                document.Number.Contains(term)
-                || document.Customer.Name.Contains(term)
-                || document.Customer.FiscalNumber.Contains(term));
-        }
-
-        var total = await query.CountAsync(cancellationToken);
         var size = Math.Clamp(pageSize, 1, 100);
         var current = Math.Max(1, page);
-        var documents = await query
+        var term = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        var projected = query
             .OrderByDescending(document => document.CreatedAt)
-            .Skip((current - 1) * size)
-            .Take(size)
             .Select(document => new
             {
                 document.Id,
@@ -1003,8 +1022,33 @@ public sealed class PosDocumentService : IPosDocumentService
                 document.ParentId,
                 EntityName = document.Customer.Name,
                 TaxId = document.Customer.FiscalNumber
-            })
-            .ToListAsync(cancellationToken);
+            });
+        // Accent folding is not available in SQL Contains; filter after materialization when searching.
+        List<(Guid Id, DateTime CreatedAt, string Number, string Status, bool IsDraft, decimal TotalFinal, bool Paid, Guid? ParentId, string EntityName, string TaxId)> documents;
+        int total;
+        if (term is null)
+        {
+            total = await query.CountAsync(cancellationToken);
+            documents = (await projected
+                .Skip((current - 1) * size)
+                .Take(size)
+                .ToListAsync(cancellationToken))
+                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
+                .ToList();
+        }
+        else
+        {
+            var all = await projected.ToListAsync(cancellationToken);
+            var matched = all
+                .Where(document => TextSearch.ContainsAny(term, document.Number, document.EntityName, document.TaxId))
+                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
+                .ToList();
+            total = matched.Count;
+            documents = matched
+                .Skip((current - 1) * size)
+                .Take(size)
+                .ToList();
+        }
 
         var parentIds = documents.Where(document => document.ParentId != null).Select(document => document.ParentId!.Value).Distinct().ToList();
         var parentNumbers = parentIds.Count == 0
@@ -1350,15 +1394,23 @@ public sealed class PosDocumentService : IPosDocumentService
         return new PosLookupItem(id, label, code);
     }
 
-    public async Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default)
+    public async Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(
+        string? search = null,
+        CancellationToken cancellationToken = default)
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var documents = await database.Documents
+        var query = database.Documents
             .AsNoTracking()
-            .Where(item => item.IsDeleted == false && item.IsDraft == false)
+            .Where(item => item.IsDeleted == false && item.IsDraft == false);
+        var term = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        if (term is "—" or "-")
+        {
+            term = null;
+        }
+
+        var projected = query
             .OrderByDescending(item => item.CreatedAt)
-            .Take(250)
             .Select(item => new
             {
                 item.Id,
@@ -1367,8 +1419,43 @@ public sealed class PosDocumentService : IPosDocumentService
                 CustomerName = item.Customer.Name,
                 FiscalNumber = item.Customer.FiscalNumber,
                 item.CreatedAt
-            })
-            .ToListAsync(cancellationToken);
+            });
+
+        // Empty picker: recent window. Typed search: find beyond that window (same fields as Documentos).
+        List<(Guid Id, string Type, string Number, string CustomerName, string FiscalNumber, DateTime CreatedAt)> documents;
+        if (term is null)
+        {
+            documents = (await projected.Take(250).ToListAsync(cancellationToken))
+                .Select(item => (item.Id, item.Type, item.Number, item.CustomerName, item.FiscalNumber, item.CreatedAt))
+                .ToList();
+        }
+        else
+        {
+            var narrowed = await projected
+                .Where(item =>
+                    item.Number.Contains(term)
+                    || item.CustomerName.Contains(term)
+                    || item.FiscalNumber.Contains(term))
+                .Take(500)
+                .ToListAsync(cancellationToken);
+            var matched = narrowed
+                .Where(item => TextSearch.ContainsAny(term, item.Number, item.CustomerName, item.FiscalNumber))
+                .Select(item => (item.Id, item.Type, item.Number, item.CustomerName, item.FiscalNumber, item.CreatedAt))
+                .ToList();
+            if (matched.Count == 0)
+            {
+                // Accent-folded name match is not expressible in SQL Contains; scan a wider recent set.
+                var recent = await projected.Take(2000).ToListAsync(cancellationToken);
+                matched = recent
+                    .Where(item => TextSearch.ContainsAny(term, item.Number, item.CustomerName, item.FiscalNumber))
+                    .Select(item => (item.Id, item.Type, item.Number, item.CustomerName, item.FiscalNumber, item.CreatedAt))
+                    .Take(100)
+                    .ToList();
+            }
+
+            documents = matched.Take(100).ToList();
+        }
+
         return documents
             .Select(item => PosLookupItem.ForDocument(
                 item.Id,
@@ -1583,23 +1670,33 @@ public sealed class PosDocumentService : IPosDocumentService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var isDraft = header?.IsDraft == true;
-        var paymentToken = string.IsNullOrWhiteSpace(header?.PaymentToken) ? "MONEY" : header.PaymentToken;
-        var paymentMethod = await database.PaymentMethods
-            .AsNoTracking()
-            .FirstOrDefaultAsync(method => method.IsDeleted == false && (method.Token == paymentToken || method.Acronym == paymentToken), cancellationToken);
-        // Drafts only need a payment method row for FK shape; fall back to any active method.
-        if (paymentMethod is null && isDraft)
+        var typeRules = new DocumentTypeAnalyzer(documentType);
+        // FT/orçamento/etc.: sem liquidação no emit — não forçar NU/MONEY. FS/FR exigem método.
+        var paymentMethods = Array.Empty<CreateDocumentPaymentMethodDto>();
+        if (typeRules.RequireFullPayment() || string.IsNullOrWhiteSpace(header?.PaymentToken) == false)
         {
-            paymentMethod = await database.PaymentMethods
+            var paymentToken = string.IsNullOrWhiteSpace(header?.PaymentToken) ? "MONEY" : header!.PaymentToken!;
+            var paymentMethod = await database.PaymentMethods
                 .AsNoTracking()
-                .Where(method => method.IsDeleted == false)
-                .OrderBy(method => method.Order)
-                .FirstOrDefaultAsync(cancellationToken);
-        }
+                .FirstOrDefaultAsync(
+                    method => method.IsDeleted == false
+                        && (method.Token == paymentToken || method.Acronym == paymentToken),
+                    cancellationToken);
+            if (paymentMethod is null && isDraft)
+            {
+                paymentMethod = await database.PaymentMethods
+                    .AsNoTracking()
+                    .Where(method => method.IsDeleted == false)
+                    .OrderBy(method => method.Order)
+                    .FirstOrDefaultAsync(cancellationToken);
+            }
 
-        if (paymentMethod is null)
-        {
-            return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+            if (paymentMethod is null)
+            {
+                return PosDocumentResult.Fail("Método de pagamento não encontrado.");
+            }
+
+            paymentMethods = [new CreateDocumentPaymentMethodDto(paymentMethod.Id, 0)];
         }
 
         var currencyId = header?.CurrencyId is Guid selectedCurrency && selectedCurrency != Guid.Empty
@@ -1636,7 +1733,7 @@ public sealed class PosDocumentService : IPosDocumentService
             TotalDelivery: null,
             Notes: string.IsNullOrWhiteSpace(header?.Notes) ? null : header!.Notes.Trim(),
             Details: details,
-            PaymentMethods: new[] { new CreateDocumentPaymentMethodDto(paymentMethod.Id, 0) },
+            PaymentMethods: paymentMethods,
             IsDraft: isDraft);
 
         var references = new DocumentReferences(

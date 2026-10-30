@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using LogicPOS.Application.Features.Finance.Documents;
 using LogicPOS.Application.Features.System;
+using LogicPOS.Core;
 using LogicPOS.Domain.Entities;
 using LogicPOS.Domain.Entities.Finance.Calculations;
 using LogicPOS.Domain.Entities.Finance.Documents.Receipts.Settlement;
@@ -29,6 +30,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
         var to = end.Date.AddDays(1);
         var query = database.Documents.AsNoTracking()
             .Include(document => document.Currency)
+            .Include(document => document.Customer)
             .Where(document => document.IsDeleted == false
                 && document.IsDraft == false
                 && document.Paid == false
@@ -41,23 +43,38 @@ public sealed class LocalReceiptEmission : IReceiptEmission
             query = query.Where(document => document.CustomerId == customer);
         }
 
-        if (string.IsNullOrWhiteSpace(search) == false)
-        {
-            var term = search.Trim();
-            query = query.Where(document =>
-                document.Number.Contains(term)
-                || document.Customer.Name.Contains(term)
-                || document.Customer.FiscalNumber.Contains(term));
-        }
-
-        var total = await query.CountAsync(cancellationToken);
         var size = Math.Clamp(pageSize, 1, 100);
         var current = Math.Max(1, page);
-        var documents = await query
-            .OrderByDescending(document => document.CreatedAt)
-            .Skip((current - 1) * size)
-            .Take(size)
-            .ToListAsync(cancellationToken);
+        var term = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
+        // Accent folding is not available in SQL Contains; filter after materialization when searching.
+        List<Document> documents;
+        int total;
+        if (term is null)
+        {
+            total = await query.CountAsync(cancellationToken);
+            documents = await query
+                .OrderByDescending(document => document.CreatedAt)
+                .Skip((current - 1) * size)
+                .Take(size)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            var matched = (await query
+                .OrderByDescending(document => document.CreatedAt)
+                .ToListAsync(cancellationToken))
+                .Where(document => TextSearch.ContainsAny(
+                    term,
+                    document.Number,
+                    document.Customer?.Name,
+                    document.Customer?.FiscalNumber))
+                .ToList();
+            total = matched.Count;
+            documents = matched
+                .Skip((current - 1) * size)
+                .Take(size)
+                .ToList();
+        }
 
         return new ReceiptEmissionPage
         {

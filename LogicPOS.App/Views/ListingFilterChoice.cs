@@ -1,7 +1,10 @@
-﻿using System.Globalization;
-using System.Text;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Media;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
@@ -76,7 +79,10 @@ public static class ListingFilters
             {
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
             }
+
+            OpenDropDownAfterFocus(box);
         };
+        AttachDropChevron(box);
     }
 
     public static void SelectEveryone(AutoCompleteBox box)
@@ -127,9 +133,9 @@ public static class ListingFilters
             return false;
         }
 
-        var term = Fold(search.Trim());
-        return Fold(choice.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
-            || Fold(choice.SearchText).Contains(term, StringComparison.OrdinalIgnoreCase);
+        var term = TextSearch.Fold(search.Trim());
+        return TextSearch.Fold(choice.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || TextSearch.Fold(choice.SearchText).Contains(term, StringComparison.OrdinalIgnoreCase);
     }
 
     public static async Task<IReadOnlyList<ListingFilterChoice>> CustomersAsync()
@@ -208,9 +214,10 @@ public static class ListingFilters
             // Open the list on focus so touch/POS users can pick without typing first.
             if (box.MinimumPrefixLength == 0)
             {
-                box.IsDropDownOpen = true;
+                OpenDropDownAfterFocus(box);
             }
         };
+        AttachDropChevron(box);
     }
 
     public static void EnableDocumentSearch(AutoCompleteBox box)
@@ -224,10 +231,16 @@ public static class ListingFilters
         box.ItemTemplate = new FuncDataTemplate<PosLookupItem>((item, _) =>
         {
             var panel = new StackPanel { Spacing = 0 };
+            // Empty Guid is the "none" row; Label may be blank so the field shows the watermark.
+            var label = item is null
+                ? string.Empty
+                : item.Id == Guid.Empty && string.IsNullOrWhiteSpace(item.Label)
+                    ? "—"
+                    : item.Label;
             panel.Children.Add(new TextBlock
             {
                 Classes = { "bo_doc_filter_search_name" },
-                Text = item?.Label ?? string.Empty
+                Text = label
             });
             if (string.IsNullOrWhiteSpace(item?.Detail) == false)
             {
@@ -249,8 +262,93 @@ public static class ListingFilters
                 box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault()?.SelectAll();
             }
 
-            box.IsDropDownOpen = true;
+            OpenDropDownAfterFocus(box);
         };
+        AttachDropChevron(box);
+    }
+
+    /// <summary>
+    /// Same PathIcon geometry as Fluent ComboBox DropDownGlyph — AutoCompleteBox has no built-in chevron.
+    /// </summary>
+    public static void AttachDropChevron(AutoCompleteBox box)
+    {
+        if (box.InnerRightContent is Control existing
+            && existing.Classes.Contains("bo_lookup_chevron"))
+        {
+            return;
+        }
+
+        var icon = new PathIcon
+        {
+            Width = 12,
+            Height = 12,
+            Data = StreamGeometry.Parse("M1939 486L2029 576L1024 1581L19 576L109 486L1024 1401L1939 486Z"),
+            Foreground = new SolidColorBrush(Color.Parse("#666666")),
+            // Let the Button receive the click; PathIcon hit-testing can swallow pointer events.
+            IsHitTestVisible = false
+        };
+        var button = new Button
+        {
+            Classes = { "bo_lookup_chevron" },
+            Content = icon,
+            Focusable = false,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        // Tunnel PointerPressed (not Click): Avalonia AutoCompleteBox closes the popup when
+        // focus/pointer settles after a Button.Click. Defer open past that close.
+        button.AddHandler(InputElement.PointerPressedEvent, (_, e) =>
+        {
+            if (e.GetCurrentPoint(button).Properties.IsLeftButtonPressed == false)
+            {
+                return;
+            }
+
+            e.Handled = true;
+            if (box.IsDropDownOpen)
+            {
+                box.IsDropDownOpen = false;
+                return;
+            }
+
+            FocusAutoComplete(box);
+            OpenDropDownAfterFocus(box);
+        }, RoutingStrategies.Tunnel);
+        box.InnerRightContent = button;
+    }
+
+    private static void FocusAutoComplete(AutoCompleteBox box)
+    {
+        if (box.IsKeyboardFocusWithin)
+        {
+            return;
+        }
+
+        var editor = box.GetVisualDescendants().OfType<TextBox>().FirstOrDefault();
+        if (editor is not null)
+        {
+            editor.Focus();
+            return;
+        }
+
+        box.Focus();
+    }
+
+    /// <summary>
+    /// Open after the current pointer/focus cycle so AutoCompleteBox does not immediately
+    /// close the popup (first-click looked dead; second click worked).
+    /// </summary>
+    private static void OpenDropDownAfterFocus(AutoCompleteBox box)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (box.IsDropDownOpen)
+            {
+                return;
+            }
+
+            box.IsDropDownOpen = true;
+        }, DispatcherPriority.Background);
     }
 
     public static Guid? SelectedDocumentId(AutoCompleteBox box)
@@ -319,10 +417,10 @@ public static class ListingFilters
             return false;
         }
 
-        var term = Fold(search.Trim());
-        return Fold(choice.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
-            || Fold(choice.Detail).Contains(term, StringComparison.OrdinalIgnoreCase)
-            || Fold(choice.Code).Contains(term, StringComparison.OrdinalIgnoreCase);
+        var term = TextSearch.Fold(search.Trim());
+        return TextSearch.Fold(choice.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || TextSearch.Fold(choice.Detail).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || TextSearch.Fold(choice.Code).Contains(term, StringComparison.OrdinalIgnoreCase);
     }
 
     public static LookupOption? SelectedLookup(AutoCompleteBox? box)
@@ -420,7 +518,7 @@ public static class ListingFilters
             return true;
         }
 
-        var term = Fold(search.Trim());
+        var term = TextSearch.Fold(search.Trim());
         if (term.Equals("todos", StringComparison.OrdinalIgnoreCase)
             || term.Equals("(nenhum)", StringComparison.OrdinalIgnoreCase))
         {
@@ -429,12 +527,12 @@ public static class ListingFilters
 
         if (option.Id == Guid.Empty)
         {
-            return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase);
+            return TextSearch.Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase);
         }
 
-        return Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
-            || Fold(option.Search ?? string.Empty).Contains(term, StringComparison.OrdinalIgnoreCase)
-            || Fold(option.Meta ?? string.Empty).Contains(term, StringComparison.OrdinalIgnoreCase);
+        return TextSearch.Fold(option.Label).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || TextSearch.Fold(option.Search ?? string.Empty).Contains(term, StringComparison.OrdinalIgnoreCase)
+            || TextSearch.Fold(option.Meta ?? string.Empty).Contains(term, StringComparison.OrdinalIgnoreCase);
     }
 
     private static string? Extra(LookupOption? option)
@@ -473,12 +571,5 @@ public static class ListingFilters
         }
 
         return count;
-    }
-
-    private static string Fold(string text)
-    {
-        var form = text.Normalize(NormalizationForm.FormD);
-        var chars = form.Where(character => CharUnicodeInfo.GetUnicodeCategory(character) != UnicodeCategory.NonSpacingMark).ToArray();
-        return new string(chars).Normalize(NormalizationForm.FormC);
     }
 }

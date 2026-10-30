@@ -271,7 +271,7 @@ public partial class EntityListing : UserControl
         if (result.Succeeded && string.IsNullOrWhiteSpace(result.Message) == false && File.Exists(result.Message))
         {
             Notice.Text = string.Empty;
-            if (TopLevel.GetTopLevel(this) is IOfficeSurface office)
+            if (OfficeSurface.Find(this) is { } office)
             {
                 var title = string.IsNullOrWhiteSpace(row["Number"]) ? row["RefNo"] : row["Number"];
                 await office.ShowPdfAsync(result.Message, title);
@@ -461,7 +461,7 @@ public partial class EntityListing : UserControl
     {
         var term = SearchBox.Text?.Trim();
         var rows = _rows.Where(InDateRange).Where(row =>
-            string.IsNullOrEmpty(term) || row.Values.Values.Any(value => value.Contains(term, StringComparison.CurrentCultureIgnoreCase))).ToList();
+            string.IsNullOrEmpty(term) || row.Values.Values.Any(value => TextSearch.Contains(value, term))).ToList();
         Grid.ItemsSource = rows;
         CardList.ItemsSource = rows;
         Notice.Text = string.IsNullOrEmpty(term) && rows.Count == _rows.Count && _notice is not null ? _notice : $"{rows.Count} registo(s)";
@@ -558,7 +558,7 @@ public partial class EntityListing : UserControl
             }
 
             var text = box.Content?.ToString() ?? string.Empty;
-            box.IsVisible = string.IsNullOrEmpty(term) || text.Contains(term, StringComparison.OrdinalIgnoreCase);
+            box.IsVisible = string.IsNullOrEmpty(term) || TextSearch.Contains(text, term);
         }
 
         RefreshSelectAll();
@@ -688,7 +688,7 @@ public partial class EntityListing : UserControl
         }
         var groups = OrderEditorGroups(fields);
 
-        // Tabbed editors keep a fixed frame so switching tabs does not resize the popup
+        // Tabbed editors keep a stable workspace; simple forms size to content.
         var simpleForm = groups.Count <= 1;
         EditorFrame.Classes.Set("bo_entity_editor_fit", simpleForm);
         EditorFrame.Classes.Set("bo_entity_editor_narrow", simpleForm);
@@ -714,8 +714,10 @@ public partial class EntityListing : UserControl
                     Classes = { "bo_entity_tab" },
                     Content = new TextBlock { Text = group }
                 };
+                // Finance tab stays visible: TypeHasPrice used to hide it when TypeId lookup
+                // had not bound yet, so prices / IVA looked "missing" from the article form.
                 var showWhen = group == "Detalhes financeiros"
-                    ? "TypeHasPrice"
+                    ? null
                     : groupFields.Select(item => item.ShowWhen).FirstOrDefault(value => string.IsNullOrWhiteSpace(value) == false);
                 var tab = (header, page, showWhen);
                 header.Click += (_, _) => SelectArticleTab(tab);
@@ -1113,6 +1115,11 @@ public partial class EntityListing : UserControl
         {
             ToolTip.SetTip(box, FormDecimal.QuantityRule);
         }
+        else if (field.Key == "Email" && field.ReadOnly == false)
+        {
+            box.PlaceholderText = "ex.: a@b.com; c@d.com";
+            ToolTip.SetTip(box, "V\u00E1rios emails: separar com ; ou ,");
+        }
 
         var input = field.ReadOnly ? (Control)box : AttachKeyboard(box);
         if (_title == "Clientes" && field.Key == "FiscalNumber" && field.ReadOnly == false && input is DockPanel dock)
@@ -1509,10 +1516,18 @@ public partial class EntityListing : UserControl
             return present;
         }
 
+        // Prefer the catalog that matches the groups present (article vs user).
+        IReadOnlyList<string> preferred =
+            present.Any(name => BackOfficeListingService.ArticleTabOrder.Contains(name, StringComparer.Ordinal))
+                ? BackOfficeListingService.ArticleTabOrder
+                : present.Any(name => BackOfficeListingService.UserTabOrder.Contains(name, StringComparer.Ordinal))
+                    ? BackOfficeListingService.UserTabOrder
+                    : Array.Empty<string>();
+
         var ordered = new List<string>();
-        foreach (var name in BackOfficeListingService.ArticleTabOrder)
+        foreach (var name in preferred)
         {
-            if (present.Contains(name))
+            if (present.Contains(name, StringComparer.Ordinal))
             {
                 ordered.Add(name);
             }
@@ -1520,7 +1535,7 @@ public partial class EntityListing : UserControl
 
         foreach (var name in present)
         {
-            if (ordered.Contains(name) == false)
+            if (ordered.Contains(name, StringComparer.Ordinal) == false)
             {
                 ordered.Add(name);
             }
@@ -1637,7 +1652,8 @@ public partial class EntityListing : UserControl
         var option = ResolveLookup("TypeId");
         if (option is null || option.Id == Guid.Empty)
         {
-            return false;
+            // Unresolved type: keep finance-related UI available (hiding prices is worse UX).
+            return true;
         }
 
         return option.Meta is not "0";
@@ -1660,7 +1676,7 @@ public partial class EntityListing : UserControl
     }
 
     /// <summary>
-    /// Resolves a lookup by SelectedItem first (stable for tab rules), then by typed text match.
+    /// Resolves a lookup by SelectedItem first, then ItemsSource label/id, then typed text match.
     /// </summary>
     private LookupOption? ResolveLookup(string key)
     {
@@ -1669,6 +1685,23 @@ public partial class EntityListing : UserControl
         if (box?.SelectedItem is LookupOption selected && selected.Id != Guid.Empty)
         {
             return selected;
+        }
+
+        if (box?.ItemsSource is System.Collections.IEnumerable items)
+        {
+            var text = (box.Text ?? string.Empty).Trim();
+            if (text.Length > 0)
+            {
+                foreach (var item in items)
+                {
+                    if (item is LookupOption option
+                        && option.Id != Guid.Empty
+                        && string.Equals(option.Label, text, StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        return option;
+                    }
+                }
+            }
         }
 
         return ChosenLookup(input);

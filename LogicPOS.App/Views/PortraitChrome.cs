@@ -100,6 +100,13 @@ internal static class PortraitChrome
         bool lockHeight = true,
         int bottomReserve = 0)
     {
+        // Desktop: nunca fullBleed (evita Novo documento edge-to-edge); Android portrait pode preencher.
+        if (OperatingSystem.IsAndroid() == false)
+        {
+            fullBleedPortrait = false;
+            bottomReserve = 0;
+        }
+
         var (width, height, portrait) = MeasureHost(host);
         margin = Math.Max(DefaultMargin, margin);
         var bottom = margin + Math.Max(0, bottomReserve);
@@ -141,6 +148,57 @@ internal static class PortraitChrome
             frame.ClearValue(Layoutable.HeightProperty);
             frame.MaxHeight = h;
         }
+    }
+
+    /// <summary>
+    /// Message / short-form overlays: width and height follow content, capped by the host.
+    /// Optional <paramref name="preferredWidth"/> becomes MaxWidth (and Width when lockWidth).
+    /// </summary>
+    public static void FitToContent(
+        Control frame,
+        Control host,
+        double maxWidth,
+        double? minWidth = null,
+        int margin = DefaultMargin,
+        int bottomReserve = 0,
+        bool lockWidth = false)
+    {
+        if (OperatingSystem.IsAndroid() == false)
+        {
+            bottomReserve = 0;
+        }
+
+        var (width, height, _) = MeasureHost(host);
+        margin = Math.Max(DefaultMargin, margin);
+        var bottom = margin + Math.Max(0, bottomReserve);
+        var availableW = Math.Max(200, width - (margin * 2));
+        var availableH = Math.Max(200, height - margin - bottom);
+        var capW = Math.Min(maxWidth, availableW);
+
+        frame.Classes.Set("bo_overlay_fullbleed", false);
+        frame.Classes.Set("bo_overlay_fitted", true);
+        frame.HorizontalAlignment = HorizontalAlignment.Center;
+        frame.VerticalAlignment = VerticalAlignment.Center;
+        frame.Margin = new Avalonia.Thickness(margin, margin, margin, bottom);
+
+        if (minWidth is { } min && min > 0)
+        {
+            frame.MinWidth = Math.Min(min, capW);
+        }
+
+        if (lockWidth)
+        {
+            frame.Width = capW;
+            frame.ClearValue(Layoutable.MaxWidthProperty);
+        }
+        else
+        {
+            frame.ClearValue(Layoutable.WidthProperty);
+            frame.MaxWidth = capW;
+        }
+
+        frame.ClearValue(Layoutable.HeightProperty);
+        frame.MaxHeight = availableH;
     }
 
     private static (int Width, int Height, bool Portrait) MeasureHost(Control host)

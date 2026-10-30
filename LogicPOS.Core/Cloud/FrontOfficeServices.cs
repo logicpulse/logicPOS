@@ -111,7 +111,9 @@ public interface IPosDocumentService
     /// <summary>Regras de código postal das tabelas auxiliares de países.</summary>
     Task<IReadOnlyList<PosCountryPostalRule>> ListCountryPostalRulesAsync(CancellationToken cancellationToken = default);
 
-    Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(CancellationToken cancellationToken = default);
+    Task<IReadOnlyList<PosLookupItem>> ListSourceDocumentsAsync(
+        string? search = null,
+        CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<PosCopiedLine>> LoadDocumentLinesAsync(Guid documentId, CancellationToken cancellationToken = default);
 

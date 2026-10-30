@@ -161,7 +161,7 @@
     </DockPanel>
 
             <Panel x:Name="QuitOverlay" Classes="login_alert_overlay" IsVisible="False">
-                <Border x:Name="QuitFrame" Classes="login_alert_frame" Width="400" Height="300">
+                <Border x:Name="QuitFrame" Classes="login_alert_frame login_alert_message_box">
                     <DockPanel Classes="login_alert_inner">
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">
@@ -292,7 +292,7 @@
             </Panel>
 
             <Panel x:Name="SaftConfirmOverlay" Classes="login_alert_overlay" IsVisible="False">
-                <Border x:Name="SaftConfirmFrame" Classes="login_alert_frame" Width="420" Height="300">
+                <Border x:Name="SaftConfirmFrame" Classes="login_alert_frame login_alert_message_box">
                     <DockPanel Classes="login_alert_inner">
                         <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                             <StackPanel Classes="login_alert_title_row">

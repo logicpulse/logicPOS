@@ -11,7 +11,7 @@
     <!-- Same popup chrome as PaymentWindow / login_alert overlays (no OS title bar). -->
     <Panel>
         <Panel Classes="login_alert_overlay" />
-        <Border Classes="login_alert_frame" Width="640" Height="680" MaxHeight="680">
+        <Border Classes="login_alert_frame" MinWidth="480" MaxWidth="640" Width="NaN" Height="NaN" MaxHeight="680">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
