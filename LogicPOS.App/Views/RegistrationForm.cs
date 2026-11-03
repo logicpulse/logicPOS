@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -399,10 +399,10 @@ public sealed class RegistrationForm : INotifyPropertyChanged
     public string ValidationPhone => cultureMsg("Indica o telefone.", "Enter the phone number.", "Indiquez le téléphone.", "Indica el teléfono.");
     public string ValidationFiscal => cultureMsg("Indica o NIF.", "Enter the tax number.", "Indiquez le NIF.", "Indica el NIF.");
     public string RegisteringNotice => cultureMsg(
-        "A contactar o servidor de licenças…",
-        "Contacting the licence server…",
-        "Contact du serveur de licences…",
-        "Contactando el servidor de licencias…");
+        "A contactar o servidor de licenças...",
+        "Contacting the licence server...",
+        "Contact du serveur de licences...",
+        "Contactando el servidor de licencias...");
     public string RegisterFailed => cultureMsg(
         "Não foi possível gravar a licença.",
         "Could not save the licence.",

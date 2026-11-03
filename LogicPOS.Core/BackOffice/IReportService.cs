@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.BackOffice;
+﻿namespace LogicPOS.Core.BackOffice;
 
 public sealed class ReportDefinition
 {
@@ -7,6 +7,9 @@ public sealed class ReportDefinition
     public required string Name { get; init; }
 
     public required string Group { get; init; }
+
+    /// <summary>BackOffice Menu SVG path relative to Assets/Images/BackOffice/ (e.g. Menu/menu_….svg).</summary>
+    public string? Icon { get; init; }
 
     public bool Dated { get; init; } = true;
 
@@ -61,6 +64,20 @@ public sealed class ReportDefinition
     public bool ShowSerial => FilterProfile is ReportFilterProfile.StockWarehouse;
 
     public bool ShowDocumentNumber => FilterProfile is ReportFilterProfile.StockSupplier;
+
+    /// <summary>True when the report needs a filter dialog before generate.</summary>
+    public bool HasFilters =>
+        ShowDates
+        || ShowDocumentType
+        || ShowTerminal
+        || ShowVat
+        || ShowCustomer
+        || ShowArticle
+        || ShowWarehouse
+        || ShowFamily
+        || ShowSubfamily
+        || ShowSerial
+        || ShowDocumentNumber;
 }
 
 public interface IReportService

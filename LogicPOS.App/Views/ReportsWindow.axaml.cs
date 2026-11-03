@@ -1,6 +1,8 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.Platform;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,11 +11,14 @@ namespace LogicPOS.App.Views;
 
 public partial class ReportsWindow : UserControl
 {
+    private const string IconRoot = "avares://LogicPOS.App/Assets/Images/BackOffice/";
+
     private readonly List<ReportDefinition> _catalog = new();
     private readonly List<Button> _rows = new();
     private ReportDefinition? _selected;
     private string _group = string.Empty;
     private UiViewport _viewport;
+    private bool _lookupsLoaded;
 
     public event Func<string, string?, Task>? PreviewRequested;
 
@@ -38,6 +43,8 @@ public partial class ReportsWindow : UserControl
     {
         RelayoutForViewport();
         Notice.Text = string.Empty;
+        FiltersNotice.Text = string.Empty;
+        FiltersOverlay.IsVisible = false;
         _selected = null;
         _catalog.Clear();
         var service = AppComposition.Services?.GetService<IReportService>();
@@ -56,11 +63,20 @@ public partial class ReportsWindow : UserControl
     {
         if (PortraitChrome.TryUpdate(this, ref _viewport, out var portrait) == false && ReportsFrame.Bounds.Width > 0)
         {
+            if (FiltersOverlay.IsVisible)
+            {
+                PortraitChrome.FitToContent(FiltersFrame, this, 980, minWidth: 520);
+            }
+
             return;
         }
 
         var bottomReserve = portrait ? PortraitChrome.FloatingToolbarReserve : 0;
         PortraitChrome.FitOverlay(ReportsFrame, this, 1080, 720, bottomReserve: bottomReserve);
+        if (FiltersOverlay.IsVisible)
+        {
+            PortraitChrome.FitToContent(FiltersFrame, this, 980, minWidth: 520, bottomReserve: bottomReserve);
+        }
     }
 
     private void BuildTabs(IReadOnlyList<string> groups)
@@ -83,9 +99,9 @@ public partial class ReportsWindow : UserControl
             {
                 _group = tab;
                 _selected = null;
+                Notice.Text = string.Empty;
                 BuildTabs(groups);
                 ShowGroup(tab);
-                ApplyFilterVisibility(null);
             };
             TabBar.Children.Add(button);
         }
@@ -98,22 +114,88 @@ public partial class ReportsWindow : UserControl
         foreach (var report in _catalog.Where(item => item.Group == group))
         {
             var current = report;
+            var selected = ReferenceEquals(_selected, current);
             var button = new Button
             {
                 Classes = { "bo_report_row" },
-                Content = report.Name,
-                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
-                HorizontalContentAlignment = Avalonia.Layout.HorizontalAlignment.Left
+                Tag = current,
+                Content = CreateReportRow(current, selected),
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalContentAlignment = HorizontalAlignment.Left
             };
-            if (ReferenceEquals(_selected, current))
+            if (selected)
             {
                 button.Classes.Add("bo_report_row_on");
             }
 
-            button.Click += (_, _) => Select(current, button);
+            button.Click += async (_, _) => await ActivateReportAsync(current, button);
             _rows.Add(button);
             Groups.Children.Add(button);
         }
+    }
+
+    private static Control CreateReportRow(ReportDefinition report, bool selected)
+    {
+        var panel = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            HorizontalAlignment = HorizontalAlignment.Left,
+            VerticalAlignment = VerticalAlignment.Center,
+            Classes = { "bo_menu_row" }
+        };
+
+        var glyph = new Border { Classes = { "bo_menu_glyph", "bo_menu_glyph_svg" } };
+        glyph.Child = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+        {
+            Classes = { "bo_menu_glyph_icon" },
+            Path = $"{IconRoot}{ResolveReportIcon(report.Icon, selected)}"
+        };
+        panel.Children.Add(glyph);
+        panel.Children.Add(new TextBlock
+        {
+            Classes = { "bo_menu_label" },
+            Text = report.Name,
+            // Unselected gray rows must stay dark even if a parent Foreground is light.
+            Foreground = selected
+                ? new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#FFFFFF"))
+                : new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.Parse("#323537")),
+            VerticalAlignment = VerticalAlignment.Center
+        });
+        return panel;
+    }
+
+    /// <summary>
+    /// Light gray rows use dark (_b) SVGs; selected lime row uses white SVGs.
+    /// </summary>
+    private static string ResolveReportIcon(string? icon, bool selected)
+    {
+        var relative = string.IsNullOrWhiteSpace(icon)
+            ? "Menu/menu_relatorios_relatorios.svg"
+            : icon!;
+        var candidate = selected ? ToLightIcon(relative) : ToDarkIcon(relative);
+        return AssetLoader.Exists(new Uri($"{IconRoot}{candidate}")) ? candidate : relative;
+    }
+
+    private static string ToDarkIcon(string relative)
+    {
+        if (relative.EndsWith("_b.svg", StringComparison.OrdinalIgnoreCase))
+        {
+            return relative;
+        }
+
+        return relative.EndsWith(".svg", StringComparison.OrdinalIgnoreCase)
+            ? string.Concat(relative.AsSpan(0, relative.Length - 4), "_b.svg")
+            : relative;
+    }
+
+    private static string ToLightIcon(string relative)
+    {
+        if (relative.EndsWith("_b.svg", StringComparison.OrdinalIgnoreCase))
+        {
+            return string.Concat(relative.AsSpan(0, relative.Length - 6), ".svg");
+        }
+
+        return relative;
     }
 
     private void Select(ReportDefinition report, Button button)
@@ -122,11 +204,47 @@ public partial class ReportsWindow : UserControl
         foreach (var row in _rows)
         {
             row.Classes.Remove("bo_report_row_on");
+            ApplyRowIcon(row, selected: false);
         }
 
         button.Classes.Add("bo_report_row_on");
-        ApplyFilterVisibility(report);
+        ApplyRowIcon(button, selected: true);
         Notice.Text = report.Name;
+    }
+
+    private static void ApplyRowIcon(Button button, bool selected)
+    {
+        if (button.Tag is not ReportDefinition report || button.Content is not Panel panel)
+        {
+            return;
+        }
+
+        var labelBrush = new Avalonia.Media.SolidColorBrush(
+            Avalonia.Media.Color.Parse(selected ? "#FFFFFF" : "#323537"));
+
+        foreach (var child in panel.Children)
+        {
+            if (child is Border { Child: Avalonia.Svg.Skia.Svg svg })
+            {
+                svg.Path = $"{IconRoot}{ResolveReportIcon(report.Icon, selected)}";
+            }
+            else if (child is TextBlock label && label.Classes.Contains("bo_menu_label"))
+            {
+                label.Foreground = labelBrush;
+            }
+        }
+    }
+
+    private async Task ActivateReportAsync(ReportDefinition report, Button button)
+    {
+        Select(report, button);
+        if (report.HasFilters == false)
+        {
+            await GenerateSelectedAsync(BuildEmptyFilters());
+            return;
+        }
+
+        OpenFiltersDialog(report);
     }
 
     private void ApplyFilterVisibility(ReportDefinition? report)
@@ -149,6 +267,11 @@ public partial class ReportsWindow : UserControl
 
     private async Task LoadLookupsAsync()
     {
+        if (_lookupsLoaded)
+        {
+            return;
+        }
+
         var listing = AppComposition.Services?.GetService<IBackOfficeListingService>();
         if (listing is null)
         {
@@ -172,6 +295,7 @@ public partial class ReportsWindow : UserControl
         WarehouseBox.ItemsSource = await listing.LookupAsync("Armazém");
         FamilyBox.ItemsSource = await listing.LookupAsync("Famílias");
         SubfamilyBox.ItemsSource = await listing.LookupAsync("Subfamílias");
+        _lookupsLoaded = true;
     }
 
     private async void OnGenerateClick(object? sender, RoutedEventArgs e)
@@ -182,15 +306,61 @@ public partial class ReportsWindow : UserControl
             return;
         }
 
-        var service = AppComposition.Services?.GetService<IReportService>();
-        if (service is null)
+        var button = _rows.FirstOrDefault(row => ReferenceEquals(row.Tag, _selected));
+        if (button is not null)
         {
-            Notice.Text = "Os relatórios ainda não estão disponíveis.";
+            await ActivateReportAsync(_selected, button);
             return;
         }
 
+        if (_selected.HasFilters == false)
+        {
+            await GenerateSelectedAsync(BuildEmptyFilters());
+            return;
+        }
+
+        OpenFiltersDialog(_selected);
+    }
+
+    private void OpenFiltersDialog(ReportDefinition report)
+    {
+        FiltersNotice.Text = string.Empty;
+        FiltersTitle.Text = "Filtros";
+        FiltersReportName.Text = report.Name;
+        ApplyFilterVisibility(report);
+        FiltersOverlay.IsVisible = true;
+        RelayoutForViewport();
+    }
+
+    private void OnFiltersCancelClick(object? sender, RoutedEventArgs e)
+    {
+        FiltersOverlay.IsVisible = false;
+        FiltersNotice.Text = string.Empty;
+        ApplyFilterVisibility(null);
+    }
+
+    private async void OnFiltersGenerateClick(object? sender, RoutedEventArgs e)
+    {
+        if (_selected is null)
+        {
+            FiltersNotice.Text = "Escolha um relatório.";
+            return;
+        }
+
+        await GenerateSelectedAsync(BuildFiltersFromUi());
+    }
+
+    private static ReportFilterRequest BuildEmptyFilters()
+        => new()
+        {
+            Start = DateTime.Today,
+            End = DateTime.Today
+        };
+
+    private ReportFilterRequest BuildFiltersFromUi()
+    {
         var documentType = SelectedOption(DocumentTypeBox);
-        var filters = new ReportFilterRequest
+        return new ReportFilterRequest
         {
             Start = StartDate.SelectedDate?.Date ?? DateTime.Today,
             End = EndDate.SelectedDate?.Date ?? DateTime.Today,
@@ -206,19 +376,47 @@ public partial class ReportsWindow : UserControl
             SerialNumber = SerialBox.Text?.Trim() ?? string.Empty,
             DocumentNumber = DocumentNumberBox.Text?.Trim() ?? string.Empty
         };
+    }
 
-        Notice.Text = "A gerar...";
-        var result = await service.GenerateAsync(_selected.Key, filters);
-        if (result.Succeeded == false || string.IsNullOrWhiteSpace(result.Message))
+    private async Task GenerateSelectedAsync(ReportFilterRequest filters)
+    {
+        if (_selected is null)
         {
-            Notice.Text = result.Error ?? "Não há dados para este relatório no intervalo indicado.";
             return;
         }
 
-        Notice.Text = string.Empty;
+        var service = AppComposition.Services?.GetService<IReportService>();
+        if (service is null)
+        {
+            SetActiveNotice("Os relatórios ainda não estão disponíveis.");
+            return;
+        }
+
+        SetActiveNotice("A gerar...");
+        var result = await service.GenerateAsync(_selected.Key, filters);
+        if (result.Succeeded == false || string.IsNullOrWhiteSpace(result.Message))
+        {
+            SetActiveNotice(result.Error ?? "Não há dados para este relatório no intervalo indicado.");
+            return;
+        }
+
+        SetActiveNotice(string.Empty);
+        FiltersOverlay.IsVisible = false;
         if (PreviewRequested is not null)
         {
             await PreviewRequested.Invoke(result.Message, _selected.Name);
+        }
+    }
+
+    private void SetActiveNotice(string text)
+    {
+        if (FiltersOverlay.IsVisible)
+        {
+            FiltersNotice.Text = text;
+        }
+        else
+        {
+            Notice.Text = text;
         }
     }
 
@@ -228,5 +426,9 @@ public partial class ReportsWindow : UserControl
     private static LookupOption? SelectedOption(ComboBox box)
         => box.SelectedItem as LookupOption;
 
-    private void OnCloseClick(object? sender, RoutedEventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
+    private void OnCloseClick(object? sender, RoutedEventArgs e)
+    {
+        FiltersOverlay.IsVisible = false;
+        Closed?.Invoke(this, EventArgs.Empty);
+    }
 }

@@ -41,13 +41,11 @@
                                         IsVisible="{Binding HasUser}"
                                         Click="OnUserClick"
                                         Tag="{Binding}">
-                                    <Panel>
+                                    <StackPanel HorizontalAlignment="Center" Spacing="2">
                                         <Image Classes="login_user_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/icon_user_default.png" />
-                                        <Border Classes="login_user_caption">
-                                            <TextBlock Classes="login_user_name" Text="{Binding Name}" />
-                                        </Border>
-                                    </Panel>
+                                        <TextBlock Classes="login_user_name" Text="{Binding Name}" />
+                                    </StackPanel>
                                 </Button>
                             </Panel>
                         </DataTemplate>

@@ -107,21 +107,29 @@
         <Setter Property="Height" Value="102" />
     </Style>
 
+    <!-- Landscape user cards: same visual tokens as Android portrait picker, vertical strip. -->
     <Style Selector="Button.login_user">
         <Setter Property="Width" Value="120" />
-        <Setter Property="Height" Value="102" />
-        <Setter Property="Padding" Value="7" />
+        <Setter Property="Height" Value="100" />
+        <Setter Property="Padding" Value="6" />
         <Setter Property="Background" Value="#AAAAAA" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="3" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="10" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
                         Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}" />
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                 </Border>
             </ControlTemplate>
         </Setter>
@@ -132,32 +140,37 @@
     </Style>
 
     <Style Selector="Button.login_user.selected">
-        <Setter Property="Background" Value="#2B2B2B" />
+        <Setter Property="BorderBrush" Value="#8BA844" />
+        <Setter Property="Background" Value="#888888" />
     </Style>
 
     <Style Selector="Button.login_user.selected:pointerover">
-        <Setter Property="Background" Value="#3A3A3A" />
+        <Setter Property="Background" Value="#999999" />
     </Style>
 
     <Style Selector="Image.login_user_icon">
-        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Width" Value="52" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="TextBlock.login_user_name">
+        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
+        <Setter Property="FontSize" Value="9" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="TextAlignment" Value="Center" />
+        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+        <Setter Property="MaxWidth" Value="100" />
+    </Style>
+
+    <!-- Kept for PosWindow / legacy overlays that still use a caption bar. -->
     <Style Selector="Border.login_user_caption">
         <Setter Property="Height" Value="14" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="Background" Value="#FAFFFFFF" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-    </Style>
-
-    <Style Selector="TextBlock.login_user_name">
-        <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
-        <Setter Property="FontSize" Value="7" />
-        <Setter Property="Foreground" Value="Black" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="TextAlignment" Value="Center" />
-        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
 
     <Style Selector="Border.login_pinpad">
@@ -5269,9 +5282,17 @@
         <Setter Property="Background" Value="#E4E8EC" />
     </Style>
 
+    <Style Selector="Button.bo_report_row TextBlock.bo_menu_label">
+        <Setter Property="Foreground" Value="#323537" />
+    </Style>
+
     <Style Selector="Button.bo_report_row.bo_report_row_on">
         <Setter Property="Background" Value="#9bbe1d" />
-        <Setter Property="Foreground" Value="#323537" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+    </Style>
+
+    <Style Selector="Button.bo_report_row.bo_report_row_on TextBlock.bo_menu_label">
+        <Setter Property="Foreground" Value="#FFFFFF" />
     </Style>
 
     <Style Selector="UserControl.bo_listing_busy_host">

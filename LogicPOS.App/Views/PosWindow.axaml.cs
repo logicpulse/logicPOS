@@ -235,7 +235,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             if (OperatingSystem.IsAndroid())
             {
-                MobileHostView.UpdateLoadingMessage("A carregar o catálogo…");
+                MobileHostView.UpdateLoadingMessage("A carregar o catálogo...");
             }
 
             await ReloadCatalogAsync(refreshMenus: false);
@@ -245,7 +245,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             if (OperatingSystem.IsAndroid())
             {
-                MobileHostView.UpdateLoadingMessage("A preparar menus…");
+                MobileHostView.UpdateLoadingMessage("A preparar menus...");
             }
 
             await RefreshWorkSessionAsync();
@@ -3860,7 +3860,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 button.Classes.Add("selected");
             }
 
-            var panel = new Panel();
+            var panel = new StackPanel
+            {
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Spacing = 2
+            };
             panel.Children.Add(new Image
             {
                 Classes = { "login_user_icon" },
@@ -3868,10 +3872,10 @@ public partial class PosWindow : UserControl, IOfficeSurface
                     ? "avares://LogicPOS.App/Assets/Images/BackOffice/icon_other_tables.png"
                     : "avares://LogicPOS.App/Assets/Images/icon_user_default.png")
             });
-            panel.Children.Add(new Border
+            panel.Children.Add(new TextBlock
             {
-                Classes = { "login_user_caption" },
-                Child = new TextBlock { Classes = { "login_user_name" }, Text = item.Text }
+                Classes = { "login_user_name" },
+                Text = item.Text
             });
             button.Content = panel;
             button.Click += async (_, _) => await onClick(key);

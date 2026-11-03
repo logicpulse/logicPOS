@@ -9,9 +9,14 @@
         ShowInTaskbar="True"
         WindowDecorations="None"
         WindowStartupLocation="CenterScreen"
-        Background="#F5F5F5"
+        TransparencyLevelHint="Transparent"
+        Background="Transparent"
         Topmost="True">
-    <Border Padding="16" Background="#F5F5F5">
+    <!-- Transparent chrome + Border CornerRadius so the splash panel is rounded (Win32). -->
+    <Border Padding="16"
+            Background="#F5F5F5"
+            CornerRadius="12"
+            ClipToBounds="True">
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="14">
             <Image Width="120"
                    Height="120"

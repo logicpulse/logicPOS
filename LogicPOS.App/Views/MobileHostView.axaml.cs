@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using LogicPOS.Core;
 
@@ -183,13 +183,13 @@ public partial class MobileHostView : UserControl
 
         try
         {
-            ShowLoadingOverlay("A carregar logicPOS…");
+            ShowLoadingOverlay("A carregar logicPOS...");
             await YieldForPaintAsync();
 
             var databaseReady = DatabaseStartup.ShowFirstTimeDatabaseMessage() == false;
             ShowLoadingOverlay(databaseReady
-                ? "A abrir a base de dados…"
-                : "A criar a base de dados…");
+                ? "A abrir a base de dados..."
+                : "A criar a base de dados...");
 
             // Leave the UI sync context so the post-bootstrap InvokeAsync cannot deadlock.
             await Task.Run(() =>
@@ -213,7 +213,7 @@ public partial class MobileHostView : UserControl
             // criar LoginWindow, activar e esconder overlay só na UI thread.
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                ShowLoadingOverlayCore(this, "A preparar o ecrã de login…");
+                ShowLoadingOverlayCore(this, "A preparar o ecrã de login...");
                 _login = new LoginWindow();
                 Host.Children.Clear();
                 Host.Children.Add(_login);
