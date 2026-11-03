@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.ReportsWindow">
     <Panel>
         <Border x:Name="ReportsFrame" Classes="login_alert_frame bo_entity_editor">
@@ -75,13 +76,8 @@
                     <StackPanel x:Name="Filters" Classes="bo_new_doc_fields" Spacing="8" Margin="16">
                         <TextBlock x:Name="FiltersReportName" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
                         <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                            <StackPanel x:Name="StartDatePanel">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Data inicial" />
-                                <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
-                            </StackPanel>
-                            <StackPanel x:Name="EndDatePanel" Grid.Column="1">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Data final" />
-                                <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
+                            <StackPanel x:Name="PeriodPanel" Grid.ColumnSpan="2">
+                                <views:PeriodRangeField x:Name="Period" />
                             </StackPanel>
                             <StackPanel x:Name="DocumentTypePanel" Grid.Column="2" IsVisible="False">
                                 <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />

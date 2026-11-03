@@ -2006,11 +2006,15 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    public async Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
+    public async Task ShowNewDocumentAsync(
+        Guid? draftId = null,
+        Guid? copyFromDocumentId = null,
+        Guid? originFromDocumentId = null,
+        string? originTargetType = null)
     {
         NewDocumentOverlay.IsVisible = true;
         FitHostedOverlays();
-        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId);
+        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId, originFromDocumentId, originTargetType);
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {

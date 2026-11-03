@@ -67,8 +67,9 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (_datesReady == false)
         {
-            StartDate.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
-            EndDate.SelectedDate = DateTime.Today;
+            Period.SetRange(
+                new DateTime(DateTime.Today.Year, 1, 1),
+                DateTime.Today.AddDays(1).AddSeconds(-1));
             _datesReady = true;
         }
 
@@ -507,8 +508,8 @@ public partial class ReceiptEmissionView : UserControl
 
     private async Task LoadCoreAsync()
     {
-        var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+        var start = Period.StartDate;
+        var end = Period.EndDate;
         if (start > end)
         {
             Notice.Text = "A data inicial não pode ser posterior à data final.";

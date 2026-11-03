@@ -139,8 +139,9 @@ public partial class EntityListing : UserControl
 
     private void ResetDates()
     {
-        StartDate.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
-        EndDate.SelectedDate = DateTime.Today;
+        Period.SetRange(
+            new DateTime(DateTime.Today.Year, 1, 1),
+            DateTime.Today.AddDays(1).AddSeconds(-1));
     }
 
     private void OnCustomerFilterChanged(object? sender, SelectionChangedEventArgs e)
@@ -474,8 +475,8 @@ public partial class EntityListing : UserControl
             return true;
         }
 
-        var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+        var start = Period.StartDate;
+        var end = Period.EndDate;
         if (end < start)
         {
             (start, end) = (end, start);
@@ -1944,16 +1945,16 @@ public partial class EntityListing : UserControl
 
         if (action is "export-saft" or "saft-period")
         {
-            var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-            var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+            var start = Period.StartDate;
+            var end = Period.EndDate;
             await ExportSaftUiAsync(action, $"{start:yyyy-MM-dd}|{end:yyyy-MM-dd}");
             return;
         }
 
         if (action == "open-audit")
         {
-            var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-            var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+            var start = Period.StartDate;
+            var end = Period.EndDate;
             await ExecuteAsync(action, null, $"{start:yyyy-MM-dd}|{end:yyyy-MM-dd}");
             return;
         }
@@ -2249,8 +2250,8 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+        var start = Period.StartDate;
+        var end = Period.EndDate;
         var result = await service.RunActionAsync("open-report", row.Id, $"{start:yyyy-MM-dd}|{end:yyyy-MM-dd}");
         if (result.Succeeded && string.IsNullOrWhiteSpace(result.Message) == false && File.Exists(result.Message))
         {

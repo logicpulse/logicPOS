@@ -27,8 +27,9 @@ public partial class ReportsWindow : UserControl
     public ReportsWindow()
     {
         InitializeComponent();
-        StartDate.SelectedDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
-        EndDate.SelectedDate = DateTime.Today;
+        Period.SetRange(
+            new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
+            DateTime.Today.AddDays(1).AddSeconds(-1));
         TouchFields.Attach(Filters);
         ApplyFilterVisibility(null);
         AttachedToVisualTree += (_, _) =>
@@ -250,8 +251,7 @@ public partial class ReportsWindow : UserControl
     private void ApplyFilterVisibility(ReportDefinition? report)
     {
         var showDates = report?.ShowDates == true;
-        StartDatePanel.IsVisible = showDates;
-        EndDatePanel.IsVisible = showDates;
+        PeriodPanel.IsVisible = showDates;
         DocumentTypePanel.IsVisible = report?.ShowDocumentType == true;
         TerminalPanel.IsVisible = report?.ShowTerminal == true;
         CustomerPanel.IsVisible = report?.ShowCustomer == true;
@@ -362,8 +362,8 @@ public partial class ReportsWindow : UserControl
         var documentType = SelectedOption(DocumentTypeBox);
         return new ReportFilterRequest
         {
-            Start = StartDate.SelectedDate?.Date ?? DateTime.Today,
-            End = EndDate.SelectedDate?.Date ?? DateTime.Today,
+            Start = Period.StartDate,
+            End = Period.EndDate,
             CustomerId = SelectedId(CustomerBox),
             ArticleId = SelectedId(ArticleBox),
             TerminalId = SelectedId(TerminalBox),

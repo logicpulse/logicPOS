@@ -1,4 +1,4 @@
-using System.ComponentModel;
+ï»¿using System.ComponentModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -25,6 +25,7 @@ public partial class DocumentsListing : UserControl
     private string _loadedSearch = string.Empty;
     private CancellationTokenSource? _searchDelay;
     private string? _promptKind;
+    private Guid? _pendingOriginDocumentId;
     private bool _sendingEmail;
     private bool _datesReady;
     private bool _fillingFilters;
@@ -48,8 +49,8 @@ public partial class DocumentsListing : UserControl
         CardList.ItemTemplate = new FuncDataTemplate<CheckedDocument>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
-                $"{item.DocumentDateText} · {item.Status}",
-                $"{item.EntityName} · {item.FinalTotalText}",
+                $"{item.DocumentDateText} ï¿½ {item.Status}",
+                $"{item.EntityName} ï¿½ {item.FinalTotalText}",
                 item), true);
         AttachedToVisualTree += (_, _) =>
         {
@@ -63,8 +64,9 @@ public partial class DocumentsListing : UserControl
     {
         if (_datesReady == false)
         {
-            StartDate.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
-            EndDate.SelectedDate = DateTime.Today;
+            Period.SetRange(
+                new DateTime(DateTime.Today.Year, 1, 1),
+                DateTime.Today.AddDays(1).AddSeconds(-1));
             _datesReady = true;
         }
 
@@ -189,8 +191,9 @@ public partial class DocumentsListing : UserControl
     private async Task ClearAndReloadAsync()
     {
         SearchBox.Text = string.Empty;
-        StartDate.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
-        EndDate.SelectedDate = DateTime.Today;
+        Period.SetRange(
+            new DateTime(DateTime.Today.Year, 1, 1),
+            DateTime.Today.AddDays(1).AddSeconds(-1));
         ResetFilterBoxes();
         _page = 1;
         await LoadAsync();
@@ -383,7 +386,7 @@ public partial class DocumentsListing : UserControl
         }
         catch (Exception)
         {
-            ActionNotice.Text = "Não foi possível abrir o rascunho.";
+            ActionNotice.Text = "Nï¿½o foi possï¿½vel abrir o rascunho.";
         }
     }
 
@@ -409,7 +412,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        OpenPrompt("cancel", "Anular documento", "Motivo da anulação");
+        OpenPrompt("cancel", "Anular documento", "Motivo da anulaï¿½ï¿½o");
     }
 
     private async void OnEmailClick(object? sender, RoutedEventArgs e)
@@ -526,7 +529,7 @@ public partial class DocumentsListing : UserControl
         {
             if (System.Net.Mail.MailAddress.TryCreate(email, out _) == false)
             {
-                return "Email inválido.";
+                return "Email invï¿½lido.";
             }
         }
 
@@ -541,9 +544,11 @@ public partial class DocumentsListing : UserControl
         PromptValue.Text = string.Empty;
         var reprint = kind == "reprint";
         var printer = kind == "print";
+        var origin = kind == "origin";
         PromptLabel.IsVisible = reprint == false && string.IsNullOrWhiteSpace(label) == false;
-        SetTouchFieldVisible(PromptValue, reprint == false && printer == false);
+        SetTouchFieldVisible(PromptValue, reprint == false && printer == false && origin == false);
         PrinterBox.IsVisible = printer;
+        OriginTargetBox.IsVisible = origin;
         ReprintPanel.IsVisible = reprint;
         PromptFrame.Classes.Set("bo_reprint_prompt", reprint);
         PromptOverlay.IsVisible = true;
@@ -565,7 +570,7 @@ public partial class DocumentsListing : UserControl
     {
         _pendingPrintIds.Clear();
         _pendingPrintIds.Add(row.Id);
-        OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"), row.Number), string.Empty);
+        OpenPrompt("reprint", string.Format(PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nï¿½: {0}"), row.Number), string.Empty);
         await BuildReprintOptionsAsync(row.Id);
     }
 
@@ -609,11 +614,11 @@ public partial class DocumentsListing : UserControl
             ReprintCopyChecks.Children.Add(box);
         }
 
-        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cópias");
+        ReprintCopiesLabel.Text = PreferenceLabels.Text("global_print_copies", "Cï¿½pias");
         ReprintSecondCopy.Content = PreferenceLabels.Text("global_second_copy", "Segunda via");
         ReprintSecondCopy.IsVisible = requestMotive;
         ReprintSecondCopy.IsChecked = true;
-        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressão do original");
+        ReprintMotiveLabel.Text = PreferenceLabels.Text("global_reprint_original_motive", "Motivo da re-impressï¿½o do original");
         ReprintMotive.Text = string.Empty;
         ReprintSecondCopy.IsCheckedChanged -= OnReprintSecondCopyChanged;
         ReprintSecondCopy.IsCheckedChanged += OnReprintSecondCopyChanged;
@@ -660,7 +665,7 @@ public partial class DocumentsListing : UserControl
             var copies = ReprintCopyChecks.Children.OfType<CheckBox>().Count(box => box.IsChecked == true && box.IsEnabled);
             if (copies < 1)
             {
-                ActionNotice.Text = "Selecione pelo menos uma cópia.";
+                ActionNotice.Text = "Selecione pelo menos uma cï¿½pia.";
                 return;
             }
 
@@ -668,13 +673,29 @@ public partial class DocumentsListing : UserControl
             var reason = ReprintMotive.Text?.Trim() ?? string.Empty;
             if (secondCopy == false && string.IsNullOrWhiteSpace(reason))
             {
-                ActionNotice.Text = "Indique o motivo da reimpressão do original.";
+                ActionNotice.Text = "Indique o motivo da reimpressï¿½o do original.";
                 return;
             }
 
             PromptOverlay.IsVisible = false;
             var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
-            ActionNotice.Text = reprintError ?? $"{copies} cópia(s) enviada(s) para a impressora térmica.";
+            ActionNotice.Text = reprintError ?? $"{copies} cÃ³pia(s) enviada(s) para a impressora tÃ©rmica.";
+            return;
+        }
+
+        if (kind == "origin")
+        {
+            if (_pendingOriginDocumentId is not Guid originId
+                || OriginTargetBox.SelectedItem is not OriginTargetChoice choice
+                || string.IsNullOrWhiteSpace(choice.Acronym))
+            {
+                ActionNotice.Text = "Selecione o tipo de documento a criar.";
+                return;
+            }
+
+            PromptOverlay.IsVisible = false;
+            _pendingOriginDocumentId = null;
+            await OpenOriginNewDocumentAsync(originId, choice.Acronym);
             return;
         }
 
@@ -701,7 +722,7 @@ public partial class DocumentsListing : UserControl
 
         if (string.IsNullOrWhiteSpace(value))
         {
-            ActionNotice.Text = "Indique o motivo da anulação.";
+            ActionNotice.Text = "Indique o motivo da anulaï¿½ï¿½o.";
             return;
         }
 
@@ -714,7 +735,11 @@ public partial class DocumentsListing : UserControl
         await ReloadAsync();
     }
 
-    private void OnPromptCancelClick(object? sender, RoutedEventArgs e) => PromptOverlay.IsVisible = false;
+    private void OnPromptCancelClick(object? sender, RoutedEventArgs e)
+    {
+        _pendingOriginDocumentId = null;
+        PromptOverlay.IsVisible = false;
+    }
 
     private List<Guid> SelectedIds() => ChosenRows().Select(row => row.Id).ToList();
 
@@ -769,12 +794,93 @@ public partial class DocumentsListing : UserControl
         await CopyDocumentAsync(item.Source);
     }
 
+    private async void OnRowUseAsOriginClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: CheckedDocument item })
+        {
+            return;
+        }
+
+        await UseAsOriginDocumentAsync(item.Source);
+    }
+
     private async Task CopyDocumentAsync(PosDocumentRow row)
     {
         if (OfficeSurface.Find(this) is { } office)
         {
             await office.ShowNewDocumentAsync(copyFromDocumentId: row.Id);
         }
+    }
+
+    private async Task UseAsOriginDocumentAsync(PosDocumentRow row)
+    {
+        if (row.CanUseAsSource == false)
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "Este documento nÃ£o pode ser usado como documento de origem.";
+            return;
+        }
+
+        var targets = PosDocumentRules.ValidTargetTypesForSource(row.ResolvedType);
+        if (targets.Count == 0)
+        {
+            ActionNotice.IsVisible = true;
+            ActionNotice.Text = "NÃ£o existe um tipo de documento compatÃ­vel com este documento de origem.";
+            return;
+        }
+
+        // GTK GetDocumentTypeValidSourceDocuments: FT/FS/FR may parent NC or guias/working docs.
+        // When more than one target exists, ask which document type to create.
+        if (targets.Count == 1)
+        {
+            await OpenOriginNewDocumentAsync(row.Id, targets[0]);
+            return;
+        }
+
+        await OpenOriginTargetPromptAsync(row, targets);
+    }
+
+    private async Task OpenOriginTargetPromptAsync(PosDocumentRow row, IReadOnlyList<string> targets)
+    {
+        _pendingOriginDocumentId = row.Id;
+        OpenPrompt("origin", "Documento de origem", "Tipo de documento a criar");
+
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        var allTypes = documents is null
+            ? Array.Empty<PosDocumentTypeOption>()
+            : await documents.ListDocumentTypesAsync();
+        var byAcronym = allTypes
+            .GroupBy(item => item.Acronym, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+
+        var choices = new List<OriginTargetChoice>();
+        foreach (var acronym in targets)
+        {
+            if (byAcronym.TryGetValue(acronym, out var option))
+            {
+                choices.Add(new OriginTargetChoice(option.Acronym, $"{option.Acronym} â€” {option.Designation}"));
+            }
+            else
+            {
+                choices.Add(new OriginTargetChoice(acronym, acronym));
+            }
+        }
+
+        OriginTargetBox.ItemsSource = choices;
+        OriginTargetBox.SelectedItem = choices.FirstOrDefault();
+    }
+
+    private async Task OpenOriginNewDocumentAsync(Guid documentId, string targetType)
+    {
+        if (OfficeSurface.Find(this) is { } office)
+        {
+            await office.ShowNewDocumentAsync(originFromDocumentId: documentId, originTargetType: targetType);
+        }
+    }
+
+    private sealed record OriginTargetChoice(string Acronym, string Label)
+    {
+        public override string ToString() => Label;
     }
 
     private async void OnSendToAtClick(object? sender, RoutedEventArgs e)
@@ -798,7 +904,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        ActionNotice.Text = "A comunicar a guia à AT…";
+        ActionNotice.Text = "A comunicar a guia ï¿½ ATï¿½";
         var result = await documents.SendTransportDocumentToAtAsync(row.Id);
         if (result.Succeeded == false)
         {
@@ -813,26 +919,26 @@ public partial class DocumentsListing : UserControl
         }
 
         ActionNotice.Text = path is null
-            ? $"{result.Message} Não foi possível abrir o PDF."
-            : $"{result.Message} O PDF foi aberto com esse código.";
+            ? $"{result.Message} Nï¿½o foi possï¿½vel abrir o PDF."
+            : $"{result.Message} O PDF foi aberto com esse cï¿½digo.";
     }
 
     private static string? TransportSendBlock(PosDocumentRow row)
     {
         if (row.Status == "Rascunho")
         {
-            return "Emita a guia antes de a comunicar à AT.";
+            return "Emita a guia antes de a comunicar ï¿½ AT.";
         }
 
         if (row.Status == "Anulado")
         {
-            return "Não é possível comunicar uma guia anulada.";
+            return "Nï¿½o ï¿½ possï¿½vel comunicar uma guia anulada.";
         }
 
         var token = row.Number.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
         if (token is { Length: <= 3 } && PosDocumentRules.IsWayBill(token) == false)
         {
-            return "Só as guias (GT, GR, GA, GC e GD) são comunicadas à AT.";
+            return "Sï¿½ as guias (GT, GR, GA, GC e GD) sï¿½o comunicadas ï¿½ AT.";
         }
 
         return null;
@@ -885,7 +991,7 @@ public partial class DocumentsListing : UserControl
         var printers = InstalledPrinters();
         if (printers.Count == 0)
         {
-            ActionNotice.Text = "Não há impressoras instaladas.";
+            ActionNotice.Text = "Nï¿½o hï¿½ impressoras instaladas.";
             return;
         }
 
@@ -926,7 +1032,7 @@ public partial class DocumentsListing : UserControl
             var path = await CreatePdfAsync(row);
             if (path is null)
             {
-                printError ??= "Não foi possível gerar o PDF.";
+                printError ??= "Nï¿½o foi possï¿½vel gerar o PDF.";
                 continue;
             }
 
@@ -942,7 +1048,7 @@ public partial class DocumentsListing : UserControl
         }
 
         var destination = useThermal && thermal == sent
-            ? "a impressora térmica"
+            ? "a impressora tï¿½rmica"
             : string.IsNullOrWhiteSpace(printer) ? "a impressora predefinida" : printer;
         ActionNotice.Text = sent == rows.Count
             ? $"{sent} documento(s) enviado(s) para {destination}."
@@ -955,7 +1061,7 @@ public partial class DocumentsListing : UserControl
         if (await NeedsReprintDialogAsync(documentId))
         {
             // Already printed: caller must open the reprint dialog (copies + motive).
-            return (true, "Documento já impresso. Use Imprimir e indique o motivo da segunda via.");
+            return (true, "Documento jï¿½ impresso. Use Imprimir e indique o motivo da segunda via.");
         }
 
         return await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
@@ -1154,7 +1260,7 @@ public partial class DocumentsListing : UserControl
             var path = await service.CreateA4FileAsync(row.Id);
             if (string.IsNullOrWhiteSpace(path))
             {
-                ActionNotice.Text = "Não foi possível gerar o PDF.";
+                ActionNotice.Text = "Nï¿½o foi possï¿½vel gerar o PDF.";
                 return null;
             }
 
@@ -1162,7 +1268,7 @@ public partial class DocumentsListing : UserControl
         }
         catch (Exception)
         {
-            ActionNotice.Text = "Não foi possível gerar o PDF.";
+            ActionNotice.Text = "Nï¿½o foi possï¿½vel gerar o PDF.";
             return null;
         }
     }
@@ -1182,7 +1288,7 @@ public partial class DocumentsListing : UserControl
             return;
         }
 
-        ActionNotice.Text = "Não foi possível abrir o documento.";
+        ActionNotice.Text = "Nï¿½o foi possï¿½vel abrir o documento.";
     }
 
     private Task LoadAsync() => _load.RunAsync(LoadCoreAsync);
@@ -1227,12 +1333,12 @@ public partial class DocumentsListing : UserControl
         EmptyLabel.IsVisible = false;
 
         var generation = ++_loadGeneration;
-        var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+        var start = Period.StartDate;
+        var end = Period.EndDate;
         if (end < start)
         {
             end = start;
-            EndDate.SelectedDate = end;
+            Period.SetRange(Period.Start, end.AddDays(1).AddSeconds(-1));
         }
 
         var search = SearchBox.Text?.Trim();
@@ -1257,7 +1363,7 @@ public partial class DocumentsListing : UserControl
             _totalPages = Math.Max(1, page.TotalPages);
             _loadedSearch = search ?? string.Empty;
             _picked.RemoveWhere(id => _rows.Exists(row => row.Id == id) == false);
-            EmptyLabel.Text = "Não existem documentos neste período.";
+            EmptyLabel.Text = "Nï¿½o existem documentos neste perï¿½odo.";
         }
         catch (Exception exception)
         {
@@ -1297,9 +1403,9 @@ public partial class DocumentsListing : UserControl
         CardList.ItemsSource = items;
         PageLabel.Text = $"{_page} / {_totalPages}";
         EmptyLabel.IsVisible = _rows.Count == 0;
-        if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "Não existem documentos neste período.")
+        if (string.IsNullOrEmpty(EmptyLabel.Text) || EmptyLabel.Text == "Nï¿½o existem documentos neste perï¿½odo.")
         {
-            EmptyLabel.Text = "Não existem documentos neste período.";
+            EmptyLabel.Text = "Nï¿½o existem documentos neste perï¿½odo.";
         }
 
         RefreshSelectionLabel();
@@ -1333,8 +1439,8 @@ public partial class DocumentsListing : UserControl
             return _rows.ToList();
         }
 
-        var start = StartDate.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = EndDate.SelectedDate?.Date ?? DateTime.Today;
+        var start = Period.StartDate;
+        var end = Period.EndDate;
         var search = SearchBox.Text?.Trim();
         var documents = services.GetRequiredService<IPosDocumentService>();
         var all = new List<PosDocumentRow>();
@@ -1361,13 +1467,13 @@ public partial class DocumentsListing : UserControl
     private static string DocumentCell(PosDocumentRow row, string header) => header switch
     {
         "Data do documento" => row.DocumentDateText,
-        "Número do Doc." => row.Number,
+        "Nï¿½mero do Doc." => row.Number,
         "Estado" => row.Status,
         "Entidade" => row.EntityName,
         "NIF" => row.TaxId,
         "Total Final" => row.FinalTotalText,
         "Valor Pago" => row.PaidAmountText,
-        "Valor em Dívida" => row.DebitAmountText,
+        "Valor em Dï¿½vida" => row.DebitAmountText,
         "Documentos Associados" => row.AssociatedDocuments,
         _ => string.Empty
     };
@@ -1572,6 +1678,8 @@ public partial class DocumentsListing : UserControl
         public bool CanView => Source.CanView;
 
         public bool CanCopy => true;
+
+        public bool CanUseAsSource => Source.CanUseAsSource;
 
         public void ApplySelected(bool selected)
         {

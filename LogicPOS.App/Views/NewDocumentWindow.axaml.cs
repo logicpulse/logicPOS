@@ -76,6 +76,8 @@ public partial class NewDocumentWindow : UserControl
     private Guid? _previewDraftId;
     private Guid? _seedDraftId;
     private Guid? _copyFromDocumentId;
+    private Guid? _originFromDocumentId;
+    private string? _originTargetType;
     private Guid? _customerId;
     private bool _customerIsFinal;
     private PosCustomer? _customer;
@@ -104,7 +106,11 @@ public partial class NewDocumentWindow : UserControl
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnNewDocLayoutUpdated;
     }
 
-    public Task<bool> ShowAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
+    public Task<bool> ShowAsync(
+        Guid? draftId = null,
+        Guid? copyFromDocumentId = null,
+        Guid? originFromDocumentId = null,
+        string? originTargetType = null)
     {
         _draggingDocument = false;
         _resizingDocument = false;
@@ -113,6 +119,10 @@ public partial class NewDocumentWindow : UserControl
         RestoreOrPlaceDocumentShell();
         _seedDraftId = draftId;
         _copyFromDocumentId = copyFromDocumentId;
+        _originFromDocumentId = originFromDocumentId;
+        _originTargetType = string.IsNullOrWhiteSpace(originTargetType)
+            ? null
+            : originTargetType.Trim().ToUpperInvariant();
         _lines.Clear();
         LinesGrid.ItemsSource = null;
         ArticleSearch.Text = string.Empty;
@@ -448,9 +458,10 @@ public partial class NewDocumentWindow : UserControl
 
         var loadingDraft = _seedDraftId is not null;
         var loadingCopy = _copyFromDocumentId is not null;
+        var loadingOrigin = _originFromDocumentId is not null;
         Busy.Show(loadingDraft
             ? "A carregar rascunho..."
-            : loadingCopy
+            : loadingCopy || loadingOrigin
                 ? "A carregar documento..."
                 : "A carregar...");
 
@@ -621,6 +632,7 @@ public partial class NewDocumentWindow : UserControl
 
         await FillPreservingErrors(lookupErrors, async () => await SeedDraftAsync(documents, customers));
         await FillPreservingErrors(lookupErrors, async () => await ApplyCopyFromAsync(documents, customers));
+        await FillPreservingErrors(lookupErrors, async () => await ApplyOriginFromAsync(documents, customers));
         await FillPreservingErrors(lookupErrors, async () =>
         {
             if (_customerId is not null)
@@ -635,6 +647,7 @@ public partial class NewDocumentWindow : UserControl
             }
         });
         _filling = false;
+        RefreshOriginPickerState();
         UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
     }
 
@@ -687,6 +700,59 @@ public partial class NewDocumentWindow : UserControl
         await ApplyDocumentCopyAsync(documentId, documents, customers);
     }
 
+    /// <summary>
+    /// GTK Documento de origem path (not Copiar outro documento): set OriginBox, keep/select a
+    /// compatible target type, then fill customer + lines from the parent document.
+    /// </summary>
+    private async Task ApplyOriginFromAsync(IPosDocumentService documents, IPosCustomerService customers)
+    {
+        if (_originFromDocumentId is not Guid documentId || documentId == Guid.Empty)
+        {
+            return;
+        }
+
+        var source = await documents.LoadDocumentForCopyAsync(documentId);
+        if (source is null)
+        {
+            return;
+        }
+
+        if (PosDocumentRules.CanUseAsSourceDocument(source.Type, statusCode: "N", isDraft: false) == false)
+        {
+            ErrorLabel.Text = "Este documento não pode ser usado como documento de origem.";
+            return;
+        }
+
+        var preferred = _originTargetType is not null
+            && PosDocumentRules.IsValidSourceForTarget(source.Type, _originTargetType)
+            ? _originTargetType
+            : PosDocumentRules.PreferredTargetTypeForSource(source.Type);
+        if (preferred is not null)
+        {
+            SelectDocumentType(preferred);
+        }
+        else if (PosDocumentRules.IsValidSourceForTarget(source.Type, SelectedType()?.Acronym) == false)
+        {
+            ErrorLabel.Text = "Não existe um tipo de documento compatível com este documento de origem.";
+            return;
+        }
+
+        if (_documents.Any(item => item.Id == documentId) == false)
+        {
+            var lookup = await documents.GetDocumentLookupAsync(documentId)
+                ?? new PosLookupItem(documentId, "Documento", source.Type);
+            _documents.Insert(0, lookup);
+        }
+
+        var choices = Optional(_documents);
+        OriginBox.ItemsSource = choices;
+        CopyBox.ItemsSource = choices;
+        SelectDocumentId(OriginBox, documentId);
+        RefreshDocumentClearButtons();
+        await ApplyDocumentOriginAsync(documentId, documents, customers, source);
+        RefreshOriginPickerState();
+    }
+
     private async Task ApplyDocumentCopyAsync(
         Guid documentId,
         IPosDocumentService documents,
@@ -732,6 +798,60 @@ public partial class NewDocumentWindow : UserControl
                 TransportBox.IsChecked = true;
                 ApplyStoredShip(source.ShipTo, ToAddress, ToRegion, ToPostal, ToCity, ToCountry, ToDate, ToTime);
                 ApplyStoredShip(source.ShipFrom, FromAddress, FromRegion, FromPostal, FromCity, FromCountry, FromDate, FromTime);
+            }
+        }
+        finally
+        {
+            _filling = wasFilling;
+        }
+
+        UpdateTransport(openPopup: PosDocumentRules.IsWayBill(SelectedType()?.Acronym));
+    }
+
+    /// <summary>
+    /// GTK UpdateFromDocumentSource: currency, customer and lines — does not clone type/notes/payment.
+    /// </summary>
+    private async Task ApplyDocumentOriginAsync(
+        Guid documentId,
+        IPosDocumentService documents,
+        IPosCustomerService? customers,
+        PosDocumentCopySource? loaded = null)
+    {
+        var source = loaded ?? await documents.LoadDocumentForCopyAsync(documentId);
+        if (source is null)
+        {
+            return;
+        }
+
+        var target = SelectedType()?.Acronym;
+        if (PosDocumentRules.IsValidSourceForTarget(source.Type, target) == false)
+        {
+            ErrorLabel.Text = "O documento de origem não é compatível com o tipo selecionado.";
+            return;
+        }
+
+        var wasFilling = _filling;
+        _filling = true;
+        try
+        {
+            SelectId(CurrencyBox, source.CurrencyId);
+
+            _lines.Clear();
+            foreach (var line in source.Lines)
+            {
+                var article = _catalog.FirstOrDefault(item => item.Article.Id == line.ArticleId)?.Article;
+                _lines.Add(NewDocumentLine.FromCopy(
+                    line,
+                    article is null ? string.Empty : FamilyNameOf(article),
+                    source.DocumentDiscount,
+                    article?.VatExemptionReasonId));
+            }
+
+            RefreshLines();
+
+            if (customers is not null && source.CustomerId != Guid.Empty)
+            {
+                await RestoreCustomerAsync(customers, source.CustomerId, customerName: null, fiscalNumber: null);
             }
         }
         finally
@@ -915,7 +1035,46 @@ public partial class NewDocumentWindow : UserControl
             services?.GetService<IPosCustomerService>());
     }
 
-    private void OnOriginChanged(object? sender, SelectionChangedEventArgs e) => RefreshOriginClear();
+    private async void OnOriginChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        RefreshOriginClear();
+        if (_filling || ListingFilters.SelectedDocumentId(OriginBox) is not Guid documentId)
+        {
+            return;
+        }
+
+        var services = AppComposition.Services;
+        var documents = services?.GetService<IPosDocumentService>();
+        if (documents is null)
+        {
+            return;
+        }
+
+        var lookup = _documents.FirstOrDefault(item => item.Id == documentId);
+        var sourceType = lookup?.Code;
+        if (string.IsNullOrWhiteSpace(sourceType) == false
+            && PosDocumentRules.IsValidSourceForTarget(sourceType, SelectedType()?.Acronym) == false)
+        {
+            ErrorLabel.Text = "O documento de origem não é compatível com o tipo selecionado.";
+            _filling = true;
+            try
+            {
+                SelectDocumentId(OriginBox, null);
+            }
+            finally
+            {
+                _filling = false;
+            }
+
+            RefreshOriginClear();
+            return;
+        }
+
+        await ApplyDocumentOriginAsync(
+            documentId,
+            documents,
+            services?.GetService<IPosCustomerService>());
+    }
 
     private void OnOriginTextChanged(object? sender, TextChangedEventArgs e)
     {
@@ -1107,6 +1266,7 @@ public partial class NewDocumentWindow : UserControl
         if (type is null)
         {
             SeriesLabel.Text = string.Empty;
+            RefreshOriginPickerState();
             return;
         }
 
@@ -1115,13 +1275,43 @@ public partial class NewDocumentWindow : UserControl
         if (_filling == false)
         {
             ApplyPaymentConditionForType(type.Acronym);
+            // GTK: changing document type always clears Documento de origem.
+            if (ListingFilters.SelectedDocumentId(OriginBox) is not null)
+            {
+                SelectDocumentId(OriginBox, null);
+                RefreshOriginClear();
+            }
         }
 
+        RefreshOriginPickerState();
         UpdateTransport(openPopup: _filling == false && PosDocumentRules.IsWayBill(type.Acronym));
         if (_filling == false && PosDocumentRules.RequiresNamedCustomer(type.Acronym) && ShowsFinalConsumer())
         {
             ClearCustomer();
             ErrorLabel.Text = "Escolha um cliente para este documento.";
+        }
+    }
+
+    /// <summary>GTK: Budget/Proforma disable the source-document picker.</summary>
+    private void RefreshOriginPickerState()
+    {
+        var allowed = PosDocumentRules.AllowsSourceDocumentPicker(SelectedType()?.Acronym);
+        OriginBox.IsEnabled = allowed;
+        OriginClearButton.IsEnabled = allowed;
+        if (allowed == false && ListingFilters.SelectedDocumentId(OriginBox) is not null)
+        {
+            var wasFilling = _filling;
+            _filling = true;
+            try
+            {
+                SelectDocumentId(OriginBox, null);
+            }
+            finally
+            {
+                _filling = wasFilling;
+            }
+
+            RefreshOriginClear();
         }
     }
 
@@ -2563,6 +2753,15 @@ public partial class NewDocumentWindow : UserControl
             ErrorLabel.Text = "Indique as condições de pagamento.";
             PaymentBox.IsEnabled = true;
             PaymentBox.Focus();
+            return;
+        }
+
+        if (draft == false
+            && PosDocumentRules.RequiresSourceDocument(type.Acronym)
+            && ListingFilters.SelectedDocumentId(OriginBox) is null)
+        {
+            ErrorLabel.Text = "Indique o documento de origem.";
+            OriginBox.Focus();
             return;
         }
 

@@ -88,14 +88,7 @@
             </DockPanel>
             <DockPanel x:Name="DesktopTools" Classes="bo_doc_tools">
                 <StackPanel x:Name="DocFilters" Classes="bo_doc_filters" DockPanel.Dock="Left">
-                    <StackPanel Classes="bo_doc_date_field">
-                        <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
-                        <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
-                    </StackPanel>
-                    <StackPanel Classes="bo_doc_date_field">
-                        <TextBlock Classes="bo_doc_label" Text="Data Final" />
-                        <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
-                    </StackPanel>
+                    <views:PeriodRangeField x:Name="Period" />
                     <StackPanel Classes="bo_doc_date_field">
                         <TextBlock Classes="bo_doc_label" Text="Cliente" />
                         <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />
@@ -194,12 +187,15 @@
                     <DataGridTextColumn Header="Valor Pago" Binding="{Binding PaidAmountText}" Width="140" MinWidth="140" IsReadOnly="True" />
                     <DataGridTextColumn Header="Valor em Dívida" Binding="{Binding DebitAmountText}" Width="170" MinWidth="170" IsReadOnly="True" />
                     <DataGridTextColumn Header="Documentos Associados" Binding="{Binding AssociatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
-                    <DataGridTemplateColumn Header="" Width="72" MinWidth="72" MaxWidth="72" CanUserSort="False" CanUserReorder="False">
+                    <DataGridTemplateColumn Header="" Width="108" MinWidth="108" MaxWidth="108" CanUserSort="False" CanUserReorder="False">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:CompileBindings="False">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="0">
                                     <Button Classes="bo_doc_icon_button" Click="OnRowCopyClick" IsVisible="{Binding CanCopy}" ToolTip.Tip="Copiar">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_copiar_b.svg" />
+                                    </Button>
+                                    <Button Classes="bo_doc_icon_button" Click="OnRowUseAsOriginClick" IsVisible="{Binding CanUseAsSource}" ToolTip.Tip="Documento de origem">
+                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_origem_b.svg" />
                                     </Button>
                                     <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" IsVisible="{Binding CanView}" ToolTip.Tip="Ver">
                                         <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
@@ -314,6 +310,7 @@
                     <StackPanel Classes="bo_entity_form" Spacing="10">
                         <TextBlock x:Name="PromptLabel" Classes="bo_new_doc_caption" />
                         <ComboBox x:Name="PrinterBox" Classes="bo_entity_input" IsVisible="False" />
+                        <ComboBox x:Name="OriginTargetBox" Classes="bo_entity_input" IsVisible="False" />
                         <TextBox x:Name="PromptValue" Classes="bo_entity_input" />
                         <StackPanel x:Name="ReprintPanel" IsVisible="False" Spacing="10">
                             <TextBlock x:Name="ReprintCopiesLabel" Classes="bo_new_doc_caption" Text="Cópias" />

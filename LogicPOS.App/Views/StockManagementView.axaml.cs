@@ -94,8 +94,9 @@ public partial class StockManagementView : UserControl
         Grid.SelectionChanged += OnGridSelectionChanged;
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(Notice);
-        StartDate.SelectedDate = DateTime.Today.AddMonths(-1);
-        EndDate.SelectedDate = DateTime.Today;
+        Period.SetRange(
+            DateTime.Today.AddMonths(-1),
+            DateTime.Today.AddDays(1).AddSeconds(-1));
         ApplyToolbar();
         TouchFields.Attach(this);
         EditorOverlay.PropertyChanged += (_, args) =>
@@ -188,8 +189,8 @@ public partial class StockManagementView : UserControl
         Page = _page,
         PageSize = PageSize,
         Search = string.IsNullOrWhiteSpace(SearchBox.Text) ? null : SearchBox.Text.Trim(),
-        StartDate = _tab is StockTab.Movements or StockTab.History ? StartDate.SelectedDate?.Date : null,
-        EndDate = _tab is StockTab.Movements or StockTab.History ? EndDate.SelectedDate?.Date : null,
+        StartDate = _tab is StockTab.Movements or StockTab.History ? Period.StartDate : null,
+        EndDate = _tab is StockTab.Movements or StockTab.History ? Period.EndDate : null,
         ArticleId = ListingFilters.SelectedLookup(FilterArticle)?.Id,
         CustomerId = _tab == StockTab.Movements ? SelectedFilterId(FilterCustomer) : null
     };
@@ -493,8 +494,7 @@ public partial class StockManagementView : UserControl
             BtnBarcode.IsVisible = false;
             BtnLocation.IsVisible = false;
             BtnExchange.IsVisible = false;
-            StartDateField.IsVisible = false;
-            EndDateField.IsVisible = false;
+            Period.IsVisible = false;
             ArticleFilterField.IsVisible = false;
             CustomerFilterField.IsVisible = false;
             return;
@@ -509,10 +509,7 @@ public partial class StockManagementView : UserControl
         BtnLocation.IsVisible = _tab is StockTab.History or StockTab.Warehouse;
         BtnExchange.IsVisible = _tab == StockTab.History;
         var showDates = _tab is StockTab.Movements or StockTab.History;
-        StartDateField.IsVisible = showDates;
-        EndDateField.IsVisible = showDates;
-        StartDate.IsVisible = showDates;
-        EndDate.IsVisible = showDates;
+        Period.IsVisible = showDates;
         ArticleFilterField.IsVisible = _tab == StockTab.Movements;
         CustomerFilterField.IsVisible = _tab == StockTab.Movements;
     }

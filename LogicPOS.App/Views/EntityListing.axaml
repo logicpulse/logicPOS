@@ -35,14 +35,7 @@
                     </DockPanel>
                     <DockPanel x:Name="DesktopTools" Classes="bo_doc_tools">
                         <StackPanel x:Name="DateFilters" Classes="bo_doc_filters" DockPanel.Dock="Left">
-                            <StackPanel Classes="bo_doc_date_field">
-                                <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
-                                <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
-                            </StackPanel>
-                            <StackPanel Classes="bo_doc_date_field">
-                                <TextBlock Classes="bo_doc_label" Text="Data Final" />
-                                <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
-                            </StackPanel>
+                            <views:PeriodRangeField x:Name="Period" />
                             <StackPanel x:Name="CustomerFilterField" Classes="bo_doc_date_field" IsVisible="False">
                                 <TextBlock Classes="bo_doc_label" Text="Cliente" />
                                 <AutoCompleteBox x:Name="CustomerBox" Classes="bo_doc_filter_search" SelectionChanged="OnCustomerFilterChanged" />

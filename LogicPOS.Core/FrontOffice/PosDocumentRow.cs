@@ -1,4 +1,4 @@
-namespace LogicPOS.Core.FrontOffice;
+﻿namespace LogicPOS.Core.FrontOffice;
 
 public sealed class PosDocumentPage
 {
@@ -20,6 +20,14 @@ public sealed class PosDocumentRow
     public string DocumentDateText => DocumentDate.ToString("dd/MM/yyyy HH:mm:ss");
 
     public string Number { get; init; } = string.Empty;
+
+    /// <summary>Document type acronym (FT, FS, GR, …).</summary>
+    public string Type { get; init; } = string.Empty;
+
+    /// <summary>Raw fiscal status code (N/A/F) before display mapping.</summary>
+    public string StatusCode { get; init; } = string.Empty;
+
+    public bool IsDraft { get; init; }
 
     public string Status { get; init; } = string.Empty;
 
@@ -48,4 +56,44 @@ public sealed class PosDocumentRow
     public string EditActionText => CanEdit ? "Editar" : "Ver";
 
     public bool CanDelete => Status != "Anulado";
+
+    /// <summary>GTK: row may be used as Documento de origem (not draft/cancelled/invoiced; valid source type).</summary>
+    public bool CanUseAsSource => PosDocumentRules.CanUseAsSourceDocument(
+        ResolvedType,
+        EffectiveStatusCode(),
+        IsDraft || string.Equals(Status, "Rascunho", StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Cloud list mappers may leave <see cref="Type"/> empty; document numbers are "FT A001/1".
+    /// </summary>
+    public string ResolvedType
+    {
+        get
+        {
+            if (string.IsNullOrWhiteSpace(Type) == false)
+            {
+                return Type;
+            }
+
+            var token = Number.Trim().Split([' ', '\t'], 2, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+            return token ?? string.Empty;
+        }
+    }
+
+    private string EffectiveStatusCode()
+    {
+        if (string.IsNullOrWhiteSpace(StatusCode) == false)
+        {
+            return StatusCode;
+        }
+
+        return Status switch
+        {
+            "Normal" => "N",
+            "Anulado" => "A",
+            "Faturado" => "F",
+            "Rascunho" => "Rascunho",
+            _ => string.Empty
+        };
+    }
 }

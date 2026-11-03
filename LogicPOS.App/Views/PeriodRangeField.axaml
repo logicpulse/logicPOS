@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.PeriodRangeField"
+             Classes="bo_doc_date_field bo_period_field">
+    <StackPanel Classes="bo_doc_date_field">
+        <TextBlock x:Name="Caption" Classes="bo_doc_label" Text="Período" />
+        <Button x:Name="SummaryButton"
+                Classes="bo_period_summary"
+                Foreground="#000000"
+                Click="OnSummaryClick"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Left">
+            <TextBlock x:Name="SummaryText"
+                       Classes="bo_period_summary_text"
+                       Foreground="#000000"
+                       TextWrapping="NoWrap"
+                       TextTrimming="CharacterEllipsis" />
+        </Button>
+        <Popup x:Name="PickerPopup"
+               Placement="Bottom"
+               IsLightDismissEnabled="True"
+               Closed="OnPopupClosed">
+            <Border Classes="bo_period_popup">
+                <DockPanel>
+                    <Border Classes="bo_period_popup_footer" DockPanel.Dock="Bottom">
+                        <DockPanel>
+                            <TextBlock x:Name="DaySpanLabel"
+                                       Classes="bo_period_day_span"
+                                       DockPanel.Dock="Left"
+                                       VerticalAlignment="Center" />
+                            <StackPanel Classes="bo_period_popup_actions" DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Classes="bo_period_popup_button" Content="Cancelar" Click="OnCancelClick" />
+                                <Button Classes="bo_period_popup_button bo_period_popup_apply" Content="Aplicar" Click="OnApplyClick" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                    <StackPanel Classes="bo_period_popup_body">
+                        <StackPanel Classes="bo_period_calendars" Orientation="Horizontal">
+                            <Calendar x:Name="LeftCalendar"
+                                      Classes="bo_period_calendar"
+                                      SelectionMode="SingleDate"
+                                      SelectedDatesChanged="OnLeftCalendarChanged" />
+                            <Calendar x:Name="RightCalendar"
+                                      Classes="bo_period_calendar"
+                                      SelectionMode="SingleDate"
+                                      SelectedDatesChanged="OnRightCalendarChanged" />
+                        </StackPanel>
+                        <Grid Classes="bo_period_times" ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <StackPanel>
+                                <TextBlock Classes="bo_doc_label" Text="Hora inicial" />
+                                <TimePicker x:Name="StartTimePicker"
+                                            Classes="bo_period_time"
+                                            MinuteIncrement="1"
+                                            SelectedTimeChanged="OnDraftTimeChanged" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="bo_doc_label" Text="Hora final" />
+                                <TimePicker x:Name="EndTimePicker"
+                                            Classes="bo_period_time"
+                                            MinuteIncrement="1"
+                                            SelectedTimeChanged="OnDraftTimeChanged" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Popup>
+    </StackPanel>
+</UserControl>

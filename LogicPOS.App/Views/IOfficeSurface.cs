@@ -1,4 +1,4 @@
-namespace LogicPOS.App.Views;
+﻿namespace LogicPOS.App.Views;
 
 /// <summary>
 /// Window that can host document listings and PDF preview (BackOffice or POS).
@@ -7,5 +7,9 @@ public interface IOfficeSurface
 {
     Task ShowPdfAsync(string path, string? title, Guid? documentId = null);
 
-    Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null);
+    Task ShowNewDocumentAsync(
+        Guid? draftId = null,
+        Guid? copyFromDocumentId = null,
+        Guid? originFromDocumentId = null,
+        string? originTargetType = null);
 }

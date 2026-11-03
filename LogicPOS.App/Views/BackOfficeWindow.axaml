@@ -354,14 +354,7 @@
                             </StackPanel>
                         </Border>
                         <StackPanel Classes="bo_entity_form">
-                            <StackPanel Classes="bo_doc_date_field">
-                                <TextBlock x:Name="SaftPeriodStartLabel" Classes="bo_doc_label" Text="Data Inicial" />
-                                <CalendarDatePicker x:Name="SaftPeriodStart" Classes="bo_doc_date" />
-                            </StackPanel>
-                            <StackPanel Classes="bo_doc_date_field">
-                                <TextBlock x:Name="SaftPeriodEndLabel" Classes="bo_doc_label" Text="Data Final" />
-                                <CalendarDatePicker x:Name="SaftPeriodEnd" Classes="bo_doc_date" />
-                            </StackPanel>
+                            <views:PeriodRangeField x:Name="SaftPeriod" />
                         </StackPanel>
                     </DockPanel>
                 </Border>

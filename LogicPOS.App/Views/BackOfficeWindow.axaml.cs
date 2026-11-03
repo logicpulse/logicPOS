@@ -241,10 +241,14 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     public event EventHandler? LoggedOut;
 
-    public async Task ShowNewDocumentAsync(Guid? draftId = null, Guid? copyFromDocumentId = null)
+    public async Task ShowNewDocumentAsync(
+        Guid? draftId = null,
+        Guid? copyFromDocumentId = null,
+        Guid? originFromDocumentId = null,
+        string? originTargetType = null)
     {
         NewDocumentOverlay.IsVisible = true;
-        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId);
+        var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId, originFromDocumentId, originTargetType);
         NewDocumentOverlay.IsVisible = false;
         if (created)
         {
@@ -752,10 +756,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         _pendingSaftAction = "saft-period";
         SaftPeriodTitle.Text = SaftExportUi.CustomPeriodTitle();
-        SaftPeriodStartLabel.Text = PreferenceLabels.Text("global_date_start", "Data Inicial");
-        SaftPeriodEndLabel.Text = PreferenceLabels.Text("global_date_end", "Data Final");
-        SaftPeriodStart.SelectedDate = new DateTime(DateTime.Today.Year, 1, 1);
-        SaftPeriodEnd.SelectedDate = DateTime.Today;
+        var yearStart = new DateTime(DateTime.Today.Year, 1, 1);
+        SaftPeriod.SetRange(yearStart, DateTime.Today.AddDays(1).AddSeconds(-1));
         SaftPeriodOverlay.IsVisible = true;
     }
 
@@ -781,8 +783,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private async void OnSaftPeriodOkClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         SaftPeriodOverlay.IsVisible = false;
-        var start = SaftPeriodStart.SelectedDate?.Date ?? new DateTime(DateTime.Today.Year, 1, 1);
-        var end = SaftPeriodEnd.SelectedDate?.Date ?? DateTime.Today;
+        var start = SaftPeriod.StartDate;
+        var end = SaftPeriod.EndDate;
         if (end < start)
         {
             (start, end) = (end, start);

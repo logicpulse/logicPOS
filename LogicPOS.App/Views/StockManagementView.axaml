@@ -89,14 +89,7 @@
                     </DockPanel>
                     <DockPanel x:Name="DesktopTools" Classes="bo_doc_tools">
                         <StackPanel x:Name="StockFilters" Classes="bo_doc_filters" DockPanel.Dock="Left">
-                            <StackPanel x:Name="StartDateField" Classes="bo_doc_date_field">
-                                <TextBlock Classes="bo_doc_label" Text="Data Inicial" />
-                                <CalendarDatePicker x:Name="StartDate" Classes="bo_doc_date" />
-                            </StackPanel>
-                            <StackPanel x:Name="EndDateField" Classes="bo_doc_date_field">
-                                <TextBlock Classes="bo_doc_label" Text="Data Final" />
-                                <CalendarDatePicker x:Name="EndDate" Classes="bo_doc_date" />
-                            </StackPanel>
+                            <views:PeriodRangeField x:Name="Period" />
                             <StackPanel x:Name="ArticleFilterField" Classes="bo_doc_date_field" IsVisible="False">
                                 <TextBlock Classes="bo_doc_label" Text="Artigo" />
                                 <AutoCompleteBox x:Name="FilterArticle" Classes="bo_article_search" />

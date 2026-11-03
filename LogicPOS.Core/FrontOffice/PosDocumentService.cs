@@ -240,10 +240,137 @@ public static class PosDocumentRules
 {
     public const string Unknown = "Desconhecido";
 
+    /// <summary>
+    /// GTK FrameworkUtils.GetDocumentTypeValidSourceDocuments — types that may appear as
+    /// Documento de origem for at least one target document type.
+    /// </summary>
+    private static readonly HashSet<string> AllSourceDocumentTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "GR", "GT", "GA", "GC", "GD",
+        "CM", "DC",
+        "FC",
+        "OR", "PF", "PP", "FP",
+        "FT", "FS", "FR"
+    };
+
     public static bool IsWayBill(string? acronym)
     {
         return string.IsNullOrWhiteSpace(acronym) == false && new DocumentTypeAnalyzer(acronym).IsWayBill();
     }
+
+    /// <summary>
+    /// GTK: Budget / Proforma disable the source-document picker entirely.
+    /// </summary>
+    public static bool AllowsSourceDocumentPicker(string? targetAcronym)
+    {
+        var type = NormalizeAcronym(targetAcronym);
+        return type is not ("OR" or "PF" or "PP" or "FP");
+    }
+
+    /// <summary>GTK: Credit notes require a source document.</summary>
+    public static bool RequiresSourceDocument(string? targetAcronym)
+        => NormalizeAcronym(targetAcronym) == "NC";
+
+    /// <summary>
+    /// GTK GetDocumentTypeValidSourceDocuments mapped to acronyms for the selected target type.
+    /// </summary>
+    public static IReadOnlyList<string> ValidSourceTypesFor(string? targetAcronym)
+    {
+        var type = NormalizeAcronym(targetAcronym);
+        return type switch
+        {
+            // Invoice, SimplifiedInvoice, InvoiceAndPayment, CurrentAccountInput
+            "FT" or "FS" or "FR" or "CC" =>
+            [
+                "GR", "GT", "GA", "GC", "GD",
+                "CM", "DC",
+                "FC",
+                "OR", "PF", "PP", "FP"
+            ],
+            // CreditNote — FT / FS / FR (InvoiceWayBill omitted: no Avalonia acronym)
+            "NC" => ["FT", "FS", "FR"],
+            // MovementOfGoods + WorkingDocuments (conference / consignation)
+            "GR" or "GT" or "GA" or "GC" or "GD" or "CM" or "DC" or "FC" =>
+            [
+                "FT", "FS", "FR",
+                "CM", "DC",
+                "OR", "PF", "PP", "FP"
+            ],
+            _ => []
+        };
+    }
+
+    /// <summary>
+    /// GTK source filter: not disabled/draft, DocumentStatusStatus not A (cancelled) or F (invoiced),
+    /// and type can be a parent for some target.
+    /// </summary>
+    public static bool CanUseAsSourceDocument(string? sourceType, string? statusCode, bool isDraft)
+    {
+        if (isDraft)
+        {
+            return false;
+        }
+
+        var status = (statusCode ?? string.Empty).Trim();
+        if (status is "A" or "F"
+            || string.Equals(status, "Anulado", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Faturado", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Rascunho", StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        var type = NormalizeAcronym(sourceType);
+        return string.IsNullOrEmpty(type) == false && AllSourceDocumentTypes.Contains(type);
+    }
+
+    public static bool IsValidSourceForTarget(string? sourceType, string? targetAcronym)
+    {
+        var source = NormalizeAcronym(sourceType);
+        if (string.IsNullOrEmpty(source) || AllowsSourceDocumentPicker(targetAcronym) == false)
+        {
+            return false;
+        }
+
+        return ValidSourceTypesFor(targetAcronym)
+            .Any(item => string.Equals(item, source, StringComparison.OrdinalIgnoreCase));
+    }
+
+    /// <summary>
+    /// Target document types that may use <paramref name="sourceType"/> as Documento de origem
+    /// (inverse of <see cref="ValidSourceTypesFor"/>). Order: NC first for invoices, then FT family, then guias.
+    /// </summary>
+    public static IReadOnlyList<string> ValidTargetTypesForSource(string? sourceType)
+    {
+        var source = NormalizeAcronym(sourceType);
+        if (string.IsNullOrEmpty(source) || AllSourceDocumentTypes.Contains(source) == false)
+        {
+            return [];
+        }
+
+        // Prefer credit note for invoice-family sources; otherwise sales invoice, then guias / working docs.
+        string[] candidates =
+        [
+            "NC",
+            "FT", "FS", "FR", "CC",
+            "GR", "GT", "GA", "GC", "GD",
+            "CM", "DC", "FC"
+        ];
+
+        return candidates
+            .Where(target => IsValidSourceForTarget(source, target))
+            .ToList();
+    }
+
+    /// <summary>
+    /// Default target when opening Novo documento from a listing row (first of
+    /// <see cref="ValidTargetTypesForSource"/>: NC for FT/FS/FR; FT otherwise when compatible).
+    /// </summary>
+    public static string? PreferredTargetTypeForSource(string? sourceType)
+        => ValidTargetTypesForSource(sourceType).FirstOrDefault();
+
+    private static string NormalizeAcronym(string? acronym)
+        => (acronym ?? string.Empty).Trim().ToUpperInvariant();
 
     public static bool RequiresNamedCustomer(string? acronym, bool isAngola = false)
     {
@@ -1015,6 +1142,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 document.Id,
                 document.CreatedAt,
                 document.Number,
+                document.Type,
                 document.Status,
                 document.IsDraft,
                 document.TotalFinal,
@@ -1024,7 +1152,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 TaxId = document.Customer.FiscalNumber
             });
         // Accent folding is not available in SQL Contains; filter after materialization when searching.
-        List<(Guid Id, DateTime CreatedAt, string Number, string Status, bool IsDraft, decimal TotalFinal, bool Paid, Guid? ParentId, string EntityName, string TaxId)> documents;
+        List<(Guid Id, DateTime CreatedAt, string Number, string Type, string Status, bool IsDraft, decimal TotalFinal, bool Paid, Guid? ParentId, string EntityName, string TaxId)> documents;
         int total;
         if (term is null)
         {
@@ -1033,7 +1161,7 @@ public sealed class PosDocumentService : IPosDocumentService
                 .Skip((current - 1) * size)
                 .Take(size)
                 .ToListAsync(cancellationToken))
-                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
+                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Type, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
                 .ToList();
         }
         else
@@ -1041,7 +1169,7 @@ public sealed class PosDocumentService : IPosDocumentService
             var all = await projected.ToListAsync(cancellationToken);
             var matched = all
                 .Where(document => TextSearch.ContainsAny(term, document.Number, document.EntityName, document.TaxId))
-                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
+                .Select(document => (document.Id, document.CreatedAt, document.Number, document.Type, document.Status, document.IsDraft, document.TotalFinal, document.Paid, document.ParentId, document.EntityName, document.TaxId))
                 .ToList();
             total = matched.Count;
             documents = matched
@@ -1070,6 +1198,9 @@ public sealed class PosDocumentService : IPosDocumentService
                 Id = document.Id,
                 DocumentDate = document.CreatedAt,
                 Number = document.Number,
+                Type = document.Type,
+                StatusCode = document.Status,
+                IsDraft = document.IsDraft,
                 Status = DescribeStatus(document.IsDraft, document.Status),
                 EntityName = document.EntityName,
                 TaxId = document.TaxId,
@@ -1400,9 +1531,13 @@ public sealed class PosDocumentService : IPosDocumentService
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        // GTK source picker: hide cancelled (A) and invoiced (F) documents.
         var query = database.Documents
             .AsNoTracking()
-            .Where(item => item.IsDeleted == false && item.IsDraft == false);
+            .Where(item => item.IsDeleted == false
+                && item.IsDraft == false
+                && item.Status != "A"
+                && item.Status != "F");
         var term = string.IsNullOrWhiteSpace(search) ? null : search.Trim();
         if (term is "—" or "-")
         {
