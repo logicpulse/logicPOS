@@ -73,10 +73,8 @@
                 <StackPanel Classes="bo_sidebar_footer" DockPanel.Dock="Bottom">
                     <Button x:Name="ExitButton" Classes="bo_nav" Click="OnExitClick" ToolTip.Tip="Sair da Aplicação">
                         <StackPanel Classes="bo_menu_row">
-                            <Border Classes="bo_menu_glyph">
-                                <Border.OpacityMask>
-                                    <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_pos_close_backoffice.png" />
-                                </Border.OpacityMask>
+                            <Border Classes="bo_menu_glyph bo_menu_glyph_svg">
+                                <svg:Svg Classes="bo_menu_glyph_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_sistema_logout.svg" />
                             </Border>
                             <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Sair da Aplicação" />
                         </StackPanel>
@@ -110,10 +108,8 @@
                     <StackPanel>
                         <Button x:Name="DashboardButton" Classes="bo_nav bo_menu_on" Click="OnDashboardClick" ToolTip.Tip="Painel">
                             <StackPanel Classes="bo_menu_row">
-                                <Border Classes="bo_menu_glyph">
-                                    <Border.OpacityMask>
-                                        <ImageBrush Source="avares://LogicPOS.App/Assets/Images/BackOffice/icon_dashboard.png" />
-                                    </Border.OpacityMask>
+                                <Border Classes="bo_menu_glyph bo_menu_glyph_svg">
+                                    <svg:Svg Classes="bo_menu_glyph_icon" Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_dashboard.svg" />
                                 </Border>
                                 <TextBlock Classes="bo_menu_label" VerticalAlignment="Center" Text="Painel" />
                             </StackPanel>

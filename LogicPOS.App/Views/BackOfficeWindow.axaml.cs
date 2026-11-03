@@ -403,98 +403,98 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void BuildMenu()
     {
-        var sections = new (string Title, string Icon, (string Title, bool Logout)[] Items)[]
+        var sections = new (string Title, string Icon, (string Title, string? Icon, bool Logout)[] Items)[]
         {
-            ("Documentos", "Accordion/pos_backoffice_documentos.png", new[]
+            ("Documentos", "Menu/menu_dashboard_documentos_b.svg", new[]
             {
-                ("Novo Doc.", false),
-                ("Documentos", false),
-                ("Emissão Recibos", false),
-                ("Recibos", false),
-                ("Conta.Corr.", false),
-                ("Sessões de Trab.", false)
+                ("Novo Doc.", "Menu/menu_dashboard_novo_documento.svg", false),
+                ("Documentos", "Menu/menu_dashboard_documentos_b.svg", false),
+                ("Emissão Recibos", "Menu/menu_dashboard_emissao_recibos.svg", false),
+                ("Recibos", "Menu/menu_dashboard_recibos.svg", false),
+                ("Conta.Corr.", "Menu/menu_dashboard_conta_corrente.svg", false),
+                ("Sessões de Trab.", (string?)null, false)
             }),
-            ("Relatórios", "Accordion/pos_backoffice_relatorios.png", new[]
+            ("Relatórios", "Menu/menu_relatorios_relatorios.svg", new[]
             {
-                ("Relatórios", false)
+                ("Relatórios", "Menu/menu_relatorios_relatorios.svg", false)
             }),
-            ("Artigos", "Accordion/pos_backoffice_artigos.png", new[]
+            ("Artigos", "Menu/menu_artigos_artigos.svg", new[]
             {
-                ("Famílias", false),
-                ("Subfamílias", false),
-                ("Artigos", false),
-                ("Tipo de artigos", false),
-                ("Classe do artigo", false),
-                ("Tipo de Preço", false),
-                ("Gestão de Stocks", false),
-                ("Importar Artigos", false),
-                ("Exportar Artigos", false)
+                ("Famílias", "Menu/menu_artigos_familas.svg", false),
+                ("Subfamílias", "Menu/menu_artigos_subfamilias.svg", false),
+                ("Artigos", "Menu/menu_artigos_artigos.svg", false),
+                ("Tipo de artigos", "Menu/menu_artigos_tipos_artigo.svg", false),
+                ("Classe do artigo", (string?)null, false),
+                ("Tipo de Preço", "Menu/menu_artigos_tipos_preco.svg", false),
+                ("Gestão de Stocks", "Menu/menu_artigos_gestao_stocks.svg", false),
+                ("Importar Artigos", "Menu/menu_importacao_importar_artigos.svg", false),
+                ("Exportar Artigos", "Menu/menu_exportacao_exportar_artigos.svg", false)
             }),
-            ("Informação fiscal", "Accordion/pos_backoffice_informacao_fiscal.png", new[]
+            ("Informação fiscal", "Menu/menu_informacoes_fiscais.svg", new[]
             {
-                ("Abertura de ano fiscal", false),
-                ("Séries", false),
-                ("Tipo de documento", false),
-                ("Taxas de imposto", false),
-                ("Motivo de isenção de IVA", false),
-                ("Cond. de Pagamento", false),
-                ("Métodos de pagamento", false)
+                ("Abertura de ano fiscal", "Menu/menu_informacoes_fiscais_anos_fiscais.svg", false),
+                ("Séries", "Menu/menu_informacoes_fiscais_series_documentos.svg", false),
+                ("Tipo de documento", "Menu/menu_informacoes_fiscais_tipos_documentos.svg", false),
+                ("Taxas de imposto", "Menu/menu_informacoes_fiscais_taxas_iva.svg", false),
+                ("Motivo de isenção de IVA", "Menu/menu_informacoes_fiscais_movimentos_isencao_iva.svg", false),
+                ("Cond. de Pagamento", "Menu/menu_informacoes_fiscais_condicoes_pagamento.svg", false),
+                ("Métodos de pagamento", "Menu/menu_informacoes_fiscais_metodo_pagamento.svg", false)
             }),
-            ("Clientes", "Accordion/pos_backoffice_clientes.png", new[]
+            ("Clientes", "Menu/menu_clientes.svg", new[]
             {
-                ("Clientes", false),
-                ("Tipo de clientes", false),
-                ("Grupo de descontos", false),
-                ("Importar Clientes", false),
-                ("Exportar Clientes", false)
+                ("Clientes", "Menu/menu_clientes.svg", false),
+                ("Tipo de clientes", "Menu/menu_clientes_tipo_clientes.svg", false),
+                ("Grupo de descontos", "Menu/menu_clientes_grupo_desconto.svg", false),
+                ("Importar Clientes", "Menu/menu_importacao_importar_clientes.svg", false),
+                ("Exportar Clientes", "Menu/menu_exportacao_exportar_clientes.svg", false)
             }),
-            ("Utilizadores", "Accordion/pos_backoffice_utilizadores.png", new[]
+            ("Utilizadores", "Menu/menu_utilizadores.svg", new[]
             {
-                ("Utilizadores", false),
-                ("Permissões", false),
-                ("Grupo de comissões", false)
+                ("Utilizadores", "Menu/menu_utilizadores.svg", false),
+                ("Permissões", "Menu/menu_utilizadores_permicoes.svg", false),
+                ("Grupo de comissões", "Menu/menu_utilizadores_grupo_comicao.svg", false)
             }),
-            ("Dispositivos", "Accordion/pos_backoffice_impressoras.png", new[]
+            ("Dispositivos", "Menu/menu_dispositivos.svg", new[]
             {
-                ("Tipos de impressora", false),
-                ("Impressoras", false),
-                ("Dispositivos de Entrada", false),
-                ("Display de Cliente", false),
-                ("Balanças", false)
+                ("Tipos de impressora", "Menu/menu_dispositivos_tipos_impressoras.svg", false),
+                ("Impressoras", "Menu/menu_dispositivos_impressoras.svg", false),
+                ("Dispositivos de Entrada", "Menu/menu_dispositivos_leitores.svg", false),
+                ("Display de Cliente", "Menu/menu_dispositivos_display.svg", false),
+                ("Balanças", "Menu/menu_dispositivos_balancas.svg", false)
             }),
-            ("Outras Tabelas", "Accordion/pos_backoffice_outras_tabelas.png", new[]
+            ("Outras Tabelas", "Menu/menu_outras_tabelas.svg", new[]
             {
-                ("País", false),
-                ("Moeda", false),
-                ("Locais", false),
-                ("Mesas", false),
-                ("Tipo de Movimento", false),
-                ("Unidades de medida", false),
-                ("Unidades de tamanho", false),
-                ("Feriados", false),
-                ("Armazém", false)
+                ("País", "Menu/menu_outras_tabelas_menu_dispositivos_paises.svg", false),
+                ("Moeda", "Menu/menu_outras_tabelas_moedas.svg", false),
+                ("Locais", "Menu/menu_outras_tabelas_locais.svg", false),
+                ("Mesas", "Menu/menu_outras_tabelas_mesas.svg", false),
+                ("Tipo de Movimento", "Menu/menu_outras_tabelas_tipo_movimento.svg", false),
+                ("Unidades de medida", "Menu/menu_outras_tabelas_unidade_medida.svg", false),
+                ("Unidades de tamanho", "Menu/menu_outras_tabelas_unidade_tamanho.svg", false),
+                ("Feriados", "Menu/menu_outras_tabelas_feriados.svg", false),
+                ("Armazém", "Menu/menu_outras_tabelas_armazens.svg", false)
             }),
-            ("Configuração", "Accordion/pos_backoffice_configuracao.png", new[]
+            ("Configuração", "Menu/menu_configuracoes.svg", new[]
             {
-                ("Parâmetros da Empresa", false),
-                ("Parâmetros de Sistema", false),
-                ("Terminais", false)
+                ("Parâmetros da Empresa", "Menu/menu_configuracoes_preferencias_empresa.svg", false),
+                ("Parâmetros de Sistema", "Menu/menu_configuracoes_preferencias_sistema.svg", false),
+                ("Terminais", "Menu/menu_configuracoes_terminais.svg", false)
             }),
-            ("SAFT", "Accordion/pos_backoffice_export.png", new[]
+            ("SAFT", "Menu/menu_exportacao.svg", new[]
             {
-                ("SAF-T ano", false),
-                ("SAF-T último mês", false),
-                ("SAF-T período", false)
+                ("SAF-T ano", "Menu/menu_exportacao_saft_anual.svg", false),
+                ("SAF-T último mês", "Menu/menu_exportacao_saft_ultimo_mes.svg", false),
+                ("SAF-T período", "Menu/menu_exportacao_saft_personalizado.svg", false)
             }),
-            ("Sistema", "Accordion/pos_backoffice_sistema.png", new[]
+            ("Sistema", "Menu/menu_sistema.svg", new[]
             {
-                ("Notificações", false),
-                ("Registro de alterações (Changelog)", false),
-                ("Backup DB", false),
-                ("Restaurar DB", false),
-                ("Restaurar de ficheiro", false),
-                ("Atualizar", false),
-                ("Sair da Sessão", true)
+                ("Notificações", "Menu/menu_sistema_notificacoes.svg", false),
+                ("Registro de alterações (Changelog)", "Menu/menu_sistema_change_logs.svg", false),
+                ("Backup DB", "Menu/menu_sistema_backup.svg", false),
+                ("Restaurar DB", "Menu/menu_sistema_restauro.svg", false),
+                ("Restaurar de ficheiro", "Menu/menu_sistema_restauro.svg", false),
+                ("Atualizar", (string?)null, false),
+                ("Sair da Sessão", "Menu/menu_sistema_logout.svg", true)
             })
         };
 
@@ -505,18 +505,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             // Keep the separate AGT Séries/Documentos section; only rename the fiscal export accordion.
             if (exportIndex >= 0)
             {
-                menu[exportIndex] = ("AGT", "Accordion/pos_backoffice_export.png", new[]
+                menu[exportIndex] = ("AGT", "Menu/menu_exportacao.svg", new[]
                 {
-                    ("AGT ano", false),
-                    ("AGT último mês", false),
-                    ("AGT período", false)
+                    ("AGT ano", "Menu/menu_exportacao_saft_anual.svg", false),
+                    ("AGT último mês", "Menu/menu_exportacao_saft_ultimo_mes.svg", false),
+                    ("AGT período", "Menu/menu_exportacao_saft_personalizado.svg", false)
                 });
             }
 
-            menu.Insert(exportIndex < 0 ? menu.Count : exportIndex, ("AGT", "Accordion/pos_backoffice_informacao_fiscal.png", new[]
+            menu.Insert(exportIndex < 0 ? menu.Count : exportIndex, ("AGT", "Menu/menu_informacoes_fiscais.svg", new[]
             {
-                ("Séries AGT", false),
-                ("Documentos AGT", false)
+                ("Séries AGT", "Menu/menu_informacoes_fiscais_series_documentos.svg", false),
+                ("Documentos AGT", "Menu/menu_informacoes_fiscais_tipos_documentos.svg", false)
             }));
         }
 
@@ -532,10 +532,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 {
                     var logout = item.Logout;
                     var title = item.Title;
+                    var label = AppText.Get(title);
                     var child = new Button
                     {
                         Classes = { "bo_menu_child" },
-                        Content = AppText.Get(title),
+                        Content = string.IsNullOrEmpty(item.Icon)
+                            ? label
+                            : CreateRow($"{IconRoot}{item.Icon}", label),
                         Tag = title
                     };
                     child.Click += (_, _) =>
@@ -647,14 +650,32 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             Orientation = Orientation.Horizontal,
             HorizontalAlignment = HorizontalAlignment.Left,
-            VerticalAlignment = VerticalAlignment.Center
+            VerticalAlignment = VerticalAlignment.Center,
+            Classes = { "bo_menu_row" }
         };
-        var glyph = new Border { Classes = { "bo_menu_glyph" } };
-        glyph.OpacityMask = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri(iconUri))))
+        if (string.IsNullOrWhiteSpace(iconUri) == false)
         {
-            Stretch = Stretch.Uniform
-        };
-        panel.Children.Add(glyph);
+            var glyph = new Border { Classes = { "bo_menu_glyph" } };
+            if (iconUri.EndsWith(".svg", StringComparison.OrdinalIgnoreCase))
+            {
+                glyph.Classes.Add("bo_menu_glyph_svg");
+                glyph.Child = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
+                {
+                    Classes = { "bo_menu_glyph_icon" },
+                    Path = iconUri
+                };
+            }
+            else
+            {
+                glyph.OpacityMask = new ImageBrush(new Bitmap(AssetLoader.Open(new Uri(iconUri))))
+                {
+                    Stretch = Stretch.Uniform
+                };
+            }
+
+            panel.Children.Add(glyph);
+        }
+
         panel.Children.Add(new TextBlock
         {
             Classes = { "bo_menu_label" },

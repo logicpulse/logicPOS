@@ -2951,8 +2951,24 @@
         <Setter Property="Background" Value="#FFFFFF" />
     </Style>
 
+    <Style Selector="Border.bo_menu_glyph.bo_menu_glyph_svg">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="svg|Svg.bo_menu_glyph_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="Button.bo_menu_on Border.bo_menu_glyph">
         <Setter Property="Background" Value="#323537" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_on Border.bo_menu_glyph.bo_menu_glyph_svg">
+        <Setter Property="Background" Value="Transparent" />
     </Style>
 
     <Style Selector="Button.bo_nav">
@@ -3145,9 +3161,9 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="#FFFFFF" />
         <Setter Property="FontSize" Value="11" />
-        <Setter Property="Height" Value="28" />
+        <Setter Property="Height" Value="30" />
         <Setter Property="Margin" Value="18,1,6,1" />
-        <Setter Property="Padding" Value="12,0" />
+        <Setter Property="Padding" Value="8,0" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="BorderThickness" Value="0" />
@@ -3169,6 +3185,17 @@
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.bo_menu_child Border.bo_menu_glyph">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
+        <Setter Property="Margin" Value="0,0,6,0" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child svg|Svg.bo_menu_glyph_icon">
+        <Setter Property="Width" Value="18" />
+        <Setter Property="Height" Value="18" />
     </Style>
 
     <Style Selector="Button.bo_menu_child:pointerover">
