@@ -10,152 +10,175 @@
         CanResize="False">
     <Panel>
         <Panel Classes="login_alert_overlay" IsVisible="False" />
-        <Border Classes="login_alert_frame bo_pay_dialog" MaxWidth="640" MaxHeight="680">
+        <Border Classes="login_alert_frame bo_pay_dialog">
             <DockPanel Classes="login_alert_inner">
-                <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <StackPanel Classes="login_alert_title_row">
-                        <Image Classes="login_alert_title_icon"
-                               Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
-                        <TextBlock Classes="login_alert_title" Text="Pagamentos" />
+                <Border Classes="login_alert_titlebar pos_pay_titlebar" DockPanel.Dock="Top">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_window_payments.png" />
+                            <TextBlock Classes="login_alert_title" Text="Pagamentos" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="bo_window_button" Click="OnCancelClick" ToolTip.Tip="Fechar">
+                            <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
+                    <StackPanel Classes="pos_pay_actions">
+                        <Button Classes="login_alert_action pos_pay_action" Click="OnInvoiceClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_toolbar_finance_document.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Fatura" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action pos_pay_action" Click="OnClearCustomerClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_nav_delete.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Limpar" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action pos_pay_action" Click="OnNewCustomerClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Novo Cli." />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="FullPaymentButton" Classes="login_alert_action pos_pay_action selected">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pag. Total" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action pos_pay_action" Click="OnPartialPaymentClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Pag. Parcial" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnConfirmClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Ok" />
+                            </StackPanel>
+                        </Button>
+                        <Button Classes="login_alert_action pos_pay_action" Click="OnCancelClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
+                            </StackPanel>
+                        </Button>
                     </StackPanel>
                 </Border>
 
-                <StackPanel Classes="pos_pay_actions" DockPanel.Dock="Bottom">
-                    <Button Classes="login_alert_action" Click="OnInvoiceClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_toolbar_finance_document.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Fatura" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="login_alert_action" Click="OnClearCustomerClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_nav_delete.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Limpar" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="login_alert_action" Click="OnNewCustomerClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_clients.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Novo Cli." />
-                        </StackPanel>
-                    </Button>
-                    <Button x:Name="FullPaymentButton" Classes="login_alert_action selected">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_full.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Pag.Total" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="login_alert_action" Click="OnPartialPaymentClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Pos/Payments/icon_pos_payment_partial.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Pag.Parcial" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="login_alert_action" Click="OnConfirmClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Ok" />
-                        </StackPanel>
-                    </Button>
-                    <Button Classes="login_alert_action" Click="OnCancelClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+                <ScrollViewer Classes="pos_pay_scroll">
+                    <StackPanel Classes="pos_pay_body">
+                        <Grid ColumnDefinitions="350,*" Margin="0,0,0,10">
+                            <Grid x:Name="MethodGrid"
+                                  ColumnDefinitions="112,112,112"
+                                  RowDefinitions="76,76,76" />
+                            <Border Grid.Column="1" Classes="pos_pay_totals">
+                                <StackPanel Spacing="10">
+                                    <TextBlock Classes="pos_pay_totals_title" Text="Resumo do Pagamento" />
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Classes="pos_pay_caption" Text="Documento" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="DocumentTypeValue" Grid.Column="1" Classes="pos_pay_amount" Text="FS" />
+                                    </Grid>
+                                    <Border Classes="pos_pay_due_row">
+                                        <Grid ColumnDefinitions="*,Auto">
+                                            <TextBlock Classes="pos_pay_due_label" Text="Total a pagar" VerticalAlignment="Center" />
+                                            <TextBlock x:Name="TotalValue" Grid.Column="1" Classes="pos_pay_due_value" Text="0" />
+                                        </Grid>
+                                    </Border>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Classes="pos_pay_caption" Text="Total entregue" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="DeliveryValue" Grid.Column="1" Classes="pos_pay_amount" Text="0" />
+                                    </Grid>
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <TextBlock Classes="pos_pay_caption" Text="Troco" VerticalAlignment="Center" />
+                                        <TextBlock x:Name="ChangeValue" Grid.Column="1" Classes="pos_pay_change" Text="0" />
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
 
-                <Grid Classes="pos_pay_body" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,*">
-                    <Grid ColumnDefinitions="332,*">
-                        <Grid x:Name="MethodGrid" ColumnDefinitions="108,108,108" RowDefinitions="67,67,67" />
-                        <Border Grid.Column="1" Classes="pos_pay_totals">
-                            <StackPanel Spacing="8">
-                                <StackPanel>
-                                    <TextBlock Classes="pos_pay_caption" Text="Documento" />
-                                    <TextBlock x:Name="DocumentTypeValue" Classes="pos_pay_total" Text="FS" />
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Classes="pos_pay_caption" Text="Total a pagar:" />
-                                    <TextBlock x:Name="TotalValue" Classes="pos_pay_total" Text="0" />
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Classes="pos_pay_caption" Text="Total entregue:" />
-                                    <TextBlock x:Name="DeliveryValue" Classes="pos_pay_amount" Text="0" />
-                                </StackPanel>
-                                <StackPanel>
-                                    <TextBlock Classes="pos_pay_caption" Text="Troco:" />
-                                    <TextBlock x:Name="ChangeValue" Classes="pos_pay_amount" Text="0" />
+                        <Border Classes="pos_pay_customer_section">
+                            <StackPanel>
+                                <Border Classes="pos_pay_customer_header">
+                                    <TextBlock Classes="pos_pay_customer_header_text" Text="Dados do Cliente" />
+                                </Border>
+                                <StackPanel Classes="pos_pay_customer_form">
+                                    <Grid ColumnDefinitions="*,*">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Classes="pos_pay_label" Text="NIF" />
+                                            <TextBox x:Name="FiscalNumber" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                            <TextBlock Classes="pos_pay_label" Text="Número do Cartão de Cliente" />
+                                            <TextBox x:Name="CardNumber" Classes="pos_pay_field" TextChanged="OnCardNumberChanged" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid ColumnDefinitions="*,160">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Classes="pos_pay_label" Text="Cliente" />
+                                            <TextBox x:Name="CustomerName" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
+                                            <TextBlock x:Name="CustomerSearchNotice" Classes="bo_entity_error" IsVisible="False" />
+                                            <Popup x:Name="CustomerSuggest"
+                                                   Placement="Bottom"
+                                                   IsLightDismissEnabled="True">
+                                                <Border Classes="bo_new_doc_suggest" MinWidth="280">
+                                                    <ScrollViewer MaxHeight="180">
+                                                        <StackPanel x:Name="CustomerSuggestList" />
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </Popup>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                            <TextBlock Classes="pos_pay_label" Text="Desconto" />
+                                            <TextBox x:Name="Discount" Classes="pos_pay_field" Text="0,00" TextChanged="OnDiscountChanged" />
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <StackPanel>
+                                        <TextBlock Classes="pos_pay_label" Text="Morada" />
+                                        <TextBox x:Name="Address" Classes="pos_pay_field" />
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <TextBlock Classes="pos_pay_label" Text="Localidade" />
+                                        <TextBox x:Name="Locality" Classes="pos_pay_field" />
+                                    </StackPanel>
+                                    <Grid ColumnDefinitions="140,*,*">
+                                        <StackPanel Margin="0,0,8,0">
+                                            <TextBlock Classes="pos_pay_label" Text="Código-Postal" />
+                                            <TextBox x:Name="ZipCode" Classes="pos_pay_field" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="8,0">
+                                            <TextBlock Classes="pos_pay_label" Text="Cidade" />
+                                            <TextBox x:Name="City" Classes="pos_pay_field" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2" Margin="8,0,0,0">
+                                            <TextBlock Classes="pos_pay_label" Text="País" />
+                                            <TextBox x:Name="Country" Classes="pos_pay_field" IsReadOnly="True" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <StackPanel>
+                                        <TextBlock Classes="pos_pay_label" Text="Notas" />
+                                        <TextBox x:Name="Notes" Classes="pos_pay_field" />
+                                    </StackPanel>
                                 </StackPanel>
                             </StackPanel>
                         </Border>
-                    </Grid>
-
-                    <Grid Grid.Row="1" ColumnDefinitions="*,*">
-                        <StackPanel Margin="0,0,6,0">
-                            <TextBlock Classes="pos_pay_label" Text="NIF" />
-                            <TextBox x:Name="FiscalNumber" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
-                            <TextBlock Classes="pos_pay_label" Text="Número do Cartão de Cliente" />
-                            <TextBox x:Name="CardNumber" Classes="pos_pay_field" TextChanged="OnCardNumberChanged" />
-                        </StackPanel>
-                    </Grid>
-
-                    <Grid Grid.Row="2" ColumnDefinitions="*,160">
-                        <StackPanel Margin="0,0,6,0">
-                            <TextBlock Classes="pos_pay_label" Text="Cliente" />
-                            <TextBox x:Name="CustomerName" Classes="pos_pay_field" KeyDown="OnCustomerSearchKey" TextChanged="OnCustomerTextChanged" />
-                            <TextBlock x:Name="CustomerSearchNotice" Classes="bo_entity_error" IsVisible="False" />
-                            <Popup x:Name="CustomerSuggest"
-                                   Placement="Bottom"
-                                   IsLightDismissEnabled="True">
-                                <Border Classes="bo_new_doc_suggest" MinWidth="280">
-                                    <ScrollViewer MaxHeight="180">
-                                        <StackPanel x:Name="CustomerSuggestList" />
-                                    </ScrollViewer>
-                                </Border>
-                            </Popup>
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Margin="6,0,0,0">
-                            <TextBlock Classes="pos_pay_label" Text="Desconto" />
-                            <TextBox x:Name="Discount" Classes="pos_pay_field" Text="0,00" TextChanged="OnDiscountChanged" />
-                        </StackPanel>
-                    </Grid>
-
-                    <StackPanel Grid.Row="3">
-                        <TextBlock Classes="pos_pay_label" Text="Morada" />
-                        <TextBox x:Name="Address" Classes="pos_pay_field" />
                     </StackPanel>
-                    <StackPanel Grid.Row="4">
-                        <TextBlock Classes="pos_pay_label" Text="Localidade" />
-                        <TextBox x:Name="Locality" Classes="pos_pay_field" />
-                    </StackPanel>
-                    <Grid Grid.Row="5" ColumnDefinitions="140,*,*">
-                        <StackPanel Margin="0,0,6,0">
-                            <TextBlock Classes="pos_pay_label" Text="Código-postal" />
-                            <TextBox x:Name="ZipCode" Classes="pos_pay_field" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="1" Margin="6,0">
-                            <TextBlock Classes="pos_pay_label" Text="Cidade" />
-                            <TextBox x:Name="City" Classes="pos_pay_field" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="2" Margin="6,0,0,0">
-                            <TextBlock Classes="pos_pay_label" Text="País" />
-                            <TextBox x:Name="Country" Classes="pos_pay_field" IsReadOnly="True" />
-                        </StackPanel>
-                    </Grid>
-                    <StackPanel Grid.Row="6">
-                        <TextBlock Classes="pos_pay_label" Text="Notas" />
-                        <TextBox x:Name="Notes" Classes="pos_pay_field" />
-                    </StackPanel>
-                </Grid>
+                </ScrollViewer>
             </DockPanel>
         </Border>
 

@@ -1907,23 +1907,35 @@
         <Setter Property="SizeToContent" Value="Manual" />
     </Style>
 
-    <Style Selector="Grid.pos_pay_body">
-        <Setter Property="Margin" Value="8,8,8,4" />
+    <Style Selector="ScrollViewer.pos_pay_scroll">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_pay_body">
+        <Setter Property="Margin" Value="14,12,14,8" />
+        <Setter Property="Spacing" Value="0" />
+    </Style>
+
+    <Style Selector="Border.pos_pay_titlebar">
+        <Setter Property="Background" Value="#2B3A4A" />
+        <Setter Property="Padding" Value="10,0,8,0" />
     </Style>
 
     <Style Selector="Button.pos_pay_method">
         <Setter Property="Width" Value="108" />
-        <Setter Property="Height" Value="67" />
-        <Setter Property="Background" Value="#A3C749" />
-        <Setter Property="Foreground" Value="#3B3B39" />
-        <Setter Property="FontSize" Value="10" />
-        <Setter Property="Padding" Value="2" />
-        <Setter Property="Margin" Value="1" />
+        <Setter Property="Height" Value="72" />
+        <Setter Property="Background" Value="#B7D84F" />
+        <Setter Property="Foreground" Value="#1F2933" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="Padding" Value="4,6" />
+        <Setter Property="Margin" Value="2" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
-        <Setter Property="BorderBrush" Value="#C8C8C8" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
@@ -1943,41 +1955,60 @@
         </Setter>
     </Style>
 
+    <Style Selector="Button.pos_pay_method:pointerover /template/ Border">
+        <Setter Property="Background" Value="#C6E45E" />
+    </Style>
+
     <Style Selector="Button.pos_pay_method.selected">
-        <Setter Property="BorderBrush" Value="#2F4A10" />
+        <Setter Property="Background" Value="#9FCD3A" />
+        <Setter Property="BorderBrush" Value="#2F6B1A" />
         <Setter Property="BorderThickness" Value="3" />
     </Style>
 
+    <Style Selector="Button.pos_pay_method:disabled">
+        <Setter Property="Opacity" Value="0.45" />
+    </Style>
+
     <Style Selector="Button.pos_pay_method_wide">
-        <Setter Property="Width" Value="328" />
+        <Setter Property="Width" Value="340" />
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
     <Style Selector="Image.pos_pay_method_icon">
-        <Setter Property="Width" Value="36" />
-        <Setter Property="Height" Value="36" />
+        <Setter Property="Width" Value="34" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Stretch" Value="Uniform" />
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="TextBlock.pos_pay_method_text">
-        <Setter Property="Foreground" Value="#3B3B39" />
-        <Setter Property="FontSize" Value="10" />
+        <Setter Property="Foreground" Value="#1F2933" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="TextAlignment" Value="Center" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.pos_pay_totals">
-        <Setter Property="Background" Value="#3D3D3D" />
-        <Setter Property="Padding" Value="12,8" />
-        <Setter Property="Margin" Value="8,0,0,0" />
+        <Setter Property="Background" Value="#1E2430" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Padding" Value="14,12" />
+        <Setter Property="Margin" Value="12,2,0,2" />
+        <Setter Property="MinHeight" Value="220" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_totals_title">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Margin" Value="0,0,0,4" />
     </Style>
 
     <Style Selector="TextBlock.pos_pay_caption">
-        <Setter Property="Foreground" Value="#6589AB" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#9BB4CC" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style Selector="TextBlock.pos_pay_total">
@@ -1989,15 +2020,66 @@
 
     <Style Selector="TextBlock.pos_pay_amount">
         <Setter Property="Foreground" Value="#FFFFFF" />
-        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontSize" Value="14" />
         <Setter Property="FontWeight" Value="Bold" />
         <Setter Property="HorizontalAlignment" Value="Right" />
     </Style>
 
+    <Style Selector="Border.pos_pay_due_row">
+        <Setter Property="Background" Value="#2F6FAD" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Padding" Value="10,8" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_due_label">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_due_value">
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_change">
+        <Setter Property="Foreground" Value="#B8E05C" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+
+    <Style Selector="Border.pos_pay_customer_section">
+        <Setter Property="Background" Value="#F4F7FA" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="BorderBrush" Value="#D9E2EC" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.pos_pay_customer_header">
+        <Setter Property="Background" Value="#D6E6F5" />
+        <Setter Property="Padding" Value="12,8" />
+    </Style>
+
+    <Style Selector="TextBlock.pos_pay_customer_header_text">
+        <Setter Property="Foreground" Value="#1F3A5F" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="StackPanel.pos_pay_customer_form">
+        <Setter Property="Margin" Value="12,4,12,12" />
+        <Setter Property="Spacing" Value="2" />
+    </Style>
+
     <Style Selector="TextBlock.pos_pay_label">
-        <Setter Property="Foreground" Value="#3B3B39" />
+        <Setter Property="Foreground" Value="#3D4F5F" />
         <Setter Property="FontSize" Value="11" />
-        <Setter Property="Margin" Value="0,6,0,2" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,8,0,3" />
     </Style>
 
     <Style Selector="StackPanel.pos_volta_form">
@@ -2005,22 +2087,31 @@
     </Style>
 
     <Style Selector="TextBox.pos_pay_field">
-        <Setter Property="Height" Value="28" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Background" Value="#FFFFFF" />
-        <Setter Property="Foreground" Value="#000000" />
-        <Setter Property="BorderBrush" Value="#C8C8C8" />
+        <Setter Property="Foreground" Value="#111111" />
+        <Setter Property="BorderBrush" Value="#C5D0DB" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="8" />
-        <Setter Property="Padding" Value="6,0" />
-        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="FontSize" Value="13" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.pos_pay_footer">
+        <Setter Property="Background" Value="#2B3A4A" />
+        <Setter Property="Padding" Value="10,10,12,12" />
     </Style>
 
     <Style Selector="StackPanel.pos_pay_actions">
         <Setter Property="Orientation" Value="Horizontal" />
         <Setter Property="HorizontalAlignment" Value="Right" />
-        <Setter Property="Spacing" Value="4" />
-        <Setter Property="Margin" Value="4,0,8,8" />
+        <Setter Property="Spacing" Value="6" />
+        <Setter Property="Margin" Value="0" />
+    </Style>
+
+    <Style Selector="Button.login_alert_action.pos_pay_action_ok">
+        <Setter Property="Background" Value="#8FBF2F" />
     </Style>
 
     <Style Selector="Button.login_alert_action.selected">
@@ -5685,13 +5776,14 @@
     </Style>
 
     <Style Selector="Border.bo_pay_dialog">
-        <Setter Property="MinWidth" Value="420" />
-        <Setter Property="MaxWidth" Value="640" />
-        <Setter Property="Width" Value="NaN" />
+        <Setter Property="MinWidth" Value="720" />
+        <Setter Property="MaxWidth" Value="820" />
+        <Setter Property="Width" Value="780" />
         <Setter Property="Height" Value="NaN" />
-        <Setter Property="MaxHeight" Value="680" />
+        <Setter Property="MaxHeight" Value="820" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="14" />
     </Style>
 
     <Style Selector="Border.bo_entity_prompt">
