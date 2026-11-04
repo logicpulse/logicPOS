@@ -282,7 +282,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         StartupOverlay.IsVisible = true;
-        FitHostedOverlays();
         var shown = await StartupHost.ShowAsync();
         if (shown == false)
         {
@@ -461,11 +460,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(OrdersFrame, this, 560, 360, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(VoltaFrame, this, 620, 430, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(SessionFrame, this, sessionW, sessionH, lockHeight: false, bottomReserve: bottomReserve);
-        if (StartupOverlay.IsVisible)
-        {
-            PortraitChrome.FitOverlay(StartupHost, this, 720, 520, lockHeight: false, bottomReserve: bottomReserve);
-        }
-
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {

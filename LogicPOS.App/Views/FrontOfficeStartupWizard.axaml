@@ -4,7 +4,7 @@
              xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.FrontOfficeStartupWizard">
     <Panel>
-        <Border Classes="login_alert_frame bo_fiscal_wizard">
+        <Border Classes="login_alert_frame bo_fo_startup_wizard">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
                     <StackPanel Classes="login_alert_title_row">
@@ -48,25 +48,23 @@
                     <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" />
                 </Border>
 
-                <ScrollViewer Classes="bo_fiscal_wizard_scroll">
-                    <Panel>
-                        <StackPanel x:Name="DayStep" Classes="bo_fiscal_wizard_form">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir o dia" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="O dia de trabalho tem de estar aberto antes de abrir a sessão deste terminal. Sem isto não consegue vender."
-                                       TextWrapping="Wrap" />
-                            <TextBlock x:Name="DayStatus" Classes="bo_fiscal_wizard_caption" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <StackPanel x:Name="SessionStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir a sessão" />
-                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
-                                       Text="Indique o valor inicial em caixa (pode ser zero). Depois disso este posto fica pronto a vender."
-                                       TextWrapping="Wrap" />
-                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Valor inicial em caixa" />
-                            <TextBox x:Name="AmountBox" Classes="bo_entity_input" />
-                        </StackPanel>
-                    </Panel>
-                </ScrollViewer>
+                <Panel>
+                    <StackPanel x:Name="DayStep" Classes="bo_fiscal_wizard_form">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir o dia" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                   Text="O dia de trabalho tem de estar aberto antes de abrir a sessão deste terminal. Sem isto não consegue vender."
+                                   TextWrapping="Wrap" />
+                        <TextBlock x:Name="DayStatus" Classes="bo_fiscal_wizard_caption" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <StackPanel x:Name="SessionStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir a sessão" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                   Text="Indique o valor inicial em caixa (pode ser zero). Depois disso este posto fica pronto a vender."
+                                   TextWrapping="Wrap" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Valor inicial em caixa" />
+                        <TextBox x:Name="AmountBox" Classes="bo_entity_input" />
+                    </StackPanel>
+                </Panel>
             </DockPanel>
         </Border>
         <views:ListingBusy x:Name="Busy" />
