@@ -1681,27 +1681,57 @@
     </Style>
 
     <Style Selector="Button.pos_scroll">
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="#2F2F2F" />
+        <Setter Property="BorderBrush" Value="#4A4A4A" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="CornerRadius" Value="0" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="Transparent" ClipToBounds="True">
-                    <ContentPresenter Content="{TemplateBinding Content}" />
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        ClipToBounds="True">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                 </Border>
             </ControlTemplate>
         </Setter>
+    </Style>
+
+    <Style Selector="Button.pos_scroll:pointerover /template/ Border">
+        <Setter Property="Background" Value="#3C3C3C" />
+        <Setter Property="BorderBrush" Value="#5C5C5C" />
+    </Style>
+
+    <Style Selector="Button.pos_scroll:pressed /template/ Border">
+        <Setter Property="Background" Value="#262626" />
     </Style>
 
     <Style Selector="Button.pos_scroll:disabled">
         <Setter Property="Opacity" Value="0.35" />
     </Style>
 
+    <Style Selector="svg|Svg.pos_scroll_icon">
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="Image.pos_scroll_icon">
-        <Setter Property="Stretch" Value="Fill" />
+        <Setter Property="Width" Value="22" />
+        <Setter Property="Height" Value="22" />
+        <Setter Property="Stretch" Value="Uniform" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Button.pos_pad_button">

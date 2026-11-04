@@ -635,26 +635,26 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PlaceTicketPad(layout);
         PlaceToolbar(layout);
 
-        _familyPrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png", () => ChangePage(ref _familyPage, -1, FamilyPageCount()));
-        _familyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png", () => ChangePage(ref _familyPage, 1, FamilyPageCount()));
-        _subfamilyPrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _subfamilyPage, -1, SubfamilyPageCount()));
-        _subfamilyNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _subfamilyPage, 1, SubfamilyPageCount()));
+        _familyPrevious = CreateScroll(ScrollChevron.Up, () => ChangePage(ref _familyPage, -1, FamilyPageCount()));
+        _familyNext = CreateScroll(ScrollChevron.Down, () => ChangePage(ref _familyPage, 1, FamilyPageCount()));
+        _subfamilyPrevious = CreateScroll(ScrollChevron.Left, () => ChangePage(ref _subfamilyPage, -1, SubfamilyPageCount()));
+        _subfamilyNext = CreateScroll(ScrollChevron.Right, () => ChangePage(ref _subfamilyPage, 1, SubfamilyPageCount()));
         if (layout.IsPortrait)
         {
             // Em portrait as setas flanqueiam a pesquisa (cima / baixo).
             _articlePrevious = CreateScroll(
-                "avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png",
+                ScrollChevron.Up,
                 () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
             _articleNext = CreateScroll(
-                "avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png",
+                ScrollChevron.Down,
                 () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
             Place(_articlePrevious, layout.ArticlePreviousX, layout.ArticlePreviousY, layout.ScrollWidth, layout.SearchBarHeight);
             Place(_articleNext, layout.ArticleNextX, layout.ArticleNextY, layout.ScrollWidth, layout.SearchBarHeight);
         }
         else
         {
-            _articlePrevious = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
-            _articleNext = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
+            _articlePrevious = CreateScroll(ScrollChevron.Left, () => ChangePage(ref _articlePage, -1, ArticlePageCount()));
+            _articleNext = CreateScroll(ScrollChevron.Right, () => ChangePage(ref _articlePage, 1, ArticlePageCount()));
             Place(_familyPrevious, layout.FamilyPreviousX, layout.FamilyPreviousY, layout.ButtonWidth, layout.StatusBar1Height);
             Place(_familyNext, layout.FamilyNextX, layout.FamilyNextY, layout.ButtonWidth, layout.StatusBar1Height);
             Place(_subfamilyPrevious, layout.SubfamilyPreviousX, layout.SubfamilyPreviousY, layout.ScrollWidth, layout.StatusBar1Height);
@@ -1838,15 +1838,30 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    private Button CreateScroll(string iconUri, Action click)
+    private enum ScrollChevron
     {
+        Up,
+        Down,
+        Left,
+        Right
+    }
+
+    private Button CreateScroll(ScrollChevron direction, Action click)
+    {
+        var file = direction switch
+        {
+            ScrollChevron.Up => "chevron_up.svg",
+            ScrollChevron.Down => "chevron_down.svg",
+            ScrollChevron.Left => "chevron_left.svg",
+            _ => "chevron_right.svg"
+        };
         var button = new Button
         {
             Classes = { "pos_scroll" },
-            Content = new Image
+            Content = new Avalonia.Svg.Skia.Svg(new Uri("avares://LogicPOS.App/"))
             {
                 Classes = { "pos_scroll_icon" },
-                Source = LoadBitmap(iconUri)
+                Path = $"avares://LogicPOS.App/Assets/Images/Pos/{file}"
             }
         };
         button.Click += (_, _) => click();
@@ -3407,8 +3422,8 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private StackPanel CreateTablesScroller(Action previous, Action next, bool canPrevious, bool canNext)
     {
-        var previousButton = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_left.png", previous);
-        var nextButton = CreateScroll("avares://LogicPOS.App/Assets/Images/Pos/button_subfamily_article_scroll_right.png", next);
+        var previousButton = CreateScroll(ScrollChevron.Left, previous);
+        var nextButton = CreateScroll(ScrollChevron.Right, next);
         previousButton.Classes.Add("pos_tables_scroll");
         nextButton.Classes.Add("pos_tables_scroll");
         previousButton.IsEnabled = canPrevious;
