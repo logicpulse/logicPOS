@@ -361,22 +361,22 @@ public sealed class PosLayout
         // ~800x600 / small tablets
         if (shortSide <= 600)
         {
-            return (100, 75, 54, 38, 22, 8);
+            return (100, 75, 54, 38, 22, 13);
         }
 
         // ~1024x600, 1024x768, 1280x720, 1280x800
         if (shortSide <= 800 && longSide <= 1366)
         {
-            return (120, 90, 80, 60, 34, 9);
+            return (120, 90, 80, 60, 34, 15);
         }
 
         // ~1366x768, 1440x900, 1600x900
         if (longSide < 1680)
         {
-            return (140, 105, 100, 75, 42, 10);
+            return (140, 105, 100, 75, 42, 16);
         }
 
         // 1680+, 1920x1080, 2560+, portrait 1080x1920 (longSide 1920)
-        return (160, 120, 120, 90, 50, 10);
+        return (160, 120, 120, 90, 50, 17);
     }
 }

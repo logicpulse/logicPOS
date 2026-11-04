@@ -1315,7 +1315,7 @@
         <Setter Property="Background" Value="#E4E4E4" />
         <Setter Property="BorderBrush" Value="#C8C8C8" />
         <Setter Property="BorderThickness" Value="0,0,0,1" />
-        <Setter Property="Height" Value="28" />
+        <Setter Property="Height" Value="34" />
         <Setter Property="Padding" Value="4,0,0,0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -1371,7 +1371,7 @@
 
     <Style Selector="Border.pos_ticket_row">
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="Height" Value="24" />
+        <Setter Property="Height" Value="32" />
         <Setter Property="Padding" Value="4,0,4,0" />
     </Style>
 
@@ -1381,14 +1381,14 @@
 
     <Style Selector="TextBlock.pos_ticket_cell">
         <Setter Property="Foreground" Value="#000000" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     </Style>
 
     <Style Selector="TextBlock.pos_ticket_cell_right">
         <Setter Property="Foreground" Value="#000000" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="16" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="TextAlignment" Value="Right" />
