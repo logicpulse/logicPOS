@@ -24,8 +24,8 @@
             <Button x:Name="LoginMinimize" Classes="login_minimize" Click="OnMinimizeClick" />
             <StackPanel x:Name="LoginUsersColumn" Classes="login_users_column">
                 <Button x:Name="LoginUsersPrev" Classes="login_scroll" Click="OnPreviousUsersClick">
-                    <Image x:Name="LoginUsersPrevIcon" Classes="login_scroll_icon"
-                           Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_up.png" />
+                    <svg:Svg Classes="login_scroll_icon"
+                             Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_up.svg" />
                 </Button>
                 <ItemsControl x:Name="LoginUsers" Classes="login_users" ItemsSource="{Binding UserSlots}">
                     <ItemsControl.ItemsPanel>
@@ -52,8 +52,8 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
                 <Button x:Name="LoginUsersNext" Classes="login_scroll" Click="OnNextUsersClick">
-                    <Image x:Name="LoginUsersNextIcon" Classes="login_scroll_icon"
-                           Source="avares://LogicPOS.App/Assets/Images/button_family_scroll_down.png" />
+                    <svg:Svg Classes="login_scroll_icon"
+                             Path="avares://LogicPOS.App/Assets/Images/Pos/chevron_down.svg" />
                 </Button>
             </StackPanel>
             <Border x:Name="LoginPinpad" Classes="login_pinpad">
