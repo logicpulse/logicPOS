@@ -113,6 +113,10 @@ public static class AppComposition
             services.AddSingleton<IFiscalYearWizard>(provider => provider.GetRequiredService<LocalFiscalYearWizard>());
             services.AddSingleton<LocalArticleSetupWizard>();
             services.AddSingleton<IArticleSetupWizard>(provider => provider.GetRequiredService<LocalArticleSetupWizard>());
+            services.AddSingleton<LocalFinalConsumerSetupWizard>();
+            services.AddSingleton<IFinalConsumerSetupWizard>(provider => provider.GetRequiredService<LocalFinalConsumerSetupWizard>());
+            services.AddSingleton<LocalTableSetupWizard>();
+            services.AddSingleton<ITableSetupWizard>(provider => provider.GetRequiredService<LocalTableSetupWizard>());
             services.AddSingleton<LocalCompanySetupService>();
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
             services.AddSingleton<StartupReadinessService>();

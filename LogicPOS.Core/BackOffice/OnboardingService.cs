@@ -157,7 +157,7 @@ public sealed class OnboardingService : IOnboardingService
             new(
                 "final-consumer",
                 "Cliente de balcão",
-                "Garanta o cliente «Consumidor Final» para fatura simplificada.",
+                "Crie o «Consumidor Final» para fatura simplificada.",
                 "Clientes",
                 hasFinalConsumer)
         };
@@ -169,7 +169,7 @@ public sealed class OnboardingService : IOnboardingService
                 "Mesa de venda",
                 hasPlace
                     ? "Crie pelo menos uma mesa para gravar pedidos no posto."
-                    : "Crie um local e depois uma mesa para gravar pedidos no posto.",
+                    : "Crie um local e uma mesa para gravar pedidos no posto.",
                 hasPlace ? "Mesas" : "Locais",
                 hasTable));
         }

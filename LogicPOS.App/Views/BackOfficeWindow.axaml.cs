@@ -80,6 +80,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         };
         EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.ArticleSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.FinalConsumerSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.TableSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.EntitySaved += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.OverlayDismissed += (_, _) => RestoreOnboardingAfterOverlay();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
@@ -441,6 +443,20 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (step.Key == "final-consumer"
+            || string.Equals(step.ActionPage, "Clientes", StringComparison.OrdinalIgnoreCase))
+        {
+            await OpenFinalConsumerSetupWizardFromOnboardingAsync();
+            return;
+        }
+
+        if (step.Key == "table"
+            || step.ActionPage is "Mesas" or "Locais")
+        {
+            await OpenTableSetupWizardFromOnboardingAsync();
+            return;
+        }
+
         if (IsOnboardingCreateStep(step))
         {
             await OpenEntityCreateFromOnboardingAsync(step.ActionPage!);
@@ -454,8 +470,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     }
 
     private static bool IsOnboardingCreateStep(OnboardingStep step)
-        => step.Key is "final-consumer" or "table" or "payment-method"
-            || step.ActionPage is "Clientes" or "Mesas" or "Locais" or "Métodos de pagamento";
+        => step.Key is "payment-method"
+            || step.ActionPage is "Métodos de pagamento";
 
     private async Task OpenFiscalYearWizardFromOnboardingAsync()
     {
@@ -467,6 +483,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         await PrepareOnboardingOverlayAsync("Artigos");
         await EntityHost.OpenArticleSetupWizardAsync();
+    }
+
+    private async Task OpenFinalConsumerSetupWizardFromOnboardingAsync()
+    {
+        await PrepareOnboardingOverlayAsync("Clientes");
+        await EntityHost.OpenFinalConsumerSetupWizardAsync();
+    }
+
+    private async Task OpenTableSetupWizardFromOnboardingAsync()
+    {
+        await PrepareOnboardingOverlayAsync("Mesas");
+        await EntityHost.OpenTableSetupWizardAsync();
     }
 
     private async Task OpenEntityCreateFromOnboardingAsync(string title)

@@ -67,6 +67,8 @@ public partial class EntityListing : UserControl
         ListingNotice.HideWhenEmpty(Notice);
         FiscalYearHost.Finished += OnFiscalYearFinished;
         ArticleSetupHost.Finished += OnArticleSetupFinished;
+        FinalConsumerSetupHost.Finished += OnFinalConsumerSetupFinished;
+        TableSetupHost.Finished += OnTableSetupFinished;
         CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), true);
         AttachedToVisualTree += (_, _) =>
         {
@@ -79,6 +81,10 @@ public partial class EntityListing : UserControl
     public event EventHandler? FiscalYearCompleted;
 
     public event EventHandler? ArticleSetupCompleted;
+
+    public event EventHandler? FinalConsumerSetupCompleted;
+
+    public event EventHandler? TableSetupCompleted;
 
     public event EventHandler? EntitySaved;
 
@@ -98,6 +104,18 @@ public partial class EntityListing : UserControl
             ArticleSetupOverlay,
             message,
             () => ArticleSetupCompleted?.Invoke(this, EventArgs.Empty));
+
+    private async void OnFinalConsumerSetupFinished(object? sender, string? message)
+        => await FinishOnboardingOverlayAsync(
+            FinalConsumerSetupOverlay,
+            message,
+            () => FinalConsumerSetupCompleted?.Invoke(this, EventArgs.Empty));
+
+    private async void OnTableSetupFinished(object? sender, string? message)
+        => await FinishOnboardingOverlayAsync(
+            TableSetupOverlay,
+            message,
+            () => TableSetupCompleted?.Invoke(this, EventArgs.Empty));
 
     private async Task FinishOnboardingOverlayAsync(Panel overlay, string? message, Action completed)
     {
@@ -135,6 +153,18 @@ public partial class EntityListing : UserControl
     {
         ArticleSetupOverlay.IsVisible = true;
         await ArticleSetupHost.ShowAsync();
+    }
+
+    public async Task OpenFinalConsumerSetupWizardAsync()
+    {
+        FinalConsumerSetupOverlay.IsVisible = true;
+        await FinalConsumerSetupHost.ShowAsync();
+    }
+
+    public async Task OpenTableSetupWizardAsync()
+    {
+        TableSetupOverlay.IsVisible = true;
+        await TableSetupHost.ShowAsync();
     }
 
     public async Task ShowAsync(string title)

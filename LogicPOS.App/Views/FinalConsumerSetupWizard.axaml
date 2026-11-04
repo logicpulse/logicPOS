@@ -1,0 +1,56 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.FinalConsumerSetupWizard">
+    <Panel>
+        <Border Classes="login_alert_frame bo_fiscal_wizard">
+            <DockPanel Classes="login_alert_inner">
+                <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                    <StackPanel Classes="login_alert_title_row">
+                        <Image Classes="login_alert_title_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info_window.png" />
+                        <TextBlock Classes="login_alert_title" Text="Cliente de balcão" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+                            <Button x:Name="FinishButton" Classes="login_alert_action" Click="OnFinishClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Criar" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="CloseButton" Classes="login_alert_action" Click="OnCloseClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock x:Name="Notice" Classes="bo_entity_error" Margin="12,0,12,0"
+                                   VerticalAlignment="Center" TextWrapping="Wrap" />
+                    </DockPanel>
+                </Border>
+
+                <ScrollViewer Classes="bo_fiscal_wizard_scroll">
+                    <StackPanel Classes="bo_fiscal_wizard_form">
+                        <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Consumidor Final" />
+                        <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                   Text="Cliente usado nas faturas simplificadas de balcão. Em Portugal o NIF genérico é 999999990."
+                                   TextWrapping="Wrap" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="Nome" />
+                        <TextBox x:Name="NameBox" Classes="bo_entity_input" />
+                        <TextBlock Classes="bo_fiscal_wizard_caption" Text="NIF" />
+                        <TextBox x:Name="FiscalBox" Classes="bo_entity_input" />
+                    </StackPanel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+        <views:ListingBusy x:Name="Busy" />
+    </Panel>
+</UserControl>
