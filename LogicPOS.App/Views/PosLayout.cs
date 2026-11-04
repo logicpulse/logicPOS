@@ -161,11 +161,11 @@ public sealed class PosLayout
         ArticleRows = FamilyRows;
 
         var logoSpan = ticketColumn + (Margin * 2);
-        // Use the ticket-column width; cap height so the list still keeps most of the band.
-        LogoWidth = Math.Max(120, logoSpan - Margin);
-        LogoHeight = Math.Min(72, (int)Math.Round(LogoWidth * (350.0 / 1024.0)));
-        LogoX = columnRight + ((logoSpan - LogoWidth) / 2);
-        LogoY = 6;
+        // Fill the whole ticket-column brand band (same aspect as logicpos_logo_frontoffice.png).
+        LogoWidth = Math.Max(120, logoSpan);
+        LogoHeight = Math.Max(40, (int)Math.Round(LogoWidth * (350.0 / 1024.0)));
+        LogoX = columnRight;
+        LogoY = 4;
 
         StatusBar1X = Margin;
         StatusBar1Y = 8;

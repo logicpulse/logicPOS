@@ -1295,10 +1295,9 @@
     </Style>
 
     <Style Selector="Image.pos_logo">
-        <!-- Fill the ticket-column logo band; crop lightly rather than leave empty side gaps. -->
-        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="Stretch" Value="Fill" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="Border.pos_status_bar_1">
