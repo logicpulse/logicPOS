@@ -163,6 +163,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         NewDocumentHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
+        StartupHost.Finished += OnStartupWizardFinished;
         BuildKeypad();
         TouchFields.Attach(this);
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
@@ -265,10 +266,52 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
             await YieldUiAsync();
             await LoadDefaultTableAsync();
+            await ShowStartupWizardIfNeededAsync();
         }
         finally
         {
             _openingHost = false;
+        }
+    }
+
+    private async Task ShowStartupWizardIfNeededAsync()
+    {
+        if (_terminalOpen)
+        {
+            return;
+        }
+
+        StartupOverlay.IsVisible = true;
+        FitHostedOverlays();
+        var shown = await StartupHost.ShowAsync();
+        if (shown == false)
+        {
+            StartupOverlay.IsVisible = false;
+        }
+    }
+
+    private async void OnStartupWizardFinished(object? sender, FrontOfficeStartupResult result)
+    {
+        StartupOverlay.IsVisible = false;
+        await RefreshWorkSessionAsync();
+        if (result.SessionOpened == false)
+        {
+            return;
+        }
+
+        string? printError = null;
+        try
+        {
+            printError = await PrintSessionMovementAsync("open-session");
+        }
+        catch
+        {
+            // Printing must not block opening the floor.
+        }
+
+        if (string.IsNullOrWhiteSpace(printError) == false)
+        {
+            ShowQuestion(TicketPrompt.Notice, "Caixa", printError, question: false, confirmText: "Ok", showCancel: false);
         }
     }
 
@@ -418,6 +461,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
         PortraitChrome.FitOverlay(OrdersFrame, this, 560, 360, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(VoltaFrame, this, 620, 430, lockHeight: false, bottomReserve: bottomReserve);
         PortraitChrome.FitOverlay(SessionFrame, this, sessionW, sessionH, lockHeight: false, bottomReserve: bottomReserve);
+        if (StartupOverlay.IsVisible)
+        {
+            PortraitChrome.FitOverlay(StartupHost, this, 720, 520, lockHeight: false, bottomReserve: bottomReserve);
+        }
+
         PortraitChrome.FitOverlay(DocumentsMenuFrame, this, 581, 286, lockHeight: false, bottomReserve: bottomReserve);
         if (PricePad.IsVisible)
         {

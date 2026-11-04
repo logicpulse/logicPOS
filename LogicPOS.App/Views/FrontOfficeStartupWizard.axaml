@@ -1,0 +1,74 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             xmlns:views="using:LogicPOS.App.Views"
+             x:Class="LogicPOS.App.Views.FrontOfficeStartupWizard">
+    <Panel>
+        <Border Classes="login_alert_frame bo_fiscal_wizard">
+            <DockPanel Classes="login_alert_inner">
+                <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                    <StackPanel Classes="login_alert_title_row">
+                        <Image Classes="login_alert_title_icon"
+                               Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_toolbar_cashdrawer.png" />
+                        <TextBlock Classes="login_alert_title" Text="Começar a vender" />
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
+                            <Button x:Name="BackButton" Classes="login_alert_action" Click="OnBackClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <svg:Svg Classes="login_alert_action_icon"
+                                             Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_back.svg" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Voltar" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="PrimaryButton" Classes="login_alert_action" Click="OnPrimaryClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                                    <TextBlock x:Name="PrimaryText" Classes="login_alert_action_text" Text="Abrir dia" />
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="LaterButton" Classes="login_alert_action" Click="OnLaterClick">
+                                <StackPanel Classes="login_alert_action_content">
+                                    <Image Classes="login_alert_action_icon"
+                                           Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Mais tarde" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock x:Name="Notice" Classes="bo_entity_error" Margin="12,0,12,0"
+                                   VerticalAlignment="Center" TextWrapping="Wrap" />
+                    </DockPanel>
+                </Border>
+
+                <Border Classes="bo_fiscal_wizard_tabs_host" DockPanel.Dock="Top">
+                    <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" />
+                </Border>
+
+                <ScrollViewer Classes="bo_fiscal_wizard_scroll">
+                    <Panel>
+                        <StackPanel x:Name="DayStep" Classes="bo_fiscal_wizard_form">
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir o dia" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="O dia de trabalho tem de estar aberto antes de abrir a sessão deste terminal. Sem isto não consegue vender."
+                                       TextWrapping="Wrap" />
+                            <TextBlock x:Name="DayStatus" Classes="bo_fiscal_wizard_caption" TextWrapping="Wrap" />
+                        </StackPanel>
+                        <StackPanel x:Name="SessionStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Abrir a sessão" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="Indique o valor inicial em caixa (pode ser zero). Depois disso este posto fica pronto a vender."
+                                       TextWrapping="Wrap" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Valor inicial em caixa" />
+                            <TextBox x:Name="AmountBox" Classes="bo_entity_input" />
+                        </StackPanel>
+                    </Panel>
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+        <views:ListingBusy x:Name="Busy" />
+    </Panel>
+</UserControl>

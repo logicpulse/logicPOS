@@ -555,6 +555,10 @@
             </Border>
         </Panel>
 
+        <Panel x:Name="StartupOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:FrontOfficeStartupWizard x:Name="StartupHost" />
+        </Panel>
+
         <Panel x:Name="PdfOverlay" Classes="login_alert_overlay" IsVisible="False">
             <views:PdfDocumentView x:Name="PdfHost" />
         </Panel>
