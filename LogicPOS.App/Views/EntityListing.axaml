@@ -204,6 +204,10 @@
             <views:FiscalYearWizard x:Name="FiscalYearHost" />
         </Panel>
 
+        <Panel x:Name="ArticleSetupOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:ArticleSetupWizard x:Name="ArticleSetupHost" />
+        </Panel>
+
         <Panel x:Name="ImportOverlay" Classes="login_alert_overlay" IsVisible="False">
             <Border Classes="login_alert_frame bo_entity_editor">
                 <DockPanel Classes="login_alert_inner">

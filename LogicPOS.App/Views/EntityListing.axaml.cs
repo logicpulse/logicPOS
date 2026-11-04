@@ -66,6 +66,7 @@ public partial class EntityListing : UserControl
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(Notice);
         FiscalYearHost.Finished += OnFiscalYearFinished;
+        ArticleSetupHost.Finished += OnArticleSetupFinished;
         CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), true);
         AttachedToVisualTree += (_, _) =>
         {
@@ -77,6 +78,8 @@ public partial class EntityListing : UserControl
 
     public event EventHandler? FiscalYearCompleted;
 
+    public event EventHandler? ArticleSetupCompleted;
+
     public event EventHandler? EntitySaved;
 
     /// <summary>Fired when an overlay opened from onboarding is closed without completing setup.</summary>
@@ -85,8 +88,20 @@ public partial class EntityListing : UserControl
     private bool _overlayOnly;
 
     private async void OnFiscalYearFinished(object? sender, string? message)
+        => await FinishOnboardingOverlayAsync(
+            FiscalYearOverlay,
+            message,
+            () => FiscalYearCompleted?.Invoke(this, EventArgs.Empty));
+
+    private async void OnArticleSetupFinished(object? sender, string? message)
+        => await FinishOnboardingOverlayAsync(
+            ArticleSetupOverlay,
+            message,
+            () => ArticleSetupCompleted?.Invoke(this, EventArgs.Empty));
+
+    private async Task FinishOnboardingOverlayAsync(Panel overlay, string? message, Action completed)
     {
-        FiscalYearOverlay.IsVisible = false;
+        overlay.IsVisible = false;
         if (_overlayOnly == false)
         {
             await ReloadAsync();
@@ -99,7 +114,7 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        FiscalYearCompleted?.Invoke(this, EventArgs.Empty);
+        completed();
     }
 
     /// <summary>
@@ -115,6 +130,12 @@ public partial class EntityListing : UserControl
 
     /// <summary>Opens the Novo editor overlay for the current listing page.</summary>
     public Task OpenNewEntityAsync() => EditAsync(null);
+
+    public async Task OpenArticleSetupWizardAsync()
+    {
+        ArticleSetupOverlay.IsVisible = true;
+        await ArticleSetupHost.ShowAsync();
+    }
 
     public async Task ShowAsync(string title)
     {

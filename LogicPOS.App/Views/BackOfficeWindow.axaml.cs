@@ -79,6 +79,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ClockLabel.Text = text;
         };
         EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.ArticleSetupCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.EntitySaved += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.OverlayDismissed += (_, _) => RestoreOnboardingAfterOverlay();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
@@ -433,6 +434,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (step.Key == "article"
+            || string.Equals(step.ActionPage, "Artigos", StringComparison.OrdinalIgnoreCase))
+        {
+            await OpenArticleSetupWizardFromOnboardingAsync();
+            return;
+        }
+
         if (IsOnboardingCreateStep(step))
         {
             await OpenEntityCreateFromOnboardingAsync(step.ActionPage!);
@@ -446,13 +454,19 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     }
 
     private static bool IsOnboardingCreateStep(OnboardingStep step)
-        => step.Key is "article" or "final-consumer" or "table" or "payment-method"
-            || step.ActionPage is "Artigos" or "Clientes" or "Mesas" or "Locais" or "Métodos de pagamento";
+        => step.Key is "final-consumer" or "table" or "payment-method"
+            || step.ActionPage is "Clientes" or "Mesas" or "Locais" or "Métodos de pagamento";
 
     private async Task OpenFiscalYearWizardFromOnboardingAsync()
     {
         await PrepareOnboardingOverlayAsync("Abertura de ano fiscal");
         await EntityHost.OpenFiscalYearWizardAsync();
+    }
+
+    private async Task OpenArticleSetupWizardFromOnboardingAsync()
+    {
+        await PrepareOnboardingOverlayAsync("Artigos");
+        await EntityHost.OpenArticleSetupWizardAsync();
     }
 
     private async Task OpenEntityCreateFromOnboardingAsync(string title)

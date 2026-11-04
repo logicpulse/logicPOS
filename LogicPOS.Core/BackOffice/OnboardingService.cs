@@ -151,7 +151,7 @@ public sealed class OnboardingService : IOnboardingService
             new(
                 "article",
                 "Primeiro artigo",
-                "Crie pelo menos um artigo para vender no posto.",
+                "Crie família, subfamília e o primeiro artigo para vender no posto.",
                 "Artigos",
                 hasArticle),
             new(

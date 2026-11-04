@@ -111,6 +111,8 @@ public static class AppComposition
             services.AddSingleton<IReportService>(provider => provider.GetRequiredService<LocalReportService>());
             services.AddSingleton<LocalFiscalYearWizard>();
             services.AddSingleton<IFiscalYearWizard>(provider => provider.GetRequiredService<LocalFiscalYearWizard>());
+            services.AddSingleton<LocalArticleSetupWizard>();
+            services.AddSingleton<IArticleSetupWizard>(provider => provider.GetRequiredService<LocalArticleSetupWizard>());
             services.AddSingleton<LocalCompanySetupService>();
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
             services.AddSingleton<StartupReadinessService>();
