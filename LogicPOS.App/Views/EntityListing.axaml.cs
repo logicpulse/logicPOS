@@ -77,6 +77,8 @@ public partial class EntityListing : UserControl
 
     public event EventHandler? FiscalYearCompleted;
 
+    public event EventHandler? EntitySaved;
+
     private async void OnFiscalYearFinished(object? sender, string? message)
     {
         FiscalYearOverlay.IsVisible = false;
@@ -84,6 +86,9 @@ public partial class EntityListing : UserControl
         Notice.Text = message ?? string.Empty;
         FiscalYearCompleted?.Invoke(this, EventArgs.Empty);
     }
+
+    /// <summary>Opens the Novo editor overlay for the current listing page.</summary>
+    public Task OpenNewEntityAsync() => EditAsync(null);
 
     public async Task ShowAsync(string title)
     {
@@ -1332,6 +1337,7 @@ public partial class EntityListing : UserControl
             ClearCatalogImageCacheIfNeeded();
             EditorOverlay.IsVisible = false;
             await ReloadAsync();
+            EntitySaved?.Invoke(this, EventArgs.Empty);
             if (_title == "Permissões" && this.FindAncestorOfType<BackOfficeWindow>() is BackOfficeWindow office)
             {
                 await office.ApplyMenuAccessAsync();

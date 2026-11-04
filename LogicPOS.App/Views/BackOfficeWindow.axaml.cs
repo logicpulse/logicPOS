@@ -79,6 +79,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             ClockLabel.Text = text;
         };
         EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.EntitySaved += (_, _) => _ = RefreshHomeAfterSetupAsync();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
         AttachedToVisualTree += (_, _) =>
         {
@@ -430,15 +431,36 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (IsOnboardingCreateStep(step))
+        {
+            await OpenEntityCreateFromOnboardingAsync(step.ActionPage!);
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(step.ActionPage) == false)
         {
             ShowPage(step.ActionPage);
         }
     }
 
+    private static bool IsOnboardingCreateStep(OnboardingStep step)
+        => step.Key is "article" or "final-consumer" or "table" or "payment-method"
+            || step.ActionPage is "Artigos" or "Clientes" or "Mesas" or "Locais" or "Métodos de pagamento";
+
     private async Task OpenFiscalYearWizardFromOnboardingAsync()
     {
-        const string title = "Abertura de ano fiscal";
+        await ShowEntityPageForOnboardingAsync("Abertura de ano fiscal");
+        await EntityHost.OpenFiscalYearWizardAsync();
+    }
+
+    private async Task OpenEntityCreateFromOnboardingAsync(string title)
+    {
+        await ShowEntityPageForOnboardingAsync(title);
+        await EntityHost.OpenNewEntityAsync();
+    }
+
+    private async Task ShowEntityPageForOnboardingAsync(string title)
+    {
         PageTitle.Text = title;
         SyncPortraitChrome(title);
         _articleDashboardRequest++;
@@ -456,7 +478,6 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         EntityHost.IsVisible = true;
 
         await EntityHost.ShowAsync(title);
-        await EntityHost.OpenFiscalYearWizardAsync();
     }
 
     private async Task OpenCompanySetupAsync()

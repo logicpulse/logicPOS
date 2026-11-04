@@ -82,12 +82,12 @@
                             <CheckBox x:Name="CreateSeries" Classes="bo_entity_input" Content="Selecionar todas" IsChecked="True" />
                             <CheckBox x:Name="PerTerminal" Classes="bo_entity_input" Content="Uma série por terminal" />
                             <TextBlock Classes="bo_fiscal_wizard_caption" Text="Séries a criar" />
-                            <StackPanel x:Name="SeriesList" Classes="bo_fiscal_wizard_checklist" />
+                            <UniformGrid x:Name="SeriesList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
                         </StackPanel>
                         <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
                             <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Terminais" />
                             <TextBlock x:Name="TerminalsHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
-                            <StackPanel x:Name="TerminalList" Classes="bo_fiscal_wizard_checklist" />
+                            <UniformGrid x:Name="TerminalList" Classes="bo_fiscal_wizard_checklist" Columns="2" />
                         </StackPanel>
                         <StackPanel x:Name="AtStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
                             <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Comunicação AT" />
