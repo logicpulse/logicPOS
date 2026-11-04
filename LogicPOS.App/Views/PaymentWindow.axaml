@@ -26,7 +26,7 @@
                 </Border>
 
                 <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
-                    <StackPanel Classes="pos_pay_actions">
+                    <UniformGrid Classes="pos_pay_actions" Columns="7" Rows="1">
                         <Button Classes="login_alert_action pos_pay_action" Click="OnInvoiceClick">
                             <StackPanel Classes="login_alert_action_content">
                                 <Image Classes="login_alert_action_icon"
@@ -76,7 +76,7 @@
                                 <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                             </StackPanel>
                         </Button>
-                    </StackPanel>
+                    </UniformGrid>
                 </Border>
 
                 <ScrollViewer Classes="pos_pay_scroll">
