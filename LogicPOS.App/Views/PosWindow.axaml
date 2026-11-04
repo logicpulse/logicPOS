@@ -559,6 +559,10 @@
             <views:FrontOfficeStartupWizard x:Name="StartupHost" />
         </Panel>
 
+        <Panel x:Name="FirstSaleTipOverlay" Classes="login_alert_overlay" IsVisible="False">
+            <views:FrontOfficeFirstSaleTip x:Name="FirstSaleTipHost" />
+        </Panel>
+
         <Panel x:Name="PdfOverlay" Classes="login_alert_overlay" IsVisible="False">
             <views:PdfDocumentView x:Name="PdfHost" />
         </Panel>

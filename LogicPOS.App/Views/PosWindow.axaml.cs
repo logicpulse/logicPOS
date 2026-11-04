@@ -164,6 +164,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ReportsHost.PreviewRequested += async (path, title) => await ShowPdfAsync(path, title);
         ReportsHost.Closed += (_, _) => ReportsOverlay.IsVisible = false;
         StartupHost.Finished += OnStartupWizardFinished;
+        FirstSaleTipHost.Dismissed += (_, _) => FirstSaleTipOverlay.IsVisible = false;
         BuildKeypad();
         TouchFields.Attach(this);
         AddHandler(KeyDownEvent, OnWindowKeyDown, RoutingStrategies.Tunnel);
@@ -267,6 +268,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             await YieldUiAsync();
             await LoadDefaultTableAsync();
             await ShowStartupWizardIfNeededAsync();
+            ShowFirstSaleTipIfNeeded();
         }
         finally
         {
@@ -312,6 +314,21 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             ShowQuestion(TicketPrompt.Notice, "Caixa", printError, question: false, confirmText: "Ok", showCancel: false);
         }
+
+        ShowFirstSaleTipIfNeeded();
+    }
+
+    private void ShowFirstSaleTipIfNeeded()
+    {
+        if (_terminalOpen == false
+            || FrontOfficeFirstSaleTipStore.IsSeen()
+            || StartupOverlay.IsVisible
+            || FirstSaleTipOverlay.IsVisible)
+        {
+            return;
+        }
+
+        FirstSaleTipOverlay.IsVisible = true;
     }
 
     /// <summary>
@@ -4463,6 +4480,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
             if (string.IsNullOrWhiteSpace(printError) == false)
             {
                 ShowQuestion(TicketPrompt.Notice, "Caixa", printError, question: false, confirmText: "Ok", showCancel: false);
+            }
+
+            if (action == "open-session")
+            {
+                ShowFirstSaleTipIfNeeded();
             }
         }
     }

@@ -5467,6 +5467,22 @@
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="Border.bo_fo_first_sale_tip">
+        <Setter Property="Width" Value="480" />
+        <Setter Property="Height" Value="NaN" />
+        <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MaxHeight" Value="320" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_fo_first_sale_step">
+        <Setter Property="Foreground" Value="#1F2933" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Margin" Value="0,6,0,0" />
+        <Setter Property="LineHeight" Value="22" />
+    </Style>
+
     <Style Selector="Border.bo_fiscal_wizard_tabs_host">
         <Setter Property="Background" Value="#FAFBFC" />
         <Setter Property="BorderBrush" Value="#E8ECF0" />

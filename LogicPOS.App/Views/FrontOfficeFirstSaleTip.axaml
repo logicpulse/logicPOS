@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.FrontOfficeFirstSaleTip">
+    <Border Classes="login_alert_frame bo_fo_first_sale_tip">
+        <DockPanel Classes="login_alert_inner">
+            <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
+                <StackPanel Classes="login_alert_title_row">
+                    <Image Classes="login_alert_title_icon"
+                           Source="avares://LogicPOS.App/Assets/Images/Pos/icon_pos_ticketpad_payments.png" />
+                    <TextBlock Classes="login_alert_title" Text="Primeira venda" />
+                </StackPanel>
+            </Border>
+
+            <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
+                <StackPanel Classes="login_alert_action_buttons" HorizontalAlignment="Right">
+                    <Button Classes="login_alert_action" Click="OnGotItClick">
+                        <StackPanel Classes="login_alert_action_content">
+                            <Image Classes="login_alert_action_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
+                            <TextBlock Classes="login_alert_action_text" Text="Percebi" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Classes="bo_fiscal_wizard_form">
+                <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                           Text="Com a sessão aberta, basta isto para vender:"
+                           TextWrapping="Wrap" />
+                <TextBlock Classes="bo_fo_first_sale_step" Text="1. Toque num artigo à esquerda para o adicionar ao ticket."
+                           TextWrapping="Wrap" />
+                <TextBlock Classes="bo_fo_first_sale_step" Text="2. Prima Pagamentos para concluir a venda."
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </DockPanel>
+    </Border>
+</UserControl>
