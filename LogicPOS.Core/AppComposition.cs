@@ -57,7 +57,8 @@ public static class AppComposition
                 {
                     ["DatabaseSettings:UseCloud"] = "false",
                     ["DatabaseSettings:SeedPath"] = DatabaseStartup.ResolveSeedPath(baseDirectory),
-                    ["DatabaseSettings:UseSeed"] = "true",
+                    // Honour appsettings (false = no demo articles/tables/customers on a fresh DB).
+                    ["DatabaseSettings:UseSeed"] = configuration["DatabaseSettings:UseSeed"] ?? "true",
                     // Module comes from appsettings.json (e.g. restaurant, cafe, default).
                     ["DatabaseSettings:Module"] = configuration["DatabaseSettings:Module"] ?? "default"
                 })
