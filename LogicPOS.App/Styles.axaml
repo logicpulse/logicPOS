@@ -1907,9 +1907,9 @@
         <Setter Property="SizeToContent" Value="Manual" />
     </Style>
 
-    <!-- Light scrim so the POS behind reads as a popup host without going fully black. -->
+    <!-- Scrim so the POS behind reads as a popup host without going fully black. -->
     <Style Selector="Panel.login_alert_overlay.pos_pay_scrim">
-        <Setter Property="Background" Value="#4D000000" />
+        <Setter Property="Background" Value="#73000000" />
     </Style>
 
     <Style Selector="ScrollViewer.pos_pay_scroll">
