@@ -1291,11 +1291,13 @@
 
     <Style Selector="Border.pos_logo_box">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
     <Style Selector="Image.pos_logo">
-        <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="HorizontalAlignment" Value="Right" />
+        <!-- Fill the ticket-column logo band; crop lightly rather than leave empty side gaps. -->
+        <Setter Property="Stretch" Value="UniformToFill" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

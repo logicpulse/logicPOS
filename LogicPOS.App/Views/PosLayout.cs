@@ -161,11 +161,11 @@ public sealed class PosLayout
         ArticleRows = FamilyRows;
 
         var logoSpan = ticketColumn + (Margin * 2);
-        // Compact brand: keep recognition without stealing height from the ticket list.
-        LogoWidth = (int)Math.Round(logoSpan * 0.46);
-        LogoHeight = (int)Math.Round(LogoWidth * (350.0 / 1024.0));
-        LogoX = columnRight + logoSpan - LogoWidth - Margin;
-        LogoY = 8;
+        // Use the ticket-column width; cap height so the list still keeps most of the band.
+        LogoWidth = Math.Max(120, logoSpan - Margin);
+        LogoHeight = Math.Min(72, (int)Math.Round(LogoWidth * (350.0 / 1024.0)));
+        LogoX = columnRight + ((logoSpan - LogoWidth) / 2);
+        LogoY = 6;
 
         StatusBar1X = Margin;
         StatusBar1Y = 8;
