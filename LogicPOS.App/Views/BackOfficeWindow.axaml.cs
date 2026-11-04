@@ -33,11 +33,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private bool _allowClose;
     private bool _backOfficeOnly;
     private bool _setupToastsShown;
+    private bool _onboardingIncomplete;
     private StockManagementView? _stockView;
     private string? _pendingSaftAction;
     private bool _portrait;
     private bool _drawerOpen;
     private UiViewport _viewport;
+
+    /// <summary>
+    /// When true, finishing mandatory onboarding opens the FrontOffice instead of the Painel.
+    /// Set by login when the session was forced into BackOffice for setup.
+    /// </summary>
+    public bool HandoffToFrontOfficeWhenReady { get; set; }
 
     public BackOfficeWindow()
         : this(string.Empty)
@@ -71,7 +78,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             var text = DateTime.Now.ToString(ClockFormat);
             ClockLabel.Text = text;
         };
-        EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshSetupAlertsAsync();
+        EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        OnboardingHost.StepRequested += OnOnboardingStepRequested;
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -79,6 +87,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnLayoutUpdated;
     }
+
+    public event EventHandler? FrontOfficeHandoffRequested;
 
     public async Task ActivateHostedAsync()
     {
@@ -235,7 +245,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     public void UseBackOfficeOnly()
     {
         _backOfficeOnly = true;
-        FrontOfficeButton.IsVisible = false;
+        ApplyFrontOfficeGate();
     }
 
     public event EventHandler? ReturnToPos;
@@ -290,8 +300,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         _clock.Start();
         // Diferir carregamentos pesados para não bloquear o UI thread (evita ANR no Android).
         Dispatcher.UIThread.Post(() => _ = ApplyMenuAccessAsync(), DispatcherPriority.Background);
-        Dispatcher.UIThread.Post(() => _ = ReloadDashboardSafeAsync(), DispatcherPriority.Background);
-        Dispatcher.UIThread.Post(() => _ = RefreshSetupAlertsAsync(), DispatcherPriority.Background);
+        Dispatcher.UIThread.Post(() => _ = RefreshHomeAfterSetupAsync(), DispatcherPriority.Background);
     }
 
     private async Task ReloadDashboardSafeAsync()
@@ -304,6 +313,133 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         {
             App.WriteCrash("DashboardHost.ReloadAsync", exception);
         }
+    }
+
+    private async Task RefreshHomeAfterSetupAsync()
+    {
+        await RefreshOnboardingAsync();
+        if (_onboardingIncomplete == false)
+        {
+            await RefreshSetupAlertsAsync();
+        }
+    }
+
+    private async Task RefreshOnboardingAsync()
+    {
+        var service = AppComposition.Services?.GetService<IOnboardingService>();
+        if (service is null)
+        {
+            _onboardingIncomplete = false;
+            ApplyFrontOfficeGate();
+            return;
+        }
+
+        OnboardingStatus status;
+        try
+        {
+            status = await service.GetStatusAsync();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("RefreshOnboardingAsync", exception);
+            return;
+        }
+
+        _onboardingIncomplete = status.IsComplete == false;
+        ApplyFrontOfficeGate();
+
+        if (_onboardingIncomplete)
+        {
+            SetupAlerts.Children.Clear();
+            SetupAlerts.IsVisible = false;
+            await ShowOnboardingHomeAsync();
+            return;
+        }
+
+        var wasOnboarding = OnboardingHost.IsVisible;
+        OnboardingHost.IsVisible = false;
+
+        if (HandoffToFrontOfficeWhenReady && _backOfficeOnly == false)
+        {
+            HandoffToFrontOfficeWhenReady = false;
+            FrontOfficeHandoffRequested?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
+        if (wasOnboarding || DashboardHost.IsVisible || PageHost.IsVisible == false)
+        {
+            ShowDashboardHome();
+            await ReloadDashboardSafeAsync();
+        }
+    }
+
+    private async Task ShowOnboardingHomeAsync()
+    {
+        SelectMenuItem(DashboardButton);
+        PageTitle.Text = string.Empty;
+        SyncPortraitChrome(AppText.Get("Configuração inicial"));
+        DashboardHost.IsVisible = false;
+        ArticleDashboardHost.IsVisible = false;
+        PageHost.IsVisible = false;
+        DocumentsHost.IsVisible = false;
+        EntityHost.IsVisible = false;
+        StockHost.IsVisible = false;
+        OnboardingHost.IsVisible = true;
+        await OnboardingHost.ReloadAsync();
+    }
+
+    private void ShowDashboardHome()
+    {
+        SelectMenuItem(DashboardButton);
+        PageTitle.Text = string.Empty;
+        SyncPortraitChrome(AppText.Get("Painel"));
+        OnboardingHost.IsVisible = false;
+        DashboardHost.IsVisible = true;
+        ArticleDashboardHost.IsVisible = false;
+        PageHost.IsVisible = false;
+        DocumentsHost.IsVisible = false;
+        EntityHost.IsVisible = false;
+        StockHost.IsVisible = false;
+    }
+
+    private void ApplyFrontOfficeGate()
+    {
+        if (_backOfficeOnly)
+        {
+            FrontOfficeButton.IsVisible = false;
+            FrontOfficeButton.IsEnabled = false;
+            return;
+        }
+
+        FrontOfficeButton.IsVisible = true;
+        FrontOfficeButton.IsEnabled = _onboardingIncomplete == false;
+    }
+
+    private async void OnOnboardingStepRequested(object? sender, OnboardingStep step)
+    {
+        if (step.OpensCompanySetup)
+        {
+            await OpenCompanySetupAsync();
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(step.ActionPage) == false)
+        {
+            ShowPage(step.ActionPage);
+        }
+    }
+
+    private async Task OpenCompanySetupAsync()
+    {
+        var setup = AppComposition.Services?.GetService<ICompanySetupService>();
+        var owner = HostWindow;
+        if (setup is null || owner is null)
+        {
+            return;
+        }
+
+        await new CompanySetupWindow(setup).ShowDialog(owner);
+        await RefreshHomeAfterSetupAsync();
     }
 
     public async Task RefreshSetupAlertsAsync()
@@ -908,6 +1044,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         _articleDashboardRequest++;
         ReportsOverlay.IsVisible = false;
 
+        OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = false;
         ArticleDashboardHost.IsVisible = false;
         PageHost.IsVisible = true;
@@ -1110,6 +1247,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         PageTitle.Text = "Artigos";
         SyncPortraitChrome("Artigos");
         ReportsOverlay.IsVisible = false;
+        OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = false;
         PageHost.IsVisible = false;
         ArticleDashboardHost.IsVisible = true;
@@ -1118,22 +1256,13 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void OnDashboardClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        SelectMenuItem(DashboardButton);
         _articleDashboardRequest++;
-        PageTitle.Text = string.Empty;
-        SyncPortraitChrome(AppText.Get("Painel"));
-        DashboardHost.IsVisible = true;
-        ArticleDashboardHost.IsVisible = false;
-        PageHost.IsVisible = false;
-        DocumentsHost.IsVisible = false;
-        EntityHost.IsVisible = false;
-        StockHost.IsVisible = false;
-        _ = DashboardHost.ReloadAsync();
+        _ = RefreshHomeAfterSetupAsync();
     }
 
     private void OnPosClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (_backOfficeOnly)
+        if (_backOfficeOnly || _onboardingIncomplete)
         {
             return;
         }
@@ -1180,7 +1309,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private void OnWindowCloseClick(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        if (_backOfficeOnly)
+        if (_backOfficeOnly || _onboardingIncomplete)
         {
             QuitOverlay.IsVisible = true;
             return;

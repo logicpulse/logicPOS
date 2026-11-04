@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="LogicPOS.App.Views.OnboardingView"
+             Classes="onboarding_root">
+    <Border Classes="bo_doc_page">
+        <ScrollViewer>
+            <StackPanel Classes="onboarding_page">
+                <Grid ColumnDefinitions="Auto,*" Classes="onboarding_header">
+                    <Border Classes="onboarding_progress_ring">
+                        <TextBlock x:Name="PercentText"
+                                   Classes="onboarding_progress_value"
+                                   Text="0%"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Border>
+                    <StackPanel Grid.Column="1" Classes="onboarding_header_text" VerticalAlignment="Center">
+                        <TextBlock Classes="onboarding_title"
+                                   Text="Conclua a configuração inicial" />
+                        <TextBlock x:Name="ProgressLabel"
+                                   Classes="onboarding_subtitle"
+                                   Text="0 de 0 passos concluídos" />
+                    </StackPanel>
+                </Grid>
+
+                <TextBlock Classes="onboarding_intro"
+                           Text="Estes passos são obrigatórios antes de usar o posto de venda. Escolha por onde começar."
+                           TextWrapping="Wrap" />
+
+                <WrapPanel x:Name="CardsHost" Classes="onboarding_cards" />
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

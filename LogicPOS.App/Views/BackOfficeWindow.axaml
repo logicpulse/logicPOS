@@ -131,6 +131,7 @@
         </Border>
 
         <Panel x:Name="PageArea" Grid.Column="1">
+            <views:OnboardingView x:Name="OnboardingHost" IsVisible="False" />
             <views:DashboardView x:Name="DashboardHost" />
             <views:ArticleDashboardView x:Name="ArticleDashboardHost" IsVisible="False" />
 

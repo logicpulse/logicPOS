@@ -127,38 +127,8 @@ public partial class LoginWindow : UserControl
 
     private async Task PromptStartupDialogsAsync()
     {
-        await PromptCompanySetupIfNeededAsync();
+        // Company setup is the first mandatory onboarding card in BackOffice.
         await PromptRegistrationIfNeededAsync();
-    }
-
-    private async Task PromptCompanySetupIfNeededAsync()
-    {
-        var setup = AppComposition.Services?.GetService<ICompanySetupService>();
-        if (setup is null)
-        {
-            return;
-        }
-
-        try
-        {
-            if (await setup.NeedsSetupAsync() == false)
-            {
-                return;
-            }
-        }
-        catch (Exception ex)
-        {
-            System.Diagnostics.Debug.WriteLine($"Company setup check failed: {ex}");
-            return;
-        }
-
-        var owner = ResolveDialogOwner();
-        if (owner is null)
-        {
-            return;
-        }
-
-        await new CompanySetupWindow(setup).ShowDialog(owner);
     }
 
     /// <summary>
@@ -509,9 +479,25 @@ public partial class LoginWindow : UserControl
             }
         }
 
+        var onboardingIncomplete = false;
+        var onboarding = AppComposition.Services?.GetService<IOnboardingService>();
+        if (onboarding is not null)
+        {
+            try
+            {
+                var status = await Task.Run(async () => await onboarding.GetStatusAsync())
+                    .ConfigureAwait(true);
+                onboardingIncomplete = status.IsComplete == false;
+            }
+            catch (Exception)
+            {
+                onboardingIncomplete = false;
+            }
+        }
+
         try
         {
-            if (backOfficeOnly)
+            if (backOfficeOnly || onboardingIncomplete)
             {
                 UpdateAuthLoading("A abrir o BackOffice...");
                 await YieldLoginPaintAsync();
@@ -519,7 +505,17 @@ public partial class LoginWindow : UserControl
                 var label = await Task.Run(async () => await SessionLabelAsync(userName))
                     .ConfigureAwait(true);
                 var office = new BackOfficeWindow(label);
-                office.UseBackOfficeOnly();
+                if (backOfficeOnly)
+                {
+                    office.UseBackOfficeOnly();
+                }
+                else
+                {
+                    office.HandoffToFrontOfficeWhenReady = true;
+                    office.FrontOfficeHandoffRequested += (_, _) =>
+                        _ = OpenFrontOfficeAfterOnboardingAsync(userName);
+                }
+
                 void OnBoLoggedOut()
                 {
                     _viewModel.ClearSession();
@@ -609,6 +605,40 @@ public partial class LoginWindow : UserControl
                 }
             };
             await box.ShowDialog(owner);
+        }
+    }
+
+    private async Task OpenFrontOfficeAfterOnboardingAsync(string userName)
+    {
+        try
+        {
+            UpdateAuthLoading("A construir o ecrã POS...");
+            await YieldLoginPaintAsync();
+
+            var pos = new PosWindow(userName);
+            void OnLoggedOut()
+            {
+                _viewModel.ClearSession();
+                IsVisible = true;
+                PinEntryFocus();
+            }
+
+            if (OperatingSystem.IsAndroid())
+            {
+                MobileHostView.ShowSession(pos, OnLoggedOut);
+                await pos.ActivateHostedAsync();
+                HideAuthLoading();
+                return;
+            }
+
+            pos.LoggedOut += (_, _) => RestoreDesktopLogin();
+            PresentDesktopShell(new PosShellWindow(pos));
+            HideAuthLoading();
+        }
+        catch (Exception exception)
+        {
+            App.WriteCrash("OpenFrontOfficeAfterOnboardingAsync", exception);
+            HideAuthLoading();
         }
     }
 

@@ -114,6 +114,8 @@ public static class AppComposition
             services.AddSingleton<ICompanySetupService>(provider => provider.GetRequiredService<LocalCompanySetupService>());
             services.AddSingleton<StartupReadinessService>();
             services.AddSingleton<IStartupReadinessService>(provider => provider.GetRequiredService<StartupReadinessService>());
+            services.AddSingleton<OnboardingService>();
+            services.AddSingleton<IOnboardingService>(provider => provider.GetRequiredService<OnboardingService>());
             services.AddSingleton<CompanyCurrency>();
             services.AddSingleton<ITicketPrinter, EscPosTicketPrinter>();
             services.AddSingleton<IThermalPrintSource, LocalThermalPrintSource>();
