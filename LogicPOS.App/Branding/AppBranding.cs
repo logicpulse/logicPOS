@@ -16,6 +16,7 @@ public static class AppBranding
     private const string DefaultBrandCode = "Logicpulse";
     private const string DefaultLoginUri = "avares://LogicPOS.App/Assets/Images/logicpos_logo.png";
     private const string DefaultSimpleUri = "avares://LogicPOS.App/Assets/Images/logicpos_logo_simple.png";
+    private const string DefaultFrontOfficeUri = "avares://LogicPOS.App/Assets/Images/logicpos_logo_frontoffice.png";
 
     public static string Reseller
     {
@@ -44,6 +45,11 @@ public static class AppBranding
         => BrandCode == DefaultBrandCode
             ? LoadAvaresBitmap(DefaultLoginUri, applyBrandingDecoder: false)
             : LoadBrandBitmap("login.png", DefaultLoginUri);
+
+    public static Bitmap LoadFrontOfficeLogo()
+        => BrandCode == DefaultBrandCode
+            ? LoadAvaresBitmap(DefaultFrontOfficeUri, applyBrandingDecoder: false)
+            : LoadBrandBitmap("front.png", DefaultFrontOfficeUri);
 
     public static Bitmap LoadSimpleLogo()
         => BrandCode == DefaultBrandCode

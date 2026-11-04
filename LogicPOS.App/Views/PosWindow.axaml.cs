@@ -568,7 +568,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             Avalonia.Media.IImage? logoSource = null;
             try
             {
-                logoSource = AppBranding.LoadLoginLogo();
+                logoSource = AppBranding.LoadFrontOfficeLogo();
             }
             catch
             {
