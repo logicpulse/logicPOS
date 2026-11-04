@@ -186,7 +186,7 @@ public partial class PaymentWindow : Window
         _filling = true;
         _customerId = customer.Id;
         _finalConsumer = customer.IsFinalConsumer;
-        _defaultCountry = customer.Country ?? string.Empty;
+        _defaultCountry = string.IsNullOrWhiteSpace(customer.Country) ? "Portugal" : customer.Country;
         CustomerName.Text = customer.Name;
         FiscalNumber.Text = customer.FiscalNumber;
         CardNumber.Text = customer.CardNumber ?? string.Empty;

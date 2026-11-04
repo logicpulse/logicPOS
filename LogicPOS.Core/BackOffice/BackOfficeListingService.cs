@@ -1687,6 +1687,16 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            if (property.Name == "CountryId" && target == typeof(Country))
+            {
+                var preferred = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
+                if (preferred is { } country)
+                {
+                    property.SetValue(entity, country.Id);
+                    continue;
+                }
+            }
+
             var rows = await MaterializeAsync(database, target, cancellationToken);
             var first = rows.Cast<object>().FirstOrDefault(row => ReadBool(row, "IsDeleted") == false);
             if (first is null)

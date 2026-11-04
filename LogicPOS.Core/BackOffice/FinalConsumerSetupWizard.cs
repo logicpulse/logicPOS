@@ -84,21 +84,35 @@ public sealed class LocalFinalConsumerSetupWizard : IFinalConsumerSetupWizard
             return FinalConsumerSetupResult.Fail(blocked);
         }
 
-        var existing = await database.Customers.AsNoTracking()
+        var preferredCountry = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
+        var existing = await database.Customers
             .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Name == name, cancellationToken);
         if (existing is not null)
         {
+            if (preferredCountry is { } country && existing.CountryId != country.Id)
+            {
+                existing.CountryId = country.Id;
+                existing.UpdatedAt = DateTime.Now;
+                await database.SaveChangesAsync(cancellationToken);
+            }
+
             return FinalConsumerSetupResult.Done($"O cliente «{name}» já existe.");
+        }
+
+        var fields = new Dictionary<string, string>
+        {
+            ["Name"] = name,
+            ["FiscalNumber"] = fiscal
+        };
+        if (preferredCountry is { } createCountry)
+        {
+            fields["CountryId"] = createCountry.Id.ToString();
         }
 
         var saved = await _listing.SaveAsync(
             "Clientes",
             null,
-            new Dictionary<string, string>
-            {
-                ["Name"] = name,
-                ["FiscalNumber"] = fiscal
-            },
+            fields,
             cancellationToken);
         if (saved.Succeeded == false)
         {

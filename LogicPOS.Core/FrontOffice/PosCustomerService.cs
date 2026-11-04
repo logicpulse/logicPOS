@@ -25,40 +25,42 @@ public sealed class PosCustomerService : IPosCustomerService
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
 
-        var customer = await database.Customers
-            .AsNoTracking()
-            .Where(item => item.IsDeleted == false && item.Name == FinalConsumerName)
-            .Select(item => new
-            {
-                item.Id,
-                item.Name,
-                item.FiscalNumber,
-                item.CardNumber,
-                item.Discount,
-                item.Address,
-                item.Locality,
-                item.ZipCode,
-                item.City,
-                Country = item.Country != null ? item.Country.Designation : null
-            })
-            .FirstOrDefaultAsync(cancellationToken);
-
-        if (customer is null)
+        var preferred = await CompanyCountryResolver.ResolveAsync(database, cancellationToken);
+        var tracked = await database.Customers
+            .FirstOrDefaultAsync(item => item.IsDeleted == false && item.Name == FinalConsumerName, cancellationToken);
+        if (tracked is null)
         {
             return null;
         }
 
+        if (preferred is { } country && tracked.CountryId != country.Id)
+        {
+            tracked.CountryId = country.Id;
+            tracked.UpdatedAt = DateTime.Now;
+            await database.SaveChangesAsync(cancellationToken);
+            InvalidateSearch();
+        }
+
+        var countryName = preferred?.Designation;
+        if (string.IsNullOrWhiteSpace(countryName))
+        {
+            countryName = await database.Countries.AsNoTracking()
+                .Where(item => item.Id == tracked.CountryId)
+                .Select(item => item.Designation)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
+
         return new PosCustomer(
-            customer.Id,
-            customer.Name,
-            customer.FiscalNumber,
-            customer.CardNumber,
-            customer.Discount,
-            customer.Address,
-            customer.Locality,
-            customer.ZipCode,
-            customer.City,
-            customer.Country,
+            tracked.Id,
+            tracked.Name,
+            tracked.FiscalNumber,
+            tracked.CardNumber,
+            tracked.Discount,
+            tracked.Address,
+            tracked.Locality,
+            tracked.ZipCode,
+            tracked.City,
+            countryName,
             true);
     }
 
