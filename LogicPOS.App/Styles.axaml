@@ -1295,14 +1295,15 @@
 
     <Style Selector="Image.pos_logo">
         <Setter Property="Stretch" Value="Uniform" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.pos_status_bar_1">
-        <Setter Property="Background" Value="#585858" />
+        <Setter Property="Background" Value="#2A2A2A" />
+        <Setter Property="BorderBrush" Value="#3F3F3F" />
+        <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
     </Style>
 
@@ -1313,19 +1314,20 @@
     </Style>
 
     <Style Selector="Grid.pos_status_bar_content">
-        <Setter Property="Margin" Value="8,0" />
+        <Setter Property="Margin" Value="12,0" />
     </Style>
 
     <Style Selector="TextBlock.pos_status_text">
-        <Setter Property="Foreground" Value="#EEEEEE" />
-        <Setter Property="FontSize" Value="11" />
-        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="Foreground" Value="#FFFFFF" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="TextBlock.pos_status_text_small">
-        <Setter Property="Foreground" Value="#DADADA" />
-        <Setter Property="FontSize" Value="7" />
+        <Setter Property="Foreground" Value="#D0D0D0" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 

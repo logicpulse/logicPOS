@@ -599,7 +599,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
             statusGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             _terminalLabel = new TextBlock { Classes = { "pos_status_text" }, Text = SessionCaption.Format(_terminalName, _userName) };
-            _sessionStateLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Center, Foreground = Brushes.White };
+            _sessionStateLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Center };
             Grid.SetColumn(_sessionStateLabel, 1);
             _clockLabel = new TextBlock { Classes = { "pos_status_text" }, HorizontalAlignment = HorizontalAlignment.Right };
             Grid.SetColumn(_clockLabel, 2);
