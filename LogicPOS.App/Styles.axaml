@@ -1932,8 +1932,8 @@
         <Setter Property="Margin" Value="2" />
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="#B7D84F" />
+        <Setter Property="BorderThickness" Value="3" />
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -1945,6 +1945,7 @@
                         BorderThickness="{TemplateBinding BorderThickness}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
+                        ClipToBounds="True"
                         TextBlock.FontSize="{TemplateBinding FontSize}"
                         TextBlock.Foreground="{TemplateBinding Foreground}">
                     <ContentPresenter Content="{TemplateBinding Content}"
@@ -1957,6 +1958,7 @@
 
     <Style Selector="Button.pos_pay_method:pointerover /template/ Border">
         <Setter Property="Background" Value="#C6E45E" />
+        <Setter Property="BorderBrush" Value="#C6E45E" />
     </Style>
 
     <Style Selector="Button.pos_pay_method.selected">
@@ -5798,6 +5800,22 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="BorderBrush" Value="#5A5A5A" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <!-- Keep chrome radii in sync with bo_pay_dialog so white body does not show in corners. -->
+    <Style Selector="Border.bo_pay_dialog Border.pos_pay_titlebar">
+        <Setter Property="CornerRadius" Value="14,14,0,0" />
+    </Style>
+
+    <Style Selector="Border.bo_pay_dialog Border.pos_pay_footer">
+        <Setter Property="CornerRadius" Value="0,0,14,14" />
+        <Setter Property="ClipToBounds" Value="True" />
+    </Style>
+
+    <Style Selector="Border.bo_pay_dialog DockPanel.login_alert_inner">
+        <Setter Property="Background" Value="#F5F5F5" />
     </Style>
 
     <Style Selector="Border.bo_entity_prompt">
