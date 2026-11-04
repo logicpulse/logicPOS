@@ -9,7 +9,7 @@
         Background="Transparent"
         CanResize="False">
     <Panel>
-        <Panel Classes="login_alert_overlay" IsVisible="False" />
+        <Panel Classes="login_alert_overlay pos_pay_scrim" />
         <Border Classes="login_alert_frame bo_pay_dialog">
             <DockPanel Classes="login_alert_inner">
                 <Border Classes="login_alert_titlebar pos_pay_titlebar" DockPanel.Dock="Top">
