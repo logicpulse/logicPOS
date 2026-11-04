@@ -2055,10 +2055,11 @@
 
     <Style Selector="Border.pos_pay_customer_section">
         <Setter Property="Background" Value="#F5F5F5" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="BorderBrush" Value="#D8D8D8" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderBrush" Value="#E0E0E0" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="Margin" Value="0,0,0,2" />
     </Style>
 
     <Style Selector="Border.pos_pay_customer_header">
@@ -2113,9 +2114,10 @@
     <Style Selector="Button.login_alert_action.pos_pay_action">
         <Setter Property="Width" Value="NaN" />
         <Setter Property="Height" Value="56" />
-        <Setter Property="Margin" Value="3,0" />
+        <Setter Property="Margin" Value="2,0" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="Background" Value="#585858" />
+        <Setter Property="CornerRadius" Value="8" />
     </Style>
 
     <Style Selector="Button.login_alert_action.pos_pay_action:pointerover">
@@ -5800,13 +5802,16 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="BorderBrush" Value="#5A5A5A" />
+        <!-- Dark shell matches title/footer so anti-aliased corners stay gray, not white. -->
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="BorderBrush" Value="#3D3D3D" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
-    <!-- Keep chrome radii in sync with bo_pay_dialog so white body does not show in corners. -->
     <Style Selector="Border.bo_pay_dialog Border.pos_pay_titlebar">
         <Setter Property="CornerRadius" Value="14,14,0,0" />
+        <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
     <Style Selector="Border.bo_pay_dialog Border.pos_pay_footer">
@@ -5815,7 +5820,11 @@
     </Style>
 
     <Style Selector="Border.bo_pay_dialog DockPanel.login_alert_inner">
-        <Setter Property="Background" Value="#F5F5F5" />
+        <Setter Property="Background" Value="#3D3D3D" />
+    </Style>
+
+    <Style Selector="Border.bo_pay_dialog ScrollViewer.pos_pay_scroll">
+        <Setter Property="Background" Value="#F0F0F0" />
     </Style>
 
     <Style Selector="Border.bo_entity_prompt">
