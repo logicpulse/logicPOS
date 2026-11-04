@@ -1,5 +1,6 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.FiscalYearWizard">
     <Panel>
@@ -12,14 +13,23 @@
                         <TextBlock Classes="login_alert_title" Text="Criar ano fiscal" />
                     </StackPanel>
                 </Border>
-                <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+
+                <Border Classes="login_alert_actions bo_fiscal_wizard_actions" DockPanel.Dock="Bottom">
                     <DockPanel>
                         <StackPanel DockPanel.Dock="Right" Classes="login_alert_action_buttons">
                             <Button x:Name="BackButton" Classes="login_alert_action" Click="OnBackClick">
-                                <TextBlock Classes="login_alert_action_text" Text="Voltar" />
+                                <StackPanel Classes="login_alert_action_content">
+                                    <svg:Svg Classes="login_alert_action_icon"
+                                             Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_back.svg" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Voltar" />
+                                </StackPanel>
                             </Button>
                             <Button x:Name="NextButton" Classes="login_alert_action" Click="OnNextClick">
-                                <TextBlock Classes="login_alert_action_text" Text="Seguinte" />
+                                <StackPanel Classes="login_alert_action_content">
+                                    <svg:Svg Classes="login_alert_action_icon"
+                                             Path="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_next.svg" />
+                                    <TextBlock Classes="login_alert_action_text" Text="Seguinte" />
+                                </StackPanel>
                             </Button>
                             <Button x:Name="FinishButton" Classes="login_alert_action" Click="OnFinishClick">
                                 <StackPanel Classes="login_alert_action_content">
@@ -40,41 +50,60 @@
                                    VerticalAlignment="Center" TextWrapping="Wrap" />
                     </DockPanel>
                 </Border>
-                <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" DockPanel.Dock="Top" />
-                <ScrollViewer>
+
+                <Border Classes="bo_fiscal_wizard_tabs_host" DockPanel.Dock="Top">
+                    <StackPanel x:Name="TabBar" Classes="bo_fiscal_wizard_tabs" />
+                </Border>
+
+                <ScrollViewer Classes="bo_fiscal_wizard_scroll">
                     <Panel>
                         <StackPanel x:Name="YearStep" Classes="bo_fiscal_wizard_form">
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Dados do ano" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="Confirme o ano, a designação e o acrónimo usados nas séries de documento."
+                                       TextWrapping="Wrap" />
                             <StackPanel x:Name="CloseRow">
                                 <CheckBox x:Name="CloseCurrent" Classes="bo_entity_input" />
                             </StackPanel>
-                            <TextBlock Classes="bo_new_doc_caption" Text="Ano fiscal" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Ano fiscal" />
                             <TextBox x:Name="YearBox" Classes="bo_entity_input" IsReadOnly="True" />
-                            <TextBlock Classes="bo_new_doc_caption" Text="Designação" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Designação" />
                             <TextBox x:Name="DesignationBox" Classes="bo_entity_input" />
-                            <TextBlock Classes="bo_new_doc_caption" Text="Acrónimo" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Acrónimo" />
                             <TextBox x:Name="AcronymBox" Classes="bo_entity_input" />
-                            <TextBlock Classes="bo_new_doc_caption" Text="Notas" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Notas" />
                             <TextBox x:Name="NotesBox" Classes="bo_entity_multiline" AcceptsReturn="True" />
                         </StackPanel>
                         <StackPanel x:Name="SeriesStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Séries de documento" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="Escolha os tipos de documento para os quais pretende criar séries."
+                                       TextWrapping="Wrap" />
                             <CheckBox x:Name="CreateSeries" Classes="bo_entity_input" Content="Selecionar todas" IsChecked="True" />
                             <CheckBox x:Name="PerTerminal" Classes="bo_entity_input" Content="Uma série por terminal" />
-                            <TextBlock Classes="bo_new_doc_caption" Text="Séries a criar" />
-                            <StackPanel x:Name="SeriesList" />
+                            <TextBlock Classes="bo_fiscal_wizard_caption" Text="Séries a criar" />
+                            <StackPanel x:Name="SeriesList" Classes="bo_fiscal_wizard_checklist" />
                         </StackPanel>
                         <StackPanel x:Name="TerminalsStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
-                            <TextBlock x:Name="TerminalsHint" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
-                            <StackPanel x:Name="TerminalList" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Terminais" />
+                            <TextBlock x:Name="TerminalsHint" Classes="bo_fiscal_wizard_step_hint" TextWrapping="Wrap" />
+                            <StackPanel x:Name="TerminalList" Classes="bo_fiscal_wizard_checklist" />
                         </StackPanel>
                         <StackPanel x:Name="AtStep" Classes="bo_fiscal_wizard_form" IsVisible="False">
+                            <TextBlock Classes="bo_fiscal_wizard_step_title" Text="Comunicação AT" />
+                            <TextBlock Classes="bo_fiscal_wizard_step_hint"
+                                       Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores."
+                                       TextWrapping="Wrap" />
                             <CheckBox x:Name="Communicate" Classes="bo_entity_input" Content="Comunicar as séries com a AT" />
-                            <TextBlock Classes="bo_new_doc_caption" TextWrapping="Wrap"
-                                       Text="As séries novas são registadas na Autoridade Tributária. Se existir um ano activo, o fecho também comunica a anulação ou a finalização das séries anteriores." />
                             <StackPanel x:Name="AtPanel" Classes="bo_fiscal_wizard_at" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Parâmetros de comunicação com a AT" />
+                                <TextBlock Classes="bo_fiscal_wizard_caption" Text="Parâmetros de comunicação com a AT" />
                                 <StackPanel x:Name="AtFields" Classes="bo_fiscal_wizard_at" />
-                                <Button x:Name="TestAtButton" Classes="login_alert_action" Click="OnTestAtClick">
-                                    <TextBlock Classes="login_alert_action_text" Text="Testar" />
+                                <Button x:Name="TestAtButton" Classes="login_alert_action" Click="OnTestAtClick" HorizontalAlignment="Left">
+                                    <StackPanel Classes="login_alert_action_content">
+                                        <Image Classes="login_alert_action_icon"
+                                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_info.png" />
+                                        <TextBlock Classes="login_alert_action_text" Text="Testar" />
+                                    </StackPanel>
                                 </Button>
                             </StackPanel>
                         </StackPanel>

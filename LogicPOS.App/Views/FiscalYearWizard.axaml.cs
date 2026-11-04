@@ -230,12 +230,16 @@ public partial class FiscalYearWizard : UserControl
         {
             var tab = new Button
             {
-                Classes = { "bo_entity_tab" },
-                Content = steps[index]
+                Classes = { "bo_fiscal_wizard_tab" },
+                Content = $"{index + 1}. {steps[index]}"
             };
             if (index == _step)
             {
-                tab.Classes.Add("bo_entity_tab_on");
+                tab.Classes.Add("bo_fiscal_wizard_tab_on");
+            }
+            else if (index < _step)
+            {
+                tab.Classes.Add("bo_fiscal_wizard_tab_done");
             }
 
             var target = index;
