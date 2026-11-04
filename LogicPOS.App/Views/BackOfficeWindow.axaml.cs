@@ -80,6 +80,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         };
         EntityHost.FiscalYearCompleted += (_, _) => _ = RefreshHomeAfterSetupAsync();
         EntityHost.EntitySaved += (_, _) => _ = RefreshHomeAfterSetupAsync();
+        EntityHost.OverlayDismissed += (_, _) => RestoreOnboardingAfterOverlay();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
         AttachedToVisualTree += (_, _) =>
         {
@@ -318,6 +319,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private async Task RefreshHomeAfterSetupAsync()
     {
+        EntityHost.SetOverlayOnly(false);
         await RefreshOnboardingAsync();
         if (_onboardingIncomplete == false)
         {
@@ -449,35 +451,48 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
     private async Task OpenFiscalYearWizardFromOnboardingAsync()
     {
-        await ShowEntityPageForOnboardingAsync("Abertura de ano fiscal");
+        await PrepareOnboardingOverlayAsync("Abertura de ano fiscal");
         await EntityHost.OpenFiscalYearWizardAsync();
     }
 
     private async Task OpenEntityCreateFromOnboardingAsync(string title)
     {
-        await ShowEntityPageForOnboardingAsync(title);
+        await PrepareOnboardingOverlayAsync(title);
         await EntityHost.OpenNewEntityAsync();
     }
 
-    private async Task ShowEntityPageForOnboardingAsync(string title)
+    /// <summary>
+    /// Keeps the onboarding panel visible and only mounts EntityListing overlays on top.
+    /// </summary>
+    private async Task PrepareOnboardingOverlayAsync(string title)
     {
-        PageTitle.Text = title;
-        SyncPortraitChrome(title);
         _articleDashboardRequest++;
         ReportsOverlay.IsVisible = false;
-
-        OnboardingHost.IsVisible = false;
         DashboardHost.IsVisible = false;
         ArticleDashboardHost.IsVisible = false;
-        PageHost.IsVisible = true;
         DocumentsHost.IsVisible = false;
         ReceiptHost.IsVisible = false;
         StockHost.IsVisible = false;
         SettingsHost.IsVisible = false;
         PlaceholderHost.IsVisible = false;
+
+        OnboardingHost.IsVisible = true;
+        PageHost.IsVisible = true;
         EntityHost.IsVisible = true;
+        EntityHost.SetOverlayOnly(true);
 
         await EntityHost.ShowAsync(title);
+    }
+
+    private void RestoreOnboardingAfterOverlay()
+    {
+        EntityHost.SetOverlayOnly(false);
+        EntityHost.IsVisible = false;
+        PageHost.IsVisible = false;
+        OnboardingHost.IsVisible = true;
+        PageTitle.Text = string.Empty;
+        SyncPortraitChrome(AppText.Get("Configuração inicial"));
+        _ = OnboardingHost.ReloadAsync();
     }
 
     private async Task OpenCompanySetupAsync()
@@ -1151,6 +1166,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         if (service is not null && service.HasPage(title))
         {
+            EntityHost.SetOverlayOnly(false);
             EntityHost.IsVisible = true;
             _ = EntityHost.ShowAsync(title);
             return;

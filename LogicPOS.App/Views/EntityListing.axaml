@@ -5,7 +5,7 @@
              x:Class="LogicPOS.App.Views.EntityListing"
              Classes="bo_listing">
     <Panel>
-        <Border Classes="bo_doc_page">
+        <Border x:Name="ListingSurface" Classes="bo_doc_page">
             <DockPanel>
                 <StackPanel Classes="bo_doc_header" DockPanel.Dock="Top">
                     <Border Classes="bo_page_header">

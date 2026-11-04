@@ -5445,6 +5445,10 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
+    <Style Selector="UserControl.bo_listing.bo_listing_overlay_only">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
     <Style Selector="Border.bo_fiscal_wizard">
         <Setter Property="Width" Value="720" />
         <Setter Property="Height" Value="560" />

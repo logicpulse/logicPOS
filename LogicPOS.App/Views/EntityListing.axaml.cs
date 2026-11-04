@@ -79,12 +79,38 @@ public partial class EntityListing : UserControl
 
     public event EventHandler? EntitySaved;
 
+    /// <summary>Fired when an overlay opened from onboarding is closed without completing setup.</summary>
+    public event EventHandler? OverlayDismissed;
+
+    private bool _overlayOnly;
+
     private async void OnFiscalYearFinished(object? sender, string? message)
     {
         FiscalYearOverlay.IsVisible = false;
-        await ReloadAsync();
+        if (_overlayOnly == false)
+        {
+            await ReloadAsync();
+        }
+
         Notice.Text = message ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(message) && _overlayOnly)
+        {
+            OverlayDismissed?.Invoke(this, EventArgs.Empty);
+            return;
+        }
+
         FiscalYearCompleted?.Invoke(this, EventArgs.Empty);
+    }
+
+    /// <summary>
+    /// Hides the listing chrome so overlays can sit on top of the onboarding panel.
+    /// </summary>
+    public void SetOverlayOnly(bool overlayOnly)
+    {
+        _overlayOnly = overlayOnly;
+        ListingSurface.IsVisible = overlayOnly == false;
+        Background = overlayOnly ? Brushes.Transparent : null;
+        Classes.Set("bo_listing_overlay_only", overlayOnly);
     }
 
     /// <summary>Opens the Novo editor overlay for the current listing page.</summary>
@@ -1606,7 +1632,14 @@ public partial class EntityListing : UserControl
         return dock;
     }
 
-    private void OnEditorCancelClick(object? sender, RoutedEventArgs e) => EditorOverlay.IsVisible = false;
+    private void OnEditorCancelClick(object? sender, RoutedEventArgs e)
+    {
+        EditorOverlay.IsVisible = false;
+        if (_overlayOnly)
+        {
+            OverlayDismissed?.Invoke(this, EventArgs.Empty);
+        }
+    }
 
     private static List<string> OrderEditorGroups(IReadOnlyList<ListingField> fields)
     {
