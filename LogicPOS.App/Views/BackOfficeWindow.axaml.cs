@@ -423,10 +423,40 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
+        if (step.Key == "fiscal-year"
+            || string.Equals(step.ActionPage, "Abertura de ano fiscal", StringComparison.OrdinalIgnoreCase))
+        {
+            await OpenFiscalYearWizardFromOnboardingAsync();
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(step.ActionPage) == false)
         {
             ShowPage(step.ActionPage);
         }
+    }
+
+    private async Task OpenFiscalYearWizardFromOnboardingAsync()
+    {
+        const string title = "Abertura de ano fiscal";
+        PageTitle.Text = title;
+        SyncPortraitChrome(title);
+        _articleDashboardRequest++;
+        ReportsOverlay.IsVisible = false;
+
+        OnboardingHost.IsVisible = false;
+        DashboardHost.IsVisible = false;
+        ArticleDashboardHost.IsVisible = false;
+        PageHost.IsVisible = true;
+        DocumentsHost.IsVisible = false;
+        ReceiptHost.IsVisible = false;
+        StockHost.IsVisible = false;
+        SettingsHost.IsVisible = false;
+        PlaceholderHost.IsVisible = false;
+        EntityHost.IsVisible = true;
+
+        await EntityHost.ShowAsync(title);
+        await EntityHost.OpenFiscalYearWizardAsync();
     }
 
     private async Task OpenCompanySetupAsync()

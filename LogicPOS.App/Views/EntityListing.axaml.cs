@@ -104,6 +104,13 @@ public partial class EntityListing : UserControl
         await ReloadAsync();
     }
 
+    /// <summary>Opens the fiscal-year wizard overlay (same as «Criar ano fiscal»).</summary>
+    public async Task OpenFiscalYearWizardAsync()
+    {
+        FiscalYearOverlay.IsVisible = true;
+        await FiscalYearHost.ShowAsync();
+    }
+
     private static bool UsesDateFilter(string title)
         => title is "Recibos" or "Emissão Recibos" or "Sessões de Trab." or "Gestão de Stocks" or "Conta.Corr." or "Registro de alterações (Changelog)" or "Séries";
 
