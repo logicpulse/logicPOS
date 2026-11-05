@@ -1154,6 +1154,22 @@ public partial class DocumentsListing : UserControl
         await OpenPdfAsync(item.Source);
     }
 
+    private async void OnRowPrintClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: CheckedDocument item })
+        {
+            return;
+        }
+
+        if (await NeedsReprintDialogAsync(item.Source.Id))
+        {
+            await OpenReprintPromptAsync(item.Source);
+            return;
+        }
+
+        await PrintRowsAsync(new[] { item.Source }, null);
+    }
+
     private void OnChooseColumnsClick(object? sender, RoutedEventArgs e)
     {
         ColumnSearch.Text = string.Empty;
@@ -1696,6 +1712,8 @@ public partial class DocumentsListing : UserControl
         public bool CanEdit => Source.CanEdit;
 
         public bool CanView => Source.CanView;
+
+        public bool CanPrint => Source.CanView;
 
         public bool CanCopy => true;
 
