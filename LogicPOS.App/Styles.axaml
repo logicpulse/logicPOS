@@ -6055,8 +6055,16 @@
         <Setter Property="BorderBrush" Value="#C5CED6" />
     </Style>
 
-    <Style Selector="Border.bo_reports_filters ComboBox.bo_reports_filter_input,
-                     Border.bo_reports_filters TextBox.bo_reports_filter_input">
+    <Style Selector="Border.bo_reports_filters ComboBox.bo_reports_filter_input">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="Border.bo_reports_filters TextBox.bo_reports_filter_input">
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="Height" Value="36" />
         <Setter Property="Padding" Value="10,0" />
