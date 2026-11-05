@@ -5,32 +5,29 @@
              Classes="bo_doc_date_field bo_period_field">
     <StackPanel Classes="bo_doc_date_field">
         <TextBlock x:Name="Caption" Classes="bo_doc_label" Text="Período" />
-        <DockPanel Classes="bo_period_summary_row">
+        <StackPanel Classes="bo_period_summary_row" Orientation="Horizontal" Spacing="6">
+            <TextBox x:Name="StartBox"
+                     Classes="bo_period_date_box bo_no_touch"
+                     Width="148"
+                     PlaceholderText="dd/MM/yyyy HH:mm"
+                     LostFocus="OnStartLostFocus"
+                     KeyUp="OnStartKeyUp" />
+            <TextBlock Classes="bo_period_range_sep"
+                       Text="–"
+                       VerticalAlignment="Center" />
+            <TextBox x:Name="EndBox"
+                     Classes="bo_period_date_box bo_no_touch"
+                     Width="148"
+                     PlaceholderText="dd/MM/yyyy HH:mm"
+                     LostFocus="OnEndLostFocus"
+                     KeyUp="OnEndKeyUp" />
             <Button x:Name="CalendarButton"
                     Classes="bo_listing_icon_button bo_period_calendar_button"
-                    DockPanel.Dock="Right"
                     Click="OnSummaryClick"
                     ToolTip.Tip="Escolher no calendário">
                 <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
             </Button>
-            <Grid Classes="bo_period_summary_inputs" ColumnDefinitions="*,Auto,*" ColumnSpacing="6">
-                <TextBox x:Name="StartBox"
-                         Classes="bo_period_date_box"
-                         PlaceholderText="dd/MM/yyyy HH:mm"
-                         LostFocus="OnStartLostFocus"
-                         KeyUp="OnStartKeyUp" />
-                <TextBlock Grid.Column="1"
-                           Classes="bo_period_range_sep"
-                           Text="–"
-                           VerticalAlignment="Center" />
-                <TextBox x:Name="EndBox"
-                         Grid.Column="2"
-                         Classes="bo_period_date_box"
-                         PlaceholderText="dd/MM/yyyy HH:mm"
-                         LostFocus="OnEndLostFocus"
-                         KeyUp="OnEndKeyUp" />
-            </Grid>
-        </DockPanel>
+        </StackPanel>
         <Popup x:Name="PickerPopup"
                Placement="Bottom"
                IsLightDismissEnabled="True"
@@ -64,7 +61,7 @@
                             <StackPanel>
                                 <TextBlock Classes="bo_doc_label" Text="Início" />
                                 <TextBox x:Name="DraftStartBox"
-                                         Classes="bo_period_date_box"
+                                         Classes="bo_period_date_box bo_no_touch"
                                          PlaceholderText="dd/MM/yyyy HH:mm"
                                          LostFocus="OnDraftStartLostFocus"
                                          KeyUp="OnDraftStartKeyUp" />
@@ -72,7 +69,7 @@
                             <StackPanel Grid.Column="1">
                                 <TextBlock Classes="bo_doc_label" Text="Fim" />
                                 <TextBox x:Name="DraftEndBox"
-                                         Classes="bo_period_date_box"
+                                         Classes="bo_period_date_box bo_no_touch"
                                          PlaceholderText="dd/MM/yyyy HH:mm"
                                          LostFocus="OnDraftEndLostFocus"
                                          KeyUp="OnDraftEndKeyUp" />

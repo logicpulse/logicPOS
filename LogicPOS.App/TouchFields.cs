@@ -53,6 +53,7 @@ internal static class TouchFields
     {
         if (box.IsVisible == false
             || box.Classes.Contains("bo_touch_ready")
+            || box.Classes.Contains("bo_no_touch")
             || box.Classes.Contains("login_pin_entry")
             || box is TextBox { IsReadOnly: true })
         {

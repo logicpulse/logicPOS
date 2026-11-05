@@ -111,7 +111,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="150" MinWidth="140" MaxWidth="160" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="175" MinWidth="175" IsReadOnly="True" />
                         <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
                         <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
                         <DataGridTextColumn Header="Entidade" Binding="{Binding CustomerName}" Width="*" MinWidth="140" IsReadOnly="True" />
