@@ -5815,11 +5815,12 @@
     </Style>
 
     <Style Selector="Border.pos_cash_dialog">
-        <Setter Property="MinWidth" Value="420" />
-        <Setter Property="MaxWidth" Value="540" />
-        <Setter Property="Width" Value="NaN" />
-        <Setter Property="Height" Value="NaN" />
-        <Setter Property="MaxHeight" Value="560" />
+        <Setter Property="MinWidth" Value="620" />
+        <Setter Property="MaxWidth" Value="720" />
+        <Setter Property="Width" Value="680" />
+        <Setter Property="MinHeight" Value="520" />
+        <Setter Property="Height" Value="600" />
+        <Setter Property="MaxHeight" Value="720" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="CornerRadius" Value="14" />
@@ -5852,12 +5853,19 @@
 
     <Style Selector="Border.pos_cash_body">
         <Setter Property="Background" Value="#F0F0F0" />
-        <Setter Property="Padding" Value="0" />
+        <Setter Property="Padding" Value="4" />
+    </Style>
+
+    <Style Selector="Border.pos_cash_dialog Grid.pos_price_pad">
+        <Setter Property="Margin" Value="14,12,14,10" />
+        <Setter Property="MinHeight" Value="380" />
     </Style>
 
     <Style Selector="Border.pos_cash_dialog Button.pos_price_digit">
         <Setter Property="Background" Value="#585858" />
         <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="22" />
+        <Setter Property="Margin" Value="4" />
     </Style>
 
     <Style Selector="Border.pos_cash_dialog Button.pos_price_digit:pointerover">
@@ -5867,6 +5875,8 @@
     <Style Selector="Border.pos_cash_dialog Button.pos_price_money">
         <Setter Property="Background" Value="#8FBF2F" />
         <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="FontSize" Value="15" />
+        <Setter Property="Margin" Value="4" />
     </Style>
 
     <Style Selector="Border.pos_cash_dialog Button.pos_price_money:pointerover">
@@ -5874,6 +5884,9 @@
     </Style>
 
     <Style Selector="Border.pos_cash_dialog TextBox.pos_price_entry">
+        <Setter Property="Height" Value="52" />
+        <Setter Property="FontSize" Value="26" />
+        <Setter Property="Margin" Value="2,0,2,12" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="BorderBrush" Value="#D0D0D0" />
         <Setter Property="Background" Value="#FFFFFF" />

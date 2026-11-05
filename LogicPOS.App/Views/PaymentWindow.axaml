@@ -284,7 +284,7 @@
                         </UniformGrid>
                     </Border>
                     <Border Classes="pos_cash_body">
-                        <Grid Classes="pos_price_pad" RowDefinitions="Auto,*" ColumnDefinitions="108,*,108">
+                        <Grid Classes="pos_price_pad" RowDefinitions="Auto,*" ColumnDefinitions="140,*,140">
                             <TextBox x:Name="CashEntry" Grid.ColumnSpan="3" Classes="pos_price_entry" IsReadOnly="True" />
                             <Grid Grid.Row="1" RowDefinitions="*,*,*,*,*">
                                 <Button Classes="pos_price_money" Content="0,05 €" Tag="0.05" Click="OnCashMoneyClick" />
@@ -293,7 +293,7 @@
                                 <Button Classes="pos_price_money" Grid.Row="3" Content="0,50 €" Tag="0.50" Click="OnCashMoneyClick" />
                                 <Button Classes="pos_price_money" Grid.Row="4" Content="1,00 €" Tag="1.00" Click="OnCashMoneyClick" />
                             </Grid>
-                            <Grid Grid.Row="1" Grid.Column="1" Margin="6,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
+                            <Grid Grid.Row="1" Grid.Column="1" Margin="10,0" ColumnDefinitions="*,*,*" RowDefinitions="*,*,*,*">
                                 <Button Classes="pos_price_digit" Content="7" Tag="7" Click="OnCashDigitClick" />
                                 <Button Classes="pos_price_digit" Grid.Column="1" Content="8" Tag="8" Click="OnCashDigitClick" />
                                 <Button Classes="pos_price_digit" Grid.Column="2" Content="9" Tag="9" Click="OnCashDigitClick" />
