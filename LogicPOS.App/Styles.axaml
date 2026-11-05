@@ -812,14 +812,15 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
+    <!-- Dark shell + matching title/footer radii so anti-aliased corners stay gray, not white. -->
     <Style Selector="Border.login_alert_frame">
-        <Setter Property="Background" Value="#FFFFFF" />
-        <Setter Property="BorderBrush" Value="#D6D6D6" />
-        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="BorderBrush" Value="#3D3D3D" />
+        <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="14" />
         <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="BoxShadow" Value="0 12 28 0 #66000000" />
     </Style>
@@ -831,7 +832,8 @@
     <Style Selector="Border.login_alert_titlebar">
         <Setter Property="Height" Value="42" />
         <Setter Property="Background" Value="#3D3D3D" />
-        <Setter Property="CornerRadius" Value="8,8,0,0" />
+        <Setter Property="CornerRadius" Value="14,14,0,0" />
+        <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="Padding" Value="8,0,8,0" />
     </Style>
 
@@ -1003,7 +1005,8 @@
     <Style Selector="Border.login_alert_actions">
         <Setter Property="Background" Value="#FFFFFF" />
         <Setter Property="Padding" Value="0,4,12,8" />
-        <Setter Property="CornerRadius" Value="0,0,8,8" />
+        <Setter Property="CornerRadius" Value="0,0,14,14" />
+        <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
     <Style Selector="StackPanel.login_alert_action_buttons">
@@ -2747,7 +2750,7 @@
     <Style Selector="Border.login_alert_frame.bo_overlay_fullbleed">
         <Setter Property="MaxWidth" Value="NaN" />
         <Setter Property="MaxHeight" Value="NaN" />
-        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="CornerRadius" Value="14" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
