@@ -111,7 +111,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="190" MinWidth="190" IsReadOnly="True" />
+                        <DataGridTextColumn Header="Data do documento" Binding="{Binding DateText}" Width="150" MinWidth="140" MaxWidth="160" IsReadOnly="True" />
                         <DataGridTextColumn Header="Número do Doc." Binding="{Binding Number}" Width="180" MinWidth="180" IsReadOnly="True" />
                         <DataGridTextColumn Header="Estado" Binding="{Binding Status}" Width="100" MinWidth="100" IsReadOnly="True" />
                         <DataGridTextColumn Header="Entidade" Binding="{Binding CustomerName}" Width="*" MinWidth="140" IsReadOnly="True" />
@@ -120,12 +120,17 @@
                         <DataGridTextColumn Header="Valor Pago" Binding="{Binding TotalPaidText}" Width="140" MinWidth="140" IsReadOnly="True" />
                         <DataGridTextColumn Header="Valor em Débito" Binding="{Binding TotalToPayText}" Width="170" MinWidth="170" IsReadOnly="True" />
                         <DataGridTextColumn Header="Documentos Associados" Binding="{Binding RelatedDocuments}" Width="230" MinWidth="230" IsReadOnly="True" />
-                        <DataGridTemplateColumn Header="" Width="36" MinWidth="36" MaxWidth="36" CanUserSort="False" CanUserReorder="False">
+                        <DataGridTemplateColumn Header="" Width="72" MinWidth="72" MaxWidth="72" CanUserSort="False" CanUserReorder="False">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:CompileBindings="False">
-                                    <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" ToolTip.Tip="Ver">
-                                        <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
-                                    </Button>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="0">
+                                        <Button Classes="bo_doc_icon_button" Click="OnRowViewClick" ToolTip.Tip="Ver">
+                                            <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg" />
+                                        </Button>
+                                        <Button Classes="bo_doc_icon_button" Click="OnRowPrintClick" ToolTip.Tip="Imprimir">
+                                            <svg:Svg Classes="bo_doc_row_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg" />
+                                        </Button>
+                                    </StackPanel>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

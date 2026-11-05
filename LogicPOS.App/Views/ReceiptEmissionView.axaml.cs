@@ -9,6 +9,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using LogicPOS.App;
+using LogicPOS.App.Hardware;
 using LogicPOS.Application.Features.System;
 using LogicPOS.Core;
 using LogicPOS.Core.BackOffice;
@@ -52,8 +53,8 @@ public partial class ReceiptEmissionView : UserControl
         CardList.ItemTemplate = new FuncDataTemplate<ReceiptGridRow>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
-                $"{item.DateText} · {item.Status}",
-                $"{item.CustomerName} · {item.TotalToPayText}",
+                $"{item.DateText} ï¿½ {item.Status}",
+                $"{item.CustomerName} ï¿½ {item.TotalToPayText}",
                 item), true);
         AttachedToVisualTree += (_, _) =>
         {
@@ -352,7 +353,7 @@ public partial class ReceiptEmissionView : UserControl
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || TryMoney(ExchangeRate.Text, out var rate) == false)
         {
-            PayError.Text = "A taxa de câmbio tem de ser superior a zero.";
+            PayError.Text = "A taxa de cï¿½mbio tem de ser superior a zero.";
             return;
         }
 
@@ -365,7 +366,7 @@ public partial class ReceiptEmissionView : UserControl
             var service = AppComposition.Services?.GetService<IReceiptEmission>();
             if (service is null)
             {
-                PayError.Text = "Emissão de recibos indisponível.";
+                PayError.Text = "Emissï¿½o de recibos indisponï¿½vel.";
                 return;
             }
 
@@ -438,15 +439,24 @@ public partial class ReceiptEmissionView : UserControl
         await OpenDocumentAsync(row);
     }
 
+    private async void OnRowPrintClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Button { DataContext: ReceiptGridRow row })
+        {
+            return;
+        }
+
+        await PrintDocumentAsync(row);
+    }
+
     private async Task OpenDocumentAsync(ReceiptGridRow row)
     {
         try
         {
-            var documents = AppComposition.Services?.GetService<IPosDocumentService>();
-            var path = documents is null ? null : await documents.CreateA4FileAsync(row.Source.Id);
+            var path = await CreateDocumentPdfAsync(row.Source.Id);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Notice.Text = "Não foi possível abrir o documento.";
+                Notice.Text = "NÃ£o foi possÃ­vel abrir o documento.";
                 return;
             }
 
@@ -459,6 +469,39 @@ public partial class ReceiptEmissionView : UserControl
         {
             Notice.Text = exception.Message;
         }
+    }
+
+    private async Task PrintDocumentAsync(ReceiptGridRow row)
+    {
+        try
+        {
+            var path = await CreateDocumentPdfAsync(row.Source.Id);
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                Notice.Text = "NÃ£o foi possÃ­vel gerar o PDF.";
+                return;
+            }
+
+            await Task.Run(() =>
+            {
+                if (PdfWindowsPrint.PrintOrOpen(path) == false)
+                {
+                    throw new InvalidOperationException("NÃ£o foi possÃ­vel enviar o documento para a impressora.");
+                }
+            });
+
+            Notice.Text = "Documento enviado para a impressora.";
+        }
+        catch (Exception exception)
+        {
+            Notice.Text = exception.Message;
+        }
+    }
+
+    private static async Task<string?> CreateDocumentPdfAsync(Guid documentId)
+    {
+        var documents = AppComposition.Services?.GetService<IPosDocumentService>();
+        return documents is null ? null : await documents.CreateA4FileAsync(documentId);
     }
 
     private void OnCurrencyChanged(object? sender, SelectionChangedEventArgs e)
@@ -512,7 +555,7 @@ public partial class ReceiptEmissionView : UserControl
         var end = Period.EndDate;
         if (start > end)
         {
-            Notice.Text = "A data inicial não pode ser posterior à data final.";
+            Notice.Text = "A data inicial nï¿½o pode ser posterior ï¿½ data final.";
             return;
         }
 
@@ -614,28 +657,28 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (selected.Count == 0)
         {
-            return "É necessário seleccionar pelo menos um documento.";
+            return "ï¿½ necessï¿½rio seleccionar pelo menos um documento.";
         }
 
         if (selected.Any(item => item.IsDraft))
         {
-            return "Rascunhos não podem ser liquidados";
+            return "Rascunhos nï¿½o podem ser liquidados";
         }
 
         var paid = string.Join(",", selected.Where(item => item.Paid).Select(item => item.Number));
         if (paid.Length > 0)
         {
-            return $"Os seguintes documentos já foram pagos: {paid}";
+            return $"Os seguintes documentos jï¿½ foram pagos: {paid}";
         }
 
         if (selected.All(item => item.Type == "NC"))
         {
-            return "É necessário pelo menos uma fatura ou nota de débito para liquidar.";
+            return "ï¿½ necessï¿½rio pelo menos uma fatura ou nota de dï¿½bito para liquidar.";
         }
 
         if (ReceiptSettlement.Net(selected) < 0)
         {
-            return "O total das notas de crédito seleccionadas excede a dívida das faturas.";
+            return "O total das notas de crï¿½dito seleccionadas excede a dï¿½vida das faturas.";
         }
 
         if (selected.Select(item => item.CustomerId).Distinct().Count() > 1)
@@ -650,22 +693,22 @@ public partial class ReceiptEmissionView : UserControl
     {
         if (PaymentMethodBox.SelectedItem is not ReceiptPayOption)
         {
-            return "O método de pagamento é obrigatório.";
+            return "O mï¿½todo de pagamento ï¿½ obrigatï¿½rio.";
         }
 
         if (CurrencyBox.SelectedItem is not ReceiptPayOption)
         {
-            return "A moeda é obrigatória.";
+            return "A moeda ï¿½ obrigatï¿½ria.";
         }
 
         if (TryMoney(ExchangeRate.Text, out var rate) == false || rate <= 0)
         {
-            return "A taxa de câmbio tem de ser superior a zero.";
+            return "A taxa de cï¿½mbio tem de ser superior a zero.";
         }
 
         if (TryMoney(TotalPaid.Text, out var currencyAmount) == false || currencyAmount < 0)
         {
-            return "O montante em moeda não pode ser negativo.";
+            return "O montante em moeda nï¿½o pode ser negativo.";
         }
 
         var amount = DocumentLineCalculator.ReceiptAmount(_net, currencyAmount, rate);
@@ -676,12 +719,12 @@ public partial class ReceiptEmissionView : UserControl
 
         if (amount > _net)
         {
-            return "O valor do pagamento é superior ao total em dívida dos documentos seleccionados.";
+            return "O valor do pagamento ï¿½ superior ao total em dï¿½vida dos documentos seleccionados.";
         }
 
         if (DateTime.TryParseExact(PayDate.Text?.Trim(), "yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out _) == false)
         {
-            return "Data inválida.";
+            return "Data invï¿½lida.";
         }
 
         return null;

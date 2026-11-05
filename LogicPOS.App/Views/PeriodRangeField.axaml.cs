@@ -1,15 +1,25 @@
 using System.Globalization;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace LogicPOS.App.Views;
 
 /// <summary>
-/// Single "Período" filter control (qTrack-style): summary field + dual-month popup with Aplicar/Cancelar.
+/// "Período" filter: editable start/end fields + dual-month calendar popup.
 /// </summary>
 public partial class PeriodRangeField : UserControl
 {
     private static readonly CultureInfo Pt = CultureInfo.GetCultureInfo("pt-PT");
+    private static readonly string[] Formats =
+    [
+        "dd/MM/yyyy HH:mm",
+        "dd/MM/yyyy H:mm",
+        "dd/MM/yyyy",
+        "d/M/yyyy HH:mm",
+        "d/M/yyyy H:mm",
+        "d/M/yyyy"
+    ];
 
     private DateTime _start;
     private DateTime _end;
@@ -30,7 +40,7 @@ public partial class PeriodRangeField : UserControl
         RefreshSummary();
     }
 
-    /// <summary>Raised after Aplicar commits a new range (not on Cancelar / light-dismiss).</summary>
+    /// <summary>Raised after a committed range change (Aplicar or typed dates).</summary>
     public event EventHandler? PeriodChanged;
 
     /// <summary>When false, the built-in "Período" caption is hidden (host supplies its own label).</summary>
@@ -52,7 +62,7 @@ public partial class PeriodRangeField : UserControl
         set => SetRange(_start, value, raise: false);
     }
 
-    /// <summary>Inclusive calendar day of the period start (matches previous CalendarDatePicker.SelectedDate?.Date).</summary>
+    /// <summary>Inclusive calendar day of the period start.</summary>
     public DateTime StartDate => _start.Date;
 
     /// <summary>Inclusive calendar day of the period end.</summary>
@@ -63,6 +73,7 @@ public partial class PeriodRangeField : UserControl
         Normalize(ref start, ref end);
         if (_start == start && _end == end)
         {
+            RefreshSummary();
             if (raise)
             {
                 PeriodChanged?.Invoke(this, EventArgs.Empty);
@@ -89,7 +100,7 @@ public partial class PeriodRangeField : UserControl
         }
 
         OpenDraft();
-        PickerPopup.PlacementTarget = SummaryButton;
+        PickerPopup.PlacementTarget = CalendarButton;
         PickerPopup.IsOpen = true;
         _opened = true;
     }
@@ -111,6 +122,50 @@ public partial class PeriodRangeField : UserControl
         Normalize(ref _draftStart, ref _draftEnd);
         SetRange(_draftStart, _draftEnd, raise: true);
         PickerPopup.IsOpen = false;
+    }
+
+    private void OnStartLostFocus(object? sender, RoutedEventArgs e) => TryCommitTyped(StartBox, isStart: true, raise: true);
+
+    private void OnEndLostFocus(object? sender, RoutedEventArgs e) => TryCommitTyped(EndBox, isStart: false, raise: true);
+
+    private void OnStartKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            TryCommitTyped(StartBox, isStart: true, raise: true);
+            e.Handled = true;
+        }
+    }
+
+    private void OnEndKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            TryCommitTyped(EndBox, isStart: false, raise: true);
+            e.Handled = true;
+        }
+    }
+
+    private void OnDraftStartLostFocus(object? sender, RoutedEventArgs e) => TryCommitDraftTyped(DraftStartBox, isStart: true);
+
+    private void OnDraftEndLostFocus(object? sender, RoutedEventArgs e) => TryCommitDraftTyped(DraftEndBox, isStart: false);
+
+    private void OnDraftStartKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            TryCommitDraftTyped(DraftStartBox, isStart: true);
+            e.Handled = true;
+        }
+    }
+
+    private void OnDraftEndKeyUp(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            TryCommitDraftTyped(DraftEndBox, isStart: false);
+            e.Handled = true;
+        }
     }
 
     private void OnLeftCalendarChanged(object? sender, SelectionChangedEventArgs e)
@@ -153,6 +208,7 @@ public partial class PeriodRangeField : UserControl
         }
 
         CommitDraftTimes();
+        RefreshDraftBoxes();
         RefreshDaySpan();
     }
 
@@ -222,6 +278,7 @@ public partial class PeriodRangeField : UserControl
             RightCalendar.DisplayDate = rightMonth;
             StartTimePicker.SelectedTime = _draftStart.TimeOfDay;
             EndTimePicker.SelectedTime = _draftEnd.TimeOfDay;
+            RefreshDraftBoxes();
             RefreshDaySpan();
         }
         finally
@@ -232,8 +289,29 @@ public partial class PeriodRangeField : UserControl
 
     private void RefreshSummary()
     {
-        SummaryText.Text = FormatRange(_start, _end);
-        ToolTip.SetTip(SummaryButton, SummaryText.Text);
+        if (_syncing)
+        {
+            return;
+        }
+
+        _syncing = true;
+        try
+        {
+            StartBox.Text = FormatDateTime(_start);
+            EndBox.Text = FormatDateTime(_end);
+            ToolTip.SetTip(StartBox, StartBox.Text);
+            ToolTip.SetTip(EndBox, EndBox.Text);
+        }
+        finally
+        {
+            _syncing = false;
+        }
+    }
+
+    private void RefreshDraftBoxes()
+    {
+        DraftStartBox.Text = FormatDateTime(_draftStart);
+        DraftEndBox.Text = FormatDateTime(_draftEnd);
     }
 
     private void RefreshDaySpan()
@@ -247,6 +325,82 @@ public partial class PeriodRangeField : UserControl
         DaySpanLabel.Text = days == 1 ? "1 Dia" : $"{days} Dias";
     }
 
+    private void TryCommitTyped(TextBox box, bool isStart, bool raise)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        if (TryParseDateTime(box.Text, out var value) == false)
+        {
+            RefreshSummary();
+            return;
+        }
+
+        if (isStart == false && box.Text is { } text && LooksDateOnly(text))
+        {
+            value = value.Date.AddHours(23).AddMinutes(59);
+        }
+
+        var start = isStart ? value : _start;
+        var end = isStart ? _end : value;
+        SetRange(start, end, raise);
+    }
+
+    private void TryCommitDraftTyped(TextBox box, bool isStart)
+    {
+        if (_syncing || _opened == false)
+        {
+            return;
+        }
+
+        if (TryParseDateTime(box.Text, out var value) == false)
+        {
+            RefreshDraftBoxes();
+            return;
+        }
+
+        if (isStart == false && box.Text is { } text && LooksDateOnly(text))
+        {
+            value = value.Date.AddHours(23).AddMinutes(59);
+        }
+
+        if (isStart)
+        {
+            _draftStart = value;
+        }
+        else
+        {
+            _draftEnd = value;
+        }
+
+        Normalize(ref _draftStart, ref _draftEnd);
+        SyncDraftUi();
+    }
+
+    private static bool LooksDateOnly(string text)
+    {
+        var trimmed = text.Trim();
+        return trimmed.Contains(':') == false && trimmed.Contains(' ') == false;
+    }
+
+    private static bool TryParseDateTime(string? text, out DateTime value)
+    {
+        value = default;
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        return DateTime.TryParseExact(
+            text.Trim(),
+            Formats,
+            Pt,
+            DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.AssumeLocal,
+            out value);
+    }
+
     private static void Normalize(ref DateTime start, ref DateTime end)
     {
         if (end < start)
@@ -258,6 +412,6 @@ public partial class PeriodRangeField : UserControl
     private static DateTime Combine(DateTime date, TimeSpan time)
         => date.Date.Add(time);
 
-    private static string FormatRange(DateTime start, DateTime end)
-        => start.ToString("dd/MM/yyyy HH:mm", Pt) + " - " + end.ToString("dd/MM/yyyy HH:mm", Pt);
+    private static string FormatDateTime(DateTime value)
+        => value.ToString("dd/MM/yyyy HH:mm", Pt);
 }

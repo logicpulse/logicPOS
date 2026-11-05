@@ -1,26 +1,50 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              x:Class="LogicPOS.App.Views.PeriodRangeField"
              Classes="bo_doc_date_field bo_period_field">
     <StackPanel Classes="bo_doc_date_field">
         <TextBlock x:Name="Caption" Classes="bo_doc_label" Text="Período" />
-        <Button x:Name="SummaryButton"
-                Classes="bo_period_summary"
-                Foreground="#000000"
-                Click="OnSummaryClick"
-                HorizontalAlignment="Stretch"
-                HorizontalContentAlignment="Left">
-            <TextBlock x:Name="SummaryText"
-                       Classes="bo_period_summary_text"
-                       Foreground="#000000"
-                       TextWrapping="NoWrap"
-                       TextTrimming="CharacterEllipsis" />
-        </Button>
+        <DockPanel Classes="bo_period_summary_row">
+            <Button x:Name="CalendarButton"
+                    Classes="bo_listing_icon_button bo_period_calendar_button"
+                    DockPanel.Dock="Right"
+                    Click="OnSummaryClick"
+                    ToolTip.Tip="Escolher no calendário">
+                <svg:Svg Classes="bo_listing_icon" Path="avares://LogicPOS.App/Assets/Images/Documents/botao_calendario_b.svg" />
+            </Button>
+            <Grid Classes="bo_period_summary_inputs" ColumnDefinitions="*,Auto,*" ColumnSpacing="6">
+                <TextBox x:Name="StartBox"
+                         Classes="bo_period_date_box"
+                         PlaceholderText="dd/MM/yyyy HH:mm"
+                         LostFocus="OnStartLostFocus"
+                         KeyUp="OnStartKeyUp" />
+                <TextBlock Grid.Column="1"
+                           Classes="bo_period_range_sep"
+                           Text="–"
+                           VerticalAlignment="Center" />
+                <TextBox x:Name="EndBox"
+                         Grid.Column="2"
+                         Classes="bo_period_date_box"
+                         PlaceholderText="dd/MM/yyyy HH:mm"
+                         LostFocus="OnEndLostFocus"
+                         KeyUp="OnEndKeyUp" />
+            </Grid>
+        </DockPanel>
         <Popup x:Name="PickerPopup"
                Placement="Bottom"
                IsLightDismissEnabled="True"
                Closed="OnPopupClosed">
             <Border Classes="bo_period_popup">
+                <Border.Resources>
+                    <x:Double x:Key="CalendarFontSize">13</x:Double>
+                    <x:Double x:Key="CalendarDayButtonFontSize">12</x:Double>
+                    <x:Double x:Key="CalendarWeekNumberFontSize">11</x:Double>
+                    <x:Double x:Key="CalendarButtonMinWidth">28</x:Double>
+                    <x:Double x:Key="CalendarButtonMinHeight">28</x:Double>
+                    <x:Double x:Key="TimePickerThemeMinWidth">140</x:Double>
+                    <x:Double x:Key="TimePickerThemeMaxWidth">220</x:Double>
+                </Border.Resources>
                 <DockPanel>
                     <Border Classes="bo_period_popup_footer" DockPanel.Dock="Bottom">
                         <DockPanel>
@@ -29,12 +53,31 @@
                                        DockPanel.Dock="Left"
                                        VerticalAlignment="Center" />
                             <StackPanel Classes="bo_period_popup_actions" DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
-                                <Button Classes="bo_period_popup_button" Content="Cancelar" Click="OnCancelClick" />
-                                <Button Classes="bo_period_popup_button bo_period_popup_apply" Content="Aplicar" Click="OnApplyClick" />
+                                <Button Classes="bo_doc_page_button bo_period_popup_button" Content="Cancelar" Click="OnCancelClick" />
+                                <Button Classes="bo_doc_filter bo_period_popup_button bo_period_popup_apply" Content="Aplicar" Click="OnApplyClick" />
                             </StackPanel>
                         </DockPanel>
                     </Border>
                     <StackPanel Classes="bo_period_popup_body">
+                        <TextBlock Classes="bo_period_popup_title" Text="Seleccionar período" />
+                        <Grid Classes="bo_period_draft_inputs" ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <StackPanel>
+                                <TextBlock Classes="bo_doc_label" Text="Início" />
+                                <TextBox x:Name="DraftStartBox"
+                                         Classes="bo_period_date_box"
+                                         PlaceholderText="dd/MM/yyyy HH:mm"
+                                         LostFocus="OnDraftStartLostFocus"
+                                         KeyUp="OnDraftStartKeyUp" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Classes="bo_doc_label" Text="Fim" />
+                                <TextBox x:Name="DraftEndBox"
+                                         Classes="bo_period_date_box"
+                                         PlaceholderText="dd/MM/yyyy HH:mm"
+                                         LostFocus="OnDraftEndLostFocus"
+                                         KeyUp="OnDraftEndKeyUp" />
+                            </StackPanel>
+                        </Grid>
                         <StackPanel Classes="bo_period_calendars" Orientation="Horizontal">
                             <Calendar x:Name="LeftCalendar"
                                       Classes="bo_period_calendar"

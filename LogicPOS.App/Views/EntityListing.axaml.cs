@@ -351,27 +351,63 @@ public partial class EntityListing : UserControl
 
     private async Task OpenListedDocumentAsync(ListingRow row)
     {
+        var path = await ResolveListedDocumentPdfAsync(row);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        Notice.Text = string.Empty;
+        if (OfficeSurface.Find(this) is { } office)
+        {
+            var title = string.IsNullOrWhiteSpace(row["Number"]) ? row["RefNo"] : row["Number"];
+            await office.ShowPdfAsync(path, title);
+        }
+    }
+
+    private async Task PrintListedDocumentAsync(ListingRow row)
+    {
+        var path = await ResolveListedDocumentPdfAsync(row);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        try
+        {
+            await Task.Run(() =>
+            {
+                if (PdfWindowsPrint.PrintOrOpen(path) == false)
+                {
+                    throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
+                }
+            });
+
+            Notice.Text = "Documento enviado para a impressora.";
+        }
+        catch (Exception exception)
+        {
+            Notice.Text = exception.Message;
+        }
+    }
+
+    private async Task<string?> ResolveListedDocumentPdfAsync(ListingRow row)
+    {
         var service = Service;
         if (service is null || row.Id == Guid.Empty)
         {
             Notice.Text = "Selecione o documento.";
-            return;
+            return null;
         }
 
         var result = await service.RunActionAsync("view-receipt", row.Id, null);
         if (result.Succeeded && string.IsNullOrWhiteSpace(result.Message) == false && File.Exists(result.Message))
         {
-            Notice.Text = string.Empty;
-            if (OfficeSurface.Find(this) is { } office)
-            {
-                var title = string.IsNullOrWhiteSpace(row["Number"]) ? row["RefNo"] : row["Number"];
-                await office.ShowPdfAsync(result.Message, title);
-            }
-
-            return;
+            return result.Message;
         }
 
         Notice.Text = result.Error ?? "Não foi possível abrir o documento.";
+        return null;
     }
 
     private Task ReloadAsync() => _load.RunAsync(ReloadCoreAsync);
@@ -511,6 +547,7 @@ public partial class EntityListing : UserControl
         if (ShowsDocument)
         {
             Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_ver_b.svg", row => _ = OpenListedDocumentAsync(row), _ => true));
+            Grid.Columns.Add(ActionColumn("avares://LogicPOS.App/Assets/Images/Documents/botao_imprimir_b.svg", row => _ = PrintListedDocumentAsync(row), _ => true));
         }
 
         if (snapshot.CanEdit)
