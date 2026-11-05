@@ -135,20 +135,34 @@ public sealed class PosLayout
         const int ticketGap = 16;
         const int arrowGap = 12;
         const int arrowRowGap = 8;
+        // Tall/narrow windows: stack the bottom toolbar under the ticket pad so side buttons stay clear.
+        var stackToolbar = ScreenHeight > ScreenWidth;
+
+        if (stackToolbar)
+        {
+            // Keep classic columns but shrink the pad so list + pad + toolbar fit above each other.
+            TicketButtonWidth = Math.Max(48, Math.Min(TicketButtonWidth, (ScreenWidth / 2 - Margin * 2) / TicketColumns));
+            TicketButtonHeight = Math.Max(40, Math.Min(TicketButtonHeight, TicketButtonWidth));
+        }
+
         var ticketColumn = TicketButtonWidth * TicketColumns;
         var columnRight = ScreenWidth - ticketColumn - (Margin * 2);
         var menuRight = columnRight - ticketGap;
+        var toolbarBand = ToolbarButtonHeight + (Margin * 2);
+        var padBand = (TicketButtonHeight * TicketRows) + Margin;
+        // When stacked, content must clear pad + toolbar; side-by-side only clears the toolbar row.
+        var bottomReserve = stackToolbar ? padBand + toolbarBand : toolbarBand;
         var usefulWidth = Math.Max(bucket.BaseWidth, menuRight - Margin);
         var usefulHeight = Math.Max(
             bucket.BaseHeight,
-            ScreenHeight - (StatusBarHeight * 2) - Margin - StatusBarHeight - (ToolbarButtonHeight + (Margin * 2)));
+            ScreenHeight - (StatusBarHeight * 2) - Margin - StatusBarHeight - bottomReserve);
         var guessedColumns = Math.Max(1, usefulWidth / bucket.BaseWidth);
         var guessedRows = Math.Max(1, usefulHeight / bucket.BaseHeight);
         ButtonWidth = bucket.BaseWidth + ((usefulWidth - (bucket.BaseWidth * guessedColumns)) / guessedColumns);
         ButtonHeight = bucket.BaseHeight + ((usefulHeight - (bucket.BaseHeight * guessedRows)) / guessedRows);
         var gridBottom = (StatusBarHeight * 2) + Margin + (ButtonHeight * guessedRows);
-        var toolbarTop = ScreenHeight - ToolbarButtonHeight - (Margin * 2);
-        var overflow = gridBottom + arrowRowGap + StatusBarHeight - toolbarTop;
+        var contentBottom = ScreenHeight - bottomReserve;
+        var overflow = gridBottom + arrowRowGap + StatusBarHeight - contentBottom;
         if (overflow > 0 && guessedRows > 0)
         {
             ButtonHeight -= (overflow + guessedRows - 1) / guessedRows;
@@ -203,20 +217,22 @@ public sealed class PosLayout
         ArticleNextY = FamilyNextY;
 
         ToolbarX = 0;
-        ToolbarY = ScreenHeight - ToolbarButtonHeight - (Margin * 2);
-        ToolbarWidth = ScreenWidth - ticketColumn - (Margin * 2);
-        ToolbarHeight = ToolbarButtonHeight + (Margin * 2);
+        ToolbarY = ScreenHeight - toolbarBand;
+        ToolbarWidth = stackToolbar ? ScreenWidth : ScreenWidth - ticketColumn - (Margin * 2);
+        ToolbarHeight = toolbarBand;
+
+        TicketPadX = columnRight;
+        TicketPadY = stackToolbar
+            ? ToolbarY - padBand
+            : ScreenHeight - padBand;
+        TicketPadWidth = (TicketButtonWidth * TicketColumns) + (Margin * 2);
+        TicketPadHeight = padBand;
 
         TicketListX = columnRight;
         TicketListY = LogoY + LogoHeight + Margin;
         TicketListWidth = ticketColumn + (Margin * 2);
-        TicketListHeight = ScreenHeight - ((TicketButtonHeight * TicketRows) + Margin) - TicketListY;
+        TicketListHeight = Math.Max(80, TicketPadY - TicketListY);
         AssignTicketColumns(ticketColumn);
-
-        TicketPadX = columnRight;
-        TicketPadY = ScreenHeight - (TicketButtonHeight * TicketRows) - Margin;
-        TicketPadWidth = (TicketButtonWidth * TicketColumns) + (Margin * 2);
-        TicketPadHeight = (TicketButtonHeight * TicketRows) + Margin;
     }
 
     private void BuildPortrait((int BaseWidth, int BaseHeight, int ToolbarWidth, int ToolbarHeight, int Icon, int TicketFont) bucket)

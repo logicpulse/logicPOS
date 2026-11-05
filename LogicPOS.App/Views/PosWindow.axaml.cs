@@ -796,12 +796,16 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             var x = layout.ToolbarX + PosLayout.Margin;
             var y = layout.ToolbarY + PosLayout.Margin;
+            // Fit all toolbar buttons inside ToolbarWidth — never spill onto the ticket pad.
+            var available = Math.Max(buttons.Length, layout.ToolbarWidth - (PosLayout.Margin * 2));
+            var buttonWidth = Math.Min(layout.ToolbarButtonWidth, available / buttons.Length);
+            var iconSize = Math.Min(layout.ToolbarIconSize, Math.Max(16, buttonWidth - 12));
             foreach (var item in buttons)
             {
-                var button = CreateToolbarButton(item.Text, item.Icon, item.Style, item.Click, layout.ToolbarIconSize);
-                Place(button, x, y, layout.ToolbarButtonWidth, layout.ToolbarButtonHeight, inset: 2);
+                var button = CreateToolbarButton(item.Text, item.Icon, item.Style, item.Click, iconSize);
+                Place(button, x, y, buttonWidth, layout.ToolbarButtonHeight, inset: 2);
                 _toolbarButtons[item.Text] = button;
-                x += layout.ToolbarButtonWidth;
+                x += buttonWidth;
             }
         }
 
