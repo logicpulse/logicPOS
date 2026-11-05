@@ -28,17 +28,28 @@ internal static class PdfWindowsPrint
     public static bool PrintWithDialog(string pdfPath)
     {
         using var session = CreateSession(pdfPath, printerName: null);
-        using var dialog = new System.Windows.Forms.PrintDialog
+        try
         {
-            Document = session.Document,
-            UseEXDialog = true,
-            AllowSomePages = true,
-            AllowSelection = false
-        };
+            using var dialog = new System.Windows.Forms.PrintDialog
+            {
+                Document = session.Document,
+                UseEXDialog = true,
+                AllowSomePages = true,
+                AllowSelection = false
+            };
 
-        if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+            {
+                return false;
+            }
+        }
+        catch (FileNotFoundException)
         {
-            return false;
+            // Self-contained installs may omit Windows Forms — print to the default printer.
+        }
+        catch (TypeLoadException)
+        {
+            // Same fallback when the WinForms type is unavailable at runtime.
         }
 
         session.Document.Print();
