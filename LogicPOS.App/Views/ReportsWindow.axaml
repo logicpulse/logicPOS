@@ -3,128 +3,148 @@
              xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.ReportsWindow">
     <Panel>
-        <Border x:Name="ReportsFrame" Classes="login_alert_frame bo_entity_editor">
+        <Border x:Name="ReportsFrame" Classes="login_alert_frame bo_entity_editor bo_reports_dialog">
             <DockPanel Classes="login_alert_inner">
-                <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                    <StackPanel Classes="login_alert_title_row">
-                        <Image Classes="login_alert_title_icon"
-                               Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
-                        <TextBlock Classes="login_alert_title" Text="Relatórios" />
-                    </StackPanel>
+                <Border Classes="login_alert_titlebar pos_pay_titlebar" DockPanel.Dock="Top">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Classes="login_alert_title_row">
+                            <Image Classes="login_alert_title_icon"
+                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
+                            <TextBlock Classes="login_alert_title" Text="Relatórios" />
+                        </StackPanel>
+                        <Button Grid.Column="1" Classes="bo_window_button" Click="OnCloseClick" ToolTip.Tip="Fechar">
+                            <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                        </Button>
+                    </Grid>
                 </Border>
-                <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
                     <DockPanel>
-                        <TextBlock x:Name="Notice" Classes="bo_entity_notice" VerticalAlignment="Center" />
-                        <StackPanel Classes="login_alert_action_buttons">
-                            <Button Classes="login_alert_action" Click="OnGenerateClick">
+                        <UniformGrid Classes="pos_pay_actions" Columns="2" Rows="1" DockPanel.Dock="Right"
+                                     Width="220">
+                            <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnGenerateClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Gerar" />
                                 </StackPanel>
                             </Button>
-                            <Button Classes="login_alert_action" Click="OnCloseClick">
+                            <Button Classes="login_alert_action pos_pay_action" Click="OnCloseClick">
                                 <StackPanel Classes="login_alert_action_content">
                                     <Image Classes="login_alert_action_icon"
                                            Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                     <TextBlock Classes="login_alert_action_text" Text="Fechar" />
                                 </StackPanel>
                             </Button>
-                        </StackPanel>
+                        </UniformGrid>
+                        <TextBlock x:Name="Notice" Classes="bo_reports_notice" VerticalAlignment="Center" />
                     </DockPanel>
                 </Border>
-                <DockPanel Classes="bo_new_doc_body">
-                    <StackPanel x:Name="TabBar" Classes="bo_entity_tab_headers" DockPanel.Dock="Top" />
-                    <ScrollViewer>
-                        <StackPanel x:Name="Groups" />
-                    </ScrollViewer>
-                </DockPanel>
+                <Border Classes="bo_reports_body">
+                    <DockPanel>
+                        <Border Classes="bo_reports_tabs" DockPanel.Dock="Top">
+                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                <StackPanel x:Name="TabBar" Classes="bo_entity_tab_headers bo_reports_tab_headers" />
+                            </ScrollViewer>
+                        </Border>
+                        <ScrollViewer Classes="bo_reports_scroll">
+                            <StackPanel x:Name="Groups" Classes="bo_reports_list" />
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
             </DockPanel>
         </Border>
 
-        <Panel x:Name="FiltersOverlay" Classes="login_alert_overlay" ZIndex="10" IsVisible="False">
-            <Border x:Name="FiltersFrame" Classes="login_alert_frame bo_entity_editor">
+        <Panel x:Name="FiltersOverlay" Classes="login_alert_overlay pos_pay_scrim" ZIndex="10" IsVisible="False">
+            <Border x:Name="FiltersFrame" Classes="login_alert_frame bo_entity_editor bo_reports_filters">
                 <DockPanel Classes="login_alert_inner">
-                    <Border Classes="login_alert_titlebar" DockPanel.Dock="Top">
-                        <StackPanel Classes="login_alert_title_row">
-                            <Image Classes="login_alert_title_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
-                            <TextBlock x:Name="FiltersTitle" Classes="login_alert_title" Text="Filtros" />
-                        </StackPanel>
+                    <Border Classes="login_alert_titlebar pos_pay_titlebar" DockPanel.Dock="Top">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Classes="login_alert_title_row">
+                                <Image Classes="login_alert_title_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_window_documents.png" />
+                                <TextBlock x:Name="FiltersTitle" Classes="login_alert_title" Text="Filtros" />
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bo_window_button" Click="OnFiltersCancelClick" ToolTip.Tip="Fechar">
+                                <TextBlock Text="✕" FontSize="14" Foreground="#FFFFFF" VerticalAlignment="Center" />
+                            </Button>
+                        </Grid>
                     </Border>
-                    <Border Classes="login_alert_actions" DockPanel.Dock="Bottom">
+                    <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
                         <DockPanel>
-                            <TextBlock x:Name="FiltersNotice" Classes="bo_entity_notice" VerticalAlignment="Center" />
-                            <StackPanel Classes="login_alert_action_buttons">
-                                <Button Classes="login_alert_action" Click="OnFiltersGenerateClick">
+                            <UniformGrid Classes="pos_pay_actions" Columns="2" Rows="1" DockPanel.Dock="Right"
+                                         Width="240">
+                                <Button Classes="login_alert_action pos_pay_action pos_pay_action_ok" Click="OnFiltersGenerateClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_ok.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Gerar" />
                                     </StackPanel>
                                 </Button>
-                                <Button Classes="login_alert_action" Click="OnFiltersCancelClick">
+                                <Button Classes="login_alert_action pos_pay_action" Click="OnFiltersCancelClick">
                                     <StackPanel Classes="login_alert_action_content">
                                         <Image Classes="login_alert_action_icon"
                                                Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
                                         <TextBlock Classes="login_alert_action_text" Text="Cancelar" />
                                     </StackPanel>
                                 </Button>
-                            </StackPanel>
+                            </UniformGrid>
+                            <TextBlock x:Name="FiltersNotice" Classes="bo_reports_notice" VerticalAlignment="Center" />
                         </DockPanel>
                     </Border>
-                    <StackPanel x:Name="Filters" Classes="bo_new_doc_fields" Spacing="8" Margin="16">
-                        <TextBlock x:Name="FiltersReportName" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
-                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                            <StackPanel x:Name="PeriodPanel" Grid.ColumnSpan="2">
-                                <views:PeriodRangeField x:Name="Period" />
-                            </StackPanel>
-                            <StackPanel x:Name="DocumentTypePanel" Grid.Column="2" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
-                                <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="TerminalPanel" Grid.Column="3" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Terminal" />
-                                <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                        </Grid>
-                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                            <StackPanel x:Name="CustomerPanel" IsVisible="False">
-                                <TextBlock x:Name="CustomerCaption" Classes="bo_new_doc_caption" Text="Cliente" />
-                                <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="VatPanel" Grid.Column="1" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Taxa IVA" />
-                                <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="WarehousePanel" Grid.Column="2" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Armazém" />
-                                <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
-                                <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                        </Grid>
-                        <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                            <StackPanel x:Name="FamilyPanel" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Família" />
-                                <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="SubfamilyPanel" Grid.Column="1" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="Subfamília" />
-                                <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo" />
-                            </StackPanel>
-                            <StackPanel x:Name="SerialPanel" Grid.Column="2" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="N.º de série" />
-                                <TextBox x:Name="SerialBox" Classes="bo_new_doc_text" />
-                            </StackPanel>
-                            <StackPanel x:Name="DocumentNumberPanel" Grid.Column="3" IsVisible="False">
-                                <TextBlock Classes="bo_new_doc_caption" Text="N.º documento" />
-                                <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text" />
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
+                    <Border Classes="bo_reports_body">
+                        <StackPanel x:Name="Filters" Classes="bo_new_doc_fields bo_reports_filters_body" Spacing="8">
+                            <TextBlock x:Name="FiltersReportName" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
+                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                                <StackPanel x:Name="PeriodPanel" Grid.ColumnSpan="2">
+                                    <views:PeriodRangeField x:Name="Period" />
+                                </StackPanel>
+                                <StackPanel x:Name="DocumentTypePanel" Grid.Column="2" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
+                                    <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="TerminalPanel" Grid.Column="3" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Terminal" />
+                                    <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                                <StackPanel x:Name="CustomerPanel" IsVisible="False">
+                                    <TextBlock x:Name="CustomerCaption" Classes="bo_new_doc_caption" Text="Cliente" />
+                                    <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="VatPanel" Grid.Column="1" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Taxa IVA" />
+                                    <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="WarehousePanel" Grid.Column="2" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Armazém" />
+                                    <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
+                                    <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                                <StackPanel x:Name="FamilyPanel" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Família" />
+                                    <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="SubfamilyPanel" Grid.Column="1" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="Subfamília" />
+                                    <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo" />
+                                </StackPanel>
+                                <StackPanel x:Name="SerialPanel" Grid.Column="2" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="N.º de série" />
+                                    <TextBox x:Name="SerialBox" Classes="bo_new_doc_text" />
+                                </StackPanel>
+                                <StackPanel x:Name="DocumentNumberPanel" Grid.Column="3" IsVisible="False">
+                                    <TextBlock Classes="bo_new_doc_caption" Text="N.º documento" />
+                                    <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text" />
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                 </DockPanel>
             </Border>
         </Panel>

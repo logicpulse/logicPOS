@@ -88,7 +88,7 @@ public partial class ReportsWindow : UserControl
             var tab = name;
             var button = new Button
             {
-                Classes = { "bo_entity_tab" },
+                Classes = { "bo_entity_tab", "bo_report_tab" },
                 Content = tab
             };
             if (tab == _group)
