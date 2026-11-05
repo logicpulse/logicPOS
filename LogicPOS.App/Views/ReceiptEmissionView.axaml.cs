@@ -62,6 +62,16 @@ public partial class ReceiptEmissionView : UserControl
             LayoutUpdated += OnReceiptLayoutUpdated;
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnReceiptLayoutUpdated;
+        Period.PeriodChanged += (_, _) =>
+        {
+            if (_datesReady == false)
+            {
+                return;
+            }
+
+            _page = 1;
+            _ = LoadAsync();
+        };
     }
 
     public async Task ReloadAsync()
@@ -551,11 +561,11 @@ public partial class ReceiptEmissionView : UserControl
 
     private async Task LoadCoreAsync()
     {
-        var start = Period.StartDate;
-        var end = Period.EndDate;
+        var start = Period.Start;
+        var end = Period.End;
         if (start > end)
         {
-            Notice.Text = "A data inicial n�o pode ser posterior � data final.";
+            Notice.Text = "A data inicial não pode ser posterior à data final.";
             return;
         }
 

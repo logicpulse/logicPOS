@@ -97,6 +97,13 @@ public partial class StockManagementView : UserControl
         Period.SetRange(
             DateTime.Today.AddMonths(-1),
             DateTime.Today.AddDays(1).AddSeconds(-1));
+        Period.PeriodChanged += (_, _) =>
+        {
+            if (Period.IsVisible)
+            {
+                _ = LoadAsync(resetPage: true);
+            }
+        };
         ApplyToolbar();
         TouchFields.Attach(this);
         EditorOverlay.PropertyChanged += (_, args) =>
@@ -132,7 +139,7 @@ public partial class StockManagementView : UserControl
         var service = Service;
         if (service is null)
         {
-            Notice.Text = "Serviço de stocks indisponível.";
+            Notice.Text = "Serviï¿½o de stocks indisponï¿½vel.";
             return;
         }
 
@@ -152,28 +159,28 @@ public partial class StockManagementView : UserControl
                 {
                     var page = await service.GetArticlesAsync(request);
                     _rows.AddRange(page.Items);
-                    CountLabel.Text = $"{page.TotalCount} artigo(s) · página {page.Page}/{page.TotalPages}";
+                    CountLabel.Text = $"{page.TotalCount} artigo(s) ï¿½ pï¿½gina {page.Page}/{page.TotalPages}";
                     break;
                 }
                 case StockTab.Movements:
                 {
                     var page = await service.GetMovementsAsync(request);
                     _rows.AddRange(page.Items);
-                    CountLabel.Text = $"{page.TotalCount} movimento(s) · página {page.Page}/{page.TotalPages}";
+                    CountLabel.Text = $"{page.TotalCount} movimento(s) ï¿½ pï¿½gina {page.Page}/{page.TotalPages}";
                     break;
                 }
                 case StockTab.History:
                 {
                     var page = await service.GetHistoryAsync(request);
                     _rows.AddRange(page.Items);
-                    CountLabel.Text = $"{page.TotalCount} série(s) · página {page.Page}/{page.TotalPages}";
+                    CountLabel.Text = $"{page.TotalCount} sï¿½rie(s) ï¿½ pï¿½gina {page.Page}/{page.TotalPages}";
                     break;
                 }
                 case StockTab.Warehouse:
                 {
                     var page = await service.GetWarehouseArticlesAsync(request);
                     _rows.AddRange(page.Items);
-                    CountLabel.Text = $"{page.TotalCount} posição(ões) · página {page.Page}/{page.TotalPages}";
+                    CountLabel.Text = $"{page.TotalCount} posiï¿½ï¿½o(ï¿½es) ï¿½ pï¿½gina {page.Page}/{page.TotalPages}";
                     break;
                 }
             }
@@ -204,10 +211,10 @@ public partial class StockManagementView : UserControl
         switch (_tab)
         {
             case StockTab.Articles:
-                AddText("Code", "Código", 120);
-                AddText("Designation", "Designação", 220, star: true);
+                AddText("Code", "Cï¿½digo", 120);
+                AddText("Designation", "Designaï¿½ï¿½o", 220, star: true);
                 AddText("TotalStock", "Total Stock", 120);
-                AddText("MinimumStock", "Stock mínimo", 120);
+                AddText("MinimumStock", "Stock mï¿½nimo", 120);
                 AddText("Unit", "Unidade de medida", 140);
                 AddText("UpdatedAt", "Atualizado em", 150);
                 AddEditAction();
@@ -216,7 +223,7 @@ public partial class StockManagementView : UserControl
                 AddText("Movement", "Movimento", 110);
                 AddText("Date", "Data", 110);
                 AddText("Customer", "Entidade", 160);
-                AddText("DocumentNumber", "Número do Doc.", 150);
+                AddText("DocumentNumber", "Nï¿½mero do Doc.", 150);
                 AddText("Article", "Artigo", 200, star: true);
                 AddText("Quantity", "Quantidade", 110);
                 AddText("UpdatedAt", "Atualizado em", 150);
@@ -225,27 +232,27 @@ public partial class StockManagementView : UserControl
                 break;
             case StockTab.History:
                 AddLabelSelectColumn();
-                AddText("Article", "Designação", 200, star: true);
-                AddText("SerialNumber", "Número de série", 150);
+                AddText("Article", "Designaï¿½ï¿½o", 200, star: true);
+                AddText("SerialNumber", "Nï¿½mero de sï¿½rie", 150);
                 AddText("SoldText", "Vendido", 90);
                 AddText("Status", "Estado", 110);
                 AddText("ComposedText", "Artigo Composto", 130);
                 AddText("PurchaseDate", "Data de Compra", 130);
                 AddText("Supplier", "Fornecedor", 150);
-                AddText("PurchasePrice", "Preço Compra", 120);
+                AddText("PurchasePrice", "Preï¿½o Compra", 120);
                 AddText("OriginDocument", "Documento Origem", 150);
                 AddText("SaleDocument", "Documento Venda", 150);
-                AddText("Warehouse", "Armazém", 130);
-                AddText("Location", "Localização", 130);
+                AddText("Warehouse", "Armazï¿½m", 130);
+                AddText("Location", "Localizaï¿½ï¿½o", 130);
                 AddText("UpdatedAt", "Atualizado em", 150);
                 AddEditAction();
                 AddDeleteAction();
                 break;
             case StockTab.Warehouse:
-                AddText("Warehouse", "Armazém", 140);
-                AddText("Location", "Localização", 140);
-                AddText("Article", "Designação", 220, star: true);
-                AddText("SerialNumber", "Número de série", 150);
+                AddText("Warehouse", "Armazï¿½m", 140);
+                AddText("Location", "Localizaï¿½ï¿½o", 140);
+                AddText("Article", "Designaï¿½ï¿½o", 220, star: true);
+                AddText("SerialNumber", "Nï¿½mero de sï¿½rie", 150);
                 AddText("Quantity", "Quantidade", 110);
                 AddText("UpdatedAt", "Atualizado em", 150);
                 AddEditAction();
@@ -590,7 +597,7 @@ public partial class StockManagementView : UserControl
             case StockTab.Movements when SelectedMovement() is { } movement:
                 if (movement.CanEdit == false)
                 {
-                    Notice.Text = "Este movimento está ligado a um documento e não pode ser editado.";
+                    Notice.Text = "Este movimento estï¿½ ligado a um documento e nï¿½o pode ser editado.";
                     return;
                 }
 
@@ -599,7 +606,7 @@ public partial class StockManagementView : UserControl
             case StockTab.History when SelectedHistory() is { } history:
                 if (string.IsNullOrWhiteSpace(history.SerialNumber))
                 {
-                    Notice.Text = "Selecione um número de série.";
+                    Notice.Text = "Selecione um nï¿½mero de sï¿½rie.";
                     return;
                 }
 
@@ -624,14 +631,14 @@ public partial class StockManagementView : UserControl
                         var service = Service;
                         if (service is null)
                         {
-                            Fail("Serviço de stocks indisponível.");
+                            Fail("Serviï¿½o de stocks indisponï¿½vel.");
                             return;
                         }
 
                         var result = await service.DeleteMovementAsync(movement.Id);
                         if (result.Succeeded == false)
                         {
-                            Fail(result.Error ?? "Não foi possível apagar o movimento.");
+                            Fail(result.Error ?? "Nï¿½o foi possï¿½vel apagar o movimento.");
                             return;
                         }
 
@@ -651,12 +658,12 @@ public partial class StockManagementView : UserControl
         {
             if (history.IsSold)
             {
-                Fail("Não é possível apagar um número de série vendido.");
+                Fail("Nï¿½o ï¿½ possï¿½vel apagar um nï¿½mero de sï¿½rie vendido.");
                 return;
             }
 
             AskConfirm(
-                $"Confirma que deseja eliminar o número de série {history.SerialNumber}?",
+                $"Confirma que deseja eliminar o nï¿½mero de sï¿½rie {history.SerialNumber}?",
                 async () =>
                 {
                     try
@@ -664,18 +671,18 @@ public partial class StockManagementView : UserControl
                         var service = Service;
                         if (service is null)
                         {
-                            Fail("Serviço de stocks indisponível.");
+                            Fail("Serviï¿½o de stocks indisponï¿½vel.");
                             return;
                         }
 
                         var result = await service.DeleteSerialAsync(history.WarehouseArticleId);
                         if (result.Succeeded == false)
                         {
-                            Fail(result.Error ?? "Não foi possível apagar o número de série.");
+                            Fail(result.Error ?? "Nï¿½o foi possï¿½vel apagar o nï¿½mero de sï¿½rie.");
                             return;
                         }
 
-                        Toast.Success(this, result.Message ?? "Número de série apagado.");
+                        Toast.Success(this, result.Message ?? "Nï¿½mero de sï¿½rie apagado.");
                         Notice.Text = string.Empty;
                         await LoadAsync(resetPage: false);
                     }
@@ -750,7 +757,7 @@ public partial class StockManagementView : UserControl
             var path = await service.SaveExternalDocumentAsync(movementId.Value);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Fail("Este registo não tem documento de origem anexado.");
+                Fail("Este registo nï¿½o tem documento de origem anexado.");
                 return;
             }
 
@@ -779,7 +786,7 @@ public partial class StockManagementView : UserControl
 
         if (string.IsNullOrWhiteSpace(number))
         {
-            Notice.Text = "Este registo não tem documento de venda.";
+            Notice.Text = "Este registo nï¿½o tem documento de venda.";
             return;
         }
 
@@ -788,7 +795,7 @@ public partial class StockManagementView : UserControl
             var path = await service.SaveSaleDocumentPdfAsync(number);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Fail("Não foi possível abrir o documento de venda.");
+                Fail("Nï¿½o foi possï¿½vel abrir o documento de venda.");
                 return;
             }
 
@@ -811,7 +818,7 @@ public partial class StockManagementView : UserControl
 
         if (service is null || ids.Count == 0)
         {
-            Notice.Text = "Selecione um número de série.";
+            Notice.Text = "Selecione um nï¿½mero de sï¿½rie.";
             return;
         }
 
@@ -820,7 +827,7 @@ public partial class StockManagementView : UserControl
             var path = await service.GenerateBarcodeLabelsAsync(ids);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Fail("Não foi possível gerar a etiqueta.");
+                Fail("Nï¿½o foi possï¿½vel gerar a etiqueta.");
                 return;
             }
 
@@ -881,25 +888,25 @@ public partial class StockManagementView : UserControl
 
         if (locations.Count == 0)
         {
-            Fail("Não há localizações de armazém.");
+            Fail("Nï¿½o hï¿½ localizaï¿½ï¿½es de armazï¿½m.");
             return;
         }
 
         _editor = EditorMode.ChangeLocation;
         _editId = warehouseArticleId;
-        EditorTitle.Text = "Alterar localização do artigo";
+        EditorTitle.Text = "Alterar localizaï¿½ï¿½o do artigo";
         EditorHost.Children.Clear();
         if (_tab == StockTab.History && SelectedHistory() is { } historyRow)
         {
             EditorHost.Children.Add(ReadOnly("Artigo", historyRow.Article));
-            EditorHost.Children.Add(ReadOnly("Número de série", historyRow.SerialNumber));
-            EditorHost.Children.Add(ReadOnly("Armazém atual", historyRow.Warehouse));
+            EditorHost.Children.Add(ReadOnly("Nï¿½mero de sï¿½rie", historyRow.SerialNumber));
+            EditorHost.Children.Add(ReadOnly("Armazï¿½m atual", historyRow.Warehouse));
         }
         else if (_tab == StockTab.Warehouse && SelectedWarehouse() is { } warehouseRow)
         {
             EditorHost.Children.Add(ReadOnly("Artigo", warehouseRow.Article));
-            EditorHost.Children.Add(ReadOnly("Número de série", warehouseRow.SerialNumber));
-            EditorHost.Children.Add(ReadOnly("Armazém atual", warehouseRow.Warehouse));
+            EditorHost.Children.Add(ReadOnly("Nï¿½mero de sï¿½rie", warehouseRow.SerialNumber));
+            EditorHost.Children.Add(ReadOnly("Armazï¿½m atual", warehouseRow.Warehouse));
         }
 
         _locationBox = new ComboBox
@@ -910,7 +917,7 @@ public partial class StockManagementView : UserControl
         _locationBox.Classes.Add("bo_entity_input");
         _quantityBox = Field("Quantidade", FormDecimal.Format(quantity), out var quantityField, FormDecimal.QuantityRule);
         EditorNotice.Text = string.Empty;
-        EditorHost.Children.Add(Label("Nova localização"));
+        EditorHost.Children.Add(Label("Nova localizaï¿½ï¿½o"));
         EditorHost.Children.Add(_locationBox);
         EditorHost.Children.Add(quantityField);
         EditorOverlay.IsVisible = true;
@@ -921,30 +928,30 @@ public partial class StockManagementView : UserControl
         var service = Service;
         if (service is null || SelectedHistory() is not { } history)
         {
-            Notice.Text = "Selecione um número de série vendido.";
+            Notice.Text = "Selecione um nï¿½mero de sï¿½rie vendido.";
             return;
         }
 
         if (history.IsSold == false)
         {
-            Notice.Text = "A troca só está disponível para artigos vendidos.";
+            Notice.Text = "A troca sï¿½ estï¿½ disponï¿½vel para artigos vendidos.";
             return;
         }
 
         var available = await service.GetAvailableSerialsAsync(history.ArticleId);
         if (available.Count == 0)
         {
-            Notice.Text = "Não há números de série disponíveis para troca.";
+            Notice.Text = "Nï¿½o hï¿½ nï¿½meros de sï¿½rie disponï¿½veis para troca.";
             return;
         }
 
         _editor = EditorMode.Exchange;
         _editId = history.WarehouseArticleId;
-        EditorTitle.Text = "Trocar artigo único";
+        EditorTitle.Text = "Trocar artigo ï¿½nico";
         EditorHost.Children.Clear();
         _exchangeBox = new AutoCompleteBox { ItemsSource = available, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_exchangeBox);
-        _exchangeBox.PlaceholderText = "Número de série";
+        _exchangeBox.PlaceholderText = "Nï¿½mero de sï¿½rie";
         EditorHost.Children.Add(Label("Artigo para troca"));
         EditorHost.Children.Add(_exchangeBox);
         EditorOverlay.IsVisible = true;
@@ -963,13 +970,13 @@ public partial class StockManagementView : UserControl
         var locations = await service.GetLocationsAsync();
         if (suppliers.Count == 0)
         {
-            Notice.Text = "Não há fornecedores para o movimento.";
+            Notice.Text = "Nï¿½o hï¿½ fornecedores para o movimento.";
             return;
         }
 
         if (articles.Count == 0)
         {
-            Notice.Text = "Não há artigos.";
+            Notice.Text = "Nï¿½o hï¿½ artigos.";
             return;
         }
 
@@ -984,7 +991,7 @@ public partial class StockManagementView : UserControl
         _dateBox = new CalendarDatePicker { SelectedDate = DateTime.Today };
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", string.Empty, out var documentField);
-        _documentBox.PlaceholderText = "Número do documento do fornecedor";
+        _documentBox.PlaceholderText = "Nï¿½mero do documento do fornecedor";
         _notesBox = Field("Notas", string.Empty, out var notesField);
         _attachLabel = new TextBlock { Text = "Sem anexo", Classes = { "bo_entity_notice" } };
         var attachButton = UploadButton();
@@ -1027,7 +1034,7 @@ public partial class StockManagementView : UserControl
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", movement.DocumentNumber, out var documentField);
         _quantityBox = Field("Quantidade", FormDecimal.Format(movement.Quantity), out var quantityField, FormDecimal.QuantityRule);
-        _priceBox = Field("Preço", FormDecimal.Format(movement.Price, FormDecimalKind.Money), out var priceField, FormDecimal.MoneyRule);
+        _priceBox = Field("Preï¿½o", FormDecimal.Format(movement.Price, FormDecimalKind.Money), out var priceField, FormDecimal.MoneyRule);
         _attachLabel = new TextBlock
         {
             Text = movement.HasExternalDocument ? "Anexo atual mantido (escolha outro para substituir)" : "Sem anexo",
@@ -1043,7 +1050,7 @@ public partial class StockManagementView : UserControl
         EditorHost.Children.Add(priceField);
         EditorHost.Children.Add(attachButton);
         EditorHost.Children.Add(_attachLabel);
-        EditorHost.Children.Add(Label("Número de série (só leitura)"));
+        EditorHost.Children.Add(Label("Nï¿½mero de sï¿½rie (sï¿½ leitura)"));
         EditorHost.Children.Add(new TextBox { Text = movement.SerialNumber, IsReadOnly = true, Classes = { "bo_entity_input" } });
         EditorOverlay.IsVisible = true;
     }
@@ -1055,7 +1062,7 @@ public partial class StockManagementView : UserControl
         EditorTitle.Text = $"Stock - {article.Designation}";
         EditorHost.Children.Clear();
         _totalBox = Field("Total stock", FormDecimal.Format(article.TotalStock), out var totalField, FormDecimal.QuantityRule);
-        _minimumBox = Field("Stock mínimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
+        _minimumBox = Field("Stock mï¿½nimo", FormDecimal.Format(article.MinimumStock), out var minimumField, FormDecimal.QuantityRule);
         EditorHost.Children.Add(totalField);
         EditorHost.Children.Add(minimumField);
         EditorOverlay.IsVisible = true;
@@ -1089,13 +1096,13 @@ public partial class StockManagementView : UserControl
         _editPrice = history.ArticlePrice;
         _editLocationId = history.WarehouseLocationId;
         _childBoxes.Clear();
-        EditorTitle.Text = "Editar Artigo Único";
+        EditorTitle.Text = "Editar Artigo ï¿½nico";
         EditorHost.Children.Clear();
         EditorHost.Children.Add(ReadOnly("Artigo", history.Article));
         EditorHost.Children.Add(ReadOnly("Estado", history.Status));
-        EditorHost.Children.Add(ReadOnly("Armazém", history.Warehouse));
-        EditorHost.Children.Add(ReadOnly("Localização", history.Location));
-        _serialBox = Field("Número de série", history.SerialNumber, out var serialField);
+        EditorHost.Children.Add(ReadOnly("Armazï¿½m", history.Warehouse));
+        EditorHost.Children.Add(ReadOnly("Localizaï¿½ï¿½o", history.Location));
+        _serialBox = Field("Nï¿½mero de sï¿½rie", history.SerialNumber, out var serialField);
         _serialBox.IsReadOnly = history.IsSold;
         EditorHost.Children.Add(serialField);
         if (history.IsSold)
@@ -1104,7 +1111,7 @@ public partial class StockManagementView : UserControl
             EditorHost.Children.Add(ReadOnly("Data de venda", history.SaleDate?.ToString("yyyy-MM-dd") ?? string.Empty));
             EditorHost.Children.Add(new TextBlock
             {
-                Text = "Artigo vendido: o número de série não pode ser alterado.",
+                Text = "Artigo vendido: o nï¿½mero de sï¿½rie nï¿½o pode ser alterado.",
                 Classes = { "bo_doc_count" }
             });
         }
@@ -1127,7 +1134,7 @@ public partial class StockManagementView : UserControl
                 Classes = { "bo_entity_input" }
             };
             ListingFilters.EnableLookupSearch(combo);
-            combo.PlaceholderText = "Número de série";
+            combo.PlaceholderText = "Nï¿½mero de sï¿½rie";
             ListingFilters.SelectLookup(combo, options.FirstOrDefault(item => item.Id == slot.ChildId) ?? options.FirstOrDefault());
             _childBoxes.Add(combo);
             EditorHost.Children.Add(Label(string.IsNullOrWhiteSpace(slot.Article) ? "Artigo filho" : slot.Article));
@@ -1141,13 +1148,13 @@ public partial class StockManagementView : UserControl
             {
                 ItemsSource = documents,
                 SelectedIndex = -1,
-                PlaceholderText = documents.Count > 0 ? "Selecione o documento de venda…" : "Sem documentos de venda",
+                PlaceholderText = documents.Count > 0 ? "Selecione o documento de vendaï¿½" : "Sem documentos de venda",
                 Classes = { "bo_entity_input" }
             };
             _saleDateBox = new CalendarDatePicker { SelectedDate = DateTime.Today, Classes = { "bo_doc_date" } };
-            // bo_listing_icon_button is 32x32 (icon-only) and truncates labels to "Reg." — use text action.
-            var sell = new Button { Content = "Registar saída", Classes = { "bo_doc_action" } };
-            ToolTip.SetTip(sell, "Associa este número de série a um documento de venda e marca-o como vendido.");
+            // bo_listing_icon_button is 32x32 (icon-only) and truncates labels to "Reg." ï¿½ use text action.
+            var sell = new Button { Content = "Registar saï¿½da", Classes = { "bo_doc_action" } };
+            ToolTip.SetTip(sell, "Associa este nï¿½mero de sï¿½rie a um documento de venda e marca-o como vendido.");
             sell.IsEnabled = documents.Count > 0;
             sell.Click += (_, _) =>
             {
@@ -1158,7 +1165,7 @@ public partial class StockManagementView : UserControl
                 }
 
                 AskConfirm(
-                    $"Confirma a saída do artigo único para o documento {document.Number}?",
+                    $"Confirma a saï¿½da do artigo ï¿½nico para o documento {document.Number}?",
                     async () => await RegisterSaleAsync(history));
             };
             EditorHost.Children.Add(Label("Documento de venda"));
@@ -1184,18 +1191,18 @@ public partial class StockManagementView : UserControl
         var suppliers = await service.LookupSuppliersAsync();
         if (articles.Count == 0 || locations.Count == 0)
         {
-            Notice.Text = "Não há artigos ou localizações para criar a posição.";
+            Notice.Text = "Nï¿½o hï¿½ artigos ou localizaï¿½ï¿½es para criar a posiï¿½ï¿½o.";
             return;
         }
 
         _editor = EditorMode.WarehousePosition;
         _editId = null;
         _attachedPdf = null;
-        EditorTitle.Text = "Gestão de Armazéns";
+        EditorTitle.Text = "Gestï¿½o de Armazï¿½ns";
         EditorHost.Children.Clear();
         _articleBox = new AutoCompleteBox { ItemsSource = articles, Classes = { "bo_entity_input" } };
         ListingFilters.EnableLookupSearch(_articleBox);
-        _serialBox = Field("Número de série", string.Empty, out var serialField);
+        _serialBox = Field("Nï¿½mero de sï¿½rie", string.Empty, out var serialField);
         _locationBox = new ComboBox
         {
             ItemsSource = locations,
@@ -1207,12 +1214,12 @@ public partial class StockManagementView : UserControl
         _dateBox = new CalendarDatePicker { SelectedDate = DateTime.Today };
         _dateBox.Classes.Add("bo_doc_date");
         _documentBox = Field("Documento", string.Empty, out var documentField);
-        _documentBox.PlaceholderText = "Número do documento do fornecedor";
+        _documentBox.PlaceholderText = "Nï¿½mero do documento do fornecedor";
 
         EditorHost.Children.Add(Label("Artigo"));
         EditorHost.Children.Add(_articleBox);
         EditorHost.Children.Add(serialField);
-        EditorHost.Children.Add(Label("Localização"));
+        EditorHost.Children.Add(Label("Localizaï¿½ï¿½o"));
         EditorHost.Children.Add(_locationBox);
         EditorHost.Children.Add(quantityField);
         if (suppliers.Count > 0)
@@ -1241,7 +1248,7 @@ public partial class StockManagementView : UserControl
         ToolTip.SetTip(quantity, FormDecimal.QuantityRule);
         var price = new TextBox { Text = "0", Classes = { "bo_entity_input", "bo_numeric" } };
         ToolTip.SetTip(price, FormDecimal.MoneyRule);
-        var serial = new TextBox { PlaceholderText = "Nº série", Classes = { "bo_entity_input" } };
+        var serial = new TextBox { PlaceholderText = "Nï¿½ sï¿½rie", Classes = { "bo_entity_input" } };
         var location = new ComboBox
         {
             ItemsSource = locations,
@@ -1252,11 +1259,11 @@ public partial class StockManagementView : UserControl
         panel.Children.Add(article);
         panel.Children.Add(Label("Quantidade"));
         panel.Children.Add(quantity);
-        panel.Children.Add(Label("Preço"));
+        panel.Children.Add(Label("Preï¿½o"));
         panel.Children.Add(price);
-        panel.Children.Add(Label("Nº série"));
+        panel.Children.Add(Label("Nï¿½ sï¿½rie"));
         panel.Children.Add(serial);
-        panel.Children.Add(Label("Localização"));
+        panel.Children.Add(Label("Localizaï¿½ï¿½o"));
         panel.Children.Add(location);
         _linesHost.Children.Add(panel);
         TouchFields.Attach(panel);
@@ -1305,7 +1312,7 @@ public partial class StockManagementView : UserControl
         var service = Service;
         if (service is null)
         {
-            EditorError("Serviço de stocks indisponível.");
+            EditorError("Serviï¿½o de stocks indisponï¿½vel.");
             return;
         }
 
@@ -1340,11 +1347,11 @@ public partial class StockManagementView : UserControl
                         return;
                     }
 
-                    if (ReadDecimal(line.Quantity.Text, "Quantidade inválida numa das linhas.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
+                    if (ReadDecimal(line.Quantity.Text, "Quantidade invï¿½lida numa das linhas.", out var quantity, FormDecimalKind.Quantity) == false || quantity == 0)
                     {
                         if (string.IsNullOrWhiteSpace(EditorNotice.Text))
                         {
-                            EditorError("Quantidade inválida numa das linhas.");
+                            EditorError("Quantidade invï¿½lida numa das linhas.");
                         }
 
                         return;
@@ -1352,7 +1359,7 @@ public partial class StockManagementView : UserControl
 
                     var price = 0m;
                     if (string.IsNullOrWhiteSpace(line.Price.Text) == false
-                        && ReadDecimal(line.Price.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
+                        && ReadDecimal(line.Price.Text, "Preï¿½o invï¿½lido.", out price, FormDecimalKind.Money) == false)
                     {
                         return;
                     }
@@ -1384,14 +1391,14 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.EditMovement when _editId is Guid id:
             {
-                if (ReadDecimal(_quantityBox?.Text, "Quantidade inválida.", out var quantity, FormDecimalKind.Quantity) == false)
+                if (ReadDecimal(_quantityBox?.Text, "Quantidade invï¿½lida.", out var quantity, FormDecimalKind.Quantity) == false)
                 {
                     return;
                 }
 
                 var price = 0m;
                 if (string.IsNullOrWhiteSpace(_priceBox?.Text) == false
-                    && ReadDecimal(_priceBox?.Text, "Preço inválido.", out price, FormDecimalKind.Money) == false)
+                    && ReadDecimal(_priceBox?.Text, "Preï¿½o invï¿½lido.", out price, FormDecimalKind.Money) == false)
                 {
                     return;
                 }
@@ -1409,8 +1416,8 @@ public partial class StockManagementView : UserControl
             }
             case EditorMode.AdjustArticle when _editId is Guid articleId:
             {
-                if (ReadDecimal(_totalBox?.Text, "Valores de stock inválidos.", out var total, FormDecimalKind.Quantity) == false ||
-                    ReadDecimal(_minimumBox?.Text, "Valores de stock inválidos.", out var minimum, FormDecimalKind.Quantity) == false)
+                if (ReadDecimal(_totalBox?.Text, "Valores de stock invï¿½lidos.", out var total, FormDecimalKind.Quantity) == false ||
+                    ReadDecimal(_minimumBox?.Text, "Valores de stock invï¿½lidos.", out var minimum, FormDecimalKind.Quantity) == false)
                 {
                     return;
                 }
@@ -1428,11 +1435,11 @@ public partial class StockManagementView : UserControl
             case EditorMode.ChangeLocation when _editId is Guid warehouseArticleId:
             {
                 if (SelectedLocation() is not StockLocationOption location ||
-                    ReadDecimal(_quantityBox?.Text, "Localização ou quantidade inválida.", out var quantity) == false)
+                    ReadDecimal(_quantityBox?.Text, "Localizaï¿½ï¿½o ou quantidade invï¿½lida.", out var quantity) == false)
                 {
                     if (string.IsNullOrWhiteSpace(EditorNotice.Text))
                     {
-                        EditorError("Localização ou quantidade inválida.");
+                        EditorError("Localizaï¿½ï¿½o ou quantidade invï¿½lida.");
                     }
 
                     return;
@@ -1456,7 +1463,7 @@ public partial class StockManagementView : UserControl
             {
                 if (string.IsNullOrWhiteSpace(_serialBox?.Text))
                 {
-                    EditorError("Indique o número de série.");
+                    EditorError("Indique o nï¿½mero de sï¿½rie.");
                     return;
                 }
 
@@ -1468,7 +1475,7 @@ public partial class StockManagementView : UserControl
                     {
                         if (ListingFilters.SelectedLookup(box) is not LookupOption child || child.Id == Guid.Empty)
                         {
-                            EditorError("Selecione o número de série de cada artigo filho.");
+                            EditorError("Selecione o nï¿½mero de sï¿½rie de cada artigo filho.");
                             return;
                         }
 
@@ -1484,12 +1491,12 @@ public partial class StockManagementView : UserControl
                 if (ListingFilters.SelectedLookup(_articleBox) is not LookupOption article ||
                     _locationBox?.SelectedItem is not StockLocationOption location ||
                     _dateBox?.SelectedDate is null ||
-                    ReadDecimal(_quantityBox?.Text, "Preencha artigo, localização, data e quantidade.", out var positionQty) == false ||
+                    ReadDecimal(_quantityBox?.Text, "Preencha artigo, localizaï¿½ï¿½o, data e quantidade.", out var positionQty) == false ||
                     positionQty == 0)
                 {
                     if (string.IsNullOrWhiteSpace(EditorNotice.Text))
                     {
-                        EditorError("Preencha artigo, localização, data e quantidade.");
+                        EditorError("Preencha artigo, localizaï¿½ï¿½o, data e quantidade.");
                     }
 
                     return;
@@ -1508,7 +1515,7 @@ public partial class StockManagementView : UserControl
                     SupplierId = supplier?.Id ?? Guid.Empty,
                     Date = _dateBox.SelectedDate.Value.Date,
                     DocumentNumber = DocumentNumberOrReference(),
-                    Notes = "Posição de armazém",
+                    Notes = "Posiï¿½ï¿½o de armazï¿½m",
                     Items =
                     [
                         new StockMovementLineInput
@@ -1534,7 +1541,7 @@ public partial class StockManagementView : UserControl
         }
         catch (Exception)
         {
-            EditorError("Não foi possível guardar.");
+            EditorError("Nï¿½o foi possï¿½vel guardar.");
             return;
         }
 
@@ -1603,11 +1610,11 @@ public partial class StockManagementView : UserControl
         if (access.ShowAcquireMessage)
         {
             AskConfirm(
-                "O módulo de gestão de stocks não está incluído nesta licença. Quer abrir a página para o adquirir?",
+                "O mï¿½dulo de gestï¿½o de stocks nï¿½o estï¿½ incluï¿½do nesta licenï¿½a. Quer abrir a pï¿½gina para o adquirir?",
                 () =>
                 {
                     Process.Start(new ProcessStartInfo("https://logic-pos.com/") { UseShellExecute = true });
-                    Notice.Text = "Módulo de stocks não incluído na licença.";
+                    Notice.Text = "Mï¿½dulo de stocks nï¿½o incluï¿½do na licenï¿½a.";
                     BtnInsert.IsVisible = false;
                     return Task.CompletedTask;
                 },
@@ -1668,7 +1675,7 @@ public partial class StockManagementView : UserControl
             SupplierId = document.CustomerId,
             Date = _saleDateBox.SelectedDate.Value.Date,
             DocumentNumber = document.Number,
-            Notes = "Saída de artigo único",
+            Notes = "Saï¿½da de artigo ï¿½nico",
             Items =
             [
                 new StockMovementLineInput
@@ -1683,11 +1690,11 @@ public partial class StockManagementView : UserControl
         });
         if (result.Succeeded == false)
         {
-            Fail(result.Error ?? "Não foi possível registar a saída.");
+            Fail(result.Error ?? "Nï¿½o foi possï¿½vel registar a saï¿½da.");
             return;
         }
 
-        Toast.Success(this, result.Message ?? "Saída registada.");
+        Toast.Success(this, result.Message ?? "Saï¿½da registada.");
         EditorOverlay.IsVisible = false;
         _editor = EditorMode.None;
         await LoadAsync(resetPage: false);
@@ -1734,7 +1741,7 @@ public partial class StockManagementView : UserControl
             return;
         }
 
-        Fail("Não foi possível mostrar o documento.");
+        Fail("Nï¿½o foi possï¿½vel mostrar o documento.");
     }
 
     private static TextBlock Label(string text) => new()
@@ -1898,21 +1905,21 @@ public partial class StockManagementView : UserControl
             StockTab.Articles => PortraitChrome.Card(
                 Prop(row, "Designation"),
                 Prop(row, "Code"),
-                $"Stock: {Prop(row, "TotalStock")} · Min: {Prop(row, "MinimumStock")}",
+                $"Stock: {Prop(row, "TotalStock")} ï¿½ Min: {Prop(row, "MinimumStock")}",
                 row),
             StockTab.Movements => PortraitChrome.Card(
                 Prop(row, "Article"),
-                $"{Prop(row, "Movement")} · {Prop(row, "Date")}",
-                $"{Prop(row, "Customer")} · Qty {Prop(row, "Quantity")}",
+                $"{Prop(row, "Movement")} ï¿½ {Prop(row, "Date")}",
+                $"{Prop(row, "Customer")} ï¿½ Qty {Prop(row, "Quantity")}",
                 row),
             StockTab.History => PortraitChrome.Card(
                 Prop(row, "Article"),
                 Prop(row, "Status"),
-                $"{Prop(row, "Warehouse")} · {Prop(row, "Location")}",
+                $"{Prop(row, "Warehouse")} ï¿½ {Prop(row, "Location")}",
                 row),
             _ => PortraitChrome.Card(
                 Prop(row, "Article"),
-                $"{Prop(row, "Warehouse")} · {Prop(row, "Location")}",
+                $"{Prop(row, "Warehouse")} ï¿½ {Prop(row, "Location")}",
                 $"Qty {Prop(row, "Quantity")}",
                 row)
         };

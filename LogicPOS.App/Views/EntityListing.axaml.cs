@@ -76,6 +76,13 @@ public partial class EntityListing : UserControl
             LayoutUpdated += OnListingLayoutUpdated;
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnListingLayoutUpdated;
+        Period.PeriodChanged += (_, _) =>
+        {
+            if (DateFilters.IsVisible)
+            {
+                ApplyFilter();
+            }
+        };
     }
 
     public event EventHandler? FiscalYearCompleted;
@@ -602,8 +609,8 @@ public partial class EntityListing : UserControl
             return true;
         }
 
-        var start = Period.StartDate;
-        var end = Period.EndDate;
+        var start = Period.Start;
+        var end = Period.End;
         if (end < start)
         {
             (start, end) = (end, start);
@@ -625,8 +632,7 @@ public partial class EntityListing : UserControl
                     continue;
                 }
 
-                var day = date.Date;
-                return day >= start && day <= end;
+                return date >= start && date <= end;
             }
         }
 

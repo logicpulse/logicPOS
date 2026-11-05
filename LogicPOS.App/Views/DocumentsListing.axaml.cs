@@ -58,6 +58,7 @@ public partial class DocumentsListing : UserControl
             LayoutUpdated += OnDocsLayoutUpdated;
         };
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnDocsLayoutUpdated;
+        Period.PeriodChanged += (_, _) => ReloadFromFilter();
     }
 
     public async Task ReloadAsync()
@@ -1369,12 +1370,12 @@ public partial class DocumentsListing : UserControl
         EmptyLabel.IsVisible = false;
 
         var generation = ++_loadGeneration;
-        var start = Period.StartDate;
-        var end = Period.EndDate;
+        var start = Period.Start;
+        var end = Period.End;
         if (end < start)
         {
             end = start;
-            Period.SetRange(Period.Start, end.AddDays(1).AddSeconds(-1));
+            Period.SetRange(Period.Start, end);
         }
 
         var search = SearchBox.Text?.Trim();

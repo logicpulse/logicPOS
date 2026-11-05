@@ -1114,13 +1114,13 @@ public sealed class PosDocumentService : IPosDocumentService
         Guid? customerId = null,
         string? documentType = null)
     {
-        var from = start.Date;
-        var to = end.Date.AddDays(1);
+        var from = start;
+        var to = end < start ? start : end;
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
         var query = database.Documents
             .AsNoTracking()
-            .Where(document => document.IsDeleted == false && document.CreatedAt >= from && document.CreatedAt < to);
+            .Where(document => document.IsDeleted == false && document.CreatedAt >= from && document.CreatedAt <= to);
         if (customerId is Guid customer && customer != Guid.Empty)
         {
             query = query.Where(document => document.CustomerId == customer);

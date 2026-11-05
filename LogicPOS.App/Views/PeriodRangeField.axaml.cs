@@ -340,7 +340,7 @@ public partial class PeriodRangeField : UserControl
 
         if (isStart == false && box.Text is { } text && LooksDateOnly(text))
         {
-            value = value.Date.AddHours(23).AddMinutes(59);
+            value = value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
         }
 
         var start = isStart ? value : _start;
@@ -363,7 +363,7 @@ public partial class PeriodRangeField : UserControl
 
         if (isStart == false && box.Text is { } text && LooksDateOnly(text))
         {
-            value = value.Date.AddHours(23).AddMinutes(59);
+            value = value.Date.AddHours(23).AddMinutes(59).AddSeconds(59);
         }
 
         if (isStart)

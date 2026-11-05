@@ -26,8 +26,8 @@ public sealed class LocalReceiptEmission : IReceiptEmission
     {
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var from = start.Date;
-        var to = end.Date.AddDays(1);
+        var from = start;
+        var to = end < start ? start : end;
         var query = database.Documents.AsNoTracking()
             .Include(document => document.Currency)
             .Include(document => document.Customer)
@@ -37,7 +37,7 @@ public sealed class LocalReceiptEmission : IReceiptEmission
                 && document.Status == "N"
                 && (document.Type == "FT" || document.Type == "ND" || document.Type == "NC")
                 && document.CreatedAt >= from
-                && document.CreatedAt < to);
+                && document.CreatedAt <= to);
         if (customerId is Guid customer && customer != Guid.Empty)
         {
             query = query.Where(document => document.CustomerId == customer);
