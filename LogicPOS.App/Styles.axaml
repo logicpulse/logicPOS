@@ -4232,7 +4232,7 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
-    <!-- Fluent CalendarItem paints BorderBrush into BackgroundLayer + MinHeight 290 → empty gray band. -->
+    <!-- Fluent CalendarItem defaults MinWidth 332 / template Grid 294 → empty band beside day cells. -->
     <Style Selector="Calendar.bo_period_calendar">
         <Setter Property="FontFamily" Value="avares://LogicPOS.App/Assets/Fonts#Montserrat" />
         <Setter Property="FontSize" Value="13" />
@@ -4244,7 +4244,9 @@
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Top" />
-        <Setter Property="MinWidth" Value="232" />
+        <Setter Property="Width" Value="216" />
+        <Setter Property="MinWidth" Value="216" />
+        <Setter Property="MaxWidth" Value="216" />
         <Setter Property="MinHeight" Value="0" />
     </Style>
 
@@ -4253,9 +4255,18 @@
         <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="0" />
+        <Setter Property="Width" Value="216" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="MaxWidth" Value="216" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+
+    <Style Selector="Calendar.bo_period_calendar CalendarItem /template/ Grid">
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Top" />
     </Style>
 
     <Style Selector="Calendar.bo_period_calendar CalendarItem /template/ Border#BackgroundLayer">
@@ -4265,12 +4276,21 @@
 
     <Style Selector="Calendar.bo_period_calendar CalendarItem /template/ Grid#PART_MonthView">
         <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
     <Style Selector="Calendar.bo_period_calendar CalendarItem /template/ Grid#PART_YearView">
         <Setter Property="MinHeight" Value="0" />
+        <Setter Property="MinWidth" Value="0" />
         <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Calendar.bo_period_calendar CalendarItem /template/ Grid#PART_ElementWeekNumberLabels">
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Width" Value="0" />
+        <Setter Property="IsVisible" Value="False" />
     </Style>
 
     <Style Selector="Border.bo_period_calendar_frame">
@@ -4278,8 +4298,9 @@
         <Setter Property="BorderBrush" Value="#E4E9EF" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="CornerRadius" Value="6" />
-        <Setter Property="Padding" Value="6" />
+        <Setter Property="Padding" Value="4" />
         <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
     </Style>
 
     <Style Selector="Calendar.bo_period_calendar TextBlock">
