@@ -31,6 +31,15 @@ public sealed class LogicPOSDbContextFactory : IDesignTimeDbContextFactory<Logic
     private sealed class DesignTimeAuditingInformationService : IAuditingInformationService
     {
         public Guid? GetUserId() => null;
+
         public Guid? GetTerminalId() => null;
+
+        public void SetUser(Guid? userId)
+        {
+        }
+
+        public void SetTerminal(Guid? terminalId)
+        {
+        }
     }
 }

@@ -1081,6 +1081,16 @@
         <Setter Property="Margin" Value="2" />
     </Style>
 
+    <Style Selector="Button.pos_toolbar_float_button:disabled">
+        <Setter Property="Background" Value="#5A6168" />
+        <Setter Property="Foreground" Value="#2E3338" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_toolbar_float_button:disabled Image.pos_button_icon">
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
     <!-- FO portrait: tabs Favoritos / Famílias / Subfamílias + faixa + pesquisa. -->
     <Style Selector="Button.pos_fo_tab">
         <Setter Property="MinWidth" Value="0" />
@@ -1622,11 +1632,21 @@
     </Style>
 
     <Style Selector="Button.pos_menu_button:disabled">
-        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_menu_button_green:disabled">
-        <Setter Property="Background" Value="#999999" />
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_menu_button_grey:disabled">
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#4A4A4A" />
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_menu_button.pos_menu_button_selected">
@@ -1719,17 +1739,25 @@
     </Style>
 
     <Style Selector="Button.pos_pad_button:disabled">
-        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#3F3F3F" />
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_pad_button_grey:disabled">
-        <Setter Property="Background" Value="#999999" />
-        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#3F3F3F" />
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_pad_button_green:disabled">
-        <Setter Property="Background" Value="#999999" />
-        <Setter Property="Foreground" Value="#666666" />
+        <Setter Property="Background" Value="#6E6E6E" />
+        <Setter Property="Foreground" Value="#3F3F3F" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_pad_button:disabled Image.pos_button_icon">
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_toolbar_button">
@@ -1759,11 +1787,15 @@
         </Setter>
     </Style>
 
-    <!-- Same muted look as ticketpad when IsEnabled=false (e.g. ticket has lines). -->
+    <!-- Desativado (permissão ou ticket aberto): cinza escuro a 70%. -->
     <Style Selector="Button.pos_toolbar_button:disabled">
-        <Setter Property="Background" Value="#999999" />
-        <Setter Property="Foreground" Value="#666666" />
-        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Background" Value="#5A6168" />
+        <Setter Property="Foreground" Value="#2E3338" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.pos_toolbar_button:disabled Image.pos_button_icon">
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Button.pos_toolbar_button_close">
@@ -1794,9 +1826,9 @@
     </Style>
 
     <Style Selector="Button.pos_toolbar_button_close:disabled">
-        <Setter Property="Background" Value="#999999" />
-        <Setter Property="Foreground" Value="#666666" />
-        <Setter Property="Opacity" Value="0.6" />
+        <Setter Property="Background" Value="#7A4A44" />
+        <Setter Property="Foreground" Value="#3A2422" />
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Image.pos_button_icon">
@@ -3165,6 +3197,25 @@
         <Setter Property="Background" Value="#3C3F42" />
     </Style>
 
+    <!-- Sem permissão: 70% de opacidade, sem hover. -->
+    <Style Selector="Button.bo_menu_parent:disabled">
+        <Setter Property="Foreground" Value="#5A5E62" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent:disabled:pointerover">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent:disabled Border.bo_menu_glyph">
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_parent:disabled svg|Svg.bo_menu_glyph_icon">
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
     <Style Selector="StackPanel.bo_menu_children">
         <Setter Property="Background" Value="#2B2E30" />
         <Setter Property="Margin" Value="0,0,0,4" />
@@ -3219,6 +3270,25 @@
         <Setter Property="Background" Value="#D5DAE2" />
         <Setter Property="Foreground" Value="#323537" />
         <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child:disabled">
+        <Setter Property="Foreground" Value="#5A5E62" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Opacity" Value="0.7" />
+        <Setter Property="FontWeight" Value="Normal" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child:disabled:pointerover">
+        <Setter Property="Background" Value="Transparent" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child:disabled Border.bo_menu_glyph">
+        <Setter Property="Opacity" Value="0.7" />
+    </Style>
+
+    <Style Selector="Button.bo_menu_child:disabled svg|Svg.bo_menu_glyph_icon">
+        <Setter Property="Opacity" Value="0.7" />
     </Style>
 
     <Style Selector="Image.bo_menu_icon">
@@ -5008,6 +5078,30 @@
         <Setter Property="Margin" Value="0,2,18,2" />
         <Setter Property="MinHeight" Value="36" />
         <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+
+    <Style Selector="StackPanel.bo_perm_root">
+        <Setter Property="Spacing" Value="8" />
+        <Setter Property="Margin" Value="0,4,0,0" />
+    </Style>
+
+    <Style Selector="TextBox.bo_perm_search">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <Style Selector="Grid.bo_perm_grid">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="ColumnSpacing" Value="12" />
+        <Setter Property="RowSpacing" Value="2" />
+    </Style>
+
+    <Style Selector="Grid.bo_perm_grid > CheckBox.bo_perm_item">
+        <Setter Property="Margin" Value="0,2,8,2" />
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
     </Style>
 
     <Style Selector="StackPanel.app_toast_host">

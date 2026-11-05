@@ -72,7 +72,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private ScrollViewer? _ticketLines;
     private StackPanel? _ticketRows;
     private TextBlock? _keypadValue;
+    private TextBox? _pinEntry;
     private Grid? _quantityPad;
+    private Grid? _pinPad;
     private StackPanel? _splitHost;
     private TextBlock? _splitNotice;
     private StackPanel? _splitList;
@@ -101,6 +103,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private const double TablesPlaceColumnWidth = 128;
     private Guid? _pendingUserId;
     private string _pendingUserName = string.Empty;
+    private FrontOfficeAccess _access = FrontOfficeAccess.All;
     private string? _sessionAction;
     private bool _dayOpen;
     private bool _terminalOpen;
@@ -249,6 +252,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             }
 
             await RefreshWorkSessionAsync();
+            await ReloadAccessAsync();
             await YieldUiAsync();
 
             // Bounds/ClientSize já estáveis: um único BuildChrome + menus (chunked no Android).
@@ -1925,6 +1929,25 @@ public partial class PosWindow : UserControl, IOfficeSurface
         ApplyFrontOfficeRules();
     }
 
+    private async Task ReloadAccessAsync()
+    {
+        var services = AppComposition.Services;
+        if (services is null)
+        {
+            _access = FrontOfficeAccess.All;
+            return;
+        }
+
+        try
+        {
+            _access = await FrontOfficeAccess.LoadAsync(services);
+        }
+        catch
+        {
+            _access = FrontOfficeAccess.All;
+        }
+    }
+
     private void ApplyFrontOfficeRules()
     {
         var selling = _terminalOpen;
@@ -1948,12 +1971,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
         SetNamedButton(_padButtons, "Aumentar", selling && lineEditable);
         SetNamedButton(_padButtons, "Diminuir", selling && lineEditable);
         SetNamedButton(_padButtons, "Quantidade", selling && lineEditable);
-        SetNamedButton(_padButtons, "Preço", selling && lineEditable);
+        SetNamedButton(_padButtons, "Preço", selling && lineEditable && _access.AllowsChangePrice);
         SetNamedButton(_padButtons, "Peso", selling && hasLines && editingTicket);
         SetNamedButton(_padButtons, "Fin.pedido", selling && hasLines && editingTicket);
-        SetNamedButton(_padButtons, "Eliminar", selling && lineEditable);
-        SetNamedButton(_padButtons, "Pagamentos", selling && (hasLines || hasOrder));
-        SetNamedButton(_padButtons, "Dividir", selling && hasOrder && editingTicket == false && _openOrderId is not null);
+        SetNamedButton(_padButtons, "Eliminar", selling && lineEditable && _access.AllowsDeleteTicket);
+        SetNamedButton(_padButtons, "Pagamentos", selling && (hasLines || hasOrder) && _access.AllowsPayments);
+        SetNamedButton(_padButtons, "Dividir", selling && hasOrder && editingTicket == false && _openOrderId is not null && _access.AllowsPayments);
         SetNamedButton(_padButtons, "Ordens", selling);
         SetNamedButton(_padButtons, "Alt. lista", selling);
         SetNamedButton(_padButtons, "Cartão", selling);
@@ -1961,19 +1984,20 @@ public partial class PosWindow : UserControl, IOfficeSurface
         SetNamedButton(_padButtons, "Reemb. Volta", selling && hasLines == false);
 
         var toolbarEnabled = hasLines == false;
-        SetNamedButton(_toolbarButtons, "BackOffice", toolbarEnabled);
+        SetNamedButton(_toolbarButtons, "BackOffice", toolbarEnabled && _access.AllowsBackOffice);
         SetNamedButton(_toolbarButtons, "Sair da Sessão", toolbarEnabled);
         SetNamedButton(_toolbarButtons, "Utilizador", toolbarEnabled);
-        SetNamedButton(_toolbarButtons, "Sessão", toolbarEnabled);
-        SetNamedButton(_toolbarButtons, "Relatórios", toolbarEnabled);
-        SetNamedButton(_toolbarButtons, "Documentos", toolbarEnabled);
-        SetNamedButton(_toolbarButtons, "Novo Doc.", toolbarEnabled);
+        SetNamedButton(_toolbarButtons, "Sessão", toolbarEnabled && _access.AllowsSession);
+        SetNamedButton(_toolbarButtons, "Relatórios", toolbarEnabled && _access.AllowsReports);
+        SetNamedButton(_toolbarButtons, "Documentos", toolbarEnabled && _access.AllowsDocuments);
+        SetNamedButton(_toolbarButtons, "Novo Doc.", toolbarEnabled && _access.AllowsNewDocument);
 
         DaySessionCaption.Text = _dayOpen ? "Fecho do dia" : "Abertura do dia";
-        // Close-day requires terminal closed first; open-day is always available
-        DaySessionButton.IsEnabled = _dayOpen == false || _terminalOpen == false;
+        var dayAllowed = _dayOpen ? _access.AllowsDayClose : _access.AllowsDayOpen;
+        // Close-day requires terminal closed first; open-day is always available when permitted
+        DaySessionButton.IsEnabled = dayAllowed && (_dayOpen == false || _terminalOpen == false);
         // Cash drawer is only available when the day is open
-        SessionMenuButton.IsEnabled = _dayOpen;
+        SessionMenuButton.IsEnabled = _dayOpen && _access.AllowsSession;
 
         if (_sessionStateLabel is not null)
         {
@@ -1981,6 +2005,17 @@ public partial class PosWindow : UserControl, IOfficeSurface
             var sessionText = _terminalOpen ? "Aberta" : "Fechada";
             _sessionStateLabel.Text = $"Dia: {dayText}  |  Sessão: {sessionText}";
         }
+    }
+
+    private bool RequireAccess(bool allowed, string message)
+    {
+        if (allowed)
+        {
+            return true;
+        }
+
+        ShowQuestion(TicketPrompt.Notice, "Permissão", message, question: false, confirmText: "Ok", showCancel: false);
+        return false;
     }
 
     private static void SetNamedButton(Dictionary<string, Button> buttons, string name, bool enabled)
@@ -2012,6 +2047,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
         Guid? originFromDocumentId = null,
         string? originTargetType = null)
     {
+        if (RequireAccess(_access.AllowsNewDocument, "Não tem permissão para criar documentos.") == false)
+        {
+            return;
+        }
+
         NewDocumentOverlay.IsVisible = true;
         FitHostedOverlays();
         var created = await NewDocumentHost.ShowAsync(draftId, copyFromDocumentId, originFromDocumentId, originTargetType);
@@ -2047,6 +2087,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void ShowReports()
     {
+        if (RequireAccess(_access.AllowsReports, "Não tem permissão para ver relatórios.") == false)
+        {
+            return;
+        }
+
         HideListingOverlays();
         ReportsOverlay.IsVisible = true;
         FitHostedOverlays();
@@ -2198,6 +2243,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void ShowBackOffice(string? page)
     {
+        if (RequireAccess(_access.AllowsBackOffice, "Não tem permissão para aceder ao BackOffice.") == false)
+        {
+            return;
+        }
+
         var session = SessionCaption.Format(_terminalName, _userName);
         if (_backOffice is null)
         {
@@ -2220,6 +2270,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
 
         _backOffice.SetSessionLabel(session);
+        _ = _backOffice.ApplyMenuAccessAsync();
         IsVisible = false;
 
         if (OperatingSystem.IsAndroid())
@@ -3761,6 +3812,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void ShowDocuments()
     {
+        if (RequireAccess(_access.AllowsDocuments, "Não tem permissão para ver documentos.") == false)
+        {
+            return;
+        }
+
         DocumentsMenuOverlay.IsVisible = true;
         FitHostedOverlays();
     }
@@ -3925,6 +3981,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void RequestDeleteTicket()
     {
+        if (RequireAccess(_access.AllowsDeleteTicket, "Não tem permissão para eliminar linhas.") == false)
+        {
+            return;
+        }
+
         if (SelectedOrderLine is { } orderLine)
         {
             ShowQuestion(
@@ -3975,6 +4036,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private void RequestPrice()
     {
+        if (RequireAccess(_access.AllowsChangePrice, "Não tem permissão para alterar o preço.") == false)
+        {
+            return;
+        }
+
         var line = _orderListMode ? SelectedOrderLine : _ticket.Selected;
         if (line is null)
         {
@@ -4075,12 +4141,6 @@ public partial class PosWindow : UserControl, IOfficeSurface
         _pendingUserName = name;
         ListOverlay.IsVisible = false;
         ShowKeypad(TicketPrompt.ChangeUser, name, 0);
-        if (_keypadValue is not null)
-        {
-            _keypadValue.Text = string.Empty;
-        }
-
-        _replaceKeypad = true;
     }
 
     private async Task<string?> ApplyUserPinAsync()
@@ -4090,7 +4150,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             return "Selecione um utilizador.";
         }
 
-        var pin = (_keypadValue?.Text ?? string.Empty).Replace(",", string.Empty).Trim();
+        var pin = (_pinEntry?.Text ?? string.Empty).Trim();
         var services = AppComposition.Services;
         if (services is null)
         {
@@ -4100,6 +4160,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
         var result = await services.GetRequiredService<ILoginService>().SignInAsync(userId, pin);
         if (result.Succeeded == false)
         {
+            if (_pinEntry is not null)
+            {
+                _pinEntry.Text = string.Empty;
+            }
+
             return result.Message;
         }
 
@@ -4109,11 +4174,23 @@ public partial class PosWindow : UserControl, IOfficeSurface
             _terminalLabel.Text = SessionCaption.Format(_terminalName, _userName);
         }
 
+        await ReloadAccessAsync();
+        ApplyFrontOfficeRules();
+        if (_backOffice is not null)
+        {
+            await _backOffice.ApplyMenuAccessAsync();
+        }
+
         return null;
     }
 
     private void ShowSession()
     {
+        if (RequireAccess(_access.AllowsSession, "Não tem permissão para a sessão de trabalho.") == false)
+        {
+            return;
+        }
+
         SessionOverlay.IsVisible = true;
         SessionNotice.Text = string.Empty;
         SessionHome.IsVisible = true;
@@ -4129,6 +4206,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_dayOpen)
         {
+            if (RequireAccess(_access.AllowsDayClose, "Não tem permissão para fechar o dia.") == false)
+            {
+                return;
+            }
+
             // Close day
             var result = await RunSessionAsync("close-day", null);
             string? printError = null;
@@ -4150,6 +4232,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
         else
         {
+            if (RequireAccess(_access.AllowsDayOpen, "Não tem permissão para abrir o dia.") == false)
+            {
+                return;
+            }
+
             // Only open the day; then show cash drawer so user can choose opening amount
             var result = await RunSessionAsync("open-day", null);
             if (result.Succeeded)
@@ -4169,6 +4256,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private async void OnShowCashDrawerClick(object? sender, RoutedEventArgs e)
     {
+        if (RequireAccess(_access.AllowsSession, "Não tem permissão para a sessão de trabalho.") == false)
+        {
+            return;
+        }
+
         _cashTotal = await LoadCashTotalAsync();
 
         SessionHome.IsVisible = false;
@@ -4186,19 +4278,25 @@ public partial class PosWindow : UserControl, IOfficeSurface
         {
             // Terminal open: can close, cash-in, cash-out. Cannot open again.
             SessionOpen.IsEnabled = false;
-            SessionClose.IsEnabled = true;
-            SessionIn.IsEnabled = true;
-            SessionOut.IsEnabled = true;
-            ActivateCashButton(SessionClose, "close-session");
+            SessionClose.IsEnabled = _access.AllowsTerminalClose;
+            SessionIn.IsEnabled = _access.AllowsCashDrawer || _access.AllowsSession;
+            SessionOut.IsEnabled = _access.AllowsCashDrawer || _access.AllowsSession;
+            if (SessionClose.IsEnabled)
+            {
+                ActivateCashButton(SessionClose, "close-session");
+            }
         }
         else
         {
             // Terminal closed: only open is available
-            SessionOpen.IsEnabled = true;
+            SessionOpen.IsEnabled = _access.AllowsTerminalOpen;
             SessionClose.IsEnabled = false;
             SessionIn.IsEnabled = false;
             SessionOut.IsEnabled = false;
-            ActivateCashButton(SessionOpen, "open-session");
+            if (SessionOpen.IsEnabled)
+            {
+                ActivateCashButton(SessionOpen, "open-session");
+            }
         }
     }
 
@@ -4430,6 +4528,11 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private async void RequestPayments()
     {
+        if (RequireAccess(_access.AllowsPayments, "Não tem permissão para pagamentos.") == false)
+        {
+            return;
+        }
+
         if (_ticket.HasLines == false && _orderLines.Count == 0)
         {
             return;
@@ -4573,6 +4676,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         TicketQuestionBody.IsVisible = false;
         TicketBarcode.IsVisible = false;
         TicketDialogCancelText.Text = "Não";
+        HidePinPad();
 
         if (prompt == TicketPrompt.Price)
         {
@@ -4588,6 +4692,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
         PricePad.IsVisible = false;
         TicketKeypad.IsVisible = true;
+        if (prompt == TicketPrompt.ChangeUser)
+        {
+            ShowPinPad();
+            return;
+        }
+
         if (prompt == TicketPrompt.Split)
         {
             if (_keypadValue is not null)
@@ -4618,6 +4728,53 @@ public partial class PosWindow : UserControl, IOfficeSurface
         if (_splitHost is not null)
         {
             _splitHost.IsVisible = false;
+        }
+    }
+
+    private void ShowPinPad()
+    {
+        if (_keypadValue is not null)
+        {
+            _keypadValue.IsVisible = false;
+        }
+
+        if (_quantityPad is not null)
+        {
+            _quantityPad.IsVisible = false;
+        }
+
+        if (_splitHost is not null)
+        {
+            _splitHost.IsVisible = false;
+        }
+
+        SplitPeopleButtons.IsVisible = false;
+        if (_pinEntry is not null)
+        {
+            _pinEntry.Text = string.Empty;
+            _pinEntry.IsVisible = true;
+        }
+
+        if (_pinPad is not null)
+        {
+            _pinPad.IsVisible = true;
+        }
+
+        TicketDialogCancelText.Text = "Cancelar";
+        TicketDialogConfirmText.Text = "Entrar";
+    }
+
+    private void HidePinPad()
+    {
+        if (_pinEntry is not null)
+        {
+            _pinEntry.Text = string.Empty;
+            _pinEntry.IsVisible = false;
+        }
+
+        if (_pinPad is not null)
+        {
+            _pinPad.IsVisible = false;
         }
     }
 
@@ -4729,6 +4886,83 @@ public partial class PosWindow : UserControl, IOfficeSurface
         Grid.SetColumn(clear, 3);
         pad.Children.Add(clear);
         TicketKeypad.Children.Add(pad);
+        BuildPinPad();
+    }
+
+    private void BuildPinPad()
+    {
+        _pinEntry = new TextBox
+        {
+            Classes = { "pos_price_entry" },
+            IsReadOnly = true,
+            PasswordChar = '*',
+            Watermark = "Introduza a palavra-passe",
+            HorizontalContentAlignment = HorizontalAlignment.Center,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Margin = new Avalonia.Thickness(8, 4, 8, 8),
+            IsVisible = false
+        };
+        TicketKeypad.Children.Add(_pinEntry);
+
+        _pinPad = new Grid
+        {
+            ColumnDefinitions = new ColumnDefinitions("*,*,*"),
+            RowDefinitions = new RowDefinitions("*,*,*,*"),
+            Width = 280,
+            Height = 280,
+            HorizontalAlignment = HorizontalAlignment.Center,
+            IsVisible = false
+        };
+
+        AddPinDigit(_pinPad, "7", 0, 0);
+        AddPinDigit(_pinPad, "8", 0, 1);
+        AddPinDigit(_pinPad, "9", 0, 2);
+        AddPinDigit(_pinPad, "4", 1, 0);
+        AddPinDigit(_pinPad, "5", 1, 1);
+        AddPinDigit(_pinPad, "6", 1, 2);
+        AddPinDigit(_pinPad, "1", 2, 0);
+        AddPinDigit(_pinPad, "2", 2, 1);
+        AddPinDigit(_pinPad, "3", 2, 2);
+
+        var clear = new Button
+        {
+            Classes = { "pos_price_money", "pos_qty_clear" },
+            Content = "CE"
+        };
+        clear.Click += (_, _) =>
+        {
+            if (_pinEntry is not null)
+            {
+                _pinEntry.Text = string.Empty;
+            }
+        };
+        Grid.SetRow(clear, 3);
+        Grid.SetColumn(clear, 0);
+        _pinPad.Children.Add(clear);
+
+        AddPinDigit(_pinPad, "0", 3, 1);
+        TicketKeypad.Children.Add(_pinPad);
+    }
+
+    private void AddPinDigit(Grid pad, string caption, int row, int column)
+    {
+        var button = new Button
+        {
+            Classes = { "pos_price_money" },
+            Content = caption
+        };
+        button.Click += (_, _) =>
+        {
+            if (_pinEntry is null || caption.Length != 1 || char.IsDigit(caption[0]) == false)
+            {
+                return;
+            }
+
+            _pinEntry.Text = (_pinEntry.Text ?? string.Empty) + caption;
+        };
+        Grid.SetRow(button, row);
+        Grid.SetColumn(button, column);
+        pad.Children.Add(button);
     }
 
     private void AddQuantityShortcut(Grid pad, string caption, int row, int column)
@@ -4890,9 +5124,12 @@ public partial class PosWindow : UserControl, IOfficeSurface
     private void CloseTicketDialog()
     {
         _prompt = TicketPrompt.None;
+        _pendingUserId = null;
+        _pendingUserName = string.Empty;
         TicketOverlay.IsVisible = false;
         TicketKeypad.IsVisible = false;
         SplitPeopleButtons.IsVisible = false;
+        HidePinPad();
         if (_keypadValue is not null)
         {
             _keypadValue.IsVisible = true;

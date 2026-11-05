@@ -1,4 +1,5 @@
 ﻿using LogicPOS.Application.Features.Finance.Documents.PdfGeneration;
+using LogicPOS.Core.FrontOffice;
 using QrCodes;
 using QrCodes.Renderers;
 using QrCodes.Renderers.Abstractions;
@@ -399,7 +400,11 @@ public class ReceiptModel : IDocument
         });
     }
 
-    public byte[] ToPdf() => this.GeneratePdf();
+    public byte[] ToPdf()
+    {
+        A4DocumentPdf.EnsureReady();
+        return this.GeneratePdf();
+    }
 
     public void Compose(IDocumentContainer container)
     {

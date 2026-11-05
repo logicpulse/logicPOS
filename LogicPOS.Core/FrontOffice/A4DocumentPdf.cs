@@ -10,13 +10,33 @@ public sealed record PosDocumentTypeOption(Guid Id, string Acronym, string Desig
 
 public static class A4DocumentPdf
 {
-    static A4DocumentPdf()
+    private static readonly object FontGate = new();
+    private static bool _fontsReady;
+
+    static A4DocumentPdf() => EnsureReady();
+
+    /// <summary>License and Arial registration. Receipt PDFs do not pass through <see cref="Render"/>.</summary>
+    public static void EnsureReady()
     {
         QuestPDF.Settings.License = LicenseType.Community;
-        RegisterSystemFont("arial.ttf");
-        RegisterSystemFont("arialbd.ttf");
-        RegisterSystemFont("ariali.ttf");
-        RegisterSystemFont("arialbi.ttf");
+        if (_fontsReady)
+        {
+            return;
+        }
+
+        lock (FontGate)
+        {
+            if (_fontsReady)
+            {
+                return;
+            }
+
+            RegisterSystemFont("arial.ttf");
+            RegisterSystemFont("arialbd.ttf");
+            RegisterSystemFont("ariali.ttf");
+            RegisterSystemFont("arialbi.ttf");
+            _fontsReady = true;
+        }
     }
 
     public static byte[] Render(DocumentPdfData data, bool isSecondCopy = false)

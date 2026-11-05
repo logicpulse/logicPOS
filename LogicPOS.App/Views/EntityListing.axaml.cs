@@ -9,6 +9,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using LogicPOS.App;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
 using Avalonia.VisualTree;
@@ -776,6 +777,15 @@ public partial class EntityListing : UserControl
 
     private async Task<Control> LayoutGroupAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
     {
+        var permissions = fields
+            .Where(field => field.Key.StartsWith("perm:", StringComparison.Ordinal) && field.Kind == "bool")
+            .ToList();
+        if (permissions.Count > 0
+            && permissions.Count == fields.Count(field => field.Kind != "image"))
+        {
+            return await BuildPermissionGroupAsync(service, permissions);
+        }
+
         var root = new StackPanel();
         var prices = fields.Where(field => IsPriceCell(field.Key)).ToList();
         if (prices.Count > 0)
@@ -784,6 +794,87 @@ public partial class EntityListing : UserControl
         }
 
         root.Children.Add(await BuildColumnsAsync(service, fields.Where(field => IsPriceCell(field.Key) == false).ToList()));
+        return root;
+    }
+
+    private async Task<Control> BuildPermissionGroupAsync(IBackOfficeListingService service, IReadOnlyList<ListingField> fields)
+    {
+        var root = new StackPanel { Classes = { "bo_perm_root" } };
+        var search = new TextBox
+        {
+            Classes = { "bo_entity_input", "bo_perm_search" },
+            PlaceholderText = "Pesquisar permissões..."
+        };
+        var grid = new Grid { Classes = { "bo_perm_grid" } };
+        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        grid.ColumnDefinitions.Add(new ColumnDefinition(new GridLength(1, GridUnitType.Star)));
+        var items = new List<(Control Block, string Label)>();
+        var column = 0;
+        var row = 0;
+        foreach (var field in fields)
+        {
+            var block = await CreateFieldBlockAsync(service, field, caption: false);
+            block.Classes.Add("bo_perm_item");
+            if (block is CheckBox box)
+            {
+                box.Content = new TextBlock
+                {
+                    Text = field.Label,
+                    TextWrapping = TextWrapping.Wrap
+                };
+            }
+
+            EnsureRow(grid, row);
+            Avalonia.Controls.Grid.SetRow(block, row);
+            Avalonia.Controls.Grid.SetColumn(block, column);
+            grid.Children.Add(block);
+            items.Add((block, field.Label ?? string.Empty));
+            if (column == 1)
+            {
+                column = 0;
+                row++;
+            }
+            else
+            {
+                column++;
+            }
+        }
+
+        void ApplyFilter()
+        {
+            var needle = (search.Text ?? string.Empty).Trim();
+            var visible = items
+                .Where(item => needle.Length == 0
+                    || item.Label.Contains(needle, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            foreach (var (block, _) in items)
+            {
+                block.IsVisible = false;
+            }
+
+            var nextColumn = 0;
+            var nextRow = 0;
+            foreach (var (block, _) in visible)
+            {
+                EnsureRow(grid, nextRow);
+                Avalonia.Controls.Grid.SetRow(block, nextRow);
+                Avalonia.Controls.Grid.SetColumn(block, nextColumn);
+                block.IsVisible = true;
+                if (nextColumn == 1)
+                {
+                    nextColumn = 0;
+                    nextRow++;
+                }
+                else
+                {
+                    nextColumn++;
+                }
+            }
+        }
+
+        search.TextChanged += (_, _) => ApplyFilter();
+        root.Children.Add(search);
+        root.Children.Add(grid);
         return root;
     }
 

@@ -2536,10 +2536,13 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             .Select(item => new { item.PermissionItemId, item.Granted })
             .ToListAsync(cancellationToken);
         var keepPermissions = ProfileMenuAccess.KeepsPermissionsMenu(profileId);
-        // Profiles that were never edited keep the full menu, including Permissões.
+        // Owner with no rows yet keeps the full menu. Other profiles without rows get nothing
+        // (seeded waiters/barmen have no PermissionProfile rows — must not mean "allow all").
         if (grants.Count == 0)
         {
-            return null;
+            return keepPermissions
+                ? null
+                : ProfileMenuAccess.AllowedTitles([], keepPermissionsMenu: false);
         }
 
         var grantedIds = grants.Where(item => item.Granted).Select(item => item.PermissionItemId).ToHashSet();

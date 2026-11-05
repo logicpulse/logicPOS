@@ -12,7 +12,7 @@ public sealed class LoginService : ILoginService
 {
     private readonly IServiceScopeFactory _scopes;
     private readonly IPasswordHasher _passwordHasher;
-    private readonly DesktopAuditingInformationService? _auditing;
+    private readonly IAuditingInformationService? _auditing;
     private Guid? _selectedTerminalId;
 
     public LoginService(
@@ -22,7 +22,7 @@ public sealed class LoginService : ILoginService
     {
         _scopes = scopes;
         _passwordHasher = passwordHasher;
-        _auditing = auditing as DesktopAuditingInformationService;
+        _auditing = auditing;
     }
 
     public async Task<IReadOnlyList<UserOption>> GetUsersAsync(CancellationToken cancellationToken = default)

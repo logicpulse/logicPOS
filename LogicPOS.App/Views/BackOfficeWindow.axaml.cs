@@ -28,6 +28,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     private readonly List<StackPanel> _sectionPanels = new();
     private readonly List<Button> _sectionButtons = new();
     private readonly HashSet<string> _dismissedSetupAlerts = new(StringComparer.OrdinalIgnoreCase);
+    private IReadOnlyCollection<string>? _allowedMenu;
     private Button? _selectedItem;
     private bool _allowClose;
     private bool _backOfficeOnly;
@@ -288,6 +289,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         ClockLabel.Text = DateTime.Now.ToString(ClockFormat);
         _clock.Start();
         // Diferir carregamentos pesados para não bloquear o UI thread (evita ANR no Android).
+        Dispatcher.UIThread.Post(() => _ = ApplyMenuAccessAsync(), DispatcherPriority.Background);
         Dispatcher.UIThread.Post(() => _ = ReloadDashboardSafeAsync(), DispatcherPriority.Background);
         Dispatcher.UIThread.Post(() => _ = RefreshSetupAlertsAsync(), DispatcherPriority.Background);
     }
@@ -576,7 +578,8 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             var parent = new Button
             {
                 Classes = { "bo_menu_parent" },
-                Content = CreateRow($"{IconRoot}{section.Icon}", AppText.Get(section.Title))
+                Content = CreateRow($"{IconRoot}{section.Icon}", AppText.Get(section.Title)),
+                Tag = direct ? section.Title : null
             };
             ToolTip.SetTip(parent, AppText.Get(section.Title));
             parent.Click += (_, _) =>
@@ -588,6 +591,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
                 if (direct)
                 {
+                    if (IsMenuAllowed(section.Title) == false)
+                    {
+                        return;
+                    }
+
                     OpenReports();
                     return;
                 }
@@ -630,22 +638,53 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             return;
         }
 
-        if (allowed is null)
+        // null = unrestricted owner; empty = no gated menus; otherwise only listed titles.
+        _allowedMenu = allowed;
+        for (var index = 0; index < _sectionPanels.Count; index++)
         {
-            return;
-        }
-
-        foreach (var panel in _sectionPanels)
-        {
+            var panel = _sectionPanels[index];
+            var parent = index < _sectionButtons.Count ? _sectionButtons[index] : null;
+            var anyChild = false;
+            var childCount = 0;
             foreach (var child in panel.Children.OfType<Button>())
             {
-                if (child.Tag is string title)
+                if (child.Tag is not string title)
                 {
-                    // Ungated entries (backup, logout, new document) stay available.
-                    child.IsEnabled = ProfileMenuAccess.IsRestricted(title) == false || allowed.Contains(title);
+                    continue;
                 }
+
+                childCount++;
+                var enabled = IsMenuAllowed(title);
+                child.IsEnabled = enabled;
+                anyChild |= enabled;
+            }
+
+            if (parent is null)
+            {
+                continue;
+            }
+
+            if (parent.Tag is string directTitle)
+            {
+                parent.IsEnabled = IsMenuAllowed(directTitle);
+            }
+            else if (childCount > 0)
+            {
+                // Keep the section visible but muted when every child is denied.
+                parent.IsEnabled = anyChild;
             }
         }
+    }
+
+    private bool IsMenuAllowed(string title)
+    {
+        if (ProfileMenuAccess.IsRestricted(title) == false)
+        {
+            return true;
+        }
+
+        // null => unrestricted; empty => deny all gated titles.
+        return _allowedMenu is null || _allowedMenu.Contains(title);
     }
 
     private static Control CreateRow(string iconUri, string text)
@@ -847,6 +886,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
     {
         var service = AppComposition.Services?.GetService<IBackOfficeListingService>();
         title = service?.ResolveTitle(title) ?? title;
+        if (IsMenuAllowed(title) == false)
+        {
+            return;
+        }
+
         if (SaftExportUi.IsMenuTitle(title))
         {
             OpenSaftFromMenu(title);
