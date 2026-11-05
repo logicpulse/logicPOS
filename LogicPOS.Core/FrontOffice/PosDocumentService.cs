@@ -2021,8 +2021,10 @@ public sealed class PosDocumentService : IPosDocumentService
             .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId, cancellationToken);
         var thermalPrinted = await database.DocumentPrints.AsNoTracking()
             .AnyAsync(item => item.IsDeleted == false && item.DocumentId == documentId && item.IsThermalPrint, cancellationToken);
-        // FO talões (FS/FR) always; other invoice types only when already printed thermally.
-        var useTicketLayout = document.Type is "FS" or "FR" || thermalPrinted;
+        var backOfficeOnly = scope.ServiceProvider.GetService<IOperationMode>() is { } mode
+            && await mode.IsBackOfficeOnlyAsync(cancellationToken);
+        // BackOffice mode is always A4. FO talões (FS/FR) always; other types only when already printed thermally.
+        var useTicketLayout = backOfficeOnly == false && (document.Type is "FS" or "FR" || thermalPrinted);
         // Portuguese rules: after the original was delivered, further copies are 2ª via.
         var isSecondCopy = wasPrinted;
 

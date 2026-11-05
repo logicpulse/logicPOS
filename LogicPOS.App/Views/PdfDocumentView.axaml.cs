@@ -213,7 +213,8 @@ public partial class PdfDocumentView : UserControl
 
         try
         {
-            if (_documentId is Guid documentId && documentId != Guid.Empty)
+            var backOfficeOnly = await IsBackOfficeOnlyAsync();
+            if (backOfficeOnly == false && _documentId is Guid documentId && documentId != Guid.Empty)
             {
                 var source = AppComposition.Services?.GetService<IThermalPrintSource>();
                 if (source is not null && await source.WasPrintedAsync(documentId))
@@ -226,14 +227,16 @@ public partial class PdfDocumentView : UserControl
                     return;
                 }
 
-                var (_, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
-                if (printError is null)
+                var (handled, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
+                if (handled && printError is null)
                 {
                     SetStatus(string.Empty);
                     return;
                 }
 
-                if (printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
+                if (handled
+                    && printError is not null
+                    && printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
                     && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
                 {
                     SetStatus(printError);
@@ -241,7 +244,13 @@ public partial class PdfDocumentView : UserControl
                 }
             }
 
-            await Task.Run(() => PdfWindowsPrint.Print(_pdfPath));
+            // A4 / preview: always open the Windows printer dialog (STA = UI thread).
+            if (PdfWindowsPrint.PrintWithDialog(_pdfPath) == false)
+            {
+                SetStatus(string.Empty);
+                return;
+            }
+
             SetStatus(string.Empty);
         }
         catch (Exception exception)
@@ -250,6 +259,12 @@ public partial class PdfDocumentView : UserControl
                 ? "Não foi possível imprimir o documento."
                 : exception.Message);
         }
+    }
+
+    private static async Task<bool> IsBackOfficeOnlyAsync()
+    {
+        var mode = AppComposition.Services?.GetService<IOperationMode>();
+        return mode is not null && await mode.IsBackOfficeOnlyAsync();
     }
 
     private async Task BuildReprintOptionsAsync(Guid documentId)

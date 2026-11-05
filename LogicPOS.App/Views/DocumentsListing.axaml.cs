@@ -1007,7 +1007,9 @@ public partial class DocumentsListing : UserControl
         var sent = 0;
         var thermal = 0;
         string? printError = null;
-        var useThermal = string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer);
+        var backOfficeOnly = await IsBackOfficeOnlyAsync();
+        var useThermal = backOfficeOnly == false
+            && (string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer));
         foreach (var row in rows)
         {
             if (useThermal)
@@ -1032,13 +1034,24 @@ public partial class DocumentsListing : UserControl
             var path = await CreatePdfAsync(row);
             if (path is null)
             {
-                printError ??= "N�o foi poss�vel gerar o PDF.";
+                printError ??= "Não foi possível gerar o PDF.";
                 continue;
             }
 
             try
             {
-                await Task.Run(() => PdfWindowsPrint.Print(path, printer));
+                if (backOfficeOnly && string.IsNullOrWhiteSpace(printer))
+                {
+                    if (PdfWindowsPrint.PrintWithDialog(path) == false)
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    await Task.Run(() => PdfWindowsPrint.Print(path, printer));
+                }
+
                 sent++;
             }
             catch (Exception exception)
@@ -1048,8 +1061,8 @@ public partial class DocumentsListing : UserControl
         }
 
         var destination = useThermal && thermal == sent
-            ? "a impressora t�rmica"
-            : string.IsNullOrWhiteSpace(printer) ? "a impressora predefinida" : printer;
+            ? "a impressora térmica"
+            : string.IsNullOrWhiteSpace(printer) ? "a impressora selecionada" : printer;
         ActionNotice.Text = sent == rows.Count
             ? $"{sent} documento(s) enviado(s) para {destination}."
             : $"Enviados {sent} de {rows.Count} documentos."
@@ -1061,7 +1074,7 @@ public partial class DocumentsListing : UserControl
         if (await NeedsReprintDialogAsync(documentId))
         {
             // Already printed: caller must open the reprint dialog (copies + motive).
-            return (true, "Documento j� impresso. Use Imprimir e indique o motivo da segunda via.");
+            return (true, "Documento já impresso. Use Imprimir e indique o motivo da segunda via.");
         }
 
         return await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
@@ -1069,8 +1082,19 @@ public partial class DocumentsListing : UserControl
 
     private static async Task<bool> NeedsReprintDialogAsync(Guid documentId)
     {
+        if (await IsBackOfficeOnlyAsync())
+        {
+            return false;
+        }
+
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
         return source is not null && await source.WasPrintedAsync(documentId);
+    }
+
+    private static async Task<bool> IsBackOfficeOnlyAsync()
+    {
+        var mode = AppComposition.Services?.GetService<IOperationMode>();
+        return mode is not null && await mode.IsBackOfficeOnlyAsync();
     }
 
     private static async Task<bool> IsTerminalThermalPrinterAsync(string? printerName)

@@ -33,6 +33,12 @@ internal static class FrontOfficePrinting
             : null;
     }
 
+    private static async Task<bool> IsBackOfficeOnlyAsync()
+    {
+        var mode = AppComposition.Services?.GetService<IOperationMode>();
+        return mode is not null && await mode.IsBackOfficeOnlyAsync();
+    }
+
     /// <summary>
     /// Prints the issued document on the terminal thermal printer (GTK ThermalPrintingService.PrintInvoice).
     /// Returns an error message, or null when printed or when the terminal has no thermal printer.
@@ -47,6 +53,12 @@ internal static class FrontOfficePrinting
         if (blocked is not null)
         {
             return (false, blocked);
+        }
+
+        if (await IsBackOfficeOnlyAsync())
+        {
+            // BackOffice mode always prints A4 via the Windows spooler — never thermal.
+            return (false, null);
         }
 
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
@@ -105,6 +117,12 @@ internal static class FrontOfficePrinting
         if (blocked is not null)
         {
             return (false, blocked);
+        }
+
+        if (await IsBackOfficeOnlyAsync())
+        {
+            // BackOffice mode always prints A4 via the Windows spooler — never thermal.
+            return (false, null);
         }
 
         var source = AppComposition.Services?.GetService<IThermalPrintSource>();
