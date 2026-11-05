@@ -5024,11 +5024,20 @@
         <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
-    <Style Selector="Border.bo_pdf_dialog Border.pos_pay_footer">
+    <Style Selector="Border.bo_pdf_dialog Border.pos_pay_footer.bo_pdf_footer">
         <Setter Property="CornerRadius" Value="0,0,14,14" />
         <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="Padding" Value="14,10" />
+        <Setter Property="Padding" Value="16,12" />
         <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="MinHeight" Value="76" />
+    </Style>
+
+    <Style Selector="Border.bo_pdf_dialog Button.login_alert_action">
+        <Setter Property="Width" Value="84" />
+        <Setter Property="Height" Value="52" />
+        <Setter Property="MinWidth" Value="84" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
 
     <Style Selector="Border.bo_pdf_dialog DockPanel.login_alert_inner">

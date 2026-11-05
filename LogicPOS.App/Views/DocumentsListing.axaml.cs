@@ -1042,11 +1042,7 @@ public partial class DocumentsListing : UserControl
             {
                 await Task.Run(() =>
                 {
-                    if (OperatingSystem.IsWindows())
-                    {
-                        PdfWindowsPrint.Print(path, printer);
-                    }
-                    else if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
+                    if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
                     {
                         throw new InvalidOperationException("Não foi possível abrir o PDF para impressão.");
                     }

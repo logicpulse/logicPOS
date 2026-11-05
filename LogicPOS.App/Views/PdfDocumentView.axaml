@@ -12,16 +12,18 @@
                     <TextBlock x:Name="TitleText" Classes="login_alert_title" Text="Documento" />
                 </StackPanel>
             </Border>
-            <Border Classes="pos_pay_footer" DockPanel.Dock="Bottom">
-                <StackPanel Classes="login_alert_action_buttons">
-                    <Button Classes="login_alert_action pos_pay_action" Click="OnCloseClick">
-                        <StackPanel Classes="login_alert_action_content">
-                            <Image Classes="login_alert_action_icon"
-                                   Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
-                            <TextBlock Classes="login_alert_action_text" Text="Fechar" />
-                        </StackPanel>
-                    </Button>
-                </StackPanel>
+            <Border Classes="pos_pay_footer bo_pdf_footer" DockPanel.Dock="Bottom">
+                <DockPanel>
+                    <StackPanel Classes="login_alert_action_buttons" DockPanel.Dock="Right">
+                        <Button Classes="login_alert_action" Click="OnCloseClick">
+                            <StackPanel Classes="login_alert_action_content">
+                                <Image Classes="login_alert_action_icon"
+                                       Source="avares://LogicPOS.App/Assets/Images/Dialogs/icon_pos_dialog_action_no.png" />
+                                <TextBlock Classes="login_alert_action_text" Text="Fechar" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
             </Border>
             <Border Classes="bo_pdf_body">
                 <DockPanel>
