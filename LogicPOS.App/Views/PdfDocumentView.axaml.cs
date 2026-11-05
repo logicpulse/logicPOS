@@ -244,14 +244,16 @@ public partial class PdfDocumentView : UserControl
                 }
             }
 
-            // A4 / preview: always open the Windows printer dialog (STA = UI thread).
-            if (PdfWindowsPrint.PrintWithDialog(_pdfPath) == false)
+            // A4 / preview: Windows → default printer; Linux/macOS → open PDF for the user to print.
+            if (PdfWindowsPrint.PrintOrOpen(_pdfPath) == false)
             {
-                SetStatus(string.Empty);
+                SetStatus("Não foi possível iniciar a impressão.");
                 return;
             }
 
-            SetStatus(string.Empty);
+            SetStatus(OperatingSystem.IsWindows()
+                ? string.Empty
+                : "PDF aberto — imprime a partir da aplicação do sistema.");
         }
         catch (Exception exception)
         {

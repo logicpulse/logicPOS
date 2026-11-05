@@ -1040,17 +1040,17 @@ public partial class DocumentsListing : UserControl
 
             try
             {
-                if (backOfficeOnly && string.IsNullOrWhiteSpace(printer))
+                await Task.Run(() =>
                 {
-                    if (PdfWindowsPrint.PrintWithDialog(path) == false)
+                    if (OperatingSystem.IsWindows())
                     {
-                        continue;
+                        PdfWindowsPrint.Print(path, printer);
                     }
-                }
-                else
-                {
-                    await Task.Run(() => PdfWindowsPrint.Print(path, printer));
-                }
+                    else if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
+                    {
+                        throw new InvalidOperationException("Não foi possível abrir o PDF para impressão.");
+                    }
+                });
 
                 sent++;
             }

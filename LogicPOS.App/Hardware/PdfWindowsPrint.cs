@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Printing;
 using System.Runtime.Versioning;
@@ -7,63 +8,56 @@ using SkiaSharp;
 namespace LogicPOS.App.Hardware;
 
 /// <summary>
-/// Prints a PDF through the Windows spooler (GDI). Shell verbs print/printto are unreliable
-/// when Edge/Chrome owns the .pdf association and does not register those verbs.
+/// Cross-platform PDF print helper. Windows uses the GDI spooler (no WinForms dialog);
+/// Linux/macOS open the PDF in the default viewer so the user can print there.
 /// </summary>
 internal static class PdfWindowsPrint
 {
+    /// <summary>
+    /// Prints on Windows (default or named printer) or opens the PDF on other OSes.
+    /// Returns false only when the user-facing open/print could not be started.
+    /// </summary>
+    public static bool PrintOrOpen(string pdfPath, string? printerName = null)
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            Print(pdfPath, printerName);
+            return true;
+        }
+
+        return OpenWithDefaultApp(pdfPath);
+    }
+
     [SupportedOSPlatform("windows")]
     public static void Print(string pdfPath, string? printerName = null)
     {
+        if (OperatingSystem.IsWindows() == false)
+        {
+            throw new PlatformNotSupportedException("A impressão GDI só está disponível em Windows.");
+        }
+
         using var session = CreateSession(pdfPath, printerName);
         session.Document.Print();
     }
 
-    /// <summary>
-    /// Opens the Windows printer dialog, then prints when the user confirms.
-    /// Must run on an STA thread (Avalonia UI thread on Windows).
-    /// Returns false when the user cancels.
-    /// </summary>
-    [SupportedOSPlatform("windows")]
-    public static bool PrintWithDialog(string pdfPath)
+    public static bool OpenWithDefaultApp(string pdfPath)
     {
-        using var session = CreateSession(pdfPath, printerName: null);
-        try
+        if (string.IsNullOrWhiteSpace(pdfPath) || File.Exists(pdfPath) == false)
         {
-            using var dialog = new System.Windows.Forms.PrintDialog
-            {
-                Document = session.Document,
-                UseEXDialog = true,
-                AllowSomePages = true,
-                AllowSelection = false
-            };
-
-            if (dialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-            {
-                return false;
-            }
-        }
-        catch (FileNotFoundException)
-        {
-            // Self-contained installs may omit Windows Forms — print to the default printer.
-        }
-        catch (TypeLoadException)
-        {
-            // Same fallback when the WinForms type is unavailable at runtime.
+            throw new FileNotFoundException("PDF não encontrado.", pdfPath);
         }
 
-        session.Document.Print();
-        return true;
+        var start = new ProcessStartInfo
+        {
+            FileName = pdfPath,
+            UseShellExecute = true
+        };
+        return Process.Start(start) is not null;
     }
 
     [SupportedOSPlatform("windows")]
     private static PrintSession CreateSession(string pdfPath, string? printerName)
     {
-        if (OperatingSystem.IsWindows() == false)
-        {
-            throw new PlatformNotSupportedException("A impressão de PDF só está disponível em Windows.");
-        }
-
         if (string.IsNullOrWhiteSpace(pdfPath) || File.Exists(pdfPath) == false)
         {
             throw new FileNotFoundException("PDF não encontrado.", pdfPath);
