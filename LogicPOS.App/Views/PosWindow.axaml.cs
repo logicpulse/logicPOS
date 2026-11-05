@@ -620,7 +620,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
                 orderGrid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
                 orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
                 orderGrid.RowDefinitions.Add(new RowDefinition(GridLength.Star));
-                AddStatusText(orderGrid, "Ordem", 0, 0, "pos_status_text_small", HorizontalAlignment.Left);
+                AddStatusText(orderGrid, TableSingularLabel, 0, 0, "pos_status_text_small", HorizontalAlignment.Left);
                 _currentTableLabel = new TextBlock { Classes = { "pos_status_text" }, Text = CurrentTableCaption(), HorizontalAlignment = HorizontalAlignment.Left };
                 Grid.SetRow(_currentTableLabel, 1);
                 orderGrid.Children.Add(_currentTableLabel);
@@ -737,7 +737,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Aumentar", "icon_pos_ticketpad_increase.png", 1, 0, 1, "pos_pad_button_grey", IncreaseSelected);
             AddPadButton("Fin.pedido", "icon_pos_retail_ticketpad_finish_order.png", 2, 0, 1, "pos_pad_button_green", FinishTicket);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_green", RequestPayments);
-            AddPadButton("Ordens", "icon_pos_retail_view_orders.png", 4, 0, 1, "pos_pad_button_green", ShowOrders);
+            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 4, 0, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Eliminar", "icon_pos_ticketpad_delete.png", 5, 0, 1, "pos_pad_button_grey", RequestDeleteTicket);
             AddPadButton("Próximo", "icon_pos_ticketpad_next.png", 0, 1, 1, "pos_pad_button_grey", SelectNextLine);
             AddPadButton("Diminuir", "icon_pos_ticketpad_decrease.png", 1, 1, 1, "pos_pad_button_grey", DecreaseSelected);
@@ -760,7 +760,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
             AddPadButton("Dividir", "icon_pos_ticketpad_payments.png", 3, 0, 1, "pos_pad_button_grey", RequestSplit);
             AddPadButton("Pagamentos", "icon_pos_ticketpad_payments.png", 2, 1, 1, "pos_pad_button_green", RequestPayments);
             AddPadButton("Reemb. Volta", "icon_pos_ticketpad_payments.png", 3, 1, 1, "pos_pad_button_grey", ShowVoltaRefund);
-            AddPadButton("Ordens", "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
+            AddPadButton(TablesPadLabel, "icon_pos_retail_view_orders.png", 2, 2, 1, "pos_pad_button_green", ShowOrders);
             AddPadButton("Cartão", "icon_pos_ticketpad_card_entry.png", 3, 2, 1, "pos_pad_button_grey", RequestCard);
             AddPadButton("Cód.Barras/Artigo", "icon_pos_ticketpad_barcode.png", 2, 3, 1, "pos_pad_button_grey", RequestBarcode);
             AddPadButton("Peso", "icon_pos_ticketpad_weight.png", 3, 3, 1, "pos_pad_button_grey", RequestWeight);
@@ -2058,7 +2058,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         SetNamedButton(_padButtons, "Eliminar", selling && lineEditable && _access.AllowsDeleteTicket);
         SetNamedButton(_padButtons, "Pagamentos", selling && (hasLines || hasOrder) && _access.AllowsPayments);
         SetNamedButton(_padButtons, "Dividir", selling && hasOrder && editingTicket == false && _openOrderId is not null && _access.AllowsPayments);
-        SetNamedButton(_padButtons, "Ordens", selling);
+        SetNamedButton(_padButtons, TablesPadLabel, selling);
         SetNamedButton(_padButtons, "Alt. lista", selling);
         SetNamedButton(_padButtons, "Cartão", selling);
         SetNamedButton(_padButtons, "Cód.Barras/Artigo", selling);
@@ -2740,8 +2740,20 @@ public partial class PosWindow : UserControl, IOfficeSurface
 
     private string CurrentTableCaption()
     {
-        return _currentTable is null ? string.Empty : $"Ordem {_currentTable.Name}";
+        return _currentTable is null ? string.Empty : $"{TableSingularLabel} {_currentTable.Name}";
     }
+
+    private static bool UsesRetailOrderVocabulary()
+    {
+        var module = AppComposition.Services?.GetService<IConfiguration>()?["DatabaseSettings:Module"];
+        return OperationModes.UsesRetailOrderVocabulary(module);
+    }
+
+    private string TablesPadLabel => UsesRetailOrderVocabulary() ? "Ordens" : "Mesas";
+
+    private string TableSingularLabel => UsesRetailOrderVocabulary() ? "Ordem" : "Mesa";
+
+    private string TablesDialogTitle => TablesPadLabel;
 
     private async Task LoadDefaultTableAsync()
     {
@@ -3274,9 +3286,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         ListTitle.Text = _tablePurpose switch
         {
-            TablePurpose.ChangeOrder => "Mudar ordem",
+            TablePurpose.ChangeOrder => UsesRetailOrderVocabulary() ? "Mudar ordem" : "Mudar mesa",
             TablePurpose.MoveLine => "Mover linha",
-            _ => "Ordens"
+            _ => TablesDialogTitle
         };
         TablesChangeButton.IsVisible = _openOrderId is not null;
         TablesMoveButton.IsVisible = _orderListMode && SelectedOrderLine is not null;
@@ -3490,7 +3502,9 @@ public partial class PosWindow : UserControl, IOfficeSurface
             orders = orders.Where(order => order.Id == picked.OrderId).ToList();
         }
 
-        OrdersTitle.Text = picked is null ? "Ordens" : $"Ordens :: Ordem {picked.Name}";
+        OrdersTitle.Text = picked is null
+            ? TablesDialogTitle
+            : $"{TablesDialogTitle} :: {TableSingularLabel} {picked.Name}";
         OrdersHost.Children.Clear();
         if (orders.Count == 0)
         {
@@ -3767,7 +3781,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         RenderTables();
         if (result.Succeeded == false)
         {
-            ShowQuestion(TicketPrompt.Notice, "Ordens", result.Error ?? "Não foi possível alterar a reserva.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, TablesDialogTitle, result.Error ?? "Não foi possível alterar a reserva.", question: false, confirmText: "Ok", showCancel: false);
         }
     }
 
@@ -3854,14 +3868,14 @@ public partial class PosWindow : UserControl, IOfficeSurface
     {
         if (_pickedTableKey is null)
         {
-            ShowQuestion(TicketPrompt.Notice, "Ordens", "Selecione uma mesa.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, TablesDialogTitle, "Selecione uma mesa.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
         var table = _tableSlots.First(item => item.Id.ToString() == _pickedTableKey);
         if (table.State == PosTableState.Reserved)
         {
-            ShowQuestion(TicketPrompt.Notice, "Ordens", "Mesa reservada.", question: false, confirmText: "Ok", showCancel: false);
+            ShowQuestion(TicketPrompt.Notice, TablesDialogTitle, "Mesa reservada.", question: false, confirmText: "Ok", showCancel: false);
             return;
         }
 
