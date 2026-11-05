@@ -37,10 +37,13 @@
                     <x:Double x:Key="CalendarFontSize">13</x:Double>
                     <x:Double x:Key="CalendarDayButtonFontSize">12</x:Double>
                     <x:Double x:Key="CalendarWeekNumberFontSize">11</x:Double>
-                    <x:Double x:Key="CalendarButtonMinWidth">28</x:Double>
+                    <x:Double x:Key="CalendarButtonMinWidth">30</x:Double>
                     <x:Double x:Key="CalendarButtonMinHeight">28</x:Double>
                     <x:Double x:Key="TimePickerThemeMinWidth">140</x:Double>
                     <x:Double x:Key="TimePickerThemeMaxWidth">220</x:Double>
+                    <!-- Fluent CalendarItem reserves ~301px; keep month view tight. -->
+                    <x:Double x:Key="CalendarItemMinHeight">0</x:Double>
+                    <x:Double x:Key="CalendarItemMinWidth">220</x:Double>
                 </Border.Resources>
                 <DockPanel>
                     <Border Classes="bo_period_popup_footer" DockPanel.Dock="Bottom">
@@ -76,14 +79,18 @@
                             </StackPanel>
                         </Grid>
                         <StackPanel Classes="bo_period_calendars" Orientation="Horizontal">
-                            <Calendar x:Name="LeftCalendar"
-                                      Classes="bo_period_calendar"
-                                      SelectionMode="SingleDate"
-                                      SelectedDatesChanged="OnLeftCalendarChanged" />
-                            <Calendar x:Name="RightCalendar"
-                                      Classes="bo_period_calendar"
-                                      SelectionMode="SingleDate"
-                                      SelectedDatesChanged="OnRightCalendarChanged" />
+                            <Border Classes="bo_period_calendar_frame">
+                                <Calendar x:Name="LeftCalendar"
+                                          Classes="bo_period_calendar"
+                                          SelectionMode="SingleDate"
+                                          SelectedDatesChanged="OnLeftCalendarChanged" />
+                            </Border>
+                            <Border Classes="bo_period_calendar_frame">
+                                <Calendar x:Name="RightCalendar"
+                                          Classes="bo_period_calendar"
+                                          SelectionMode="SingleDate"
+                                          SelectedDatesChanged="OnRightCalendarChanged" />
+                            </Border>
                         </StackPanel>
                         <Grid Classes="bo_period_times" ColumnDefinitions="*,*" ColumnSpacing="12">
                             <StackPanel>
