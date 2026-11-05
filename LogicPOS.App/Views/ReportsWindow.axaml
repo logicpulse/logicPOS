@@ -92,55 +92,56 @@
                         </DockPanel>
                     </Border>
                     <Border Classes="bo_reports_body">
-                        <StackPanel x:Name="Filters" Classes="bo_new_doc_fields bo_reports_filters_body" Spacing="8">
-                            <TextBlock x:Name="FiltersReportName" Classes="bo_new_doc_caption" TextWrapping="Wrap" />
-                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
-                                <StackPanel x:Name="PeriodPanel" Grid.ColumnSpan="2">
+                        <StackPanel x:Name="Filters" Classes="bo_new_doc_fields bo_reports_filters_body" Spacing="14">
+                            <TextBlock x:Name="FiltersReportName" Classes="bo_reports_filter_title" TextWrapping="Wrap" />
+                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="2*,*,*" ColumnSpacing="12">
+                                <StackPanel x:Name="PeriodPanel">
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Período" />
                                     <views:PeriodRangeField x:Name="Period" />
                                 </StackPanel>
-                                <StackPanel x:Name="DocumentTypePanel" Grid.Column="2" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Tipo de documento" />
-                                    <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo" />
+                                <StackPanel x:Name="DocumentTypePanel" Grid.Column="1" IsVisible="False">
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Tipo de documento" />
+                                    <ComboBox x:Name="DocumentTypeBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
-                                <StackPanel x:Name="TerminalPanel" Grid.Column="3" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Terminal" />
-                                    <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo" />
+                                <StackPanel x:Name="TerminalPanel" Grid.Column="2" IsVisible="False">
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Terminal" />
+                                    <ComboBox x:Name="TerminalBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                             </Grid>
-                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
                                 <StackPanel x:Name="CustomerPanel" IsVisible="False">
-                                    <TextBlock x:Name="CustomerCaption" Classes="bo_new_doc_caption" Text="Cliente" />
-                                    <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock x:Name="CustomerCaption" Classes="bo_reports_filter_caption" Text="Cliente" />
+                                    <ComboBox x:Name="CustomerBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="VatPanel" Grid.Column="1" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Taxa IVA" />
-                                    <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Taxa IVA" />
+                                    <ComboBox x:Name="VatBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="WarehousePanel" Grid.Column="2" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Armazém" />
-                                    <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Armazém" />
+                                    <ComboBox x:Name="WarehouseBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="ArticlePanel" Grid.Column="3" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Artigo" />
-                                    <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Artigo" />
+                                    <ComboBox x:Name="ArticleBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                             </Grid>
-                            <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                            <Grid Classes="bo_reports_filter_row" ColumnDefinitions="*,*,*,*" ColumnSpacing="12">
                                 <StackPanel x:Name="FamilyPanel" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Família" />
-                                    <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Família" />
+                                    <ComboBox x:Name="FamilyBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="SubfamilyPanel" Grid.Column="1" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="Subfamília" />
-                                    <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="Subfamília" />
+                                    <ComboBox x:Name="SubfamilyBox" Classes="bo_new_doc_combo bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="SerialPanel" Grid.Column="2" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="N.º de série" />
-                                    <TextBox x:Name="SerialBox" Classes="bo_new_doc_text" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="N.º de série" />
+                                    <TextBox x:Name="SerialBox" Classes="bo_new_doc_text bo_reports_filter_input" />
                                 </StackPanel>
                                 <StackPanel x:Name="DocumentNumberPanel" Grid.Column="3" IsVisible="False">
-                                    <TextBlock Classes="bo_new_doc_caption" Text="N.º documento" />
-                                    <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text" />
+                                    <TextBlock Classes="bo_reports_filter_caption" Text="N.º documento" />
+                                    <TextBox x:Name="DocumentNumberBox" Classes="bo_new_doc_text bo_reports_filter_input" />
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

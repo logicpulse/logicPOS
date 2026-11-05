@@ -27,6 +27,7 @@ public partial class ReportsWindow : UserControl
     public ReportsWindow()
     {
         InitializeComponent();
+        Period.ShowCaption = false;
         Period.SetRange(
             new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1),
             DateTime.Today.AddDays(1).AddSeconds(-1));

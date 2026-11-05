@@ -6018,6 +6018,53 @@
         <Setter Property="Margin" Value="16,14" />
     </Style>
 
+    <Style Selector="TextBlock.bo_reports_filter_title">
+        <Setter Property="Foreground" Value="#15202B" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,2" />
+    </Style>
+
+    <Style Selector="TextBlock.bo_reports_filter_caption">
+        <Setter Property="Foreground" Value="#6B7785" />
+        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Margin" Value="0,0,0,4" />
+        <Setter Property="Height" Value="16" />
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+    </Style>
+
+    <Style Selector="Grid.bo_reports_filter_row">
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <Style Selector="Grid.bo_reports_filter_row > StackPanel">
+        <Setter Property="Spacing" Value="0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+    </Style>
+
+    <!-- Same control height for period summary, combos and text boxes in the filters dialog. -->
+    <Style Selector="Border.bo_reports_filters Button.bo_period_summary">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="MinWidth" Value="0" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="BorderBrush" Value="#C5CED6" />
+    </Style>
+
+    <Style Selector="Border.bo_reports_filters ComboBox.bo_reports_filter_input,
+                     Border.bo_reports_filters TextBox.bo_reports_filter_input">
+        <Setter Property="MinHeight" Value="36" />
+        <Setter Property="Height" Value="36" />
+        <Setter Property="Padding" Value="10,0" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+    </Style>
+
     <Style Selector="TextBlock.bo_reports_notice">
         <Setter Property="Margin" Value="0,0,12,0" />
         <Setter Property="Foreground" Value="#F0F0F0" />

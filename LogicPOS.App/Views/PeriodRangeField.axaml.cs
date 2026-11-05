@@ -33,6 +33,13 @@ public partial class PeriodRangeField : UserControl
     /// <summary>Raised after Aplicar commits a new range (not on Cancelar / light-dismiss).</summary>
     public event EventHandler? PeriodChanged;
 
+    /// <summary>When false, the built-in "Período" caption is hidden (host supplies its own label).</summary>
+    public bool ShowCaption
+    {
+        get => Caption.IsVisible;
+        set => Caption.IsVisible = value;
+    }
+
     public DateTime Start
     {
         get => _start;
