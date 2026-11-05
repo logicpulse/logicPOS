@@ -812,7 +812,20 @@
         <Setter Property="Background" Value="Transparent" />
     </Style>
 
-    <!-- Novo documento / editores BO: corpo claro (titlebar continua escura). -->
+    <!-- Dark shell + matching title/footer radii so anti-aliased corners stay gray, not white. -->
+    <Style Selector="Border.login_alert_frame">
+        <Setter Property="Background" Value="#3D3D3D" />
+        <Setter Property="BorderBrush" Value="#3D3D3D" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="ClipToBounds" Value="True" />
+        <Setter Property="BoxShadow" Value="0 12 28 0 #66000000" />
+    </Style>
+
+    <!-- Novo documento / editores BO: corpo claro (depois do dark shell para ganhar prioridade). -->
     <Style Selector="UserControl.bo_new_doc Border.login_alert_frame">
         <Setter Property="Background" Value="#FFFFFF" />
         <Setter Property="BorderBrush" Value="#D0D5DA" />
@@ -830,19 +843,6 @@
 
     <Style Selector="UserControl.bo_new_doc DataGrid.bo_doc_grid DataGridCell">
         <Setter Property="Foreground" Value="#15202B" />
-    </Style>
-
-    <!-- Dark shell + matching title/footer radii so anti-aliased corners stay gray, not white. -->
-    <Style Selector="Border.login_alert_frame">
-        <Setter Property="Background" Value="#3D3D3D" />
-        <Setter Property="BorderBrush" Value="#3D3D3D" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="CornerRadius" Value="14" />
-        <Setter Property="ClipToBounds" Value="True" />
-        <Setter Property="BoxShadow" Value="0 12 28 0 #66000000" />
     </Style>
 
     <Style Selector="DockPanel.login_alert_inner">

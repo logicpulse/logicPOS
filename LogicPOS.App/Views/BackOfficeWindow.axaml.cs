@@ -335,8 +335,11 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         var service = AppComposition.Services?.GetService<IOnboardingService>();
         if (service is null)
         {
+            // Cloud/Host: onboarding local não está registado — ainda assim carregar o Painel.
             _onboardingIncomplete = false;
             ApplyFrontOfficeGate();
+            ShowDashboardHome();
+            await ReloadDashboardSafeAsync();
             return;
         }
 

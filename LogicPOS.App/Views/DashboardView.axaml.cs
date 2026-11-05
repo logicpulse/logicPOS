@@ -113,13 +113,14 @@ public partial class DashboardView : UserControl
         {
             // Pedido mais recente substituiu este carregamento.
         }
-        catch
+        catch (Exception exception)
         {
             if (generation != _loadGeneration)
             {
                 return;
             }
 
+            App.WriteCrash("DashboardView.LoadAsync", exception);
             await ShowStatusOnUiAsync("Não foi possível ler a faturação.");
         }
     }
