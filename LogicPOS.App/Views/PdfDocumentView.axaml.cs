@@ -244,14 +244,16 @@ public partial class PdfDocumentView : UserControl
                 }
             }
 
-            // Open in the OS viewer (no WinForms/GDI+) — user prints from there on every platform.
-            if (PdfWindowsPrint.PrintOrOpen(_pdfPath) == false)
+            // Direct print (Win32 spooler / Unix lpr) — no external viewer, no WinForms/GDI+.
+            await Task.Run(() =>
             {
-                SetStatus("Não foi possível abrir o PDF.");
-                return;
-            }
+                if (PdfWindowsPrint.PrintOrOpen(_pdfPath) == false)
+                {
+                    throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
+                }
+            });
 
-            SetStatus("PDF aberto — imprime a partir da aplicação do sistema.");
+            SetStatus(string.Empty);
         }
         catch (Exception exception)
         {
