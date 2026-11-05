@@ -16,10 +16,10 @@ namespace LogicPOS.App.Views;
 
 public partial class NewDocumentWindow : UserControl
 {
-    private const double DocumentMinWidth = 640;
-    private const double DocumentMinHeight = 480;
-    private const double DocumentDefaultWidth = 960;
-    private const double DocumentDefaultHeight = 780;
+    private const double DocumentMinWidth = 1100;
+    private const double DocumentMinHeight = 520;
+    private const double DocumentDefaultWidth = 1280;
+    private const double DocumentDefaultHeight = 820;
 
     // Último tamanho/posição entre aberturas (mesma sessão da app).
     private static double _savedLeft;
