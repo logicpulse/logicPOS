@@ -483,13 +483,12 @@ public partial class ReceiptEmissionView : UserControl
 
     private async Task PrintDocumentAsync(ReceiptGridRow row)
     {
-        try
+        await PrintUi.RunAsync(this, Busy, async () =>
         {
             var path = await CreateDocumentPdfAsync(row.Source.Id);
             if (string.IsNullOrWhiteSpace(path))
             {
-                Notice.Text = "Não foi possível gerar o PDF.";
-                return;
+                throw new InvalidOperationException("Não foi possível gerar o PDF.");
             }
 
             await Task.Run(() =>
@@ -499,13 +498,8 @@ public partial class ReceiptEmissionView : UserControl
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
             });
-
-            Notice.Text = "Documento enviado para a impressora.";
-        }
-        catch (Exception exception)
-        {
-            Notice.Text = exception.Message;
-        }
+        });
+        Notice.Text = string.Empty;
     }
 
     private static async Task<string?> CreateDocumentPdfAsync(Guid documentId)

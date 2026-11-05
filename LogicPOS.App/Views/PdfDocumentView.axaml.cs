@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
+using LogicPOS.App;
 using LogicPOS.App.Hardware;
 using LogicPOS.Core;
 using LogicPOS.Core.FrontOffice;
@@ -211,26 +212,28 @@ public partial class PdfDocumentView : UserControl
             return;
         }
 
-        try
+        var backOfficeOnly = await IsBackOfficeOnlyAsync();
+        if (backOfficeOnly == false && _documentId is Guid documentId && documentId != Guid.Empty)
         {
-            var backOfficeOnly = await IsBackOfficeOnlyAsync();
-            if (backOfficeOnly == false && _documentId is Guid documentId && documentId != Guid.Empty)
+            var source = AppComposition.Services?.GetService<IThermalPrintSource>();
+            if (source is not null && await source.WasPrintedAsync(documentId))
             {
-                var source = AppComposition.Services?.GetService<IThermalPrintSource>();
-                if (source is not null && await source.WasPrintedAsync(documentId))
-                {
-                    ReprintTitle.Text = string.Format(
-                        PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"),
-                        string.IsNullOrWhiteSpace(_documentTitle) ? "—" : _documentTitle);
-                    await BuildReprintOptionsAsync(documentId);
-                    ReprintOverlay.IsVisible = true;
-                    return;
-                }
+                ReprintTitle.Text = string.Format(
+                    PreferenceLabels.Text("window_title_dialog_document_finance_print", "Doc.Nº: {0}"),
+                    string.IsNullOrWhiteSpace(_documentTitle) ? "—" : _documentTitle);
+                await BuildReprintOptionsAsync(documentId);
+                ReprintOverlay.IsVisible = true;
+                return;
+            }
 
+            Busy.Show("A imprimir...");
+            try
+            {
                 var (handled, printError) = await FrontOfficePrinting.TryPrintInvoiceAsync(documentId);
                 if (handled && printError is null)
                 {
                     SetStatus(string.Empty);
+                    PrintUi.Success(this, "Documento enviado para a impressora.");
                     return;
                 }
 
@@ -239,12 +242,19 @@ public partial class PdfDocumentView : UserControl
                     && printError.Contains("não configurada", StringComparison.OrdinalIgnoreCase) == false
                     && printError.Contains("não encontrada", StringComparison.OrdinalIgnoreCase) == false)
                 {
-                    SetStatus(printError);
+                    SetStatus(string.Empty);
+                    PrintUi.Error(this, printError);
                     return;
                 }
             }
+            finally
+            {
+                Busy.Hide();
+            }
+        }
 
-            // Direct print (Win32 spooler / Unix lpr) — no external viewer, no WinForms/GDI+.
+        await PrintUi.RunAsync(this, Busy, async () =>
+        {
             await Task.Run(() =>
             {
                 if (PdfWindowsPrint.PrintOrOpen(_pdfPath) == false)
@@ -252,15 +262,8 @@ public partial class PdfDocumentView : UserControl
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
             });
-
             SetStatus(string.Empty);
-        }
-        catch (Exception exception)
-        {
-            SetStatus(string.IsNullOrWhiteSpace(exception.Message)
-                ? "Não foi possível imprimir o documento."
-                : exception.Message);
-        }
+        });
     }
 
     private static async Task<bool> IsBackOfficeOnlyAsync()
@@ -364,8 +367,24 @@ public partial class PdfDocumentView : UserControl
         }
 
         ReprintOverlay.IsVisible = false;
-        var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
-        SetStatus(reprintError ?? string.Empty);
+        Busy.Show("A imprimir...");
+        try
+        {
+            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+            SetStatus(string.Empty);
+            if (reprintError is null)
+            {
+                PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para a impressora.");
+            }
+            else
+            {
+                PrintUi.Error(this, reprintError);
+            }
+        }
+        finally
+        {
+            Busy.Hide();
+        }
     }
 
     private void OnReprintCancelClick(object? sender, RoutedEventArgs e)

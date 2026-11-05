@@ -1,6 +1,7 @@
 ﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             xmlns:views="using:LogicPOS.App.Views"
              x:Class="LogicPOS.App.Views.PdfDocumentView">
     <Border x:Name="PdfFrame" Classes="login_alert_frame bo_pdf_dialog">
         <Panel>
@@ -108,6 +109,7 @@
                 </DockPanel>
             </Border>
         </Panel>
+        <views:ListingBusy x:Name="Busy" ZIndex="30" />
         </Panel>
     </Border>
 </UserControl>

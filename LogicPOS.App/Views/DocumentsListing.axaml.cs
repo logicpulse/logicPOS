@@ -679,8 +679,25 @@ public partial class DocumentsListing : UserControl
             }
 
             PromptOverlay.IsVisible = false;
-            var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
-            ActionNotice.Text = reprintError ?? $"{copies} cópia(s) enviada(s) para a impressora térmica.";
+            Busy.Show("A imprimir...");
+            try
+            {
+                var (_, reprintError) = await FrontOfficePrinting.TryReprintInvoiceAsync(documentId, copies, reason, secondCopy);
+                ActionNotice.Text = string.Empty;
+                if (reprintError is null)
+                {
+                    PrintUi.Success(this, $"{copies} cópia(s) enviada(s) para a impressora térmica.");
+                }
+                else
+                {
+                    PrintUi.Error(this, reprintError);
+                }
+            }
+            finally
+            {
+                Busy.Hide();
+            }
+
             return;
         }
 
@@ -1005,65 +1022,81 @@ public partial class DocumentsListing : UserControl
 
     private async Task PrintRowsAsync(IReadOnlyList<PosDocumentRow> rows, string? printer)
     {
+        Busy.Show("A imprimir...");
         var sent = 0;
         var thermal = 0;
         string? printError = null;
-        var backOfficeOnly = await IsBackOfficeOnlyAsync();
-        var useThermal = backOfficeOnly == false
-            && (string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer));
-        foreach (var row in rows)
+        try
         {
-            if (useThermal)
+            var backOfficeOnly = await IsBackOfficeOnlyAsync();
+            var useThermal = backOfficeOnly == false
+                && (string.IsNullOrWhiteSpace(printer) || await IsTerminalThermalPrinterAsync(printer));
+            foreach (var row in rows)
             {
-                var (handled, error) = await PrintThermalDocumentAsync(row.Id);
-                if (handled)
+                if (useThermal)
                 {
-                    if (error is null)
+                    var (handled, error) = await PrintThermalDocumentAsync(row.Id);
+                    if (handled)
                     {
-                        sent++;
-                        thermal++;
-                    }
-                    else
-                    {
-                        printError ??= error;
-                    }
+                        if (error is null)
+                        {
+                            sent++;
+                            thermal++;
+                        }
+                        else
+                        {
+                            printError ??= error;
+                        }
 
+                        continue;
+                    }
+                }
+
+                var path = await CreatePdfAsync(row);
+                if (path is null)
+                {
+                    printError ??= "Não foi possível gerar o PDF.";
                     continue;
+                }
+
+                try
+                {
+                    await Task.Run(() =>
+                    {
+                        if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
+                        {
+                            throw new InvalidOperationException("Não foi possível abrir o PDF para impressão.");
+                        }
+                    });
+
+                    sent++;
+                }
+                catch (Exception exception)
+                {
+                    printError ??= exception.Message;
                 }
             }
 
-            var path = await CreatePdfAsync(row);
-            if (path is null)
+            var destination = useThermal && thermal == sent
+                ? "a impressora térmica"
+                : string.IsNullOrWhiteSpace(printer) ? "a impressora selecionada" : printer;
+            ActionNotice.Text = string.Empty;
+            if (sent == rows.Count && printError is null)
             {
-                printError ??= "Não foi possível gerar o PDF.";
-                continue;
+                PrintUi.Success(this, $"{sent} documento(s) enviado(s) para {destination}.");
             }
-
-            try
+            else
             {
-                await Task.Run(() =>
-                {
-                    if (PdfWindowsPrint.PrintOrOpen(path, printer) == false)
-                    {
-                        throw new InvalidOperationException("Não foi possível abrir o PDF para impressão.");
-                    }
-                });
-
-                sent++;
-            }
-            catch (Exception exception)
-            {
-                printError ??= exception.Message;
+                PrintUi.Warning(
+                    this,
+                    $"Enviados {sent} de {rows.Count} documentos."
+                    + (printError is null ? string.Empty : $" {printError}"));
             }
         }
-
-        var destination = useThermal && thermal == sent
-            ? "a impressora térmica"
-            : string.IsNullOrWhiteSpace(printer) ? "a impressora selecionada" : printer;
-        ActionNotice.Text = sent == rows.Count
-            ? $"{sent} documento(s) enviado(s) para {destination}."
-            : $"Enviados {sent} de {rows.Count} documentos."
-              + (printError is null ? string.Empty : $" Erro ao imprimir: {printError}");
+        finally
+        {
+            Busy.Hide();
+        }
     }
 
     private static async Task<(bool Handled, string? Error)> PrintThermalDocumentAsync(Guid documentId)

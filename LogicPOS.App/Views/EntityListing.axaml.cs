@@ -380,7 +380,7 @@ public partial class EntityListing : UserControl
             return;
         }
 
-        try
+        await PrintUi.RunAsync(this, Busy, async () =>
         {
             await Task.Run(() =>
             {
@@ -389,13 +389,8 @@ public partial class EntityListing : UserControl
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
             });
-
-            Notice.Text = "Documento enviado para a impressora.";
-        }
-        catch (Exception exception)
-        {
-            Notice.Text = exception.Message;
-        }
+        });
+        Notice.Text = string.Empty;
     }
 
     private async Task<string?> ResolveListedDocumentPdfAsync(ListingRow row)
