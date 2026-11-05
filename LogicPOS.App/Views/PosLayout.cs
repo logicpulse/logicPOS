@@ -150,18 +150,17 @@ public sealed class PosLayout
         var menuRight = columnRight - ticketGap;
         var toolbarBand = ToolbarButtonHeight + (Margin * 2);
         var padBand = (TicketButtonHeight * TicketRows) + Margin;
-        // When stacked, content must clear pad + toolbar; side-by-side only clears the toolbar row.
-        var bottomReserve = stackToolbar ? padBand + toolbarBand : toolbarBand;
+        // Articles live on the left — only clear the bottom toolbar. The ticket pad sits on the right.
         var usefulWidth = Math.Max(bucket.BaseWidth, menuRight - Margin);
         var usefulHeight = Math.Max(
             bucket.BaseHeight,
-            ScreenHeight - (StatusBarHeight * 2) - Margin - StatusBarHeight - bottomReserve);
+            ScreenHeight - (StatusBarHeight * 2) - Margin - StatusBarHeight - toolbarBand);
         var guessedColumns = Math.Max(1, usefulWidth / bucket.BaseWidth);
         var guessedRows = Math.Max(1, usefulHeight / bucket.BaseHeight);
         ButtonWidth = bucket.BaseWidth + ((usefulWidth - (bucket.BaseWidth * guessedColumns)) / guessedColumns);
         ButtonHeight = bucket.BaseHeight + ((usefulHeight - (bucket.BaseHeight * guessedRows)) / guessedRows);
         var gridBottom = (StatusBarHeight * 2) + Margin + (ButtonHeight * guessedRows);
-        var contentBottom = ScreenHeight - bottomReserve;
+        var contentBottom = ScreenHeight - toolbarBand;
         var overflow = gridBottom + arrowRowGap + StatusBarHeight - contentBottom;
         if (overflow > 0 && guessedRows > 0)
         {
