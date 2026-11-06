@@ -5,7 +5,7 @@
 /// </summary>
 public interface IOfficeSurface
 {
-    Task ShowPdfAsync(string path, string? title, Guid? documentId = null);
+    Task ShowPdfAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null);
 
     Task ShowNewDocumentAsync(
         Guid? draftId = null,

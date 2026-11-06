@@ -496,7 +496,7 @@ public sealed class LocalStockService : IStockManagementService
         };
     }
 
-    public async Task<string?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default)
+    public async Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default)
     {
         if (ids.Count == 0)
         {
@@ -505,18 +505,103 @@ public sealed class LocalStockService : IStockManagementService
 
         await using var scope = _scopes.CreateAsyncScope();
         var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
-        var serials = await database.WarehouseArticles.AsNoTracking()
-            .Where(item => ids.Contains(item.Id) && item.SerialNumber != null)
-            .Select(item => item.SerialNumber!)
+        var rows = await database.WarehouseArticles.AsNoTracking()
+            .Where(item => ids.Contains(item.Id) && item.SerialNumber != null && item.SerialNumber != "")
+            .Select(item => new
+            {
+                Serial = item.SerialNumber!,
+                ArticleId = item.ArticleId,
+                Code = item.Article != null ? item.Article.Code : null,
+                Designation = item.Article != null ? item.Article.Designation : null,
+                PrintModel = item.Article != null ? item.Article.BarcodeLabelPrintModel : null
+            })
             .ToListAsync(cancellationToken);
-        return serials.Count == 0 ? null : WriteBarcodePdf(serials);
+        if (rows.Count == 0)
+        {
+            return null;
+        }
+
+        var labels = rows.Select(item => new BarcodeLabelLine(
+            item.Serial,
+            item.Code ?? string.Empty,
+            item.Designation ?? string.Empty,
+            item.PrintModel)).ToList();
+        var printer = await ResolveLabelPrinterAsync(database, rows.Select(item => item.ArticleId).Distinct().ToList(), cancellationToken);
+        return new BarcodeLabelPrintResult
+        {
+            Path = WriteBarcodePdf(labels),
+            PreferredPrinter = printer
+        };
     }
 
-    public Task<string?> GenerateBarcodeLabelsBySerialAsync(IReadOnlyList<string> serialNumbers, CancellationToken cancellationToken = default)
+    public async Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsBySerialAsync(IReadOnlyList<string> serialNumbers, CancellationToken cancellationToken = default)
     {
         var serials = serialNumbers.Where(item => string.IsNullOrWhiteSpace(item) == false).Distinct().ToList();
-        return Task.FromResult(serials.Count == 0 ? null : WriteBarcodePdf(serials));
+        if (serials.Count == 0)
+        {
+            return null;
+        }
+
+        await using var scope = _scopes.CreateAsyncScope();
+        var database = scope.ServiceProvider.GetRequiredService<LogicPOSDbContext>();
+        var rows = await database.WarehouseArticles.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.SerialNumber != null && serials.Contains(item.SerialNumber))
+            .Select(item => new
+            {
+                Serial = item.SerialNumber!,
+                ArticleId = item.ArticleId,
+                Code = item.Article != null ? item.Article.Code : null,
+                Designation = item.Article != null ? item.Article.Designation : null,
+                PrintModel = item.Article != null ? item.Article.BarcodeLabelPrintModel : null
+            })
+            .ToListAsync(cancellationToken);
+        var bySerial = rows.GroupBy(item => item.Serial, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var labels = serials.Select(serial =>
+        {
+            if (bySerial.TryGetValue(serial, out var row))
+            {
+                return new BarcodeLabelLine(row.Serial, row.Code ?? string.Empty, row.Designation ?? string.Empty, row.PrintModel);
+            }
+
+            return new BarcodeLabelLine(serial, string.Empty, string.Empty, null);
+        }).ToList();
+        var articleIds = rows.Select(item => item.ArticleId).Distinct().ToList();
+        var printer = await ResolveLabelPrinterAsync(database, articleIds, cancellationToken);
+        return new BarcodeLabelPrintResult
+        {
+            Path = WriteBarcodePdf(labels),
+            PreferredPrinter = printer
+        };
     }
+
+    private static async Task<string?> ResolveLabelPrinterAsync(
+        LogicPOSDbContext database,
+        IReadOnlyList<Guid> articleIds,
+        CancellationToken cancellationToken)
+    {
+        if (articleIds.Count == 0)
+        {
+            return null;
+        }
+
+        var association = await database.PrinterAssociations.AsNoTracking()
+            .Where(item => item.IsDeleted == false && articleIds.Contains(item.EntityId))
+            .Select(item => new { item.EntityId, item.PrinterId, Network = item.Printer != null ? item.Printer.NetworkName : null, Name = item.Printer != null ? item.Printer.Designation : null })
+            .ToListAsync(cancellationToken);
+        if (association.Count == 0)
+        {
+            return null;
+        }
+
+        // Prefer the printer of the first selected article when several differ.
+        var preferred = association.FirstOrDefault(item => item.EntityId == articleIds[0]) ?? association[0];
+        return string.IsNullOrWhiteSpace(preferred.Network) == false
+            ? preferred.Network!.Trim()
+            : (string.IsNullOrWhiteSpace(preferred.Name) ? null : preferred.Name!.Trim());
+    }
+
+    private sealed record BarcodeLabelLine(string Serial, string Code, string Designation, string? PrintModel);
 
     public async Task<StockDashboardSnapshot> LoadDashboardAsync(int year, CancellationToken cancellationToken = default)
     {
@@ -1140,7 +1225,7 @@ public sealed class LocalStockService : IStockManagementService
         _ => "Nenhum"
     };
 
-    private static string WriteBarcodePdf(IReadOnlyList<string> serials)
+    private static string WriteBarcodePdf(IReadOnlyList<BarcodeLabelLine> labels)
     {
         QuestPDF.Settings.License = LicenseType.Community;
         var writer = new ZXing.BarcodeWriter<SKBitmap>
@@ -1155,33 +1240,47 @@ public sealed class LocalStockService : IStockManagementService
             }
         };
 
-        var images = serials.Select(serial =>
+        var website = (LogicPOS.Shared.Features.Software.SoftwareInfo.Portugal.CompanyWeb ?? "http://www.logicpulse.com")
+            .Replace("http://", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .Replace("https://", string.Empty, StringComparison.OrdinalIgnoreCase)
+            .TrimEnd('/');
+
+        var images = labels.Select(label =>
         {
-            using var bitmap = writer.Write(serial);
+            using var bitmap = writer.Write(label.Serial);
             using var data = bitmap.Encode(SKEncodedImageFormat.Png, 100);
-            return (serial, bytes: data.ToArray());
+            return (label, bytes: data.ToArray());
         }).ToList();
 
         var path = Path.Combine(Path.GetTempPath(), "logicpos-labels-" + Guid.NewGuid().ToString("N") + ".pdf");
         QuestPDF.Fluent.Document.Create(container =>
         {
-            container.Page(page =>
+            foreach (var (label, bytes) in images)
             {
-                page.Size(PageSizes.A4);
-                page.Margin(24);
-                page.Content().Column(column =>
+                var big = string.Equals(label.PrintModel, "100x50", StringComparison.OrdinalIgnoreCase)
+                    || string.IsNullOrWhiteSpace(label.PrintModel);
+                container.Page(page =>
                 {
-                    column.Spacing(16);
-                    foreach (var (serial, bytes) in images)
+                    page.Size(big ? new PageSize(100, 50, Unit.Millimetre) : new PageSize(40, 30, Unit.Millimetre));
+                    page.Margin(4, Unit.Millimetre);
+                    page.Content().Column(column =>
                     {
-                        column.Item().Column(label =>
+                        column.Item().AlignCenter().Height(big ? 18 : 12, Unit.Millimetre).Image(bytes);
+                        column.Item().AlignCenter().Text("SN: " + label.Serial).FontSize(big ? 9 : 7).Bold();
+                        if (string.IsNullOrWhiteSpace(label.Designation) == false)
                         {
-                            label.Item().AlignCenter().Width(220).Image(bytes);
-                            label.Item().AlignCenter().Text(serial);
-                        });
-                    }
+                            column.Item().AlignCenter().Text(label.Designation).FontSize(big ? 8 : 6);
+                        }
+
+                        if (string.IsNullOrWhiteSpace(label.Code) == false)
+                        {
+                            column.Item().AlignCenter().Text("ref. " + label.Code).FontSize(big ? 8 : 6);
+                        }
+
+                        column.Item().AlignCenter().Text(website).FontSize(big ? 7 : 5);
+                    });
                 });
-            });
+            }
         }).GeneratePdf(path);
         return path;
     }

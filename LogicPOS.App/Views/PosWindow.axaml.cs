@@ -2151,7 +2151,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
+    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         var newDocOpen = NewDocumentOverlay.IsVisible;
@@ -2160,7 +2160,7 @@ public partial class PosWindow : UserControl, IOfficeSurface
         NewDocumentOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
         FitHostedOverlays();
-        await PdfHost.ShowAsync(path, title, documentId);
+        await PdfHost.ShowAsync(path, title, documentId, preferredPrinter);
         PdfOverlay.IsVisible = false;
         NewDocumentOverlay.IsVisible = newDocOpen;
         ReportsOverlay.IsVisible = reportsOpen;

@@ -60,6 +60,13 @@ public sealed class StockArticleRow
     public DateTime? UpdatedAt { get; init; }
 }
 
+public sealed class BarcodeLabelPrintResult
+{
+    public string Path { get; init; } = string.Empty;
+
+    public string? PreferredPrinter { get; init; }
+}
+
 public sealed class StockMovementRow
 {
     public Guid Id { get; init; }
@@ -378,9 +385,9 @@ public interface IStockManagementService
 
     Task<StockPageResult<StockHistoryRow>> GetHistoryAsync(StockPageRequest request, CancellationToken cancellationToken = default);
 
-    Task<string?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
+    Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsAsync(IReadOnlyList<Guid> ids, CancellationToken cancellationToken = default);
 
-    Task<string?> GenerateBarcodeLabelsBySerialAsync(IReadOnlyList<string> serialNumbers, CancellationToken cancellationToken = default);
+    Task<BarcodeLabelPrintResult?> GenerateBarcodeLabelsBySerialAsync(IReadOnlyList<string> serialNumbers, CancellationToken cancellationToken = default);
 
     Task<StockModuleAccess> GetModuleAccessAsync(CancellationToken cancellationToken = default);
 

@@ -593,7 +593,7 @@ public partial class StockManagementView : UserControl
         switch (_tab)
         {
             case StockTab.Articles when SelectedArticle() is { } article:
-                OpenAdjustArticle(article);
+                await OpenFullArticleAsync(article);
                 break;
             case StockTab.Movements when SelectedMovement() is { } movement:
                 if (movement.CanEdit == false)
@@ -825,20 +825,20 @@ public partial class StockManagementView : UserControl
 
         try
         {
-            var path = await service.GenerateBarcodeLabelsAsync(ids);
-            if (string.IsNullOrWhiteSpace(path))
+            var result = await service.GenerateBarcodeLabelsAsync(ids);
+            if (result is null || string.IsNullOrWhiteSpace(result.Path))
             {
                 Fail("Não foi possível gerar a etiqueta.");
                 return;
             }
 
-            if (path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            if (result.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                await ShowPdfAsync(path, "Etiqueta");
+                await ShowPdfAsync(result.Path, "Etiqueta", result.PreferredPrinter);
             }
             else
             {
-                Notice.Text = $"Etiqueta gerada: {path}";
+                Notice.Text = $"Etiqueta gerada: {result.Path}";
             }
         }
         catch (Exception exception)
@@ -1054,6 +1054,24 @@ public partial class StockManagementView : UserControl
         EditorHost.Children.Add(Label("Número de série (só leitura)"));
         EditorHost.Children.Add(new TextBox { Text = movement.SerialNumber, IsReadOnly = true, Classes = { "bo_entity_input" } });
         EditorOverlay.IsVisible = true;
+    }
+
+    private async Task OpenFullArticleAsync(StockArticleRow article)
+    {
+        if (this.FindAncestorOfType<BackOfficeWindow>() is not BackOfficeWindow office)
+        {
+            OpenAdjustArticle(article);
+            return;
+        }
+
+        try
+        {
+            await office.EditEntityAsync("Artigos", article.Id);
+        }
+        catch (Exception exception)
+        {
+            Fail(exception.Message);
+        }
     }
 
     private void OpenAdjustArticle(StockArticleRow article)
@@ -1811,10 +1829,12 @@ public partial class StockManagementView : UserControl
 
         try
         {
-            var path = await service.GenerateBarcodeLabelsBySerialAsync(values);
-            if (string.IsNullOrWhiteSpace(path) == false && path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+            var result = await service.GenerateBarcodeLabelsBySerialAsync(values);
+            if (result is not null
+                && string.IsNullOrWhiteSpace(result.Path) == false
+                && result.Path.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
             {
-                await ShowPdfAsync(path, "Etiquetas");
+                await ShowPdfAsync(result.Path, "Etiquetas", result.PreferredPrinter);
             }
         }
         catch (Exception exception)
@@ -1829,11 +1849,11 @@ public partial class StockManagementView : UserControl
         Toast.Error(this, message);
     }
 
-    private async Task ShowPdfAsync(string path, string title)
+    private async Task ShowPdfAsync(string path, string title, string? preferredPrinter = null)
     {
         if (OfficeSurface.Find(this) is { } office)
         {
-            await office.ShowPdfAsync(path, title);
+            await office.ShowPdfAsync(path, title, preferredPrinter: preferredPrinter);
             return;
         }
 

@@ -47,6 +47,8 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
         ["Phone"] = "Telefone",
         ["MobilePhone"] = "Telemóvel",
         ["Barcode"] = "Código de barras",
+        ["BarcodeLabelPrintModel"] = "Modelo etiqueta código barras",
+        ["AssociatedPrinterId"] = "Impressora de etiquetas",
         ["Quantity"] = "Quantidade",
         ["Token"] = "Parâmetro",
         ["Acronym"] = "Acrónimo",
@@ -541,6 +543,12 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 if (childError is not null)
                 {
                     return ListingSaveResult.Fail(childError);
+                }
+
+                var printerError = await SaveArticlePrinterAsync(database, savedArticle.Id, fields, cancellationToken);
+                if (printerError is not null)
+                {
+                    return ListingSaveResult.Fail(printerError);
                 }
 
                 await database.SaveChangesAsync(cancellationToken);
@@ -1115,8 +1123,50 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             });
         }
 
+        if (page.EntityType == typeof(Article))
+        {
+            var modelIndex = fields.FindIndex(field => field.Key == "BarcodeLabelPrintModel");
+            var modelValue = modelIndex >= 0 ? fields[modelIndex].Value : string.Empty;
+            var modelLabel = BarcodeLabelModels.FirstOrDefault(item =>
+                string.Equals(item.Model, modelValue, StringComparison.OrdinalIgnoreCase)).Label
+                ?? BarcodeLabelModels[0].Label;
+            var modelField = new ListingField
+            {
+                Key = "BarcodeLabelPrintModel",
+                Label = Header("BarcodeLabelPrintModel"),
+                Kind = "choice",
+                Options = BarcodeLabelModels.Select(item => item.Label).ToList(),
+                Value = modelLabel,
+                Group = "Outros detalhes"
+            };
+            if (modelIndex >= 0)
+            {
+                fields[modelIndex] = modelField;
+            }
+            else
+            {
+                fields.Add(modelField);
+            }
+
+            fields.Add(new ListingField
+            {
+                Key = "AssociatedPrinterId",
+                Label = Header("AssociatedPrinterId"),
+                Kind = "lookup",
+                Lookup = nameof(Printer),
+                Value = string.Empty,
+                Group = "Outros detalhes"
+            });
+        }
+
         return fields;
     }
+
+    private static readonly (string Model, string Label)[] BarcodeLabelModels =
+    [
+        ("100x50", "Modelo para impressão de Código de barras 100*50"),
+        ("40x30", "Modelo para impressão de Código de barras 40*30")
+    ];
 
     private static string? FieldGroup(Type entityType, string propertyName)
     {
@@ -1379,6 +1429,11 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
                 continue;
             }
 
+            if (pair.Key == "AssociatedPrinterId")
+            {
+                continue;
+            }
+
             if (TryApplyArticlePriceField(type, entity, pair.Key, pair.Value, out var priceError))
             {
                 if (priceError is not null)
@@ -1392,6 +1447,15 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             var property = type.GetProperty(pair.Key);
             if (property is null || property.CanWrite == false)
             {
+                continue;
+            }
+
+            if (pair.Key == "BarcodeLabelPrintModel" && entity is Article)
+            {
+                var model = BarcodeLabelModels.FirstOrDefault(item =>
+                    string.Equals(item.Label, pair.Value, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(item.Model, pair.Value, StringComparison.OrdinalIgnoreCase)).Model;
+                property.SetValue(entity, string.IsNullOrWhiteSpace(model) ? "100x50" : model);
                 continue;
             }
 
@@ -1883,6 +1947,17 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             ShowWhen = "UniqueArticles",
             Value = serials.Count == 0 ? "Ainda não há números de série neste artigo." : string.Join(", ", serials)
         });
+
+        var printerId = await database.PrinterAssociations.AsNoTracking()
+            .Where(item => item.IsDeleted == false && item.EntityId == articleId)
+            .Select(item => (Guid?)item.PrinterId)
+            .FirstOrDefaultAsync(cancellationToken);
+        var printerField = fields.FirstOrDefault(field => field.Key == "AssociatedPrinterId");
+        if (printerField is not null)
+        {
+            printerField.Value = printerId is Guid id && id != Guid.Empty ? id.ToString() : string.Empty;
+        }
+
         _ = article;
     }
 
@@ -1909,6 +1984,73 @@ public sealed class BackOfficeListingService : IBackOfficeListingService
             ShowWhen = "IsComposed",
             Value = FormDecimal.Format(quantity, FormDecimalKind.Quantity)
         });
+    }
+
+    private static async Task<string?> SaveArticlePrinterAsync(
+        LogicPOSDbContext database,
+        Guid articleId,
+        IReadOnlyDictionary<string, string> fields,
+        CancellationToken cancellationToken)
+    {
+        if (fields.TryGetValue("AssociatedPrinterId", out var raw) == false)
+        {
+            return null;
+        }
+
+        Guid? printerId = null;
+        if (string.IsNullOrWhiteSpace(raw) == false)
+        {
+            if (Guid.TryParse(raw, out var parsed) == false || parsed == Guid.Empty)
+            {
+                return "Impressora de etiquetas inválida.";
+            }
+
+            var exists = await database.Printers.AsNoTracking()
+                .AnyAsync(item => item.Id == parsed && item.IsDeleted == false, cancellationToken);
+            if (exists == false)
+            {
+                return "Impressora de etiquetas não encontrada.";
+            }
+
+            printerId = parsed;
+        }
+
+        var links = await database.PrinterAssociations
+            .Where(item => item.EntityId == articleId && item.IsDeleted == false)
+            .ToListAsync(cancellationToken);
+        if (printerId is null)
+        {
+            foreach (var link in links)
+            {
+                link.IsDeleted = true;
+                link.DeletedAt = DateTime.Now;
+                link.UpdatedAt = DateTime.Now;
+            }
+
+            return null;
+        }
+
+        var current = links.FirstOrDefault();
+        if (current is null)
+        {
+            database.PrinterAssociations.Add(new PrinterAssociation
+            {
+                PrinterId = printerId.Value,
+                EntityId = articleId
+            });
+            return null;
+        }
+
+        current.PrinterId = printerId.Value;
+        current.UpdatedAt = DateTime.Now;
+        foreach (var extra in links.Skip(1))
+        {
+            extra.IsDeleted = true;
+            extra.DeletedAt = DateTime.Now;
+            extra.UpdatedAt = DateTime.Now;
+        }
+
+        return null;
     }
 
     private static async Task<string?> SaveArticleChildrenAsync(LogicPOSDbContext database, Guid articleId, IReadOnlyDictionary<string, string> fields, CancellationToken cancellationToken)

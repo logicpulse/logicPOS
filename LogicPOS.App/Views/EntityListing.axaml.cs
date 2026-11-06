@@ -156,6 +156,9 @@ public partial class EntityListing : UserControl
     /// <summary>Opens the Novo editor overlay for the current listing page.</summary>
     public Task OpenNewEntityAsync() => EditAsync(null);
 
+    /// <summary>Opens the editor overlay for an existing row on the current listing page.</summary>
+    public Task OpenEditEntityAsync(Guid id) => EditAsync(id);
+
     public async Task OpenArticleSetupWizardAsync()
     {
         ArticleSetupOverlay.IsVisible = true;

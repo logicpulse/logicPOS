@@ -276,7 +276,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         }
     }
 
-    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null)
+    public async Task ShowPdfAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null)
     {
         var reportsOpen = ReportsOverlay.IsVisible;
         var newDocOpen = NewDocumentOverlay.IsVisible;
@@ -284,10 +284,28 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
         // PDF por cima do Novo documento (senão o preview fica tapado).
         NewDocumentOverlay.IsVisible = false;
         PdfOverlay.IsVisible = true;
-        await PdfHost.ShowAsync(path, title, documentId);
+        await PdfHost.ShowAsync(path, title, documentId, preferredPrinter);
         PdfOverlay.IsVisible = false;
         NewDocumentOverlay.IsVisible = newDocOpen;
         ReportsOverlay.IsVisible = reportsOpen;
+    }
+
+    /// <summary>Shows a BackOffice entity page and opens the editor for <paramref name="id"/>.</summary>
+    public async Task EditEntityAsync(string title, Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            return;
+        }
+
+        ShowPage(title);
+        if (EntityHost.IsVisible == false)
+        {
+            return;
+        }
+
+        await EntityHost.ShowAsync(title);
+        await EntityHost.OpenEditEntityAsync(id);
     }
 
     public void SetSessionLabel(string sessionLabel)

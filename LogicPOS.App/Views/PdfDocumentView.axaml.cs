@@ -24,6 +24,7 @@ public partial class PdfDocumentView : UserControl
     private TaskCompletionSource<bool>? _closed;
     private string? _pdfPath;
     private string? _documentTitle;
+    private string? _preferredPrinter;
     private Guid? _documentId;
     private int _pageIndex;
     private double _zoom = 1;
@@ -42,11 +43,12 @@ public partial class PdfDocumentView : UserControl
         DetachedFromVisualTree += (_, _) => LayoutUpdated -= OnPdfLayoutUpdated;
     }
 
-    public Task ShowAsync(string path, string? title, Guid? documentId = null)
+    public Task ShowAsync(string path, string? title, Guid? documentId = null, string? preferredPrinter = null)
     {
         RelayoutForViewport();
         _pdfPath = path;
         _documentId = documentId;
+        _preferredPrinter = string.IsNullOrWhiteSpace(preferredPrinter) ? null : preferredPrinter.Trim();
         _documentTitle = string.IsNullOrWhiteSpace(title) ? "Documento" : title;
         TitleText.Text = _documentTitle;
         SetStatus("A carregar...");
@@ -257,7 +259,7 @@ public partial class PdfDocumentView : UserControl
         {
             await Task.Run(() =>
             {
-                if (PdfWindowsPrint.PrintOrOpen(_pdfPath) == false)
+                if (PdfWindowsPrint.PrintOrOpen(_pdfPath, _preferredPrinter) == false)
                 {
                     throw new InvalidOperationException("Não foi possível enviar o documento para a impressora.");
                 }
