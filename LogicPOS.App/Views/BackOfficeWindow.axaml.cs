@@ -873,6 +873,18 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
                 {
                     _ = ShowArticleDashboardAsync();
                 }
+
+                if (opening && section.Title == "Documentos")
+                {
+                    var documentsChild = children.Children.OfType<Button>()
+                        .FirstOrDefault(button => button.Tag as string == "Documentos");
+                    if (documentsChild is not null)
+                    {
+                        SelectMenuItem(documentsChild);
+                    }
+
+                    ShowPage("Documentos");
+                }
             };
             MenuHost.Children.Add(parent);
             if (direct == false)
