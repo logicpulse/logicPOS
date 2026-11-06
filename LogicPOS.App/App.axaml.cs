@@ -103,53 +103,67 @@ public partial class App : global::Avalonia.Application
             }
         }
 
-        await Dispatcher.UIThread.InvokeAsync(async () =>
+        // Avoid OnMainWindowClose killing the process while we swap splash → edition → login.
+        desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
         {
             // Close splash before dialogs: Opened may touch ILicenseModule (branding).
             loading.Close();
+        });
 
-            var configuration = AppComposition.Services?
-                .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
-                as Microsoft.Extensions.Configuration.IConfiguration;
-            var needsEdition = ApplyProductEditionAsync is not null
-                && (configuration is null || ProductEditionSettings.HasEdition(configuration) == false);
+        var configuration = AppComposition.Services?
+            .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
+            as Microsoft.Extensions.Configuration.IConfiguration;
+        var needsEdition = ApplyProductEditionAsync is not null
+            && (configuration is null || ProductEditionSettings.HasEdition(configuration) == false);
 
-            if (needsEdition)
+        if (needsEdition)
+        {
+            // Wait for Closed outside InvokeAsync so the UI thread keeps pumping input.
+            var wizard = await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                var wizard = new EditionSetupWindow();
-                desktop.MainWindow = wizard;
-                var closed = new TaskCompletionSource<bool>();
-                wizard.Closed += (_, _) => closed.TrySetResult(true);
-                wizard.Show();
-                await closed.Task;
-                if (wizard.Completed == false)
-                {
-                    desktop.Shutdown();
-                    return;
-                }
+                var window = new EditionSetupWindow();
+                desktop.MainWindow = window;
+                window.Show();
+                return window;
+            });
 
-                var error = await ApplyProductEditionAsync!(
-                    wizard.SelectedEdition,
-                    wizard.SelectedHosting,
-                    wizard.ApiAddress,
-                    wizard.ClientId);
-                if (string.IsNullOrWhiteSpace(error) == false)
-                {
-                    // Still continue — Business server without licence works as local until activated.
-                    AppLogging.Warning(null, "First-run edition apply: {Error}", error);
-                }
+            var closed = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            wizard.Closed += (_, _) => closed.TrySetResult(true);
+            await closed.Task.ConfigureAwait(true);
 
-                // Re-compose so Edition/Hosting/licence gates match the choice.
-                await Task.Run(() =>
-                {
-                    var bootstrap = Bootstrap ?? AppComposition.Configure;
-                    bootstrap();
-                });
+            if (wizard.Completed == false)
+            {
+                desktop.Shutdown();
+                return;
             }
 
+            var error = await ApplyProductEditionAsync!(
+                wizard.SelectedEdition,
+                wizard.SelectedHosting,
+                wizard.ApiAddress,
+                wizard.ClientId).ConfigureAwait(true);
+            if (string.IsNullOrWhiteSpace(error) == false)
+            {
+                // Still continue — Business server without licence works as local until activated.
+                AppLogging.Warning(null, "First-run edition apply: {Error}", error);
+            }
+
+            // Re-compose so Edition/Hosting/licence gates match the choice.
+            await Task.Run(() =>
+            {
+                var bootstrap = Bootstrap ?? AppComposition.Configure;
+                bootstrap();
+            }).ConfigureAwait(true);
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
             var login = new LoginShellWindow();
             desktop.MainWindow = login;
             login.Show();
+            desktop.ShutdownMode = ShutdownMode.OnMainWindowClose;
         });
     }
 
