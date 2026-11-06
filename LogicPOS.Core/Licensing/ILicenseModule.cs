@@ -13,6 +13,18 @@ public interface ILicenseModule
     /// <summary>When false, printing stays inactive (LogicPulse soft lock).</summary>
     bool PrintEnabled { get; }
 
+    /// <summary>Business/Cloud: local API host may run.</summary>
+    bool ApiEnabled { get; }
+
+    /// <summary>Business/Cloud: Blazor portal may serve.</summary>
+    bool PortalEnabled { get; }
+
+    /// <summary>Business/Cloud: network / print-agent printing.</summary>
+    bool NetworkPrintingEnabled { get; }
+
+    /// <summary>Business/Cloud: extra terminals against a shared API.</summary>
+    bool MultiTerminalEnabled { get; }
+
     /// <summary>Machine hardware id shown on the registration form (empty in the public edition).</summary>
     string HardwareId { get; }
 

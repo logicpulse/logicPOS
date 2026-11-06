@@ -17,6 +17,11 @@ public partial class App : global::Avalonia.Application
     public static Action? Bootstrap { get; set; }
 
     /// <summary>
+    /// Host applies first-run edition (writes appsettings, may ADDLOCAL API/portal, re-composes DI).
+    /// </summary>
+    public static Func<ProductEdition, ProductHosting, string?, string?, Task<string?>>? ApplyProductEditionAsync { get; set; }
+
+    /// <summary>
     /// Android: MainActivity define esta acção para chamar FinishAffinity + kill.
     /// Login/POS/BO invocam-na quando IClassicDesktopStyleApplicationLifetime não existe.
     /// </summary>
@@ -98,13 +103,52 @@ public partial class App : global::Avalonia.Application
             }
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() =>
+        await Dispatcher.UIThread.InvokeAsync(async () =>
         {
+            // Close splash before dialogs: Opened may touch ILicenseModule (branding).
+            loading.Close();
+
+            var configuration = AppComposition.Services?
+                .GetService(typeof(Microsoft.Extensions.Configuration.IConfiguration))
+                as Microsoft.Extensions.Configuration.IConfiguration;
+            var needsEdition = ApplyProductEditionAsync is not null
+                && (configuration is null || ProductEditionSettings.HasEdition(configuration) == false);
+
+            if (needsEdition)
+            {
+                var wizard = new EditionSetupWindow();
+                desktop.MainWindow = wizard;
+                var closed = new TaskCompletionSource<bool>();
+                wizard.Closed += (_, _) => closed.TrySetResult(true);
+                wizard.Show();
+                await closed.Task;
+                if (wizard.Completed == false)
+                {
+                    desktop.Shutdown();
+                    return;
+                }
+
+                var error = await ApplyProductEditionAsync!(
+                    wizard.SelectedEdition,
+                    wizard.SelectedHosting,
+                    wizard.ApiAddress,
+                    wizard.ClientId);
+                if (string.IsNullOrWhiteSpace(error) == false)
+                {
+                    // Still continue — Business server without licence works as local until activated.
+                    AppLogging.Warning(null, "First-run edition apply: {Error}", error);
+                }
+
+                // Re-compose so Edition/Hosting/licence gates match the choice.
+                await Task.Run(() =>
+                {
+                    var bootstrap = Bootstrap ?? AppComposition.Configure;
+                    bootstrap();
+                });
+            }
+
             var login = new LoginShellWindow();
             desktop.MainWindow = login;
-            // Close splash before Show(): Opened may touch ILicenseModule (branding) and must not
-            // leave the loader stuck if a sync licence probe blocks briefly.
-            loading.Close();
             login.Show();
         });
     }

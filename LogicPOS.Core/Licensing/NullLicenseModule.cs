@@ -8,6 +8,15 @@ public sealed class NullLicenseModule : ILicenseModule
 
     public bool PrintEnabled => true;
 
+    // Public GitHub build: no API/portal/network extras.
+    public bool ApiEnabled => false;
+
+    public bool PortalEnabled => false;
+
+    public bool NetworkPrintingEnabled => false;
+
+    public bool MultiTerminalEnabled => false;
+
     public string HardwareId => string.Empty;
 
     public string Reseller => "LogicPulse";

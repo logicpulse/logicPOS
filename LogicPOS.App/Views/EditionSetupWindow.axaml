@@ -1,0 +1,43 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LogicPOS.App.Views.EditionSetupWindow"
+        Title="LogicPOS 2.0"
+        Width="720"
+        Height="560"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False">
+  <DockPanel Margin="24">
+    <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="12" Margin="0,16,0,0">
+      <Button x:Name="BtnContinue" Content="Continuar" MinWidth="120" Click="OnContinueClick" />
+    </StackPanel>
+
+    <ScrollViewer>
+      <StackPanel Spacing="16">
+        <TextBlock FontSize="22" FontWeight="SemiBold" Text="Escolha a sua edição" />
+        <TextBlock TextWrapping="Wrap"
+                   Text="As três edições incluem faturação certificada. A Community é gratuita e offline. O Business acrescenta API, portal e vários postos. O Cloud é o Business alojado pela LogicPulse." />
+
+        <RadioButton x:Name="RbCommunity" GroupName="Edition" IsChecked="True"
+                     Content="Community Edition — grátis, local, certificada" />
+        <RadioButton x:Name="RbBusiness" GroupName="Edition"
+                     Content="Business Edition — 15 €/mês, API e portal" />
+        <RadioButton x:Name="RbCloud" GroupName="Edition"
+                     Content="Cloud — 9 €/mês, sem servidores" />
+
+        <Border x:Name="PanelBusinessHosting" IsVisible="False" Padding="12" BorderThickness="1" BorderBrush="#CCCCCC" CornerRadius="4">
+          <StackPanel Spacing="8">
+            <TextBlock FontWeight="SemiBold" Text="Alojamento Business" />
+            <RadioButton x:Name="RbLocalServer" GroupName="Hosting" IsChecked="True"
+                         Content="Este computador é o servidor (instala API e portal quando a licença estiver activa)" />
+            <RadioButton x:Name="RbRemoteApi" GroupName="Hosting"
+                         Content="Ligar a uma API já existente" />
+            <TextBox x:Name="TxtApiAddress" Watermark="https://servidor:5001/" IsVisible="False" />
+            <TextBox x:Name="TxtClientId" Watermark="Client ID (opcional)" IsVisible="False" />
+          </StackPanel>
+        </Border>
+
+        <TextBlock x:Name="LblStatus" TextWrapping="Wrap" Opacity="0.8" />
+      </StackPanel>
+    </ScrollViewer>
+  </DockPanel>
+</Window>
