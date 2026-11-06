@@ -1,5 +1,6 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
              x:Class="LogicPOS.App.Views.SettingsPage">
     <Border Classes="bo_doc_page">
         <DockPanel>
@@ -7,7 +8,10 @@
                 <Border Classes="bo_page_header">
                     <DockPanel>
                         <Button Classes="bo_page_action" DockPanel.Dock="Right" Click="OnSaveClick" Content="Guardar" />
-                        <TextBlock x:Name="TitleText" Classes="bo_page_title" />
+                        <StackPanel Classes="bo_page_title_row">
+                            <svg:Svg x:Name="TitleIcon" Classes="bo_page_title_icon" IsVisible="False" />
+                            <TextBlock x:Name="TitleText" Classes="bo_page_title" />
+                        </StackPanel>
                     </DockPanel>
                 </Border>
                 <TextBlock x:Name="Notice" Classes="bo_entity_notice" />

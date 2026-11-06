@@ -37,6 +37,7 @@ public partial class SettingsPage : UserControl
     {
         _title = title;
         TitleText.Text = title;
+        BackOfficePageIcons.Apply(TitleIcon, title);
         Notice.Text = string.Empty;
         _fields.Clear();
         _pages.Clear();

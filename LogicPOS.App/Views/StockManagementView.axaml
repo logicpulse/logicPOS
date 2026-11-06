@@ -60,7 +60,11 @@
                                     </StackPanel>
                                 </Button>
                             </StackPanel>
-                            <TextBlock Classes="bo_page_title" Text="Gestão de Stocks" />
+                            <StackPanel Classes="bo_page_title_row">
+                                <svg:Svg Classes="bo_page_title_icon"
+                                         Path="avares://LogicPOS.App/Assets/Images/BackOffice/Menu/menu_artigos_gestao_stocks.svg" />
+                                <TextBlock Classes="bo_page_title" Text="Gestão de Stocks" />
+                            </StackPanel>
                         </DockPanel>
                     </Border>
 

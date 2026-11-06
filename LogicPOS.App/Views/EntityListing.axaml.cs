@@ -178,6 +178,7 @@ public partial class EntityListing : UserControl
     {
         _title = title;
         TitleText.Text = title;
+        BackOfficePageIcons.Apply(TitleIcon, title);
         SearchBox.Text = string.Empty;
         Notice.Text = string.Empty;
         ResetDates();

@@ -775,6 +775,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
 
         foreach (var section in menu)
         {
+            BackOfficePageIcons.Register(section.Title, section.Icon);
             var direct = section.Items.Length == 1
                 && section.Items[0].Logout == false
                 && section.Items[0].Title == section.Title;
@@ -783,6 +784,7 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             {
                 foreach (var item in section.Items)
                 {
+                    BackOfficePageIcons.Register(item.Title, item.Icon, section.Icon);
                     var logout = item.Logout;
                     var title = item.Title;
                     var label = AppText.Get(title);
