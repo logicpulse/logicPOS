@@ -1,4 +1,4 @@
-﻿<Styles xmlns="https://github.com/avaloniaui"
+<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia">
     <Style Selector="Window.login_window">
@@ -86,19 +86,6 @@
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_scroll:pointerover /template/ Border">
@@ -144,19 +131,6 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_user:pointerover">
@@ -213,20 +187,21 @@
     </Style>
 
     <!-- Glass buttons (time.track / access.track KMP: PrimaryGlassBox + SoftGlass). -->
-    <Style Selector="Button.btn_glass, Button.btn_glass_soft, Button.login_pin_key">
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="0" />
+    <!-- Default glass chrome for all Buttons (KMP PrimaryGlassBox / SoftGlass sheen). -->
+    <Style Selector="Button">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border CornerRadius="{TemplateBinding CornerRadius}"
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
                         BoxShadow="0 2 6 0 #1A000000"
-                        ClipToBounds="False">
+                        ClipToBounds="False"
+                        TextBlock.FontSize="{TemplateBinding FontSize}"
+                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
+                        TextBlock.Foreground="{TemplateBinding Foreground}">
                     <Panel>
-                        <Border x:Name="GlassFill"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}" />
                         <Border IsHitTestVisible="False"
                                 CornerRadius="{TemplateBinding CornerRadius}">
                             <Border.Background>
@@ -238,12 +213,9 @@
                             </Border.Background>
                         </Border>
                         <ContentPresenter Content="{TemplateBinding Content}"
-                                          Margin="{TemplateBinding Padding}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          TextBlock.FontSize="{TemplateBinding FontSize}"
-                                          TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                                          TextBlock.Foreground="{TemplateBinding Foreground}" />
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </Panel>
                 </Border>
             </ControlTemplate>
@@ -524,15 +496,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="ZIndex" Value="2" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_pin_reveal:pointerover">
@@ -696,19 +659,6 @@
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_user:pointerover">
@@ -800,15 +750,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="ZIndex" Value="2" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_pin_reveal:pointerover">
@@ -841,37 +782,6 @@
                 <GradientStop Color="#E0F4F5F7" Offset="0.45" />
                 <GradientStop Color="#D1E8EAED" Offset="1" />
             </LinearGradientBrush>
-        </Setter>
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border CornerRadius="{TemplateBinding CornerRadius}"
-                        BoxShadow="0 2 6 0 #1A000000"
-                        ClipToBounds="False">
-                    <Panel>
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}" />
-                        <Border IsHitTestVisible="False"
-                                CornerRadius="{TemplateBinding CornerRadius}">
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
-                                    <GradientStop Color="#8CFFFFFF" Offset="0" />
-                                    <GradientStop Color="#1FFFFFFF" Offset="0.4" />
-                                    <GradientStop Color="#00FFFFFF" Offset="1" />
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
-                        <ContentPresenter Content="{TemplateBinding Content}"
-                                          Margin="{TemplateBinding Padding}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          TextBlock.FontSize="{TemplateBinding FontSize}"
-                                          TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                                          TextBlock.Foreground="{TemplateBinding Foreground}" />
-                    </Panel>
-                </Border>
-            </ControlTemplate>
         </Setter>
     </Style>
 
@@ -986,20 +896,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Margin" Value="4,4,4,4" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_portrait_submit:pointerover">
@@ -1302,19 +1198,6 @@
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.login_alert_action:pointerover">
@@ -1404,20 +1287,6 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      TextBlock.Foreground="{TemplateBinding Foreground}"
-                                      TextBlock.FontSize="{TemplateBinding FontSize}"
-                                      TextBlock.FontWeight="{TemplateBinding FontWeight}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_fo_tab.active">
@@ -1732,20 +1601,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_split_pay:pointerover">
@@ -1768,19 +1623,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_split_step:pointerover">
@@ -1823,20 +1665,6 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_price_money:pointerover">
@@ -1858,19 +1686,6 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_price_digit:pointerover">
@@ -1908,19 +1723,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_menu_button_green">
@@ -1993,19 +1795,6 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_scroll:pointerover /template/ Border">
@@ -2046,20 +1835,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_pad_button_grey">
@@ -2103,20 +1878,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <!-- Desativado (permissão ou ticket aberto): cinza escuro a 70%. -->
@@ -2141,20 +1902,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_toolbar_button_close:disabled">
@@ -2218,22 +1965,6 @@
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_pay_method:pointerover /template/ Border">
@@ -2608,23 +2339,6 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_flat:disabled">
@@ -2759,17 +2473,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_table_button">
@@ -2782,19 +2485,6 @@
         <Setter Property="Height" Value="88" />
         <Setter Property="Margin" Value="6" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Stretch" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_table_button:pointerover">
@@ -2864,22 +2554,6 @@
         <Setter Property="VerticalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        ClipToBounds="True"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.pos_doc_menu:disabled">
@@ -2951,13 +2625,6 @@
         <Setter Property="MinWidth" Value="0" />
         <Setter Property="MinHeight" Value="0" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Image.pos_dialog_close_icon">
@@ -3259,17 +2926,6 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_window_button:pointerover">
@@ -3315,17 +2971,6 @@
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_sidebar_toggle:pointerover">
@@ -3409,16 +3054,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Image.bo_sidebar_logo">
@@ -3477,20 +3112,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_nav:pointerover">
@@ -3566,20 +3187,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_sidebar_about:pointerover">
@@ -3619,20 +3226,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_menu_parent:pointerover">
@@ -3681,20 +3274,6 @@
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_menu_child Border.bo_menu_glyph">
@@ -3829,19 +3408,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Image.bo_shortcut_icon">
@@ -3910,18 +3476,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="StackPanel.dash_stock_open_content">
@@ -4003,20 +3557,6 @@
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      TextBlock.Foreground="{TemplateBinding Foreground}"
-                                      TextBlock.FontSize="{TemplateBinding FontSize}"
-                                      TextBlock.FontWeight="{TemplateBinding FontWeight}" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.dash_segment.active">
@@ -4372,20 +3912,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}"
-                        TextBlock.Foreground="{TemplateBinding Foreground}"
-                        TextBlock.FontSize="{TemplateBinding FontSize}"
-                        TextBlock.FontWeight="{TemplateBinding FontWeight}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_page_action:pointerover">
@@ -4702,17 +4228,6 @@
         <Setter Property="Padding" Value="14,6" />
         <Setter Property="MinHeight" Value="32" />
         <Setter Property="VerticalAlignment" Value="Bottom" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="StackPanel.bo_doc_action_content">
@@ -4754,17 +4269,6 @@
         <Setter Property="MinWidth" Value="28" />
         <Setter Property="MinHeight" Value="28" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="8"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_line_icon:pointerover">
@@ -4811,17 +4315,6 @@
         <Setter Property="Padding" Value="10,6" />
         <Setter Property="MinHeight" Value="32" />
         <Setter Property="FontSize" Value="12" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="TextBlock.bo_doc_count">
@@ -4861,17 +4354,6 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="8" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_listing_icon_button:pointerover">
@@ -4891,16 +4373,6 @@
         <Setter Property="MinHeight" Value="32" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_listing_columns:pointerover">
@@ -4931,16 +4403,6 @@
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="CornerRadius" Value="6" />
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_listing_search_clear:pointerover">
@@ -5915,15 +5377,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Cursor" Value="Hand" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.app_toast_close:pointerover">
@@ -5985,15 +5438,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_lookup_clear">
@@ -6013,15 +5457,6 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_lookup_clear:pointerover">
@@ -6043,15 +5478,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
         <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="Transparent" Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                     HorizontalAlignment="Center"
-                                     VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_lookup_chevron:pointerover /template/ Border">
@@ -6555,20 +5981,6 @@
         <Setter Property="CornerRadius" Value="12" />
         <Setter Property="BorderBrush" Value="#E6E6E6" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="Template">
-            <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-                    <ContentPresenter Content="{TemplateBinding Content}"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalAlignment="Center" />
-                </Border>
-            </ControlTemplate>
-        </Setter>
     </Style>
 
     <Style Selector="Button.bo_report_row:pointerover">

@@ -6,16 +6,31 @@
         <ControlTheme x:Key="BoEntityTabTheme" TargetType="Button">
             <Setter Property="Template">
                 <ControlTemplate>
-                    <Border Background="Transparent"
+                    <Border Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}">
-                        <ContentPresenter x:Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="Center"
-                                          RecognizesAccessKey="True" />
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Padding="{TemplateBinding Padding}"
+                            BoxShadow="0 2 6 0 #1A000000"
+                            ClipToBounds="False">
+                        <Panel>
+                            <Border IsHitTestVisible="False"
+                                    CornerRadius="{TemplateBinding CornerRadius}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                                        <GradientStop Color="#8CFFFFFF" Offset="0" />
+                                        <GradientStop Color="#1FFFFFFF" Offset="0.4" />
+                                        <GradientStop Color="#00FFFFFF" Offset="1" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            <ContentPresenter x:Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+                        </Panel>
                     </Border>
                 </ControlTemplate>
             </Setter>
