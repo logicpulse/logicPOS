@@ -60,7 +60,7 @@ public static class BarcodeLabelPdf
                     page.Size(big ? new PageSize(100, 50, Unit.Millimetre) : new PageSize(40, 30, Unit.Millimetre));
                     page.Margin(big ? 1.5f : 1f, Unit.Millimetre);
                     page.DefaultTextStyle(style => style.LineHeight(0.95f));
-                    page.Content().Column(column =>
+                    page.Content().AlignMiddle().Column(column =>
                     {
                         column.Spacing(big ? 0.8f : 0.4f, Unit.Millimetre);
                         // Stretch barcode across the full printable width of the label.
