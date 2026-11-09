@@ -366,6 +366,7 @@ public partial class StockManagementView : UserControl
             MinWidth = 36,
             MaxWidth = 36,
             Width = new DataGridLength(36),
+            // supportsRecycling must stay false: recycled checkboxes kept the previous row Id in the click handler.
             CellTemplate = new FuncDataTemplate<object>((row, _) =>
             {
                 if (row is not StockHistoryRow history)
@@ -385,19 +386,39 @@ public partial class StockManagementView : UserControl
                         return;
                     }
 
-                    if (box.IsChecked == true)
+                    // Prefer live DataContext — row containers can be rebound after scroll.
+                    var id = Guid.Empty;
+                    if (box.DataContext is StockHistoryRow bound)
                     {
-                        _labelIds.Add(history.Id);
+                        id = bound.Id;
+                    }
+                    else if (box.FindAncestorOfType<DataGridRow>()?.DataContext is StockHistoryRow live)
+                    {
+                        id = live.Id;
                     }
                     else
                     {
-                        _labelIds.Remove(history.Id);
+                        id = history.Id;
+                    }
+
+                    if (id == Guid.Empty)
+                    {
+                        return;
+                    }
+
+                    if (box.IsChecked == true)
+                    {
+                        _labelIds.Add(id);
+                    }
+                    else
+                    {
+                        _labelIds.Remove(id);
                     }
 
                     SyncGridSelectionFromLabels();
                 };
                 return box;
-            }, true)
+            }, false)
         });
     }
 
