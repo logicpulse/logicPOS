@@ -3,6 +3,8 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using SkiaSharp;
+using ZXing.SkiaSharp.Rendering;
+
 namespace LogicPOS.Core.BackOffice;
 
 public static class BarcodeLabelPdf
