@@ -102,9 +102,15 @@ public partial class BackOfficeWindow : UserControl, IOfficeSurface
             {
                 _entityEditReturnToStock = false;
                 ReturnToStockAfterEntityEdit();
+                return;
+            }
+
+            // Only used when an editor was opened on top of the onboarding wizard.
+            if (OnboardingHost.IsVisible)
+            {
+                RestoreOnboardingAfterOverlay();
             }
         };
-        EntityHost.OverlayDismissed += (_, _) => RestoreOnboardingAfterOverlay();
         OnboardingHost.StepRequested += OnOnboardingStepRequested;
         AttachedToVisualTree += (_, _) =>
         {
