@@ -57,7 +57,7 @@ internal static class PortraitChrome
     }
 
     public static FuncDataTemplate<T> CardTemplate<T>(Func<T, Border> build) where T : class
-        => new((item, _) => build(item), true);
+        => new((item, _) => build(item), false);
 
     public static Button SheetButton(string label, EventHandler<Avalonia.Interactivity.RoutedEventArgs> click)
     {

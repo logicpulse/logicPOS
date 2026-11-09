@@ -114,7 +114,8 @@ public partial class StockManagementView : UserControl
                 TouchFields.Attach(EditorHost);
             }
         };
-        CardList.ItemTemplate = new FuncDataTemplate<object>((row, _) => BuildStockCard(row), true);
+        // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
+        CardList.ItemTemplate = new FuncDataTemplate<object>((row, _) => BuildStockCard(row), false);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -337,6 +338,7 @@ public partial class StockManagementView : UserControl
             MinWidth = 36,
             MaxWidth = 36,
             Width = new DataGridLength(36),
+            // No recycling: recycled cells would keep the previous row in the click closure.
             CellTemplate = new FuncDataTemplate<object>((row, _) =>
             {
                 var button = new Button
@@ -350,9 +352,18 @@ public partial class StockManagementView : UserControl
                     Classes = { "bo_doc_row_icon" },
                     Path = icon
                 };
-                button.Click += (_, _) => click(row);
+                button.Click += (_, _) =>
+                {
+                    var current = button.DataContext
+                        ?? button.FindAncestorOfType<DataGridRow>()?.DataContext
+                        ?? row;
+                    if (current is not null)
+                    {
+                        click(current);
+                    }
+                };
                 return button;
-            }, true)
+            }, false)
         };
     }
 
@@ -2142,8 +2153,11 @@ public partial class StockManagementView : UserControl
         object? row = null;
         if (e.Source is Visual visual)
         {
-            row = visual.FindAncestorOfType<Border>()?.Tag
-                ?? visual.FindAncestorOfType<ListBoxItem>()?.Content;
+            // Prefer live container DataContext/Content over Tag (Tag is set at template build time).
+            row = visual.FindAncestorOfType<ListBoxItem>()?.Content
+                ?? visual.FindAncestorOfType<ListBoxItem>()?.DataContext
+                ?? visual.FindAncestorOfType<Border>()?.DataContext
+                ?? visual.FindAncestorOfType<Border>()?.Tag;
         }
 
         row ??= CardList.SelectedItem;

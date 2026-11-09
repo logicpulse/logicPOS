@@ -50,12 +50,13 @@ public partial class ReceiptEmissionView : UserControl
         DocumentGrid.ItemsSource = _visible;
         TouchFields.Attach(this);
         CardList.ItemsSource = _visible;
+        // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
         CardList.ItemTemplate = new FuncDataTemplate<ReceiptGridRow>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
                 $"{item.DateText} � {item.Status}",
                 $"{item.CustomerName} � {item.TotalToPayText}",
-                item), true);
+                item), false);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -811,8 +812,11 @@ public partial class ReceiptEmissionView : UserControl
         ReceiptGridRow? row = null;
         if (e.Source is Visual visual)
         {
-            row = visual.FindAncestorOfType<Border>()?.Tag as ReceiptGridRow
-                ?? visual.FindAncestorOfType<ListBoxItem>()?.Content as ReceiptGridRow;
+            // Prefer live container DataContext/Content over Tag (Tag is set at template build time).
+            row = visual.FindAncestorOfType<ListBoxItem>()?.Content as ReceiptGridRow
+                ?? visual.FindAncestorOfType<ListBoxItem>()?.DataContext as ReceiptGridRow
+                ?? visual.FindAncestorOfType<Border>()?.DataContext as ReceiptGridRow
+                ?? visual.FindAncestorOfType<Border>()?.Tag as ReceiptGridRow;
         }
 
         row ??= CardList.SelectedItem as ReceiptGridRow;

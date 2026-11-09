@@ -46,12 +46,13 @@ public partial class DocumentsListing : UserControl
         _load = new ListingLoad(Busy);
         ListingNotice.HideWhenEmpty(ActionNotice);
         TouchFields.Attach(this);
+        // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
         CardList.ItemTemplate = new FuncDataTemplate<CheckedDocument>((item, _) =>
             PortraitChrome.Card(
                 item.Number,
                 $"{item.DocumentDateText} � {item.Status}",
                 $"{item.EntityName} � {item.FinalTotalText}",
-                item), true);
+                item), false);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();

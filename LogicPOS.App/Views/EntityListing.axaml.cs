@@ -69,7 +69,8 @@ public partial class EntityListing : UserControl
         ArticleSetupHost.Finished += OnArticleSetupFinished;
         FinalConsumerSetupHost.Finished += OnFinalConsumerSetupFinished;
         TableSetupHost.Finished += OnTableSetupFinished;
-        CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), true);
+        // No recycling: cards bake title/Tag from the row; recycled cells would show the wrong item.
+        CardList.ItemTemplate = new FuncDataTemplate<ListingRow>((row, _) => BuildCard(row), false);
         AttachedToVisualTree += (_, _) =>
         {
             RelayoutForViewport();
@@ -577,6 +578,7 @@ public partial class EntityListing : UserControl
             MinWidth = 36,
             MaxWidth = 36,
             Width = new DataGridLength(36),
+            // No recycling: recycled cells would keep the previous row in the click closure.
             CellTemplate = new FuncDataTemplate<ListingRow>((row, _) =>
             {
                 var button = new Button { Classes = { "bo_doc_icon_button" }, IsEnabled = enabled(row) };
@@ -585,9 +587,18 @@ public partial class EntityListing : UserControl
                     Classes = { "bo_doc_row_icon" },
                     Path = icon
                 };
-                button.Click += (_, _) => click(row);
+                button.Click += (_, _) =>
+                {
+                    var current = button.DataContext as ListingRow
+                        ?? button.FindAncestorOfType<DataGridRow>()?.DataContext as ListingRow
+                        ?? row;
+                    if (enabled(current))
+                    {
+                        click(current);
+                    }
+                };
                 return button;
-            })
+            }, false)
         };
     }
 
@@ -2375,9 +2386,15 @@ public partial class EntityListing : UserControl
                     Classes = { "bo_doc_row_icon" },
                     Path = "avares://LogicPOS.App/Assets/Images/Documents/botao_eliminar_b.svg"
                 };
-                button.Click += (_, _) => RemoveImportLine(line);
+                button.Click += (_, _) =>
+                {
+                    var current = button.DataContext as ImportLine
+                        ?? button.FindAncestorOfType<DataGridRow>()?.DataContext as ImportLine
+                        ?? line;
+                    RemoveImportLine(current);
+                };
                 return button;
-            })
+            }, false)
         };
     }
 
@@ -2651,7 +2668,17 @@ public partial class EntityListing : UserControl
 
     private async void OnCardTapped(object? sender, TappedEventArgs e)
     {
-        if (CardList.SelectedItem is not ListingRow row)
+        ListingRow? row = null;
+        if (e.Source is Visual visual)
+        {
+            row = visual.FindAncestorOfType<ListBoxItem>()?.Content as ListingRow
+                ?? visual.FindAncestorOfType<ListBoxItem>()?.DataContext as ListingRow
+                ?? visual.FindAncestorOfType<Border>()?.DataContext as ListingRow
+                ?? visual.FindAncestorOfType<Border>()?.Tag as ListingRow;
+        }
+
+        row ??= CardList.SelectedItem as ListingRow;
+        if (row is null)
         {
             return;
         }
